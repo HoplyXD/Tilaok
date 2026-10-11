@@ -15,10 +15,10 @@ Context for Claude Code sessions in this repo.
 ## Design summary
 - Inspired by the Ultimate Chicken Horse build-then-run loop. **Never copy UCH code, art, sounds, names, or characters**; only the mechanic is borrowed, with our own twist.
 - All characters are chickens (color skins), a wholesome reimagining of sabong.
-- Every round: **Party Box → Place → Play.** The stage persists and grows.
-- Most rounds race to the flag. Every few rounds, a **laro ng lahi event** takes over the same stage (next event announced one round ahead).
-- **Lagsanay** (Ilonggo for tag): bomb-taya tag. Touch to pass; when the timer hits zero the taya is eliminated; repeat until one survivor.
-- **Scoring:** UCH default values (Goal 1, First +0.2, Solo +0.6, Trap +0.2/kill, Comeback +0.8, Coin +0.6; no points if all or none reach the goal). Events map onto Goal/First. **Exception: Lagsanay uses placement** (1.0 / 0.6 / 0.2 / 0) plus Trap and Comeback. Win at 10 points.
+- Every round: **Pugad → Place → Play.** The Pugad is a nest of eggs; picking one hatches an item. The stage persists and grows.
+- Most rounds race to the flag. Every **4th round**, a **laro ng lahi event** takes over the same stage (announced a round ahead).
+- **Lagsanay** (Ilonggo for tag): bomb-taya tag. Touch to pass; when the timer hits zero the taya is eliminated; repeat until one survivor. Trap deaths are eliminations.
+- **Scoring** (our own values; see GDD §5): Tapos 1.0, Una +0.25, Bayani +0.5, Patibong +0.25/kill, Bawi +0.75, Barya (coin) +0.5; no points if all or none reach the goal (waived in 2-player). Events map onto Tapos/Una. **Exception: Lagsanay uses placement** (1.0 / 0.5 / 0.25 / 0) plus Patibong and Bawi. First to 10 points, or highest after round 12.
 
 ## Competition rules that affect code
 - **All game logic/mechanics/code must be written by the team.** No tutorial, template, or open-source code for core mechanics.
@@ -32,4 +32,4 @@ Context for Claude Code sessions in this repo.
 - Update `docs/GDD.md` when design decisions change.
 
 ## Open items
-Team roles, art style (pixel art suggested for speed), event trigger frequency, final trap list, stage-clutter control.
+Team roles (later), exact 2D art style, final trap list (later), Pugad egg count tuning.
