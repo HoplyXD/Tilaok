@@ -1,0 +1,6 @@
+# Engine/OS junk
+.DS_Store
+Thumbs.db
+*.tmp
+build/
+exports/
