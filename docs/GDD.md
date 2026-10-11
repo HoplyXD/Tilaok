@@ -67,14 +67,29 @@ Scoring follows Ultimate Chicken Horse's default point values (in 1/5-point unit
 ### Event mapping
 | Event | Goal = | First = |
 |---|---|---|
-| **Lagsanay** | Survive until the event timer ends (not eliminated by the bomb or traps) | Player who held the taya the shortest total time |
+| **Lagsanay** | _Uses placement scoring, see below_ | — |
 | Langit-Lupa | Still standing when the timer ends | Highest position at the end |
 | Agawan Base | Your team scores a capture | Player who carried the flag in |
 | Patintero / Tubigan | Cross the stage without being tagged | First to cross |
 | Luksong Tinik | Survive all spike waves | Last hit / fewest close calls (TBD) |
 | Agawan Buko | Holding at least 1 coconut at the end | Most coconuts |
 
-**Lagsanay adjustment:** to make "too easy / too hard" possible and avoid always ending with one survivor, the event runs on a fixed timer (~45s) with a set number of bomb detonations (e.g., players − 2). Survivors at the timer = Goal.
+### Lagsanay: placement scoring (exception)
+Lagsanay is elimination-based, so it uses survival placement instead of Goal/First. This keeps it fair: everyone earns something for how long they lasted.
+
+| Placement | Points |
+|---|---|
+| 1st (last survivor) | 1.0 |
+| 2nd | 0.6 |
+| 3rd | 0.2 |
+| 4th (first eliminated) | 0 |
+
+- **Trap** (+0.2 per kill) still applies; traps stay deadly during Lagsanay.
+- **Comeback** (+0.8) applies if an Underdog places 1st.
+- **No too easy / too hard rule**: there is always a winner.
+- Runs until one survivor remains (no fixed timer needed).
+- With fewer players, the scale shrinks from the top: 3 players = 1.0 / 0.6 / 0; 2 players = 1.0 / 0.
+- Values are in UCH-scale units so Lagsanay is worth about the same as a race round; tune in playtesting.
 
 ### Match settings
 - **Points to win: 10** (UCH lets this be set from 3–20). Tune in playtesting for a ~10-minute match.
