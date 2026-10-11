@@ -25,6 +25,8 @@ Context for Claude Code sessions in this repo.
 - **AI use is allowed but must be disclosed** (Form 03), and organizers may request git history or prompts. Keep commits honest and descriptive; note AI-assisted work.
 - Assets must be team-made, Godot-included, or properly licensed. Track any third-party asset with its license.
 - Must run on PC with no paid license.
+- Content must be wholesome: no "torturous" material, no gambling imagery; deaths are soft and comedic. Colors must be accessible (second identifier besides color).
+- A tutorial/onboarding is required for screening. Form 03 asks for AI tool, area and extent of use.
 
 ## Working conventions
 - Local multiplayer only (no networking) for the deadline.
