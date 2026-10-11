@@ -46,23 +46,40 @@ Ilonggo for tag (Tagalog: *habulan* / *taya-tayaan*). Tag + hot potato.
 
 _Naming: prefer local Hiligaynon names where they exist. Verify names before finalizing._
 
-## 5. Scoring (unified, all rounds)
-| Result | Points |
-|---|---|
-| 1st | 3 |
-| 2nd | 2 |
-| 3rd | 1 |
-| 4th / didn't finish / first eliminated | 0 |
-| Each kill by your placed trap | +1 |
+## 5. Scoring (UCH-style, all rounds)
+Scoring follows Ultimate Chicken Horse's default point values (in 1/5-point units). Event rounds reuse the **same point types**, re-mapped to each event's objective, so players learn one system.
 
-- **Race rounds:** placement = finish order at the flag.
-- **Event rounds:** placement = survival order. **Placement points are doubled** (6/4/2/0). Trap kills stay +1.
-- **Race-round balance rules:**
-  - Everyone finishes → no placement points (trap kills still count).
-  - Nobody finishes → no placement points (trap kills still count).
-  - Only one finisher → **Solo bonus +1**.
-- **Win condition:** first player to **25 points** (~10-minute match).
-- Balance watch: if trap-kill farming dominates events, cap at +2 per round.
+### Point types
+| Type | Points | Race round | Event round |
+|---|---|---|---|
+| **Goal** | 1.0 | Reach the flag alive | Complete the event's objective (see below) |
+| **First** | +0.2 | First to reach the flag | Best performer in the event (see below) |
+| **Solo** | +0.6 | Only player to reach the flag (3–4 players) | Only player to complete the objective |
+| **Trap** | +0.2 each | Each player killed by a trap you placed | Same |
+| **Comeback** | +0.8 | Reach the goal as an Underdog (missed goal 2+ rounds while others scored) | Same, using event Goals |
+| **Coin** | +0.6 | Reach the flag carrying the coin | Optional event pickup (if the event uses one) |
+
+### Too easy / too hard (all rounds)
+- Everyone gets Goal → **no points** that round (except Coin).
+- Nobody gets Goal → **no points** that round (except Coin).
+- This forces players to build stages that are hard but beatable, in events too.
+
+### Event mapping
+| Event | Goal = | First = |
+|---|---|---|
+| **Lagsanay** | Survive until the event timer ends (not eliminated by the bomb or traps) | Player who held the taya the shortest total time |
+| Langit-Lupa | Still standing when the timer ends | Highest position at the end |
+| Agawan Base | Your team scores a capture | Player who carried the flag in |
+| Patintero / Tubigan | Cross the stage without being tagged | First to cross |
+| Luksong Tinik | Survive all spike waves | Last hit / fewest close calls (TBD) |
+| Agawan Buko | Holding at least 1 coconut at the end | Most coconuts |
+
+**Lagsanay adjustment:** to make "too easy / too hard" possible and avoid always ending with one survivor, the event runs on a fixed timer (~45s) with a set number of bomb detonations (e.g., players − 2). Survivors at the timer = Goal.
+
+### Match settings
+- **Points to win: 10** (UCH lets this be set from 3–20). Tune in playtesting for a ~10-minute match.
+- If players tie at the limit → Sudden Death round.
+- Optional later: Second/Third placement points (UCH has these, default 0).
 
 ## 6. Characters
 - All players are **chickens** with different skins/colors (black, white, orange, etc.).
