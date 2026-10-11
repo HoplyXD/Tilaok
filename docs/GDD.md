@@ -111,11 +111,12 @@ Filipino-themed obstacles:
 - Plus basics: platforms, springs, and an eraser/bomb item to keep the stage playable
 
 ## 8. Platform & Multiplayer
+- Engine: **Godot 4** (free and open source, so no license is needed to play or build).
 - PC (free to play, no license needed).
 - **Local multiplayer** (2–4 players, controllers or shared keyboard). Online play is out of scope for the deadline.
 
 ## 9. Open Questions
-- [ ] Engine choice
+- [x] Engine choice: **Godot 4**
 - [ ] Team size and roles
 - [ ] How often events trigger (every N rounds vs random, telegraphed)
 - [ ] Final trap list and Party Box rules

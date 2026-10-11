@@ -14,7 +14,7 @@ Deadline: **Oct 25, 2026** (14 days from Oct 11).
 ## Rough Schedule
 | Days | Goal |
 |---|---|
-| Oct 11–12 | Lock engine, team roles, art style |
+| Oct 11–12 | Engine locked (Godot 4); lock team roles, art style |
 | Oct 13–16 | Movement, item placement, race round, scoring |
 | Oct 17–19 | Lagsanay event, Filipino traps |
 | Oct 20–22 | Art, audio, UI, tutorial, 2nd event if on track |

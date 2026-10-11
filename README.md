@@ -21,5 +21,9 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 | Nov 9, 2026 | Announcement of finalists |
 | Nov 26–27, 2026 | Game demo, judging, and awarding |
 
+## Tech
+- **Engine:** Godot 4
+- **Platform:** PC, local multiplayer (2–4 players)
+
 ## Status
 Pre-production: design phase.
