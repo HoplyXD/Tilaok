@@ -1,0 +1,236 @@
+# Tilaok! Prototype Defaults and Team Handoff
+
+**PROTOTYPE — UNTESTED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. Approval to prepare this documentation does not prove balance, authorize gameplay implementation by AI, or approve previously unseen changes to GDD rules. Core code remains team-written. Proposed rule changes below remain inactive until explicitly accepted.
+
+## 1. Recommendation and evidence
+
+Start with responsive run/jump controls, a compact graybox, explicit device assignment, and Kaing Stack plus Tulay na Kawayan. Prove a two-player build/race round before adding Gulong Talon, then verify three/four players, Lagsanay, full-match ties/restart, Kangaroo, and finally the three required event stacks. Use an explicit surface-support property for Rising wave. Centralize tunables; keep art, new events, and extra obstacle families out of the first slice.
+
+Decision labels throughout:
+
+- **C — CURRENT CONTRACT:** preserve documented intent; it is not test evidence.
+- **P — PROTOTYPE DEFAULT:** recommended starting point, cheap to revise.
+- **R — PROPOSED RULE CHANGE:** differs from the current contract; inactive pending explicit approval.
+- **D — DEFERRED:** not needed at the indicated milestone.
+- **U — UNKNOWN FACT:** team information, never invented.
+
+### Reverified repository facts
+
+On October 12, `git status --short`, remote/branch/history inspection, `rg --files`, CLI version checks, and the merged-PR query were run. The source branch is `feat/filipino-obstacles-events`; its HEAD and the remote main verified by `git ls-remote` were `791084a75ca06b3d130f3bacf58a29eb88356b59`. Remote: `https://github.com/HoplyXD/Tilaok.git`. The merged-PR query returned `[]`; that is the query result, not proof of all historical development activity.
+
+The source checkout has modified CLAUDE.md, README.md, GDD.md and ROADMAP.md and ten untracked documentation/guidance files. No source checkout changes were made by this task. The project skeleton exists, but no `.gd`, `.tscn`, or `.scn` gameplay files were found. `tilaok!/project.godot:14` declares 4.7; installed `godot --version` is `4.6.3.stable.official.7d41c59c4`; gdlint and gdformat are 4.5.0. No engine setting was changed.
+
+| Area | Documented rules | Implemented system |
+|---|---|---|
+| Project | EXISTS: engine/platform intent | PARTIAL: project/icon only |
+| Controller | PARTIAL: run/jump and pass-through contact | NONE |
+| Input/lobby | PARTIAL: flow, no device/binding policy | NONE |
+| Loop, placement, scoring | EXISTS: detailed contracts | NONE |
+| Stage/camera | PARTIAL: geometry deliberately pending | NONE |
+| Items/events/support | EXISTS: catalog and event contracts; tuning partial | NONE |
+| Configuration/tuning | PARTIAL: centralization requested | NONE |
+| Production | PARTIAL: workstreams and gates; owners/equipment TBD | NONE: no build pipeline found |
+
+Source-checkout evidence at inspection: [GDD.md:14](GDD.md#3-core-loop-every-round) (eggs/timers), GDD.md:63–74 (tag/contact), GDD.md:89–101 (commands/Storm), GDD.md:120 and :149 (ties), [STAGE_AND_PLACEMENT.md:29](STAGE_AND_PLACEMENT.md#base-stage-requirements) (geometry pending), STAGE_AND_PLACEMENT.md:87–93 (wave), [ITEMS.md:42–53](ITEMS.md#provisional-logical-grid-matrix) (footprints), [PRODUCTION.md:15–32](PRODUCTION.md#role-assignment-sheet) (owners/dependencies), UI_TUTORIAL.md:143–149 (input decisions), ROADMAP.md:18 and :28 (dependencies/freeze). Line numbers refer to the inspected source before this handoff's additions.
+
+Networking: **N/A**, local only; target 0 B/s gameplay traffic. Save impact: **none**. Optional local win tally is session memory only for this prototype; no disk persistence or new save system.
+
+## 2. Controller, scale, and contact
+
+Dependency order: jump height/apex time → gravity/impulse → collider clearance and grid → reachable platform gaps/height → stage bounds → camera/readability. Input thresholds feed both locomotion and Freeze. Actual post-movement support feeds wave evaluation; coyote permission is never support. Forced movement feeds collision but is separate from intentional input. Retune these groups together when one affects the others.
+
+All distances are world units (wu), provisionally equal to unscaled 2D pixels; this is not a final art resolution. Positive x is right, positive y is down. Use a 60 Hz simulation target for repeatable timing; verify actual team implementation rather than relying on engine defaults.
+
+| Decision/key | Label; starting value and experimental range | Reason / main drawback | Experiment and change trigger | Confidence |
+|---|---|---|---|---|
+| `grid.cell_wu` | P: 32 wu; 24–40 wu only with proportional geometry review | Simple construction; changing it affects every footprint | Test 1-cell footholds/2-cell headroom; resize only if readable collisions cannot fit | Medium structural, low feel |
+| `move.body_size_wu` | P: 24×48 wu; 22–26×44–52 wu, within 32×64 clearance | 1×2-cell clearance with margins; narrower than art may feel generous | Edge/ceiling runs; change if visible feet repeatedly disagree with collision | Low |
+| `move.jump_height_wu`, `apex_s` | P: 96 wu and 0.32 s; 80–112 wu, 0.28–0.38 s | Clears useful 2-cell rises with reserve; cannot clear a 3-cell solid safely | Ten 2-cell rises per player; revise if controls cause >20% misses after practice | Low feel; high arithmetic |
+| `move.run_speed_wu_s` | P: 280 wu/s; 240–320 | Fast across compact stage; less reaction time at upper end | Marked landing/stopping trials; lower if repeated unintentional overshoot persists | Low |
+| `move.ground_accel_wu_s2` | P: 2400 wu/s²; 1800–3200 | Quick starts; limited weight | Start/stop trials; increase if late starts feel unresponsive | Low |
+| `move.brake_wu_s2` | P: 2800 wu/s²; 2200–3600 | Short recoverable stops; may feel abrupt | Stop before ledge; change if >20% unintentional falls or movement looks discontinuous | Low |
+| `move.reverse_wu_s2` | P: 3200 wu/s²; 2400–4000 | Distinct quick reversal; less momentum commitment | Alternate targets; revise if reversal frequently misses intended landing | Low |
+| `move.air_accel_wu_s2` | P: 1600 wu/s²; 1000–2000; same air reversal rate | Midair corrections; weakens commitment | Compare landing corrections and deliberate long jumps | Low |
+| `move.air_neutral_drag_wu_s2` | P: 0; compare 0–400 | Predictable momentum; releasing direction does not stop flight | Explain then test; add drag only if misunderstanding persists | Low |
+| Derived ascent gravity/impulse | P: 1875 wu/s² down; jump velocity −600 wu/s; derive from height/time, never tune independently | Coherent arc; discrete collision differs from ideal model | Measure actual apex; investigate >2 wu or >1 physics-step deviation | High arithmetic |
+| Falling gravity / terminal speed | P: 1.35× ascent = 2531.25 wu/s²; cap +900 wu/s; multiplier 1.1–1.6, cap 800–1100 | Crisp descent; less late correction | Drop/landing tests; reduce multiplier if timing window is too unforgiving | Low |
+| Variable jump | P: while rising after release use 2.5× ascent gravity; range 2–3×; once descending use fall gravity | Short hops plus full jumps; extra learned timing | Ten taps/holds; reconsider only if players cannot distinguish heights | Low |
+| `move.coyote_s`, `buffer_s` | P: 0.10 s each; 0.07–0.13 s | Forgives timing; long windows can feel like air jumps | Ledge and pre-landing presses; reduce if ghost jumps become visibly confusing | Medium rationale |
+| `contact.sensor_size_wu` | P: 28×48 wu centered on body; width 24–32 wu | 2 wu expansion per side, readable near-contact; may appear early | Stationary, edge and crossing tests; reduce if visible gaps seem too large | Low |
+| `contact.pass_back_s` | C/P: 1.0 s; 0.75–1.25 s | Stops immediate retaliation; temporary immunity can be exploited | Pursuit and overlap trials; change if repeated back-and-forth or no counterplay | Low |
+
+Normal controls are left/right and jump only. No wall jump, dash, double jump, or drop-through action. Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
+
+One-way Tulay: pass through underside/sides; land on its upward top only when descending relative to it and crossing the top from above. Start with horizontal 4×1-cell footprint and 4 wu visible/collision top strip; vertical orientation stays disabled because the existing contract makes it conditional on controller support. Leave via an edge or jump. Keep footprint reservation distinct from collision strip. Kaing starts with 1×1 and 2×3 variants (equal conditional weights), 90° rotation where shape changes. Other approved variants remain deferred, not deleted.
+
+### Mathematical check — not a collision test
+
+Choose H = 96 wu and t = 0.32 s first:
+
+- g = 2H/t² = **1875 wu/s²**.
+- Jump-speed magnitude = gt = **600 wu/s**.
+- Full-hold descent to takeoff height = sqrt(2H / 2531.25) = **0.2754 s**.
+- Full airtime = **0.5954 s**; full-speed horizontal displacement = **166.7 wu = 5.21 tiles**.
+- Full jump reaches the starting height at about 697.1 wu/s downward, below the 900 wu/s terminal cap.
+- Ground time to 280 wu/s = **0.1167 s**; acceleration distance = **16.33 wu**.
+- Braking time = **0.10 s**, stopping distance v²/(2a) = **14 wu**.
+- Reversal +280 to −280 = **0.175 s** at 3200 wu/s².
+- From zero horizontal speed while jumping, air acceleration reduces ideal reach to about **142.2 wu**.
+- Immediate jump release gives ideal height **38.4 wu**, airtime **0.3022 s**, and full-speed displacement **84.6 wu**; real taps depend on sampled release time.
+- Landing 64 wu above takeoff occurs on descent at **0.4790 s**, giving **134.1 wu** ideal displacement.
+
+Assumptions: level takeoff, full hold unless stated, no obstruction, no moving platform/force, maximum speed maintained, and continuous equations. Margins include body width and landing control, not merely gap width. A 64 wu gap with each center 20 wu inside the respective edge needs 104 wu travel: a comfortable candidate even at a 64 wu rise. A 96 wu level gap with the same margins needs 136 wu: an advanced candidate. Do not describe 166.7 wu as a safe gap. All actual reachability is **UNTESTED**.
+
+### Contact and temporary-state policy
+
+**C:** bodies pass through each other in every supported mode; tag/Hug use sensors, never pushing. This follows GDD.md:73 and the race-stack rules; the more general collision wording at :181 should be read consistently with them.
+
+**P:** evaluate ongoing overlaps each physics step, not only entry callbacks. Permit at most one taya transfer globally per step. Freeze the candidate set before transfer; pick nearest eligible contact. Preserve the current lowest-slot exact tie until R1 is approved. After a pass, the previous taya cannot receive it back for 1.0 s; contacts with others remain eligible. A stationary overlapping pair can pass back after immunity expires, never multiple times within one step. Ignore eliminated/secured chickens. Opening frozen taya cannot tag or be tagged during the head start. Hug uses the same contact geometry, requires actual overlap at evaluation, and never pushes bodies.
+
+State precedence for movement: terminal outcome (secured or eliminated, mutually exclusive) > opening taya freeze > bubble capture > externally forced motion > normal locomotion. Do not let a lower state reactivate a terminal player. Same-step goal/death resolves by recorded time; indistinguishable elimination wins, per GDD. Opening freeze fixes position, clears pending motion and ignores hazards/capture. Bubble replaces movement control but remains taggable/vulnerable under its existing contract. Normal forced motion adds external velocity without a default input lockout; acceleration still permits steering. A spring launch is not shortened by releasing the ordinary jump button.
+
+**P, later spring gate:** initial launch magnitude 775 wu/s along its rotated normal (about 160 wu rise under normal ascent gravity); timed jump within 0.10 s before contact boosts to 849 wu/s (about 192 wu rise). Use a 0.20 s per-player spring retrigger cooldown. External horizontal speed initially caps at 480 wu/s and upward launch at 900 wu/s; collision stops motion at world bounds. These values are provisional and do not apply to ordinary run speed. No new hazard damage behavior is added.
+
+Freeze reads intentional run/jump input before movement-state suppression, with the same device thresholds as locomotion and a 0.10 s release grace at response start. Opposing run buttons still count as intentional input even when their movement cancels. Passive conveyors, spring launches and knockback do not fail Freeze. Merely being captured is not a Freeze failure; deliberately pressing run/jump while captured is still intentional input.
+
+**P out-of-bounds safeguard:** visible solid side walls, floor and ceiling prevent normal escape. Race-only unexpected escape beyond the arena is a single failed terminal outcome, never a respawn or repeat score. Lagsanay, including its stacks, never converts falling into elimination: an unexpected containment breach pauses the entire simulation and reports a prototype defect; restart the round with its pre-round score snapshot and unchanged construction, with no awards from the aborted attempt. Do not teleport the taya to safety while its timer continues or reset only that player's timer. Kangaroo-only containment failure uses the same paused defect recovery. This is a development safeguard, not a player ability or finished recovery feature.
+
+## 3. Input and local competition
+
+**P supported baseline to verify:** two gamepads, or one gamepad plus one keyboard seat. Release target remains 2–4 players using verified gamepads/mixed devices. Two shared-keyboard seats are an explicitly enabled fallback after rollover testing. Four-player keyboard-only support is not promised. Physical device availability is U.
+
+Gamepad labels are positions: South (Xbox A / PlayStation Cross), East (B / Circle), West (X / Square), Start/Options. Keyboard bindings below are provisional physical key positions.
+
+| Phase/action | Gamepad | Keyboard seat K1 | Keyboard seat K2 |
+|---|---|---|---|
+| Join; ready toggle | South | F | Enter |
+| Lobby leave / menu back | East | G | Backspace |
+| Menu/Pugad navigation | D-pad or left stick | W A S D | Arrow keys |
+| Run left/right | D-pad or left-stick x | A / D | Left / Right |
+| Jump | South | Space | Right Ctrl |
+| Pugad claim | South | F | Enter |
+| Place pointer | D-pad or left stick | W A S D | Arrow keys |
+| Rotate clockwise | West | R | Right Shift |
+| Confirm placement | South | F | Enter |
+| Round/match results ready | South | F | Enter |
+| Pause / request resume | Start/Options | Escape | Escape (shared system key) |
+| Pause/menu accept / back | South / East | F / G | Enter / Backspace |
+| Spectator cheer | West | R | Right Shift |
+
+Place movement is grid steps: first press moves one cell; repeat after 0.25 s at 8 cells/s. Pugad/menu repeat uses 0.25 s initial delay and 6 moves/s. Diagonal placement steps do not exceed the cardinal movement rate. Rotate on a fresh press only; unsupported orientations show a disabled cue. Confirm is a pending submission; all solid edits still resolve atomically at phase end, not by confirmation order. Conflicting submissions reject as a set.
+
+**P movement parity:** use digital full-speed target on keyboard, D-pad and stick. Stick activates at |x| ≥ 0.25 and returns to neutral below 0.20; tune activation 0.20–0.35 after drift tests. No stick-exclusive precision walk. Opposing simultaneous directions cancel movement. If D-pad is active, use it rather than the stick. This loses analog walking but keeps the same locomotion possibilities across supported devices. The serious alternative is proportional analog movement only if tests show its extra precision is important enough to justify device asymmetry.
+
+**P assignment:** player number and shape are fixed from join until return to lobby: 1 circle, 2 triangle, 3 square, 4 diamond. Color is supplementary. A device joins exactly one seat; a second join press readies it, never creates another seat. Keyboard is one source split into the two explicit key groups only after selecting shared-keyboard mode. K1/K2 are device layouts, not permanent player numbers. Each can join one vacant slot; mixed gamepads occupy the rest. Route events by device type and assigned device, never broadcast unfiltered gamepad actions to all players.
+
+Newly joining devices cannot ready on the same press. Every phase transition consumes existing press edges; require release before claim, confirm, rotate, jump or ready can trigger again. Movement may continue from a held direction, but jump buffers clear across phases. Ignore operating-system key repeats for one-shot actions. Pugad cursors start centered with no preselected egg; exact same-step claims use a seeded equal lottery among claimants, then losing players can choose again. Existing earlier claims win. Leftovers at timeout are assigned without replacement.
+
+**P disconnect/pause:** any participant may pause. Focus loss or a bound device disconnect pauses all gameplay clocks, hazards, projectiles, physics, event windows, immunity and phase timers together. Disconnect preserves slot, score, taya and position. Reclaim the missing slot through a visible reconnect screen using an unassigned device; no assumption that device IDs stay stable after reconnect. Multiple missing slots require choosing the displayed number and explicit confirmation. Existing assigned devices cannot steal another seat. Never silently substitute a bot or drop the player.
+
+The pauser owns menu navigation; a system pause gives it to the first fresh confirm. Resume requires a fresh ready from every connected participant and all missing seats reclaimed, then a 3 s countdown with simulation still paused. Clear ready flags if focus/device status changes. Countdown cancellation returns to pause. Round results use all-ready or an 8 s timeout; match results wait for all-ready with Replay/Return-to-lobby chosen by the menu owner. Leaving during a match returns the whole group to lobby after a visible confirmation, rather than changing player-count scoring mid-match. Cheer has no simulation effect and a 1 s cooldown.
+
+Engine implementation references, not team mechanic code: [official controller documentation](https://docs.godotengine.org/en/stable/tutorials/inputs/controllers_gamepads_joysticks.html) describes deadzones and unfocused controller input; [official pause documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html) explains process modes. Team verification must include timers/signals that can still operate during pause. The [4.7 migration documentation](https://github.com/godotengine/godot-docs/blob/4.7/tutorials/migrating/upgrading_to_godot_4.7.rst) changes keyboard/mouse device IDs: use event type and target-version identifiers, never assume keyboard and gamepad 0 are interchangeable. No engine-version migration is authorized here.
+
+Tradeoffs/tests: digital sticks sacrifice fine speed control; all-ready resume adds delay; shared keyboard risks lost simultaneous keys. Rotate players across slots/devices, test drift and every simultaneous key chord, and change bindings/thresholds only on reproducible device failures or consistent control complaints. Never market untested devices as supported.
+
+## 4. Central tuning data and enablement
+
+**P:** the team should author one small configuration resource (suggested future path `tilaok!/config/prototype_defaults.tres`) with named groups, plus ordinary per-item data for footprint/contact properties. No plugin, framework, live editor, public analytics or persistence. This Markdown document is the authoritative starting-value register; other documents link here rather than copy values.
+
+Separate simulation invariants (one outcome, pass-through bodies, atomic edits, scoring family), tunable data (movement, timers, bounds, weights), and presentation (markers, colors, shake/text). Gameplay values snapshot at match start. Changing them requires a new test match; never change collision, height bands, timers or weights mid-round. Presentation-only volume/shake may change in pause. Log the test profile, seed and build locally in human test notes, not the player HUD.
+
+| Keys/group | Label; default | Experimental range | Why / downside / change trigger | Confidence |
+|---|---|---|---|---|
+| `pugad.extra_eggs`, `pick_s` | C/P: players + 2; 8 s | +1…+3; 6–12 s | Choice without lengthy selection; change if claims routinely time out despite understood UI | Low |
+| `pugad.family_weights` | P: Kaing 50, Tulay 50; after spring gate 45/40/15 | Kaing 35–60, Tulay 30–55, spring 5–20; normalize eligible weights | Construction first; less hazard pressure. Revise if one item is consistently unwanted, not from one losing round | Low |
+| `place.seconds` | C/P: 15 s | 12–25 s | Fast rounds; extend if understood placement still times out often | Low |
+| `race.cap_s`, `after_first_s` | C/P: 60 s, 15 s; end at earlier deadline | 45–75 s; 10–20 s | Limits stalling; revise from finish/stall logs | Low |
+| `items.activation_grace_s` | P: 1.0 s after Play begins | 0.5–1.5 s | Readable hazard start; delays pressure. Test reset-on-player scenarios; preserve opening taya's longer immunity | Low |
+| `events.main_weights` | C: Karera 70, Lagsanay 20, Kangaroo 10 | Fixed baseline; experiments only in named test profile | Preserve contract; disabling content must remove its weight before normalization | Contract only |
+| `events.twist_chance` | C: rounds 1–4: 0; 5–7: .10; 8–10: .20; 11–12: .30 | Fixed baseline | Guaranteed rounds 4/8/12 still standalone; chance table never overrides that | Contract only |
+| `events.twist_weights` | P: equal among verified compatible Twists | Compare equal vs one explicit weighted profile later | Small predictable pool; no eligible pair means no Twist | Low |
+| `lagsanay.timer_by_alive_s` | C/P: 4→15, 3→10, 2→7 s | 12–18, 8–12, 6–10 s | Shorter endgame; test evasion/pass opportunity at each count | Low |
+| `lagsanay.open_freeze_s`, `speed_multiplier` | C/P: 3 s; P: 1.05× run speed for taya | 2–3 s; 1.00–1.10× | Head start plus chase advantage; revise on pursuit trials, not win-rate equalization | Low |
+| `kangaroo.telegraph_s`, `response_s`, `reset_s` | C/P: 1 / 3 / .75 s | .8–1.5 / 2.5–4 / .5–1 s outside locked baseline | Readable commands; preserve acceleration rule unless R3 approved | Low |
+| `kangaroo.command_weights` | C: 1:1:1; Hug rerolls at two survivors | No change in baseline | R2 proposes changing the three-player rule; inactive | Contract only |
+| `kangaroo.wave_y_wu` | P: 384, 288, 192 wu; equal probability | Move bands by one 32 wu cell as a group | World heights 3/6/9 tiles above floor; construction can fail deliberately | Low |
+| `support.contact_epsilon_wu`, `height_epsilon_wu` | P: 1 wu each; zero time grace | 0.5–2 wu; no gameplay-time extension | Numerical tolerance only; investigate contact instability before enlarging | Medium rationale |
+| `kangaroo.freeze_release_s` | P: .10 s | .07–.15 s | Forgives release after cue; too much grace permits a free move | Low |
+| `items.persistent_cap` | P: 48 placed items (not cells); base excluded | 32–48 after cap-policy review | Matches four placements × 12 rounds; lower caps can deny construction and need a fair rejection rule | Medium bound |
+| `transients.projectiles`, `bubbles`, `vfx` | P: max 16 projectiles (2/emitter), 4 bubbles (1/emitter, 1/player), 32 cosmetic effects | 8–24, 2–4, 16–48 | Bounded future workload; baseline has none of these items enabled | Low |
+| `transients.ttl_s` | P: projectile 3 s, empty bubble 4 s, cosmetic 2 s; capture C/P ≈2 s | 2–4, 3–5, 1–3 s; capture 1–2 s | Prevents accumulation; expiry must release captives safely before removal | Low |
+| `bubble.recapture_immunity_s` | P: 1.0 s against all bubbles | .75–1.5 s | Stops immediate recapture; not hazard immunity. Disable unsafe event pairing if chains remain unavoidable | Low |
+
+Bounds/camera values live in STAGE_AND_PLACEMENT.md's graybox table; movement/contact values are above. Do not duplicate numeric sources in production code. Terminal velocity applies to ordinary gravity; external launch limits have their own keys.
+
+Timer policy: passing taya never resets its countdown. A new taya after elimination receives the timer for the new alive count. Race-stack reassignment when a taya secures the flag preserves the remaining countdown; the newly assigned taya has no opening freeze. The initial head start occurs once at Play start. These are P clarifications to test against the existing stack behavior.
+
+Caps: at the initial 48-item cap, ordinary 12-round play cannot overrun the limit. Debug insertion beyond the cap is rejected before play. At transient saturation, suppress new spawns rather than evict an existing captive/projectile. Allocate available spawn slots by a rotating emitter order, not callback order; telegraph only successful spawns. Do not lower persistent caps without specifying fair simultaneous-placement overflow behavior. Avoid unnecessary hot-path allocation; optimize from profiling, not assumptions.
+
+Named profiles: `movement_room` (no score/events), `karera_slice` (Kaing/Tulay only), `karera_spring` (adds verified spring), `lagsanay_lab`, `kangaroo_contract_lab`, `stack_lab`, `release_candidate`. Debug seed starts at 12345 and is user-settable before a test. Separate seeded streams for egg selection, event selection and exact-tie lotteries so cosmetic randomness cannot affect results. Keep all R policies off in contract profiles; proposed-policy comparison runs need explicit team acceptance first.
+
+Only implemented AND verified modes/items/pairs enter a profile's pool. Disabled weights are zeroed then positive eligible weights normalized; an empty required pool is a configuration error, not a random fallback. Production schedule still requires Lagsanay rounds 4/8/12 and sudden death. `karera_slice` is an explicitly labeled development override with races only; it may display tied leaders and pending sudden-death coverage but must not claim a complete competition-ready match. `release_candidate` refuses to start if required scheduled/sudden-death modes are missing. Do not silently reschedule unavailable release content as Karera.
+
+No scored tutorial bonus, new save format, network service, or new obstacle family is introduced.
+
+## 5. Focused balance audit — recommendations, not approved rule edits
+
+GDD remains unchanged in this task. R1–R4 are concrete proposals for later explicit review; none is enabled by accepting this documentation handoff. A test of current behavior can demonstrate a risk without claiming that a replacement has already been approved or balanced.
+
+| ID / label | Current behavior → problematic scenario | Recommendation | Cost / drawback | Prototype experiment and change trigger |
+|---|---|---|---|---|
+| R1 — PROPOSED RULE CHANGE | GDD:63 tag ties, :97 Hug ties and :149 exact Last Cluck ties favor lowest slot. Equal geometry/time repeats slot advantage | Keep nearest contact/latest time, but resolve only indistinguishable candidate ties with a seeded uniform lottery; exact Hug edge ties get seeded shuffled order | Small; random tie outcomes require an honest visual callout. Does not remove all randomness or guarantee equal wins | Reproduce exact ties at each slot/device permutation. Approval trigger: slot identity alone changes outcome; verify proposed selection gives every tied candidate opportunity across many seeds |
+| R2 — PROPOSED RULE CHANGE | Pair-only Hug guarantees one failure at three live players even if everyone makes contact | With ≥3 eligible chickens, pass each chicken having at least one other eligible contact at evaluation; remove exclusive pairing. Keep two-survivor pre-telegraph Hug reroll | Small; reduces forced exclusion and creates group cooperation/denial choices; removes pair-only tactical identity | Compare three-player all-contact and separated-player cases. Approve if unavoidable markers undermine understanding/agency; four-player 3+1 should fail only the isolated player |
+| R3 — PROPOSED RULE CHANGE | Storm forces Freeze + Rising overlap at two survivors; moving to necessary support can violate Freeze | Keep pressure escalation, but never overlap Freeze with a movement-demanding Hug or Rising response. Queue the next command until the incompatible response resolves; retain Storm's 1 s response and ≤2 active cap | Medium; reduces 0.5 s landing throughput and may lengthen endgame. Explicitly removes forced Freeze+Rising overlap | Test start off support with a reachable destination. Approve if current pair necessarily fails one command despite correct execution. Verify queue does not reroll wave height or cancel a command |
+| R4 — PROPOSED RULE CHANGE | Bomb timer continues during Freeze; isolated taya with 1 s left must move and fail or stand and expire | Suspend only Bomb-Taya countdown during Freeze response, resume same remaining value afterward; contact/traps/world continue | Medium; changes the current always-running timer contract and slightly extends survival. Repeated Freeze cannot reset timer | Freeze at 0.5/1/3 s remaining with reachable contacts. Approve if no action avoids a failure/timeout solely because of command conflict; verify pause totals, no timer reset and eventual running windows |
+| C — CURRENT CONTRACT | Equal-probability fixed wave bands can be above every usable player-built support | Keep no reroll, and show next event plus eligible-support feedback before play | Low; a whole group may fail due to poor preparation, deliberately | Test empty and well-built layouts; change presentation if players cannot explain failure. Only reopen rules if informed construction strategy still offers no meaningful preparation |
+| P — PROTOTYPE DEFAULT | Bubble can capture for about 2 s, remain taggable and expose players to a hazard; overlapping emitters may remove repeated control | Keep bubble last/off initially; use global bubble recapture immunity and no generic knockback input lock. Disable bubble in Lagsanay if unavoidable chains persist, as existing item contract permits | Medium lifecycle testing; fewer compatible items until verified. Immunity is not protection from direct hazards | Compare avoidable entry, forced capture, multiple emitters and low-time taya. Any reproducible forced re-capture chain with no actionable interval blocks enablement |
+| C/P — precision clarification | GDD:120 says exact averages/eighth units; generic three-way quarter-point averages can require thirds | Retain eighth units for the current legal placement groups, with explicit tests and no claim of universal precision. Use rational arithmetic if later rules permit other groups | Low now; future score-table changes need renewed proof | Exhaust every legal simultaneous group and Last Cluck loser allocation; reject any silently rounded award |
+
+### Exact-score audit
+
+Only eliminated players share placements while a survivor remains. Thus a tie cannot include first place; all-remaining elimination uses Last Cluck instead. For current tables:
+
+| Match size / tied places | Exact average | Eighth-point units |
+|---|---|---|
+| 4 players, places 3–4 | (0.25+0)/2 = 0.125 | 1 |
+| 4 players, places 2–3 | (0.5+0.25)/2 = 0.375 | 3 |
+| 4 players, places 2–4 (three-way) | (0.5+0.25+0)/3 = 0.25 | 2 |
+| 3 players, places 2–3 | (0.5+0)/2 = 0.25 | 2 |
+| 2 players | No legal averaged non-winning group of two | Last Cluck applies |
+
+After Last Cluck awards first, remaining exactly tied losers use the relevant lower placement group; distinguishable loser times retain their lower-order placement. This is a P clarification of the otherwise underspecified lower-placement allocation, not permission to share first. Base awards and additive bonuses are all multiples of 0.25 and therefore eighth-representable. No averaging of cumulative scores is performed.
+
+The hypothetical first–third average (1+0.5+0.25)/3 = **7/12**, and first–fourth average = **7/16**, are NOT representable in eighths. Neither is legal under the current Last Cluck exception. Do not claim eighths represent every possible future tie, and do not falsely report the current legal three-player group as a precision defect. Display eighth fractions/three decimal places without rounding the stored score; compare exact totals for 10 points, underdog thresholds and match ties.
+
+Additional scope contradictions: PRODUCTION originally placed stacking before Kangaroo; corrected dependency order is now in PRODUCTION.md. ROADMAP previously required Lagsanay before all items; construction seed pieces now explicitly precede it. The old Oct 20–22 feature window conflicted with Oct 21 freeze; Oct 22 is now stabilization. GDD's generic contact wording is less precise than its explicit pass-through rule; follow the latter. None of these documents supplies observed balance results.
+
+## 6. Decision timing and unanswered facts
+
+| When | Decisions/defaults | What remains open |
+|---|---|---|
+| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | U: intended engine binary, gameplay owner, available test devices |
+| Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: target PC and tested baseline device combination |
+| Before relevant event | Current contact/command/support contracts, independent-mode gates; explicit R1–R4 decisions before any replacement behavior | U: owner/time for event review and physical tests |
+| Tune after playing | Movement feel, gaps, sensor dimensions, deadzones, egg weights, timers, force/caps and readability; one related parameter group at a time | All balance/feel confidence remains low |
+| Defer to production art | Final sprite scale/style, font choice, animation, sounds and cultural copy review | U: creators/licences and reviewer names |
+
+Essential factual questions, recorded rather than blocking this handoff:
+
+1. Who are the registered gameplay/integration owners, and how many hours can they spend before October 21?
+2. What target PC/display, keyboard model/layout and actual controllers/connections are available?
+3. Where is the intended Godot 4.7 binary with matching export templates, or does the team intend a separately reviewed version decision?
+
+Equipment and names remain TBD; do not infer them from installed tools. No final font/art decision is needed before graybox tests. R1–R4 are design proposals, not unknown factual questions.
+
+## 7. Documentation-only delivery boundary
+
+This handoff was prepared after the user asked to proceed, but a complete Stage A plan had not reached them. Consequently it applies prototype documentation and production ordering while preserving current GDD gameplay rules. Previously unseen rule replacements stay explicit inactive proposals. No gameplay code, scene, project setting, prompt file or production asset is generated.
+
+Worktree: `C:\Users\roman\.codex\worktrees\prototype-balance-defaults\Tilaok`, branch `feat/prototype-balance-defaults`, created from fetched origin/main. Named prerequisite snapshots brought forward from the dirty source: AGENTS.md; docs/GDD.md, ROADMAP.md, ITEMS.md, STAGE_AND_PLACEMENT.md, UI_TUTORIAL.md, PRODUCTION.md, PLAYTEST.md, ASSETS.md, AI_USAGE.md, INDEX.md and SUBMISSION.md. They were hash-verified on copy. SUBMISSION/ASSETS/ITEMS/AGENTS provide referenced context; they receive no content changes. Source README/CLAUDE edits are not included. The source checkout is never overwritten.
+
+Task edits: this NEW centralized defaults document; STAGE_AND_PLACEMENT graybox/support; UI_TUTORIAL input reference; PRODUCTION dependency gates/team setup; ROADMAP ordering/freeze; PLAYTEST experiments/evidence; AI_USAGE assistance scope; INDEX navigation. GDD stays byte-for-byte equal to its carried source snapshot; any diff versus origin/main is prerequisite user work, not a newly approved gameplay change.
+
+Before any later commit, distinguish prerequisite user documentation from this task's edits and stage named files only. Commit only on the user's explicit `commit`; push/open PR only on explicit `push`; never merge. No Co-Authored-By trailer or AI attribution in commit/PR text; accurate disclosure belongs in AI_USAGE and Form 03. Do not rewrite history.
+
+**One next team experiment:** implement only the M0 movement room with two assigned inputs, the proposed collider and jump/braking model, and 64 wu gap/64 wu rise targets. Measure the arc and ten attempts per player. This answers the most consequential coupled assumptions before building menus, events or art.
