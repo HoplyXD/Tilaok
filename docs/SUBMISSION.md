@@ -21,12 +21,12 @@ Keep Form 03 aligned with these repository documents:
 
 | Evidence | Location |
 |---|---|
-| AI-assisted documentation/research record | `AI_USAGE.md` |
+| Cumulative AI assistance and programming disclosure | `AI_USAGE.md` |
 | Asset-level licence and cultural-review record | `ASSETS.md` |
 | Honest verification status and test evidence | `PLAYTEST.md` |
-| Team-authored gameplay boundaries | `PRODUCTION.md`, `AGENTS.md`, and version-control history |
+| Programming provenance and current workflow | `PRODUCTION.md`, `AGENTS.md`, `CLAUDE.md`, `AI_USAGE.md`, and version-control history |
 
-Do not label AI assistance as team-authored work or claim a playable/tested feature from documentation alone.
+Do not represent AI-generated code as manually team-written or claim a playable/tested feature from documentation alone.
 
 ## Synopsis outline
 
@@ -37,7 +37,7 @@ Keep the final synopsis below 500 words. It should cover:
 3. **Competitive hook:** Karera races, Lagsanay tag, Kangaroo pressure, scoring, and the first-to-10/12-round match format.
 4. **Theme:** Filipino games, language review, Filipino setting, themed items, and educational cards where culturally verified.
 5. **Spectator value:** local 2–4 player chaos, readable objectives, crowd response, and event stacking.
-6. **Compliance:** original team-written game logic and properly tracked assets.
+6. **Compliance:** original game logic with actual AI assistance accurately disclosed, properly tracked assets, and the §7/§8 interpretation checked against current official instructions.
 
 ## Trailer plan
 
@@ -87,7 +87,7 @@ The producer/compliance owner confirms all of the following before upload:
 
 - game is playable and winner determination is clear each round/match;
 - tutorial/onboarding is present and accessible;
-- build uses only team-authored core gameplay code and permitted assets;
+- build provenance and any AI-generated code are accurately disclosed; no copied code or unlicensed assets are included; the recorded originality requirements and §7/§8 interpretation have been checked against current official instructions;
 - no unsupported Filipino-cultural claims remain in public copy;
 - no prohibited content, gambling imagery, gore, or uncredited assets remain;
 - Form 01–03 and all media are complete and match the final build;

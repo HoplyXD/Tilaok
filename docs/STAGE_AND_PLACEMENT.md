@@ -1,6 +1,6 @@
 # Tilaok! Stage and Placement Specification
 
-**Status:** pre-production contract. `GDD.md` remains the source of truth when this document conflicts with it. This document records the stage rules a team-written implementation must satisfy; it does not provide gameplay code.
+**Status:** pre-production contract. `GDD.md` remains the source of truth when this document conflicts with it. This document records stage rules for implementation under the standing AI-assisted programming workflow; it does not provide gameplay code.
 
 ## Purpose
 
@@ -113,7 +113,7 @@ These are measurement and art/layout decisions, not unresolved gameplay rules:
 
 See the prototype layout/support handoff below and the coupled movement model in [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md).
 
-Use `PLAYTEST.md` for the required simultaneous-placement, cleanup, support-removal, first-batch item, Rising wave, and match-persistence checks. No stage implementation exists yet, so those checks remain **COULD NOT RUN** until team-written systems are available.
+Use `PLAYTEST.md` for the required simultaneous-placement, cleanup, support-removal, first-batch item, Rising wave, and match-persistence checks. No stage implementation exists yet, so those checks remain **COULD NOT RUN** until the necessary systems are implemented and a suitable build is available.
 
 ## Prototype graybox — actual reachability UNTESTED
 

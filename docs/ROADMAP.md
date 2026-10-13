@@ -5,7 +5,7 @@ Deadline: **Oct 25, 2026** (as of Oct 12, 2026).
 ## Priorities
 | Priority | Scope |
 |---|---|
-| **Must** | Team-authored platformer controls; Pugad → Place → Play loop; 1 stage; Karera as the weighted default Main Challenge; unified scoring; Lagsanay; core event stacking with Karera + Lagsanay, Karera + Kangaroo, and Kangaroo + Lagsanay; tutorial/onboarding (required for screening); all eight first-batch families and applicable approved variants (conditional Tulay orientation gated); title/results, Library, settings/help, essential audio/visual cues and release presentation |
+| **Must** | Team-directed platformer controls developed under the standing AI-assisted programming workflow; Pugad → Place → Play loop; 1 stage; Karera as the weighted default Main Challenge; unified scoring; Lagsanay; core event stacking with Karera + Lagsanay, Karera + Kangaroo, and Kangaroo + Lagsanay; tutorial/onboarding (required for screening); all eight first-batch families and applicable approved variants (conditional Tulay orientation gated); title/results, Library, settings/help, essential audio/visual cues and release presentation |
 | **Should** | Langit-Lupa remains the named second event; richer chicken cosmetics; enhanced crowd audio; Barya; reviewed "Alam mo ba?" cards; session-only local win tally |
 | **Nice / backlog** | Expanded 36-family item catalog, more events/stages, extra polish, accessories |
 
@@ -17,7 +17,7 @@ The design catalog in `docs/ITEMS.md` contains **36 mechanically distinct propos
 
 Before advanced item implementation, the team must have movement/input, stage, round lifecycle, placement validation, scoring, and relevant event foundations. Kaing Stack and Tulay na Kawayan are construction prerequisites for the base-loop slice and precede Lagsanay; Gulong Talon follows their validation. Items remain inactive during Place except Walis Cleanup's one-shot construction edit. Event stacking is a core system: every round has one Main Challenge and may gain one compatible Twist at its round-scaled chance. Karera is guaranteed in Round 1 and weighted at 70% on non-guaranteed rounds; Lagsanay is guaranteed in rounds 4, 8, and 12, and Kangaroo is a 10% standalone Main Challenge on the remaining eligible rounds. The first required compatibility pairs are Karera + Lagsanay, Karera + Kangaroo, and Kangaroo + Lagsanay; every further pair needs a written compatibility contract and playtest evidence. Langit-Lupa remains the named second laro ng lahi. Do not displace tutorial or Lagsanay to reach an item count. See PRODUCTION.md for ordered prototype gates: each stack follows its independently working components; early race-only profiles do not change release scope.
 
-The repository now contains a Godot project skeleton, but no gameplay scenes or scripts. This roadmap is not evidence that any gameplay prerequisite or item is implemented or stable. See `docs/PLAYTEST.md` for the observed import result, version mismatch, verification scenarios, and honest status boundary.
+The repository now contains P01 foundations and a P02 diagnostic input/movement slice, but not a complete gameplay loop. This roadmap is not evidence that later gameplay prerequisites or items are implemented or stable. See `docs/PLAYTEST.md` and `docs/PHASETASK.md` for current evidence and status boundaries.
 
 ## Rough Schedule
 | Days | Goal |

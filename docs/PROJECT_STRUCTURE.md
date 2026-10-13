@@ -15,9 +15,9 @@ P01 foundation plus P02 input/movement diagnostic layout for Godot 4.7. The main
 | Checks | `tilaok!/tests/` | `run_foundation_tests.gd` preserves P01 regression checks; `run_p02_tests.gd` runs focused synthetic input and Godot physics assertions; `capture_p02_room.gd` creates the rendered image and performance sample. |
 | Future responsibilities | `scripts/match`, `stage`, `items`, `events`, `scoring`, `presentation` | Required product systems remain unimplemented; P02 fixtures do not imply their completion. |
 
-## Authorship and review
+## Programming provenance and review
 
-At the user's explicit direction, OpenAI Codex authored the P01 foundation and the P02 input, controller, sensor, pause/reconnect, diagnostic recovery scripts/scenes and focused tests. This is an explicit AI-implementation exception to the repository's team-authored-code acceptance wording, scoped to P01 and P02 implementation/tests. Codex-authored work is not labeled team-authored; a user exception does not establish DOST eligibility or organizer acceptance. P01-T02 registered-team authorship review remains open. The team must disclose this assistance on DOST Form 03.
+AI/LLM-assisted programming, including core gameplay generation, is the standing Tilaok! development workflow. Francis (lead developer) and Carlos (co-lead developer) direct development using these tools and retain integration, review, testing and delivery responsibility. P01 and P02 code was AI-generated; it is not represented as manually team-written. See [AI_USAGE.md](AI_USAGE.md) for the current policy and cumulative disclosure, and [COMPETITION.md](COMPETITION.md) for the recorded external-rule summary and its limitations. P01-T02's actual human review remains open. The workflow does not establish organizer approval or competition eligibility; Form 03 and other submission requirements remain separate.
 
 ## Running the foundation
 

@@ -44,11 +44,11 @@ The headless test script passed checks for valid/invalid finite tuning and prese
 
 Formatting and lint passed using installed 4.5.0 tools. Godot 4.7.2 import/parse and headless run completed without warnings/errors. Matching 4.7.2 templates were installed by extracting the official package into the standard version directory; the manager UI was not used. Windows export succeeded and its executable launched/closed locally. Exact logs are linked in the current status table and in [PHASETASK P01](PHASETASK.md#p01--project-foundations).
 
-**Limitations:** Codex authored these foundations under the user's explicit exception; this is not described as team-authored and does not settle competition originality eligibility. No physical controller/input test, multiplayer gameplay, novice onboarding test, performance measurement, clean-PC install, or final-release export was performed. P00-T02 and P00-T06 remain open; see [PRODUCTION](PRODUCTION.md#p00-baseline-record).
+**Limitations:** Codex generated these foundations under the task authorization and internal policy in force at that time; they are not described as manually team-written. This does not settle competition originality eligibility. No physical controller/input test, multiplayer gameplay, novice onboarding test, performance measurement, clean-PC install, or final-release export was performed. P00-T02 and P00-T06 remain open; see [PRODUCTION](PRODUCTION.md#p00-baseline-record).
 
 ## P02 input and movement diagnostic session — October 13, 2026
 
-**Build identity:** `P02-input-movement-dev`, base `e2b4a555e8d45bec774ffebde7c46e595cd3abdb` plus the current local P02 changes; Godot `4.7.2.stable.official.ed1daf0bf`; movement room; seed `12345`; 60 Hz; local Windows PC with NVIDIA GeForce RTX 4050 Laptop GPU/OpenGL 3.3 Compatibility. P02 code was authorized as an AI-implementation exception; no independent team reviewer is recorded.
+**Build identity:** `P02-input-movement-dev`, base `e2b4a555e8d45bec774ffebde7c46e595cd3abdb` plus the current local P02 changes; Godot `4.7.2.stable.official.ed1daf0bf`; movement room; seed `12345`; 60 Hz; local Windows PC with NVIDIA GeForce RTX 4050 Laptop GPU/OpenGL 3.3 Compatibility. P02 code was AI-generated under the authorization and internal policy in force at the time; no independent team reviewer is recorded.
 
 | Check | Status | Procedure and observed result | Evidence/limit |
 |---|---|---|---|
@@ -87,7 +87,7 @@ Record build/commit, test date, local player count, input devices, scenario, ite
 - Verify no source code, copied UCH art/audio/names, unsupported cultural origin claims, or false implementation/playtest claims.
 - Verify new docs are referenced and paths marked NEW before implementation.
 
-### Team-written project checks (when available)
+### Project implementation checks (when available)
 
 1. **Project/controls:** launch via documented Godot version; join local 2, 3, and 4 players; test gamepad-first and shared-keyboard fallback. Record physical-device limitations. Check run/jump only during Play and input deadzone behavior.
 2. **Pugad/placement:** simultaneous egg claims cannot duplicate an egg; timeout handling is deterministic; invalid placements discard cleanly; colliding solid placements reject atomically independent of callback order; allowed solid/trigger overlaps remain readable; no object places on a player or protected clearance.
@@ -123,7 +123,7 @@ For each new session, append date/build and a table containing check, status, ev
 
 ## Original prototype test plan and change discipline
 
-**Written before P02 implementation.** Baseline values are centralized in PROTOTYPE_DEFAULTS.md; geometry/support are in STAGE_AND_PLACEMENT.md. Do not copy tunables into this checklist. The current P02 fixture now exists; its measurements and AI authorship are recorded above. Human playfeel and physical device checks still require the team.
+**Written before P02 implementation.** Baseline values are centralized in PROTOTYPE_DEFAULTS.md; geometry/support are in STAGE_AND_PLACEMENT.md. Do not copy tunables into this checklist. The current P02 fixture now exists; its measurements and AI authorship are recorded above. Human playfeel and physical device checks still require team sessions.
 
 First session, once M0 exists: about 25 minutes with two actual available players/devices. Record hardware rather than assuming gamepads. Use `movement_room`, seed 12345, and the named baseline. Spend 3 minutes identifying controls, 8 minutes on ten full/short jumps and ten comfortable-gap/rise trials per player, 5 minutes on advanced landings/braking/reversal, 5 minutes swapping player slots/devices and repeating a subset, and 4 minutes collecting separate feedback. This is directional evidence, not enough to prove balance or equal win rates.
 

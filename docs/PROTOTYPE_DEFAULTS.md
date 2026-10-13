@@ -1,6 +1,6 @@
 # Tilaok! Prototype Defaults and Team Handoff
 
-**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The initial documentation approval did not authorize AI implementation. On 2026-10-13, the user separately authorized an AI-implementation exception for P02; its code and test evidence are recorded in `docs/AI_USAGE.md` and `docs/PHASETASK.md`. That exception does not prove balance, represent code as team-authored, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
+**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, establish competition eligibility, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
 
 ## 1. Recommendation and evidence
 
@@ -225,7 +225,7 @@ Additional scope contradictions: PRODUCTION originally placed stacking before Ka
 
 | When | Decisions/defaults | What remains open |
 |---|---|---|
-| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | P02 diagnostic implementation now exists under the user's AI-implementation exception; P01-T02 review and physical-device checks remain open |
+| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; use the standing AI-assisted programming workflow for approved implementation tasks | P02 diagnostic implementation exists; P01-T02 human review and physical-device checks remain open |
 | Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: physical keyboard/controller inventory and tested baseline device combination; no gamepads are available and keyboard model/layout/rollover are unverified; matching Godot 4.7.2 templates were installed and a local export succeeded |
 | Before relevant event | Current contact/command/support contracts, independent-mode gates; explicit R1–R4 decisions before any replacement behavior | U: owner/time for event review and physical tests |
 | Tune after playing | Movement feel, gaps, sensor dimensions, deadzones, egg weights, timers, force/caps and readability; one related parameter group at a time | All balance/feel confidence remains low |
@@ -233,7 +233,7 @@ Additional scope contradictions: PRODUCTION originally placed stacking before Ka
 
 Essential factual questions, recorded rather than blocking this handoff:
 
-1. Who are the registered gameplay/integration owners, and how many hours can they spend before October 21? The user will handle assignments privately; P00 does not record them.
+1. Francis and Carlos are the supplied development leads. Their registration status, individual gameplay/integration assignments and available hours through October 21 remain unrecorded; P00 does not claim them.
 2. The user selected the current PC as target; what keyboard model/layout and physical controllers/connections can the team test?
 3. The intended Godot 4.7.2 binary is in `D:\Downloads`; obtain matching 4.7.2 templates before any export check. The installed `4.7.stable` templates have a different version identifier. No engine/version change or template installation was part of the P00 baseline.
 
