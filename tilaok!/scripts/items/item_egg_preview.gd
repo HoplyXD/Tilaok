@@ -95,6 +95,44 @@ func _draw_silhouette(center: Vector2, wobble: float) -> void:
 			2.0
 		)
 		return
+	match _family.preview_silhouette:
+		"solid_block":
+			draw_rect(rect, Color("#6e7580"))
+			draw_line(
+				rect.position + Vector2(0.0, rect.size.y * 0.5),
+				rect.position + Vector2(rect.size.x, rect.size.y * 0.5),
+				Color("#4c525a"),
+				2.0
+			)
+			draw_rect(rect, Color("#212429"), false, 2.0)
+			return
+		"wood_box":
+			draw_rect(rect, Color("#b8803f"))
+			draw_line(rect.position, rect.end, Color("#7a4f24"), 3.0)
+			draw_line(
+				rect.position + Vector2(rect.size.x, 0.0),
+				rect.position + Vector2(0.0, rect.size.y),
+				Color("#7a4f24"),
+				3.0
+			)
+			draw_rect(rect, Color("#2b1a0a"), false, 2.0)
+			return
+		"collapsing_block":
+			var crumble := rect.grow(-wobble * 1.5)
+			draw_rect(crumble, Color("#d9ba85"))
+			draw_polyline(
+				PackedVector2Array(
+					[
+						crumble.position + Vector2(crumble.size.x * 0.2, 0.0),
+						crumble.get_center() + Vector2(-2.0, 0.0),
+						crumble.position + Vector2(crumble.size.x * 0.6, crumble.size.y),
+					]
+				),
+				Color("#5c3f1e"),
+				2.0
+			)
+			draw_rect(crumble, Color("#5c3f1e"), false, 2.0)
+			return
 	# Bamboo bridge: dashed reservation, thin strip on its one-way side, pulsing arrow.
 	draw_rect(rect, Color("#cfe8a0"), false, 1.0)
 	var normal := ItemGeometry.rotate_vector(Vector2.UP, quarter_turns)

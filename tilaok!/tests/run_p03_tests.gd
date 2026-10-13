@@ -48,61 +48,61 @@ func _check(condition: bool, label: String) -> void:
 func _test_arena_and_guards() -> void:
 	var definition := ArenaDefinition.new(GameplayTuning.new())
 	_check(
-		definition.arena_bounds.size == Vector2(1024.0, 512.0), "arena is 1024 by 512 world units"
+		definition.arena_bounds.size == Vector2(2048.0, 1024.0), "arena is 2048 by 1024 world units"
 	)
 	_check(
-		definition.spawn_feet == Vector2(96.0, 480.0),
+		definition.spawn_feet == Vector2(192.0, 960.0),
 		"shared spawn uses documented feet coordinate"
 	)
 	var origin := definition.controller_origin_from_feet(definition.spawn_feet)
 	_check(
-		is_equal_approx(origin.y + 24.0, 480.0),
+		is_equal_approx(origin.y + definition.tuning.body_height_wu * 0.5, 960.0),
 		"center-origin controller feet align with floor top"
 	)
-	_check(definition.surface_specs[0].rect.position.y == 480.0, "floor top is y=480")
+	_check(definition.surface_specs[0].rect.position.y == 960.0, "floor top is y=960")
 	var signature := definition.arena_geometry_signature()
 	var valid := definition.validate_region(
-		Rect2(Vector2(200.0, 192.0), Vector2(32.0, 32.0)), ArenaDefinition.REGION_FOOTPRINT
+		Rect2(Vector2(400.0, 384.0), Vector2(64.0, 64.0)), ArenaDefinition.REGION_FOOTPRINT
 	)
 	_check(bool(valid.allowed), "valid footprint inside the build region is accepted")
 	var spawn := definition.validate_region(
-		Rect2(Vector2(24.0, 376.0), Vector2(32.0, 32.0)), ArenaDefinition.REGION_FOOTPRINT
+		Rect2(Vector2(48.0, 752.0), Vector2(64.0, 64.0)), ArenaDefinition.REGION_FOOTPRINT
 	)
 	_check(
 		not bool(spawn.allowed) and spawn.reason == "protected spawn zone",
 		"spawn footprint is rejected"
 	)
 	var goal_sweep := definition.validate_region(
-		Rect2(Vector2(920.0, 320.0), Vector2(32.0, 32.0)), ArenaDefinition.REGION_SWEEP
+		Rect2(Vector2(1840.0, 640.0), Vector2(64.0, 64.0)), ArenaDefinition.REGION_SWEEP
 	)
 	_check(
 		not bool(goal_sweep.allowed) and goal_sweep.reason == "protected goal zone",
 		"goal sweep remains protected"
 	)
 	var hidden_goal_effect := definition.validate_region(
-		Rect2(Vector2(928.0, 304.0), Vector2(24.0, 24.0)), ArenaDefinition.REGION_EFFECT
+		Rect2(Vector2(1856.0, 608.0), Vector2(48.0, 48.0)), ArenaDefinition.REGION_EFFECT
 	)
 	_check(
 		not bool(hidden_goal_effect.allowed),
 		"goal effect region is protected regardless of flag visibility"
 	)
 	var base_overlap := definition.validate_region(
-		Rect2(Vector2(210.0, 430.0), Vector2(24.0, 24.0)), ArenaDefinition.REGION_FOOTPRINT
+		Rect2(Vector2(420.0, 860.0), Vector2(48.0, 48.0)), ArenaDefinition.REGION_FOOTPRINT
 	)
 	_check(
 		not bool(base_overlap.allowed) and str(base_overlap.reason).begins_with("immutable base"),
 		"base geometry overlap is rejected"
 	)
 	var outside := definition.validate_region(
-		Rect2(Vector2(150.0, 200.0), Vector2(24.0, 24.0)), ArenaDefinition.REGION_FOOTPRINT
+		Rect2(Vector2(300.0, 400.0), Vector2(48.0, 48.0)), ArenaDefinition.REGION_FOOTPRINT
 	)
 	_check(
 		not bool(outside.allowed) and outside.reason == "outside build region",
 		"out-of-build-region edit is rejected"
 	)
-	var actor_rects: Array[Rect2] = [Rect2(Vector2(400.0, 192.0), Vector2(24.0, 48.0))]
+	var actor_rects: Array[Rect2] = [Rect2(Vector2(800.0, 384.0), Vector2(56.0, 120.0))]
 	var clearance := definition.validate_region(
-		Rect2(Vector2(424.0, 200.0), Vector2(16.0, 16.0)),
+		Rect2(Vector2(856.0, 400.0), Vector2(32.0, 32.0)),
 		ArenaDefinition.REGION_FOOTPRINT,
 		actor_rects
 	)
@@ -178,19 +178,19 @@ func _test_camera_framing() -> void:
 	)
 	var scenarios := [
 		[
-			Rect2(Vector2(24.0, 420.0), Vector2(24.0, 48.0)),
-			Rect2(Vector2(976.0, 420.0), Vector2(24.0, 48.0))
+			Rect2(Vector2(48.0, 816.0), Vector2(56.0, 120.0)),
+			Rect2(Vector2(1952.0, 816.0), Vector2(56.0, 120.0))
 		],
 		[
-			Rect2(Vector2(24.0, 420.0), Vector2(24.0, 48.0)),
-			Rect2(Vector2(500.0, 96.0), Vector2(128.0, 32.0)),
-			Rect2(Vector2(976.0, 420.0), Vector2(24.0, 48.0))
+			Rect2(Vector2(48.0, 816.0), Vector2(56.0, 120.0)),
+			Rect2(Vector2(1000.0, 192.0), Vector2(256.0, 64.0)),
+			Rect2(Vector2(1952.0, 816.0), Vector2(56.0, 120.0))
 		],
 		[
-			Rect2(Vector2(24.0, 420.0), Vector2(24.0, 48.0)),
-			Rect2(Vector2(360.0, 96.0), Vector2(96.0, 32.0)),
-			Rect2(Vector2(640.0, 288.0), Vector2(192.0, 64.0)),
-			Rect2(Vector2(976.0, 420.0), Vector2(24.0, 48.0))
+			Rect2(Vector2(48.0, 816.0), Vector2(56.0, 120.0)),
+			Rect2(Vector2(720.0, 192.0), Vector2(192.0, 64.0)),
+			Rect2(Vector2(1280.0, 576.0), Vector2(384.0, 128.0)),
+			Rect2(Vector2(1952.0, 816.0), Vector2(56.0, 120.0))
 		],
 	]
 	for scenario_index in range(scenarios.size()):
@@ -207,15 +207,15 @@ func _test_camera_framing() -> void:
 		if scenario_index == 0:
 			_check(
 				room.camera_rig.screen_bounds_visible(
-					Rect2(Vector2(500.0, 96.0), Vector2(128.0, 32.0))
+					Rect2(Vector2(1000.0, 192.0), Vector2(256.0, 64.0))
 				),
-				"highest legal construction preview at build-region y=96 remains visible"
+				"highest legal construction preview at build-region y=192 remains visible"
 			)
 	var launch_and_preview: Array[Rect2] = [
-		Rect2(Vector2(0.0, 0.0), Vector2(24.0, 48.0)),
-		Rect2(Vector2(1000.0, 464.0), Vector2(24.0, 48.0)),
-		Rect2(Vector2(820.0, 96.0), Vector2(160.0, 64.0)),
-		Rect2(Vector2(480.0, 128.0), Vector2(24.0, 48.0)),
+		Rect2(Vector2(0.0, 0.0), Vector2(56.0, 120.0)),
+		Rect2(Vector2(1992.0, 904.0), Vector2(56.0, 120.0)),
+		Rect2(Vector2(1640.0, 192.0), Vector2(320.0, 128.0)),
+		Rect2(Vector2(960.0, 256.0), Vector2(56.0, 120.0)),
 	]
 	room.set_camera_fixture_targets(launch_and_preview, BoundedStageCamera.Context.PLACE)
 	await process_frame
@@ -225,7 +225,10 @@ func _test_camera_framing() -> void:
 		all_visible = all_visible and room.camera_rig.screen_bounds_visible(rect)
 	_check(all_visible, "launch and rotated-preview extents remain inside the usable viewport")
 	_check(
-		room.camera_rig.zoom.x >= 1.0 and room.camera_rig.zoom.x <= 1.4,
+		(
+			room.camera_rig.zoom.x >= room.tuning.camera_zoom_min
+			and room.camera_rig.zoom.x <= room.tuning.camera_zoom_max
+		),
 		"camera honors its bounded zoom range"
 	)
 	var last_position := room.camera_rig.position
@@ -269,14 +272,14 @@ func _test_camera_framing() -> void:
 
 func _test_camera_hud_easing() -> void:
 	var camera := room.camera_rig
-	var fixture := Rect2(Vector2(488.0, 276.0), Vector2(48.0, 48.0))
+	var fixture := Rect2(Vector2(976.0, 552.0), Vector2(96.0, 96.0))
 	var camera_was_processing := camera.is_processing()
 	var previous_position := camera.position
 	var previous_zoom := camera.zoom
 	var previous_initialized := camera._initialized
 	camera.set_process(false)
-	camera.position = Vector2(512.0, 256.0)
-	camera.zoom = Vector2.ONE
+	camera.position = Vector2(1024.0, 512.0)
+	camera.zoom = Vector2.ONE * room.tuning.camera_zoom_min
 	camera._initialized = false
 	room.set_camera_fixture_targets([fixture], BoundedStageCamera.Context.PLAY)
 	for _step in range(20):
@@ -312,11 +315,11 @@ func _test_camera_hud_easing() -> void:
 
 
 func _test_maximum_launch_camera(actor: ChickenController) -> void:
-	actor.global_position = Vector2(736.0, 456.0)
+	actor.global_position = Vector2(1472.0, 900.0)
 	actor.velocity = Vector2.ZERO
 	actor.locomotion_velocity = Vector2.ZERO
 	actor.external_velocity = Vector2.ZERO
-	actor.launch(Vector2(0.0, -900.0))
+	actor.launch(Vector2(0.0, -1800.0))
 	var all_visible := true
 	var highest_target_y := INF
 	for _frame in range(36):
@@ -328,11 +331,13 @@ func _test_maximum_launch_camera(actor: ChickenController) -> void:
 		var target := room.camera_rig.targets[0]
 		all_visible = all_visible and room.camera_rig.screen_bounds_visible(target.world_rect)
 		highest_target_y = minf(highest_target_y, target.world_rect.position.y)
-	_check(highest_target_y < 300.0, "maximum configured 900 wu/s launch reaches its measured apex")
+	_check(
+		highest_target_y < 600.0, "maximum configured 1800 wu/s launch reaches its measured apex"
+	)
 	_check(all_visible, "camera contains live identity and body extents through maximum launch")
 	print(
 		(
-			"P03_CAMERA_LAUNCH speed=900 target_top_y=%.2f frames=36 visible=%s"
+			"P03_CAMERA_LAUNCH speed=1800 target_top_y=%.2f frames=36 visible=%s"
 			% [highest_target_y, all_visible]
 		)
 	)
@@ -409,8 +414,8 @@ func _test_playable_route(actor: ChickenController) -> void:
 	for _frame in range(60):
 		await physics_frame
 		if (
-			actor.global_position.x >= 900.0
-			and is_equal_approx(actor.global_position.y + 24.0, 384.0)
+			actor.global_position.x >= 1800.0
+			and is_equal_approx(actor.global_position.y + room.tuning.body_height_wu * 0.5, 768.0)
 		):
 			reached_goal = true
 			break
@@ -489,22 +494,22 @@ func _test_support_contacts(actor: ChickenController) -> void:
 
 	var one_way := _make_surface(
 		"fixture.one_way",
-		Rect2(Vector2(300.0, 280.0), Vector2(160.0, 8.0)),
+		Rect2(Vector2(600.0, 560.0), Vector2(320.0, 8.0)),
 		SupportSurfaceMetadata.Eligibility.ELIGIBLE,
 		true,
 		true
 	)
 	room.input_router.set_phase(LocalInputRouter.Phase.LOBBY)
-	actor.global_position = Vector2(350.0, 310.0)
+	actor.global_position = Vector2(700.0, 626.0)
 	actor.velocity = Vector2.ZERO
 	actor.locomotion_velocity = Vector2.ZERO
 	actor.external_velocity = Vector2.ZERO
 	actor.coyote_remaining = 0.0
-	actor.launch(Vector2(0.0, -600.0))
+	actor.launch(Vector2(0.0, -1200.0))
 	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)
 	await _physics_frames(12)
 	_check(
-		room.current_support_result(actor.support_actor_id, 300.0).reason == "no support",
+		room.current_support_result(actor.support_actor_id, 600.0).reason == "no support",
 		"one-way bridge does not support a player rising through it"
 	)
 	var one_way_landed := await _wait_for_surface(actor, "fixture.one_way", 65)
@@ -623,8 +628,8 @@ func _test_fixture_support_lines(actor: ChickenController) -> void:
 
 
 func _test_base_and_ineligible_surfaces(actor: ChickenController) -> void:
-	await _place_actor_on(actor, Vector2(440.0, 328.0))
-	var base_result := room.current_support_result(actor.support_actor_id, 400.0)
+	await _place_actor_on(actor, Vector2(880.0, 704.0 - room.tuning.body_height_wu * 0.5))
+	var base_result := room.current_support_result(actor.support_actor_id, 800.0)
 	_check(
 		not bool(base_result.qualifies) and base_result.reason == "base surface",
 		"elevated base platform never qualifies regardless of height"

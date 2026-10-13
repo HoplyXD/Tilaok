@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-13 — approved scope/wording reconciliation, P00 target-PC confirmation, and wall-movement extension; existing gameplay values unchanged._
+_Last updated: 2026-10-14 — 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (requested by Jorge, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
 
 ## 1. Pitch
 A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
@@ -28,7 +28,7 @@ The stage **persists and grows** across rounds. Pugad and building continue duri
 
 **Starting stage:** a hand-built base layout with a spawn on the left, a flag on the right, a solid floor and a few platforms, so round 1 already has something to run across. Base stage pieces, the spawn and the flag are indestructible. Raised player-built geometry is the intended way to prepare for Kangaroo's Rising wave; a team that does not build useful elevation can lose to it. (Exact layout to be designed and playtested.)
 
-**Construction rules (design contract):** the stage uses a logical tile grid whose pixel size is set from the project player-collision dimensions when the project is created. Validate simultaneous edits against a shared phase snapshot. If newly placed solid footprints conflict, reject the entire conflicting set rather than giving an advantage based on callback order. Intentional solid/trigger intersections are allowed only when the trigger remains readable and its danger region is shown. Walis Cleanup targets only removable player-built items in its preview; cleanup targets are resolved as one edit against the phase snapshot, then remaining placements are validated and committed as one set. It cannot affect base geometry, spawn safety, the goal platform/flag zone, or a hidden event goal zone. Removal persists across rounds. A removed support does not cause crushing: unsupported moving items return to their defined safe start or are removed according to their item contract. Layout solvability is not guaranteed.
+**Construction rules (design contract):** the stage uses a logical tile grid of **64×64 px tiles** (2026-10-14). A chicken is 1 tile wide and 2 tiles tall (clearance 64×128; collision body 56×120). Block sizes are written width×height in tiles (1x1 = 64×64, 3x1 = 192×64) and most blocks rotate in Place with R. The base stage is drawn by a 64 px TileMapLayer. Validate simultaneous edits against a shared phase snapshot. If newly placed solid footprints conflict, reject the entire conflicting set rather than giving an advantage based on callback order. Intentional solid/trigger intersections are allowed only when the trigger remains readable and its danger region is shown. Walis Cleanup targets only removable player-built items in its preview; cleanup targets are resolved as one edit against the phase snapshot, then remaining placements are validated and committed as one set. It cannot affect base geometry, spawn safety, the goal platform/flag zone, or a hidden event goal zone. Removal persists across rounds. A removed support does not cause crushing: unsupported moving items return to their defined safe start or are removed according to their item contract. Layout solvability is not guaranteed.
 
 Placement footprints, mover sweeps, projectile lanes and effect radii are distinct regions. Every new item defines rotation, bounding behavior and protected clearance. Moving hazards have bounded visible paths, reset to a deterministic direction at Play start, and remain inactive through Place. Use a short configurable activation grace so resets do not create unavoidable first-frame hits. Solids block Tsinelas Launcher projectiles. Item parameters are centralized data, not scattered constants. Exact pixel dimensions remain dependent on the team-created player and stage.
 
@@ -177,6 +177,7 @@ Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. T
 - Engine: **Godot 4.7** (free and open source, so no license is needed to play or build).
 - PC (free to play, no license needed).
 - **Local multiplayer** (2–4 players, **gamepads first**, shared keyboard as fallback). Online play is out of scope for the deadline.
+- **Keyboard controls (2026-10-14):** K1 A/D move, **W jump (hold W while falling to glide)**, **S sneak**; K2 uses the arrows the same way (Up jump/glide, Down sneak). Space/Ctrl stay as alternate jump keys and W/Up still move cursors in menus and Place. Gamepad: A jumps (hold to glide), d-pad down sneaks. See [Sneak and glide](#sneak-and-glide--2026-10-14-extension).
 - **Controls baseline:** the measured P02 controller implements run and jump only. On October 13, wall slide/jump was approved as a separate Should-scope extension, implemented, verified on synthetic evidence and enabled by default as core movement (owner decision, 2026-10-13); see [Wall slide and wall jump](#wall-slide-and-wall-jump--approved-extension). Dash, double jump and drop-through remain excluded.
 - **Player collision:** chicken bodies pass through each other in all supported modes. Separate contact sensors handle Lagsanay tagging and Kangaroo Hug; contact does not introduce body pushing. Future modes need their own explicit contract.
 
@@ -187,6 +188,26 @@ Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. T
 While airborne and touching an eligible solid side, a chicken slides down with a configurable cap on downward speed. Holding toward the wall is not required. Base and player-built solid sides qualify; moving solids qualify only while actual contact remains valid. One-way platform sides and undersides, pass-through chicken bodies and arena containment boundaries do not qualify. A fresh jump press kicks the chicken away; start with configurable prototype candidates of 240 wu/s horizontally and −520 wu/s vertically. Steering remains available immediately under ordinary air control. One kick is allowed per wall contact; the chicken must separate and make fresh contact before another. Holding jump and operating-system repeats do not repeat a kick; buffered input is consumed once.
 
 Terminal, opening-freeze, capture and external-force precedence remain unchanged. External launches preempt wall actions and clear wall eligibility/input. Pause freezes the action; phase changes, reset and reload clear stale wall contact or buffered input. Chicken bodies remain pass-through. Wall contact is not grounded support and never qualifies for Rising wave. Slide cap, grace/separation thresholds and impulse values remain provisional and require real physics trials and human feel review. Dash, double jump and drop-through remain out of scope. See [PRD REQ-MOVE-004](PRD.md#req-move-004--slide-on-eligible-walls-and-kick-away-with-a-fresh-jump-press) and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope).
+### Sneak and glide — 2026-10-14 extension
+
+**Status — October 14, 2026:** requested by Jorge and implemented in the main game; automated Godot checks pass; human feel review and physical-device checks are pending (see [PHASETASK P02-T23–T26](PHASETASK.md#p02-sneak-glide-64-wu-grid-and-stage-blocks-extension--implemented-should-scope)). Should scope, like wall movement.
+
+- **Sneak:** hold down (S / Down / d-pad down) while standing to crouch into a 1×1 body (56×56). A sneaking chicken cannot walk or jump. Releasing stands back up only when there is headroom; under a one-tile ceiling the chicken stays small instead of clipping. Sneak ends on launch, capture, freeze, elimination and phase change (when there is room).
+- **Glide:** hold jump while falling to cap descent at a configurable 180 wu/s; steering is unchanged. Tapping still jumps normally, a fresh press on a wall still wall-jumps, and wall slide wins over glide while touching an eligible wall.
+- Wall slide and wall jump are the existing approved extension below (rescaled to the 64 px grid).
+
+### Stage blocks — 2026-10-14
+
+Each block is its own editable scene in `tilaok!/scenes/blocks/` and enters the Pugad pool like any other construction item.
+
+| Block | Size (tiles) | Behavior |
+|---|---|---|
+| Solid Block | 3x1 (rotates to 1x3) | No gravity; wall-slide eligible. |
+| Wood Box | 2x2 | Falls under gravity; a grounded chicken walking into its side pushes it; chickens can stand on it; returns to its placed spot at every Place/Play start. |
+| Collapsing Block | 1x1 | No gravity. Standing on it or wall-sliding on it starts a 2 s shake; then it drops away (no collision) and returns about 3 s later once no chicken overlaps it. Restored at every Place/Play start. |
+
+The Collapsing Block overlaps the proposed *Marupok na Papag* expansion idea (2×1/3×1); it is recorded as a separate 1×1 family and does not approve or replace that proposal.
+
 - **Camera:** dynamic, always keeps everyone who matters in frame by zooming and panning smoothly.
   - **Play phase:** frames live players only. Dead players are excluded (finished players too, so the camera follows whoever is still running).
   - **Place phase:** frames the pointers of players who have **not placed yet**. Far-apart pointers zoom out to fit both; once a player places, their pointer drops out and the camera eases in on the remaining ones. When everyone has placed, the camera eases to the Play framing.

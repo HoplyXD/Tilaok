@@ -4,7 +4,7 @@ extends Area2D
 signal chicken_contacted(other: Node2D)
 signal chicken_contact_left(other: Node2D)
 
-@export var contact_size := Vector2(28.0, 48.0)
+@export var contact_size := Vector2(60.0, 120.0)
 var _overlapping: Array[Node2D] = []
 
 

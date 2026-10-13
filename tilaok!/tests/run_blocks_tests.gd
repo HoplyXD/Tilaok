@@ -1,0 +1,546 @@
+extends SceneTree
+
+## 2026-10-14 movement & blocks extension: 64 wu stage tiles, W/Up jump in Play, sneak, glide,
+## and the scene-authored Solid Block, Wood Box and Collapsing Block. Synthetic input plus real
+## Godot physics in the Item Lab (64 wu grid). Not physical-device or human feel evidence.
+## Run: godot --headless --path tilaok! --script res://tests/run_blocks_tests.gd
+
+const ROOM_SCENE := preload("res://scenes/fixtures/item_lab.tscn")
+const SOLID := "build.solid_block.slab_3x1"
+const BOX := "build.wood_box.box_2x2"
+const COLLAPSE := "build.collapsing_block.cell_1x1"
+const BLOCK_SCENES := {
+	SOLID: "res://scenes/blocks/solid_block.tscn",
+	BOX: "res://scenes/blocks/wood_box.tscn",
+	COLLAPSE: "res://scenes/blocks/collapsing_block.tscn",
+}
+const FLOOR_Y := 960.0
+const TOLERANCE := 1.0
+
+var failures := 0
+var checks := 0
+var room: ItemLabRoom
+var actor: ChickenController
+var seat := 0
+
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	room = ROOM_SCENE.instantiate() as ItemLabRoom
+	root.add_child(room)
+	await _frames(3)
+	_test_grid_and_tiles()
+	_test_block_scene_authoring()
+	seat = room.join_keyboard("K1")
+	actor = room.actors[seat] as ChickenController
+	room.start_play()
+	await _frames(3)
+	await _test_controls()
+	await _test_sneak()
+	await _test_sneak_headroom()
+	await _test_glide()
+	await _test_solid_block()
+	await _test_wood_box()
+	await _test_collapsing_block()
+	room.queue_free()
+	await process_frame
+	print("BLOCKS_TESTS checks=%d failures=%d" % [checks, failures])
+	quit(1 if failures > 0 else 0)
+
+
+func _check(condition: bool, label: String) -> void:
+	checks += 1
+	if condition:
+		print("PASS ", label)
+	else:
+		failures += 1
+		push_error("FAIL " + label)
+
+
+func _frames(count: int) -> void:
+	for _frame in range(count):
+		await physics_frame
+
+
+func _key(key: int, down: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = key
+	event.keycode = key
+	event.pressed = down
+	room.input_router._handle_key(event)
+
+
+func _release_all() -> void:
+	for key in [KEY_A, KEY_D, KEY_W, KEY_S, KEY_SPACE]:
+		_key(key, false)
+	room.input_router._stick_x[seat] = 0.0
+
+
+func _half_height() -> float:
+	return room.tuning.body_height_wu * 0.5
+
+
+func _feet_y() -> float:
+	return actor.global_position.y + _half_height()
+
+
+func _put_actor_feet(feet: Vector2) -> void:
+	actor.global_position = feet - Vector2(0.0, _half_height())
+	actor.velocity = Vector2.ZERO
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.external_velocity = Vector2.ZERO
+	actor.coyote_remaining = 0.0
+	actor.jump_buffer_remaining = 0.0
+	actor.reset_wall_state()
+	actor.lifecycle.status = PlayerLifecycleState.Status.ACTIVE
+	room.support_tracker.invalidate_actor(actor.support_actor_id)
+
+
+func _body_shape() -> CollisionShape2D:
+	for child in actor.get_children():
+		if child is CollisionShape2D:
+			return child
+	return null
+
+
+## Places entries (variant, cell, turns) as one fresh construction set and starts Play.
+func _arrange(entries: Array) -> Array[String]:
+	_release_all()
+	var items := room.items
+	items.reset_match()
+	var ids: Array[String] = []
+	var no_rects: Array[Rect2] = []
+	for entry in entries:
+		var result := items.place(
+			str(entry[0]),
+			entry[1] as Vector2i,
+			int(entry[2]) if entry.size() > 2 else 0,
+			0,
+			no_rects
+		)
+		_check(bool(result.allowed), "arrange %s at %s: %s" % [entry[0], entry[1], result.reason])
+		ids.append(str(result.get("instance_id", "")))
+	items.begin_play()
+	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)
+	return ids
+
+
+# ---------------------------------------------------------------- grid and tiles
+
+
+func _test_grid_and_tiles() -> void:
+	var tuning := room.tuning
+	_check(tuning.grid_cell_wu == 64.0, "stage grid is 64 wu per tile")
+	_check(
+		(
+			tuning.body_width_wu <= tuning.grid_cell_wu
+			and tuning.body_height_wu <= 2.0 * tuning.grid_cell_wu
+		),
+		(
+			"chicken body (%sx%s) fits a 1x2-tile clearance"
+			% [tuning.body_width_wu, tuning.body_height_wu]
+		)
+	)
+	_check(
+		(
+			GameplayTuning.legacy_32_wu().grid_cell_wu == 32.0
+			and GameplayTuning.legacy_32_wu().validate().is_empty()
+		),
+		"legacy 32 wu fixture profile is derived from the current defaults and validates"
+	)
+	var tiles := room.stage_tiles
+	_check(
+		tiles != null and tiles.tile_set != null and tiles.tile_set.tile_size == Vector2i(64, 64),
+		"stage uses a TileMapLayer with 64x64 tiles"
+	)
+	if tiles == null:
+		return
+	var expected := 0
+	for spec in room.arena.surface_specs:
+		var rect: Rect2 = spec.rect
+		expected += roundi(rect.size.x / 64.0) * roundi(rect.size.y / 64.0)
+	_check(
+		tiles.get_used_cells().size() == expected,
+		"every arena surface cell is painted (%d tiles)" % tiles.get_used_cells().size()
+	)
+	_check(
+		(
+			tiles.get_cell_atlas_coords(Vector2i(0, 15)) == StageTileLayer.TILE_GROUND
+			and tiles.get_cell_atlas_coords(Vector2i(6, 13)) == StageTileLayer.TILE_PLATFORM
+			and tiles.get_cell_atlas_coords(Vector2i(-1, 0)) == StageTileLayer.TILE_BOUNDARY
+		),
+		"floor, base platform and containment use distinct tiles"
+	)
+	_check(
+		tiles.map_to_local(Vector2i(6, 13)) == Vector2(6.5, 13.5) * 64.0,
+		"tile cells line up with ArenaDefinition world coordinates"
+	)
+
+
+func _test_block_scene_authoring() -> void:
+	for key in BLOCK_SCENES:
+		var found := room.definitions.find_variant(key)
+		var variant := found.variant as ItemVariantDefinition
+		var scene := load(BLOCK_SCENES[key]) as PackedScene
+		var node := scene.instantiate()
+		var collision := node.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		var visual := node.get_node_or_null("Visual")
+		var authored := (
+			(collision.shape as RectangleShape2D).size if collision != null else Vector2.ZERO
+		)
+		_check(
+			(
+				authored == Vector2(variant.footprint_cells) * room.tuning.grid_cell_wu
+				and visual != null
+			),
+			(
+				"%s scene authors a %s collision matching its %s footprint"
+				% [key, authored, variant.footprint_cells]
+			)
+		)
+		node.free()
+
+
+# ---------------------------------------------------------------- controls
+
+
+func _test_controls() -> void:
+	var router := room.input_router
+	_release_all()
+	router.set_phase(LocalInputRouter.Phase.PLACE)
+	_key(KEY_W, true)
+	_check(
+		router.is_action_held(seat, "up") and not router.is_action_held(seat, "jump"),
+		"W is 'up' during Place"
+	)
+	_key(KEY_W, false)
+	router.set_phase(LocalInputRouter.Phase.PLAY)
+	_key(KEY_W, true)
+	_check(router.is_action_held(seat, "jump"), "W is jump during Play")
+	_key(KEY_W, false)
+	_key(KEY_S, true)
+	_check(router.is_action_held(seat, "down"), "S is sneak (down) during Play")
+	_key(KEY_S, false)
+	# Drop the unconsumed mapping-check presses so they cannot trigger a later jump.
+	router.clear_input_state()
+	room.items.reset_match()
+	room.items.begin_play()
+	# Column 11 (x 704..768) is open to the arena ceiling.
+	_put_actor_feet(Vector2(736.0, FLOOR_Y))
+	await _frames(10)
+	_key(KEY_W, true)
+	var highest := _feet_y()
+	for _frame in range(30):
+		await physics_frame
+		highest = minf(highest, _feet_y())
+	_key(KEY_W, false)
+	_check(
+		FLOOR_Y - highest > room.tuning.jump_height_wu * 0.8,
+		"a W press jumps (rise %.1f wu of %.0f)" % [FLOOR_Y - highest, room.tuning.jump_height_wu]
+	)
+	await _frames(60)
+
+
+# ---------------------------------------------------------------- sneak
+
+
+func _test_sneak() -> void:
+	room.items.reset_match()
+	room.items.begin_play()
+	_put_actor_feet(Vector2(1000.0, FLOOR_Y))
+	await _frames(10)
+	_key(KEY_S, true)
+	await _frames(3)
+	var shape := _body_shape()
+	var rect := shape.shape as RectangleShape2D
+	var shape_bottom := actor.global_position.y + shape.position.y + rect.size.y * 0.5
+	_check(
+		(
+			actor.sneaking
+			and rect.size == Vector2(room.tuning.body_width_wu, room.tuning.sneak_height_wu)
+		),
+		"holding S on the floor shrinks the body to %s" % rect.size
+	)
+	_check(absf(shape_bottom - FLOOR_Y) <= TOLERANCE, "sneaking keeps the feet on the floor")
+	var x_before := actor.global_position.x
+	_key(KEY_D, true)
+	await _frames(20)
+	_check(
+		absf(actor.global_position.x - x_before) <= 0.5 and actor.locomotion_velocity.x == 0.0,
+		"a sneaking chicken cannot walk"
+	)
+	_key(KEY_D, false)
+	_key(KEY_W, true)
+	await _frames(12)
+	_key(KEY_W, false)
+	_check(
+		actor.is_on_floor() and absf(_feet_y() - FLOOR_Y) <= TOLERANCE,
+		"a sneaking chicken cannot jump"
+	)
+	_key(KEY_S, false)
+	await _frames(2)
+	_check(
+		not actor.sneaking and rect.size.y == room.tuning.body_height_wu,
+		"releasing S in open space stands back up"
+	)
+	_put_actor_feet(Vector2(736.0, 400.0))
+	await _frames(2)
+	_key(KEY_S, true)
+	await _frames(3)
+	_check(not actor.sneaking, "sneak only starts while grounded")
+	_key(KEY_S, false)
+	await _frames(40)
+
+
+func _test_sneak_headroom() -> void:
+	# Solid slab at row 13 leaves a one-tile gap (y 896..960) above the floor.
+	var ids := _arrange([[SOLID, Vector2i(15, 13)]])
+	_put_actor_feet(Vector2(700.0, FLOOR_Y))
+	await _frames(10)
+	_key(KEY_S, true)
+	await _frames(3)
+	_put_actor_feet(Vector2(1056.0, FLOOR_Y))
+	await _frames(5)
+	_key(KEY_S, false)
+	await _frames(5)
+	_check(
+		actor.sneaking and absf(_feet_y() - FLOOR_Y) <= TOLERANCE,
+		"a sneaking chicken under a one-tile ceiling stays small instead of clipping"
+	)
+	room.items.remove(ids[0], "test", true)
+	await _frames(3)
+	_check(not actor.sneaking, "it stands up as soon as the headroom is clear")
+	room.items.reset_match()
+	room.items.begin_play()
+
+
+# ---------------------------------------------------------------- glide
+
+
+func _test_glide() -> void:
+	room.items.reset_match()
+	room.items.begin_play()
+	var cap := room.tuning.glide_fall_cap_wu_s
+	_put_actor_feet(Vector2(1480.0, 200.0))
+	await _frames(30)
+	var free_fall := actor.locomotion_velocity.y
+	_check(
+		free_fall > cap * 2.0 and not actor.gliding,
+		"without W a chicken falls fast (%.0f)" % free_fall
+	)
+	_put_actor_feet(Vector2(1480.0, 200.0))
+	_key(KEY_W, true)
+	var max_speed := 0.0
+	var glided := false
+	for _frame in range(40):
+		await physics_frame
+		max_speed = maxf(max_speed, actor.locomotion_velocity.y)
+		glided = glided or actor.gliding
+	_check(
+		glided and max_speed <= cap + 0.5,
+		"holding W while falling glides at <= %.0f wu/s (max %.1f)" % [cap, max_speed]
+	)
+	var x_before := actor.global_position.x
+	_key(KEY_A, true)
+	await _frames(10)
+	_key(KEY_A, false)
+	_check(actor.global_position.x < x_before - 20.0, "air steering still works while gliding")
+	_key(KEY_W, false)
+	await _frames(2)
+	_check(not actor.gliding, "releasing W ends the glide")
+	await _frames(60)
+	# Wall slide wins over glide on an eligible wall (held W, no fresh press at the wall).
+	_arrange([[SOLID, Vector2i(23, 9), 1]])
+	_put_actor_feet(Vector2(1300.0, 300.0))
+	_key(KEY_W, true)
+	await _frames(12)
+	_put_actor_feet(Vector2(1536.0 + room.tuning.body_width_wu * 0.5 + 0.1, 640.0))
+	await _frames(6)
+	_check(
+		(
+			actor.wall_sliding
+			and not actor.gliding
+			and absf(actor.locomotion_velocity.y - room.tuning.wall_slide_fall_cap_wu_s) <= 0.5
+		),
+		"wall slide (not glide) applies on a wall while W is held"
+	)
+	_key(KEY_W, false)
+	await _frames(60)
+
+
+# ---------------------------------------------------------------- blocks
+
+
+func _test_solid_block() -> void:
+	var ids := _arrange([[SOLID, Vector2i(14, 8)], [SOLID, Vector2i(20, 6), 1]])
+	var flat := room.items.node_for(ids[0])
+	var upright := room.items.node_for(ids[1])
+	var flat_rect: Rect2 = flat.call("footprint_world_rect")
+	var upright_rect: Rect2 = upright.call("footprint_world_rect")
+	_check(
+		flat is SolidBlock and flat_rect.size == Vector2(192.0, 64.0), "solid block is 3x1 (192x64)"
+	)
+	_check(upright_rect.size == Vector2(64.0, 192.0), "R rotates the solid block to 1x3 (64x192)")
+	_check(
+		(
+			is_equal_approx(upright.rotation, PI * 0.5)
+			and upright.position == upright_rect.get_center()
+		),
+		"rotated block root is centered on its footprint and turned 90 degrees"
+	)
+	var metadata := room.support_tracker.surfaces[ids[0]] as SupportSurfaceMetadata
+	_check(
+		metadata.wall_movement_eligibility == SupportSurfaceMetadata.Eligibility.ELIGIBLE,
+		"solid block sides are wall-slide eligible"
+	)
+	_put_actor_feet(Vector2(flat_rect.get_center().x, flat_rect.position.y - 100.0))
+	await _frames(40)
+	var position_before := flat.position
+	_check(
+		actor.is_on_floor() and absf(_feet_y() - flat_rect.position.y) <= TOLERANCE,
+		"a chicken stands on the solid block"
+	)
+	_check(flat.position == position_before, "solid block has no gravity")
+	room.items.reset_match()
+
+
+func _test_wood_box() -> void:
+	# Placed one cell above the floor under Base B; it falls once Play starts.
+	var ids := _arrange([[BOX, Vector2i(14, 12)]])
+	var box := room.items.node_for(ids[0]) as WoodBox
+	var start := box.position
+	_check(
+		box != null and box.footprint_world_rect().size == Vector2(128.0, 128.0), "wood box is 2x2"
+	)
+	await _frames(60)
+	_check(
+		box.is_on_floor() and absf(box.position.y + 64.0 - FLOOR_Y) <= TOLERANCE,
+		(
+			"wood box falls under gravity and lands on the floor (bottom y=%.1f)"
+			% (box.position.y + 64.0)
+		)
+	)
+	var box_right := box.position.x + 64.0
+	_put_actor_feet(Vector2(box_right + room.tuning.body_width_wu * 0.5 + 1.0, FLOOR_Y))
+	await _frames(5)
+	var box_x := box.position.x
+	_key(KEY_A, true)
+	await _frames(45)
+	_key(KEY_A, false)
+	var moved := box_x - box.position.x
+	_check(moved > 40.0, "a grounded chicken walking into the box pushes it (%.1f wu)" % moved)
+	_check(
+		actor.global_position.x > box.position.x + 64.0 - 0.5,
+		"the chicken never passes through the box"
+	)
+	await _frames(30)
+	var rest_x := box.position.x
+	await _frames(10)
+	_check(absf(box.position.x - rest_x) <= 0.5, "friction stops the box when the push ends")
+	# Step clear of the placed spot so the reset box does not land on this chicken.
+	_put_actor_feet(Vector2(736.0, FLOOR_Y))
+	room.items.enter_place()
+	_check(
+		box.position == start and not box.active,
+		"entering Place returns the box to its placed spot and freezes it"
+	)
+	await _frames(10)
+	_check(box.position == start, "the box stays put during Place")
+	room.items.begin_play()
+	await _frames(60)
+	_check(box.is_on_floor(), "the next Play start drops the box again from its placed spot")
+	# Open sky between Base C and Base D: stand on top of a landed box.
+	ids = _arrange([[BOX, Vector2i(22, 12)]])
+	box = room.items.node_for(ids[0]) as WoodBox
+	await _frames(30)
+	_put_actor_feet(Vector2(box.position.x, box.position.y - 64.0 - 60.0))
+	await _frames(30)
+	_check(
+		actor.is_on_floor() and absf(_feet_y() - (box.position.y - 64.0)) <= TOLERANCE,
+		"a chicken can stand on the box"
+	)
+	room.items.reset_match()
+
+
+func _test_collapsing_block() -> void:
+	var ids := _arrange([[COLLAPSE, Vector2i(22, 11)]])
+	var block := room.items.node_for(ids[0]) as CollapsingBlock
+	var top := block.footprint_world_rect().position.y
+	_check(
+		block != null and block.footprint_world_rect().size == Vector2(64.0, 64.0),
+		"collapsing block is 1x1"
+	)
+	_put_actor_feet(Vector2(1440.0, top - 80.0))
+	var landed := false
+	for _frame in range(30):
+		await physics_frame
+		if block.state == CollapsingBlock.State.CRUMBLING:
+			landed = actor.is_on_floor() and absf(_feet_y() - top) <= TOLERANCE
+			break
+	_check(landed, "standing on the collapsing block starts its timer")
+	var crumble_frames := 0
+	while block.state == CollapsingBlock.State.CRUMBLING and crumble_frames < 400:
+		await physics_frame
+		crumble_frames += 1
+	var expected_crumble := roundi(room.tuning.block_collapse_delay_s * 60.0)
+	_check(
+		(
+			absi(crumble_frames - expected_crumble) <= 2
+			and block.state == CollapsingBlock.State.GONE
+			and StageBlockSupport.shape_of(block).disabled
+		),
+		(
+			"it loses collision %d frames (%.2f s) after contact"
+			% [crumble_frames, crumble_frames / 60.0]
+		)
+	)
+	var gone_frames := 0
+	var fell := false
+	while block.state == CollapsingBlock.State.GONE and gone_frames < 600:
+		await physics_frame
+		gone_frames += 1
+		fell = fell or _feet_y() > top + 100.0
+	_check(fell, "the chicken falls through once it collapses")
+	var expected_gone := roundi(room.tuning.block_collapse_respawn_s * 60.0)
+	_check(
+		absi(gone_frames - expected_gone) <= 2 and block.state == CollapsingBlock.State.SOLID,
+		"it respawns %d frames (%.2f s) after collapsing" % [gone_frames, gone_frames / 60.0]
+	)
+	# Wall-slide contact also starts the timer.
+	ids = _arrange([[COLLAPSE, Vector2i(22, 9)]])
+	block = room.items.node_for(ids[0]) as CollapsingBlock
+	var face := block.footprint_world_rect().end.x
+	_put_actor_feet(Vector2(face + room.tuning.body_width_wu * 0.5 + 0.1, 700.0))
+	var slid := false
+	for _frame in range(8):
+		await physics_frame
+		slid = slid or actor.wall_sliding
+	_check(
+		slid and block.state == CollapsingBlock.State.CRUMBLING,
+		"wall-sliding on the collapsing block starts its timer"
+	)
+	# Respawn waits while a chicken overlaps the footprint.
+	await _frames(int(room.tuning.block_collapse_delay_s * 60.0) + 5)
+	_check(block.state == CollapsingBlock.State.GONE, "wall-slide contact collapses it after 2 s")
+	_put_actor_feet(
+		Vector2(
+			block.footprint_world_rect().get_center().x, block.footprint_world_rect().end.y + 20.0
+		)
+	)
+	actor.set_opening_freeze(true)
+	await _frames(int(room.tuning.block_collapse_respawn_s * 60.0) + 20)
+	_check(block.state == CollapsingBlock.State.GONE, "it does not respawn inside a chicken")
+	actor.set_opening_freeze(false)
+	_put_actor_feet(Vector2(1000.0, FLOOR_Y))
+	await _frames(5)
+	_check(block.state == CollapsingBlock.State.SOLID, "it respawns once the footprint is clear")
+	block.notify_chicken_contact(actor)
+	room.items.enter_place()
+	_check(
+		block.state == CollapsingBlock.State.SOLID and not block.active,
+		"entering Place restores a crumbling block and freezes it"
+	)
+	room.items.reset_match()

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/stage/stage_tile_layer.gd" id="1_layer"]
+[ext_resource type="TileSet" path="res://assets/tiles/debug_stage_tileset.tres" id="2_tiles"]
+
+[node name="StageTiles" type="TileMapLayer"]
+z_index = -5
+tile_set = ExtResource("2_tiles")
+script = ExtResource("1_layer")

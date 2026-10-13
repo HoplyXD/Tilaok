@@ -4,8 +4,10 @@ extends Control
 signal return_requested
 
 const BUILD_ID := "P03-graybox-dev"
-## Top-left of the on-demand wall-movement debug fixtures (above the base route).
+## Top-left of the on-demand wall-movement debug fixtures (above the base route), authored on
+## the historical 32 wu grid; multiply by world_scale (see wall_fixture_origin()).
 const WALL_FIXTURE_ORIGIN := Vector2(352.0, 112.0)
+const STAGE_TILES_SCENE := preload("res://scenes/stage/stage_tiles.tscn")
 const PREVIEW_COLORS := [Color("#f5c95b"), Color("#74c8d6"), Color("#ef8b74"), Color("#a8d782")]
 
 var tuning := GameplayTuning.new()
@@ -16,12 +18,16 @@ var input_router: LocalInputRouter
 var pause_coordinator: PauseRecoveryCoordinator
 var camera_rig: BoundedStageCamera
 var world_layer: Node2D
+## 64x64 visual tiles painted from ArenaDefinition; collision stays on per-surface bodies.
+var stage_tiles: StageTileLayer
 var actors: Dictionary = {}
 var wall_fixtures: Dictionary = {}
 var pointers: Array[Dictionary] = []
 var current_context := BoundedStageCamera.Context.PLAY
 var profile_id := "movement_room"
 var support_line_y := 384.0
+## grid_cell_wu / 32: scales this room's debug literals authored on the historical 32 wu grid.
+var world_scale := 1.0
 var _camera_targets: Array[StageCameraTarget] = []
 var _camera_target_cache: Dictionary = {}
 var _seed := 12345
@@ -48,6 +54,8 @@ func _ready() -> void:
 		tuning, PresentationSettings.new(), profile_id, _seed, _run_id
 	)
 	tuning = snapshot.gameplay
+	world_scale = tuning.grid_cell_wu / 32.0
+	support_line_y = 384.0 * world_scale
 	arena = ArenaDefinition.new(tuning)
 	support_tracker.configure(tuning)
 	input_router.tuning = tuning
@@ -106,8 +114,8 @@ func enter_place_fixture() -> void:
 	input_router.set_phase(LocalInputRouter.Phase.PLACE)
 	camera_rig.set_context(current_context)
 	if pointers.is_empty():
-		_add_pointer(Rect2(Vector2(176.0, 112.0), Vector2(128.0, 64.0)), false)
-		_add_pointer(Rect2(Vector2(720.0, 360.0), Vector2(192.0, 96.0)), false)
+		_add_pointer(_scaled_rect(Rect2(Vector2(176.0, 112.0), Vector2(128.0, 64.0))), false)
+		_add_pointer(_scaled_rect(Rect2(Vector2(720.0, 360.0), Vector2(192.0, 96.0))), false)
 	_update_camera_targets()
 
 
@@ -130,7 +138,7 @@ func rotate_next_pointer() -> bool:
 			pointer.rect = next_rect
 			(pointer.node as Polygon2D).position = next_rect.get_center()
 			(pointer.node as Polygon2D).polygon = _rect_polygon_centered(next_rect.size)
-			(pointer.label as Label).position = next_rect.position + Vector2(4.0, 4.0)
+			(pointer.label as Label).position = next_rect.position + Vector2(4.0, 4.0) * world_scale
 			(pointer.label as Label).text = "UNCONFIRMED • ROTATED"
 			_update_camera_targets()
 			return true
@@ -181,8 +189,8 @@ func reset_room() -> void:
 	input_router.set_phase(LocalInputRouter.Phase.PLAY)
 	camera_rig.set_context(current_context)
 	camera_rig._initialized = false
-	camera_rig.position = Vector2(512.0, 224.0)
-	camera_rig.zoom = Vector2.ONE
+	camera_rig.position = _camera_home()
+	camera_rig.zoom = Vector2.ONE * tuning.camera_zoom_min
 	_update_camera_targets()
 	_update_diagnostics()
 
@@ -190,7 +198,19 @@ func reset_room() -> void:
 ## Builds labeled wall-movement debug fixtures above the route; never touches base geometry.
 func build_wall_fixtures() -> void:
 	clear_wall_fixtures()
-	wall_fixtures = WallFixtureBuilder.build_set(world_layer, WALL_FIXTURE_ORIGIN)
+	wall_fixtures = WallFixtureBuilder.build_set(world_layer, wall_fixture_origin(), world_scale)
+
+
+func wall_fixture_origin() -> Vector2:
+	return WALL_FIXTURE_ORIGIN * world_scale
+
+
+func _camera_home() -> Vector2:
+	return Vector2(512.0, 224.0) * world_scale
+
+
+func _scaled_rect(rect: Rect2) -> Rect2:
+	return Rect2(rect.position * world_scale, rect.size * world_scale)
 
 
 func clear_wall_fixtures() -> void:
@@ -252,14 +272,17 @@ func _build_world() -> void:
 	_add_region_overlay(arena.build_region, Color("#5ba989"), "BUILD REGION • DEBUG")
 	_add_region_overlay(arena.protected_spawn, Color("#edc85c"), "SPAWN • PROTECTED")
 	_add_region_overlay(arena.protected_goal, Color("#df8d72"), "GOAL • PROTECTED")
+	stage_tiles = STAGE_TILES_SCENE.instantiate() as StageTileLayer
+	world_layer.add_child(stage_tiles)
+	stage_tiles.paint_arena(arena)
 	for spec in arena.surface_specs:
-		_add_static_surface(spec)
+		_add_static_surface(spec, false)
 	_add_flag_trigger()
 	_add_support_line()
 	camera_rig = BoundedStageCamera.new()
 	camera_rig.name = "BoundedStageCamera"
 	camera_rig.configure(tuning)
-	camera_rig.position = Vector2(512.0, 224.0)
+	camera_rig.position = _camera_home()
 	world_layer.add_child(camera_rig)
 	camera_rig.make_current()
 
@@ -307,7 +330,10 @@ func _build_hud() -> void:
 	_support_label.add_theme_color_override("font_color", Color("#ffffff"))
 	lower.add_child(_support_label)
 	var help := Label.new()
-	help.text = "K1 A/D + Space • K2 arrows + Enter • boundaries and zones are labeled debug geometry"
+	help.text = (
+		"K1 A/D move, W jump (hold to glide), S sneak • K2 arrows (Up jump/glide, Down sneak)"
+		+ " • zones are labeled debug geometry"
+	)
 	help.add_theme_color_override("font_color", Color("#ffffff"))
 	lower.add_child(help)
 
@@ -354,15 +380,15 @@ func _build_actor(seat_index: int) -> ChickenController:
 	var badge := Label.new()
 	badge.name = "IdentityBadge"
 	badge.text = "%d • %s" % [seat.identity, seat.shape]
-	badge.add_theme_font_size_override("font_size", 12)
+	badge.add_theme_font_size_override("font_size", roundi(12 * world_scale))
 	badge.add_theme_color_override("font_color", Color.WHITE)
 	badge.add_theme_color_override("font_outline_color", Color("#15242b"))
-	badge.add_theme_constant_override("outline_size", 3)
-	badge.size = Vector2(104.0, 22.0)
+	badge.add_theme_constant_override("outline_size", roundi(3 * world_scale))
+	badge.size = Vector2(104.0, 22.0) * world_scale
 	world_layer.add_child(badge)
 	var leader := Line2D.new()
 	leader.name = "IdentityLeader"
-	leader.width = 1.5
+	leader.width = 1.5 * world_scale
 	leader.default_color = Color.WHITE
 	world_layer.add_child(leader)
 	actor.set_meta("identity_badge", badge)
@@ -372,7 +398,8 @@ func _build_actor(seat_index: int) -> ChickenController:
 	return actor
 
 
-func _add_static_surface(spec: Dictionary) -> StaticBody2D:
+## `with_visual` false leaves the drawing to the stage TileMapLayer (collision only).
+func _add_static_surface(spec: Dictionary, with_visual: bool = true) -> StaticBody2D:
 	var metadata := spec.metadata as SupportSurfaceMetadata
 	if not support_tracker.register_surface(metadata):
 		push_error("Rejected arena support metadata for %s" % spec.id)
@@ -390,6 +417,8 @@ func _add_static_surface(spec: Dictionary) -> StaticBody2D:
 	shape.size = rect.size
 	collision.shape = shape
 	body.add_child(collision)
+	if not with_visual:
+		return body
 	var color := Color("#70583f") if bool(spec.immutable) else Color("#80a86c")
 	var visual := Polygon2D.new()
 	visual.polygon = _rect_polygon_centered(rect.size)
@@ -427,7 +456,8 @@ func _add_flag_trigger() -> void:
 	outline.default_color = Color("#f0d25d")
 	world_layer.add_child(outline)
 	_add_world_label(
-		"FLAG TRIGGER • FIXTURE ONLY", arena.goal_trigger.position + Vector2(-48.0, 16.0)
+		"FLAG TRIGGER • FIXTURE ONLY",
+		arena.goal_trigger.position + Vector2(-48.0, 16.0) * world_scale
 	)
 
 
@@ -435,12 +465,15 @@ func _add_support_line() -> void:
 	var line := Line2D.new()
 	line.name = "SupportDiagnosticLine"
 	line.points = PackedVector2Array(
-		[Vector2(160.0, support_line_y), Vector2(896.0, support_line_y)]
+		[Vector2(160.0 * world_scale, support_line_y), Vector2(896.0 * world_scale, support_line_y)]
 	)
 	line.width = 2.0
 	line.default_color = Color("#66d5d0")
 	world_layer.add_child(line)
-	_add_world_label("SUPPORT TEST LINE • NOT AN EVENT", Vector2(164.0, support_line_y - 14.0))
+	_add_world_label(
+		"SUPPORT TEST LINE • NOT AN EVENT",
+		Vector2(164.0, support_line_y / world_scale - 14.0) * world_scale
+	)
 
 
 func _add_region_overlay(rect: Rect2, color: Color, label: String) -> void:
@@ -465,15 +498,18 @@ func _add_region_overlay(rect: Rect2, color: Color, label: String) -> void:
 	while stripe_x < rect.end.x:
 		var stripe := Line2D.new()
 		var start_y := rect.position.y
-		var end_x := minf(stripe_x + 40.0, rect.end.x)
+		var end_x := minf(stripe_x + 40.0 * world_scale, rect.end.x)
 		stripe.points = PackedVector2Array(
-			[Vector2(stripe_x, start_y), Vector2(end_x, minf(start_y + 40.0, rect.end.y))]
+			[
+				Vector2(stripe_x, start_y),
+				Vector2(end_x, minf(start_y + 40.0 * world_scale, rect.end.y))
+			]
 		)
-		stripe.width = 1.0
+		stripe.width = 1.0 * world_scale
 		stripe.default_color = Color(color, 0.7)
 		world_layer.add_child(stripe)
-		stripe_x += 48.0
-	_add_world_label(label, rect.position + Vector2(4.0, 4.0))
+		stripe_x += 48.0 * world_scale
+	_add_world_label(label, rect.position + Vector2(4.0, 4.0) * world_scale)
 
 
 func _add_polygon(parent: Node2D, rect: Rect2, color: Color, node_name: String) -> Polygon2D:
@@ -501,10 +537,10 @@ func _add_world_label(text_value: String, world_position: Vector2) -> Label:
 	var label := Label.new()
 	label.text = text_value
 	label.position = world_position
-	label.add_theme_font_size_override("font_size", 12)
+	label.add_theme_font_size_override("font_size", roundi(12 * world_scale))
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.add_theme_color_override("font_outline_color", Color("#14232a"))
-	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_constant_override("outline_size", roundi(3 * world_scale))
 	world_layer.add_child(label)
 	return label
 
@@ -531,7 +567,9 @@ func _add_pointer(rect: Rect2, confirmed: bool) -> void:
 	outline.width = 3.0
 	outline.default_color = Color("#fff2b7")
 	pointer.add_child(outline)
-	var label := _add_world_label("UNCONFIRMED PREVIEW", rect.position + Vector2(4.0, 4.0))
+	var label := _add_world_label(
+		"UNCONFIRMED PREVIEW", rect.position + Vector2(4.0, 4.0) * world_scale
+	)
 	pointers.append(
 		{
 			"id": "pointer_%d" % _pointer_counter,
@@ -594,16 +632,17 @@ func _update_identity_badges() -> void:
 		var seat_number: int = int(seat_index)
 		var column: int = seat_number % 2
 		var row: int = floori(float(seat_number) / 2.0)
-		var badge_offset := Vector2(0.0, -42.0 - float(row) * 26.0)
+		var badge_offset := Vector2(0.0, -42.0 - float(row) * 26.0) * world_scale
+		badge_offset.y -= tuning.body_height_wu * 0.5 - 24.0 * world_scale
 		if joined_count > 1:
-			badge_offset.x = -112.0 if column == 0 else 8.0
+			badge_offset.x = (-112.0 if column == 0 else 8.0) * world_scale
 		var badge_position := actor.global_position + badge_offset
 		badge.global_position = badge_position
-		var leader_end := badge_position + Vector2(0.0, 18.0)
+		var leader_end := badge_position + Vector2(0.0, 18.0) * world_scale
 		if badge_offset.x < 0.0:
 			leader_end.x += badge.size.x
 		leader.points = PackedVector2Array(
-			[actor.global_position + Vector2(0.0, -20.0), leader_end]
+			[actor.global_position + Vector2(0.0, -tuning.body_height_wu * 0.4), leader_end]
 		)
 
 

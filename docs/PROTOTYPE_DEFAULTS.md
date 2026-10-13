@@ -61,6 +61,26 @@ All distances are world units (wu), provisionally equal to unscaled 2D pixels; t
 
 The measured P02 baseline controls are left/right and jump only; that historical implementation had no wall jump, dash, double jump, or drop-through. The separately approved wall extension is implemented, enabled by default as core movement (owner decision, 2026-10-13) and measured only in synthetic fixtures (below). Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
 
+### 64 wu grid, sneak, glide and stage blocks — October 14, 2026
+
+**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** At Jorge's request the grid moved from 32 wu to **64 wu per tile** (1 wu = 1 px). Every distance, speed and acceleration in `gameplay_tuning.gd` is the earlier value ×2 (`GameplayTuning.DISTANCE_FIELDS`); times are unchanged, so motion looks the same on screen. The camera zoom range became 0.5–0.7 (was 1.0–1.4) so the 2048×1024 wu arena (32×16 tiles) frames the same way. The 32 wu tables above and the P02/P03 measurements remain dated history. The P02 movement room still runs on the historical scale through `GameplayTuning.legacy_32_wu()` so its measurements stay comparable.
+
+| Key | 32 wu value | 64 wu value | Note |
+|---|---|---|---|
+| `grid_cell_wu` | 32 | 64 | 1 tile = 64 px |
+| `body_width_wu` × `body_height_wu` | 24×48 | **56×120** | Fits the 1×2-tile (64×128) clearance; not an exact ×2 |
+| `contact_sensor_*` | 28×48 | 60×120 | |
+| `jump_height_wu` / apex | 96 / 0.32 s | 192 / 0.32 s | Measured rise 192.1 wu in `run_blocks_tests.gd` |
+| `run_speed_wu_s` | 280 | 560 | |
+| ground / brake / reverse / air accel | 2400 / 2800 / 3200 / 1600 | 4800 / 5600 / 6400 / 3200 | |
+| `fall_speed_cap_wu_s` | 900 | 1800 | |
+| launch caps (new keys `launch_max_*`) | 480 / 900 | 960 / 1800 | Were constants in `launch()` |
+| wall slide cap / kick x / kick y / recontact | 120 / 240 / −520 / 8 | 240 / 480 / −1040 / 16 | Probe 1 wu and normal tolerance unchanged |
+| `item_tulay_strip_thickness_wu` | 4 | 8 | |
+| camera padding / view bounds | 64 / (−64,−64,1152,640) | 128 / (−128,−128,2304,1280) | |
+
+New keys (UNMEASURED candidates): `sneak_enabled` true, `sneak_height_wu` 56 (1×1 body), `glide_enabled` true, `glide_fall_cap_wu_s` 180 (wall slide is 240), `block_box_push_speed_wu_s` 160, `block_box_friction_wu_s2` 2400, `block_collapse_delay_s` 2.0, `block_collapse_respawn_s` 3.0, and item weights `item_solid_block_weight` / `item_wood_box_weight` / `item_collapsing_block_weight` 50. Synthetic measurements (Godot 4.7.stable, Item Lab, seed 12345, 60 Hz): glide max 180.0 wu/s; box push 120 wu over 45 ticks; collapse after 120 ticks (2.00 s); respawn after 181 ticks (3.02 s). See [blocks evidence](evidence/blocks/README.md). Human feel review is still needed.
+
 ### Wall movement — approved Should extension
 
 **Approved behavior, not implementation:** airborne actual contact with an eligible solid side enters a downward slide without requiring directional hold. Cap downward speed only. A fresh jump press kicks away once; allow immediate air steering. Require separation and fresh recontact before a repeat. Wall contact is not floor/ground/support contact. External launch preempts and clears wall eligibility and pending wall input; terminal > opening freeze > capture > forced motion > locomotion remains the state order. Pause freezes the action; phase/reset/reload clear stale contact and buffered input. Pass-through chicken bodies remain unchanged. See GDD, PRD REQ-MOVE-004 and PHASETASK P02-T15–T22.

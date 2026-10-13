@@ -398,6 +398,11 @@ func _build_overlays() -> void:
 		egg.claimed.connect(select_variant)
 		row.add_child(egg)
 		egg_previews[key] = egg
+	# Right-align the row so every enabled variant's egg stays on screen; a row wider than the
+	# original three-egg slot drops below the diagnostic status lines.
+	var row_width := row.get_combined_minimum_size().x
+	if row_width > 360.0:
+		row.position = Vector2(tuning.camera_virtual_width_px - row_width - 8.0, 140.0)
 	_library_panel = PanelContainer.new()
 	_library_panel.name = "LibraryPanel"
 	_library_panel.position = Vector2(tuning.camera_virtual_width_px - 520.0, 180.0)

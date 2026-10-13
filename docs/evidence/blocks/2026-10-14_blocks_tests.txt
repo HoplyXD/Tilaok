@@ -1,0 +1,62 @@
+Build: working tree on 19b3653; 4.7.stable.official.5b4e0cb0f; 2026-10-13T20:43Z; headless; synthetic input
+PASS stage grid is 64 wu per tile
+PASS chicken body (56.0x120.0) fits a 1x2-tile clearance
+PASS legacy 32 wu fixture profile is derived from the current defaults and validates
+PASS stage uses a TileMapLayer with 64x64 tiles
+PASS every arena surface cell is painted (132 tiles)
+PASS floor, base platform and containment use distinct tiles
+PASS tile cells line up with ArenaDefinition world coordinates
+PASS build.solid_block.slab_3x1 scene authors a (192.0, 64.0) collision matching its (3, 1) footprint
+PASS build.wood_box.box_2x2 scene authors a (128.0, 128.0) collision matching its (2, 2) footprint
+PASS build.collapsing_block.cell_1x1 scene authors a (64.0, 64.0) collision matching its (1, 1) footprint
+PASS W is 'up' during Place
+PASS W is jump during Play
+PASS S is sneak (down) during Play
+PASS a W press jumps (rise 192.1 wu of 192)
+PASS holding S on the floor shrinks the body to (56.0, 56.0)
+PASS sneaking keeps the feet on the floor
+PASS a sneaking chicken cannot walk
+PASS a sneaking chicken cannot jump
+PASS releasing S in open space stands back up
+PASS sneak only starts while grounded
+PASS arrange build.solid_block.slab_3x1 at (15, 13): Valid placement.
+PASS a sneaking chicken under a one-tile ceiling stays small instead of clipping
+PASS it stands up as soon as the headroom is clear
+PASS without W a chicken falls fast (1800)
+PASS holding W while falling glides at <= 180 wu/s (max 180.0)
+PASS air steering still works while gliding
+PASS releasing W ends the glide
+PASS arrange build.solid_block.slab_3x1 at (23, 9): Valid placement.
+PASS wall slide (not glide) applies on a wall while W is held
+PASS arrange build.solid_block.slab_3x1 at (14, 8): Valid placement.
+PASS arrange build.solid_block.slab_3x1 at (20, 6): Valid placement.
+PASS solid block is 3x1 (192x64)
+PASS R rotates the solid block to 1x3 (64x192)
+PASS rotated block root is centered on its footprint and turned 90 degrees
+PASS solid block sides are wall-slide eligible
+PASS a chicken stands on the solid block
+PASS solid block has no gravity
+PASS arrange build.wood_box.box_2x2 at (14, 12): Valid placement.
+PASS wood box is 2x2
+PASS wood box falls under gravity and lands on the floor (bottom y=960.0)
+PASS a grounded chicken walking into the box pushes it (120.0 wu)
+PASS the chicken never passes through the box
+PASS friction stops the box when the push ends
+PASS entering Place returns the box to its placed spot and freezes it
+PASS the box stays put during Place
+PASS the next Play start drops the box again from its placed spot
+PASS arrange build.wood_box.box_2x2 at (22, 12): Valid placement.
+PASS a chicken can stand on the box
+PASS arrange build.collapsing_block.cell_1x1 at (22, 11): Valid placement.
+PASS collapsing block is 1x1
+PASS standing on the collapsing block starts its timer
+PASS it loses collision 120 frames (2.00 s) after contact
+PASS the chicken falls through once it collapses
+PASS it respawns 181 frames (3.02 s) after collapsing
+PASS arrange build.collapsing_block.cell_1x1 at (22, 9): Valid placement.
+PASS wall-sliding on the collapsing block starts its timer
+PASS wall-slide contact collapses it after 2 s
+PASS it does not respawn inside a chicken
+PASS it respawns once the footprint is clear
+PASS entering Place restores a crumbling block and freezes it
+BLOCKS_TESTS checks=60 failures=0

@@ -125,13 +125,13 @@ func _test_configuration() -> void:
 	_check(tuning.wall_movement_enabled, "wall movement is core and enabled by default")
 	_check(
 		(
-			tuning.wall_slide_fall_cap_wu_s == 120.0
-			and tuning.wall_jump_horizontal_wu_s == 240.0
-			and tuning.wall_jump_vertical_wu_s == -520.0
+			tuning.wall_slide_fall_cap_wu_s == 240.0
+			and tuning.wall_jump_horizontal_wu_s == 480.0
+			and tuning.wall_jump_vertical_wu_s == -1040.0
 			and tuning.wall_jump_contact_grace_s == 0.08
-			and tuning.wall_jump_recontact_separation_wu == 8.0
+			and tuning.wall_jump_recontact_separation_wu == 16.0
 		),
-		"wall keys start at the documented unmeasured candidates"
+		"wall keys start at the documented unmeasured candidates (64 wu grid)"
 	)
 	var bad := GameplayTuning.new()
 	bad.wall_slide_fall_cap_wu_s = -1.0
@@ -828,8 +828,10 @@ func _test_p03_integration() -> void:
 	stage.start_play()
 	var actor := stage.actors[seat] as ChickenController
 	stage.set_wall_movement_enabled(true)
-	var base_a_right_face := 320.0
-	_p03_place(actor, Vector2(base_a_right_face + 12.1, 395.0))
+	# P03 now runs on the 64 wu grid (56x120 body); P02 room fixtures stay on 32 wu.
+	var p03_half_width := stage.tuning.body_width_wu * 0.5
+	var base_a_right_face := 640.0
+	_p03_place(actor, Vector2(base_a_right_face + p03_half_width + 0.1, 790.0))
 	await _frames(12)
 	_check(
 		actor.wall_side == -1 and actor.wall_sliding,
@@ -840,7 +842,7 @@ func _test_p03_integration() -> void:
 		"wall slide records no support contact"
 	)
 	_check(
-		stage.current_support_result(actor.support_actor_id, 384.0).reason == "no support",
+		stage.current_support_result(actor.support_actor_id, 768.0).reason == "no support",
 		"wall contact never qualifies as support or Rising-wave eligibility"
 	)
 	var signature_before := stage.arena.arena_geometry_signature()
@@ -856,7 +858,7 @@ func _test_p03_integration() -> void:
 				stage
 				. arena
 				. validate_region(
-					Rect2(Vector2(192.0, 416.0), Vector2(32.0, 32.0)),
+					Rect2(Vector2(384.0, 832.0), Vector2(64.0, 64.0)),
 					ArenaDefinition.REGION_FOOTPRINT
 				)
 				. allowed
@@ -870,19 +872,19 @@ func _test_p03_integration() -> void:
 		actor.wall_side == 0 and actor.wall_lock_side == 0 and not actor.wall_sliding,
 		"stage reset while sliding clears all wall state"
 	)
-	_p03_place(actor, Vector2(12.1, 300.0))
+	_p03_place(actor, Vector2(p03_half_width + 0.1, 600.0))
 	await _frames(12)
 	_check(
-		actor.wall_side == 0 and actor.locomotion_velocity.y > 300.0,
+		actor.wall_side == 0 and actor.locomotion_velocity.y > 600.0,
 		"P03 left containment wall never qualifies"
 	)
-	_p03_place(actor, Vector2(base_a_right_face + 12.1, 395.0))
+	_p03_place(actor, Vector2(base_a_right_face + p03_half_width + 0.1, 790.0))
 	await _frames(8)
 	var visible := true
 	_press_p03(true)
 	await _frames(3)
 	_press_p03(false)
-	actor.launch(Vector2(480.0, -900.0))
+	actor.launch(Vector2(960.0, -1800.0))
 	var contained := true
 	for _frame in range(60):
 		await physics_frame

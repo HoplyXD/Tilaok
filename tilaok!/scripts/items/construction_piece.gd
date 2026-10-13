@@ -6,6 +6,7 @@ extends StaticBody2D
 
 enum Style { CRATE, BAMBOO }
 
+## Drawing constants are authored on the historical 32 wu grid; _k() scales them to cell_wu.
 const DEBUG_LABEL_MIN_WIDTH_WU := 96.0
 const BAMBOO_NODE_SPACING_WU := 16.0
 const CHEVRON_SPACING_WU := 32.0
@@ -99,17 +100,25 @@ func _draw() -> void:
 	else:
 		_draw_bamboo()
 	var font := ThemeDB.fallback_font
-	if font != null and footprint_size.x >= DEBUG_LABEL_MIN_WIDTH_WU:
+	if font != null and footprint_size.x >= DEBUG_LABEL_MIN_WIDTH_WU * _k():
 		var text := "KAING • DEBUG" if style == Style.CRATE else "TULAY • DEBUG"
 		draw_string(
 			font,
-			Vector2(4.0, footprint_size.y - 5.0) if style == Style.CRATE else Vector2(4.0, 26.0),
+			(
+				Vector2(4.0, footprint_size.y / _k() - 5.0) * _k()
+				if style == Style.CRATE
+				else Vector2(4.0, 26.0) * _k()
+			),
 			text,
 			HORIZONTAL_ALIGNMENT_LEFT,
-			footprint_size.x - 8.0,
-			10,
+			footprint_size.x - 8.0 * _k(),
+			roundi(10 * _k()),
 			Color.WHITE
 		)
+
+
+func _k() -> float:
+	return cell_wu / 32.0
 
 
 func _draw_crate() -> void:
@@ -122,21 +131,21 @@ func _draw_crate() -> void:
 				var cell_rect := Rect2(
 					rect.position + Vector2(column, row) * cell_wu, Vector2(cell_wu, cell_wu)
 				)
-				draw_rect(cell_rect.grow(-3.0), Color("#7a5226"), false, 2.0)
-				draw_line(cell_rect.position, cell_rect.end, Color("#5a3a18"), 2.0)
+				draw_rect(cell_rect.grow(-3.0 * _k()), Color("#7a5226"), false, 2.0 * _k())
+				draw_line(cell_rect.position, cell_rect.end, Color("#5a3a18"), 2.0 * _k())
 				draw_line(
 					cell_rect.position + Vector2(cell_wu, 0.0),
 					cell_rect.position + Vector2(0.0, cell_wu),
 					Color("#5a3a18"),
-					2.0
+					2.0 * _k()
 				)
-		draw_rect(rect, outline, false, 3.0)
+		draw_rect(rect, outline, false, 3.0 * _k())
 
 
 func _draw_bamboo() -> void:
 	# Footprint reservation: dashed outline, visibly distinct from the 4 wu collision strip.
 	var reservation := Rect2(Vector2.ZERO, footprint_size)
-	var dash := 8.0
+	var dash := 8.0 * _k()
 	var x := 0.0
 	while x < reservation.size.x:
 		var end_x := minf(x + dash, reservation.size.x)
@@ -164,7 +173,7 @@ func _draw_bamboo() -> void:
 		draw_rect(rect, Color("#c9b43c"))
 		draw_rect(rect, Color("#4b4511"), false, 2.0)
 		var horizontal := absf((_strip_normals[index] as Vector2).y) > 0.5
-		var step := BAMBOO_NODE_SPACING_WU
+		var step := BAMBOO_NODE_SPACING_WU * _k()
 		var offset := step
 		var length := rect.size.x if horizontal else rect.size.y
 		while offset < length:
@@ -186,7 +195,7 @@ func _draw_bamboo() -> void:
 		# Upward chevrons mark the one-way top.
 		var normal: Vector2 = _strip_normals[index]
 		var along := Vector2(-normal.y, normal.x)
-		var cursor := CHEVRON_SPACING_WU * 0.5
+		var cursor := CHEVRON_SPACING_WU * _k() * 0.5
 		var span := rect.size.x if horizontal else rect.size.y
 		while cursor < span:
 			var base := (
@@ -197,4 +206,4 @@ func _draw_bamboo() -> void:
 			)
 			draw_line(base, base - along * 5.0 - normal * 5.0, Color("#fff2b7"), 2.0)
 			draw_line(base, base + along * 5.0 - normal * 5.0, Color("#fff2b7"), 2.0)
-			cursor += CHEVRON_SPACING_WU
+			cursor += CHEVRON_SPACING_WU * _k()

@@ -264,6 +264,28 @@ Base stage is playable before construction; player changes may make it difficult
 **Source / tasks:** [GDD.md](GDD.md#wall-slide-and-wall-jump--approved-extension), [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md#wall-movement--approved-should-extension), [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md#wall-contact-and-upward-support-are-distinct), [PLAYTEST.md](PLAYTEST.md#wall-movement--future-verification), and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope). P02-T15–T17 and T19–T21 are checked on automated/synthetic evidence; T18 (physical devices) and T22 (human review) remain unchecked. Later event-stack integration belongs at the corresponding event gates; this requirement does not depend on unimplemented events.
 
 
+### REQ-MOVE-005 — Sneak into a one-tile body and glide while holding jump
+
+**Scope:** SHOULD · **Design status:** REQUESTED BY JORGE 2026-10-14; IMPLEMENTED, AUTOMATED CHECKS PASSED, HUMAN REVIEW PENDING · **Owner role:** Gameplay (name TBD).
+
+**Expected behavior:** Holding down while grounded shrinks the chicken to a 1×1-tile body anchored at the feet; it cannot walk or jump while sneaking and stands up only when there is headroom. Holding jump while falling caps descent at a configurable glide speed with normal air steering; wall slide takes precedence on eligible walls and a fresh press still wall-jumps. On keyboards W/Up jump during Play (Space/Ctrl remain alternates) and S/Down sneak; W/Up stay navigation keys outside Play. Lifecycle/launch/pause precedence matches REQ-MOVE-004.
+
+**Acceptance:** Sneak and glide behave as above in real Godot physics on the 64 wu grid; existing run/jump/wall regressions pass; human feel review and physical-device parity are recorded separately.
+
+**Source / tasks:** [GDD](GDD.md#sneak-and-glide--2026-10-14-extension), [PROTOTYPE_DEFAULTS](PROTOTYPE_DEFAULTS.md#64-wu-grid-sneak-glide-and-stage-blocks--october-14-2026), [PHASETASK P02-T23–T26](PHASETASK.md#p02-sneak-glide-64-wu-grid-and-stage-blocks-extension--implemented-should-scope).
+
+
+### REQ-STAGE-004 — 64 px tile stage and scene-authored stage blocks
+
+**Scope:** SHOULD · **Design status:** REQUESTED BY JORGE 2026-10-14; IMPLEMENTED, AUTOMATED CHECKS PASSED, HUMAN REVIEW PENDING · **Owner role:** Gameplay / Maps (names TBD).
+
+**Expected behavior:** The stage grid is 64×64 px; a chicken is 1×2 tiles. The base stage is drawn with a 64 px TileMapLayer painted from ArenaDefinition (collision stays per surface so support/wall metadata is unchanged). Solid Block (3×1, rotatable), Wood Box (2×2, gravity, pushable, resets to its placed spot) and Collapsing Block (1×1, collapses 2 s after standing/wall-slide contact, returns after 3 s when clear) each live in their own editable scene and enter the Pugad pool as construction items.
+
+**Acceptance:** Tiles line up with arena coordinates; block scenes match their data footprints; behaviors pass real-physics checks; existing P03–P05 regressions pass at the new scale.
+
+**Source / tasks:** [GDD](GDD.md#stage-blocks--2026-10-14), [ITEMS](ITEMS.md#stage-blocks--october-14-2026), [PHASETASK P02-T23–T26](PHASETASK.md#p02-sneak-glide-64-wu-grid-and-stage-blocks-extension--implemented-should-scope).
+
+
 ### REQ-STAGE-001 — Build one protected barrio graybox arena
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).

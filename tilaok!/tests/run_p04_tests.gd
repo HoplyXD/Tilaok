@@ -9,6 +9,9 @@ const KAING_2X3 := "build.hollow_blocks.stack_2x3"
 const TULAY_3X1 := "build.bamboo_bridge.span_3x1"
 const TULAY_4X1 := "build.bamboo_bridge.span_4x1"
 const TULAY_5X1 := "build.bamboo_bridge.span_5x1"
+const SOLID_3X1 := "build.solid_block.slab_3x1"
+const WOOD_BOX_2X2 := "build.wood_box.box_2x2"
+const COLLAPSE_1X1 := "build.collapsing_block.cell_1x1"
 const FEET_TOLERANCE_WU := 1.0
 
 var failures := 0
@@ -123,7 +126,10 @@ func _test_tuning_and_definitions() -> void:
 	_check(not broken.validate().is_empty(), "tuning rejects a zero persistent cap")
 	var definitions := ItemDefinitions.load_all(tuning)
 	_check(definitions.is_valid(), "shipped definitions validate: %s" % [definitions.errors])
-	_check(definitions.families.size() == 2, "two construction families are defined")
+	_check(
+		definitions.families.size() == 5,
+		"five construction families are defined (Kaing, Tulay and three stage blocks)"
+	)
 	var kaing := definitions.find_family("build.hollow_blocks")
 	var tulay := definitions.find_family("build.bamboo_bridge")
 	var kaing_ids := PackedStringArray()
@@ -303,7 +309,7 @@ func _test_rejection_table() -> void:
 			"strip without thickness key":
 				tulay.variants[0].regions[0].thickness_tuning_key = &""
 			"strip thicker than cell":
-				tuning.item_tulay_strip_thickness_wu = 31.0
+				tuning.item_tulay_strip_thickness_wu = tuning.grid_cell_wu - 1.0
 				tulay.variants[0].regions[0].rect_cells = Rect2(0, 0, 3, 0.5)
 			"strip overlaps solid":
 				var solid := ItemRegionSpec.new()
@@ -349,7 +355,7 @@ func _test_effect_regions_are_not_cells() -> void:
 	placed.instance_id = "fixture#001"
 	placed.footprint_rect = first.footprint
 	_check(
-		first.footprint.size == Vector2(32.0, 32.0),
+		first.footprint.size == Vector2(64.0, 64.0),
 		"occupied footprint stays one cell although the effect spans 3x3"
 	)
 	var inside_effect := ItemPlacementValidator.validate(
@@ -527,7 +533,7 @@ func _test_transient_budget() -> void:
 
 
 func _actor_rect_at_cell(cell: Vector2i) -> Rect2:
-	return Rect2(Vector2(cell) * 32.0 + Vector2(4.0, 0.0), Vector2(24.0, 48.0))
+	return Rect2(Vector2(cell) * 64.0 + Vector2(4.0, 0.0), Vector2(56.0, 120.0))
 
 
 func _test_placement_reasons() -> void:
@@ -655,7 +661,7 @@ func _test_placement_reasons() -> void:
 		KAING_1X1,
 		Vector2i(14, 8),
 		0,
-		[Rect2(Vector2(14.0 * 32.0 + 32.0 + 3.0, 256.0), Vector2(24.0, 48.0))]
+		[Rect2(Vector2(14.0 * 64.0 + 64.0 + 3.0, 512.0), Vector2(56.0, 120.0))]
 	)
 	_row(
 		"T06 placement: player clearance",
@@ -667,7 +673,7 @@ func _test_placement_reasons() -> void:
 		KAING_1X1,
 		Vector2i(14, 8),
 		0,
-		[Rect2(Vector2(14.0 * 32.0 + 32.0 + 5.0, 256.0), Vector2(24.0, 48.0))]
+		[Rect2(Vector2(14.0 * 64.0 + 64.0 + 5.0, 512.0), Vector2(56.0, 120.0))]
 	)
 	_check(bool(beside_clearance.allowed), "five wu away is outside the four wu player clearance")
 	var first := items.place(KAING_2X3, Vector2i(14, 8), 0, 0, clear_rects)
@@ -909,7 +915,7 @@ func _arrange(entries: Array[Dictionary]) -> Array[String]:
 
 func _put_actor_feet(feet: Vector2) -> void:
 	_stick(0.0)
-	actor.global_position = feet - Vector2(0.0, 24.0)
+	actor.global_position = feet - Vector2(0.0, _half_height())
 	actor.velocity = Vector2.ZERO
 	actor.locomotion_velocity = Vector2.ZERO
 	actor.external_velocity = Vector2.ZERO
@@ -920,7 +926,11 @@ func _put_actor_feet(feet: Vector2) -> void:
 
 
 func _feet_y() -> float:
-	return actor.global_position.y + 24.0
+	return actor.global_position.y + _half_height()
+
+
+func _half_height() -> float:
+	return room.tuning.body_height_wu * 0.5
 
 
 func _support(line_y: float = 10000.0) -> Dictionary:
@@ -943,7 +953,7 @@ func _stand_trial(
 	var ids := _arrange([{"variant": variant, "cell": cell, "turns": turns}])
 	var piece := room.items.piece_for(ids[0])
 	var rect := piece.footprint_world_rect()
-	_put_actor_feet(Vector2(rect.get_center().x, rect.position.y - 60.0))
+	_put_actor_feet(Vector2(rect.get_center().x, rect.position.y - 120.0))
 	await _settle()
 	var result := _support(expected_top + 4.0)
 	var contact := result.contact as SupportContact
@@ -966,9 +976,9 @@ func _stand_trial(
 
 func _test_kaing_physics() -> void:
 	room.start_play()
-	await _stand_trial("T09 Kaing 1x1 top", KAING_1X1, Vector2i(14, 8), 0, 256.0)
-	await _stand_trial("T09 Kaing 2x3 top", KAING_2X3, Vector2i(14, 8), 0, 256.0)
-	await _stand_trial("T09 Kaing rotated 3x2 top", KAING_2X3, Vector2i(14, 8), 1, 256.0)
+	await _stand_trial("T09 Kaing 1x1 top", KAING_1X1, Vector2i(14, 8), 0, 512.0)
+	await _stand_trial("T09 Kaing 2x3 top", KAING_2X3, Vector2i(14, 8), 0, 512.0)
+	await _stand_trial("T09 Kaing rotated 3x2 top", KAING_2X3, Vector2i(14, 8), 1, 512.0)
 	# Footprints and collider boundaries.
 	var ids := _arrange(
 		[
@@ -977,7 +987,7 @@ func _test_kaing_physics() -> void:
 			{"variant": KAING_2X3, "cell": Vector2i(20, 6), "turns": 1},
 		]
 	)
-	var sizes := [Vector2(32, 32), Vector2(64, 96), Vector2(96, 64)]
+	var sizes := [Vector2(64, 64), Vector2(128, 192), Vector2(192, 128)]
 	for index in range(3):
 		var piece := room.items.piece_for(ids[index])
 		var shape_rect := (piece.get_child(0) as CollisionShape2D).shape.get_rect()
@@ -999,7 +1009,7 @@ func _test_kaing_physics() -> void:
 		)
 	# Wall: a 2x3 standing on the floor blocks the side; the chicken cannot pass through.
 	ids = _arrange([{"variant": KAING_2X3, "cell": Vector2i(10, 12)}])
-	_put_actor_feet(Vector2(500.0, 480.0))
+	_put_actor_feet(Vector2(1000.0, 960.0))
 	await _settle(10)
 	_stick(-1.0)
 	var min_x := 10000.0
@@ -1013,13 +1023,13 @@ func _test_kaing_physics() -> void:
 			side_contact_counted = true
 	_row(
 		"T09 Kaing solid side",
-		"stopped at x>=396 (block right edge 384 + half body 12); side contact is not support",
+		"stopped at x>=796 (block right edge 768 + half body 28); side contact is not support",
 		"min_x=%.2f side_counted=%s" % [min_x, side_contact_counted],
-		min_x >= 395.0 and not side_contact_counted
+		min_x >= 795.0 and not side_contact_counted
 	)
 	# Route: a chicken beside a 1x1 foothold jumps and lands on it.
 	ids = _arrange([{"variant": KAING_1X1, "cell": Vector2i(11, 14)}])
-	_put_actor_feet(Vector2(398.0, 480.0))
+	_put_actor_feet(Vector2(798.0, 960.0))
 	await _settle(10)
 	_stick(0.0)
 	_key(KEY_SPACE, true)
@@ -1037,31 +1047,31 @@ func _test_kaing_physics() -> void:
 			break
 	_row(
 		"T09 Kaing route foothold",
-		"chicken jumps from the floor onto the 1x1 foothold (top y=448)",
+		"chicken jumps from the floor onto the 1x1 foothold (top y=896)",
 		"on_foothold=%s feet=%.2f" % [routed, _feet_y()],
-		routed and absf(_feet_y() - 448.0) <= FEET_TOLERANCE_WU
+		routed and absf(_feet_y() - 896.0) <= FEET_TOLERANCE_WU
 	)
 	# Head clearance below a Kaing underside: stops, never clips into the solid.
 	ids = _arrange([{"variant": KAING_1X1, "cell": Vector2i(14, 8)}])
-	_put_actor_feet(Vector2(464.0, 346.0))
+	_put_actor_feet(Vector2(928.0, 596.0 + room.tuning.body_height_wu))
 	await _frames(1)
-	actor.launch(Vector2(0.0, -500.0))
+	actor.launch(Vector2(0.0, -1000.0))
 	var highest_head := 10000.0
 	var hit_ceiling := false
 	for _frame in range(30):
 		await physics_frame
-		highest_head = minf(highest_head, actor.global_position.y - 24.0)
+		highest_head = minf(highest_head, actor.global_position.y - _half_height())
 		hit_ceiling = hit_ceiling or actor.is_on_ceiling()
 	_row(
 		"T09 Kaing underside",
-		"head stops at the solid underside y=288 with a ceiling contact",
+		"head stops at the solid underside y=576 with a ceiling contact",
 		"highest_head=%.2f ceiling=%s" % [highest_head, hit_ceiling],
-		highest_head >= 287.0 and hit_ceiling
+		highest_head >= 575.0 and hit_ceiling
 	)
 	# Removal: support disappears the same step, then the chicken falls.
 	room.items.reset_match()
 	ids = _arrange([{"variant": KAING_1X1, "cell": Vector2i(14, 8)}])
-	_put_actor_feet(Vector2(464.0, 200.0))
+	_put_actor_feet(Vector2(928.0, 400.0))
 	await _settle()
 	var stood := _supported_by(ids[0])
 	room.items.enter_place()
@@ -1073,7 +1083,7 @@ func _test_kaing_physics() -> void:
 		"T08 Kaing removal",
 		"was supported; support is gone on the removal step; chicken falls to a different surface",
 		"stood=%s immediate=%s feet_after=%.2f" % [stood, immediate.reason, _feet_y()],
-		stood and immediate.reason == "no support" and _feet_y() > 300.0
+		stood and immediate.reason == "no support" and _feet_y() > 600.0
 	)
 	room.items.reset_match()
 
@@ -1087,13 +1097,13 @@ func _test_tulay_physics() -> void:
 	var strip := piece.strip_world_rects()
 	var strip_ok: bool = (
 		strip.size() == 1
-		and strip[0].size == Vector2(128.0, 4.0)
-		and piece.footprint_world_rect().size == Vector2(128.0, 32.0)
+		and strip[0].size == Vector2(256.0, 8.0)
+		and piece.footprint_world_rect().size == Vector2(256.0, 64.0)
 		and piece.occlusion_rects().is_empty()
 	)
 	_row(
 		"T15 Tulay regions",
-		"footprint 128x32, one-way strip 128x4 at the top, footprint != strip",
+		"footprint 256x64, one-way strip 256x8 at the top, footprint != strip",
 		"footprint %s strip %s" % [piece.footprint_world_rect().size, strip],
 		strip_ok
 	)
@@ -1102,17 +1112,17 @@ func _test_tulay_physics() -> void:
 		one_way_shape.one_way_collision and piece.get_child_count() == 1,
 		"T15 Tulay has exactly one one-way collision shape and no solid underside/sides"
 	)
-	_put_actor_feet(Vector2(512.0, 190.0))
+	_put_actor_feet(Vector2(1024.0, 380.0))
 	await _settle()
-	var landed := _support(260.0)
+	var landed := _support(520.0)
 	var contact := landed.contact as SupportContact
 	_row(
 		"T18 Tulay land from above",
-		"lands with feet y=256 on the strip; eligible player-built support",
+		"lands with feet y=512 on the strip; eligible player-built support",
 		"floor=%s feet=%.2f reason=%s" % [actor.is_on_floor(), _feet_y(), landed.reason],
 		(
 			actor.is_on_floor()
-			and absf(_feet_y() - 256.0) <= FEET_TOLERANCE_WU
+			and absf(_feet_y() - 512.0) <= FEET_TOLERANCE_WU
 			and bool(landed.qualifies)
 			and contact != null
 			and contact.surface_id == ids[0]
@@ -1130,9 +1140,9 @@ func _test_tulay_physics() -> void:
 		left_surface = left_surface or not actor.is_on_floor()
 	_row(
 		"T18 Tulay jump off",
-		"leaves the strip, rises about 96 wu, and lands back on it",
+		"leaves the strip, rises about 192 wu, and lands back on it",
 		"left=%s apex_feet=%.2f feet_after=%.2f" % [left_surface, apex, _feet_y()],
-		left_surface and apex < 175.0 and absf(_feet_y() - 256.0) <= FEET_TOLERANCE_WU
+		left_surface and apex < 350.0 and absf(_feet_y() - 512.0) <= FEET_TOLERANCE_WU
 	)
 	# Walk off the edge: no longer supported by the Tulay.
 	_stick(1.0)
@@ -1141,16 +1151,16 @@ func _test_tulay_physics() -> void:
 	await _settle(60)
 	_row(
 		"T18 Tulay walk off edge",
-		"walks past x=576 and lands on a different surface",
+		"walks past x=1152 and lands on a different surface",
 		(
 			"x=%.2f feet=%.2f supported_by_tulay=%s"
 			% [actor.global_position.x, _feet_y(), _supported_by(ids[0])]
 		),
-		actor.global_position.x > 576.0 and not _supported_by(ids[0]) and _feet_y() > 300.0
+		actor.global_position.x > 1152.0 and not _supported_by(ids[0]) and _feet_y() > 600.0
 	)
 	# Rise from below through the strip, then land on top; never support while rising.
 	ids = _arrange([{"variant": TULAY_4X1, "cell": Vector2i(22, 13)}])
-	_put_actor_feet(Vector2(740.0, 480.0))
+	_put_actor_feet(Vector2(1480.0, 960.0))
 	await _settle(15)
 	_key(KEY_SPACE, true)
 	var counted_while_rising := false
@@ -1159,15 +1169,15 @@ func _test_tulay_physics() -> void:
 	for frame_index in range(40):
 		await physics_frame
 		min_feet = minf(min_feet, _feet_y())
-		if _feet_y() < 414.0 and _supported_by(ids[0]):
+		if _feet_y() < 828.0 and _supported_by(ids[0]):
 			counted_while_rising = true
-		if _feet_y() < 410.0:
+		if _feet_y() < 820.0:
 			passed_through = true
 	_key(KEY_SPACE, false)
 	await _settle(60)
 	_row(
 		"T18 Tulay rise from below",
-		"passes up through the strip, is never support while rising, then lands on top (y=416)",
+		"passes up through the strip, is never support while rising, then lands on top (y=832)",
 		(
 			"min_feet=%.2f passed=%s counted_rising=%s final_feet=%.2f supported=%s"
 			% [min_feet, passed_through, counted_while_rising, _feet_y(), _supported_by(ids[0])]
@@ -1176,7 +1186,7 @@ func _test_tulay_physics() -> void:
 			passed_through
 			and not counted_while_rising
 			and _supported_by(ids[0])
-			and absf(_feet_y() - 416.0) <= FEET_TOLERANCE_WU
+			and absf(_feet_y() - 832.0) <= FEET_TOLERANCE_WU
 		)
 	)
 	# Sides and underside are non-solid: walking along a platform passes through the Tulay.
@@ -1187,9 +1197,9 @@ func _test_tulay_physics() -> void:
 			{"variant": TULAY_4X1, "cell": Vector2i(14, 8)},
 		]
 	)
-	_put_actor_feet(Vector2(340.0, 288.0))
+	_put_actor_feet(Vector2(680.0, 576.0))
 	await _settle(15)
-	var on_platform := actor.is_on_floor() and absf(_feet_y() - 288.0) <= FEET_TOLERANCE_WU
+	var on_platform := actor.is_on_floor() and absf(_feet_y() - 576.0) <= FEET_TOLERANCE_WU
 	_stick(1.0)
 	var max_x := 0.0
 	for _frame in range(60):
@@ -1198,56 +1208,56 @@ func _test_tulay_physics() -> void:
 	_stick(0.0)
 	_row(
 		"T15 Tulay sides non-solid",
-		"body overlapping the strip height walks through the footprint side (x passes 470)",
+		"body overlapping the strip height walks through the footprint side (x passes 940)",
 		"on_platform=%s max_x=%.2f" % [on_platform, max_x],
-		on_platform and max_x > 470.0
+		on_platform and max_x > 940.0
 	)
-	# Fast fall at the 900 wu/s cap onto the 4 wu strip.
+	# Fast fall at the 1800 wu/s cap onto the 8 wu strip.
 	ids = _arrange([{"variant": TULAY_4X1, "cell": Vector2i(17, 12)}])
 	var all_landed := true
 	var worst_speed := 0.0
-	for drop_x in [552.0, 580.0, 610.0, 640.0, 664.0]:
-		_put_actor_feet(Vector2(drop_x, 100.0))
+	for drop_x in [1104.0, 1160.0, 1220.0, 1280.0, 1328.0]:
+		_put_actor_feet(Vector2(drop_x, 200.0))
 		var peak := 0.0
 		for _frame in range(90):
 			await physics_frame
 			peak = maxf(peak, actor.velocity.y)
 		worst_speed = maxf(worst_speed, peak)
-		var held := absf(_feet_y() - 384.0) <= FEET_TOLERANCE_WU and _supported_by(ids[0])
+		var held := absf(_feet_y() - 768.0) <= FEET_TOLERANCE_WU and _supported_by(ids[0])
 		all_landed = all_landed and held
 	_row(
 		"T18 Tulay strip at fall cap",
-		"five drops reach ~900 wu/s and all land on the 4 wu strip (feet y=384), none tunnel",
+		"five drops reach ~1800 wu/s and all land on the 8 wu strip (feet y=768), none tunnel",
 		"peak_speed=%.1f all_landed=%s" % [worst_speed, all_landed],
-		all_landed and worst_speed >= 850.0
+		all_landed and worst_speed >= 1700.0
 	)
 	# Ceiling: rising through a Tulay directly under the arena ceiling never clips.
 	ids = _arrange([{"variant": TULAY_4X1, "cell": Vector2i(14, 3)}])
-	_put_actor_feet(Vector2(512.0, 150.0))
+	_put_actor_feet(Vector2(1024.0, 210.0 + room.tuning.body_height_wu))
 	await _frames(1)
-	actor.launch(Vector2(0.0, -800.0))
+	actor.launch(Vector2(0.0, -1600.0))
 	var highest_head := 10000.0
 	var saw_ceiling := false
 	for _frame in range(25):
 		await physics_frame
-		highest_head = minf(highest_head, actor.global_position.y - 24.0)
+		highest_head = minf(highest_head, actor.global_position.y - _half_height())
 		saw_ceiling = saw_ceiling or actor.is_on_ceiling()
 	await _settle(60)
 	_row(
 		"T18 Tulay under ceiling",
-		"passes the strip, stops at the arena ceiling (head y>=0), then lands on top (feet y=96)",
+		"passes the strip, stops at the arena ceiling (head y>=0), then lands on top (feet y=192)",
 		"highest_head=%.2f ceiling=%s final_feet=%.2f" % [highest_head, saw_ceiling, _feet_y()],
 		(
 			highest_head >= -0.5
 			and saw_ceiling
-			and absf(_feet_y() - 96.0) <= FEET_TOLERANCE_WU
+			and absf(_feet_y() - 192.0) <= FEET_TOLERANCE_WU
 			and _supported_by(ids[0])
 		)
 	)
 	# Support matrix: base floor, airborne.
 	room.items.reset_match()
 	room.items.begin_play()
-	_put_actor_feet(Vector2(560.0, 480.0))
+	_put_actor_feet(Vector2(1120.0, 960.0))
 	await _settle(30)
 	var base_row := _support()
 	_row(
@@ -1256,7 +1266,7 @@ func _test_tulay_physics() -> void:
 		str(base_row.reason),
 		base_row.reason == "base surface"
 	)
-	_put_actor_feet(Vector2(560.0, 200.0))
+	_put_actor_feet(Vector2(1120.0, 400.0))
 	await _frames(2)
 	_row(
 		"T18 matrix: airborne",
@@ -1291,7 +1301,9 @@ func _test_lab_flow() -> void:
 	room.move_cursor(seat, Vector2i(20, 0))
 	var rotated := room.rotate_cursor(seat)
 	_check(rotated and cursor.turns == 1, "2x3 rotates to 3x2 in the lab")
-	_check(ghost.footprint_rect.size == Vector2(96.0, 64.0), "rotated ghost footprint is 3x2 cells")
+	_check(
+		ghost.footprint_rect.size == Vector2(192.0, 128.0), "rotated ghost footprint is 3x2 cells"
+	)
 	var result := room.confirm_cursor(seat)
 	_check(bool(result.allowed) and room.items.persistent_count() == 1, "confirm places the piece")
 	room.cycle_variant()
@@ -1325,16 +1337,20 @@ func _test_catalog_and_harness() -> void:
 	await process_frame
 	harness.selected_profile_id = "karera_slice"
 	var catalog := harness._current_catalog()
-	_check(catalog.entries.size() == 2, "karera_slice catalog lists exactly the two families")
+	_check(catalog.entries.size() == 5, "karera_slice catalog lists exactly the five families")
 	var normalized := catalog.normalized_weights("item")
-	_check(
-		(
-			normalized.size() == 2
-			and is_equal_approx(float(normalized["build.hollow_blocks"]), 0.5)
-			and is_equal_approx(float(normalized["build.bamboo_bridge"]), 0.5)
-		),
-		"Kaing 50 / Tulay 50 normalize to equal selection weights"
-	)
+	var equal_weights := normalized.size() == 5
+	for family_id in [
+		"build.hollow_blocks",
+		"build.bamboo_bridge",
+		"build.solid_block",
+		"build.wood_box",
+		"build.collapsing_block",
+	]:
+		equal_weights = (
+			equal_weights and is_equal_approx(float(normalized.get(family_id, 0.0)), 0.2)
+		)
+	_check(equal_weights, "five families at weight 50 normalize to equal selection weights")
 	var slice_errors := catalog.validate_profile(ProfileRegistry.get_profile("karera_slice"))
 	var only_mode_gap := not slice_errors.is_empty()
 	for message in slice_errors:
@@ -1373,10 +1389,10 @@ func _test_disabled_variant_geometry() -> void:
 	room.tuning.item_tulay_vertical_enabled = true
 	room.start_play()
 	var cases: Array[Dictionary] = [
-		{"id": "Kaing 1x3 column", "variant": KAING_1X3, "turns": 0, "size": Vector2(32, 96)},
-		{"id": "Kaing 1x3 rotated 3x1", "variant": KAING_1X3, "turns": 1, "size": Vector2(96, 32)},
-		{"id": "Tulay 3x1", "variant": TULAY_3X1, "turns": 0, "size": Vector2(96, 32)},
-		{"id": "Tulay 5x1", "variant": TULAY_5X1, "turns": 0, "size": Vector2(160, 32)},
+		{"id": "Kaing 1x3 column", "variant": KAING_1X3, "turns": 0, "size": Vector2(64, 192)},
+		{"id": "Kaing 1x3 rotated 3x1", "variant": KAING_1X3, "turns": 1, "size": Vector2(192, 64)},
+		{"id": "Tulay 3x1", "variant": TULAY_3X1, "turns": 0, "size": Vector2(192, 64)},
+		{"id": "Tulay 5x1", "variant": TULAY_5X1, "turns": 0, "size": Vector2(320, 64)},
 	]
 	for entry in cases:
 		var ids := _arrange(
@@ -1384,29 +1400,29 @@ func _test_disabled_variant_geometry() -> void:
 		)
 		var piece := room.items.piece_for(ids[0])
 		var rect := piece.footprint_world_rect()
-		_put_actor_feet(Vector2(rect.position.x + 16.0, 190.0))
+		_put_actor_feet(Vector2(rect.position.x + 32.0, 380.0))
 		await _settle()
 		var stands: bool = actor.is_on_floor() and _supported_by(ids[0])
 		_row(
 			"T09/T18 disabled variant: %s" % entry.id,
-			"footprint %s and a chicken stands on its top at y=256" % entry.size,
+			"footprint %s and a chicken stands on its top at y=512" % entry.size,
 			"footprint %s feet=%.2f stands=%s" % [rect.size, _feet_y(), stands],
-			rect.size == entry.size and stands and absf(_feet_y() - 256.0) <= FEET_TOLERANCE_WU
+			rect.size == entry.size and stands and absf(_feet_y() - 512.0) <= FEET_TOLERANCE_WU
 		)
 	var vertical_ids := _arrange([{"variant": TULAY_4X1, "cell": Vector2i(17, 6), "turns": 1}])
 	var vertical := room.items.piece_for(vertical_ids[0])
 	var strips := vertical.strip_world_rects()
 	_row(
 		"T15 gated vertical Tulay geometry",
-		"1x4 footprint, 4 wu strip on the right edge, one-way normal pointing right",
+		"1x4 footprint, 8 wu strip on the right edge, one-way normal pointing right",
 		(
 			"footprint %s strip %s normal %s"
 			% [vertical.footprint_world_rect().size, strips, vertical.strip_normals()]
 		),
 		(
-			vertical.footprint_world_rect().size == Vector2(32.0, 128.0)
+			vertical.footprint_world_rect().size == Vector2(64.0, 256.0)
 			and strips.size() == 1
-			and strips[0] == Rect2(Vector2(572.0, 192.0), Vector2(4.0, 128.0))
+			and strips[0] == Rect2(Vector2(1144.0, 384.0), Vector2(8.0, 256.0))
 			and vertical.strip_normals()[0] == Vector2.RIGHT
 		)
 	)
@@ -1426,7 +1442,7 @@ func _test_wall_eligibility() -> void:
 	room.start_play()
 	var kaing_ids := _arrange([{"variant": KAING_2X3, "cell": Vector2i(10, 12)}])
 	var kaing_metadata := room.support_tracker.surfaces[kaing_ids[0]] as SupportSurfaceMetadata
-	_put_actor_feet(Vector2(396.0, 480.0))
+	_put_actor_feet(Vector2(796.0, 960.0))
 	await _settle(10)
 	var kaing_wall := probe.has_eligible_wall(
 		actor, room.tuning, -1, room.tuning.wall_contact_probe_wu
@@ -1443,7 +1459,7 @@ func _test_wall_eligibility() -> void:
 	# Wall movement is core: slide down a placed Kaing side, then kick away from it.
 	_check(room.tuning.wall_movement_enabled, "wall movement is enabled in the Item Lab by default")
 	_arrange([{"variant": KAING_2X3, "cell": Vector2i(22, 10)}])
-	_put_actor_feet(Vector2(691.9, 364.0))
+	_put_actor_feet(Vector2(1408.0 - room.tuning.body_width_wu * 0.5 - 0.1, 728.0))
 	await _frames(1)
 	_stick(1.0)
 	var slid := false
@@ -1460,7 +1476,7 @@ func _test_wall_eligibility() -> void:
 	_stick(0.0)
 	_row(
 		"T09 Kaing wall slide and kick",
-		"slides on the Kaing side at or below the 120 wu/s cap, then a fresh jump kicks away",
+		"slides on the Kaing side at or below the configured cap, then a fresh jump kicks away",
 		(
 			"slid=%s speed=%.1f kicked_away=%s vx=%.1f"
 			% [slid, slide_speed, kicked_away, actor.velocity.x]
@@ -1475,7 +1491,7 @@ func _test_wall_eligibility() -> void:
 		]
 	)
 	var tulay_metadata := room.support_tracker.surfaces[tulay_ids[2]] as SupportSurfaceMetadata
-	_put_actor_feet(Vector2(436.0, 288.0))
+	_put_actor_feet(Vector2(872.0, 576.0))
 	await _settle(10)
 	var tulay_wall := probe.has_eligible_wall(
 		actor, room.tuning, 1, room.tuning.wall_contact_probe_wu
@@ -1496,8 +1512,8 @@ func _test_wall_eligibility() -> void:
 
 
 func _test_placeholder_previews_and_library() -> void:
-	var expected_keys := [KAING_1X1, KAING_2X3, TULAY_4X1]
-	_check(room.egg_previews.size() == 3, "one placeholder egg preview per enabled variant")
+	var expected_keys := [KAING_1X1, KAING_2X3, TULAY_4X1, SOLID_3X1, WOOD_BOX_2X2, COLLAPSE_1X1]
+	_check(room.egg_previews.size() == 6, "one placeholder egg preview per enabled variant")
 	var text_free := true
 	for key in expected_keys:
 		var egg := room.egg_previews.get(key) as ItemEggPreview
@@ -1528,7 +1544,9 @@ func _test_placeholder_previews_and_library() -> void:
 		var ghost := cursor.ghost as ItemGhost
 		var found := room.definitions.find_variant(key)
 		var variant := found.variant as ItemVariantDefinition
-		var matches_shape := ghost.footprint_rect.size == Vector2(variant.footprint_cells) * 32.0
+		var matches_shape := (
+			ghost.footprint_rect.size == Vector2(variant.footprint_cells) * room.tuning.grid_cell_wu
+		)
 		var placed := room.confirm_cursor(seat)
 		var piece_key: String = (
 			(room.items.pieces[placed.instance_id] as PlacedItem).variant_key
@@ -1551,7 +1569,7 @@ func _test_placeholder_previews_and_library() -> void:
 		identity_ok
 	)
 	var entries := room.library_entries()
-	var fields_ok := entries.size() == 2
+	var fields_ok := entries.size() == 5
 	for entry in entries:
 		fields_ok = (
 			fields_ok
@@ -1566,11 +1584,14 @@ func _test_placeholder_previews_and_library() -> void:
 		)
 	_row(
 		"T12/T21 Library entry fields",
-		"both families list name, sizes, placement, tell, counterplay, controls, modes, animation",
+		"all families list name, sizes, placement, tell, counterplay, controls, modes, animation",
 		"entries=%d fields_ok=%s" % [entries.size(), fields_ok],
 		fields_ok
 	)
-	var tulay_entry := entries[1] if entries[0].family_id == "build.hollow_blocks" else entries[0]
+	var tulay_entry := entries[0]
+	for entry in entries:
+		if entry.family_id == "build.bamboo_bridge":
+			tulay_entry = entry
 	var has_disabled_note := false
 	for size_text in tulay_entry.sizes:
 		has_disabled_note = has_disabled_note or size_text.contains("not enabled yet")

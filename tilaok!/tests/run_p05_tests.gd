@@ -204,7 +204,10 @@ func _test_resolver_permutations_and_protection() -> void:
 	)
 	var stack := definitions.find_variant(VARIANT_2X3).variant as ItemVariantDefinition
 	var rotated_rect := ItemPlacementValidator.footprint_rect_for(stack, Vector2i(12, 5), 1, tuning)
-	_check(rotated_rect.size == Vector2(96.0, 64.0), "rotated 2x3 ghost swaps to a 3x2 footprint")
+	_check(
+		rotated_rect.size == Vector2(3.0, 2.0) * tuning.grid_cell_wu,
+		"rotated 2x3 ghost swaps to a 3x2 footprint"
+	)
 
 
 func _test_cleanup_once_and_batch_commit() -> void:

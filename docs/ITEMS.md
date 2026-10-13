@@ -90,6 +90,9 @@ Only some families vary in size. These variants create more placement choices wh
 |---|---|---|
 | Hollow Blocks / Kaing Stack | 1×1, 1×3 column, 2×3 stack | The egg preview and ghost show the exact shape. |
 | Tulay na Kawayan | 3×1, 4×1, 5×1 | Rotates to 1×3, 1×4, or 1×5 where vertical one-way behavior is supported. |
+| Solid Block (`build.solid_block`) | 3×1 slab | Rotates to 1×3 with R. Added 2026-10-14. |
+| Wood Box (`build.wood_box`) | 2×2 | Symmetric; no rotation. Added 2026-10-14. |
+| Collapsing Block (`build.collapsing_block`) | 1×1 | Symmetric; no rotation. Added 2026-10-14. |
 | Trumpo sa Riles | 4×1, 5×1, 6×1 rail | The moving top’s sweep always matches the shown rail length. |
 | Parol Pulse | 3–6 cell fixture span | Both fixtures and the entire beam span appear in the preview. |
 | Bula-Bulaklak | 1×3 or 1×5 path | The bubble path height is visible before selection. |
@@ -184,6 +187,18 @@ Barya remains the race-only scoring pickup already defined in GDD §5; it is not
 
 All 36 families are approved as the Tilaok design catalog. This approval does not claim that all 36 will ship before the deadline: the eight-family first batch remains the implementation target, with the other 28 held behind scope and test gates. Before implementing mechanics, the team must choose the actual project grid/player dimensions and target PC, resolve GDD scoring/tie implementation gates, and decide final Pugad weights/caps. Event stacking is core; additional unlisted event pairs remain feature-switched off until accepted and tested. Follow the standing AI-assisted programming policy in `AI_USAGE.md`; implementation still requires approved task scope and actual verification.
 
+## Stage blocks — October 14, 2026
+
+Requested by Jorge on 2026-10-14 and implemented as three construction families, each with its own editable scene (collision + DEBUG visual) under `tilaok!/scenes/blocks/`. The definition footprint in `tilaok!/data/items/` is authoritative; `run_blocks_tests.gd` checks that each scene's authored collision matches it. All declare solid-side wall eligibility, `modes_allowed` karera/lagsanay, Walis removal and persistence until removed; weights are 50 like Kaing/Tulay (tunable).
+
+| Family / variant | Behavior | Safe start |
+|---|---|---|
+| `build.solid_block.slab_3x1` | Static solid, no gravity; rotates to 1×3. | `static_no_motion` |
+| `build.wood_box.box_2x2` | Gravity; pushed by a grounded chicken walking into its side (160 wu/s, friction stop); rests on stage, blocks and chicken heads; inert in Place. | `reset_to_placed` (new documented state: returns to its placed spot at Place/Play start) |
+| `build.collapsing_block.cell_1x1` | Static until a chicken stands or wall-slides on it; collapses after 2 s, returns after 3 s once its footprint is clear; inert in Place. | `static_no_motion` (restored at Place/Play start) |
+
+Tell / counterplay: Solid — gray brick slab, jump over or route around. Box — crossed planks, push it or stand on it. Collapsing — cracked tile that shakes before dropping; keep moving or wait for it to return. Each has a second non-colour identifier (brick lines, plank cross, crack lines plus a text label).
+
 ## Implementation status — October 13, 2026
 
 | Family / variant | Implemented | Prototype-enabled | Verified (harness, synthetic input) | Release-enabled |
@@ -194,6 +209,9 @@ All 36 families are approved as the Tilaok design catalog. This approval does no
 | `build.bamboo_bridge` 4×1 horizontal | yes | yes | yes | no |
 | `build.bamboo_bridge` 3×1, 5×1 | yes | no | geometry/standing only | no |
 | `build.bamboo_bridge` vertical orientations | geometry only | no (gated) | no | no |
+| `build.solid_block` 3×1 (and rotated 1×3) — 2026-10-14 | yes | yes | yes | no |
+| `build.wood_box` 2×2 — 2026-10-14 | yes | yes | yes | no |
+| `build.collapsing_block` 1×1 — 2026-10-14 | yes | yes | yes | no |
 | Every other family | no | no | no | no |
 
 Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Placeholder eggs, ghosts and Library entries exist (P04-T10/T12/T19/T21 passed on code-drawn DEBUG placeholders; final art is human-made and still open). Event/stack integration and release enablement (P04-T11/T13/T20/T22) remain blocked. Kaing declares solid-side wall eligibility and Tulay declares itself ineligible as data; wall movement itself is a separate extension that is enabled by default as core movement.

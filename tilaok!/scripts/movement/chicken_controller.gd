@@ -5,6 +5,7 @@ signal intentional_input_changed(is_intentional: bool)
 signal terminal_state_changed(status: PlayerLifecycleState.Status, reason: String)
 signal escaped_bounds
 signal wall_kicked(side: int)
+signal sneak_changed(is_sneaking: bool)
 
 @export var seat_index := 0
 @export var tuning: GameplayTuning
@@ -12,7 +13,7 @@ signal wall_kicked(side: int)
 @export var identity_number := 1
 @export var identity_shape := "CIRCLE"
 @export var marker_color := Color("#f2c14e")
-@export var bounds := Rect2(Vector2.ZERO, Vector2(1024.0, 512.0))
+@export var bounds := Rect2(Vector2.ZERO, Vector2(2048.0, 1024.0))
 
 var support_tracker: SupportTracker
 var support_actor_id := ""
@@ -30,6 +31,10 @@ var wall_lock_side := 0
 var wall_sliding := false
 var wall_kick_count := 0
 var show_wall_debug := false
+## Sneak (hold down while grounded): body shrinks to sneak_height_wu at the feet; no walking or
+## jumping. Glide (hold jump while falling): descent capped at glide_fall_cap_wu_s.
+var sneaking := false
+var gliding := false
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
 var _jump_impulse := -600.0
@@ -39,6 +44,10 @@ var _wall_grace_remaining := 0.0
 var _wall_grace_side := 0
 var _wall_collider_id := 0
 var _wall_debug_signature := 0
+var _body_shape: CollisionShape2D
+var _standing_size := Vector2.ZERO
+var _standing_offset := Vector2.ZERO
+var _contact_sensor: ChickenContactSensor
 
 
 func _ready() -> void:
@@ -57,6 +66,8 @@ func _ready() -> void:
 	contact_sensor.collision_layer = 0
 	contact_sensor.collision_mask = 2
 	add_child(contact_sensor)
+	_contact_sensor = contact_sensor
+	_capture_body_shape()
 
 
 func _exit_tree() -> void:
@@ -89,6 +100,7 @@ func _physics_process(delta: float) -> void:
 		jump_buffer_remaining = 0.0
 		_vertical_half_step = 0.0
 		reset_wall_state()
+		reset_sneak()
 		return
 
 	if lifecycle.is_terminal():
@@ -111,6 +123,12 @@ func _physics_process(delta: float) -> void:
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
 		return
+	_update_sneak(input_router.is_action_held(seat_index, "down"))
+	if sneaking:
+		# Sneaking chickens hold still: no walking and no jump (buffered presses are dropped).
+		axis = 0.0
+		locomotion_velocity.x = 0.0
+		jump_buffer_remaining = 0.0
 	_update_wall_contact(delta)
 	_update_horizontal(axis, delta)
 	_update_vertical(delta, jump_down)
@@ -132,6 +150,7 @@ func _physics_process(delta: float) -> void:
 		coyote_remaining = tuning.coyote_seconds
 	elif external_velocity.length_squared() > 0.01:
 		coyote_remaining = 0.0
+	_notify_block_contacts(axis)
 	_refresh_wall_debug()
 	_check_bounds()
 
@@ -144,7 +163,8 @@ func set_snapshot(snapshot: ConfigurationSnapshot) -> void:
 	reset_wall_state()
 
 
-func launch(force: Vector2, max_horizontal: float = 480.0, max_upward: float = 900.0) -> void:
+## Negative caps use the tuning launch caps.
+func launch(force: Vector2, max_horizontal: float = -1.0, max_upward: float = -1.0) -> void:
 	if (
 		lifecycle.is_terminal()
 		or (
@@ -153,8 +173,13 @@ func launch(force: Vector2, max_horizontal: float = 480.0, max_upward: float = 9
 		)
 	):
 		return
+	if max_horizontal < 0.0:
+		max_horizontal = tuning.launch_max_horizontal_wu_s
+	if max_upward < 0.0:
+		max_upward = tuning.launch_max_upward_wu_s
 	_clear_support()
 	reset_wall_state()
+	reset_sneak()
 	external_velocity += force
 	external_velocity.x = clampf(external_velocity.x, -max_horizontal, max_horizontal)
 	external_velocity.y = maxf(external_velocity.y, -max_upward)
@@ -172,6 +197,7 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 		lifecycle.status = PlayerLifecycleState.Status.CAPTURED
 		_clear_support()
 		reset_wall_state()
+		reset_sneak()
 		lifecycle.capture_source_id = source_id
 		locomotion_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -190,6 +216,7 @@ func set_opening_freeze(frozen: bool) -> void:
 		lifecycle.status = PlayerLifecycleState.Status.OPENING_FREEZE
 		_clear_support()
 		reset_wall_state()
+		reset_sneak()
 		locomotion_velocity = Vector2.ZERO
 		external_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -212,6 +239,7 @@ func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 		return false
 	_clear_support()
 	reset_wall_state()
+	reset_sneak()
 	locomotion_velocity = Vector2.ZERO
 	external_velocity = Vector2.ZERO
 	jump_buffer_remaining = 0.0
@@ -297,6 +325,96 @@ func _refresh_wall_debug() -> void:
 		queue_redraw()
 
 
+## Leaves sneak when there is headroom; a chicken under a low ceiling stays small.
+func reset_sneak() -> void:
+	if sneaking and _can_stand():
+		_set_sneak_shape(false)
+
+
+func _update_sneak(down_held: bool) -> void:
+	if not sneaking:
+		if (
+			tuning.sneak_enabled
+			and down_held
+			and is_on_floor()
+			and external_velocity.length_squared() <= 0.01
+		):
+			_set_sneak_shape(true)
+	elif (not down_held or not tuning.sneak_enabled) and _can_stand():
+		_set_sneak_shape(false)
+
+
+func _capture_body_shape() -> void:
+	if _body_shape != null:
+		return
+	for child in get_children():
+		if child is CollisionShape2D and (child as CollisionShape2D).shape is RectangleShape2D:
+			_body_shape = child
+			# Own the shape so resizing never affects another chicken sharing the resource.
+			_body_shape.shape = _body_shape.shape.duplicate()
+			_standing_size = (_body_shape.shape as RectangleShape2D).size
+			_standing_offset = _body_shape.position
+			return
+
+
+func _sneak_height() -> float:
+	return minf(tuning.sneak_height_wu, _standing_size.y)
+
+
+func _can_stand() -> bool:
+	_capture_body_shape()
+	if _body_shape == null or not is_inside_tree():
+		return true
+	var rise := _standing_size.y - (_body_shape.shape as RectangleShape2D).size.y
+	if rise <= 0.0:
+		return true
+	return not test_move(global_transform, Vector2(0.0, -rise))
+
+
+func _set_sneak_shape(enabled: bool) -> void:
+	_capture_body_shape()
+	if _body_shape == null or sneaking == enabled:
+		return
+	sneaking = enabled
+	var rectangle := _body_shape.shape as RectangleShape2D
+	var height := _sneak_height() if enabled else _standing_size.y
+	# Keep the feet in place: the origin stays fixed and the shape shifts down.
+	rectangle.size = Vector2(_standing_size.x, height)
+	_body_shape.position = _standing_offset + Vector2(0.0, (_standing_size.y - height) * 0.5)
+	if _contact_sensor != null:
+		var full_height := tuning.contact_sensor_height_wu
+		var sensor_height := full_height * height / _standing_size.y
+		_contact_sensor.set_contact_size(Vector2(tuning.contact_sensor_width_wu, sensor_height))
+		_contact_sensor.position = Vector2(0.0, (full_height - sensor_height) * 0.5)
+	sneak_changed.emit(sneaking)
+	queue_redraw()
+
+
+## Tells stage blocks about real contact: floor and wall-slide touches (collapsing blocks) and
+## grounded side pushes (wood boxes). Blocks opt in by implementing the methods.
+func _notify_block_contacts(axis: float) -> void:
+	for index in range(get_slide_collision_count()):
+		var collision := get_slide_collision(index)
+		var collider := collision.get_collider() as Node
+		if collider == null or not is_instance_valid(collider):
+			continue
+		var normal := collision.get_normal()
+		if normal.y < -0.7 and collider.has_method("notify_chicken_contact"):
+			collider.call("notify_chicken_contact", self)
+		elif (
+			absf(normal.x) > 0.7
+			and is_on_floor()
+			and absf(axis) > 0.01
+			and signf(axis) == -signf(normal.x)
+			and collider.has_method("push_from_chicken")
+		):
+			collider.call("push_from_chicken", self, int(signf(axis)))
+	if wall_side != 0 and WallContactProbe.collider_is_live(_wall_collider_id):
+		var wall := instance_from_id(_wall_collider_id) as Node
+		if wall.has_method("notify_chicken_contact"):
+			wall.call("notify_chicken_contact", self)
+
+
 func _clear_support() -> void:
 	if support_tracker != null and not support_actor_id.is_empty():
 		support_tracker.invalidate_actor(support_actor_id)
@@ -335,6 +453,7 @@ func _update_horizontal(axis: float, delta: float) -> void:
 func _update_vertical(delta: float, jump_down: bool) -> void:
 	_vertical_half_step = 0.0
 	wall_sliding = false
+	gliding = false
 	if external_velocity.length_squared() > 0.01:
 		coyote_remaining = 0.0
 		jump_buffer_remaining = 0.0
@@ -371,6 +490,18 @@ func _update_vertical(delta: float, jump_down: bool) -> void:
 			locomotion_velocity.y = tuning.wall_slide_fall_cap_wu_s
 			_vertical_half_step = 0.0
 			wall_sliding = true
+		elif (
+			tuning.glide_enabled
+			and jump_down
+			and not sneaking
+			and wall_side == 0
+			and not is_on_floor()
+			and locomotion_velocity.y > tuning.glide_fall_cap_wu_s
+		):
+			# Glide caps descent only; wall slide wins on a wall and steering is unchanged.
+			locomotion_velocity.y = tuning.glide_fall_cap_wu_s
+			_vertical_half_step = 0.0
+			gliding = true
 	jump_was_held = jump_down
 
 
@@ -392,6 +523,16 @@ func _update_external_motion(delta: float) -> void:
 
 
 func _draw() -> void:
+	# The DEBUG chicken is authored for the 48 wu body; scale it to the real body and squash it
+	# toward the feet while sneaking.
+	var draw_scale := (tuning.body_height_wu if tuning != null else 48.0) / 48.0
+	var squash := 1.0
+	var drop := 0.0
+	if sneaking and _standing_size.y > 0.0:
+		squash = _sneak_height() / _standing_size.y
+		drop = (_standing_size.y - _sneak_height()) * 0.5
+	var widen := 1.0 + (1.0 - squash) * 0.3
+	draw_set_transform(Vector2(0.0, drop), 0.0, Vector2(draw_scale * widen, draw_scale * squash))
 	var body := Color.WHITE if lifecycle.is_terminal() else marker_color
 	draw_colored_polygon(
 		PackedVector2Array(
@@ -456,6 +597,7 @@ func _draw() -> void:
 		)
 	if show_wall_debug:
 		_draw_wall_debug()
+	draw_set_transform(Vector2.ZERO)
 
 
 func _draw_wall_debug() -> void:

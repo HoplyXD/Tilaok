@@ -63,7 +63,13 @@ static func validate_family(
 			errors.append("%s: %s is required" % [label, required])
 	if family.ownership != ItemFamilyDefinition.OWNERSHIP_PLACER:
 		errors.append("%s: ownership must be '%s'" % [label, ItemFamilyDefinition.OWNERSHIP_PLACER])
-	if family.safe_start != ItemFamilyDefinition.SAFE_START_STATIC:
+	if (
+		family.safe_start
+		not in [
+			ItemFamilyDefinition.SAFE_START_STATIC,
+			ItemFamilyDefinition.SAFE_START_RESET_TO_PLACED,
+		]
+	):
 		errors.append("%s: safe_start is required and must be a documented state" % label)
 	if family.removal_policy != ItemFamilyDefinition.REMOVAL_WALIS:
 		errors.append("%s: removal_policy is required and must be a documented policy" % label)

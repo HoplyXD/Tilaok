@@ -182,6 +182,22 @@ The full command/evidence inventory is in [P03 verification](evidence/p03/2026-1
 | Windows export + startup | PASSED — startup only | Release export (matching 4.7.2 templates) and `--headless --quit-after 90` of the exported executable both exit 0. | [export](evidence/p02-wall/2026-10-13_export.txt), [runtime](evidence/p02-wall/2026-10-13_export_runtime.txt) |
 | `--write-movie` clip | COULD NOT RUN | Not attempted; stills only. | — |
 
+## 64 px grid, sneak/glide and stage blocks — October 14, 2026
+
+Build: working tree on `19b3653`; Godot 4.7.stable.official.5b4e0cb0f; Windows 11; Item Lab (`karera_slice`), seed 12345, 60 Hz; synthetic K1/K2 keyboard events; 1–2 seats. Reviewer: Claude (AI, automated; no human reviewer).
+
+| Check | Expected | Actual | Result |
+|---|---|---|---|
+| Existing suites on the 64 wu grid | no regressions | foundation, P02 83, wall 85, P03 103, P04 268, P05 137, UI 437 — 0 failures | PASSED |
+| `run_blocks_tests.gd` | tiles, controls, sneak, glide, three blocks | 60 checks, 0 failures | PASSED |
+| W press in Play | full jump | 192.1 wu rise | PASSED |
+| Sneak | 56×56 body, feet fixed, no walk/jump, stays small under a 1-tile ceiling | as expected | PASSED |
+| Glide | cap 180 wu/s, steering kept, wall slide wins on walls | max 180.0 wu/s | PASSED |
+| Wood Box | falls, pushed, friction stop, standable, resets in Place | push 120 wu / 45 ticks | PASSED |
+| Collapsing Block | collapse 2 s after floor or wall-slide contact; respawn 3 s when clear | 2.00 s / 3.02 s; waits while overlapped | PASSED |
+| Rendered stage/blocks at 1080p | readable placeholders | [captures](evidence/blocks/README.md) | PASSED (visual inspection by Claude only) |
+| Human feel/balance, physical devices | session with named reviewer | not run | COULD-NOT-RUN |
+
 ## Completion status vocabulary
 
 For each check, record exactly one status:

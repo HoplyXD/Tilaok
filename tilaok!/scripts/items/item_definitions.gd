@@ -4,6 +4,9 @@ extends RefCounted
 const DEFINITION_PATHS: PackedStringArray = [
 	"res://data/items/build.hollow_blocks.tres",
 	"res://data/items/build.bamboo_bridge.tres",
+	"res://data/items/build.solid_block.tres",
+	"res://data/items/build.wood_box.tres",
+	"res://data/items/build.collapsing_block.tres",
 ]
 
 var families: Array[ItemFamilyDefinition] = []

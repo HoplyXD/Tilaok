@@ -75,49 +75,50 @@ static func add_solid(
 
 
 ## Builds the standard fixture set under `parent` at `origin` (top-left). Returns the bodies
-## keyed by fixture name so tests can move or remove them.
-static func build_set(parent: Node2D, origin: Vector2) -> Dictionary:
-	var tall := Vector2(FIXTURE_WIDTH_WU, FIXTURE_HEIGHT_WU)
+## keyed by fixture name so tests can move or remove them. The constants are authored on the
+## historical 32 wu grid; `scale` (grid_cell_wu / 32) multiplies every offset and size.
+static func build_set(parent: Node2D, origin: Vector2, scale: float = 1.0) -> Dictionary:
+	var tall := Vector2(FIXTURE_WIDTH_WU, FIXTURE_HEIGHT_WU) * scale
 	var fixtures := {}
 	fixtures["slab"] = add_solid(
 		parent,
 		"wall_fixture.slab",
-		Rect2(origin + Vector2(SLAB_X, 0.0), tall),
+		Rect2(origin + Vector2(SLAB_X * scale, 0.0), tall),
 		true,
 		{"label": "WALL OK • SLAB", "label_row": 0}
 	)
 	fixtures["shaft_left"] = add_solid(
 		parent,
 		"wall_fixture.shaft_left",
-		Rect2(origin + Vector2(SHAFT_LEFT_X, 0.0), tall),
+		Rect2(origin + Vector2(SHAFT_LEFT_X * scale, 0.0), tall),
 		true,
 		{"label": "WALL OK • SHAFT", "player_built": true, "label_row": 1}
 	)
 	fixtures["shaft_right"] = add_solid(
 		parent,
 		"wall_fixture.shaft_right",
-		Rect2(origin + Vector2(SHAFT_RIGHT_X, 0.0), tall),
+		Rect2(origin + Vector2(SHAFT_RIGHT_X * scale, 0.0), tall),
 		true,
 		{"label": "WALL OK • SHAFT", "player_built": true, "label_row": 0}
 	)
 	fixtures["excluded"] = add_solid(
 		parent,
 		"wall_fixture.excluded",
-		Rect2(origin + Vector2(EXCLUDED_X, 0.0), tall),
+		Rect2(origin + Vector2(EXCLUDED_X * scale, 0.0), tall),
 		false,
 		{"label": "NO WALL • EXCLUDED", "label_row": 1}
 	)
 	fixtures["one_way"] = add_solid(
 		parent,
 		"wall_fixture.one_way",
-		Rect2(origin + Vector2(ONE_WAY_X, 0.0), tall),
+		Rect2(origin + Vector2(ONE_WAY_X * scale, 0.0), tall),
 		true,
 		{"label": "NO WALL • ONE-WAY", "one_way": true, "label_row": 0}
 	)
 	fixtures["moving"] = add_solid(
 		parent,
 		"wall_fixture.moving",
-		Rect2(origin + Vector2(MOVING_X, 0.0), tall),
+		Rect2(origin + Vector2(MOVING_X * scale, 0.0), tall),
 		true,
 		{"label": "WALL OK • MOVING", "moving": true, "label_row": 2}
 	)
@@ -125,10 +126,10 @@ static func build_set(parent: Node2D, origin: Vector2) -> Dictionary:
 
 
 ## Local x of the free space immediately right of the slab (wall on the chicken's left).
-static func slab_right_stand_x(origin: Vector2, body_width: float) -> float:
-	return origin.x + SLAB_X + FIXTURE_WIDTH_WU + body_width * 0.5 + 0.1
+static func slab_right_stand_x(origin: Vector2, body_width: float, scale: float = 1.0) -> float:
+	return origin.x + (SLAB_X + FIXTURE_WIDTH_WU) * scale + body_width * 0.5 + 0.1
 
 
 ## Centre x of the shaft interior.
-static func shaft_center_x(origin: Vector2) -> float:
-	return origin.x + SHAFT_LEFT_X + FIXTURE_WIDTH_WU + SHAFT_GAP_WU * 0.5
+static func shaft_center_x(origin: Vector2, scale: float = 1.0) -> float:
+	return origin.x + (SHAFT_LEFT_X + FIXTURE_WIDTH_WU + SHAFT_GAP_WU * 0.5) * scale

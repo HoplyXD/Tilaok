@@ -8,7 +8,8 @@ const SEAT_POSITIONS := [Vector2(220, 548), Vector2(270, 548), Vector2(320, 548)
 ## Top-left of the on-demand wall-movement fixtures (debug geometry, floating above the course).
 const WALL_FIXTURE_ORIGIN := Vector2(160.0, 112.0)
 
-var tuning := GameplayTuning.new()
+## Historical 32 wu diagnostic fixture: its geometry and P02 measurements use the legacy scale.
+var tuning := GameplayTuning.legacy_32_wu()
 var snapshot: ConfigurationSnapshot
 var input_router := LocalInputRouter.new()
 var pause_coordinator := PauseRecoveryCoordinator.new()

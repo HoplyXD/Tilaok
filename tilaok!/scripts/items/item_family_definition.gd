@@ -3,6 +3,8 @@ extends Resource
 
 const OWNERSHIP_PLACER := "placer"
 const SAFE_START_STATIC := "static_no_motion"
+## Moves during Play (e.g. a pushed Wood Box) and returns to its placed spot at Place/Play start.
+const SAFE_START_RESET_TO_PLACED := "reset_to_placed"
 const REMOVAL_WALIS := "walis_cleanup"
 const PERSISTENCE_UNTIL_REMOVED := "until_removed"
 const WALL_ELIGIBLE := "eligible"

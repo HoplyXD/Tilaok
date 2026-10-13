@@ -1,0 +1,9 @@
+Build: working tree on 19b3653; 4.7.stable.official.5b4e0cb0f; 2026-10-13T20:43Z; headless; synthetic input
+run_foundation_tests exit=0 Harness lifecycle checks complete: 0 failure(s).
+run_p02_tests exit=0 P02_TESTS checks=83 failures=0
+run_p02_wall_tests exit=0 P02_WALL_TESTS checks=85 failures=0
+run_p03_tests exit=0 P03_TESTS checks=103 failures=0
+run_p04_tests exit=0 P04_TESTS checks=268 failures=0
+run_p05_tests exit=0 P05_TEST_SUMMARY checks=137 failures=0
+run_ui_tests exit=0 UI_TESTS checks=437 failures=0
+run_blocks_tests exit=0 BLOCKS_TESTS checks=60 failures=0

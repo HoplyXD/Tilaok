@@ -16,6 +16,10 @@ const TABLE := {
 		"span_4x1": Vector2i(4, 1),
 		"span_5x1": Vector2i(5, 1),
 	},
+	# Stage blocks (owner request 2026-10-14; docs/ITEMS.md "Stage blocks").
+	"build.solid_block": {"slab_3x1": Vector2i(3, 1)},
+	"build.wood_box": {"box_2x2": Vector2i(2, 2)},
+	"build.collapsing_block": {"cell_1x1": Vector2i(1, 1)},
 }
 
 

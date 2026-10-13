@@ -14,9 +14,16 @@ const _PROFILES: Dictionary = {
 	"karera_slice":
 	{
 		"label": "Karera Slice (incomplete development profile)",
-		"description": "Requires verified Kaing Stack and Tulay na Kawayan.",
+		"description": "Requires verified Kaing Stack, Tulay na Kawayan and the stage blocks.",
 		"development_only": true,
-		"content": ["build.hollow_blocks", "build.bamboo_bridge"],
+		"content":
+		[
+			"build.hollow_blocks",
+			"build.bamboo_bridge",
+			"build.solid_block",
+			"build.wood_box",
+			"build.collapsing_block",
+		],
 		"modes": ["karera"],
 		"pools": ["item"],
 	},

@@ -1,0 +1,3 @@
+gdformat --check / gdlint on changed and new .gd files
+29 files would be left unchanged
+Success: no problems found

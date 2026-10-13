@@ -3,6 +3,14 @@ extends ItemLabRoom
 
 const MATCH_BUILD_ID := "P05-match-loop-dev"
 const MARKS := {"CIRCLE": "●", "TRIANGLE": "▲", "SQUARE": "■", "DIAMOND": "◆"}
+const SHORT_VARIANT_LABELS := {
+	"build.hollow_blocks.cell_1x1": "Kaing 1×1",
+	"build.hollow_blocks.stack_2x3": "Kaing 2×3",
+	"build.bamboo_bridge.span_4x1": "Tulay 4×1",
+	"build.solid_block.slab_3x1": "Solid 3×1",
+	"build.wood_box.box_2x2": "Box 2×2",
+	"build.collapsing_block.cell_1x1": "Crumble 1×1",
+}
 const PHASE_TO_INPUT := {
 	MatchPhaseController.Phase.LOBBY: LocalInputRouter.Phase.LOBBY,
 	MatchPhaseController.Phase.PUGAD: LocalInputRouter.Phase.PUGAD,
@@ -839,21 +847,17 @@ func _phase_hint() -> String:
 		MatchPhaseController.Phase.PLACE:
 			return "Move: WASD / arrows / stick · Rotate: R / Right Shift · Confirm: F / Enter / Pad A"
 		MatchPhaseController.Phase.PLAY:
-			return "K1 WASD + Space · K2 arrows + Ctrl · Pad stick + A jump · End Round is diagnostic only"
+			return (
+				"K1 A/D move, W jump (hold: glide), S sneak · K2 arrows (Up jump, Down sneak)"
+				+ " · Pad stick + A jump · End Round is diagnostic only"
+			)
 		MatchPhaseController.Phase.RESULTS:
 			return "F / Enter / Pad A ready · next round starts after 8 seconds"
 	return ""
 
 
 func _short_variant_label(variant_key: String) -> String:
-	match variant_key:
-		"build.hollow_blocks.cell_1x1":
-			return "Kaing 1×1"
-		"build.hollow_blocks.stack_2x3":
-			return "Kaing 2×3"
-		"build.bamboo_bridge.span_4x1":
-			return "Tulay 4×1"
-	return "Unknown item"
+	return str(SHORT_VARIANT_LABELS.get(variant_key, "Unknown item"))
 
 
 func _move_build_region_label_below_controls() -> void:

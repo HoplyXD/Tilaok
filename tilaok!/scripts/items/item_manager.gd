@@ -12,6 +12,9 @@ signal item_removed(instance_id: String, reason: String)
 const PIECE_SCENES := {
 	"build.hollow_blocks": preload("res://scenes/items/kaing_piece.tscn"),
 	"build.bamboo_bridge": preload("res://scenes/items/tulay_piece.tscn"),
+	"build.solid_block": preload("res://scenes/blocks/solid_block.tscn"),
+	"build.wood_box": preload("res://scenes/blocks/wood_box.tscn"),
+	"build.collapsing_block": preload("res://scenes/blocks/collapsing_block.tscn"),
 }
 
 var tuning: GameplayTuning
@@ -222,14 +225,18 @@ func _materialize_placement(
 		arena.unregister_player_construction(record.instance_id)
 		return {"allowed": false, "code": "metadata", "reason": "Support metadata rejected."}
 	_serial += 1
-	var piece := (PIECE_SCENES[family.family_id] as PackedScene).instantiate() as ConstructionPiece
-	piece.configure(
+	# ConstructionPiece and the scene-authored stage blocks share this duck-typed interface.
+	var piece := (PIECE_SCENES[family.family_id] as PackedScene).instantiate() as Node2D
+	piece.call(
+		"configure",
 		record,
 		ItemGeometry.resolve_regions(variant, turns, tuning),
 		metadata,
 		family.wall_contact,
 		tuning
 	)
+	if piece.has_method("set_block_active"):
+		piece.call("set_block_active", in_play)
 	record.node = piece
 	pieces[record.instance_id] = record
 	world_parent.add_child(piece)
@@ -271,6 +278,7 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 func enter_place() -> void:
 	in_play = false
 	grace_remaining = 0.0
+	_set_blocks_active(false)
 
 
 ## Deterministic Play start: static construction has nothing to restore; movers reset here.
@@ -279,9 +287,10 @@ func begin_play() -> PackedStringArray:
 	grace_remaining = tuning.item_activation_grace_s
 	var released := budget.clear_all()
 	for instance_id in _sorted_ids():
-		var piece := (pieces[instance_id] as PlacedItem).node as ConstructionPiece
-		if piece != null:
-			piece.reset_to_start()
+		var piece := (pieces[instance_id] as PlacedItem).node
+		if piece != null and piece.has_method("reset_to_start"):
+			piece.call("reset_to_start")
+	_set_blocks_active(true)
 	return released
 
 
@@ -290,6 +299,7 @@ func end_round() -> PackedStringArray:
 	in_play = false
 	grace_remaining = 0.0
 	round_number += 1
+	_set_blocks_active(false)
 	return budget.clear_all()
 
 
@@ -322,6 +332,24 @@ func piece_for(instance_id: String) -> ConstructionPiece:
 	if not pieces.has(instance_id):
 		return null
 	return (pieces[instance_id] as PlacedItem).node as ConstructionPiece
+
+
+## Any placed node (ConstructionPiece or a scene-authored stage block).
+func node_for(instance_id: String) -> Node2D:
+	if not pieces.has(instance_id):
+		return null
+	return (pieces[instance_id] as PlacedItem).node as Node2D
+
+
+## Stage blocks (wood box, collapsing block) only simulate during Play; Place restores them.
+func _set_blocks_active(enabled: bool) -> void:
+	for instance_id in _sorted_ids():
+		var piece := (pieces[instance_id] as PlacedItem).node
+		if piece == null or not piece.has_method("set_block_active"):
+			continue
+		if not enabled and piece.has_method("reset_to_start"):
+			piece.call("reset_to_start")
+		piece.call("set_block_active", enabled)
 
 
 func _sorted_ids() -> Array:

@@ -462,7 +462,7 @@ func _key_action(layout: String, key: int) -> String:
 			KEY_D:
 				return "right"
 			KEY_W:
-				return "up"
+				return _keyboard_up_action()
 			KEY_S:
 				return "down"
 			KEY_SPACE:
@@ -480,7 +480,7 @@ func _key_action(layout: String, key: int) -> String:
 			KEY_RIGHT:
 				return "right"
 			KEY_UP:
-				return "up"
+				return _keyboard_up_action()
 			KEY_DOWN:
 				return "down"
 			KEY_CTRL:
@@ -492,6 +492,12 @@ func _key_action(layout: String, key: int) -> String:
 			KEY_SHIFT:
 				return "rotate"
 	return ""
+
+
+## W (K1) and Up (K2) jump during Play (hold to glide) and stay "up" for menus and Place.
+## Space/Ctrl remain alternate jump keys.
+func _keyboard_up_action() -> String:
+	return "jump" if phase == Phase.PLAY else "up"
 
 
 func _keyboard_south_action() -> String:
