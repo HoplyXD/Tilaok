@@ -542,23 +542,18 @@ func _cached_camera_target(target_id: String) -> StageCameraTarget:
 
 func _update_identity_badges() -> void:
 	var joined_count := actors.size()
-	var group_center := Vector2.ZERO
-	for seat_index in actors:
-		group_center += (actors[seat_index] as ChickenController).global_position
-	if joined_count > 0:
-		group_center /= float(joined_count)
 	for seat_index in actors:
 		var actor := actors[seat_index] as ChickenController
 		if actor == null or not is_instance_valid(actor):
 			continue
 		var badge := actor.get_meta("identity_badge") as Label
 		var leader := actor.get_meta("identity_leader") as Line2D
-		var badge_offset := Vector2.ZERO
-		if joined_count > 1 and actor.global_position.distance_to(group_center) < 40.0:
-			var seat_number: int = int(seat_index)
-			var column: int = seat_number % 2
-			var row: int = floori(float(seat_number) / 2.0)
-			badge_offset = Vector2(-112.0 if column == 0 else 8.0, -42.0 - float(row) * 26.0)
+		var seat_number: int = int(seat_index)
+		var column: int = seat_number % 2
+		var row: int = floori(float(seat_number) / 2.0)
+		var badge_offset := Vector2(0.0, -42.0 - float(row) * 26.0)
+		if joined_count > 1:
+			badge_offset.x = -112.0 if column == 0 else 8.0
 		var badge_position := actor.global_position + badge_offset
 		badge.global_position = badge_position
 		var leader_end := badge_position + Vector2(0.0, 18.0)

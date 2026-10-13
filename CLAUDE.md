@@ -8,6 +8,7 @@ Context for Claude Code sessions in this repo.
 - Theme: **Philippine Games and Sports.**
 
 ## Read first
+- Before creating or revising any implementation/phase prompt, read `docs/PROMPT_RULES.md` in full. It records the user's context-gathering, approval, verification, checklist, Git and Desktop-sync requirements. Prompt requests mean draft in chat, not implement.
 - `docs/GDD.md`: full design (source of truth for gameplay and scoring)
 - `docs/COMPETITION.md`: contest rules, requirements, judging criteria
 - `docs/ROADMAP.md`: scope priorities and schedule

@@ -19,6 +19,7 @@ func _run() -> void:
 	_test_arena_and_guards()
 	_test_support_metadata_contract()
 	await _test_camera_framing()
+	_test_camera_hud_easing()
 	var seat := room.join_keyboard("K1")
 	room.start_play()
 	var actor := room.actors[seat] as ChickenController
@@ -27,6 +28,7 @@ func _run() -> void:
 		await physics_frame
 	await _test_playable_route(actor)
 	await _test_support_contacts(actor)
+	_test_badge_camera_stability()
 	await _test_lifecycle_and_cleanup(actor)
 	room.queue_free()
 	await process_frame
@@ -263,6 +265,50 @@ func _test_camera_framing() -> void:
 	)
 	room._toggle_pause()
 	room.clear_camera_fixture_targets()
+
+
+func _test_camera_hud_easing() -> void:
+	var camera := room.camera_rig
+	var fixture := Rect2(Vector2(488.0, 276.0), Vector2(48.0, 48.0))
+	var camera_was_processing := camera.is_processing()
+	var previous_position := camera.position
+	var previous_zoom := camera.zoom
+	var previous_initialized := camera._initialized
+	camera.set_process(false)
+	camera.position = Vector2(512.0, 256.0)
+	camera.zoom = Vector2.ONE
+	camera._initialized = false
+	room.set_camera_fixture_targets([fixture], BoundedStageCamera.Context.PLAY)
+	for _step in range(20):
+		camera._process(0.2)
+	var expected_y := (
+		fixture.get_center().y - room.tuning.camera_hud_reservation_px * 0.5 / camera.zoom.x
+	)
+	_check(
+		absf(camera.position.y - expected_y) <= 1.0,
+		"camera easing applies the reserved-HUD offset once without vertical drift"
+	)
+	_check(
+		camera.screen_bounds_visible(fixture),
+		"camera easing keeps the stationary target inside the usable viewport"
+	)
+	print(
+		(
+			"P03_CAMERA_EASE target_y=%.2f camera_y=%.2f expected_y=%.2f zoom=%.3f visible=%s"
+			% [
+				fixture.get_center().y,
+				camera.position.y,
+				expected_y,
+				camera.zoom.x,
+				camera.screen_bounds_visible(fixture)
+			]
+		)
+	)
+	room.clear_camera_fixture_targets()
+	camera.position = previous_position
+	camera.zoom = previous_zoom
+	camera._initialized = previous_initialized
+	camera.set_process(camera_was_processing)
 
 
 func _test_maximum_launch_camera(actor: ChickenController) -> void:
@@ -777,6 +823,32 @@ func _test_lifecycle_and_cleanup(actor: ChickenController) -> void:
 		room.support_tracker.surfaces.is_empty(), "return clears support registry for scene cleanup"
 	)
 	_check(is_instance_valid(actor), "cleanup keeps room-owned actors valid until scene release")
+
+
+func _test_badge_camera_stability() -> void:
+	var first_seat := room.input_router.registry.seat_for_keyboard("K1")
+	var second_seat := room.input_router.registry.seat_for_keyboard("K2")
+	var first := room.actors[first_seat] as ChickenController
+	var second := room.actors[second_seat] as ChickenController
+	var first_position := first.global_position
+	var second_position := second.global_position
+	first.global_position = Vector2(400.0, 300.0)
+	second.global_position = Vector2(478.0, 300.0)
+	room._update_identity_badges()
+	room._update_camera_targets()
+	var close_bounds := room.camera_rig._combined_bounds()
+	second.global_position.x = 482.0
+	room._update_identity_badges()
+	room._update_camera_targets()
+	var apart_bounds := room.camera_rig._combined_bounds()
+	_check(
+		is_equal_approx(close_bounds.get_center().y, apart_bounds.get_center().y),
+		"camera vertical framing stays stable across the former 80-unit badge-spacing threshold"
+	)
+	first.global_position = first_position
+	second.global_position = second_position
+	room._update_identity_badges()
+	room._update_camera_targets()
 
 
 func _make_surface(

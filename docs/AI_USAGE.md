@@ -14,9 +14,13 @@ This standing internal workflow does not establish organizer approval, registrat
 
 ## Cumulative assistance summary
 
+On 2026-10-13, at the user's request, Codex consolidated conversation preferences into `PROMPT_RULES.md` and added agent, documentation-index and rule-discovery references. This was documentation/rule configuration only; it did not implement gameplay, run gameplay verification or complete any phase checklist task.
+
 OpenAI Codex has assisted with research, design/specification, project documentation, and programming. It authored the P01 foundation, P02 input/controller/movement diagnostic implementation, and P03 graybox arena/camera/support implementation, focused tests, rendered evidence tooling and related documentation. It also authored the documentation work listed below, the policy correction and this role clarification. This cumulative summary is intended to prevent older delivery-specific statements from being mistaken for the full project history. No AI-generated final art, audio or other production asset is recorded here; P03 uses simple code-drawn debug geometry.
 
 The P01 foundation includes typed provisional settings/profile snapshots, content validation and seeded diagnostic streams, a local development harness, scenes, focused checks, export setup and evidence. The P02 work includes local seat/device assignment, phase-specific routing, pause/focus/reclaim state, movement/contact/lifecycle code, diagnostic fixtures and focused tests. The P03 work includes tile-edge arena/protection data, a bounded Play/Place camera, support-surface provenance/contact/invalidation contracts, integration into the harness, automated/rendered evidence, and tracker/specification updates. Its geometry and content are development fixtures, not production art or enabled item/event content. Consult [PHASETASK.md](PHASETASK.md), [PLAYTEST.md](PLAYTEST.md), and [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for exact implementation status and limitations. AI authorship is disclosed and is not represented as manual human authorship. Actual human review remains unrecorded where it has not occurred.
+
+On 2026-10-13, at the user's request, Codex investigated P03 vertical camera jitter with close chickens. It fixed proximity-based identity-badge repositioning and then traced a second drift to applying HUD compensation twice during camera easing. Codex changed the camera clamp path, added an easing regression, ran P03/foundation checks, captured and inspected 1080p rendered evidence, updated the stage camera contract and recorded measurements. No human review is claimed; the input was synthetic rather than a manual physical-controller playtest.
 
 ## Form 03 preparation
 
@@ -68,10 +72,10 @@ At Francis's direction, this documentation correction replaces the earlier inter
 
 Francis later supplied these current assignments: Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These assigned production visuals and audio will be created without AI generation. This records responsibilities only; it does not claim that assets are complete or establish registration, hours, review completion or competition eligibility.
 
-### Wall-movement planning and documentation — October 13, 2026
-
-At the user's approval, OpenAI Codex added the wall-slide/wall-jump extension to the Tilaok! planning documents as separate Should scope. This assistance updated the PRD, GDD, PHASETASK, prototype defaults, playtest plan, roadmap, production plan, stage/support contract, tutorial guidance, project-structure status, README/INDEX counts and this disclosure record. The approved behavior remains unimplemented; all eight new gameplay implementation/verification tasks are unchecked. Numeric tuning is provisional. No movement code, scene, test, tuning resource, production asset, runtime trial, human feel review or balance result was created or claimed in this documentation task. This record does not claim human review or make the extension a required submission feature.
-
 ### Verification of the PRD/tracker documentation delivery — October 13, 2026
 
 The earlier documentation delivery recorded structural and content checks for 116 requirements, 20 phases and 393 tasks (207 required, 24 Should, 4 conditional-finalist, 158 expansion), rendered IDs, dependency DAG, traceability, local links/anchors, family destinations, variants, untouched source/reference hashes and whitespace. All game/delivery tasks remained unchecked. Those documentation checks did not constitute gameplay verification. See [PHASETASK documentation verification](PHASETASK.md#documentation-verification--october-13-2026-original-prdtracker-delivery).
+
+### Wall-movement planning and documentation — October 13, 2026
+
+At the user's approval, OpenAI Codex added the wall-slide/wall-jump extension to the Tilaok! planning documents as separate Should scope. This assistance updated the PRD, GDD, PHASETASK, prototype defaults, playtest plan, roadmap, production plan, stage/support contract, tutorial guidance, project-structure status, README/INDEX counts and this disclosure record. The approved behavior remains unimplemented; all eight new gameplay implementation/verification tasks are unchecked. Numeric tuning is provisional. No movement code, scene, test, tuning resource, production asset, runtime trial, human feel review or balance result was created or claimed in this documentation task. This record does not claim human review or make the extension a required submission feature.

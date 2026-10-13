@@ -10,6 +10,7 @@ Project documentation belongs in this directory. The repository root retains onl
 
 | Document | Purpose | Status |
 |---|---|---|
+| [PROMPT_RULES.md](PROMPT_RULES.md) | Standing prompt-writing workflow, context checks, phase checkboxes, delivery and safe Desktop synchronization. | Read before every implementation/phase prompt |
 | [PRD.md](PRD.md) | Consolidated product requirements, release/optional scope and acceptance, traceable to the GDD and specialized contracts. | P03 graybox stage/camera/support evidence recorded; hardware coverage and full game remain open |
 | [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | P00 0/6; P01 9/10; P02 8/22; P03 6/6; 23/401 total. P02 physical-device checks and P01-T02 human review remain open; P02-T15–T22 wall-movement Should tasks are unchecked. |
 | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | P01/P02/P03 project layout, responsibility map, programming provenance, run and test commands. | Runnable harness with P02 movement and P03 graybox fixtures; no full match loop |
