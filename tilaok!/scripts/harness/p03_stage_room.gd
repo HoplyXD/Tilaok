@@ -4,6 +4,8 @@ extends Control
 signal return_requested
 
 const BUILD_ID := "P03-graybox-dev"
+## Top-left of the on-demand wall-movement debug fixtures (above the base route).
+const WALL_FIXTURE_ORIGIN := Vector2(352.0, 112.0)
 const PREVIEW_COLORS := [Color("#f5c95b"), Color("#74c8d6"), Color("#ef8b74"), Color("#a8d782")]
 
 var tuning := GameplayTuning.new()
@@ -15,6 +17,7 @@ var pause_coordinator: PauseRecoveryCoordinator
 var camera_rig: BoundedStageCamera
 var world_layer: Node2D
 var actors: Dictionary = {}
+var wall_fixtures: Dictionary = {}
 var pointers: Array[Dictionary] = []
 var current_context := BoundedStageCamera.Context.PLAY
 var support_line_y := 384.0
@@ -162,10 +165,12 @@ func reset_room() -> void:
 		actor.external_velocity = Vector2.ZERO
 		actor.coyote_remaining = 0.0
 		actor.jump_buffer_remaining = 0.0
+		actor.reset_wall_state()
 		actor.lifecycle.status = PlayerLifecycleState.Status.ACTIVE
 		actor.lifecycle.capture_source_id = ""
 		actor.lifecycle.terminal_reason = ""
 		actor.containment_outcome_reported = false
+	clear_wall_fixtures()
 	for pointer in pointers:
 		(pointer.node as Polygon2D).queue_free()
 		(pointer.label as Label).queue_free()
@@ -179,6 +184,37 @@ func reset_room() -> void:
 	camera_rig.zoom = Vector2.ONE
 	_update_camera_targets()
 	_update_diagnostics()
+
+
+## Builds labeled wall-movement debug fixtures above the route; never touches base geometry.
+func build_wall_fixtures() -> void:
+	clear_wall_fixtures()
+	wall_fixtures = WallFixtureBuilder.build_set(world_layer, WALL_FIXTURE_ORIGIN)
+
+
+func clear_wall_fixtures() -> void:
+	for fixture in wall_fixtures.values():
+		if is_instance_valid(fixture):
+			(fixture as Node).queue_free()
+	wall_fixtures.clear()
+
+
+func set_wall_movement_enabled(enabled: bool) -> void:
+	tuning.wall_movement_enabled = enabled
+	for actor_variant in actors.values():
+		var actor := actor_variant as ChickenController
+		actor.show_wall_debug = enabled
+		actor.reset_wall_state()
+		actor.queue_redraw()
+
+
+func _toggle_wall_fixtures() -> void:
+	if wall_fixtures.is_empty():
+		build_wall_fixtures()
+		set_wall_movement_enabled(true)
+	else:
+		clear_wall_fixtures()
+		set_wall_movement_enabled(false)
 
 
 func request_return() -> void:
@@ -248,6 +284,7 @@ func _build_hud() -> void:
 	_add_button(row, "Confirm next", confirm_next_pointer)
 	_add_button(row, "Rotate next", rotate_next_pointer)
 	_add_button(row, "Reset", reset_room)
+	_add_button(row, "Wall fixtures", _toggle_wall_fixtures)
 	_pause_button = _add_button(row, "Pause", _toggle_pause)
 	_add_button(row, "Return", request_return)
 	var lower := VBoxContainer.new()

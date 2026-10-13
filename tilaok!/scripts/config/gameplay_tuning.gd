@@ -40,6 +40,16 @@ extends Resource
 @export var support_normal_limit_degrees: float = 45.0
 @export var support_contact_tolerance_wu: float = 1.0
 @export var support_height_epsilon_wu: float = 1.0
+## Wall slide / wall jump (approved Should extension, REQ-MOVE-004). PROTOTYPE — UNMEASURED.
+## Disabled by default; the October 21 keep/defer decision sets the shipped value.
+@export var wall_movement_enabled: bool = false
+@export var wall_slide_fall_cap_wu_s: float = 120.0
+@export var wall_jump_horizontal_wu_s: float = 240.0
+@export var wall_jump_vertical_wu_s: float = -520.0
+@export var wall_jump_contact_grace_s: float = 0.08
+@export var wall_jump_recontact_separation_wu: float = 8.0
+@export var wall_contact_probe_wu: float = 1.0
+@export var wall_normal_tolerance_degrees: float = 10.0
 
 
 func validate() -> PackedStringArray:
@@ -121,6 +131,7 @@ func validate() -> PackedStringArray:
 		errors.append("support normal limit must be between zero and 90 degrees")
 	if support_contact_tolerance_wu < 0.0 or support_height_epsilon_wu < 0.0:
 		errors.append("support tolerances cannot be negative")
+	errors.append_array(_validate_wall_movement())
 	if camera_view_bounds.size.x <= 0.0 or camera_view_bounds.size.y <= 0.0:
 		errors.append("camera view bounds must have positive dimensions")
 	for bound_value in [
@@ -132,4 +143,23 @@ func validate() -> PackedStringArray:
 		if not is_finite(bound_value):
 			errors.append("camera view bounds must be finite")
 			break
+	return errors
+
+
+func _validate_wall_movement() -> PackedStringArray:
+	var errors := PackedStringArray()
+	if wall_slide_fall_cap_wu_s <= 0.0 or wall_slide_fall_cap_wu_s > fall_speed_cap_wu_s:
+		errors.append("wall slide cap must be positive and not exceed the fall speed cap")
+	if wall_jump_horizontal_wu_s < 0.0 or wall_jump_horizontal_wu_s > 480.0:
+		errors.append("wall jump horizontal speed must be between 0 and the 480 wu/s external cap")
+	if wall_jump_vertical_wu_s >= 0.0 or wall_jump_vertical_wu_s < -900.0:
+		errors.append("wall jump vertical speed must be upward and within the 900 wu/s launch cap")
+	if wall_jump_contact_grace_s < 0.0 or wall_jump_contact_grace_s > 0.25:
+		errors.append("wall jump contact grace must be between 0 and 0.25 seconds")
+	if wall_contact_probe_wu <= 0.0 or wall_contact_probe_wu > 4.0:
+		errors.append("wall contact probe distance must be between 0 and 4 wu")
+	if wall_jump_recontact_separation_wu <= wall_contact_probe_wu:
+		errors.append("wall recontact separation must exceed the contact probe distance")
+	if wall_normal_tolerance_degrees < 0.0 or wall_normal_tolerance_degrees > 45.0:
+		errors.append("wall normal tolerance must be between 0 and 45 degrees")
 	return errors

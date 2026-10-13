@@ -19,7 +19,7 @@ Before advanced item implementation, the team must have movement/input, stage, r
 
 The repository contains P01 foundations, the P02 diagnostic input/movement slice, and the verified P03 graybox stage/camera/support contracts. It still does not contain a complete gameplay loop, placement system, required items/events or scoring. This roadmap is not evidence that later gameplay prerequisites or items are implemented or stable. See `docs/PLAYTEST.md` and `docs/PHASETASK.md` for current evidence and status boundaries.
 
-**Wall-movement schedule decision — October 13, 2026:** The user approved wall slide/jump as a separately tracked Should extension after P03. It remains unimplemented and is not automatically part of the October submission target. Work may proceed only when it does not delay P04 or the required build/race loop; make the Should include/defer decision before the October 21 feature freeze. The verified P03 base route must remain traversable without wall movement.
+**Wall-movement schedule decision — October 13, 2026:** The user approved wall slide/jump as a separately tracked Should extension after P03. Source was implemented on October 13 but is unverified (no engine available) and it is not automatically part of the October submission target. Keep/defer decision: PENDING. Work may proceed only when it does not delay P04 or the required build/race loop; make the Should include/defer decision before the October 21 feature freeze. The verified P03 base route must remain traversable without wall movement.
 
 ## Rough Schedule
 | Days | Goal |

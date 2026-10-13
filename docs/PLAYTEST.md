@@ -91,7 +91,7 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 
 ## Wall movement — future verification
 
-**Status:** approved Should-scope extension, not implemented. The cases below are planned; no wall-movement runtime test was run for this documentation change. Use actual Godot physics, rendered screenshots/clips, and human feel/balance review. Mathematical estimates alone do not establish playability. Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, artifact and reviewer. Mark each PASSED / FAILED / COULD-NOT-RUN. Keep synthetic and physical-device evidence separate.
+**Status:** approved Should-scope extension, implemented in source (2026-10-13) but NOT RUN; the cases below are still planned and no wall-movement runtime test result exists. The runner `run_p02_wall_tests.gd`, capture script and session sheet are recorded in [wall evidence](evidence/p02-wall/README.md). Use actual Godot physics, rendered screenshots/clips, and human feel/balance review. Mathematical estimates alone do not establish playability. Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, artifact and reviewer. Mark each PASSED / FAILED / COULD-NOT-RUN. Keep synthetic and physical-device evidence separate.
 
 | Area | Future procedure and expected result |
 |---|---|

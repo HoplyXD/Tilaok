@@ -5,6 +5,8 @@ signal return_requested
 
 const BUILD_ID := "P02-input-movement-dev"
 const SEAT_POSITIONS := [Vector2(220, 548), Vector2(270, 548), Vector2(320, 548), Vector2(370, 548)]
+## Top-left of the on-demand wall-movement fixtures (debug geometry, floating above the course).
+const WALL_FIXTURE_ORIGIN := Vector2(160.0, 112.0)
 
 var tuning := GameplayTuning.new()
 var snapshot: ConfigurationSnapshot
@@ -12,6 +14,7 @@ var input_router := LocalInputRouter.new()
 var pause_coordinator := PauseRecoveryCoordinator.new()
 var recovery_contract := ContainmentRecoveryContract.new()
 var actors: Dictionary = {}
+var wall_fixtures: Dictionary = {}
 var selected_phase := LocalInputRouter.Phase.PLAY
 var _metric_clock := 0.0
 var _simulation_ticks := 0
@@ -267,6 +270,10 @@ func _build_interface() -> void:
 	breach_button.text = "Inject escape"
 	breach_button.pressed.connect(inject_containment_breach.bind(0))
 	diagnostic_controls.add_child(breach_button)
+	var wall_button := Button.new()
+	wall_button.text = "Wall fixtures (debug) on/off"
+	wall_button.pressed.connect(_toggle_wall_fixtures)
+	diagnostic_controls.add_child(wall_button)
 	var return_button := Button.new()
 	return_button.text = "Return to harness"
 	return_button.pressed.connect(_on_return_requested)
@@ -322,6 +329,49 @@ func _sync_actors() -> void:
 		actor.add_child(body_shape)
 		world_layer().add_child(actor)
 		actors[seat_index] = actor
+
+
+## Builds the labeled wall-movement debug fixtures (REQ-MOVE-004). Safe to call repeatedly.
+func build_wall_fixtures() -> void:
+	clear_wall_fixtures()
+	wall_fixtures = WallFixtureBuilder.build_set(world_layer(), WALL_FIXTURE_ORIGIN)
+
+
+func clear_wall_fixtures() -> void:
+	for fixture in wall_fixtures.values():
+		if is_instance_valid(fixture):
+			(fixture as Node).queue_free()
+	wall_fixtures.clear()
+
+
+## Enables or disables wall movement for every seat in this room (snapshot tuning is shared).
+func set_wall_movement_enabled(enabled: bool) -> void:
+	snapshot.gameplay.wall_movement_enabled = enabled
+	for actor in actors.values():
+		var chicken := actor as ChickenController
+		chicken.show_wall_debug = enabled
+		chicken.reset_wall_state()
+		chicken.queue_redraw()
+
+
+## Drops a seat from the top of a named fixture so a human can watch slide/kick behavior.
+func drop_actor_at_fixture(seat_index: int, fixture_name: String) -> void:
+	var actor: ChickenController = actors.get(seat_index)
+	if actor == null:
+		return
+	var x := WALL_FIXTURE_ORIGIN.x
+	match fixture_name:
+		"slab":
+			x = WallFixtureBuilder.slab_right_stand_x(WALL_FIXTURE_ORIGIN, tuning.body_width_wu)
+		"shaft":
+			x = WallFixtureBuilder.shaft_center_x(WALL_FIXTURE_ORIGIN)
+		_:
+			x = WALL_FIXTURE_ORIGIN.x + float(WallFixtureBuilder.EXCLUDED_X) - 20.0
+	actor.reset_wall_state()
+	actor.global_position = Vector2(x, WALL_FIXTURE_ORIGIN.y + 24.0)
+	actor.velocity = Vector2.ZERO
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.external_velocity = Vector2.ZERO
 
 
 func world_layer() -> Node2D:
@@ -469,10 +519,21 @@ func _reset_trial() -> void:
 		actor.coyote_remaining = 0.0
 		actor.jump_buffer_remaining = 0.0
 		actor.jump_was_held = false
+		actor.reset_wall_state()
 		actor.lifecycle.status = PlayerLifecycleState.Status.ACTIVE
 		actor.lifecycle.capture_source_id = ""
 		actor.lifecycle.terminal_reason = ""
 		actor.containment_outcome_reported = false
+
+
+func _toggle_wall_fixtures() -> void:
+	if wall_fixtures.is_empty():
+		build_wall_fixtures()
+		set_wall_movement_enabled(true)
+		drop_actor_at_fixture(0, "slab")
+	else:
+		clear_wall_fixtures()
+		set_wall_movement_enabled(false)
 
 
 func _launch_trial() -> void:

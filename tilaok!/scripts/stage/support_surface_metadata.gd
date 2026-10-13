@@ -10,6 +10,9 @@ const META_KEY := &"support_surface_metadata"
 @export var player_built := false
 @export var wave_support_eligibility := Eligibility.UNSET
 @export var inherits_provenance_from := ""
+## Wall slide/jump eligibility is independent of wave support. Fail closed: only an explicit
+## ELIGIBLE opt-in qualifies. One-way shapes and arena containment must stay INELIGIBLE.
+@export var wall_movement_eligibility := Eligibility.INELIGIBLE
 
 
 func validate(known_surfaces: Dictionary = {}) -> PackedStringArray:
@@ -20,6 +23,8 @@ func validate(known_surfaces: Dictionary = {}) -> PackedStringArray:
 		errors.append("wave support eligibility must be explicit")
 	elif wave_support_eligibility not in [Eligibility.INELIGIBLE, Eligibility.ELIGIBLE]:
 		errors.append("wave support eligibility is invalid")
+	if wall_movement_eligibility not in [Eligibility.INELIGIBLE, Eligibility.ELIGIBLE]:
+		errors.append("wall movement eligibility must be explicit")
 	if not inherits_provenance_from.is_empty():
 		if not known_surfaces.has(inherits_provenance_from):
 			errors.append("provenance parent '%s' is missing" % inherits_provenance_from)

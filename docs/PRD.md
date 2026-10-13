@@ -247,9 +247,9 @@ Base stage is playable before construction; player changes may make it difficult
 
 ### REQ-MOVE-004 — Slide on eligible walls and kick away with a fresh jump press
 
-**Scope:** SHOULD · **Design status:** APPROVED, UNIMPLEMENTED (October 13, 2026) · **Owner role:** Gameplay (name TBD).
+**Scope:** SHOULD · **Design status:** APPROVED; IMPLEMENTED IN SOURCE, NOT RUN (October 13, 2026) · **Owner role:** Gameplay (name TBD).
 
-**Existing baseline:** REQ-MOVE-001 and P02-T09/T10 accurately record the previously implemented and measured run/jump-only controller. That historical acceptance excluded wall jump; it is not evidence for this extension. The extension is separately approved and no wall feature is implemented yet.
+**Existing baseline:** REQ-MOVE-001 and P02-T09/T10 accurately record the previously implemented and measured run/jump-only controller. That historical acceptance excluded wall jump; it is not evidence for this extension. The extension is separately approved; its source implementation exists but has not been run or verified (see [wall evidence](evidence/p02-wall/README.md)).
 
 **Expected behavior:** While airborne and actually touching a qualifying solid side, slide down with a configurable cap on downward speed only. Contact does not require directional hold. Base and player-built solid sides qualify; moving solids qualify only while actual contact remains valid. Exclude one-way platform sides/undersides, triggers, pass-through chicken bodies and arena containment boundaries. A fresh jump press near eligible wall contact produces one kick away, using a configurable horizontal-away and vertical impulse. Air steering remains available immediately. One kick is allowed per contact; physical separation and fresh recontact are required before another. Normal ground jump/coyote behavior remains unchanged. Holding jump or OS key-repeat never auto-repeats a wall jump; buffered input is consumed exactly once.
 
