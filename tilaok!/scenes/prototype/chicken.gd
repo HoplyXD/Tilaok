@@ -2,8 +2,8 @@ extends CharacterBody2D
 
 
 const SPEED = 300.0
-const JUMP_VELOCITY = -600.0
-const WALL_SLIDING_SPEED = 1200
+const JUMP_VELOCITY = -300.0
+const WALL_SLIDING_SPEED = 7500
 
 var GRAVITY = ProjectSettings.get_setting("physics/2d/default_gravity")
 var JUMPS_MADE = 0
@@ -18,7 +18,7 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("player1jump"):
 		if is_on_wall_only():
-			velocity.x = -direction * SPEED
+			velocity.x = -direction * 50
 			velocity.y = JUMP_VELOCITY
 			DO_WALL_JUMP= true
 			$Timer.start()

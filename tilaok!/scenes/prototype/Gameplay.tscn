@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://mkt6txdkmciv"]
 
-[ext_resource type="Script" uid="uid://b2mt85hsdjn81" path="res://scenes/gameplay.gd" id="1_4rwr5"]
-[ext_resource type="PackedScene" uid="uid://b2yd1mq6c0a5p" path="res://scenes/chicken.tscn" id="1_75vxi"]
-[ext_resource type="PackedScene" uid="uid://cda057uy6kkvg" path="res://scenes/flag.tscn" id="2_5sdaa"]
-[ext_resource type="PackedScene" uid="uid://bxi6rxc4p5wna" path="res://scenes/chicken2.tscn" id="3_5sdaa"]
+[ext_resource type="Script" uid="uid://b2mt85hsdjn81" path="res://scenes/prototype/gameplay.gd" id="1_4rwr5"]
+[ext_resource type="PackedScene" uid="uid://b2yd1mq6c0a5p" path="res://scenes/prototype/chicken.tscn" id="1_75vxi"]
+[ext_resource type="PackedScene" uid="uid://cda057uy6kkvg" path="res://scenes/prototype/flag.tscn" id="2_5sdaa"]
+[ext_resource type="PackedScene" uid="uid://bxi6rxc4p5wna" path="res://scenes/prototype/chicken2.tscn" id="3_5sdaa"]
 [ext_resource type="Texture2D" uid="uid://c8rur0xx0hv7v" path="res://icon.svg" id="3_a8mty"]
-[ext_resource type="PackedScene" uid="uid://derk50o0h5432" path="res://scenes/basic_block.tscn" id="5_gnmmn"]
-[ext_resource type="PackedScene" uid="uid://ddqbkgvgv6dcl" path="res://scenes/Wood Block.tscn" id="6_4rwr5"]
+[ext_resource type="PackedScene" uid="uid://derk50o0h5432" path="res://scenes/prototype/basic_block.tscn" id="5_gnmmn"]
+[ext_resource type="PackedScene" uid="uid://ddqbkgvgv6dcl" path="res://scenes/prototype/Wood Block.tscn" id="6_4rwr5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v5vfr"]
 size = Vector2(335, 102)
