@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. P02, P03 and P04 implementation/evidence were added on 2026-10-13; this is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. P02, P03 and P04 implementation/evidence were added on 2026-10-13; P05 diagnostic-loop evidence was added on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts; P04 adds the item infrastructure and the Kaing/Tulay seeds in an Item Lab. These are development slices, not the lobby-to-match game. Hardware coverage, player feel and late-game performance limits remain explicit. Historical P00 results remain below; P01/P02/P03 evidence follows them.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts; P04 adds the item infrastructure and Kaing/Tulay seeds in an Item Lab; P05 adds the lobby/Pugad/atomic Place/diagnostic Play/results-shell/next-round loop. P05 has no race finish rules or scoring, and T12 awaits P06-T08 actual result bindings. These are development slices, not a complete game or release playtest. Hardware coverage, human player feel and release-device performance remain explicit. Historical P00 results remain below.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -31,6 +31,26 @@ P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and 
 | Export / exported Windows build | **PASSED** | Official 4.7.2 templates installed in standard versioned path; Windows Desktop export succeeded. Executable opened a responsive `Tilaok!` window, accepted a normal close, and exited. [Template record](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [runtime record](evidence/p01-export-runtime-2026-10-13.log). Template-manager UI was not used. |
 | Physical keyboard/controller validation | **COULD NOT RUN** | Windows enumerated keyboard devices but no gamepad/controller; keyboard model/layout and actual button mapping are unknown. Device enumeration is not an input test. |
 | P02 diagnostic performance / full playtest baseline | **PARTIAL** | One rendered P02 fixture sample is measured below; complete-player playtests, physical controls, comparable pre-change baseline, 1080p and late-game stress remain unverified. |
+
+## P05 diagnostic-loop session — October 14, 2026
+
+**Build/source:** updated main checkout at fa5a4e27f61f884cd726dc35fd800da8a0fef121; Godot 4.7.2.stable.official.ed1daf0bf; seeded match 12345. **Machine:** Windows, Intel Core i5-13420H, NVIDIA RTX 4050 Laptop GPU. **Devices:** keyboard seats K1/K2 and synthetic gamepad identities 3/4. **Review:** automated checks and Codex capture inspection; no independent human review or human playtest.
+
+| Check | Status | Result and evidence |
+|---|---|---|
+| Import/class registration | PASSED | Godot editor import exited 0 with no errors/warnings; [log](evidence/p05/import_parse.log). |
+| Lint/format | PASSED | gdformat check and gdlint on all 100 project GDScript files; no lint issues. |
+| Existing automated suites | PASSED | Foundation lifecycle 0 failures; P02 83, P02 wall 85, P03 103, P04 268 checks. Logs are indexed under [P05 evidence](evidence/p05/). |
+| P05 automated match checks | PASSED | 137 checks, 0 failures: claim order/ties/final-timeout tick, 2/3/4 seats under seeds 12345/7/991, pool eligibility, placement validation, atomic permutations/conflicts/cleanup, timeout commit/discard, pause, lobby gate, held edges, result advance and ten-round persistence/reset. [log](evidence/p05/p05_test_run.log). |
+| UI component gallery contract | **PASSED — isolated debug fixture** | 437 checks across scene/component instantiation, prompt/seat identity, owned-seat input, transitions, theme/layout, and resource-free lifecycle. Sample result data is not connected to P05 or the scoring engine. [log](evidence/p05/ui_gallery_smoke.log). |
+| Existing visible regression runners | PASSED | P03 14 checks and P04 Item Lab 25 checks; see [P03 log](evidence/p05/existing_p03_interactive_run.log) and [P04 log](evidence/p05/existing_p04_interactive_run.log). |
+| P05 visible loop | PASSED | 64 checks; traversed two round cycles through the harness with four fixed identities, contested egg/retry, exact-variant handoff, rotated 2×3 ghost, simultaneous confirmed edit batch, diagnostic Play/results and construction retention. [log](evidence/p05/p05_interactive_run.log). Seats 3/4 were synthetic. |
+| Rejection/variant captures | PASSED | 1920×1080 images; 12 expected validator codes matched actual codes and visible non-color reason text. Exact variant egg/ghost/placed handoff matrix and screenshots are in [P05 evidence](evidence/p05/). |
+| Four-seat crowded render/performance | PASSED — local diagnostic sample | 600 frames at 1920×1080, 48 persistent pieces after 12 rounds: median 2.356 ms, p95 4.616 ms, worst 8.577 ms; 79.80 MiB Godot static memory; 2,323 objects; 302 nodes; zero orphan nodes. P95/worst <16.67 ms and memory <512 MiB. P04 baseline was 1.954/3.109/6.059 ms and 70.97 MiB. [metrics](evidence/p05/p05_performance.txt), [crowded image](evidence/p05/crowded_post_round12_48_pieces_1920x1080.png). The stress capture had no removals; once-only cleanup and persistence were asserted separately. |
+| Gameplay traffic | PASSED — architectural inspection | Local-only flow has no sockets/network calls; 0 B/s gameplay traffic. No traffic monitor was used. |
+| Windows Debug export/startup | PASSED — startup only | Godot 4.7.2 Windows template export and exported headless P05 room smoke; final logs: [export](evidence/p05/windows_export.log), [runtime](evidence/p05/windows_export_runtime.log). This does not verify exported physical input. |
+
+The verification report and dated D3 scope note are [here](evidence/p05/2026-10-14_p05_verification.md) and [here](evidence/p05/2026-10-14_p05_scope_note.md). P05-T01–T11 are recorded as checked, T12 remains COULD-NOT-RUN until P06-T08 passes. No scoring/award calculation, real Karera finish handling, Walis Cleanup gameplay, saves or networking were tested or implemented. Synthetic pad events do not count as physical gamepad validation; final art/audio and human/competition review remain outstanding.
 
 ## P00 production-readiness evidence
 

@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P05-match-loop-dev seed=12345
+P05_CAPTURE file=01_rejection_unknown_variant_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=unknown_variant actual=unknown_variant
+P05_CAPTURE file=02_rejection_variant_disabled_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=variant_disabled actual=variant_disabled
+P05_CAPTURE file=03_rejection_rotation_unsupported_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=rotation_unsupported actual=rotation_unsupported
+P05_CAPTURE file=04_rejection_out_of_bounds_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=out_of_bounds actual=out_of_bounds
+P05_CAPTURE file=05_rejection_protected_spawn_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=protected_spawn actual=protected_spawn
+P05_CAPTURE file=06_rejection_protected_goal_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=protected_goal actual=protected_goal
+P05_CAPTURE file=07_rejection_outside_build_region_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=outside_build_region actual=outside_build_region
+P05_CAPTURE file=08_rejection_immutable_base_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=immutable_base actual=immutable_base
+P05_CAPTURE file=09_rejection_player_clearance_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=player_clearance actual=player_clearance
+P05_CAPTURE file=10_rejection_item_overlap_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=item_overlap actual=item_overlap
+P05_CAPTURE file=11_rejection_persistent_cap_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=persistent_cap actual=persistent_cap
+P05_CAPTURE file=12_rejection_invalid_region_1920x1080.png size=1920x1080
+P05_REJECTION_CAPTURE expected=invalid_region actual=invalid_region
+P05_CAPTURE file=crowded_post_round12_48_pieces_1920x1080.png size=1920x1080
+P05_PERFORMANCE median=2.356ms p95=4.616ms worst=8.577ms memory=79.80MiB objects=2323 nodes=302 orphan_nodes=0 status=PASSED

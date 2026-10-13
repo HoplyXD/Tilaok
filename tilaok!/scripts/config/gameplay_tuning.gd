@@ -66,6 +66,11 @@ extends Resource
 @export var item_tulay_vertical_enabled: bool = false
 @export var item_kaing_weight: float = 50.0
 @export var item_tulay_weight: float = 50.0
+## P05 match-loop prototype values; copied into the match configuration snapshot.
+@export var match_pugad_extra_eggs: int = 2
+@export var match_pugad_seconds: float = 8.0
+@export var match_place_seconds: float = 15.0
+@export var match_results_advance_seconds: float = 8.0
 ## Variant keys allowed into the prototype pool; each must be defined and approved.
 @export var item_enabled_variants: PackedStringArray = PackedStringArray(
 	[
@@ -128,6 +133,9 @@ func validate() -> PackedStringArray:
 		"item_tulay_strip_thickness_wu",
 		"item_kaing_weight",
 		"item_tulay_weight",
+		"match_pugad_seconds",
+		"match_place_seconds",
+		"match_results_advance_seconds",
 	]:
 		if not is_finite(get(field_name)):
 			errors.append("%s must be finite" % field_name)
@@ -173,6 +181,14 @@ func validate() -> PackedStringArray:
 	errors.append_array(_validate_item_tuning())
 	if camera_view_bounds.size.x <= 0.0 or camera_view_bounds.size.y <= 0.0:
 		errors.append("camera view bounds must have positive dimensions")
+	if match_pugad_extra_eggs < 0:
+		errors.append("match_pugad_extra_eggs cannot be negative")
+	if (
+		match_pugad_seconds <= 0.0
+		or match_place_seconds <= 0.0
+		or match_results_advance_seconds <= 0.0
+	):
+		errors.append("match phase durations must be greater than zero")
 	for bound_value in [
 		camera_view_bounds.position.x,
 		camera_view_bounds.position.y,

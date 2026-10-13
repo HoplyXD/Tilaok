@@ -1,0 +1,17 @@
+Status: PASSED
+P05 4-seat / 48-piece performance capture
+Date: 2026-10-14 local machine date
+Engine: 4.7.2-stable (official)
+Machine: Windows / 13th Gen Intel(R) Core(TM) i5-13420H / 12 logical CPUs
+Renderer: NVIDIA; GPU: NVIDIA GeForce RTX 4050 Laptop GPU
+Display: 1920x1080, windowed; v-sync off during 600 completed rendered-frame samples
+Seats: K1/K2 plus synthetic gamepad identities 3/4; no physical gamepads certified
+Fixture: 12 construction rounds; 24 Tulay 4x1 and 24 Kaing 1x1 (48 total)
+Actual frame intervals: median 2.356 ms; p95 4.616 ms; worst 8.577 ms
+Actual static memory: 79.80 MiB
+Actual objects: 2323; nodes: 302; orphan nodes: 0
+P04 baseline (2026-10-13): median 1.954 ms; p95 3.109 ms; worst 6.059 ms; static memory 70.97 MiB; 2089 objects; 232 nodes; 0 orphan nodes.
+Cleanup: no cleanup targets in the 12-round stress fixture; the focused suite verified one-time cleanup, 10-round persistence, removal and reset.
+Targets: p95 and worst < 16.67 ms; static memory < 512 MiB; gameplay traffic 0 B/s (local-only build).
+Gameplay traffic: 0 B/s; P05 adds no sockets or network calls.
+Automated measurement from capture_p05_evidence.gd. No human review claimed.

@@ -11,7 +11,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Phased Implementation Tracker](docs/PHASETASK.md): 47/401 task records checked; P04 is 18/22 (early exit met; 4 blocked on later modes and release gates; art tasks are passed on placeholders), P03 is 6/6 and P02 is 14/22 (physical-device and human-review tasks open)
+- [Phased Implementation Tracker](docs/PHASETASK.md): 58/401 task records checked; P05 is 11/12 (P05-T12 waits on P06-T08 result evidence and the P05 phase exit remains open), P04 is 18/22, P03 is 6/6 and P02 is 14/22 (physical-device and human-review tasks open)
 - [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters
@@ -39,7 +39,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-P01 provides the foundation harness and typed provisional configuration. P02 adds the movement/input diagnostic room; P03 adds a playable protected graybox arena, bounded Play/Place camera, and explicit support-provenance/contact fixtures. P03's six tasks are verified; P02 is 14/22 because physical controller, keyboard rollover and reconnect checks and the wall-movement human review are open. Wall slide/jump is an approved Should extension (P02-T15–T22) that is implemented and automated-test verified but enabled by default (core movement, owner decision 2026-10-13); try it via the P02 room's "Wall fixtures (debug)" button or the P03 room's "Wall fixtures" button. It is not a required October submission feature, awaits human review and the October 21 keep/defer decision, and must not delay P04. P04 adds typed item definitions and a validator, a lifecycle/cap manager and the Kaing (Hollow Blocks) and Tulay na Kawayan (bamboo bridge) construction seeds, exercised in an interactive Item Lab that uses immediate lab-only placement. This is not a full lobby-to-match game and does not implement Pugad, atomic placement, scoring, Kangaroo, hazards or production UI/assets. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [P03 tracker](docs/PHASETASK.md#p03--graybox-stage-and-camera), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
+P01 provides the foundation harness and typed provisional configuration. P02 adds the movement/input diagnostic room; P03 adds a playable protected graybox arena, bounded Play/Place camera and support-provenance/contact fixtures. P04 adds typed item definitions and the Kaing/Tulay construction seeds in an immediate-placement Item Lab. P05 now adds a local lobby → Pugad → atomic Place → diagnostic Play → results shell → next-round loop, retaining construction across rounds. P05-T01–T11 have implementation/verification evidence; T12 waits on P06-T08 actual award/result evidence, so the P05 phase exit remains open. The P05 shell does not implement finish rules, scoring, Walis Cleanup gameplay, networking or saves. P02 is 14/22 because physical controller, keyboard rollover/reconnect checks and wall-movement human review remain open. Wall slide/jump is an approved Should extension, awaits human review and the October 21 keep/defer decision, and must not delay P05. P03 is 6/6 and P04 is 18/22. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), [tracker](docs/PHASETASK.md), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
 
 ## Run the P03 graybox
 
@@ -53,4 +53,18 @@ Choose **P03 Graybox Arena** in the harness. Join K1/K2 with the visible buttons
 
 ## Run the P04 Item Lab
 
-Launch the harness as above, then choose **Item Lab**. Join K1/K2 with the visible buttons, press **Place**, use **Variant** to cycle the enabled variants (Kaing 1×1, Kaing 2×3, Tulay 4×1), then move (K1 WASD / K2 arrows), rotate (K1 R / K2 Right Shift) and confirm (K1 F / K2 Enter). The ghost shows outline style, an OK/X mark and a text reason in addition to colour. **Play** starts the item lifecycle with a 1.0 s activation grace; **Reset** restarts Play and keeps construction; **Clear all** performs a match reset. Placement here is immediate and lab-only; the atomic Place resolver, Pugad and egg previews belong to P05. All visuals are code-drawn DEBUG graybox.
+Launch the harness as above, then choose **Item Lab**. Join K1/K2 with the visible buttons, press **Place**, use **Variant** to cycle the enabled variants (Kaing 1×1, Kaing 2×3, Tulay 4×1), then move (K1 WASD / K2 arrows), rotate (K1 R / K2 Right Shift) and confirm (K1 F / K2 Enter). The ghost shows outline style, an OK/X mark and a text reason in addition to colour. **Play** starts the item lifecycle with a 1.0 s activation grace; **Reset** restarts Play and keeps construction; **Clear all** performs a match reset. Placement here is immediate and lab-only; use P05 Match Loop to exercise Pugad, exact-variant eggs and the atomic Place resolver. All visuals are code-drawn DEBUG graybox.
+
+## Run the P05 match loop
+
+Launch the harness with the command above and choose **P05 Match Loop**. Join at least two seats and mark every joined seat ready before **Start match** enables. Keyboard seats use K1 **WASD + Space**, K2 **arrows + Ctrl**; **F / Enter** readies and confirms, arrows select a Pugad egg, and **R / Right Shift** rotates a supported Place piece. During diagnostic Play, use **End Round • diagnostic** or the flag-touch stub to open the results shell. The shell advances when all seats are ready or after eight seconds. It awards no points. Construction remains for the next round.
+
+Run the focused automated, interactive and capture checks with Godot 4.7.2:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p05_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/run_p05_interactive.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_p05_evidence.gd'
+```
+
+Evidence seats 3/4 use synthetic gamepad identities; physical gamepads were unavailable. P05 visuals remain DEBUG placeholders. See the [P05 verification record](docs/evidence/p05/2026-10-14_p05_verification.md) for test results and limits.

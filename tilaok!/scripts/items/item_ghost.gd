@@ -15,6 +15,7 @@ var valid := true
 var reason := ""
 var seat_label := ""
 var item_label := ""
+var compact_label := false
 
 
 func show_state(
@@ -53,8 +54,12 @@ func _draw() -> void:
 	if font == null:
 		return
 	var mark := "OK" if valid else "X"
-	var text := "%s %s • %s" % [seat_label, mark, item_label]
-	if not valid:
+	var text := (
+		"%s %s" % [seat_label, mark]
+		if compact_label
+		else "%s %s • %s" % [seat_label, mark, item_label]
+	)
+	if not valid and not compact_label:
 		text += " — " + reason
 	var anchor := footprint_rect.position + Vector2(0.0, -8.0)
 	draw_string(

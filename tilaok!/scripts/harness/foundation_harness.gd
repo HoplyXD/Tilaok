@@ -8,9 +8,10 @@ const ROOM_SCENES := {
 	"p02_movement_room": preload("res://scenes/fixtures/p02_movement_room.tscn"),
 	"p03_stage_room": preload("res://scenes/fixtures/p03_stage_room.tscn"),
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
+	"p05_match": preload("res://scenes/match/match_room.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 }
-const FULL_VIEW_ROOMS: PackedStringArray = ["p03_stage_room", "item_lab"]
+const FULL_VIEW_ROOMS: PackedStringArray = ["p03_stage_room", "item_lab", "p05_match"]
 
 var gameplay_tuning := GameplayTuning.new()
 var presentation_settings := PresentationSettings.new()
@@ -63,6 +64,7 @@ func _ready() -> void:
 	)
 	$Layout/HarnessPanel/RoomRow/ItemRoomButton.pressed.connect(_open_room.bind("item_lab"))
 	$Layout/HarnessPanel/RoomRow/EventRoomButton.pressed.connect(_open_room.bind("event_lab"))
+	$Layout/HarnessPanel/RoomRow/P05MatchButton.pressed.connect(_open_room.bind("p05_match"))
 	$Layout/ExitButton.pressed.connect(_exit_harness)
 	profile_picker.select(0)
 	_update_identity()
@@ -191,6 +193,8 @@ func _open_room(room_id: String) -> void:
 		return
 	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
+	if room_id == "p05_match" and active_room.has_method("set_match_seed"):
+		active_room.call("set_match_seed", selected_seed)
 	if FULL_VIEW_ROOMS.has(room_id):
 		active_room.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		add_child(active_room)
@@ -206,6 +210,13 @@ func _open_room(room_id: String) -> void:
 	elif room_id == "item_lab":
 		_append_status(
 			"Opened the P04 Item Lab; lab placement is immediate and is not the P05 resolver."
+		)
+	elif room_id == "p05_match":
+		_append_status(
+			(
+				"Opened P05 Lobby → Pugad → Place → diagnostic Play → Results. "
+				+ "Awards and finish rules are not active."
+			)
 		)
 	elif room_id == "p02_movement_room":
 		_append_status(

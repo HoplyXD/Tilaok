@@ -31,7 +31,7 @@ text = "Tilaok! — Development Foundation Harness"
 
 [node name="Subtitle" type="Label" parent="Layout"]
 layout_mode = 2
-text = "P01–P03 development diagnostics • No full match loop, items, scoring, or events are implemented"
+text = "P01–P05 development harness • Match loop diagnostics; scoring and events remain out of scope"
 
 [node name="Identity" type="Label" parent="Layout"]
 unique_name_in_owner = true
@@ -138,6 +138,10 @@ text = "Item Lab"
 [node name="EventRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
 layout_mode = 2
 text = "Event Lab"
+
+[node name="P05MatchButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "P05 Match Loop"
 
 [node name="RoomHost" type="Control" parent="Layout"]
 unique_name_in_owner = true
