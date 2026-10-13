@@ -4,7 +4,7 @@
 
 ## Delivery principle
 
-Ship a small, stable, understandable local-multiplayer game before adding breadth. The core loop, Karera, scoring, Lagsanay, tutorial, and a polished feasible item set take priority over backlog content.
+Ship a small, stable, understandable local-multiplayer game before adding breadth. The core loop, Karera, scoring, Lagsanay, tutorial, and the eight targeted first-batch families take priority over backlog content.
 
 All gameplay systems, controls, scenes, and game logic must be written and understood by registered team members. Documentation, research attribution, and review can be AI-assisted when accurately declared in Form 03.
 
@@ -30,7 +30,7 @@ Fill names before production work begins. A person may hold more than one role o
 5. Complete first-to-10/round-12 results, tied-match Lagsanay sudden death, full tutorial and repeatable restart. Earlier race-only scaffolding is not this full gate.
 6. Implement Kangaroo independently from the current contract; unapproved rule-change proposals remain inactive.
 7. Implement all three core stacks after their components pass. Karera + Lagsanay can be tested earlier once both work; Kangaroo-dependent stacks wait for Kangaroo.
-8. Add the feasible approved item subset, art/audio, performance and submission evidence where dependencies permit. Bubble capture stays last; stacking remains release scope.
+8. Complete all eight targeted families and applicable approved variants, art/audio, performance and submission evidence where dependencies permit. Bubble capture stays last; stacking remains release scope.
 
 No step is evidence of completion until it has the required team-written implementation and `PLAYTEST.md` evidence.
 
@@ -50,7 +50,7 @@ No step is evidence of completion until it has the required team-written impleme
 ## Scope protection and cut order
 
 - Preserve the Pugad → Place → Play loop, Karera, scoring, Lagsanay, tutorial, and clear local multiplayer controls.
-- Preserve the eight-family approved item catalog as a design commitment. If implementation capacity slips, seek an explicit team decision before cutting a family; the recommended first cut is Bula-Bulaklak because capture state and forced movement have the most dependencies.
+- Preserve all eight initial families as the approved October 13 submission target, with applicable approved variants and conditional Tulay orientation validation. If implementation capacity slips, seek an explicit team decision before cutting a family; the recommended first cut is Bula-Bulaklak because capture state and forced movement have the most dependencies.
 - Keep expanded catalog items, Langit-Lupa implementation, extra stages, cosmetics, and nonessential polish behind the core gates.
 - Do not silently replace an approved event, scoring rule, or compatibility contract.
 
@@ -126,3 +126,7 @@ Device checklist: map every button/axis, verify neutral drift, simultaneous dire
 Temporary art: one short review chooses geometric chicken placeholders, clear solid/hazard silhouettes and number+shape markers. Use engine-provided typography for graybox; verify/register terms before export. Require legible numbers, needed Philippine-language glyphs, distinct symbols and readable 1080p/minimum-zoom text. Final art style/font family/audio and cultural review do not block movement testing. Record provenance in ASSETS.md.
 
 Inspection on October 12 found only a skeleton. At documentation completion on October 13, about eight calendar days remain to October 21 feature freeze and twelve to October 25 submission. The existing required scope is high risk, not guaranteed by a calendar. Seek core-loop evidence October 13–16; independent modes/stacks October 17–20 only after gates; October 21 is the last feature-entry decision. October 22–23 stabilize, October 24 prepare media/forms, October 25 submit. If gates slip, the producer must explicitly revise release scope. Do not silently remove Lagsanay, Kangaroo or stacking, or spend the only gameplay capacity on final assets.
+
+## Product and execution handoff
+
+Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. All owners and physical hardware facts remain TBD until the team supplies evidence.
