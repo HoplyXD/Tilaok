@@ -317,3 +317,23 @@ Task edits: this NEW centralized defaults document; STAGE_AND_PLACEMENT graybox/
 Before any later commit, distinguish prerequisite user documentation from this task's edits and stage named files only. Commit only on the user's explicit `commit`; push/open PR only on explicit `push`; never merge. No Co-Authored-By trailer or AI attribution in commit/PR text; accurate disclosure belongs in AI_USAGE and Form 03. Do not rewrite history.
 
 **One next physical experiment:** with the target PC's keyboard, run the shared K1/K2 simultaneous-chord and rollover matrix in PLAYTEST.md; record exact make/model/layout and every supported chord. Then arrange two identical gamepads to complete the remaining isolation and reconnect checks. This resolves the open physical-input acceptance without treating synthetic events as hardware evidence.
+
+## P10 first-batch item keys (2026-10-14) — PROVISIONAL, UNMEASURED for feel
+
+All live in `GameplayTuning` and are validated. Values marked *doc* come from the spring gate and transient policy above; others are first proposals. Measured results are in [P10 verification index](evidence/p10/2026-10-14_p10_verification.md).
+
+| Key | Value | Source / measured |
+|---|---|---|
+| `item_spring_launch_wu_s` / `item_spring_boost_wu_s` | 775 / 849 | *doc*; measured rise 168.2 / 200.8 wu at 60 Hz |
+| `item_spring_boost_window_s` / `item_spring_cooldown_s` | 0.10 / 0.20 s | *doc*; press timestamped from the input edge |
+| `item_spring_horizontal_cap_wu_s` / `item_spring_upward_cap_wu_s` | 480 / 900 | *doc*; side launch measured 480.0 |
+| `item_spring_contact_probe_wu` | 2 | face-contact tolerance |
+| `item_trumpo_speed_wu_s` / `item_trumpo_pause_s` / `item_trumpo_hit_wu` | 160 / 0.75 / 20 | pause 45 frames, period 3.25 s on a 5×1 rail |
+| `item_parol_cycle_s` / `item_parol_active_s` / `item_parol_charge_s` / `item_parol_beam_width_wu` | 3.0 / 1.5 / 0.6 / 12 | item time: charge 0.900 s, active 1.500 s |
+| `item_launcher_initial_delay_s` / `_telegraph_s` / `_cooldown_s` | 0.5 / 0.8 / 1.7 | first shot at frame 76 after arming |
+| `item_launcher_projectile_speed_wu_s` / `_size_wu` | 360 / 14 | 6.00 wu per frame |
+| `item_bubble_cadence_s` / `_rise_wu_s` / `_radius_wu` | 2.5 / 60 / 14 | emits after the grace |
+| `item_bubble_capture_s` / `_release_wu_s` / `_recapture_immunity_s` | 2.0 / 120 / 1.0 | *doc* capture ≈2 s (121 frames) and 1.0 s immunity |
+| `item_spring_weight` / `item_trumpo_weight` / `item_parol_weight` / `item_launcher_weight` / `item_walis_weight` / `item_bubble_weight` | 15 / 50 each | spring 15 *doc* (Kaing 45 / Tulay 40 / spring 15 in `karera_spring`); `items_lab` applies equal 50 weights, labelled provisional |
+
+`items_lab` is a development profile applied by the Visualizer and `MatchRoomItemsLab` (`ItemEnabledProfiles`); it is not a `ProfileRegistry` profile, and `release_candidate` is unchanged. Measured stress at 48 persistent items, 16 projectiles and 4 bubbles: median 3.25 ms, p95 4.57 ms, worst 5.70 ms, 80.85 MiB at 1080p.

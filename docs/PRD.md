@@ -844,7 +844,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-14):** implemented and verified in the development `items_lab` profile with PLACEHOLDER art/audio and synthetic input (P10-T01–T06 and T08 PASSED); see [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). Event integration (Lagsanay/Kangaroo/stacks) and release enablement are not done and stay COULD-NOT-RUN pending P08-T06, P11-T12, P12-T04/T06/T08/T10 and P13-T06. No human review is claimed.
 
 
 ### REQ-ITEM-004 — Trumpo sa Riles
@@ -855,7 +855,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-14):** implemented and verified in the development `items_lab` profile with PLACEHOLDER art/audio and synthetic input (P10-T10–T15 and T17 PASSED); see [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). Event integration (Lagsanay/Kangaroo/stacks) and release enablement are not done and stay COULD-NOT-RUN pending P08-T06, P11-T12, P12-T04/T06/T08/T10 and P13-T06. No human review is claimed.
 
 
 ### REQ-ITEM-005 — Parol Pulse
@@ -866,7 +866,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-14):** implemented and verified in the development `items_lab` profile with PLACEHOLDER art/audio and synthetic input (P10-T19–T24 and T26 PASSED); see [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). Event integration (Lagsanay/Kangaroo/stacks) and release enablement are not done and stay COULD-NOT-RUN pending P08-T06, P11-T12, P12-T04/T06/T08/T10 and P13-T06. No human review is claimed.
 
 
 ### REQ-ITEM-007 — Tsinelas Launcher
@@ -877,7 +877,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-14):** implemented and verified in the development `items_lab` profile with PLACEHOLDER art/audio and synthetic input (P10-T28–T33 and T35 PASSED); see [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). Event integration (Lagsanay/Kangaroo/stacks) and release enablement are not done and stay COULD-NOT-RUN pending P08-T06, P11-T12, P12-T04/T06/T08/T10 and P13-T06. No human review is claimed.
 
 
 ### REQ-ITEM-008 — Walis Cleanup
@@ -888,7 +888,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-14):** implemented and verified in the development `items_lab` profile with PLACEHOLDER art/audio and synthetic input (P10-T37–T42 and T44 PASSED); see [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). Event integration (Lagsanay/Kangaroo/stacks) and release enablement are not done and stay COULD-NOT-RUN pending P08-T06, P11-T12, P12-T04/T06/T08/T10 and P13-T06. No human review is claimed.
 
 
 ### REQ-ITEM-006 — Bula-Bulaklak
@@ -899,7 +899,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-14):** implemented and verified in the development `items_lab` profile with PLACEHOLDER art/audio and synthetic input (P10-T46–T51 and T53 PASSED); see [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). Event integration (Lagsanay/Kangaroo/stacks) and release enablement are not done and stay COULD-NOT-RUN pending P08-T06, P11-T12, P12-T04/T06/T08/T10 and P13-T06. No human review is claimed.
 
 
 ### REQ-ITEM-009 — Hagdan ng Bahay

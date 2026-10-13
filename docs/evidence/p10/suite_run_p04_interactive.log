@@ -1,0 +1,31 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS Item Lab opens through the visible foundation-harness button
+PASS opening the lab exposes the arena viewport
+PASS visible join controls add two identity-labeled chickens
+PASS Library button opens the placeholder Library panel
+PASS clicking an egg claims its exact variant for the ghost
+PASS variant cycle wraps
+PASS Place button shows one ghost per seat
+PASS Variant button advances to the 2x3 stack (was build.hollow_blocks.cell_1x1)
+PASS K1 rotate key turns the 2x3 ghost to 3x2
+PASS K1 confirm places a rotated 3x2 piece (lab placement)
+PASS K2 rotate, move and confirm place a second piece
+PASS Variant selects Tulay 4x1
+PASS Tulay shows the disabled-rotation cue while vertical is gated
+PASS K1 confirm places the one-way Tulay
+PASS K2 ghost turns invalid with an actionable reason: Outside the build region. Move it inside the green area. (outside build region)
+PASS an invalid confirm is rejected with a visible reason
+PASS 1080p frame saved: 2026-10-13_item_lab_place_1080p.png
+PASS Play button starts the item lifecycle and frees ghosts
+PASS synthetic K1 input moves the real controller in Play
+PASS construction is active after the activation grace
+PASS 1080p frame saved: 2026-10-13_item_lab_play_1080p.png
+PASS Reset keeps all three pieces and restarts Play
+PASS Clear all removes construction (match reset)
+PASS Return releases the Item Lab scene
+PASS return restores the foundation harness
+P04_INTERACTIVE checks=25 failures=0 place=(1920, 1080) play=(1920, 1080)
+

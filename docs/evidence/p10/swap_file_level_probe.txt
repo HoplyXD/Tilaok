@@ -1,0 +1,3 @@
+﻿P10_SWAP_PROBE label=file_original magenta=0
+P10_SWAP_PROBE label=file_swapped magenta=4960
+P10_SWAP_PROBE label=file_restored magenta=0

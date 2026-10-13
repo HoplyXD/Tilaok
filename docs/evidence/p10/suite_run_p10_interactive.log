@@ -1,0 +1,66 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_INTERACTIVE PASSED: the harness opens the Item Visualizer from its own button
+P10_INTERACTIVE PASSED: the Visualizer fills the 1920x1080 viewport
+P10_INTERACTIVE PASSED: the Visualizer lists all eight families
+P10_INTERACTIVE PASSED: K1, K2 and two synthetic gamepads give four test chickens
+P10_INTERACTIVE PASSED: Place gives every seat its own ghost cursor
+P10_INTERACTIVE PASSED: K1 rotate key turns the Gulong ghost to 90 degrees
+P10_INTERACTIVE PASSED: K1 confirm places the Gulong exactly as ghosted
+P10_INTERACTIVE PASSED: the placed Gulong keeps the rotation shown by its ghost
+P10_INTERACTIVE PASSED: K2 confirm places a Trumpo
+P10_INTERACTIVE PASSED: gamepad seat 3 confirms a Parol
+P10_INTERACTIVE PASSED: gamepad seat 4 confirms a Bula
+P10_INTERACTIVE PASSED: K1 confirms a Tsinelas Launcher
+P10_INTERACTIVE PASSED: captured 01_visualizer_place_1920x1080.png at (1920, 1080)
+P10_INTERACTIVE PASSED: a Walis confirm is accepted as a one-shot edit: { "allowed": true, "code": "one_shot", "reason": "Cleanup removed 1 piece(s).", "one_shot": true, "owner_seat": 0, "removed": ["hazard.slipper_launcher.lane_4x1#005"], "same_phase": [], "protected": [] }
+P10_INTERACTIVE PASSED: Walis never adds a persistent piece (5 -> 4)
+P10_INTERACTIVE PASSED: Play starts every placed item from its documented reset
+P10_INTERACTIVE PASSED: live readouts show several states: ["wait", "inactive", "moving", "ready", "paused", "charge", "active", "request", "rising"]
+P10_INTERACTIVE PASSED: seat 1 stays inside the arena
+P10_INTERACTIVE PASSED: seat 2 stays inside the arena
+P10_INTERACTIVE PASSED: seat 3 stays inside the arena
+P10_INTERACTIVE PASSED: seat 4 stays inside the arena
+P10_INTERACTIVE PASSED: captured 02_visualizer_play_1920x1080.png at (1920, 1080)
+P10_INTERACTIVE PASSED: Library lists move.tire_spring
+P10_INTERACTIVE PASSED: Library lists hazard.rail_trumpo
+P10_INTERACTIVE PASSED: Library lists hazard.parol_pulse
+P10_INTERACTIVE PASSED: Library lists hazard.slipper_launcher
+P10_INTERACTIVE PASSED: Library lists utility.walis_cleanup
+P10_INTERACTIVE PASSED: Library lists hazard.bubble_planter
+P10_INTERACTIVE PASSED: captured 03_visualizer_library_1920x1080.png at (1920, 1080)
+P10_INTERACTIVE PASSED: release filter hides every unreleased family
+P10_INTERACTIVE PASSED: Return releases the Visualizer back to the harness
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P10_INTERACTIVE PASSED: the harness opens the P05 match loop with the items_lab pool
+P10_INTERACTIVE PASSED: the match loop carries all eight families
+P10_INTERACTIVE PASSED: four seats join the match
+P10_INTERACTIVE seed=12346
+P10_INTERACTIVE PASSED: the ready gate starts a seeded Pugad
+P10_INTERACTIVE PASSED: the Pugad offers first-batch eggs (4 of 6)
+P10_INTERACTIVE PASSED: captured 10_match_pugad_items_1920x1080.png at (1920, 1080)
+P10_INTERACTIVE PASSED: all four seats hatch one exact variant
+P10_INTERACTIVE PASSED: all assigned seats enter Place
+P10_INTERACTIVE PASSED: every egg hands its exact variant to its ghost
+P10_INTERACTIVE PASSED: captured 11_match_place_items_1920x1080.png at (1920, 1080)
+P10_INTERACTIVE PASSED: confirmed edits resolve together before Play
+P10_INTERACTIVE PASSED: every seat's edit is accounted for (4 placed, 0 cleanup, 0 rejected)
+P10_INTERACTIVE PASSED: at least three of four first-batch edits were valid
+P10_INTERACTIVE PASSED: placed piece hazard.rail_trumpo.rail_5x1#001 matches a hatched egg variant
+P10_INTERACTIVE PASSED: placed piece move.tire_spring.tire_2x2#002 matches a hatched egg variant
+P10_INTERACTIVE PASSED: placed piece hazard.slipper_launcher.lane_6x1#003 matches a hatched egg variant
+P10_INTERACTIVE PASSED: placed piece hazard.bubble_planter.path_1x3#004 matches a hatched egg variant
+P10_INTERACTIVE PASSED: captured 12_match_play_items_1920x1080.png at (1920, 1080)
+P10_INTERACTIVE PASSED: seat 1 stays inside the arena during Play
+P10_INTERACTIVE PASSED: seat 2 stays inside the arena during Play
+P10_INTERACTIVE PASSED: seat 3 stays inside the arena during Play
+P10_INTERACTIVE PASSED: seat 4 stays inside the arena during Play
+P10_INTERACTIVE PASSED: goal contact still ends the round with the new families on the stage
+P10_INTERACTIVE PASSED: hazards recorded attribution without scoring
+P10_INTERACTIVE PASSED: Return leaves the match room cleanly
+P10_INTERACTIVE checks=56 failures=0 evidence=C:\Users\roman\.codex\worktrees\prd-phasetask\Tilaok\docs\evidence\p10
+

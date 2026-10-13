@@ -299,3 +299,15 @@ Final task checks are listed here. Earlier import evidence above belongs to its 
 | Controller feel / exported performance / actual balance | COULD NOT RUN | No runnable game, physical-device tests or identified target PC |
 
 At that documentation-only review, no team milestone was marked complete. The current P02 task state is recorded in [PHASETASK](PHASETASK.md#p02--inputs-and-controller); historical statements about an unbuilt project apply only to that prose-only task.
+
+## P10 first-batch families — automated and rendered session (2026-10-14)
+
+| Field | Record |
+|---|---|
+| Build / engine | `main` `a368c96` + P10 working tree; Godot 4.7.2.stable.official.ed1daf0bf |
+| Profile / seed / players / input | `items_lab`, 12345, 1–4 seats, synthetic K1/K2 keyboard and synthetic gamepad seats 3/4 (no physical device) |
+| Procedure | `run_p10_tests.gd` (421 checks), `run_p10_interactive.gd` (56 checks through the harness Visualizer and the all-families P05 match), `capture_p10_evidence.gd` (sheets, tells, eggs, ghosts, 48-item stress, swap), file-level placeholder swap probe, Windows export + exported startup smoke |
+| Expected / actual | Every row in [P10 verification index](evidence/p10/2026-10-14_p10_verification.md) passed; no row failed |
+| Reviewer | Automated author only. **No human playtest, feel, balance or readability review is claimed.** |
+
+**Still needed from people:** a human read of Parol (charge/active/inactive at minimum zoom with several emitters), launcher lane/cover fairness, bubble capture length and release placement, Trumpo pause timing and Gulong boost feel; native-speaker review of every working name; physical-device runs.

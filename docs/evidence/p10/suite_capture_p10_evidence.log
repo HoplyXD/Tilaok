@@ -1,0 +1,68 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: move.tire_spring: all 4 variant/rotation combinations placed on the sheet
+P10_CAPTURE PASSED: captured gulong_sheet_variants_rotations_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: hazard.rail_trumpo: all 12 variant/rotation combinations placed on the sheet
+P10_CAPTURE PASSED: captured trumpo_sheet_variants_rotations_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: hazard.parol_pulse: all 8 variant/rotation combinations placed on the sheet
+P10_CAPTURE PASSED: captured parol_sheet_variants_rotations_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: hazard.slipper_launcher: all 4 variant/rotation combinations placed on the sheet
+P10_CAPTURE PASSED: captured tsinelas_sheet_variants_rotations_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: captured walis_preview_targets_protected_1920x1080.png at (1920, 1080)
+P10_CAPTURE PASSED: Walis 5x5 outlines its exact targets (3)
+P10_CAPTURE PASSED: captured walis_preview_protected_exclusion_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: hazard.bubble_planter: all 2 variant/rotation combinations placed on the sheet
+P10_CAPTURE PASSED: captured bula_sheet_variants_rotations_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: tell fixture placed
+P10_CAPTURE PASSED: tell fixture placed
+P10_CAPTURE PASSED: tell fixture placed
+P10_CAPTURE PASSED: tell fixture placed
+P10_CAPTURE PASSED: tell fixture placed
+P10_CAPTURE PASSED: captured tells_t0_ready_inactive_1920x1080.png at (1920, 1080)
+P10_CAPTURE PASSED: captured tells_t1_charge_telegraph_compress_1920x1080.png at (1920, 1080)
+P10_CAPTURE PASSED: captured tells_t2_active_fire_paused_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: captured egg_previews_every_new_variant_1920x1080.png at (1920, 1080)
+P10_CAPTURE PASSED: an egg preview is drawn for every new variant (14)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: ghost for move.tire_spring.tire_2x2 carries region overlays
+P10_CAPTURE PASSED: ghost for hazard.slipper_launcher.lane_6x1 carries region overlays
+P10_CAPTURE PASSED: ghost for hazard.parol_pulse.span_6x1 carries region overlays
+P10_CAPTURE PASSED: ghost for hazard.bubble_planter.path_1x5 carries region overlays
+P10_CAPTURE PASSED: captured ghosts_regions_validity_1920x1080.png at (1920, 1080)
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_CAPTURE PASSED: the crowded stage holds 48 persistent items (48)
+P10_CAPTURE PASSED: captured crowded_mixed_48_items_play_1920x1080.png at (1920, 1080)
+P10_PERFORMANCE median=3.209 p95=4.605 worst=5.147 mib=80.85 nodes=327
+P10_CAPTURE PASSED: 48-item four-seat stress stays inside the frame and memory budget
+P10_CAPTURE PASSED: projectile cap respected
+P10_CAPTURE PASSED: bubble cap respected
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+P10_SWAP_RECT [P: (863.5897, 540.0), S: (96.41034, 96.41034)]
+P10_CAPTURE PASSED: captured swap_resource_after_1920x1080.png at (1920, 1080)
+P10_CAPTURE PASSED: swapped body slot renders (magenta pixels 0 -> 5487) with no code change
+P10_CAPTURE PASSED: the swapped sound slot plays through the same call
+P10_CAPTURE PASSED: restoring the slot restores the placeholder art (0 magenta)
+P10_CAPTURE checks=37 failures=0 dir=C:\Users\roman\.codex\worktrees\prd-phasetask\Tilaok\docs\evidence\p10
+

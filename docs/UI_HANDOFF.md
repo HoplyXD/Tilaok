@@ -191,3 +191,18 @@ Questions: Francis or Carlos.
 ## 13. Source documents
 
 [UI_TUTORIAL.md](UI_TUTORIAL.md) · [GDD.md](GDD.md) · [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md) · [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md) · [ITEMS.md](ITEMS.md) · [ASSETS.md](ASSETS.md) · [PRODUCTION.md](PRODUCTION.md) · [COMPETITION.md](COMPETITION.md) · [PHASETASK.md](PHASETASK.md) (P05-T11, P13)
+
+## 14. P10 item tells and placeholder slots (Jorge/Ivie art, Shanti UI/audio)
+
+Every first-batch item is drawn through one `ItemVisualSet` per family (`tilaok!/data/items/visual/<family_id>.tres`). **Replace a placeholder by saving your file over `tilaok!/assets/items/<family_id>/PLACEHOLDER_<slot>.<ext>`, or set the slot's `frames`/`sound` in the inspector.** No code change is needed; the Item Visualizer's **Reload art** button shows the swap immediately and **Art slots** lists every slot and its owner. A missing slot falls back to a graybox shape.
+
+| Family | Slots | Tell to preserve (shape + motion + sound, never colour alone) |
+|---|---|---|
+| Gulong Talon | `body`, `body_compressed`, `sfx_launch` | Coil compresses before/at launch; arrow along the launch face; boing |
+| Trumpo sa Riles | `rail`, `top`, `sfx_pause` | Visible rail ends; top spins; pause marker and tick at each end |
+| Parol Pulse | `post`, `beam_on`, `sfx_charge`, `sfx_on` | Dotted line → thickening line → solid band (no flashing faster than ~1 Hz); rising tone, then a click |
+| Tsinelas Launcher | `launcher`, `launcher_charge`, `projectile`, `sfx_charge`, `sfx_fire` | Lane always visible and stops at the first solid; barrel pulls back; charge sound before the shot |
+| Walis Cleanup | `broom_outline`, `sfx_sweep` | Every target gets an X, protected areas are hatched; sweep sound on confirm |
+| Bula-Bulaklak | `pot`, `bubble`, `captive_icon`, `sfx_emit`, `sfx_capture`, `sfx_pop` | Upward path arrows; capture ring counts down the ~2 s hold |
+
+Slot sizes: textures are stretched into the region (body = footprint, beam = beam segment, lane/projectile = 14 wu). Final art keeps those rectangles; add frames to a slot for a loop (`fps` per slot). Egg, ghost, Library and the live piece all use the same slots. See [ASSETS.md](ASSETS.md) for the register.
