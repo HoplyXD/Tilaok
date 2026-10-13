@@ -3,7 +3,7 @@
 Context for Claude Code sessions in this repo.
 
 ## What this is
-**Tilaok!** is a 2–4 player local-multiplayer party platformer built in **Godot 4** for the **DOST Level Up 3.0 Esports Game Dev Challenge**.
+**Tilaok!** is a 2–4 player local-multiplayer party platformer built in **Godot 4.7** for the **DOST Level Up 3.0 Esports Game Dev Challenge**.
 - **Submission deadline: Oct 25, 2026.** Finals: Nov 26–27, 2026, General Santos City.
 - Theme: **Philippine Games and Sports.**
 
