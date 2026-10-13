@@ -25,6 +25,7 @@ Keep Form 03 aligned with these repository documents:
 | Asset-level licence and cultural-review record | `ASSETS.md` |
 | Honest verification status and test evidence | `PLAYTEST.md` |
 | Programming provenance and current workflow | `PRODUCTION.md`, `AGENTS.md`, `CLAUDE.md`, `AI_USAGE.md`, and version-control history |
+| P03 AI-assisted implementation scope and fixture evidence | `AI_USAGE.md`, `PHASETASK.md` P03, and `evidence/p03/2026-10-13_p03_verification.md` |
 
 Do not represent AI-generated code as manually team-written or claim a playable/tested feature from documentation alone.
 

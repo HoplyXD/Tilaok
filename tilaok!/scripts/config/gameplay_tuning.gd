@@ -3,6 +3,8 @@ extends Resource
 
 ## PROTOTYPE — UNTESTED values from docs/PROTOTYPE_DEFAULTS.md.
 @export var grid_cell_wu: float = 32.0
+@export var arena_width_tiles: int = 32
+@export var arena_height_tiles: int = 16
 @export var body_width_wu: float = 24.0
 @export var body_height_wu: float = 48.0
 @export var jump_height_wu: float = 96.0
@@ -27,6 +29,17 @@ extends Resource
 @export var contact_sensor_width_wu: float = 28.0
 @export var contact_sensor_height_wu: float = 48.0
 @export var taya_pass_back_seconds: float = 1.0
+@export var camera_virtual_width_px: float = 1280.0
+@export var camera_virtual_height_px: float = 720.0
+@export var camera_hud_reservation_px: float = 64.0
+@export var camera_target_padding_wu: float = 64.0
+@export var camera_zoom_min: float = 1.0
+@export var camera_zoom_max: float = 1.4
+@export var camera_ease_seconds: float = 0.20
+@export var camera_view_bounds := Rect2(Vector2(-64.0, -64.0), Vector2(1152.0, 640.0))
+@export var support_normal_limit_degrees: float = 45.0
+@export var support_contact_tolerance_wu: float = 1.0
+@export var support_height_epsilon_wu: float = 1.0
 
 
 func validate() -> PackedStringArray:
@@ -56,12 +69,24 @@ func validate() -> PackedStringArray:
 		"menu_repeat_rate",
 		"contact_sensor_width_wu",
 		"contact_sensor_height_wu",
-		"taya_pass_back_seconds"
+		"taya_pass_back_seconds",
+		"camera_virtual_width_px",
+		"camera_virtual_height_px",
+		"camera_hud_reservation_px",
+		"camera_target_padding_wu",
+		"camera_zoom_min",
+		"camera_zoom_max",
+		"camera_ease_seconds",
+		"support_normal_limit_degrees",
+		"support_contact_tolerance_wu",
+		"support_height_epsilon_wu",
 	]:
 		if not is_finite(get(field_name)):
 			errors.append("%s must be finite" % field_name)
 	if grid_cell_wu <= 0.0:
 		errors.append("grid_cell_wu must be greater than zero")
+	if arena_width_tiles <= 0 or arena_height_tiles <= 0:
+		errors.append("arena tile dimensions must be greater than zero")
 	if body_width_wu <= 0.0 or body_height_wu <= 0.0:
 		errors.append("body dimensions must be greater than zero")
 	if jump_height_wu <= 0.0 or jump_apex_seconds <= 0.0:
@@ -84,4 +109,27 @@ func validate() -> PackedStringArray:
 		errors.append("navigation repeat rates must be positive")
 	if contact_sensor_width_wu <= 0.0 or contact_sensor_height_wu <= 0.0:
 		errors.append("contact sensor dimensions must be positive")
+	if camera_virtual_width_px <= 0.0 or camera_virtual_height_px <= camera_hud_reservation_px:
+		errors.append("camera viewport must be positive and taller than its HUD reservation")
+	if camera_hud_reservation_px < 0.0 or camera_target_padding_wu < 0.0:
+		errors.append("camera HUD reservation and target padding cannot be negative")
+	if camera_zoom_min <= 0.0 or camera_zoom_max < camera_zoom_min:
+		errors.append("camera zoom range is invalid")
+	if camera_ease_seconds < 0.0:
+		errors.append("camera easing duration cannot be negative")
+	if support_normal_limit_degrees < 0.0 or support_normal_limit_degrees > 90.0:
+		errors.append("support normal limit must be between zero and 90 degrees")
+	if support_contact_tolerance_wu < 0.0 or support_height_epsilon_wu < 0.0:
+		errors.append("support tolerances cannot be negative")
+	if camera_view_bounds.size.x <= 0.0 or camera_view_bounds.size.y <= 0.0:
+		errors.append("camera view bounds must have positive dimensions")
+	for bound_value in [
+		camera_view_bounds.position.x,
+		camera_view_bounds.position.y,
+		camera_view_bounds.size.x,
+		camera_view_bounds.size.y
+	]:
+		if not is_finite(bound_value):
+			errors.append("camera view bounds must be finite")
+			break
 	return errors

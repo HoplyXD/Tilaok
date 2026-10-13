@@ -253,7 +253,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Base route is traversable before construction; bounds/protected zones are visible in tests; no placement/removal changes immutable geometry. Paper reachability is confirmed by actual collision trials.
 
-**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-13):** P03 builds the 32-wu tile-edge arena, protected spawn/goal/build regions, fixed bounds, immutable base geometry, and labeled debug overlays in `tilaok!/scripts/stage/arena_definition.gd` and `tilaok!/scripts/harness/p03_stage_room.gd`. The real controller traversed floor→A→B→C→D→goal with collision; protected footprint/sweep/effect edits and immutable removals were rejected and left the geometry signature unchanged. See [P03 assertions](evidence/p03/2026-10-13_p03_tests.txt), [rendered capture](evidence/p03/2026-10-13_interactive_harness_1080p.png), and [verification record](evidence/p03/2026-10-13_p03_verification.md). **Verification result:** PASSED for the P03 graybox contract. Future player edits are not guaranteed to remain solvable; no production placement system is claimed.
 
 
 ### REQ-STAGE-002 — Frame active players and unfinished placement pointers
@@ -264,7 +264,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** At 2/3/4 players, maximum separation/high construction/launches keep relevant targets visible and readable; finishing/confirming removes the correct target without unsafe snapping.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence (2026-10-13):** `tilaok!/scripts/camera/bounded_stage_camera.gd` fits real Play identity/body extents and unconfirmed Place preview rectangles inside the HUD-safe view, clamps pan to the actual viewport/bounds, and holds safe framing for empty sets. P03 verified 2/3/4 targets, opposite-corner preview extents, the highest legal preview, an actual 900-wu/s controller launch, and per-target finish/confirm exclusion. [Rendered evidence](evidence/p03/2026-10-13_play_1080p.png) is at zoom 1.0/1920×1080; [the wide-window capture](evidence/p03/2026-10-13_place_wide_window_1920x800.png) kept the same 1280×720 logical gameplay view. Full procedures/results are in [P03 verification](evidence/p03/2026-10-13_p03_verification.md). **Verification result:** PASSED for the diagnostic camera and renderer fixtures; this is not physical-controller or final-art readability certification.
 
 
 ### REQ-STAGE-003 — Track actual supporting contact and construction provenance
@@ -275,7 +275,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Support row matrix distinguishes base, Kaing, one-way bridge, launch, moving/removed surface, bubble, projectile, side contact and airborne state; missing eligibility metadata fails content validation.
 
-**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-13):** P03 implements explicit eligibility/provenance metadata, stable surface/construction IDs, post-movement upward collision contacts, feet-height evaluation, and same-step invalidation on launch, capture, reset and surface removal in `tilaok!/scripts/stage/`. The [100-check P03 suite](evidence/p03/2026-10-13_p03_tests.txt) covers base terrain, Kaing-like construction, one-way contact, launch, moving/removal, safe-face fixtures, another player's build, pass-through chickens, capture, projectile, side-wall, coyote and airborne states, missing metadata and inherited child provenance. Three fixture-only sample lines test above/on/below bounds; they do not define Kangaroo event heights or implement that event. **Verification result:** PASSED for the supporting-surface contract; later wave scheduling, scoring and hazards remain unimplemented.
 
 ## 7. Selection, construction and lifecycle
 

@@ -1,0 +1,8 @@
+Date: 2026-10-13
+Build: 4cb31a9 + P03 working tree
+Procedure: scan 20 tracked/untracked project Markdown files; validate local link and image paths plus Markdown heading/HTML anchors. Git internals and Godot cache excluded.
+Local links checked: 2375
+Initial scan note: the first checker draft collapsed whitespace around em dashes and ran before its own evidence log existed, producing false-positive anchor/path reports. Corrected slug normalization preserves each heading separator; this accepted run follows the final documentation edits.
+Status: PASSED
+Actual: all project-local Markdown paths and anchors resolve.
+Reviewer: Codex automated reference scan

@@ -1,0 +1,20 @@
+Status: PASSED
+Build: P03-graybox-dev
+Engine: 4.7.2-stable (official)
+Machine: Windows / 13th Gen Intel(R) Core(TM) i5-13420H / 12 logical CPUs
+Renderer: NVIDIA; GPU: NVIDIA GeForce RTX 4050 Laptop GPU
+Profile: movement_room / default GameplayTuning
+Seed: 12345
+Date: 2026-10-13 (local machine date)
+Actors: 4 real ChickenController instances; camera targets followed live actor extents
+Input: synthetic left/right axes; no physical devices attached or certified
+Procedure: 600 uncapped completed render frames at 1920x1080 with v-sync off; arena collision, support contacts and live actor camera motion active
+Expected: median/p95/worst rendered frame interval at or below 16.67 ms; Godot static and Windows process memory below 512 MiB; no gameplay sockets
+Actual rendered interval: median 0.826 ms; p95 1.426 ms; worst 6.141 ms
+Actual memory: static 67.60 MiB; elapsed 0.544 s
+Command: Godot 4.7.2 --path tilaok! --script res://tests/capture_p03_evidence.gd; shell records exit code
+Evidence: docs/evidence/p03/2026-10-13_performance.txt
+Reviewer: Codex automated fixture run; no human review claimed
+
+Windows engine process memory sample: peak working set 199.91 MiB; peak private bytes 250.59 MiB; sampled every 50 ms across 32 observations.
+Expected process budget: <=512 MiB; observed: PASSED. Source: docs/evidence/p03/2026-10-13_rendered_capture.txt.

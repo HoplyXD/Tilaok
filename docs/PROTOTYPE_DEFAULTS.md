@@ -97,6 +97,21 @@ Build: local P02 implementation based on `e2b4a555e8d45bec774ffebde7c46e595cd3ab
 
 These results establish behavior only in this small authored collision fixture, not player feel, complete arena reachability or balance. The first launch comparison intersected overhead geometry; that invalid trial was replaced with a clear path and not used as evidence. No tuning values were changed from their provisional defaults.
 
+### P03 graybox route, camera and support measurements — October 13, 2026
+
+**Build/profile:** `P03-graybox-dev`, working tree based on `4cb31a9`; Godot `4.7.2.stable.official.ed1daf0bf`; `movement_room`; seed `12345`; 60-Hz physics. **Machine:** Windows, 13th Gen Intel Core i5-13420H (12 logical CPUs), NVIDIA GeForce RTX 4050 Laptop GPU, Godot Compatibility renderer. **Input:** synthetic fixtures; no physical controllers or keyboard rollover were certified.
+
+| Measurement | Expected | Observed |
+|---|---|---|
+| Base stage route | Actual collision path floor → A → B → C → D → goal | Passed with the P02 controller; no teleport between route platforms; final goal position `(1012,360)` wu and still within bounds. Head/body clearance, takeoff, landing and braking assertions passed. |
+| Spawn origin conversion | Controller feet begin on floor top at y=480 wu | Feet `(96,480)` convert to center `(96,456)` wu for the 48-wu controller. No geometry or movement tuning was changed. |
+| Maximum camera launch | Keep identity/body extents visible through the configured 900-wu/s upward launch | Camera target top reached y=208.38 wu within 36 physics frames; full target remained inside the HUD-safe viewport throughout. |
+| Camera target fitting | Full extents visible at 2/3/4 targets; highest legal preview at y=96; bounded zoom 1.0–1.4 | Assertions passed. 1920×1080 Play/Place captures ran at zoom 1.0. A 1920×800 window kept a 1280×720 logical viewport; no extra world was exposed. |
+| Support tolerance | Actual upward eligible contact only; one-wu height/contact tolerance, no grace | Real collision fixtures passed above/on/below sample lines y=384/320/256 wu, same-step support removal, moving contact, and the full support-state matrix. These lines are test fixtures, not event band settings. |
+| Render throughput/memory | Median/p95/worst ≤16.67 ms; process memory ≤512 MiB | 600 uncapped rendered frames at 1920×1080, v-sync off: median 0.826 ms, p95 1.426 ms, worst 6.141 ms; Godot static memory 67.60 MiB; sampled Windows process peak working set 199.91 MiB/private bytes 250.59 MiB; elapsed 0.544 s. |
+
+Exact tests, captures and results are in [P03 verification evidence](evidence/p03/2026-10-13_p03_verification.md). These fixture measurements do not establish player feel, final-art readability, late-game stress, release readiness, or balance. No gameplay networking is instantiated by this local fixture; the sample is not a network-throughput test.
+
 ### Contact and temporary-state policy
 
 **C:** bodies pass through each other in every supported mode; tag/Hug use sensors, never pushing. This follows GDD.md:73 and the race-stack rules; the more general collision wording at :181 should be read consistently with them.

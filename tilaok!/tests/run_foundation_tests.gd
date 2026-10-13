@@ -172,7 +172,8 @@ func _run() -> void:
 	var fixture_paths := [
 		"res://scenes/fixtures/movement_room.tscn",
 		"res://scenes/fixtures/item_lab.tscn",
-		"res://scenes/fixtures/event_lab.tscn"
+		"res://scenes/fixtures/event_lab.tscn",
+		"res://scenes/fixtures/p03_stage_room.tscn"
 	]
 	for fixture_path in fixture_paths:
 		var fixture_scene: PackedScene = load(fixture_path)
@@ -181,6 +182,12 @@ func _run() -> void:
 			fixture_parent.add_child(fixture)
 			fixture.queue_free()
 			await process_frame
+			await process_frame
+		if fixture_path == "res://scenes/fixtures/p03_stage_room.tscn":
+			_check(
+				fixture_parent.get_child_count() == 0,
+				"repeated P03 fixture loads release room and owned nodes"
+			)
 		var probe: Node = fixture_scene.instantiate()
 		_check(probe.has_signal("return_requested"), "%s exposes return signal" % fixture_path)
 		probe.free()
@@ -207,11 +214,17 @@ func _run_harness_lifecycle_checks() -> void:
 		_check(
 			button.pressed.get_connections().size() == 1, "%s has one action callback" % button_name
 		)
-	for room_id in ["movement_room", "p02_movement_room", "item_lab", "event_lab"]:
+	for room_id in [
+		"movement_room", "p02_movement_room", "item_lab", "event_lab", "p03_stage_room"
+	]:
 		for _index in range(10):
 			harness._open_room(room_id)
 			await process_frame
-			var fixture: Node = room_host.get_child(0)
+			var fixture: Node = (
+				harness.get_node("P03StageRoom")
+				if room_id == "p03_stage_room"
+				else room_host.get_child(0)
+			)
 			_check(
 				fixture.get_signal_connection_list("return_requested").size() == 1,
 				"%s connects one return callback" % room_id
@@ -220,7 +233,12 @@ func _run_harness_lifecycle_checks() -> void:
 			await process_frame
 			if room_id == "p02_movement_room":
 				await physics_frame
-			_check(room_host.get_child_count() == 0, "%s reset releases its fixture" % room_id)
+			var released := (
+				harness.get_node_or_null("P03StageRoom") == null
+				if room_id == "p03_stage_room"
+				else room_host.get_child_count() == 0
+			)
+			_check(released, "%s reset releases its fixture" % room_id)
 	_check(root.get_child_count() == root_baseline, "harness fixtures return root to baseline")
 	harness._start_diagnostic_run()
 	_check(harness.active_snapshot != null, "harness run creates a configuration snapshot")

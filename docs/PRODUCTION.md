@@ -1,6 +1,6 @@
 # Tilaok! Production Plan
 
-**Status:** pre-production planning document with an implemented P02 movement/input diagnostic slice. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
+**Status:** pre-production planning document with implemented P02 movement/input and P03 graybox stage/camera/support diagnostic slices. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
 
 ## Delivery principle
 
@@ -154,7 +154,7 @@ A smaller milestone is not a release-scope cut. Each exit is binary; functionali
 
 | Milestone | What it proves / exit checks | Not yet needed |
 |---|---|---|
-| M0 Movement room | **PARTIAL:** P02 diagnostic room has four numbered/shape-marked seats, synthetic input routing, measured full/short jump, braking, bounds, pause/reclaim state probes and fixture cleanup; physical keyboard/gamepad coverage and exported interactive input/reconnect remain open | Items, events, final art |
+| M0 Movement and stage foundations | **PARTIAL:** P02 diagnostic room has four numbered/shape-marked seats, synthetic input routing, measured movement and bounds probes; P03's protected graybox route, bounded camera and support contract passed. Physical keyboard/gamepad coverage remains open; P03 does not complete a round or item system. | Items, events, final art |
 | M1 Two-player round | Lobby → Pugad → Place → Karera → score → next round twice; one egg/placement/outcome per player; timeout/invalid feedback; move/jump/place hints visible | Lagsanay, spring, hazards, match ties |
 | M2 Persistence | Ten round resets preserve construction and never duplicate score; Kaing/Tulay boundary/one-way tests pass; then spring passes launch/reset checks | Bubble and advanced first-batch hazards |
 | M3 Three/four-player loop | Three rounds at each count; all targets visible; supported simultaneous input, slot/device rotation, disconnect/reclaim and pause/resume pass | Additional events or stages |
@@ -170,7 +170,13 @@ M1–M3 use the labeled race-only development profile. P02 is not a full lobby-t
 
 P02 has an implemented diagnostic input/movement foundation and 8/14 task records verified. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 83 focused P02 assertions pass; the Windows export and headless startup pass. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
 
-Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 human review evidence and competition eligibility interpretation remain unresolved. P02 was AI-generated under the authorization then in force; the standing workflow is now recorded in `AI_USAGE.md`. Neither implementation nor this policy records team review or organizer acceptance. Do not enter P03/full-game or release status based solely on this slice.
+Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 human review evidence and competition eligibility interpretation remain unresolved. P02 was AI-generated under the authorization then in force; the standing workflow is now recorded in `AI_USAGE.md`. Neither implementation nor this policy records team review or organizer acceptance. P03 status is limited to the graybox contracts; do not treat these slices as a complete game or release candidate.
+
+### P03 graybox delivery record — October 13, 2026
+
+P03-T01–T06 are verified. The arena uses the documented 1024×512-wu bounds and protected grid, and the real P02 controller traverses the base route with collision. The bounded Play/Place camera passed 2/3/4-target extent checks, a maximum 900-wu/s launch, target lifecycle transitions and rendered 1080p/wide-window checks. Explicit support provenance/contact/invalidation passed its focused fixture matrix. The uncapped 1080p sample recorded median 0.826 ms, p95 1.426 ms, worst 6.141 ms, 67.60 MiB Godot static memory, 199.91 MiB peak working set and 250.59 MiB peak private bytes over 600 frames on the local RTX 4050 machine. A Windows Desktop export and three-frame headless startup passed. Exact records are in `PLAYTEST.md`, `PHASETASK.md` and `docs/evidence/p03/2026-10-13_p03_verification.md`.
+
+This is diagnostic geometry and fixture-contract evidence. It is not player-feel or final-art review, late-game stress, Pugad/atomic placement, production item/event implementation, full match testing, physical-device coverage, independent human review or organizer acceptance. P03 programming and test/documentation assistance is recorded in `AI_USAGE.md`; no AI-generated final art or audio was created.
 
 ## Team and integration defaults
 

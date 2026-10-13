@@ -11,12 +11,12 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Phased Implementation Tracker](docs/PHASETASK.md): ordered tasks, dependencies and completion evidence; P02 remains partially verified
-- [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured graybox results and remaining limits
+- [Phased Implementation Tracker](docs/PHASETASK.md): 23/393 task records checked; P03 is 6/6 and P02 remains partially verified
+- [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters
 - [Item Catalog](docs/ITEMS.md): first batch and expansion item contracts
-- [Stage and Placement Specification](docs/STAGE_AND_PLACEMENT.md): stage rules and shared construction contract
+- [Stage and Placement Specification](docs/STAGE_AND_PLACEMENT.md): stage rules, verified P03 graybox, and future shared construction contract
 - [UI and Tutorial Specification](docs/UI_TUTORIAL.md): local multiplayer flow, onboarding, and accessibility
 - [Asset and Cultural Register](docs/ASSETS.md): provenance, licences, cultural review, and asset compliance
 - [Production Plan](docs/PRODUCTION.md): roles, gates, scope protection, and risks
@@ -38,4 +38,14 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-P01 provides the foundation harness and typed provisional configuration. P02 adds a playable diagnostic movement/input room with numbered and shape-marked chickens, run/jump, collision/contact, pause/reclaim contracts and containment probes. It is not a full lobby-to-match game; physical controller, keyboard rollover, reconnect, human review and competition-submission interpretation checks remain open. Eight of 14 P02 tasks are verified. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [tracker](docs/PHASETASK.md#p02--inputs-and-controller), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
+P01 provides the foundation harness and typed provisional configuration. P02 adds the movement/input diagnostic room; P03 adds a playable protected graybox arena, bounded Play/Place camera, and explicit support-provenance/contact fixtures. P03's six tasks are verified; P02 remains 8/14 because physical controller, keyboard rollover and reconnect checks are open. This is not a full lobby-to-match game and does not implement Pugad, atomic placement, scoring, Kangaroo, hazards or production UI/assets. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [P03 tracker](docs/PHASETASK.md#p03--graybox-stage-and-camera), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
+
+## Run the P03 graybox
+
+From the repository root, launch the harness with the explicit Godot 4.7.2 executable:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'
+```
+
+Choose **P03 Graybox Arena** in the harness. Join K1/K2 with the visible buttons; K1 uses A/D + Space and K2 uses the arrow keys + Enter. The HUD buttons switch Play/Place fixtures, confirm/rotate a diagnostic preview, pause, reset, and return to the harness. See the [full run and test instructions](docs/PROJECT_STRUCTURE.md).

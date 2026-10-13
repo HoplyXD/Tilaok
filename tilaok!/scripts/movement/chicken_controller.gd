@@ -13,6 +13,8 @@ signal escaped_bounds
 @export var marker_color := Color("#f2c14e")
 @export var bounds := Rect2(Vector2.ZERO, Vector2(1024.0, 512.0))
 
+var support_tracker: SupportTracker
+var support_actor_id := ""
 var lifecycle := PlayerLifecycleState.new()
 var locomotion_velocity := Vector2.ZERO
 var external_velocity := Vector2.ZERO
@@ -46,6 +48,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_clear_support()
 	if input_router != null and input_router.action_pressed.is_connected(_on_action_pressed):
 		input_router.action_pressed.disconnect(_on_action_pressed)
 	if input_router != null and input_router.phase_changed.is_connected(_on_phase_changed):
@@ -56,6 +59,8 @@ func _physics_process(delta: float) -> void:
 	if input_router == null or get_tree().paused:
 		return
 	var in_play := input_router.phase == LocalInputRouter.Phase.PLAY
+	if not in_play:
+		_clear_support()
 	var axis := input_router.movement_axis(seat_index) if in_play else 0.0
 	var jump_down := in_play and input_router.is_action_held(seat_index, "jump")
 	var next_intent := (
@@ -74,15 +79,18 @@ func _physics_process(delta: float) -> void:
 		return
 
 	if lifecycle.is_terminal():
+		_clear_support()
 		locomotion_velocity = Vector2.ZERO
 		return
 	if lifecycle.status == PlayerLifecycleState.Status.OPENING_FREEZE:
+		_clear_support()
 		locomotion_velocity = Vector2.ZERO
 		external_velocity = Vector2.ZERO
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
 		return
 	if lifecycle.status == PlayerLifecycleState.Status.CAPTURED:
+		_clear_support()
 		locomotion_velocity = Vector2.ZERO
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
@@ -93,6 +101,8 @@ func _physics_process(delta: float) -> void:
 	combined.y -= _vertical_half_step
 	velocity = combined
 	move_and_slide()
+	if support_tracker != null and not support_actor_id.is_empty():
+		support_tracker.record_actor_step(support_actor_id, self, Engine.get_physics_frames())
 	locomotion_velocity = Vector2(
 		velocity.x - external_velocity.x, velocity.y - external_velocity.y + _vertical_half_step
 	)
@@ -124,6 +134,7 @@ func launch(force: Vector2, max_horizontal: float = 480.0, max_upward: float = 9
 		)
 	):
 		return
+	_clear_support()
 	external_velocity += force
 	external_velocity.x = clampf(external_velocity.x, -max_horizontal, max_horizontal)
 	external_velocity.y = maxf(external_velocity.y, -max_upward)
@@ -139,6 +150,7 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 		if lifecycle.status == PlayerLifecycleState.Status.OPENING_FREEZE:
 			return
 		lifecycle.status = PlayerLifecycleState.Status.CAPTURED
+		_clear_support()
 		lifecycle.capture_source_id = source_id
 		locomotion_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -155,6 +167,7 @@ func set_opening_freeze(frozen: bool) -> void:
 		return
 	if frozen:
 		lifecycle.status = PlayerLifecycleState.Status.OPENING_FREEZE
+		_clear_support()
 		locomotion_velocity = Vector2.ZERO
 		external_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -175,12 +188,18 @@ func eliminate(reason: String = "eliminated") -> bool:
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	if not lifecycle.set_status(status, reason):
 		return false
+	_clear_support()
 	locomotion_velocity = Vector2.ZERO
 	external_velocity = Vector2.ZERO
 	jump_buffer_remaining = 0.0
 	coyote_remaining = 0.0
 	terminal_state_changed.emit(status, reason)
 	return true
+
+
+func _clear_support() -> void:
+	if support_tracker != null and not support_actor_id.is_empty():
+		support_tracker.invalidate_actor(support_actor_id)
 
 
 func _apply_tuning() -> void:

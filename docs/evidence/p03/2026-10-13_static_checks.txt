@@ -1,0 +1,45 @@
+Status: PASSED
+Build: 4cb31a9 + P03 working tree (uncommitted at run time)
+Engine: Godot 4.7.2-stable official; matching 4.7.2.stable templates installed
+Profile: full-project source lint/format and editor import/parse
+Seed: N/A
+Date: 2026-10-13
+Actors: N/A; static project checks
+Input: N/A
+Procedure: run gdlint 4.5.0 and gdformat 4.5.0 on all 31 project GDScript files, then run Godot editor import/class registration
+Expected: lint and formatting pass; Godot import/parse completes without errors or warnings
+Actual exit codes: gdlint=0; gdformat=0; Godot import/parse=0; parser/import diagnostics=0
+Commands: gdlint <all tilaok! .gd files>; gdformat --check <all tilaok! .gd files>; Godot --headless --editor --path tilaok! --quit
+Evidence: docs/evidence/p03/2026-10-13_static_checks.txt
+Reviewer: Codex automated static checks; no human review claimed
+
+--- gdlint ---
+Success: no problems found
+--- gdformat --check ---
+31 files would be left unchanged
+--- Godot import/parse ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (2 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

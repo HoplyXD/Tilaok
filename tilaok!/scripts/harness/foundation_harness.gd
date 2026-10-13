@@ -6,6 +6,7 @@ const BUILD_ID := "P01-foundation-dev"
 const ROOM_SCENES := {
 	"movement_room": preload("res://scenes/fixtures/movement_room.tscn"),
 	"p02_movement_room": preload("res://scenes/fixtures/p02_movement_room.tscn"),
+	"p03_stage_room": preload("res://scenes/fixtures/p03_stage_room.tscn"),
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 }
@@ -55,6 +56,9 @@ func _ready() -> void:
 	)
 	$Layout/HarnessPanel/RoomRow/P02MovementRoomButton.pressed.connect(
 		_open_room.bind("p02_movement_room")
+	)
+	$Layout/HarnessPanel/RoomRow/P03StageRoomButton.pressed.connect(
+		_open_room.bind("p03_stage_room")
 	)
 	$Layout/HarnessPanel/RoomRow/ItemRoomButton.pressed.connect(_open_room.bind("item_lab"))
 	$Layout/HarnessPanel/RoomRow/EventRoomButton.pressed.connect(_open_room.bind("event_lab"))
@@ -169,10 +173,19 @@ func _open_room(room_id: String) -> void:
 		return
 	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
-	room_host.add_child(active_room)
+	if room_id == "p03_stage_room":
+		active_room.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		add_child(active_room)
+		$Layout.hide()
+	else:
+		room_host.add_child(active_room)
+		harness_panel.hide()
 	active_room.return_requested.connect(_close_room)
-	harness_panel.hide()
-	if room_id == "p02_movement_room":
+	if room_id == "p03_stage_room":
+		_append_status(
+			"Opened the P03 graybox arena; placement and wave visuals are diagnostic fixtures only."
+		)
+	elif room_id == "p02_movement_room":
 		_append_status(
 			(
 				"Opened the P02 input/movement diagnostic fixture. These narrow contracts do not "
@@ -187,7 +200,6 @@ func _open_room(room_id: String) -> void:
 
 func _close_room() -> void:
 	_release_active_room()
-	harness_panel.show()
 	_append_status("Returned to foundation diagnostics; fixture released.")
 
 
@@ -199,9 +211,14 @@ func _release_active_room() -> void:
 		var return_callback := Callable(self, "_close_room")
 		if active_room.is_connected("return_requested", return_callback):
 			active_room.disconnect("return_requested", return_callback)
-	room_host.remove_child(active_room)
+	var parent := active_room.get_parent()
+	if parent == self:
+		remove_child(active_room)
+	else:
+		parent.remove_child(active_room)
 	active_room.queue_free()
 	active_room = null
+	$Layout.show()
 	harness_panel.show()
 
 

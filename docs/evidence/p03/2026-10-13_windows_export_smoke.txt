@@ -1,0 +1,113 @@
+Export status: PASSED
+Smoke status: PASSED
+Build: 4cb31a9 + P03 working tree (uncommitted at run time)
+Engine: Godot 4.7.2-stable official; matching 4.7.2.stable Windows templates installed
+Preset: Windows Desktop / Release
+Profile: exported P03 arena scene, headless startup
+Seed: 12345
+Date: 2026-10-13
+Actors: stage scene initializes before the three-frame quit; no physical actors/devices claimed
+Input: headless smoke, no physical input test
+Procedure: export project to local temp path, then override exported main scene with res://scenes/fixtures/p03_stage_room.tscn and quit after 3 iterations
+Expected: export and stage-scene startup exit 0 with no parser/runtime diagnostics
+Actual export exit code: 0
+Actual stage-scene smoke exit code: 0
+Command: Godot --headless --path tilaok! --export-release "Windows Desktop" <temp exe>; <temp exe> --headless --scene res://scenes/fixtures/p03_stage_room.tscn --quit-after 3
+Evidence: docs/evidence/p03/2026-10-13_windows_export_smoke.txt
+Reviewer: Codex automated local export/startup; no human review claimed
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started Packing (102 steps)[39m[0m
+[   1% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-edb020fd742457190db547b64e768b60-event_lab.scn[39m[0m
+[   3% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-55e26c25d8bc6aebd598c5f3d1f52357-item_lab.scn[39m[0m
+[   6% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-dc1ffc2465b6194abebb3c130284aed9-movement_room.scn[39m[0m
+[   8% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-94a1094b6d9f9e340d67427d878fe25a-p02_movement_room.scn[39m[0m
+[  11% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-0428776e2ff00568fc8dc2b4aa19848d-p03_stage_room.scn[39m[0m
+[  14% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-f8e1214e90c51a0fb9dfde0ec2e091ed-foundation_harness.scn[39m[0m
+[  16% ] [90m[1msavepack[22m | Storing File: res://scripts/camera/bounded_stage_camera.gdc[39m[0m
+[  19% ] [90m[1msavepack[22m | Storing File: res://scripts/camera/stage_camera_target.gdc[39m[0m
+[  22% ] [90m[1msavepack[22m | Storing File: res://scripts/config/configuration_snapshot.gdc[39m[0m
+[  24% ] [90m[1msavepack[22m | Storing File: res://scripts/config/gameplay_tuning.gdc[39m[0m
+[  27% ] [90m[1msavepack[22m | Storing File: res://scripts/config/presentation_settings.gdc[39m[0m
+[  29% ] [90m[1msavepack[22m | Storing File: res://scripts/config/profile_registry.gdc[39m[0m
+[  32% ] [90m[1msavepack[22m | Storing File: res://scripts/config/run_profile.gdc[39m[0m
+[  34% ] [90m[1msavepack[22m | Storing File: res://scripts/diagnostics/content_catalog.gdc[39m[0m
+[  36% ] [90m[1msavepack[22m | Storing File: res://scripts/diagnostics/content_entry.gdc[39m[0m
+[  39% ] [90m[1msavepack[22m | Storing File: res://scripts/diagnostics/seeded_streams.gdc[39m[0m
+[  42% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/containment_recovery_contract.gdc[39m[0m
+[  44% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/diagnostic_fixture_room.gdc[39m[0m
+[  47% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/foundation_harness.gdc[39m[0m
+[  50% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/p02_movement_room.gdc[39m[0m
+[  52% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/p03_stage_room.gdc[39m[0m
+[  55% ] [90m[1msavepack[22m | Storing File: res://scripts/input/local_input_router.gdc[39m[0m
+[  57% ] [90m[1msavepack[22m | Storing File: res://scripts/input/pause_recovery_coordinator.gdc[39m[0m
+[  60% ] [90m[1msavepack[22m | Storing File: res://scripts/input/player_seat_registry.gdc[39m[0m
+[  63% ] [90m[1msavepack[22m | Storing File: res://scripts/movement/chicken_contact_sensor.gdc[39m[0m
+[  65% ] [90m[1msavepack[22m | Storing File: res://scripts/movement/chicken_controller.gdc[39m[0m
+[  67% ] [90m[1msavepack[22m | Storing File: res://scripts/movement/player_lifecycle_state.gdc[39m[0m
+[  70% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/arena_definition.gdc[39m[0m
+[  72% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/support_contact.gdc[39m[0m
+[  75% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/support_surface_metadata.gdc[39m[0m
+[  77% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/support_tracker.gdc[39m[0m
+[  80% ] [90m[1msavepack[22m | Storing File: res://tests/capture_p02_room.gdc[39m[0m
+[  83% ] [90m[1msavepack[22m | Storing File: res://tests/capture_p03_evidence.gdc[39m[0m
+[  85% ] [90m[1msavepack[22m | Storing File: res://tests/run_foundation_tests.gdc[39m[0m
+[  88% ] [90m[1msavepack[22m | Storing File: res://tests/run_p02_tests.gdc[39m[0m
+[  91% ] [90m[1msavepack[22m | Storing File: res://tests/run_p03_interactive.gdc[39m[0m
+[  93% ] [90m[1msavepack[22m | Storing File: res://tests/run_p03_tests.gdc[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://icon.svg.import[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/fixtures/event_lab.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/fixtures/item_lab.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/fixtures/movement_room.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/fixtures/p02_movement_room.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/fixtures/p03_stage_room.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scenes/harness/foundation_harness.tscn.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/camera/bounded_stage_camera.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/camera/stage_camera_target.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/config/configuration_snapshot.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/config/gameplay_tuning.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/config/presentation_settings.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/config/profile_registry.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/config/run_profile.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/diagnostics/content_catalog.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/diagnostics/content_entry.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/diagnostics/seeded_streams.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/containment_recovery_contract.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/diagnostic_fixture_room.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/foundation_harness.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/p02_movement_room.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/harness/p03_stage_room.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/input/local_input_router.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/input/pause_recovery_coordinator.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/input/player_seat_registry.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/movement/chicken_contact_sensor.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/movement/chicken_controller.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/movement/player_lifecycle_state.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/arena_definition.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/support_contact.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/support_surface_metadata.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://scripts/stage/support_tracker.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://tests/capture_p02_room.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://tests/capture_p03_evidence.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://tests/run_foundation_tests.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://tests/run_p02_tests.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://tests/run_p03_interactive.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://tests/run_p03_tests.gd.remap[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://.godot/global_script_class_cache.cfg[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://icon.svg[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://.godot/uid_cache.bin[39m[0m
+[  96% ] [90m[1msavepack[22m | Storing File: res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m
+--- exported P03 scene startup ---

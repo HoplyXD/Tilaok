@@ -1,0 +1,33 @@
+Status: PASSED
+Build: 4cb31a9 + P03 working tree (uncommitted at run time)
+Engine: Godot 4.7.2-stable official; Compatibility renderer on NVIDIA GeForce RTX 4050 Laptop GPU
+Profile: GUI harness / P03 graybox interaction fixture
+Seed: 12345
+Date: 2026-10-13
+Actors: 2 joined through visible K1/K2 controls
+Input: synthetic mouse and keyboard events; no physical devices attached or certified
+Procedure: open arena, join, Play/move, Place/confirm/rotate, pause/resume, reset, save 1920x1080 render, Return to harness
+Expected: 14 UI/lifecycle checks pass; identity labels remain separate at overlapping spawn; screenshot is 1920x1080
+Command: Godot --path tilaok! --script res://tests/run_p03_interactive.gd
+Evidence: docs/evidence/p03/2026-10-13_interactive_harness_1080p.png and this test log
+Reviewer: Codex inspected the rendered screenshot; no human review claimed
+Exit code: 0
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+PASS P03 arena opens through the visible foundation-harness button
+PASS opening P03 exposes the arena viewport
+PASS visible join controls add two identity-labeled chickens
+PASS Play camera follows the two live actors created through the UI
+PASS Play button enters Play context
+PASS synthetic keyboard input moves the real controller
+PASS Place button frames both unconfirmed pointer previews
+PASS confirm and rotate controls update the correct pointer extent
+PASS visible pause control pauses the game tree
+PASS visible pause control resumes the game tree
+PASS visible reset control clears previews and restores both actors
+PASS interactive 1080p harness frame saves as rendered evidence
+PASS visible Return control releases the P03 scene
+PASS return restores the foundation harness
+P03_INTERACTIVE checks=14 failures=0 evidence=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
