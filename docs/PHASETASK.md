@@ -146,6 +146,8 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 ## P01 — Project foundations
 
+**Phase roll-up:** ✅ Foundation implementation and local verification complete (P01-T01, P01-T03–T10: 9/10 tasks PASSED). ⏳ P01-T02 remains COULD-NOT-RUN pending registered-team authorship review, so the full phase is not yet closed.
+
 **Goal / player-visible result:** Launch an original harness and establish an early export path.
 
 **Milestone / scope:** First playable and foundational delivery.
