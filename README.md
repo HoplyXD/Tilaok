@@ -18,6 +18,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - [Item Catalog](docs/ITEMS.md): first batch and expansion item contracts
 - [Stage and Placement Specification](docs/STAGE_AND_PLACEMENT.md): stage rules, verified P03 graybox, and future shared construction contract
 - [UI and Tutorial Specification](docs/UI_TUTORIAL.md): local multiplayer flow, onboarding, and accessibility
+- [UI Handoff Spec](docs/UI_HANDOFF.md): everything UI design needs to start (frame, identity, prompts, screens, components, priorities, open decisions)
 - [Asset and Cultural Register](docs/ASSETS.md): provenance, licences, cultural review, and asset compliance
 - [Production Plan](docs/PRODUCTION.md): roles, gates, scope protection, and risks
 - [Submission Plan](docs/SUBMISSION.md): forms, synopsis, trailer/demo, and final review

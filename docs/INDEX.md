@@ -23,6 +23,7 @@ Project documentation belongs in this directory. The repository root retains onl
 | [AI_USAGE.md](AI_USAGE.md) | Record of AI-assisted work for Form 03 disclosure. | Active |
 | [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md) | Stage zones, verified P03 graybox, future placement resolution, persistence, protected areas, and Rising wave elevation rules. | P03 arena/camera/support and P04 Kaing/Tulay support results verified; production placement and event gameplay remain open |
 | [UI_TUTORIAL.md](UI_TUTORIAL.md) | Screen flow, HUD, accessibility baseline, Kangaroo prompts, and required tutorial sequence. | Active |
+| [UI_HANDOFF.md](UI_HANDOFF.md) | Handoff spec for human UI design: technical frame, player identity, input prompts, screen inventory, components, accessibility, priorities, delivery format and open decisions. | Draft 2026-10-13; no final art or typeface chosen |
 | [ASSETS.md](ASSETS.md) | Asset provenance, licence register, cultural review ledger, and AI-disclosure linkage. | Active |
 | [PRODUCTION.md](PRODUCTION.md) | Role sheet, feature gates, definition of done, risks, and implementation order after sign-off. | Active |
 | [SUBMISSION.md](SUBMISSION.md) | Competition deliverables, Form evidence, synopsis, trailer/demo, and final-review checklists. | Active |
