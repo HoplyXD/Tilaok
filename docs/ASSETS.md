@@ -125,6 +125,14 @@ P05 added no production asset. Its lobby cards, animated/code-drawn egg previews
 
 No human art review is claimed by the P05 implementation record. P05 capture screenshots document current behavior/readability only and are not approved production assets.
 
+## Chicken sprite sheet (placeholder) — 2026-10-14
+
+| Asset | Used in | Origin | Status |
+|---|---|---|---|
+| `tilaok!/assets/character/Chicken Placeholder Sprite Sheet.png` (2048×1024: 4 cols × 2 rows of 512×512 cells; 256×512 hitbox column per cell) and its `.clip` source | `scenes/characters/chicken.tscn` (all chickens in the P03-based rooms and the match) | Supplied by Jorge (maps/characters role) on 2026-10-14; not AI-generated. Authorship/licence to be confirmed in this register by the team. | PLACEHOLDER — final chicken art replaces the sheet; frames are mapped per animation in the scene's SpriteFrames |
+
+Cells: row 1 = idle, moving/wall-sliding right, moving/wall-sliding left, sneaking; row 2 = jump/glide still, jump/glide right, jump/glide left, (empty). Shown at ×0.25 (one cell = 128×128 wu = 2 tiles tall) and tinted by seat colour.
+
 ## Stage tiles and block placeholders recorded — 2026-10-14
 
 No production asset was created or imported. The stage tile atlas is a flat three-colour image written by a code tool, and the block visuals are Polygon2D/Line2D/Label nodes authored in the block scenes. All are DEBUG placeholders for the art team to replace.

@@ -9,6 +9,8 @@ const BUILD_ID := "P03-graybox-dev"
 ## the historical 32 wu grid; multiply by world_scale (see wall_fixture_origin()).
 const WALL_FIXTURE_ORIGIN := Vector2(352.0, 112.0)
 const STAGE_TILES_SCENE := preload("res://scenes/stage/stage_tiles.tscn")
+## Editable chicken scene: ChickenController + body shape + animated PLACEHOLDER sprite.
+const CHICKEN_SCENE := preload("res://scenes/characters/chicken.tscn")
 const PREVIEW_COLORS := [Color("#f5c95b"), Color("#74c8d6"), Color("#ef8b74"), Color("#a8d782")]
 
 var tuning := GameplayTuning.new()
@@ -345,7 +347,7 @@ func _build_actor(seat_index: int) -> ChickenController:
 		return null
 	if actors.has(seat_index):
 		return actors[seat_index] as ChickenController
-	var actor := ChickenController.new()
+	var actor := CHICKEN_SCENE.instantiate() as ChickenController
 	actor.name = "ChickenSeat%d" % (seat_index + 1)
 	actor.seat_index = seat_index
 	actor.identity_number = int(seat.identity)
@@ -363,11 +365,11 @@ func _build_actor(seat_index: int) -> ChickenController:
 	actor.collision_layer = 2
 	actor.collision_mask = 1
 	actor.set_meta("support_half_height", tuning.body_height_wu * 0.5)
-	var body_shape := CollisionShape2D.new()
-	var rectangle := RectangleShape2D.new()
+	# The tuning body size is authoritative; the scene's authored shape is resized to match.
+	var body_shape := actor.get_node("CollisionShape2D") as CollisionShape2D
+	var rectangle := body_shape.shape.duplicate() as RectangleShape2D
 	rectangle.size = Vector2(tuning.body_width_wu, tuning.body_height_wu)
 	body_shape.shape = rectangle
-	actor.add_child(body_shape)
 	world_layer.add_child(actor)
 	var badge := Label.new()
 	badge.name = "IdentityBadge"

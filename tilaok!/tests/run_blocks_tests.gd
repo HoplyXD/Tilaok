@@ -45,6 +45,7 @@ func _run() -> void:
 	await _test_solid_block()
 	await _test_wood_box()
 	await _test_collapsing_block()
+	await _test_chicken_animations()
 	room.queue_free()
 	await process_frame
 	print("BLOCKS_TESTS checks=%d failures=%d" % [checks, failures])
@@ -126,6 +127,86 @@ func _arrange(entries: Array) -> Array[String]:
 	items.begin_play()
 	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)
 	return ids
+
+
+# ---------------------------------------------------------------- chicken scene and animations
+
+
+func _anim_after(frames: int) -> StringName:
+	await _frames(frames)
+	await process_frame
+	return (actor.get_node("Sprite") as AnimatedSprite2D).animation
+
+
+func _test_chicken_animations() -> void:
+	room.items.reset_match()
+	room.items.begin_play()
+	_release_all()
+	var sprite := actor.get_node_or_null("Sprite") as ChickenSpriteAnimator
+	_check(sprite != null and not actor.draw_debug_body, "chickens use the animated chicken scene")
+	if sprite == null:
+		return
+	_check(sprite.scale.is_equal_approx(Vector2.ONE * 0.25), "512 px cells scale to 128 wu (0.25)")
+	var names := [
+		&"idle",
+		&"run_right",
+		&"run_left",
+		&"wall_slide_right",
+		&"wall_slide_left",
+		&"sneak",
+		&"jump",
+		&"jump_right",
+		&"jump_left",
+		&"glide",
+		&"glide_right",
+		&"glide_left",
+	]
+	var frames_ok := true
+	for anim_name in names:
+		frames_ok = frames_ok and sprite.sprite_frames.has_animation(anim_name)
+		if not sprite.sprite_frames.has_animation(anim_name):
+			continue
+		var texture := sprite.sprite_frames.get_frame_texture(anim_name, 0) as AtlasTexture
+		frames_ok = frames_ok and texture != null and texture.region.size == Vector2(512, 512)
+	_check(frames_ok, "all 12 animations exist with 512x512 sheet cells")
+	_put_actor_feet(Vector2(736.0, FLOOR_Y))
+	_check(await _anim_after(10) == &"idle", "standing still plays idle")
+	_key(KEY_D, true)
+	_check(await _anim_after(10) == &"run_right", "moving right plays run_right")
+	_key(KEY_D, false)
+	_key(KEY_A, true)
+	_check(await _anim_after(12) == &"run_left", "moving left plays run_left")
+	_key(KEY_A, false)
+	await _frames(10)
+	_key(KEY_S, true)
+	_check(await _anim_after(3) == &"sneak", "sneaking plays sneak")
+	_key(KEY_S, false)
+	await _frames(3)
+	_put_actor_feet(Vector2(736.0, 300.0))
+	_check(await _anim_after(3) == &"jump", "airborne with no input plays jump")
+	_key(KEY_D, true)
+	_check(await _anim_after(8) == &"jump_right", "airborne moving right plays jump_right")
+	_key(KEY_D, false)
+	_key(KEY_A, true)
+	await _frames(12)
+	_key(KEY_W, true)
+	_check(await _anim_after(4) == &"glide_left", "gliding left plays glide_left")
+	_key(KEY_A, false)
+	# Neutral air input keeps horizontal speed by design; stop the drift for the still pose.
+	actor.locomotion_velocity.x = 0.0
+	_check(await _anim_after(3) == &"glide", "gliding still plays glide")
+	_key(KEY_W, false)
+	var ids := _arrange([[SOLID, Vector2i(23, 9), 1]])
+	_put_actor_feet(Vector2(1472.0 - room.tuning.body_width_wu * 0.5 - 0.1, 640.0))
+	_check(await _anim_after(4) == &"wall_slide_right", "wall on the right plays wall_slide_right")
+	_put_actor_feet(Vector2(1536.0 + room.tuning.body_width_wu * 0.5 + 0.1, 640.0))
+	_check(await _anim_after(4) == &"wall_slide_left", "wall on the left plays wall_slide_left")
+	_check(
+		sprite.offset == sprite.animation_offsets[&"wall_slide_left"],
+		"each animation applies its feet offset"
+	)
+	_check(ids.size() == 1, "wall fixture placed")
+	room.items.reset_match()
 
 
 # ---------------------------------------------------------------- grid and tiles

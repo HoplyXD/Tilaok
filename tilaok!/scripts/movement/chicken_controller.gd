@@ -14,6 +14,9 @@ signal sneak_changed(is_sneaking: bool)
 @export var identity_shape := "CIRCLE"
 @export var marker_color := Color("#f2c14e")
 @export var bounds := Rect2(Vector2.ZERO, Vector2(2048.0, 1024.0))
+## False when the scene supplies a sprite (scenes/characters/chicken.tscn); the code-drawn DEBUG
+## body is then skipped, but the number/shape identity marker above the head is still drawn.
+@export var draw_debug_body := true
 
 var support_tracker: SupportTracker
 var support_actor_id := ""
@@ -572,6 +575,19 @@ func _draw() -> void:
 		drop = (_standing_size.y - _sneak_height()) * 0.5
 	var widen := 1.0 + (1.0 - squash) * 0.3
 	draw_set_transform(Vector2(0.0, drop), 0.0, Vector2(draw_scale * widen, draw_scale * squash))
+	if draw_debug_body:
+		_draw_debug_body()
+		_draw_identity_marker(Vector2(0.0, -27.0))
+	else:
+		# Sprite body: unsquashed marker just above the head, lowered with the sneaking body.
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * draw_scale)
+		_draw_identity_marker(Vector2(0.0, -30.0 + drop / draw_scale))
+	if show_wall_debug:
+		_draw_wall_debug()
+	draw_set_transform(Vector2.ZERO)
+
+
+func _draw_debug_body() -> void:
 	var body := Color.WHITE if lifecycle.is_terminal() else marker_color
 	draw_colored_polygon(
 		PackedVector2Array(
@@ -598,7 +614,9 @@ func _draw() -> void:
 		),
 		Color("#e76f51")
 	)
-	var marker := Vector2(0.0, -27.0)
+
+
+func _draw_identity_marker(marker: Vector2) -> void:
 	match identity_shape:
 		"TRIANGLE":
 			draw_colored_polygon(
@@ -634,9 +652,6 @@ func _draw() -> void:
 			9,
 			Color.BLACK
 		)
-	if show_wall_debug:
-		_draw_wall_debug()
-	draw_set_transform(Vector2.ZERO)
 
 
 func _draw_wall_debug() -> void:

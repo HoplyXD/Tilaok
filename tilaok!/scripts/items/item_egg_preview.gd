@@ -13,6 +13,9 @@ const SELECT_COLOR := Color("#fff2b7")
 const HAZARD_BOX_WU := Vector2(60.0, 52.0)
 const HAZARD_MAX_SCALE := 0.6
 
+## Silhouettes drawn here as simple shapes; every other family uses ItemSilhouettePainter.
+const BOX_SILHOUETTES := ["crate", "bamboo_bridge", "solid_block", "wood_box", "collapsing_block"]
+
 var variant_key := ""
 var quarter_turns := 0
 var selected := false
@@ -35,7 +38,7 @@ func configure(
 	_variant = found.variant
 	_tuning = source_tuning
 	_preview_behavior = null
-	if _family.preview_silhouette not in ["crate", "bamboo_bridge"]:
+	if _family.preview_silhouette not in BOX_SILHOUETTES:
 		_preview_behavior = ItemBehaviorFactory.create_preview(
 			_family, _variant, turns, source_tuning
 		)
@@ -101,7 +104,7 @@ func _draw_hazard_silhouette(center: Vector2) -> void:
 
 
 func _draw_silhouette(center: Vector2, wobble: float) -> void:
-	if _family.preview_silhouette not in ["crate", "bamboo_bridge"]:
+	if _family.preview_silhouette not in BOX_SILHOUETTES:
 		_draw_hazard_silhouette(center)
 		return
 	var cells := ItemGeometry.rotated_size(Vector2(_variant.footprint_cells), quarter_turns)

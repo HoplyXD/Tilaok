@@ -1,6 +1,6 @@
-[gd_resource type="TileSet" load_steps=3 format=3]
+[gd_resource type="TileSet" format=3 uid="uid://bi0t6ys03vk8d"]
 
-[ext_resource type="Texture2D" path="res://assets/tiles/debug_tiles_64.png" id="1_tiles"]
+[ext_resource type="Texture2D" uid="uid://b0grcmf8tgsws" path="res://assets/tiles/debug_tiles_64.png" id="1_tiles"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_debug"]
 resource_name = "debug_stage_tiles"
