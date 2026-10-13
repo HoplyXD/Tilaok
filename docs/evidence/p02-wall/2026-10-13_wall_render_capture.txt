@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 Core Profile Context 26.5.2.260413 - Compatibility - Using Device: ATI Technologies Inc. - AMD Radeon RX 580 2048SP
+
+P02_WALL_SCREENSHOT label=slide path=F:/Users/Achuchu/Documents/VSCode/Tilaok/Tilaok/docs/evidence/p02-wall/01_slide_base_side_1080p.png size=1920x1080 zoom=1.221 wall_side=-1 sliding=true lock=0 kicks=0 position=(332.1, 412.4063)
+P02_WALL_SCREENSHOT label=kick path=F:/Users/Achuchu/Documents/VSCode/Tilaok/Tilaok/docs/evidence/p02-wall/02_kick_1080p.png size=1920x1080 zoom=1.276 wall_side=0 sliding=false lock=0 kicks=1 position=(348.1, 381.9063)
+P02_WALL_SCREENSHOT label=excluded path=F:/Users/Achuchu/Documents/VSCode/Tilaok/Tilaok/docs/evidence/p02-wall/03_excluded_surface_1080p.png size=1920x1080 zoom=1.352 wall_side=0 sliding=false lock=0 kicks=1 position=(620.1, 186.625)
+P02_WALL_CAPTURE max_kick_launch peak_y=264.08 camera_visible=true
+P02_WALL_SCREENSHOT label=max_kick_launch path=F:/Users/Achuchu/Documents/VSCode/Tilaok/Tilaok/docs/evidence/p02-wall/04_max_kick_launch_camera_1080p.png size=1920x1080 zoom=1.310 wall_side=0 sliding=false lock=0 kicks=2 position=(295.258, 382.2008)

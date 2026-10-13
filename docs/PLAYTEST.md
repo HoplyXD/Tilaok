@@ -91,7 +91,7 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 
 ## Wall movement — future verification
 
-**Status:** approved Should-scope extension, implemented in source (2026-10-13) but NOT RUN; the cases below are still planned and no wall-movement runtime test result exists. The runner `run_p02_wall_tests.gd`, capture script and session sheet are recorded in [wall evidence](evidence/p02-wall/README.md). Use actual Godot physics, rendered screenshots/clips, and human feel/balance review. Mathematical estimates alone do not establish playability. Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, artifact and reviewer. Mark each PASSED / FAILED / COULD-NOT-RUN. Keep synthetic and physical-device evidence separate.
+**Status:** approved Should-scope extension, implemented and run on 2026-10-13 with automated synthetic checks (results in the dated session below). The cases in this table stay as the full future matrix; rows that still need a human or physical device are called out in the session. Evidence index: [wall evidence](evidence/p02-wall/README.md). Use actual Godot physics, rendered screenshots/clips, and human feel/balance review. Mathematical estimates alone do not establish playability. Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, artifact and reviewer. Mark each PASSED / FAILED / COULD-NOT-RUN. Keep synthetic and physical-device evidence separate.
 
 | Area | Future procedure and expected result |
 |---|---|
@@ -119,6 +119,29 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 Capture at minimum zoom and inspect rendered evidence for clear contact/eligibility cues. If a shortcut is intentionally possible, document it; escaping bounds, bypassing immutable protection or violating an event contract is a failure. The required P03 base route remains playable without this Should feature.
 
 The full command/evidence inventory is in [P03 verification](evidence/p03/2026-10-13_p03_verification.md). This work does not certify physical controller behavior, player feel, final-art readability, late-game load, balance, full round/match lifecycle, item systems, or release readiness. The previous P02 device and P01 human-review tasks remain open.
+
+## Wall movement verification session — October 13, 2026
+
+**Build identity:** working tree on `9ee25c8` (base `765ed09`); Godot `4.7.2.stable.official.ed1daf0bf`; `movement_room`; seed `12345`; 60 Hz; three seats (synthetic K1, K2, gamepad). **Machine:** Windows, AMD Ryzen 5 5500 (12 logical CPUs), AMD Radeon RX 580, Compatibility renderer, 1920×1080 renders. **Reviewer:** Claude (AI, automated tests and screenshot inspection); no human reviewer, no physical devices. **Wall setting:** `wall_movement_enabled` = true only inside the wall test and capture scripts (shipped default false).
+
+| Check | Status | Procedure and observed result | Evidence/limit |
+|---|---|---|---|
+| Wall runner | PASSED | `run_p02_wall_tests.gd`: 85 checks, 0 failures; real physics, synthetic input. | [log](evidence/p02-wall/2026-10-13_wall_tests.txt) |
+| Existing regressions | PASSED | `run_foundation_tests.gd` 0 failures; `run_p02_tests.gd` 83/0; `run_p03_tests.gd` 103/0 (default tuning, wall disabled). | `evidence/p02-wall/2026-10-13_regression_*.txt` |
+| Import/parse, lint, format | PASSED | Editor import: 0 error/warning lines. gdlint 4.5.0 and gdformat 4.5.0 clean on all scripts and tests. | [import](evidence/p02-wall/2026-10-13_import_parse.txt) |
+| Slide + symmetry | PASSED | 120.00 wu/s on left and right; ascent uncapped. | wall log |
+| Excluded surfaces | PASSED | Ineligible, one-way, metadata-less, trigger, chicken: no slide and no kick. One-way underside passes through. | wall log |
+| Kick, hold, echo, buffer | PASSED | 1 kick per fresh press on each device type; held 1 s with OS repeat → 1; echo → 0; pre-contact press → 1. | wall log |
+| Per-contact lock | PASSED | Same-contact press blocked; lock cleared at 12.10 wu gap; recontact kicks once. | wall log |
+| Lifecycle / pause / reset | PASSED | Launch, capture, freeze, terminal, pause/resume, phase change, reset, wall removal, moving wall away, stage reset, 5 reloads. | wall log |
+| Support / Rising wave | PASSED | P03 base side slide leaves support contacts empty and result "no support". | wall log |
+| Containment / camera | PASSED | Four kick+launch vectors stay in bounds; P03 camera keeps every target visible. | wall log, [capture log](evidence/p02-wall/2026-10-13_wall_render_capture.txt) |
+| Rendered stills | PASSED — inspected | 1920×1080: [slide](evidence/p02-wall/01_slide_base_side_1080p.png), [kick](evidence/p02-wall/02_kick_1080p.png), [excluded](evidence/p02-wall/03_excluded_surface_1080p.png), [max kick+launch](evidence/p02-wall/04_max_kick_launch_camera_1080p.png). Camera zoom was 1.11–1.36 (two chickens), not 1.0; debug bar and label were visible; fixture labels remain small. | Not a readability or final-art claim. |
+| Performance | PASSED — this machine only | 3 runs of `capture_p03_evidence.gd`: median 0.69–0.70 ms, p95 1.84–2.07 ms, worst 4.79–5.91 ms, static memory 68.95 MiB. Unmodified baseline `765ed09`, same machine, 3 runs: median 0.54–0.65, p95 2.05–2.20, worst 5.94–21.40 ms (one run over 16.67 ms), 68.74 MiB. Wall movement was disabled and no fixtures were built in these runs; enabled-mode cost is not separately measured. Different hardware from the P03 record, so not comparable to its 0.826/1.426/6.141 ms. | [current](evidence/p02-wall/2026-10-13_perf_current_tree_3runs.txt), [first run](evidence/p02-wall/2026-10-13_perf_rerun_this_machine.txt) |
+| Physical devices | COULD NOT RUN | No gamepads; no physical keyboard/rollover session. P02-T18 stays open. | — |
+| Human feel / balance | NOT DONE | Session sheet prepared, no reviewer. P02-T22 stays open; keep/defer PENDING. | [sheet](evidence/p02-wall/human_feel_session_sheet.md) |
+| Windows export + startup | PASSED — startup only | Release export (matching 4.7.2 templates) and `--headless --quit-after 90` of the exported executable both exit 0. | [export](evidence/p02-wall/2026-10-13_export.txt), [runtime](evidence/p02-wall/2026-10-13_export_runtime.txt) |
+| `--write-movie` clip | COULD NOT RUN | Not attempted; stills only. | — |
 
 ## Completion status vocabulary
 

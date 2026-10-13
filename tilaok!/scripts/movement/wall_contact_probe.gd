@@ -43,12 +43,12 @@ static func collider_is_live(collider_object_id: int) -> bool:
 	if collider_object_id == 0:
 		return false
 	var collider := instance_from_id(collider_object_id) as Node
-	return collider != null and is_instance_valid(collider) and not collider.is_queued_for_deletion()
+	return (
+		collider != null and is_instance_valid(collider) and not collider.is_queued_for_deletion()
+	)
 
 
-func _is_eligible(
-	collision: KinematicCollision2D, direction: int, tuning: GameplayTuning
-) -> bool:
+func _is_eligible(collision: KinematicCollision2D, direction: int, tuning: GameplayTuning) -> bool:
 	var collider := collision.get_collider() as Node
 	if collider == null or not is_instance_valid(collider) or collider.is_queued_for_deletion():
 		return false

@@ -90,6 +90,13 @@ func validate() -> PackedStringArray:
 		"support_normal_limit_degrees",
 		"support_contact_tolerance_wu",
 		"support_height_epsilon_wu",
+		"wall_slide_fall_cap_wu_s",
+		"wall_jump_horizontal_wu_s",
+		"wall_jump_vertical_wu_s",
+		"wall_jump_contact_grace_s",
+		"wall_jump_recontact_separation_wu",
+		"wall_contact_probe_wu",
+		"wall_normal_tolerance_degrees",
 	]:
 		if not is_finite(get(field_name)):
 			errors.append("%s must be finite" % field_name)

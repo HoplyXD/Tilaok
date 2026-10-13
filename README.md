@@ -11,7 +11,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Phased Implementation Tracker](docs/PHASETASK.md): 23/401 task records checked; P03 is 6/6 and P02 remains partially verified (8/22)
+- [Phased Implementation Tracker](docs/PHASETASK.md): 29/401 task records checked; P03 is 6/6 and P02 remains partially verified (14/22)
 - [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters
@@ -38,7 +38,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-P01 provides the foundation harness and typed provisional configuration. P02 adds the movement/input diagnostic room; P03 adds a playable protected graybox arena, bounded Play/Place camera, and explicit support-provenance/contact fixtures. P03's six tasks are verified; P02 remains 8/22 because physical controller, keyboard rollover and reconnect checks are open. Wall slide/jump is an approved, unimplemented Should extension tracked separately in P02-T15–T22; it is not currently playable or a required October submission feature and must not delay P04. This is not a full lobby-to-match game and does not implement Pugad, atomic placement, scoring, Kangaroo, hazards or production UI/assets. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [P03 tracker](docs/PHASETASK.md#p03--graybox-stage-and-camera), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
+P01 provides the foundation harness and typed provisional configuration. P02 adds the movement/input diagnostic room; P03 adds a playable protected graybox arena, bounded Play/Place camera, and explicit support-provenance/contact fixtures. P03's six tasks are verified; P02 is 14/22 because physical controller, keyboard rollover and reconnect checks and the wall-movement human review are open. Wall slide/jump is an approved Should extension (P02-T15–T22) that is implemented and automated-test verified but disabled by default; try it via the P02 room's "Wall fixtures (debug)" button or the P03 room's "Wall fixtures" button. It is not a required October submission feature, awaits human review and the October 21 keep/defer decision, and must not delay P04. This is not a full lobby-to-match game and does not implement Pugad, atomic placement, scoring, Kangaroo, hazards or production UI/assets. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [P03 tracker](docs/PHASETASK.md#p03--graybox-stage-and-camera), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
 
 ## Run the P03 graybox
 

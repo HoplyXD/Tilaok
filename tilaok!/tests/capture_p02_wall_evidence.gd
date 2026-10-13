@@ -16,7 +16,10 @@ func _initialize() -> void:
 
 func _run() -> void:
 	output_dir = (
-		ProjectSettings.globalize_path("res://").path_join("../docs/evidence/p02-wall").simplify_path()
+		ProjectSettings
+		. globalize_path("res://")
+		. path_join("../docs/evidence/p02-wall")
+		. simplify_path()
 	)
 	var directory_result := DirAccess.make_dir_recursive_absolute(output_dir)
 	if directory_result != OK and directory_result != ERR_ALREADY_EXISTS:
@@ -31,7 +34,11 @@ func _run() -> void:
 	await _wait_for_frames(3)
 	var seat := room.join_keyboard("K1")
 	var actor := room.actors[seat] as ChickenController
+	var other_seat := room.join_keyboard("K2")
+	var other := room.actors[other_seat] as ChickenController
 	room.start_play()
+	# A second chicken in the far corner keeps the camera near minimum zoom (full arena visible).
+	_place(other, Vector2(920.0, 358.0))
 	room.build_wall_fixtures()
 	room.set_wall_movement_enabled(true)
 	await _wait_for_frames(3)
@@ -65,10 +72,8 @@ func _run() -> void:
 		await physics_frame
 		await process_frame
 		peak_y = minf(peak_y, actor.global_position.y)
-		if not room.camera_rig.targets.is_empty():
-			all_visible = all_visible and room.camera_rig.screen_bounds_visible(
-				room.camera_rig.targets[0].world_rect
-			)
+		for target in room.camera_rig.targets:
+			all_visible = all_visible and room.camera_rig.screen_bounds_visible(target.world_rect)
 	print("P02_WALL_CAPTURE max_kick_launch peak_y=%.2f camera_visible=%s" % [peak_y, all_visible])
 	await _capture(room, "04_max_kick_launch_camera_1080p.png", actor, "max_kick_launch")
 	quit(0)
@@ -113,19 +118,21 @@ func _capture(
 		return
 	print(
 		(
-			"P02_WALL_SCREENSHOT label=%s path=%s size=%dx%d zoom=%.3f wall_side=%d sliding=%s "
-			+ "lock=%d kicks=%d position=%s"
+			(
+				"P02_WALL_SCREENSHOT label=%s path=%s size=%dx%d zoom=%.3f wall_side=%d sliding=%s "
+				+ "lock=%d kicks=%d position=%s"
+			)
+			% [
+				label,
+				path,
+				image.get_width(),
+				image.get_height(),
+				room.camera_rig.zoom.x,
+				actor.wall_side,
+				actor.wall_sliding,
+				actor.wall_lock_side,
+				actor.wall_kick_count,
+				actor.global_position
+			]
 		)
-		% [
-			label,
-			path,
-			image.get_width(),
-			image.get_height(),
-			room.camera_rig.zoom.x,
-			actor.wall_side,
-			actor.wall_sliding,
-			actor.wall_lock_side,
-			actor.wall_kick_count,
-			actor.global_position
-		]
 	)

@@ -469,7 +469,9 @@ func _draw_wall_debug() -> void:
 	var font := ThemeDB.fallback_font
 	if font != null:
 		var label := "DEBUG WALL SLIDE" if wall_sliding else "DEBUG WALL LOCK"
-		draw_string(font, Vector2(-40.0, 40.0), label, HORIZONTAL_ALIGNMENT_LEFT, 120.0, 9, bar_color)
+		draw_string(
+			font, Vector2(-40.0, 40.0), label, HORIZONTAL_ALIGNMENT_LEFT, 120.0, 9, bar_color
+		)
 
 
 func _check_bounds() -> void:

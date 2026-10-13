@@ -247,9 +247,9 @@ Base stage is playable before construction; player changes may make it difficult
 
 ### REQ-MOVE-004 — Slide on eligible walls and kick away with a fresh jump press
 
-**Scope:** SHOULD · **Design status:** APPROVED; IMPLEMENTED IN SOURCE, NOT RUN (October 13, 2026) · **Owner role:** Gameplay (name TBD).
+**Scope:** SHOULD · **Design status:** APPROVED; IMPLEMENTED, AUTOMATED CHECKS PASSED, HUMAN REVIEW PENDING (October 13, 2026) · **Owner role:** Gameplay (name TBD).
 
-**Existing baseline:** REQ-MOVE-001 and P02-T09/T10 accurately record the previously implemented and measured run/jump-only controller. That historical acceptance excluded wall jump; it is not evidence for this extension. The extension is separately approved; its source implementation exists but has not been run or verified (see [wall evidence](evidence/p02-wall/README.md)).
+**Existing baseline:** REQ-MOVE-001 and P02-T09/T10 accurately record the previously implemented and measured run/jump-only controller. That historical acceptance excluded wall jump; it is not evidence for this extension. The extension is separately approved; its implementation passes automated Godot physics, route, containment and camera checks (see [wall evidence](evidence/p02-wall/README.md)); human feel review and physical-device parity are pending.
 
 **Expected behavior:** While airborne and actually touching a qualifying solid side, slide down with a configurable cap on downward speed only. Contact does not require directional hold. Base and player-built solid sides qualify; moving solids qualify only while actual contact remains valid. Exclude one-way platform sides/undersides, triggers, pass-through chicken bodies and arena containment boundaries. A fresh jump press near eligible wall contact produces one kick away, using a configurable horizontal-away and vertical impulse. Air steering remains available immediately. One kick is allowed per contact; physical separation and fresh recontact are required before another. Normal ground jump/coyote behavior remains unchanged. Holding jump or OS key-repeat never auto-repeats a wall jump; buffered input is consumed exactly once.
 
@@ -261,7 +261,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Explicit non-goals:** Dash, double jump, drop-through, player-to-player wall interaction, AI-created final art/audio, changing P03 base route, implementing Lagsanay/Kangaroo/event logic, or promoting Should scope to a required October submission feature.
 
-**Source / tasks:** [GDD.md](GDD.md#wall-slide-and-wall-jump--approved-extension), [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md#wall-movement--approved-should-extension), [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md#wall-contact-and-upward-support-are-distinct), [PLAYTEST.md](PLAYTEST.md#wall-movement--future-verification), and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope). All eight linked implementation/verification tasks are unchecked. Later event-stack integration belongs at the corresponding event gates; this requirement does not depend on unimplemented events.
+**Source / tasks:** [GDD.md](GDD.md#wall-slide-and-wall-jump--approved-extension), [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md#wall-movement--approved-should-extension), [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md#wall-contact-and-upward-support-are-distinct), [PLAYTEST.md](PLAYTEST.md#wall-movement--future-verification), and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope). P02-T15–T17 and T19–T21 are checked on automated/synthetic evidence; T18 (physical devices) and T22 (human review) remain unchecked. Later event-stack integration belongs at the corresponding event gates; this requirement does not depend on unimplemented events.
 
 
 ### REQ-STAGE-001 — Build one protected barrio graybox arena

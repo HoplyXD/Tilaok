@@ -1,0 +1,3 @@
+P03_PERFORMANCE samples=600 elapsed=0.516s render_median=0.694ms render_p95=2.069ms render_worst=4.794ms memory=68.95MiB status=PASSED
+P03_PERFORMANCE samples=600 elapsed=0.524s render_median=0.700ms render_p95=1.995ms render_worst=5.914ms memory=68.95MiB status=PASSED
+P03_PERFORMANCE samples=600 elapsed=0.506s render_median=0.690ms render_p95=1.843ms render_worst=5.322ms memory=68.95MiB status=PASSED

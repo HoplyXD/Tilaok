@@ -18,11 +18,7 @@ const MOVING_X := 336.0
 ## Adds one solid with explicit wall eligibility metadata. `options` keys: `one_way`, `moving`,
 ## `player_built`, `label`. Returns the body (an AnimatableBody2D when `moving`).
 static func add_solid(
-	parent: Node2D,
-	surface_id: String,
-	rect: Rect2,
-	wall_eligible: bool,
-	options: Dictionary = {}
+	parent: Node2D, surface_id: String, rect: Rect2, wall_eligible: bool, options: Dictionary = {}
 ) -> StaticBody2D:
 	var metadata := SupportSurfaceMetadata.new()
 	metadata.surface_id = surface_id
@@ -66,7 +62,10 @@ static func add_solid(
 	body.add_child(visual)
 	var label := Label.new()
 	label.text = str(options.get("label", "WALL OK" if wall_eligible else "NO WALL"))
-	label.position = Vector2(-rect.size.x * 0.5 - 4.0, -rect.size.y * 0.5 - 18.0)
+	var label_row := int(options.get("label_row", 0))
+	label.position = Vector2(
+		-rect.size.x * 0.5 - 4.0, -rect.size.y * 0.5 - 18.0 - float(label_row) * 13.0
+	)
 	label.add_theme_font_size_override("font_size", 10)
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.add_theme_color_override("font_outline_color", Color("#14232a"))
@@ -79,50 +78,50 @@ static func add_solid(
 ## keyed by fixture name so tests can move or remove them.
 static func build_set(parent: Node2D, origin: Vector2) -> Dictionary:
 	var tall := Vector2(FIXTURE_WIDTH_WU, FIXTURE_HEIGHT_WU)
-	var set := {}
-	set["slab"] = add_solid(
+	var fixtures := {}
+	fixtures["slab"] = add_solid(
 		parent,
 		"wall_fixture.slab",
 		Rect2(origin + Vector2(SLAB_X, 0.0), tall),
 		true,
-		{"label": "WALL OK • BASE-STYLE SLAB"}
+		{"label": "WALL OK • SLAB", "label_row": 0}
 	)
-	set["shaft_left"] = add_solid(
+	fixtures["shaft_left"] = add_solid(
 		parent,
 		"wall_fixture.shaft_left",
 		Rect2(origin + Vector2(SHAFT_LEFT_X, 0.0), tall),
 		true,
-		{"label": "WALL OK • SHAFT", "player_built": true}
+		{"label": "WALL OK • SHAFT", "player_built": true, "label_row": 1}
 	)
-	set["shaft_right"] = add_solid(
+	fixtures["shaft_right"] = add_solid(
 		parent,
 		"wall_fixture.shaft_right",
 		Rect2(origin + Vector2(SHAFT_RIGHT_X, 0.0), tall),
 		true,
-		{"label": "WALL OK • SHAFT", "player_built": true}
+		{"label": "WALL OK • SHAFT", "player_built": true, "label_row": 0}
 	)
-	set["excluded"] = add_solid(
+	fixtures["excluded"] = add_solid(
 		parent,
 		"wall_fixture.excluded",
 		Rect2(origin + Vector2(EXCLUDED_X, 0.0), tall),
 		false,
-		{"label": "NO WALL • CONTAINMENT-LIKE"}
+		{"label": "NO WALL • EXCLUDED", "label_row": 1}
 	)
-	set["one_way"] = add_solid(
+	fixtures["one_way"] = add_solid(
 		parent,
 		"wall_fixture.one_way",
 		Rect2(origin + Vector2(ONE_WAY_X, 0.0), tall),
 		true,
-		{"label": "NO WALL • ONE-WAY SIDE", "one_way": true}
+		{"label": "NO WALL • ONE-WAY", "one_way": true, "label_row": 0}
 	)
-	set["moving"] = add_solid(
+	fixtures["moving"] = add_solid(
 		parent,
 		"wall_fixture.moving",
 		Rect2(origin + Vector2(MOVING_X, 0.0), tall),
 		true,
-		{"label": "WALL OK • MOVING", "moving": true}
+		{"label": "WALL OK • MOVING", "moving": true, "label_row": 2}
 	)
-	return set
+	return fixtures
 
 
 ## Local x of the free space immediately right of the slab (wall on the chicken's left).

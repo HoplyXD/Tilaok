@@ -1,0 +1,17 @@
+Status: FAILED
+Build: P03-graybox-dev
+Engine: 4.7.2-stable (official)
+Machine: Windows / AMD Ryzen 5 5500 / 12 logical CPUs
+Renderer: ATI Technologies Inc.; GPU: AMD Radeon RX 580 2048SP
+Profile: movement_room / default GameplayTuning
+Seed: 12345
+Date: 2026-10-13 (local machine date)
+Actors: 4 real ChickenController instances; camera targets followed live actor extents
+Input: synthetic left/right axes; no physical devices attached or certified
+Procedure: 600 uncapped completed render frames at 1920x1080 with v-sync off; arena collision, support contacts and live actor camera motion active
+Expected: median/p95/worst rendered frame interval at or below 16.67 ms; Godot static and Windows process memory below 512 MiB; no gameplay sockets
+Actual rendered interval: median 0.682 ms; p95 2.242 ms; worst 38.457 ms
+Actual memory: static 68.93 MiB; elapsed 0.598 s
+Command: Godot 4.7.2 --path tilaok! --script res://tests/capture_p03_evidence.gd; shell records exit code
+Evidence: docs/evidence/p03/2026-10-13_performance.txt
+Reviewer: Codex automated fixture run; no human review claimed

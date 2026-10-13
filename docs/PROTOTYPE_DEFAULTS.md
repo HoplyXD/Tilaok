@@ -59,7 +59,7 @@ All distances are world units (wu), provisionally equal to unscaled 2D pixels; t
 | `contact.sensor_size_wu` | P: 28×48 wu centered on body; width 24–32 wu | 2 wu expansion per side, readable near-contact; may appear early | Stationary, edge and crossing tests; reduce if visible gaps seem too large | Low |
 | `contact.pass_back_s` | C/P: 1.0 s; 0.75–1.25 s | Stops immediate retaliation; temporary immunity can be exploited | Pursuit and overlap trials; change if repeated back-and-forth or no counterplay | Low |
 
-The measured P02 baseline controls are left/right and jump only; that historical implementation had no wall jump, dash, double jump, or drop-through. The separately approved wall extension is implemented in source, disabled by default and not yet verified. Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
+The measured P02 baseline controls are left/right and jump only; that historical implementation had no wall jump, dash, double jump, or drop-through. The separately approved wall extension is implemented, disabled by default and measured only in synthetic fixtures (below). Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
 
 ### Wall movement — approved Should extension
 
@@ -75,7 +75,24 @@ Only solid sides identified as eligible wall surfaces qualify: base and player-b
 | `move.wall_jump_contact_grace_s` | 0.08 s | Compare 0–0.12 s; a fresh press just before contact may be buffered briefly, but held input never auto-repeats. |
 | `move.wall_jump_recontact_separation_wu` | 8 wu clear gap | Compare 4–16 wu; require observable physical separation before another kick on the same wall. |
 
-These values now live in `tilaok!/scripts/config/gameplay_tuning.gd` (`wall_movement_enabled`, `wall_slide_fall_cap_wu_s`, `wall_jump_horizontal_wu_s`, `wall_jump_vertical_wu_s`, `wall_jump_contact_grace_s`, `wall_jump_recontact_separation_wu`, plus `wall_contact_probe_wu` 1 and `wall_normal_tolerance_degrees` 10) with unchanged starting values and no measurements yet. They are candidates for centralized configuration, not finalized parameters or balance claims. Run real Godot collision trials, rendered sessions and human feel/balance review. Compare route completion, unintended falls, ceiling/bound escapes, repeat-climb time, and players' ability to understand the contact/recontact rule. Do not change normal ground-jump tuning just to make wall movement pass.
+These values now live in `tilaok!/scripts/config/gameplay_tuning.gd` (`wall_movement_enabled`, `wall_slide_fall_cap_wu_s`, `wall_jump_horizontal_wu_s`, `wall_jump_vertical_wu_s`, `wall_jump_contact_grace_s`, `wall_jump_recontact_separation_wu`, plus `wall_contact_probe_wu` 1 and `wall_normal_tolerance_degrees` 10) with unchanged starting values; first synthetic-fixture measurements follow and are not feel or balance evidence. They are candidates for centralized configuration, not finalized parameters or balance claims. Run real Godot collision trials, rendered sessions and human feel/balance review. Compare route completion, unintended falls, ceiling/bound escapes, repeat-climb time, and players' ability to understand the contact/recontact rule. Do not change normal ground-jump tuning just to make wall movement pass.
+
+#### Wall movement runtime measurements — October 13, 2026
+
+Build `9ee25c8` + working tree; Godot `4.7.2.stable.official.ed1daf0bf`; P02 movement room and P03 stage; seed 12345; 60 Hz; synthetic input; [log](evidence/p02-wall/2026-10-13_wall_tests.txt). Values are the unchanged starting candidates, not tuned or balance-approved.
+
+| Measurement | Expected | Observed |
+|---|---:|---:|
+| Slide speed, wall on left / right | 120 wu/s cap | 120.00 / 120.00 wu/s |
+| Kick velocity (K1 / K2 / gamepad) | 240 away, −520 up | vx 240.00; vy −457.50 two ticks after the kick (−520 + 2×31.25) |
+| Kicks per fresh press | 1 | 1 (all three device types) |
+| Kicks over a 1 s held press with OS repeats | 1 | 1; echo alone 0 |
+| Same-contact second press | blocked | blocked; lock cleared at a 12.10 wu gap |
+| Steering after kick (3 ticks toward wall) | immediate | vx 240 → 160 wu/s |
+| Kick rise, jump held / released | ≈72.1 / lower | 72.07 / 33.84 wu |
+| Enabled full ground jump apex | 96 ± 2 wu | 96.06 wu |
+| Two-wall 64 wu shaft, 240 frames | measured only | 34 kicks; reaches the room ceiling; −2.0…+24.5 wu per cycle |
+| Kick + launch (±480,−900), (0,−900), (480,0) | inside bounds | contained in all four P02-room trials; P03 camera visible, peak y 264.08 |
 
 One-way Tulay: pass through underside/sides; land on its upward top only when descending relative to it and crossing the top from above. Start with horizontal 4×1-cell footprint and 4 wu visible/collision top strip; vertical orientation stays disabled because the existing contract makes it conditional on controller support. Leave via an edge or jump. Keep footprint reservation distinct from collision strip. Kaing starts with 1×1 and 2×3 variants (equal conditional weights), 90° rotation where shape changes. Other approved variants remain deferred, not deleted.
 
