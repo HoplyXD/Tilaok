@@ -122,7 +122,7 @@ func _left_of_shaft_stand() -> Vector2:
 func _test_configuration() -> void:
 	var tuning := GameplayTuning.new()
 	_check(tuning.validate().is_empty(), "default tuning with wall keys validates")
-	_check(not tuning.wall_movement_enabled, "wall movement ships disabled by default")
+	_check(tuning.wall_movement_enabled, "wall movement is core and enabled by default")
 	_check(
 		(
 			tuning.wall_slide_fall_cap_wu_s == 120.0
@@ -823,7 +823,7 @@ func _test_p03_integration() -> void:
 	var stage := P03_ROOM.instantiate() as P03StageRoom
 	root.add_child(stage)
 	await _frames(3)
-	_check(not stage.tuning.wall_movement_enabled, "P03 stage starts with wall movement disabled")
+	_check(stage.tuning.wall_movement_enabled, "P03 stage starts with wall movement enabled")
 	var seat := stage.join_keyboard("K1")
 	stage.start_play()
 	var actor := stage.actors[seat] as ChickenController

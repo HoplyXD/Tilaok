@@ -41,8 +41,8 @@ extends Resource
 @export var support_contact_tolerance_wu: float = 1.0
 @export var support_height_epsilon_wu: float = 1.0
 ## Wall slide / wall jump (approved Should extension, REQ-MOVE-004). PROTOTYPE — UNMEASURED.
-## Disabled by default; the October 21 keep/defer decision sets the shipped value.
-@export var wall_movement_enabled: bool = false
+## Core movement: enabled everywhere by default (owner decision, 2026-10-13).
+@export var wall_movement_enabled: bool = true
 @export var wall_slide_fall_cap_wu_s: float = 120.0
 @export var wall_jump_horizontal_wu_s: float = 240.0
 @export var wall_jump_vertical_wu_s: float = -520.0

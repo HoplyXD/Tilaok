@@ -347,9 +347,14 @@ func clear_wall_fixtures() -> void:
 ## Enables or disables wall movement for every seat in this room (snapshot tuning is shared).
 func set_wall_movement_enabled(enabled: bool) -> void:
 	snapshot.gameplay.wall_movement_enabled = enabled
+	set_wall_debug_visible(enabled)
+
+
+## Debug overlay only; wall movement itself is core and stays on.
+func set_wall_debug_visible(visible_overlay: bool) -> void:
 	for actor in actors.values():
 		var chicken := actor as ChickenController
-		chicken.show_wall_debug = enabled
+		chicken.show_wall_debug = visible_overlay
 		chicken.reset_wall_state()
 		chicken.queue_redraw()
 
@@ -529,11 +534,11 @@ func _reset_trial() -> void:
 func _toggle_wall_fixtures() -> void:
 	if wall_fixtures.is_empty():
 		build_wall_fixtures()
-		set_wall_movement_enabled(true)
+		set_wall_debug_visible(true)
 		drop_actor_at_fixture(0, "slab")
 	else:
 		clear_wall_fixtures()
-		set_wall_movement_enabled(false)
+		set_wall_debug_visible(false)
 
 
 func _launch_trial() -> void:

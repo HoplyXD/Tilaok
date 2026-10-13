@@ -235,6 +235,9 @@ PASS T15 gated vertical Tulay geometry | expected: 1x4 footprint, 4 wu strip on 
 PASS restoring tuning disables the 1x3 column again
 PASS arrange build.hollow_blocks.stack_2x3 at (10, 12): Valid placement.
 PASS T09 Kaing wall eligibility | expected: metadata ELIGIBLE and the wall probe finds the solid side | actual: metadata=1 probe=true
+PASS wall movement is enabled in the Item Lab by default
+PASS arrange build.hollow_blocks.stack_2x3 at (22, 10): Valid placement.
+PASS T09 Kaing wall slide and kick | expected: slides on the Kaing side at or below the 120 wu/s cap, then a fresh jump kicks away | actual: slid=true speed=120.0 kicked_away=true vx=-186.7
 PASS arrange build.hollow_blocks.stack_2x3 at (10, 9): Valid placement.
 PASS arrange build.hollow_blocks.stack_2x3 at (13, 9): Valid placement.
 PASS arrange build.bamboo_bridge.span_4x1 at (14, 8): Valid placement.
@@ -266,4 +269,4 @@ PASS karera_slice content and item pool now validate; only the unbuilt karera mo
 PASS profiles that do not list the seeds keep an empty item pool
 PASS movement_room lists no content
 PASS no seed family is marked release_target before P13 and P12 gates
-P04_TESTS checks=265 failures=0
+P04_TESTS checks=268 failures=0

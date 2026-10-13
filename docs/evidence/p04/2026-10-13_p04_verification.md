@@ -8,7 +8,7 @@
 
 | Check | Command | Result |
 |---|---|---|
-| P04 logic + real physics | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p04_tests.gd'` | **PASSED**, 265 checks, 0 failures. [Log](2026-10-13_p04_tests.txt) |
+| P04 logic + real physics | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p04_tests.gd'` | **PASSED**, 268 checks, 0 failures. [Log](2026-10-13_p04_tests.txt) |
 | Foundation regression (incl. Item Lab open/free/reload) | `... --script 'res://tests/run_foundation_tests.gd'` | **PASSED**, 0 failures. [Log](2026-10-13_foundation_tests.txt) |
 | P02 regression | `... --script 'res://tests/run_p02_tests.gd'` | **PASSED**, 83 checks, 0 failures. [Log](2026-10-13_p02_tests.txt) |
 | P03 regression | `... --script 'res://tests/run_p03_tests.gd'` | **PASSED**, 103 checks, 0 failures. [Log](2026-10-13_p03_tests.txt) |
@@ -128,7 +128,7 @@ P03 baseline (4 chickens, no items): median 0.826 / p95 1.426 / worst 6.141 ms; 
 - Tulay occlusion is undefined (no SOLID region); revisit with the first projectile item.
 - The vertical Tulay orientation is geometry only and remains gated; it was never driven by the controller.
 - Peak fall speed is sampled after the slide step (878.9 wu/s against a 900 cap).
-- Wall slide/kick is a separate, disabled-by-default extension (P02-T15–T22). Kaing declares solid-side wall eligibility and Tulay declares itself ineligible; only the metadata and the extension's probe were checked.
+- Wall slide/kick is a separate extension that is enabled by default as core movement (P02-T15–T22). Kaing declares solid-side wall eligibility and Tulay declares itself ineligible; only the metadata and the extension's probe were checked.
 - Item Lab placement is immediate and lab-only; P05 owns the atomic resolver, Pugad and previews.
 - Input was synthetic keyboard routing and synthetic gamepad seats; no physical device, rollover or human feel evidence exists.
 - All visuals are code-drawn DEBUG graybox; no production art or audio was created.

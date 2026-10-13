@@ -1,7 +1,7 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
 PASS default tuning with wall keys validates
-PASS wall movement ships disabled by default
+PASS wall movement is core and enabled by default
 PASS wall keys start at the documented unmeasured candidates
 PASS non-positive slide cap is rejected
 PASS downward wall jump impulse is rejected
@@ -87,7 +87,7 @@ PASS wall kick never enlarges external launch caps
 P02_WALL_METRIC containment launch=(480.0, 0.0) min=(188.0748, 125.75) max=(243.9251, 555.9449) contained=true
 PASS kick plus launch (480.0, 0.0) stays inside visible bounds
 PASS wall kick never enlarges external launch caps
-PASS P03 stage starts with wall movement disabled
+PASS P03 stage starts with wall movement enabled
 PASS P03 base platform side slides when wall movement is enabled
 PASS wall slide records no support contact
 PASS wall contact never qualifies as support or Rising-wave eligibility

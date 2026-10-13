@@ -103,7 +103,7 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 | 48-piece, four-chicken render sample | **PASSED — one diagnostic sample** | 600 uncapped 1080p frames: median 1.954 / p95 3.109 / worst 6.059 ms; peak working set 208.8 MiB. A first run's single 59.4 ms interval at the v-sync switch was fixed with a warm-up and is disclosed in the index. |
 | Windows export + exported startup of Item Lab | **PASSED — startup only** | Debug export exit 0; exported build loaded both `.tres` definitions from the PCK and exited 0. |
 | Lint/format/import | **PASSED** | `gdlint`/`gdformat --check` on 49 files; editor import exit 0 without diagnostics. |
-| Wall-extension suite (not P04) | **PASSED** | `run_p02_wall_tests.gd` re-run on the rebased tree: 85 checks, 0 failures. Wall movement remains disabled by default; P04 only declares per-surface wall eligibility. |
+| Wall-extension suite (not P04) | **PASSED** | `run_p02_wall_tests.gd` re-run on the rebased tree: 85 checks, 0 failures. Wall movement is enabled by default as core movement (owner decision, 2026-10-13); P04 declares Kaing wall eligibility and its tests slide and kick on a placed Kaing block. |
 | Static checks over the whole project | **PASSED** | `gdlint`/`gdformat --check` on all 53 `.gd` files after the rebase. |
 | Placeholder egg previews and Library | **PASSED — placeholder** | Egg → ghost → piece identity for all 3 enabled variants, looping animation, no text on eggs, Library fields and release filter (265 checks total; GUI runner 25 checks). [Capture](evidence/p04/2026-10-13_eggs_library_1080p.png). |
 | Human feel/readability review | **COULD-NOT-RUN** | No human reviewer or physical device was available; crowd captures show crowded labels at 48 pieces. |

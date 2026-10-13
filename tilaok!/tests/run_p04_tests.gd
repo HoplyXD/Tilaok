@@ -1440,6 +1440,33 @@ func _test_wall_eligibility() -> void:
 			and kaing_wall
 		)
 	)
+	# Wall movement is core: slide down a placed Kaing side, then kick away from it.
+	_check(room.tuning.wall_movement_enabled, "wall movement is enabled in the Item Lab by default")
+	_arrange([{"variant": KAING_2X3, "cell": Vector2i(22, 10)}])
+	_put_actor_feet(Vector2(691.9, 364.0))
+	await _frames(1)
+	_stick(1.0)
+	var slid := false
+	var slide_speed := 0.0
+	for _frame in range(20):
+		await physics_frame
+		if actor.wall_sliding and actor.wall_side == 1:
+			slid = true
+			slide_speed = maxf(slide_speed, actor.velocity.y)
+	_key(KEY_SPACE, true)
+	await _frames(3)
+	var kicked_away: bool = actor.velocity.x < -100.0
+	_key(KEY_SPACE, false)
+	_stick(0.0)
+	_row(
+		"T09 Kaing wall slide and kick",
+		"slides on the Kaing side at or below the 120 wu/s cap, then a fresh jump kicks away",
+		(
+			"slid=%s speed=%.1f kicked_away=%s vx=%.1f"
+			% [slid, slide_speed, kicked_away, actor.velocity.x]
+		),
+		slid and slide_speed <= room.tuning.wall_slide_fall_cap_wu_s + 1.0 and kicked_away
+	)
 	var tulay_ids := _arrange(
 		[
 			{"variant": KAING_2X3, "cell": Vector2i(10, 9), "turns": 1},

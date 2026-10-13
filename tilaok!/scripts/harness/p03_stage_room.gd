@@ -202,9 +202,14 @@ func clear_wall_fixtures() -> void:
 
 func set_wall_movement_enabled(enabled: bool) -> void:
 	tuning.wall_movement_enabled = enabled
+	set_wall_debug_visible(enabled)
+
+
+## Debug overlay only; wall movement itself is core and stays on.
+func set_wall_debug_visible(visible_overlay: bool) -> void:
 	for actor_variant in actors.values():
 		var actor := actor_variant as ChickenController
-		actor.show_wall_debug = enabled
+		actor.show_wall_debug = visible_overlay
 		actor.reset_wall_state()
 		actor.queue_redraw()
 
@@ -212,10 +217,10 @@ func set_wall_movement_enabled(enabled: bool) -> void:
 func _toggle_wall_fixtures() -> void:
 	if wall_fixtures.is_empty():
 		build_wall_fixtures()
-		set_wall_movement_enabled(true)
+		set_wall_debug_visible(true)
 	else:
 		clear_wall_fixtures()
-		set_wall_movement_enabled(false)
+		set_wall_debug_visible(false)
 
 
 func request_return() -> void:
