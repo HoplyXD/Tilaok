@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_prompt_glyph.gd" id="1"]
+
+[node name="PromptGlyph" type="HBoxContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_override_constants/separation = 6
+
+[node name="GlyphPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"RowPanel"
+
+[node name="GlyphLabel" type="Label" parent="GlyphPanel"]
+layout_mode = 2
+text = "?"
+theme_type_variation = &"BodyLabel"
+horizontal_alignment = 1
+custom_minimum_size = Vector2(28, 0)
+unique_name_in_owner = true
+
+[node name="Art_Glyph" type="TextureRect" parent="."]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+custom_minimum_size = Vector2(28, 28)
+visible = false
+metadata/asset_id = "ui.common.prompt_glyph"
+unique_name_in_owner = true
+
+[node name="ActionLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Action"
+theme_type_variation = &"BodyLabel"
+unique_name_in_owner = true
+

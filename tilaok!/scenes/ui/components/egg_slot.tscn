@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_egg_slot.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="2"]
+
+[node name="EggSlot" type="PanelContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_type_variation = &"EggFrame"
+custom_minimum_size = Vector2(100, 150)
+
+[node name="Art_EggFrame" type="TextureRect" parent="."]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+metadata/asset_id = "ui.pugad.egg_frame"
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="PreviewHost" type="Control" parent="Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(84, 104)
+unique_name_in_owner = true
+
+[node name="OwnerBadge" parent="Content" instance=ExtResource("2")]
+layout_mode = 2
+visible = false
+size_flags_horizontal = 4
+unique_name_in_owner = true
+

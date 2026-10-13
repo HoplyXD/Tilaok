@@ -50,10 +50,10 @@ Each seat has a fixed number and shape from join until return to lobby. **Colour
 
 | Seat | Number | Shape | Current placeholder colour |
 |---|---|---|---|
-| 1 | 1 | Circle | `#f2c14e` |
-| 2 | 2 | Triangle | `#63a7ff` |
-| 3 | 3 | Square | `#f07c6c` |
-| 4 | 4 | Diamond | `#89c77b` |
+| 1 | 1 | Shell built 2026-10-14: `scenes/ui/screens/title_screen.tscn` (SAMPLE data; live build label pending harness wiring) | `#f2c14e` |
+| 2 | 2 | Shell built: `lobby_screen.tscn`, binds seat dictionaries (live from `PlayerSeatRegistry` once wired) | `#63a7ff` |
+| 3 | 3 | Shell built: `tutorial_prompt.tscn` prompt box only; tutorial script not implemented | `#f07c6c` |
+| 4 | 4 | Shell built: `pugad_overlay.tscn` wrapping the existing `ItemEggPreview` (live eggs); claim rules are P05 | `#89c77b` |
 
 - The number and shape marker floats above the chicken and appears on the pointer, ghost, score entries and results (CURRENT: a drawn marker plus a text badge).
 - When chickens overlap at spawn, badges fan out with leader lines (CURRENT; see the P03 camera notes in [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md)).
@@ -78,7 +78,7 @@ Prompts must show the correct glyph for the device that seat uses. Gamepad label
 | Pause / request resume | Start / Options | Escape (shared) | Escape (shared) |
 | Spectator cheer | West | R | Right Shift |
 
-**Wall slide / wall jump (CURRENT, enabled by default):** while airborne against a solid side, hold toward the wall to slide at a capped speed; a fresh jump press kicks away. Holding jump does not repeat; you must separate from the wall before kicking it again. This needs a short Library/tutorial cue and no HUD element ([UI_TUTORIAL.md](UI_TUTORIAL.md) future-extension note).
+**Wall slide / wall jump (CURRENT, enabled by default):** while airborne and touching a qualifying solid side, a chicken slides at a capped fall speed; holding toward the wall is not required. A fresh jump press kicks away once per contact. Holding jump does not repeat; the chicken must separate from the wall before kicking it again. This needs a short Library/tutorial cue and no HUD element ([UI_TUTORIAL.md](UI_TUTORIAL.md) future-extension note).
 
 Placement movement is cell steps (first press = one cell; repeat after 0.25 s at 8 cells/s). Rotation is a fresh press only; an unsupported orientation must show a **disabled cue**, not silence.
 
@@ -90,18 +90,18 @@ Flow (LOCKED, from UI_TUTORIAL): Title → Lobby → Tutorial (first Karera) →
 
 | # | Screen | What it must show | Primary actions | Code status today | Tracker |
 |---|---|---|---|---|---|
-| 1 | **Title** | Game title, Start local match, Library, Settings, Quit; a clear build/version label while in development | Start, Library, Settings, Quit | Not built (foundation harness only) | P13-T01/T02 |
-| 2 | **Local join lobby** | 2–4 join slots with device prompt; chicken colour plus number/shape; ready state; "need at least 2 players" | Join, choose identifier, ready, leave | Not built (join buttons in test rooms) | P05-T11 (minimal), P13 |
-| 3 | **Tutorial (guided first Karera)** | One instruction at a time: identify your chicken, move/jump to markers, claim an egg, place/rotate/confirm, reach the flag, read the results | Skippable once completed in the session | Not built | P13-T07/T08 |
-| 4 | **Pugad** | Visible eggs, each showing its exact item and size by a short looping animation with **no name or description**; selection countdown; next-round event announcement; claim ownership change; lost-claim cue | Move, claim | Placeholder egg row exists (Item Lab) | P05-T01/T02 |
-| 5 | **Place** | Shared stage; each player's pointer with identity marker; valid/invalid ghost (colour **and** outline/icon/texture); footprint, rotation, size; sweep/lane/effect where relevant; rejection reason text; countdown; protected-zone feedback | Move, rotate, confirm | Debug ghost exists (Item Lab) | P05-T05/T06 |
-| 6 | **Play HUD** | Round number and Main Challenge; **TWIST** label when stacked; score totals; timer only when used; player state (alive / secured / eliminated / current taya); Kangaroo **KANG → GA → ROO** failures; Barya carrier marker; next event | Run, jump (wall slide/kick) | Developer text lines only | P13-T03/T04 |
-| 7 | **Round result** | Finishes/eliminations; awards in plain language (Tapos, Una, Bayani, Patibong, Bawi, Barya); match total; clear winner or the reason no points were awarded | Continue (all ready or 8 s) | Not built | P05-T11, P06, P13 |
-| 8 | **Match result** | Winner, final scores, **Last Cluck!** callout where applicable | Replay, return to lobby (all ready) | Not built | P09, P13 |
-| 9 | **Pause / reconnect** | Pause owner; resume needs every connected player ready, then a 3 s countdown; a missing-device screen to reclaim a slot (choose seat number, explicit confirm) | Resume, settings, Library, leave (with confirmation) | Debug pause only | P02 (logic), P13 |
-| 10 | **Settings** | Screen shake: full / reduced / off; volume (master, music, effects, crowd if scope permits); controls help; accessibility info | Adjust, back | Not built | P13-T01/T02 |
-| 11 | **Library** | Sections: How to Play, Karera, Lagsanay, Kangaroo, Items, Accessibility. Items entry: name, looping animation, sizes, placement preview, tell, counterplay, controls, permitted modes. Shows only enabled release content by default | Choose category, inspect entry, back | Placeholder panel (Item Lab) | P13-T05/T06 |
-| 12 | **Event overlays** | Lagsanay: taya marker, countdown, opening-freeze countdown, pass-back immunity, placement order. Kangaroo: slipper-pose icon, text, audio, timing ring, Rising-wave target line, Hug pair marker, Slipper Storm two-command display | — | Not built | P08, P11, P13 |
+| 1 | **Title** | Game title, Start local match, Library, Settings, Quit; a clear build/version label while in development | Start, Library, Settings, Quit | Shell built 2026-10-14: `scenes/ui/screens/title_screen.tscn` (SAMPLE data; live build label pending harness wiring) | P13-T01/T02 |
+| 2 | **Local join lobby** | 2–4 join slots with device prompt; chicken colour plus number/shape; ready state; "need at least 2 players" | Join, choose identifier, ready, leave | Shell built: `lobby_screen.tscn`, binds seat dictionaries (live from `PlayerSeatRegistry` once wired) | P05-T11 (minimal), P13 |
+| 3 | **Tutorial (guided first Karera)** | One instruction at a time: identify your chicken, move/jump to markers, claim an egg, place/rotate/confirm, reach the flag, read the results | Skippable once completed in the session | Shell built: `tutorial_prompt.tscn` prompt box only; tutorial script not implemented | P13-T07/T08 |
+| 4 | **Pugad** | Visible eggs, each showing its exact item and size by a short looping animation with **no name or description**; selection countdown; next-round event announcement; claim ownership change; lost-claim cue | Move, claim | Shell built: `pugad_overlay.tscn` wrapping the existing `ItemEggPreview` (live eggs); claim rules are P05 | P05-T01/T02 |
+| 5 | **Place** | Shared stage; each player's pointer with identity marker; valid/invalid ghost (colour **and** outline/icon/texture); footprint, rotation, size; sweep/lane/effect where relevant; rejection reason text; countdown; protected-zone feedback | Move, rotate, confirm | Shell built: `place_overlay.tscn` with ghost legend; ghost drawing stays in `ItemGhost` | P05-T05/T06 |
+| 6 | **Play HUD** | Round number and Main Challenge; **TWIST** label when stacked; score totals; timer only when used; player state (alive / secured / eliminated / current taya); Kangaroo **KANG → GA → ROO** failures; Barya carrier marker; next event | Run, jump (wall slide/kick) | Shell built: `play_hud.tscn` (64 px bar, SAMPLE scores) | P13-T03/T04 |
+| 7 | **Round result** | Finishes/eliminations; awards in plain language (Tapos, Una, Bayani, Patibong, Bawi, Barya); match total; clear winner or the reason no points were awarded | Continue (all ready or 8 s) | Shell built: `round_result_screen.tscn` (SAMPLE awards) | P05-T11, P06, P13 |
+| 8 | **Match result** | Winner, final scores, **Last Cluck!** callout where applicable | Replay, return to lobby (all ready) | Shell built: `match_result_screen.tscn` (SAMPLE) | P09, P13 |
+| 9 | **Pause / reconnect** | Pause owner; resume needs every connected player ready, then a 3 s countdown; a missing-device screen to reclaim a slot (choose seat number, explicit confirm) | Resume, settings, Library, leave (with confirmation) | Shell built: `pause_screen.tscn`; `bind_coordinator()` binds the live pause/reconnect logic | P02 (logic), P13 |
+| 10 | **Settings** | Screen shake: full / reduced / off; volume (master, music, effects, crowd if scope permits); controls help; accessibility info | Adjust, back | Shell built: `settings_screen.tscn`, binds `PresentationSettings` (in-memory only) | P13-T01/T02 |
+| 11 | **Library** | Sections: How to Play, Karera, Lagsanay, Kangaroo, Items, Accessibility. Items entry: name, looping animation, sizes, placement preview, tell, counterplay, controls, permitted modes. Shows only enabled release content by default | Choose category, inspect entry, back | Shell built: `library_screen.tscn`; Items category live from `ItemLibraryEntry`, other categories SAMPLE | P13-T05/T06 |
+| 12 | **Event overlays** | Lagsanay: taya marker, countdown, opening-freeze countdown, pass-back immunity, placement order. Kangaroo: slipper-pose icon, text, audio, timing ring, Rising-wave target line, Hug pair marker, Slipper Storm two-command display | — | Component placeholders only: `events_overlay.tscn` (taya marker, Kangaroo prompt) | P08, P11, P13 |
 
 ## 7. Components and visual language to design
 
@@ -165,11 +165,28 @@ Phase banner (Pugad / Place / Play), countdown ring, announce banner for next-ro
 6. Whether the Library is shown in the release build as designed, or trimmed to How to Play only.
 7. Who integrates Shanti's assets (Francis or Carlos) and the review cadence.
 
-## 12. What development provides next (PROPOSAL, pending approval)
+## 12. What development built (2026-10-14)
 
-- Screen **shells** for Title, Lobby, Pause/Reconnect, Settings, Round and Match result and the HUD, wired to the existing input and phase code with placeholder art, so final assets drop in without code changes.
-- A per-screen **state list** and sample data for score cards and results so layouts can be tested with real content.
-- A **test harness button** for each screen so Shanti can review a build without playing a full match.
+Screen shells are real Godot scenes, not code. Status: **placeholder look, SAMPLE data, no final art.** They do not tick any P05-T11 or P13 checkbox: live modes, awards and content still come from later phases.
+
+- **Scenes:** `tilaok!/scenes/ui/screens/` (Title, Lobby, Tutorial prompt, Pugad, Place, Play HUD, Round result, Match result, Pause/Reconnect, Settings, Library, Event overlays) and `tilaok!/scenes/ui/components/` (player badge, prompt glyph, phase banner, countdown, score row, award line, toast, egg slot, ghost legend, confirm dialog, option row, lobby slot, taya marker, Kangaroo prompt).
+- **One Theme:** `tilaok!/assets/ui/theme/tilaok_theme.tres`.
+- **UI Gallery:** `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return. It is not yet wired into the foundation harness (held until P05 lands); open it in the editor and press F6, or run `godot --path tilaok! res://scenes/ui/ui_gallery.tscn`.
+- **Tests:** `tilaok!/tests/run_ui_tests.gd`, captures `tilaok!/tests/capture_ui_evidence.gd`, evidence in `docs/evidence/ui-shells/`.
+
+### How to edit the UI in Godot (for Shanti)
+
+1. **Open the project** in Godot 4.7.2 (`Godot_v4.7.2-stable_win64.exe --path tilaok! --editor`). In the FileSystem dock open `scenes/ui/ui_gallery.tscn` and press **F6** to see every screen. Use the left panel (hide it with F9) to change screen, state, device glyphs and player count.
+2. **Restyle:** open `assets/ui/theme/tilaok_theme.tres` and use the Theme editor. Colours, borders, fonts, font sizes and the safe-area margin all live there. Change what a type looks like; never rename the type variations (`TilaokMenuButton`, `MenuButtonSelected`, `RowPanel`, `RowPanelSelected`, `GhostValid`, `GhostInvalid`, `GhostProtected`, `GhostRotationOff`, `GhostConfirmed`, `HudBar`, `Backdrop`, `Scrim`, `SafeAreaMargin`...). To change the font, set the Theme's **Default Font**.
+3. **Move things:** open any scene in `scenes/ui/screens/` and edit it like normal UI (containers, anchors, sizes). Press **F6** to run just that scene with sample data where the screen supports it.
+4. **Drop art:** put PNG/SVG files in `assets/ui/<screen>/` named `ui.<screen>.<element>.<ext>`. In a scene, select the node named `Art_<Element>` and set its **Texture** in the inspector. Empty art slots show the Theme placeholder. Seat shapes: each badge has `Art_Circle`, `Art_Triangle`, `Art_Square`, `Art_Diamond`; assigning one replaces the placeholder shape.
+5. **Register the asset** in `docs/ASSETS.md` (source, licence, AI-assistance field) before it enters a build.
+
+**Do not rename or delete** nodes marked *Unique Name* (the `%Name` badge in the Scene tree): scripts find them by that name. The test `tilaok!/tests/run_ui_tests.gd` lists them per screen. Do not add Godot focus to menu buttons (`Focus Mode` must stay *None*): menus are driven by the input router, and focus would make Enter fire twice.
+
+Questions: Francis or Carlos.
+
+**Pending human decisions (placeholders until then):** safe-area inset (5 %, 64x36 px) and minimum text size (16 px mid-round, 12 px labels) are Theme constants under `TilaokPolicy`/`SafeAreaMargin`; typeface, art style and Filipino/Hiligaynon copy review are open.
 
 ## 13. Source documents
 

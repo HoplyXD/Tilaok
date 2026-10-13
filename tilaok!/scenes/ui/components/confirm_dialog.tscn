@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_confirm_dialog.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="2"]
+
+[node name="ConfirmDialog" type="PanelContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_type_variation = &"ModalPanel"
+custom_minimum_size = Vector2(420, 140)
+visible = false
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MessageLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Are you sure?"
+theme_type_variation = &"BodyLabel"
+horizontal_alignment = 1
+autowrap_mode = 3
+unique_name_in_owner = true
+
+[node name="Menu" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+script = ExtResource("2")
+theme_override_constants/separation = 16
+alignment = 1
+horizontal = true
+unique_name_in_owner = true
+
+[node name="YesButton" type="Button" parent="Content/Menu"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Yes"
+unique_name_in_owner = true
+
+[node name="NoButton" type="Button" parent="Content/Menu"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "No"
+unique_name_in_owner = true
+

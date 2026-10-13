@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_phase_banner.gd" id="1"]
+
+[node name="PhaseBanner" type="PanelContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_type_variation = &"Banner"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PhaseLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = "PHASE"
+theme_type_variation = &"HeadingLabel"
+unique_name_in_owner = true
+
+[node name="DetailLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"CaptionLabel"
+unique_name_in_owner = true
+

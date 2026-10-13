@@ -1,0 +1,37 @@
+[gd_scene load_steps=1 format=3]
+
+
+
+[node name="KangarooPrompt" type="PanelContainer"]
+layout_mode = 3
+theme_type_variation = &"Card"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Art_PoseIcon" type="TextureRect" parent="Row"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+custom_minimum_size = Vector2(56, 56)
+visible = false
+metadata/asset_id = "ui.events.kang_pose"
+
+[node name="PoseText" type="Label" parent="Row"]
+layout_mode = 2
+text = "KANG"
+theme_type_variation = &"TitleLabel"
+unique_name_in_owner = true
+
+[node name="PoseSteps" type="Label" parent="Row"]
+layout_mode = 2
+text = "KANG > GA > ROO"
+theme_type_variation = &"HeadingLabel"
+
+[node name="Note" type="Label" parent="Row"]
+layout_mode = 2
+text = "PLACEHOLDER: match the pose, three misses and you are out"
+theme_type_variation = &"CaptionLabel"
+

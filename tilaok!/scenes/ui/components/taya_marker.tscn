@@ -1,0 +1,37 @@
+[gd_scene load_steps=1 format=3]
+
+
+
+[node name="TayaMarker" type="PanelContainer"]
+layout_mode = 3
+theme_type_variation = &"Card"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Art_TayaIcon" type="TextureRect" parent="Row"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+custom_minimum_size = Vector2(40, 40)
+visible = false
+metadata/asset_id = "ui.events.taya_marker"
+
+[node name="TayaLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = "TAYA"
+theme_type_variation = &"HeadingLabel"
+
+[node name="TayaCountdown" type="Label" parent="Row"]
+layout_mode = 2
+text = "12"
+theme_type_variation = &"HeadingLabel"
+unique_name_in_owner = true
+
+[node name="Note" type="Label" parent="Row"]
+layout_mode = 2
+text = "PLACEHOLDER: touch another chicken to pass it"
+theme_type_variation = &"CaptionLabel"
+
