@@ -66,6 +66,39 @@ extends Resource
 @export var item_tulay_vertical_enabled: bool = false
 @export var item_kaing_weight: float = 50.0
 @export var item_tulay_weight: float = 50.0
+## P10 first-batch item values. PROVISIONAL and UNMEASURED: docs/PROTOTYPE_DEFAULTS.md §4/§P10.
+## Spring gate figures (775/849 wu/s, 0.10 s window, 0.20 s cooldown, 480/900 caps) are documented.
+@export var item_spring_launch_wu_s: float = 775.0
+@export var item_spring_boost_wu_s: float = 849.0
+@export var item_spring_boost_window_s: float = 0.10
+@export var item_spring_cooldown_s: float = 0.20
+@export var item_spring_contact_probe_wu: float = 2.0
+@export var item_spring_horizontal_cap_wu_s: float = 480.0
+@export var item_spring_upward_cap_wu_s: float = 900.0
+@export var item_spring_weight: float = 15.0
+@export var item_trumpo_speed_wu_s: float = 160.0
+@export var item_trumpo_pause_s: float = 0.75
+@export var item_trumpo_hit_wu: float = 20.0
+@export var item_trumpo_weight: float = 50.0
+@export var item_parol_cycle_s: float = 3.0
+@export var item_parol_active_s: float = 1.5
+@export var item_parol_charge_s: float = 0.6
+@export var item_parol_beam_width_wu: float = 12.0
+@export var item_parol_weight: float = 50.0
+@export var item_launcher_initial_delay_s: float = 0.5
+@export var item_launcher_telegraph_s: float = 0.8
+@export var item_launcher_cooldown_s: float = 1.7
+@export var item_launcher_projectile_speed_wu_s: float = 360.0
+@export var item_launcher_projectile_size_wu: float = 14.0
+@export var item_launcher_weight: float = 50.0
+@export var item_walis_weight: float = 50.0
+@export var item_bubble_cadence_s: float = 2.5
+@export var item_bubble_rise_wu_s: float = 60.0
+@export var item_bubble_radius_wu: float = 14.0
+@export var item_bubble_capture_s: float = 2.0
+@export var item_bubble_release_wu_s: float = 120.0
+@export var item_bubble_recapture_immunity_s: float = 1.0
+@export var item_bubble_weight: float = 50.0
 ## P05 match-loop prototype values; copied into the match configuration snapshot.
 @export var match_pugad_extra_eggs: int = 2
 @export var match_pugad_seconds: float = 8.0
@@ -136,6 +169,29 @@ func validate() -> PackedStringArray:
 		"item_tulay_strip_thickness_wu",
 		"item_kaing_weight",
 		"item_tulay_weight",
+		"item_spring_launch_wu_s",
+		"item_spring_boost_wu_s",
+		"item_spring_boost_window_s",
+		"item_spring_cooldown_s",
+		"item_spring_contact_probe_wu",
+		"item_trumpo_speed_wu_s",
+		"item_trumpo_pause_s",
+		"item_trumpo_hit_wu",
+		"item_parol_cycle_s",
+		"item_parol_active_s",
+		"item_parol_charge_s",
+		"item_parol_beam_width_wu",
+		"item_launcher_initial_delay_s",
+		"item_launcher_telegraph_s",
+		"item_launcher_cooldown_s",
+		"item_launcher_projectile_speed_wu_s",
+		"item_launcher_projectile_size_wu",
+		"item_bubble_cadence_s",
+		"item_bubble_rise_wu_s",
+		"item_bubble_radius_wu",
+		"item_bubble_capture_s",
+		"item_bubble_release_wu_s",
+		"item_bubble_recapture_immunity_s",
 		"match_pugad_seconds",
 		"match_place_seconds",
 		"match_results_advance_seconds",
@@ -247,4 +303,63 @@ func _validate_item_tuning() -> PackedStringArray:
 		errors.append("Tulay strip thickness must be positive and no larger than one cell")
 	if item_kaing_weight < 0.0 or item_tulay_weight < 0.0:
 		errors.append("item family weights cannot be negative")
+	errors.append_array(_validate_first_batch_tuning())
+	return errors
+
+
+func _validate_first_batch_tuning() -> PackedStringArray:
+	var errors := PackedStringArray()
+	for weight in [
+		item_spring_weight,
+		item_trumpo_weight,
+		item_parol_weight,
+		item_launcher_weight,
+		item_walis_weight,
+		item_bubble_weight
+	]:
+		if not is_finite(weight) or weight < 0.0:
+			errors.append("first-batch item weights must be finite and not negative")
+			break
+	for positive in [
+		item_spring_launch_wu_s,
+		item_spring_boost_wu_s,
+		item_spring_contact_probe_wu,
+		item_spring_horizontal_cap_wu_s,
+		item_spring_upward_cap_wu_s,
+		item_trumpo_speed_wu_s,
+		item_trumpo_hit_wu,
+		item_parol_cycle_s,
+		item_parol_active_s,
+		item_parol_beam_width_wu,
+		item_launcher_telegraph_s,
+		item_launcher_projectile_speed_wu_s,
+		item_launcher_projectile_size_wu,
+		item_bubble_cadence_s,
+		item_bubble_rise_wu_s,
+		item_bubble_radius_wu,
+		item_bubble_capture_s,
+	]:
+		if not is_finite(positive) or positive <= 0.0:
+			errors.append("first-batch item magnitudes must be finite and greater than zero")
+			break
+	if item_spring_launch_wu_s > item_spring_upward_cap_wu_s:
+		errors.append("spring launch cannot exceed the 900 wu/s upward cap")
+	if item_spring_boost_wu_s > item_spring_upward_cap_wu_s:
+		errors.append("spring boost cannot exceed the 900 wu/s upward cap")
+	if item_spring_boost_wu_s < item_spring_launch_wu_s:
+		errors.append("spring boost must not be weaker than the plain launch")
+	if item_spring_horizontal_cap_wu_s > 480.0 or item_spring_upward_cap_wu_s > 900.0:
+		errors.append("spring caps cannot exceed the documented 480/900 wu/s external caps")
+	if item_spring_boost_window_s < 0.0 or item_spring_cooldown_s < 0.0:
+		errors.append("spring windows cannot be negative")
+	if item_parol_active_s >= item_parol_cycle_s:
+		errors.append("Parol active window must be shorter than its cycle")
+	if item_parol_charge_s < 0.0 or item_parol_charge_s > item_parol_cycle_s - item_parol_active_s:
+		errors.append("Parol charge must fit inside the inactive window")
+	if item_trumpo_pause_s < 0.0 or item_launcher_initial_delay_s < 0.0:
+		errors.append("item pauses and delays cannot be negative")
+	if item_launcher_cooldown_s < 0.0 or item_bubble_recapture_immunity_s < 0.0:
+		errors.append("item cooldowns and immunity cannot be negative")
+	if item_bubble_release_wu_s < 0.0 or item_bubble_release_wu_s > item_spring_upward_cap_wu_s:
+		errors.append("bubble release speed must be between zero and the 900 wu/s cap")
 	return errors

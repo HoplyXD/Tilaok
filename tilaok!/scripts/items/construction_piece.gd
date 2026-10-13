@@ -16,6 +16,7 @@ var placed: PlacedItem
 var metadata: SupportSurfaceMetadata
 var wall_contact := ""
 var footprint_size := Vector2.ZERO
+var resolved_regions: Array[Dictionary] = []
 var cell_wu := 32.0
 var _solid_rects: Array[Rect2] = []
 var _strip_rects: Array[Rect2] = []
@@ -31,6 +32,7 @@ func configure(
 	tuning: GameplayTuning
 ) -> void:
 	placed = source
+	resolved_regions = regions
 	metadata = surface_metadata
 	wall_contact = wall_contact_declaration
 	cell_wu = tuning.grid_cell_wu

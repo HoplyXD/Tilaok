@@ -4,6 +4,15 @@ extends ItemLabRoom
 const MATCH_BUILD_ID := "P06-karera-scoring-dev"
 const MARKS := {"CIRCLE": "●", "TRIANGLE": "▲", "SQUARE": "■", "DIAMOND": "◆"}
 const RACE_CANDIDATE_QUEUE_SCRIPT := preload("res://scripts/match/race_candidate_queue.gd")
+const VARIANT_LABELS := {
+	"build.hollow_blocks.cell_1x1": "Kaing 1×1",
+	"build.hollow_blocks.stack_2x3": "Kaing 2×3",
+	"build.bamboo_bridge.span_4x1": "Tulay 4×1",
+	"build.hollow_blocks.column_1x3": "Kaing 1×3",
+	"build.bamboo_bridge.span_3x1": "Tulay 3×1",
+	"build.bamboo_bridge.span_5x1": "Tulay 5×1",
+	"move.tire_spring.tire_2x2": "Gulong 2×2",
+}
 const PHASE_TO_INPUT := {
 	MatchPhaseController.Phase.LOBBY: LocalInputRouter.Phase.LOBBY,
 	MatchPhaseController.Phase.PUGAD: LocalInputRouter.Phase.PUGAD,
@@ -305,8 +314,9 @@ func start_match() -> bool:
 	tuning = match_snapshot.gameplay
 	_seed = match_seed
 	input_router.tuning = tuning
-	definitions = ItemDefinitions.load_all(tuning)
+	definitions = _load_definitions()
 	items.configure(tuning, arena, support_tracker, definitions, world_layer)
+	items.director.elimination_sink = _on_item_elimination
 	cumulative_score_units.clear()
 	for seat in input_router.registry.joined_seats():
 		cumulative_score_units[int(seat.seat)] = 0
@@ -629,6 +639,9 @@ func _refresh_match_ghost(seat_index: int) -> void:
 		_short_variant_label(str(cursor.variant_key))
 	)
 	(_ghosts[seat_index] as ItemGhost).compact_label = true
+	(_ghosts[seat_index] as ItemGhost).set_overlay(
+		overlay_for_cursor(str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns))
+	)
 	for pointer in pointers:
 		if str(pointer.id) == "p05_cursor_%d" % seat_index:
 			pointer.rect = footprint
@@ -862,6 +875,14 @@ func _on_actor_escaped(seat_index: int) -> void:
 	)
 
 
+## First-batch hazard eliminations go to the P06 ledger as candidates (see the bridge).
+func _on_item_elimination(record: AttributionRecord) -> bool:
+	var playing := phase_controller.phase == MatchPhaseController.Phase.PLAY
+	return ItemEliminationBridge.submit(
+		race_candidate_queue, race_round_controller, playing, record
+	)
+
+
 func _on_goal_body_entered(body: Node2D) -> void:
 	if phase_controller.phase == MatchPhaseController.Phase.PLAY and body is ChickenController:
 		race_candidate_queue.queue_goal(body as ChickenController, Engine.get_physics_frames())
@@ -963,14 +984,9 @@ func _phase_hint() -> String:
 
 
 func _short_variant_label(variant_key: String) -> String:
-	match variant_key:
-		"build.hollow_blocks.cell_1x1":
-			return "Kaing 1×1"
-		"build.hollow_blocks.stack_2x3":
-			return "Kaing 2×3"
-		"build.bamboo_bridge.span_4x1":
-			return "Tulay 4×1"
-	return "Unknown item"
+	if VARIANT_LABELS.has(variant_key):
+		return str(VARIANT_LABELS[variant_key])
+	return definitions.short_label(variant_key)
 
 
 func _move_build_region_label_below_controls() -> void:

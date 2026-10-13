@@ -51,25 +51,34 @@ static func validate(
 		return _reject("rotation_unsupported")
 	if variant.gated_rotations.has(turns) and not tuning.item_tulay_vertical_enabled:
 		return _reject("rotation_unsupported")
-	if existing.size() >= tuning.item_persistent_cap:
+	var family := found.family as ItemFamilyDefinition
+	if existing.size() >= tuning.item_persistent_cap and not family.one_shot_edit:
 		return _reject("persistent_cap")
 	var footprint := footprint_rect_for(variant, origin_cell, turns, tuning)
-	var arena_result := arena.validate_region(
-		footprint, ArenaDefinition.REGION_FOOTPRINT, actor_rects
-	)
-	if not bool(arena_result.allowed):
-		return _reject(_code_for_arena_reason(str(arena_result.reason)), str(arena_result.reason))
+	var occupied := occupied_rects_for(family, variant, origin_cell, turns, tuning)
+	if family.one_shot_edit:
+		if not arena.arena_bounds.encloses(footprint):
+			return _reject("out_of_bounds", "outside arena bounds")
+	else:
+		for occupied_rect in occupied:
+			var arena_result := arena.validate_region(
+				occupied_rect, ArenaDefinition.REGION_FOOTPRINT, actor_rects
+			)
+			if not bool(arena_result.allowed):
+				return _reject(
+					_code_for_arena_reason(str(arena_result.reason)), str(arena_result.reason)
+				)
 	for region in ItemGeometry.resolve_regions(variant, turns, tuning):
 		var region_kind: ItemRegionSpec.Kind = region.kind
-		if not ItemRegionSpec.is_bounded_extent_kind(region_kind):
+		if not ItemRegionSpec.is_bounded_extent_kind(region_kind) or family.one_shot_edit:
 			continue
 		var world_rect: Rect2 = region.rect
 		world_rect.position += footprint.position
-		var extent_kind := (
-			ArenaDefinition.REGION_SWEEP
-			if region_kind in [ItemRegionSpec.Kind.SWEEP, ItemRegionSpec.Kind.LANE]
-			else ArenaDefinition.REGION_EFFECT
-		)
+		var extent_kind := ArenaDefinition.REGION_EFFECT
+		if bool(region.get("blockable", false)):
+			extent_kind = ArenaDefinition.REGION_BLOCKABLE
+		elif region_kind in [ItemRegionSpec.Kind.SWEEP, ItemRegionSpec.Kind.LANE]:
+			extent_kind = ArenaDefinition.REGION_SWEEP
 		var extent_result := arena.validate_region(world_rect, extent_kind, actor_rects)
 		if not bool(extent_result.allowed):
 			return _reject(
@@ -77,9 +86,44 @@ static func validate(
 			)
 	for other_variant in existing:
 		var other := other_variant as PlacedItem
-		if footprint.intersects(other.footprint_rect, false):
-			return _reject("item_overlap", "overlaps %s" % other.instance_id)
-	return {"allowed": true, "code": "valid", "reason": "Valid placement.", "footprint": footprint}
+		for occupied_rect in occupied:
+			for other_rect in other.occupancy():
+				if occupied_rect.intersects(other_rect, false):
+					return _reject("item_overlap", "overlaps %s" % other.instance_id)
+	return {
+		"allowed": true,
+		"code": "valid",
+		"reason": "Valid placement.",
+		"footprint": footprint,
+		"occupied": occupied,
+		"one_shot": family.one_shot_edit,
+	}
+
+
+## Cells this placement actually reserves. One-shot edits reserve nothing; a variant that lists
+## `occupied_cells` (Parol posts) reserves only those; everything else reserves its footprint.
+static func occupied_rects_for(
+	family: ItemFamilyDefinition,
+	variant: ItemVariantDefinition,
+	origin_cell: Vector2i,
+	quarter_turns: int,
+	tuning: GameplayTuning
+) -> Array[Rect2]:
+	var result: Array[Rect2] = []
+	if family.one_shot_edit:
+		return result
+	var footprint := footprint_rect_for(variant, origin_cell, quarter_turns, tuning)
+	if variant.occupied_cells.is_empty():
+		result.append(footprint)
+		return result
+	var cell := tuning.grid_cell_wu
+	var box := Vector2(variant.footprint_cells) * cell
+	for cells in variant.occupied_cells:
+		var local := Rect2(Vector2(cells.position) * cell, Vector2(cells.size) * cell)
+		var rotated := ItemGeometry.rotate_rect(local, box, quarter_turns)
+		rotated.position += footprint.position
+		result.append(rotated)
+	return result
 
 
 static func footprint_rect_for(

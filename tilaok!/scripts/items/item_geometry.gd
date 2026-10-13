@@ -51,6 +51,7 @@ static func resolve_regions(
 					"kind": region.kind,
 					"rect": rotate_rect(rect, box, turns),
 					"normal": normal,
+					"blockable": region.blockable,
 				}
 			)
 		)

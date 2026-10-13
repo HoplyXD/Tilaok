@@ -4,6 +4,8 @@ extends RefCounted
 const REGION_FOOTPRINT := "footprint"
 const REGION_SWEEP := "sweep"
 const REGION_EFFECT := "effect"
+## A lane/beam/path that solids may clip; immutable base geometry overlap is allowed.
+const REGION_BLOCKABLE := "blockable"
 
 var tuning: GameplayTuning
 var arena_bounds: Rect2
@@ -84,7 +86,7 @@ func validate_region(
 		reason = "protected goal zone"
 	elif not build_region.encloses(region):
 		reason = "outside build region"
-	if reason.is_empty():
+	if reason.is_empty() and region_kind != REGION_BLOCKABLE:
 		for spec in surface_specs:
 			if bool(spec.immutable) and _overlaps(region, spec.rect):
 				reason = "immutable base geometry: %s" % spec.id
@@ -94,7 +96,7 @@ func validate_region(
 			if _overlaps(region, actor_rect.grow(4.0)):
 				reason = "player clearance"
 				break
-	elif reason.is_empty() and region_kind not in [REGION_SWEEP, REGION_EFFECT]:
+	elif reason.is_empty() and region_kind not in [REGION_SWEEP, REGION_EFFECT, REGION_BLOCKABLE]:
 		reason = "unknown edit region kind"
 	return (
 		_reject(reason)

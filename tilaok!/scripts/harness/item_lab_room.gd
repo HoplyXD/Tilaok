@@ -34,7 +34,7 @@ func _ready() -> void:
 	super._ready()
 	if arena == null:
 		return
-	definitions = ItemDefinitions.load_all(tuning)
+	definitions = _load_definitions()
 	if not definitions.is_valid():
 		push_error("Item definitions rejected: " + "; ".join(definitions.errors))
 		return
@@ -42,6 +42,7 @@ func _ready() -> void:
 	items.name = "ItemManager"
 	add_child(items)
 	items.configure(tuning, arena, support_tracker, definitions, world_layer)
+	items.actors_source = _actors_for_items
 	var enabled := _enabled_variant_keys()
 	selected_variant_key = enabled[0] if not enabled.is_empty() else ""
 	input_router.action_pressed.connect(_on_lab_action_pressed)
@@ -55,6 +56,33 @@ func _ready() -> void:
 			"P04_ITEM_LAB_READY families=%d enabled_variants=%d profile=%s"
 			% [definitions.families.size(), tuning.item_enabled_variants.size(), profile_id]
 		)
+	)
+
+
+## Profile-keyed definitions: the P04 profiles keep the exact Kaing/Tulay pair and pool.
+func _load_definitions() -> ItemDefinitions:
+	ItemEnabledProfiles.apply(tuning, profile_id)
+	return ItemDefinitions.load_for_profile(tuning, profile_id)
+
+
+func _actors_for_items() -> Dictionary:
+	return actors
+
+
+## Region overlay for first-batch families (empty for the P04 construction pieces).
+func overlay_for_cursor(variant_key: String, cell: Vector2i, turns: int) -> Array[Dictionary]:
+	var found := definitions.find_variant(variant_key)
+	if found.is_empty() or (found.family as ItemFamilyDefinition).visual_set == null:
+		return []
+	return ItemOverlayBuilder.build(
+		found.family,
+		found.variant,
+		cell,
+		turns,
+		tuning,
+		arena,
+		items.pieces.values(),
+		items.round_number
 	)
 
 
@@ -210,7 +238,7 @@ func confirm_cursor(seat_index: int) -> Dictionary:
 		selected_variant_key, cursor.cell, cursor.turns, seat_index, _actor_rects()
 	)
 	last_message = (
-		"Placed %s." % result.instance_id
+		"Placed %s." % result.get("instance_id", result.get("reason", ""))
 		if bool(result.allowed)
 		else "Rejected: %s" % result.reason
 	)
@@ -340,6 +368,9 @@ func _refresh_ghost(seat_index: int) -> void:
 		str(verdict.reason),
 		"P%d %s" % [int(seat.identity), str(seat.shape)],
 		selected_variant_key.trim_prefix("build.")
+	)
+	(cursor.ghost as ItemGhost).set_overlay(
+		overlay_for_cursor(selected_variant_key, cursor.cell, cursor.turns)
 	)
 	for pointer in pointers:
 		if str(pointer.id) == "lab_cursor_%d" % seat_index:

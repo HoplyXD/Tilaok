@@ -10,6 +10,8 @@ const EGG_SIZE := Vector2(76.0, 96.0)
 const LOOP_SECONDS := 2.0
 const SILHOUETTE_BOX_WU := 44.0
 const SELECT_COLOR := Color("#fff2b7")
+const HAZARD_BOX_WU := Vector2(60.0, 52.0)
+const HAZARD_MAX_SCALE := 0.6
 
 var variant_key := ""
 var quarter_turns := 0
@@ -18,6 +20,7 @@ var elapsed := 0.0
 var _family: ItemFamilyDefinition
 var _variant: ItemVariantDefinition
 var _tuning: GameplayTuning
+var _preview_behavior: ItemBehavior
 
 
 func configure(
@@ -31,6 +34,11 @@ func configure(
 	_family = found.family
 	_variant = found.variant
 	_tuning = source_tuning
+	_preview_behavior = null
+	if _family.preview_silhouette not in ["crate", "bamboo_bridge"]:
+		_preview_behavior = ItemBehaviorFactory.create_preview(
+			_family, _variant, turns, source_tuning
+		)
 	custom_minimum_size = EGG_SIZE + Vector2(8.0, 8.0)
 	size = custom_minimum_size
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -78,7 +86,24 @@ func _draw_egg(center: Vector2, highlight: bool) -> void:
 	)
 
 
+func _draw_hazard_silhouette(center: Vector2) -> void:
+	var envelope := ItemSilhouettePainter.envelope(_variant, quarter_turns, _tuning)
+	var fit := minf(HAZARD_BOX_WU.x / envelope.size.x, HAZARD_BOX_WU.y / envelope.size.y)
+	var scale_value := minf(fit, HAZARD_MAX_SCALE)
+	var state := {"elapsed": elapsed}
+	if _preview_behavior != null:
+		_preview_behavior.preview_at(elapsed)
+		state = _preview_behavior.readout()
+	var offset := center - envelope.get_center() * scale_value
+	draw_set_transform(offset, 0.0, Vector2(scale_value, scale_value))
+	ItemSilhouettePainter.draw_variant(self, _family, _variant, quarter_turns, _tuning, state)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
 func _draw_silhouette(center: Vector2, wobble: float) -> void:
+	if _family.preview_silhouette not in ["crate", "bamboo_bridge"]:
+		_draw_hazard_silhouette(center)
+		return
 	var cells := ItemGeometry.rotated_size(Vector2(_variant.footprint_cells), quarter_turns)
 	var scale := minf(SILHOUETTE_BOX_WU / (cells.x * 32.0), SILHOUETTE_BOX_WU / (cells.y * 32.0))
 	scale = minf(scale, 0.6)

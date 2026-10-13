@@ -11,3 +11,8 @@ extends Resource
 @export var gated_rotations: PackedInt32Array = PackedInt32Array()
 ## Disabled-rotation cue text shown when no rotation changes this variant.
 @export var rotation_cue := ""
+## Cells actually reserved on the construction grid, relative to the unrotated footprint.
+## Empty means the whole footprint. Parol Pulse reserves only its two posts.
+@export var occupied_cells: Array[Rect2i] = []
+## False for non-solid families (rail trumpo, Walis Cleanup): no collision region is required.
+@export var requires_collision := true

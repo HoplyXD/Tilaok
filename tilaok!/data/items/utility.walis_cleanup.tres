@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="ItemFamilyDefinition" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/item_family_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/items/item_variant_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/items/item_region_spec.gd" id="3"]
+[ext_resource type="Resource" path="res://data/items/visual/utility.walis_cleanup.tres" id="4"]
+
+[sub_resource type="Resource" id="Region_area_3x3_0"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(0, 0, 3, 3)
+declared_bounded = true
+
+[sub_resource type="Resource" id="Variant_area_3x3"]
+script = ExtResource("2")
+variant_id = "area_3x3"
+footprint_cells = Vector2i(3, 3)
+regions = Array[ExtResource("3")]([SubResource("Region_area_3x3_0")])
+rotations = PackedInt32Array(0)
+requires_collision = false
+
+[sub_resource type="Resource" id="Region_area_5x5_0"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(0, 0, 5, 5)
+declared_bounded = true
+
+[sub_resource type="Resource" id="Variant_area_5x5"]
+script = ExtResource("2")
+variant_id = "area_5x5"
+footprint_cells = Vector2i(5, 5)
+regions = Array[ExtResource("3")]([SubResource("Region_area_5x5_0")])
+rotations = PackedInt32Array(0)
+requires_collision = false
+
+[resource]
+script = ExtResource("1")
+family_id = "utility.walis_cleanup"
+working_name = "Walis Cleanup"
+category = "utility"
+variants = Array[ExtResource("2")]([SubResource("Variant_area_3x3"), SubResource("Variant_area_5x5")])
+ownership = "placer"
+safe_start = "static_no_motion"
+removal_policy = "walis_cleanup"
+persistence = "until_removed"
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+wall_contact = "ineligible"
+weight_tuning_key = &"item_walis_weight"
+preview_silhouette = "broom"
+preview_cue = "area_sweep"
+library_tell = "The broom outline marks every piece it will remove and every protected area it will skip."
+library_counterplay = "Place thoughtfully: cleanup is one use, a fixed area, and removed pieces never return."
+implementation_complete = true
+independently_verified = true
+runtime_enabled = true
+release_target = false
+support_role = "none"
+one_shot_edit = true
+visual_set = ExtResource("4")

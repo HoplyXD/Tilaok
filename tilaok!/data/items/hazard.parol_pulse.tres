@@ -1,0 +1,131 @@
+[gd_resource type="Resource" script_class="ItemFamilyDefinition" load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/item_family_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/items/item_variant_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/items/item_region_spec.gd" id="3"]
+[ext_resource type="Resource" path="res://data/items/visual/hazard.parol_pulse.tres" id="4"]
+
+[sub_resource type="Resource" id="Region_span_3x1_0"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_3x1_1"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(2, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_3x1_2"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(1, 0, 1, 1)
+declared_bounded = true
+blockable = true
+
+[sub_resource type="Resource" id="Variant_span_3x1"]
+script = ExtResource("2")
+variant_id = "span_3x1"
+footprint_cells = Vector2i(3, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_span_3x1_0"), SubResource("Region_span_3x1_1"), SubResource("Region_span_3x1_2")])
+rotations = PackedInt32Array(0, 1)
+occupied_cells = Array[Rect2i]([Rect2i(0, 0, 1, 1), Rect2i(2, 0, 1, 1)])
+
+[sub_resource type="Resource" id="Region_span_4x1_0"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_4x1_1"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(3, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_4x1_2"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(1, 0, 2, 1)
+declared_bounded = true
+blockable = true
+
+[sub_resource type="Resource" id="Variant_span_4x1"]
+script = ExtResource("2")
+variant_id = "span_4x1"
+footprint_cells = Vector2i(4, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_span_4x1_0"), SubResource("Region_span_4x1_1"), SubResource("Region_span_4x1_2")])
+rotations = PackedInt32Array(0, 1)
+occupied_cells = Array[Rect2i]([Rect2i(0, 0, 1, 1), Rect2i(3, 0, 1, 1)])
+
+[sub_resource type="Resource" id="Region_span_5x1_0"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_5x1_1"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(4, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_5x1_2"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(1, 0, 3, 1)
+declared_bounded = true
+blockable = true
+
+[sub_resource type="Resource" id="Variant_span_5x1"]
+script = ExtResource("2")
+variant_id = "span_5x1"
+footprint_cells = Vector2i(5, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_span_5x1_0"), SubResource("Region_span_5x1_1"), SubResource("Region_span_5x1_2")])
+rotations = PackedInt32Array(0, 1)
+occupied_cells = Array[Rect2i]([Rect2i(0, 0, 1, 1), Rect2i(4, 0, 1, 1)])
+
+[sub_resource type="Resource" id="Region_span_6x1_0"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_6x1_1"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(5, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_span_6x1_2"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(1, 0, 4, 1)
+declared_bounded = true
+blockable = true
+
+[sub_resource type="Resource" id="Variant_span_6x1"]
+script = ExtResource("2")
+variant_id = "span_6x1"
+footprint_cells = Vector2i(6, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_span_6x1_0"), SubResource("Region_span_6x1_1"), SubResource("Region_span_6x1_2")])
+rotations = PackedInt32Array(0, 1)
+occupied_cells = Array[Rect2i]([Rect2i(0, 0, 1, 1), Rect2i(5, 0, 1, 1)])
+
+[resource]
+script = ExtResource("1")
+family_id = "hazard.parol_pulse"
+working_name = "Parol Pulse"
+category = "hazard"
+variants = Array[ExtResource("2")]([SubResource("Variant_span_3x1"), SubResource("Variant_span_4x1"), SubResource("Variant_span_5x1"), SubResource("Variant_span_6x1")])
+ownership = "placer"
+safe_start = "reset_inactive_charge"
+removal_policy = "walis_cleanup"
+persistence = "until_removed"
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+wall_contact = "ineligible"
+weight_tuning_key = &"item_parol_weight"
+preview_silhouette = "parol"
+preview_cue = "beam_phase"
+library_tell = "Two lantern posts; a dotted line, then a thickening charge line, then a solid beam band."
+library_counterplay = "Cross while the beam is inactive, or use solid cover that truly blocks it."
+implementation_complete = true
+independently_verified = true
+runtime_enabled = true
+release_target = false
+support_role = "none"
+visual_set = ExtResource("4")

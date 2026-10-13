@@ -9,9 +9,15 @@ extends Node
 signal item_placed(instance_id: String)
 signal item_removed(instance_id: String, reason: String)
 
+const HAZARD_PIECE_SCENE := preload("res://scenes/items/hazard_piece.tscn")
 const PIECE_SCENES := {
 	"build.hollow_blocks": preload("res://scenes/items/kaing_piece.tscn"),
 	"build.bamboo_bridge": preload("res://scenes/items/tulay_piece.tscn"),
+	"move.tire_spring": HAZARD_PIECE_SCENE,
+	"hazard.rail_trumpo": HAZARD_PIECE_SCENE,
+	"hazard.parol_pulse": HAZARD_PIECE_SCENE,
+	"hazard.slipper_launcher": HAZARD_PIECE_SCENE,
+	"hazard.bubble_planter": HAZARD_PIECE_SCENE,
 }
 
 var tuning: GameplayTuning
@@ -19,6 +25,9 @@ var arena: ArenaDefinition
 var support_tracker: SupportTracker
 var definitions: ItemDefinitions
 var budget := TransientBudget.new()
+## Returns {seat_index: ChickenController}; rooms set it so hazards see the live actors.
+var actors_source := Callable()
+var director: ItemHazardDirector
 var world_parent: Node
 var pieces: Dictionary = {}
 var in_play := false
@@ -40,6 +49,11 @@ func configure(
 	definitions = source_definitions
 	world_parent = parent_for_pieces
 	budget.configure(tuning)
+	if director != null and is_instance_valid(director):
+		director.queue_free()
+	director = ItemHazardDirector.new()
+	add_child(director)
+	director.configure(self)
 
 
 func _exit_tree() -> void:
@@ -93,6 +107,8 @@ func place(
 	var result := validate_placement(variant_key, origin_cell, quarter_turns, actor_rects)
 	if not bool(result.allowed):
 		return result
+	if bool(result.get("one_shot", false)):
+		return _apply_one_shot(result, owner_seat)
 	return _materialize_placement(variant_key, origin_cell, quarter_turns, owner_seat, result)
 
 
@@ -149,6 +165,7 @@ func commit_batch(resolution: Dictionary, actor_rects: Array[Rect2] = []) -> Dic
 		placeholder.owner_seat = int(edit.seat_index)
 		placeholder.placed_round = round_number
 		placeholder.footprint_rect = verdict.footprint
+		placeholder.occupied_rects = verdict.occupied
 		preflight_existing.append(placeholder)
 		checked_commits.append(edit)
 	for target_id in removal_ids:
@@ -182,7 +199,33 @@ func commit_batch(resolution: Dictionary, actor_rects: Array[Rect2] = []) -> Dic
 			)
 			return {"allowed": false, "reason": "Batch materialization failed; see engine output."}
 		materialized.append(result)
-	return {"allowed": true, "removals": removal_ids, "commits": materialized}
+	return {
+		"allowed": true,
+		"removals": removal_ids,
+		"commits": materialized,
+		"one_shot_edits": resolution.get("one_shot_edits", []),
+	}
+
+
+## Immediate Walis path (Item Lab / Visualizer): one removal set from the current snapshot.
+func _apply_one_shot(verdict: Dictionary, owner_seat: int) -> Dictionary:
+	var target_info := CleanupTargetResolver.resolve(
+		verdict.footprint, pieces.values(), arena, round_number
+	)
+	var removed: Array[String] = []
+	for target_id in target_info.ids:
+		if bool(remove(str(target_id), "walis_cleanup").allowed):
+			removed.append(str(target_id))
+	return {
+		"allowed": true,
+		"code": "one_shot",
+		"reason": "Cleanup removed %d piece(s)." % removed.size(),
+		"one_shot": true,
+		"owner_seat": owner_seat,
+		"removed": removed,
+		"same_phase": target_info.same_phase,
+		"protected": target_info.protected,
+	}
 
 
 func _materialize_placement(
@@ -205,11 +248,16 @@ func _materialize_placement(
 	record.owner_seat = owner_seat
 	record.placed_round = round_number
 	record.footprint_rect = result.footprint
+	record.occupied_rects = result.get("occupied", [])
 	var metadata := SupportSurfaceMetadata.new()
 	metadata.surface_id = record.instance_id
 	metadata.construction_id = record.instance_id
 	metadata.player_built = true
-	metadata.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.ELIGIBLE
+	metadata.wave_support_eligibility = (
+		SupportSurfaceMetadata.Eligibility.INELIGIBLE
+		if family.support_role == ItemFamilyDefinition.SUPPORT_ROLE_NONE
+		else SupportSurfaceMetadata.Eligibility.ELIGIBLE
+	)
 	# Wall slide/jump eligibility is explicit and independent of wave support (fail closed).
 	metadata.wall_movement_eligibility = (
 		SupportSurfaceMetadata.Eligibility.ELIGIBLE
@@ -230,6 +278,10 @@ func _materialize_placement(
 		family.wall_contact,
 		tuning
 	)
+	var behavior := ItemBehaviorFactory.create(family.family_id)
+	if behavior != null and piece is HazardPiece:
+		behavior.configure(record, ItemGeometry.resolve_regions(variant, turns, tuning), tuning)
+		(piece as HazardPiece).attach_behavior(family, variant, behavior, tuning)
 	record.node = piece
 	pieces[record.instance_id] = record
 	world_parent.add_child(piece)
@@ -252,6 +304,8 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 	if not bool(verdict.allowed):
 		return {"allowed": false, "code": "not_removable", "reason": str(verdict.reason)}
 	var record := pieces[instance_id] as PlacedItem
+	if director != null:
+		director.on_item_removed(instance_id)
 	# Invalidate support before the node leaves the tree so no step evaluates a stale contact.
 	support_tracker.invalidate_surface(instance_id)
 	arena.unregister_player_construction(instance_id)
@@ -277,11 +331,15 @@ func enter_place() -> void:
 func begin_play() -> PackedStringArray:
 	in_play = true
 	grace_remaining = tuning.item_activation_grace_s
+	director.release_all_captives()
 	var released := budget.clear_all()
+	director.reset_for_play()
 	for instance_id in _sorted_ids():
 		var piece := (pieces[instance_id] as PlacedItem).node as ConstructionPiece
 		if piece != null:
 			piece.reset_to_start()
+			if piece is HazardPiece:
+				(piece as HazardPiece).set_animating(true)
 	return released
 
 
@@ -290,11 +348,18 @@ func end_round() -> PackedStringArray:
 	in_play = false
 	grace_remaining = 0.0
 	round_number += 1
+	director.release_all_captives()
+	for instance_id in _sorted_ids():
+		var piece := (pieces[instance_id] as PlacedItem).node as HazardPiece
+		if piece != null:
+			piece.set_animating(false)
 	return budget.clear_all()
 
 
 ## Match reset: construction is removed, counters restart, transients clear.
 func reset_match() -> PackedStringArray:
+	if director != null:
+		director.release_all_captives()
 	var released := budget.clear_all()
 	for instance_id in _sorted_ids():
 		remove(instance_id, "match_reset", true)
