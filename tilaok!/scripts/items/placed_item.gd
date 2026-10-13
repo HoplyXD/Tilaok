@@ -11,7 +11,15 @@ var quarter_turns := 0
 var owner_seat := -1
 var placed_round := 0
 var footprint_rect := Rect2()
+## Cells actually reserved on the grid; empty means the whole footprint (Parol reserves its posts).
+var occupied_rects: Array[Rect2] = []
 var node: Node = null
+
+
+func occupancy() -> Array[Rect2]:
+	if occupied_rects.is_empty():
+		return [footprint_rect]
+	return occupied_rects
 
 
 func signature() -> String:

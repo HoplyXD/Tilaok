@@ -18,8 +18,59 @@ static func resolve(
 		var item := item_variant as PlacedItem
 		if item != null:
 			snapshot_by_id[item.instance_id] = item
+	# One-shot construction edits (Walis Cleanup) become cleanup targets from the same snapshot.
+	var rejected: Dictionary = {}
+	var one_shot_edits: Array[Dictionary] = []
+	var placing_edits: Array[Dictionary] = []
+	var all_edits: Array[Dictionary] = []
+	var ordered_edits := edit_submissions.duplicate()
+	ordered_edits.sort_custom(
+		func(left: Dictionary, right: Dictionary) -> bool:
+			return int(left.get("seat_index", -1)) < int(right.get("seat_index", -1))
+	)
+	for edit_variant in ordered_edits:
+		var edit := (edit_variant as Dictionary).duplicate(true)
+		var found := definitions.find_variant(str(edit.get("variant_key", "")))
+		var is_one_shot := (
+			not found.is_empty() and (found.family as ItemFamilyDefinition).one_shot_edit
+		)
+		if not is_one_shot:
+			placing_edits.append(edit)
+			all_edits.append(edit)
+			continue
+		var verdict := ItemPlacementValidator.validate(
+			definitions,
+			arena,
+			tuning,
+			str(edit.variant_key),
+			edit.get("origin_cell", Vector2i.ZERO),
+			int(edit.get("quarter_turns", 0)),
+			snapshot_pieces,
+			actor_rects
+		)
+		if not bool(verdict.allowed):
+			rejected[int(edit.get("seat_index", -1))] = str(verdict.reason)
+			continue
+		var info := CleanupTargetResolver.resolve(
+			verdict.footprint, snapshot_pieces, arena, current_round
+		)
+		edit["cleanup_targets"] = info.ids
+		all_edits.append(edit)
+		(
+			one_shot_edits
+			. append(
+				{
+					"seat_index": int(edit.get("seat_index", -1)),
+					"variant_key": str(edit.variant_key),
+					"area": verdict.footprint,
+					"targets": info.ids,
+					"same_phase": info.same_phase,
+					"protected": info.protected,
+				}
+			)
+		)
 	var cleanup_ids: Dictionary = {}
-	for edit in edit_submissions:
+	for edit in all_edits:
 		for target_variant in edit.get("cleanup_targets", []):
 			var target_id := str(target_variant)
 			if not snapshot_by_id.has(target_id):
@@ -41,7 +92,7 @@ static func resolve(
 			return left.instance_id < right.instance_id
 	)
 	var edits_by_seat: Dictionary = {}
-	for edit in edit_submissions:
+	for edit in placing_edits:
 		var seat_index := int(edit.get("seat_index", -1))
 		if not edits_by_seat.has(seat_index):
 			edits_by_seat[seat_index] = []
@@ -49,7 +100,6 @@ static func resolve(
 	var seats: Array = edits_by_seat.keys()
 	seats.sort()
 	var accepted: Array[Dictionary] = []
-	var rejected: Dictionary = {}
 	var committed_snapshot: Array[PlacedItem] = remaining_snapshot.duplicate()
 	for seat_variant in seats:
 		var seat_index := int(seat_variant)
@@ -134,6 +184,7 @@ static func resolve(
 		"allowed": true,
 		"removals": removals,
 		"commits": accepted,
+		"one_shot_edits": one_shot_edits,
 		"rejections": rejected,
 		"signature": "\n".join(signature_rows),
 	}

@@ -1,0 +1,15 @@
+Status: PASSED
+P10 48-item mixed-family / four-seat performance capture
+Engine: 4.7.2-stable (official)
+Resolution: 1920x1080 windowed, V-sync off, 600 rendered-frame samples
+Persistent items: 48 ({ "launcher": 16, "hazard.bubble_planter": 4, "move.tire_spring": 4, "hazard.rail_trumpo": 4, "hazard.parol_pulse": 3 })
+Peak active projectiles: 16 (cap 16)
+Peak active bubbles: 4 (cap 4)
+Director step cost: mean 0.986 ms; worst 2.054 ms over 584 steps
+Cosmetic VFX nodes: 0 (first-batch tells are drawn, none use the 32-effect pool)
+Frame intervals: median 3.209 ms; p95 4.605 ms; worst 5.147 ms
+Static memory: 80.85 MiB; objects 2506; nodes 327; orphan nodes 0
+Attribution records emitted: 0
+P04 reference (1080p): median 1.954 ms; p95 3.109 ms; worst 6.059 ms; 70.97 MiB; 232 nodes
+P05 reference (1080p, 48 pieces): median 2.272 ms; p95 4.720 ms; worst 11.011 ms; 79.78 MiB; 302 nodes
+Targets: p95 and worst <= 16.67 ms; static memory <= 512 MiB; 0 B/s network

@@ -1,6 +1,6 @@
 # Tilaok! Item Catalog and Design Contracts
 
-_Approved design catalog, 2026-10-12. As of 2026-10-13 only `build.hollow_blocks` and `build.bamboo_bridge` have code (P04, harness-verified with synthetic input, enabled for the development `karera_slice` profile only; nothing is release-enabled). No other item in this document is implemented or playtested._
+_Approved design catalog, 2026-10-12. As of 2026-10-14 the eight first-batch families have code: `build.hollow_blocks` and `build.bamboo_bridge` (P04) and `move.tire_spring`, `hazard.rail_trumpo`, `hazard.parol_pulse`, `hazard.slipper_launcher`, `utility.walis_cleanup` and `hazard.bubble_planter` (P10), all harness-verified with synthetic input on PLACEHOLDER presentation and enabled only for development profiles (`karera_slice`, `karera_spring`, `items_lab`); nothing is release-enabled. None of the 28 expansion families is implemented or playtested._
 
 ## Purpose and boundaries
 
@@ -209,9 +209,20 @@ Tell / counterplay: Solid — gray brick slab, jump over or route around. Box �
 | `build.bamboo_bridge` 4×1 horizontal | yes | yes | yes | no |
 | `build.bamboo_bridge` 3×1, 5×1 | yes | no | geometry/standing only | no |
 | `build.bamboo_bridge` vertical orientations | geometry only | no (gated) | no | no |
-| `build.solid_block` 3×1 (and rotated 1×3) — 2026-10-14 | yes | yes | yes | no |
-| `build.wood_box` 2×2 — 2026-10-14 | yes | yes | yes | no |
-| `build.collapsing_block` 1×1 — 2026-10-14 | yes | yes | yes | no |
-| Every other family | no | no | no | no |
+| `move.tire_spring` `tire_2x2` (rotations 0/90/180/270) | yes | yes (`items_lab`, `karera_spring`) | yes | no |
+| `hazard.rail_trumpo` `rail_4x1`, `rail_5x1`, `rail_6x1` (rotations 0–3) | yes | yes (`items_lab`) | yes | no |
+| `hazard.parol_pulse` `span_3x1`–`span_6x1` (horizontal and vertical; span = total cells incl. both posts) | yes | yes (`items_lab`) | yes | no |
+| `hazard.slipper_launcher` `lane_4x1`, `lane_6x1` (0° and 180°) | yes | yes (`items_lab`) | yes | no |
+| `utility.walis_cleanup` `area_3x3`, `area_5x5` (one-shot Place edit) | yes | yes (`items_lab`) | yes | no |
+| `hazard.bubble_planter` `path_1x3`, `path_1x5` (fixed upward path) | yes | yes (`items_lab`) | yes | no |
+| `build.solid_block` 3×1 (and rotated 1×3) — 2026-10-14 | yes | yes (default pool and `items_lab`) | yes | no |
+| `build.wood_box` 2×2 — 2026-10-14 | yes | yes (default pool and `items_lab`) | yes | no |
+| `build.collapsing_block` 1×1 — 2026-10-14 | yes | yes (default pool and `items_lab`) | yes | no |
+| Lagsanay/Kangaroo/stack interaction of any first-batch family | no | no | no | no |
+| The 28 expansion families | no | no | no | no |
 
 Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Placeholder eggs, ghosts and Library entries exist (P04-T10/T12/T19/T21 passed on code-drawn DEBUG placeholders; final art is human-made and still open). Event/stack integration and release enablement (P04-T11/T13/T20/T22) remain blocked. Kaing declares solid-side wall eligibility and Tulay declares itself ineligible as data; wall movement itself is a separate extension that is enabled by default as core movement.
+
+### P10 implementation notes (2026-10-14)
+
+Evidence: [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). All six new families declare `modes_allowed = karera` and `modes_pending_review = lagsanay, kangaroo`; wall contact is `ineligible` and wave-support role is `none` (fail closed). Spring "genuinely supported by a separate safe face" is not implemented. Parol's "3–6 cell fixture span" is built as the total span including both posts, so the beam is span − 2 cells and the 6×1 figure is the bounded envelope (approved Stage A decision D7). Presentation is PLACEHOLDER only (see [ASSETS.md](ASSETS.md)); names remain working names awaiting native-speaker review. Direct eliminations are typed `AttributionRecord`s and are handed to the P06 race ledger; the ledger owns the terminal commit and drops self-kill credit. Bubble capture and spring launches are setup records and never earn Patibong.

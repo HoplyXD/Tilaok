@@ -1,0 +1,145 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P05_TEST PASSED: P05 phase tuning validates
+P05_TEST PASSED: Pugad pool contains joined seats plus two eggs
+P05_TEST PASSED: egg picks only enabled variant build.bamboo_bridge.span_4x1
+P05_TEST PASSED: egg picks only enabled variant build.hollow_blocks.stack_2x3
+P05_TEST PASSED: egg picks only enabled variant build.hollow_blocks.stack_2x3
+P05_TEST PASSED: egg picks only enabled variant build.hollow_blocks.cell_1x1
+P05_TEST PASSED: egg picks only enabled variant build.hollow_blocks.cell_1x1
+P05_TEST PASSED: egg picks only enabled variant build.bamboo_bridge.span_4x1
+P05_TEST PASSED: egg identifiers are unique while duplicate variants remain allowed
+P05_TEST PASSED: egg pool is stable for the same match seed
+P05_TEST PASSED: invalid P05 phase durations fail tuning validation
+P05_TEST PASSED: seed 12345 2-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 2 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 2 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 2 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 2 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 12345 3-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 3 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 3 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 3 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 3 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 12345 4-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 4 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 4 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 4 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 4 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 7 2-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 2 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 2 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 2 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 2 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 7 3-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 3 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 3 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 3 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 3 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 7 4-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 4 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 4 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 4 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 4 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 991 2-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 2 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 2 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 2 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 2 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 991 3-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 3 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 3 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 3 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 3 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: seed 991 4-seat claim permutations resolve identically
+P05_TEST PASSED: one contested egg has one owner at 4 seats
+P05_TEST PASSED: all losing seats receive retry feedback at 4 seats
+P05_TEST PASSED: timeout assigns every remaining seat at 4 seats
+P05_TEST PASSED: timeout assignment never duplicates eggs at 4 seats
+P05_TEST PASSED: claim received on the final timeout tick resolves before auto-assignment
+P05_TEST PASSED: resolver signatures ignore callback submission order
+P05_TEST PASSED: valid non-overlapping construction edits commit together
+P05_TEST PASSED: solid conflict resolves by stable seat order
+P05_TEST PASSED: conflicting whole edit set gets actionable rejection
+P05_TEST PASSED: conflicting edits from one seat reject as a whole set
+P05_TEST PASSED: whole-set rejection keeps a specific reason
+P05_TEST PASSED: spawn protection is enforced with readable reason
+P05_TEST PASSED: goal protection is enforced with readable reason
+P05_TEST PASSED: arena bounds rejection is actionable
+P05_TEST PASSED: rotated 2x3 ghost swaps to a 3x2 footprint
+P05_TEST PASSED: validator returns the specific unknown_variant rejection reason
+P05_TEST PASSED: validator returns the specific variant_disabled rejection reason
+P05_TEST PASSED: validator returns the specific rotation_unsupported rejection reason
+P05_TEST PASSED: validator returns the specific out_of_bounds rejection reason
+P05_TEST PASSED: validator returns the specific protected_spawn rejection reason
+P05_TEST PASSED: validator returns the specific protected_goal rejection reason
+P05_TEST PASSED: validator returns the specific outside_build_region rejection reason
+P05_TEST PASSED: validator returns the specific immutable_base rejection reason
+P05_TEST PASSED: validator returns the specific player_clearance rejection reason
+P05_TEST PASSED: validator returns the specific item_overlap rejection reason
+P05_TEST PASSED: validator returns the specific persistent_cap rejection reason
+P05_TEST PASSED: invalid authored region reports an item-rule rejection
+P05_TEST PASSED: cleanup test creates one prior-round construction item
+P05_TEST PASSED: snapshot cleanup targets are unioned and deduplicated
+P05_TEST PASSED: batch commit applies validated removals and additions
+P05_TEST PASSED: overlapping cleanup executes exactly once
+P05_TEST PASSED: batch creates both stable accepted edits
+P05_TEST PASSED: same-round construction cannot be removed in its own Place phase
+P05_TEST PASSED: Place timeout commits valid unconfirmed cursor and discards invalid cursor
+P05_TEST PASSED: confirmed edits remain pending for the atomic batch
+P05_TEST PASSED: one confirmed seat cannot end Place while another remains
+P05_TEST PASSED: Place ends when every seat confirms
+P05_TEST PASSED: test-only mover resets cleanly to its authored start
+P05_TEST PASSED: solid/trigger intersection has an explicit danger-region label
+P05_TEST PASSED: persistence test starts with construction
+P05_TEST PASSED: round 1 preserves current construction signature
+P05_TEST PASSED: round 1 does not duplicate persistent pieces
+P05_TEST PASSED: round 2 preserves current construction signature
+P05_TEST PASSED: round 2 does not duplicate persistent pieces
+P05_TEST PASSED: round 3 preserves current construction signature
+P05_TEST PASSED: round 3 does not duplicate persistent pieces
+P05_TEST PASSED: round 4 preserves current construction signature
+P05_TEST PASSED: round 4 does not duplicate persistent pieces
+P05_TEST PASSED: round 5 preserves current construction signature
+P05_TEST PASSED: round 5 does not duplicate persistent pieces
+P05_TEST PASSED: round 6 preserves current construction signature
+P05_TEST PASSED: round 6 does not duplicate persistent pieces
+P05_TEST PASSED: round 7 preserves current construction signature
+P05_TEST PASSED: round 7 does not duplicate persistent pieces
+P05_TEST PASSED: round 8 preserves current construction signature
+P05_TEST PASSED: round 8 does not duplicate persistent pieces
+P05_TEST PASSED: round 9 preserves current construction signature
+P05_TEST PASSED: round 9 does not duplicate persistent pieces
+P05_TEST PASSED: round 10 preserves current construction signature
+P05_TEST PASSED: round 10 does not duplicate persistent pieces
+P05_TEST PASSED: removed construction does not resurrect in later rounds
+P05_TEST PASSED: match reset clears construction and round counter
+P05_TEST PASSED: lobby blocks a start with fewer than two seats
+P05_TEST PASSED: keyboard identities receive stable seat numbers
+P05_TEST PASSED: two unready seats cannot start
+P05_TEST PASSED: lobby waits for every joined seat to be ready
+P05_TEST PASSED: two connected ready seats pass the lobby gate
+P05_TEST PASSED: phase transition consumes a held one-shot press
+P05_TEST PASSED: held confirm cannot leak into the next phase
+P05_TEST PASSED: released then pressed confirm is accepted in the new phase
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P05_TEST PASSED: paused-timer fixture starts an approved two-seat match
+P05_TEST PASSED: Pugad timer freezes while paused
+P05_TEST PASSED: Place timer freezes while paused
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P05_TEST PASSED: results-timer fixture starts a two-seat match
+P05_TEST PASSED: real goal results begin the configured eight-second advance
+P05_TEST PASSED: paused live-results timer does not advance the next round
+P05_TEST PASSED: results timer starts the next Pugad after eight seconds
+P05_TEST_SUMMARY checks=137 failures=0
+EXIT_CODE: 0

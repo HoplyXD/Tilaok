@@ -1,0 +1,273 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS default tuning including item tunables validates
+PASS caps are 48 persistent, 16 projectiles (2/emitter), 4 bubbles (1/emitter, 1/player), 32 VFX
+PASS TTLs 3/4/2 s and activation grace 1.0 s match PROTOTYPE_DEFAULTS
+PASS tuning rejects a zero Tulay strip thickness
+PASS tuning rejects a zero persistent cap
+PASS shipped definitions validate: []
+PASS two construction families are defined
+PASS Kaing lists 1x1, 1x3 column and 2x3 stack
+PASS Tulay lists 3x1, 4x1 and 5x1
+PASS prototype Kaing subset is exactly 1x1 and 2x3
+PASS prototype Tulay subset is exactly horizontal 4x1
+PASS 1x3 column and 3x1/5x1 Tulay are defined but not enabled
+PASS every Kaing variant is one SOLID region equal to its footprint, with no trigger
+PASS every Tulay variant is a single ONE_WAY_TOP strip region
+PASS ownership, safe start, removal and persistence are explicit
+PASS mode flags: Kaing karera+lagsanay; Tulay karera, Lagsanay pending review
+PASS wall-contact declaration: Kaing solid sides eligible, Tulay ineligible
+PASS T02 reject: missing family_id | expected: family_id is required | actual: 6 error(s)
+PASS T02 reject: missing ownership | expected: ownership must be | actual: 1 error(s)
+PASS T02 reject: missing safe_start | expected: safe_start is required | actual: 1 error(s)
+PASS T02 reject: missing removal_policy | expected: removal_policy is required | actual: 1 error(s)
+PASS T02 reject: missing persistence | expected: persistence is required | actual: 1 error(s)
+PASS T02 reject: missing event eligibility | expected: event eligibility | actual: 1 error(s)
+PASS T02 reject: missing wall_contact | expected: wall_contact declaration | actual: 1 error(s)
+PASS T02 reject: missing weight key | expected: weight_tuning_key | actual: 1 error(s)
+PASS T02 reject: missing preview silhouette | expected: preview_silhouette is required | actual: 1 error(s)
+PASS T02 reject: missing library tell | expected: library_tell is required | actual: 1 error(s)
+PASS T02 reject: no variants | expected: at least one variant | actual: 3 error(s)
+PASS T02 reject: missing variant id | expected: variant_id is required | actual: 2 error(s)
+PASS T02 reject: undocumented variant | expected: undocumented variant | actual: 2 error(s)
+PASS T02 reject: wrong documented footprint | expected: does not match documented | actual: 1 error(s)
+PASS T02 reject: zero footprint | expected: footprint is required | actual: 2 error(s)
+PASS T02 reject: no rotations | expected: at least one documented rotation | actual: 1 error(s)
+PASS T02 reject: rotation out of range | expected: outside 0..3 | actual: 1 error(s)
+PASS T02 reject: gated rotation undocumented | expected: gated rotation | actual: 1 error(s)
+PASS T02 reject: no regions | expected: at least one region | actual: 1 error(s)
+PASS T02 reject: region kind unset | expected: region kind is required | actual: 2 error(s)
+PASS T02 reject: zero-size region | expected: missing, unbounded or non-positive | actual: 2 error(s)
+PASS T02 reject: infinite region | expected: missing, unbounded or non-positive | actual: 2 error(s)
+PASS T02 reject: arena-sized region | expected: exceeds the arena extent | actual: 2 error(s)
+PASS T02 reject: effect not declared bounded | expected: must declare explicit bounds | actual: 1 error(s)
+PASS T02 reject: solid outside footprint | expected: inside the footprint | actual: 1 error(s)
+PASS T02 reject: strip without thickness key | expected: thickness tuning key | actual: 1 error(s)
+PASS T02 reject: strip thicker than cell | expected: strip thickness is outside | actual: 1 error(s)
+PASS T02 reject: strip overlaps solid | expected: may not overlap a solid | actual: 1 error(s)
+PASS T02 reject: enabled without verification | expected: runtime_enabled requires | actual: 1 error(s)
+PASS T02 reject: duplicate variant | expected: duplicate variant | actual: 2 error(s)
+PASS T02 reject: enabled variant undefined | expected: is not defined | actual: 1 error(s)
+PASS all 31 rejection cases are rejected
+PASS unmodified definitions still validate after the table runs
+PASS a bounded effect region around a 1x1 passes validation
+PASS 1x1 with effect region places
+PASS occupied footprint stays one cell although the effect spans 3x3
+PASS a piece may sit inside another piece's effect region: effect cells are not occupied
+PASS the real footprint cell is still occupied
+PASS an effect region reaching protected spawn rejects the placement
+PASS projectile grants stop at the 16 cap (got 16)
+PASS saturated projectile budget suppresses spawns
+PASS no active projectile was evicted
+PASS one emitter is limited to 2 projectiles (got 2)
+PASS bubble grants stop at the 4 cap
+PASS one bubble per player
+PASS cosmetic effects stop at the 32 cap
+PASS callback order permutation yields the same grants in the same order
+PASS rotating order is fair: 6 emitters, cap 4, 6 rounds -> 4 wins each { "e0": 4, "e1": 4, "e2": 4, "e3": 4, "e4": 4, "e5": 4 }
+PASS a captive attaches to a bubble
+PASS saturation suppresses new bubbles and leaves the captive's bubble untouched
+PASS empty bubbles expire by TTL; the captive's bubble does not
+PASS explicit release returns the captive and clears the reference
+PASS clear_all drops every transient and releases the captive
+PASS cosmetic effects expire at 2 s while projectile and bubble remain
+PASS projectile expires at 3 s and an empty bubble at 4 s
+PASS T06/T15 placement: valid 1x1 | expected: valid | actual: valid (Valid placement.)
+PASS T06/T15 placement: valid rotated 3x2 | expected: valid | actual: valid (Valid placement.)
+PASS T06/T15 placement: valid Tulay 4x1 | expected: valid | actual: valid (Valid placement.)
+PASS T06/T15 placement: out of bounds | expected: out_of_bounds | actual: out_of_bounds (Outside the arena. Move it inside the stage. (outside arena bounds))
+PASS T06/T15 placement: past right edge | expected: out_of_bounds | actual: out_of_bounds (Outside the arena. Move it inside the stage. (outside arena bounds))
+PASS T06/T15 placement: protected spawn | expected: protected_spawn | actual: protected_spawn (Spawn area is protected. Move it right of the spawn zone. (protected spawn zone))
+PASS T06/T15 placement: protected goal | expected: protected_goal | actual: protected_goal (Goal area is protected. Move it away from the flag platform. (protected goal zone))
+PASS T06/T15 placement: outside build region | expected: outside_build_region | actual: outside_build_region (Outside the build region. Move it inside the green area. (outside build region))
+PASS T06/T15 placement: base geometry | expected: immutable_base | actual: immutable_base (Overlaps stage ground. Move it into open space. (immutable base geometry: arena.base_a))
+PASS T06/T15 placement: disabled variant | expected: variant_disabled | actual: variant_disabled (This variant is not enabled in the current pool.)
+PASS T06/T15 placement: disabled Tulay 5x1 | expected: variant_disabled | actual: variant_disabled (This variant is not enabled in the current pool.)
+PASS T06/T15 placement: unknown variant | expected: unknown_variant | actual: unknown_variant (Unknown item variant. Pick one from the approved list.)
+PASS T06/T15 placement: 1x1 rotation | expected: rotation_unsupported | actual: rotation_unsupported (This variant cannot face that way. Rotate to a supported direction.)
+PASS T06/T15 placement: 180 degrees | expected: rotation_unsupported | actual: rotation_unsupported (This variant cannot face that way. Rotate to a supported direction.)
+PASS T06/T15 placement: vertical Tulay gated | expected: rotation_unsupported | actual: rotation_unsupported (This variant cannot face that way. Rotate to a supported direction.)
+PASS T06 placement: player clearance | expected: player_clearance | actual: player_clearance
+PASS five wu away is outside the four wu player clearance
+PASS first placement is committed
+PASS T06 placement: overlap | expected: item_overlap | actual: item_overlap
+PASS a flush neighbour that only shares an edge is valid
+PASS Tulay footprint reservation overlaps Kaing solid
+PASS 48 persistent pieces fit (placed 48)
+PASS T03 cap: 49th piece | expected: persistent_cap | actual: persistent_cap
+PASS a rejected piece creates no node or record
+PASS match reset removes every piece
+PASS setup 1x1
+PASS setup rotated 2x3
+PASS setup Tulay
+PASS Place accepts construction
+PASS cycle 1: Play start has no stale captive
+PASS cycle 1: activation grace restarts at Play
+PASS cycle 1: construction cannot be placed during Play
+PASS cycle 1: test-only transients are active
+PASS cycle 1: construction becomes active after grace
+PASS cycle 1: round end clears transients and releases the captive
+PASS cycle 1: only the intended construction persists
+PASS cycle 1: static pieces return to their placed positions
+PASS cycle 2: Play start has no stale captive
+PASS cycle 2: activation grace restarts at Play
+PASS cycle 2: construction cannot be placed during Play
+PASS cycle 2: test-only transients are active
+PASS cycle 2: round end clears transients and releases the captive
+PASS cycle 2: only the intended construction persists
+PASS cycle 2: static pieces return to their placed positions
+PASS cycle 3: Play start has no stale captive
+PASS cycle 3: activation grace restarts at Play
+PASS cycle 3: construction cannot be placed during Play
+PASS cycle 3: test-only transients are active
+PASS cycle 3: round end clears transients and releases the captive
+PASS cycle 3: only the intended construction persists
+PASS cycle 3: static pieces return to their placed positions
+PASS cycle 4: Play start has no stale captive
+PASS cycle 4: activation grace restarts at Play
+PASS cycle 4: construction cannot be placed during Play
+PASS cycle 4: test-only transients are active
+PASS cycle 4: round end clears transients and releases the captive
+PASS cycle 4: only the intended construction persists
+PASS cycle 4: static pieces return to their placed positions
+PASS cycle 5: Play start has no stale captive
+PASS cycle 5: activation grace restarts at Play
+PASS cycle 5: construction cannot be placed during Play
+PASS cycle 5: test-only transients are active
+PASS cycle 5: round end clears transients and releases the captive
+PASS cycle 5: only the intended construction persists
+PASS cycle 5: static pieces return to their placed positions
+PASS cycle 6: Play start has no stale captive
+PASS cycle 6: activation grace restarts at Play
+PASS cycle 6: construction cannot be placed during Play
+PASS cycle 6: test-only transients are active
+PASS cycle 6: round end clears transients and releases the captive
+PASS cycle 6: only the intended construction persists
+PASS cycle 6: static pieces return to their placed positions
+PASS cycle 7: Play start has no stale captive
+PASS cycle 7: activation grace restarts at Play
+PASS cycle 7: construction cannot be placed during Play
+PASS cycle 7: test-only transients are active
+PASS cycle 7: round end clears transients and releases the captive
+PASS cycle 7: only the intended construction persists
+PASS cycle 7: static pieces return to their placed positions
+PASS cycle 8: Play start has no stale captive
+PASS cycle 8: activation grace restarts at Play
+PASS cycle 8: construction cannot be placed during Play
+PASS cycle 8: test-only transients are active
+PASS cycle 8: round end clears transients and releases the captive
+PASS cycle 8: only the intended construction persists
+PASS cycle 8: static pieces return to their placed positions
+PASS cycle 9: Play start has no stale captive
+PASS cycle 9: activation grace restarts at Play
+PASS cycle 9: construction cannot be placed during Play
+PASS cycle 9: test-only transients are active
+PASS cycle 9: round end clears transients and releases the captive
+PASS cycle 9: only the intended construction persists
+PASS cycle 9: static pieces return to their placed positions
+PASS cycle 10: Play start has no stale captive
+PASS cycle 10: activation grace restarts at Play
+PASS cycle 10: construction cannot be placed during Play
+PASS cycle 10: test-only transients are active
+PASS cycle 10: round end clears transients and releases the captive
+PASS cycle 10: only the intended construction persists
+PASS cycle 10: static pieces return to their placed positions
+PASS T04 ten cycles: node count | expected: stable at 127 | actual: 127
+PASS T04 ten cycles: object count | expected: stable at 1980 | actual: 1980
+PASS T04 ten cycles: orphan nodes | expected: stable at 0 | actual: 0
+PASS three construction pieces remain in the world
+PASS construction is not removed during Play without force
+PASS Place removal succeeds
+PASS removal invalidates support, unregisters construction and releases the emitter's captive
+PASS removed piece node is freed
+PASS match reset empties construction
+PASS no construction surfaces remain registered
+PASS identical placement script reproduces identical IDs and layout (seed 12345 run)
+PASS arrange build.hollow_blocks.cell_1x1 at (14, 8): Valid placement.
+PASS T09 Kaing 1x1 top | expected: stands with feet at y=256 on build.hollow_blocks.cell_1x1#001, eligible player-built support | actual: floor=true feet=255.98 reason=eligible built support
+PASS arrange build.hollow_blocks.stack_2x3 at (14, 8): Valid placement.
+PASS T09 Kaing 2x3 top | expected: stands with feet at y=256 on build.hollow_blocks.stack_2x3#001, eligible player-built support | actual: floor=true feet=255.98 reason=eligible built support
+PASS arrange build.hollow_blocks.stack_2x3 at (14, 8): Valid placement.
+PASS T09 Kaing rotated 3x2 top | expected: stands with feet at y=256 on build.hollow_blocks.stack_2x3#001, eligible player-built support | actual: floor=true feet=255.98 reason=eligible built support
+PASS arrange build.hollow_blocks.cell_1x1 at (8, 6): Valid placement.
+PASS arrange build.hollow_blocks.stack_2x3 at (14, 6): Valid placement.
+PASS arrange build.hollow_blocks.stack_2x3 at (20, 6): Valid placement.
+PASS T06 Kaing collider #0 | expected: solid == footprint (32.0, 32.0), one shape, no trigger, occlusion == solid | actual: footprint (32.0, 32.0) shape (32.0, 32.0) children 1
+PASS T06 Kaing collider #1 | expected: solid == footprint (64.0, 96.0), one shape, no trigger, occlusion == solid | actual: footprint (64.0, 96.0) shape (64.0, 96.0) children 1
+PASS T06 Kaing collider #2 | expected: solid == footprint (96.0, 64.0), one shape, no trigger, occlusion == solid | actual: footprint (96.0, 64.0) shape (96.0, 64.0) children 1
+PASS arrange build.hollow_blocks.stack_2x3 at (10, 12): Valid placement.
+PASS T09 Kaing solid side | expected: stopped at x>=396 (block right edge 384 + half body 12); side contact is not support | actual: min_x=396.00 side_counted=false
+PASS arrange build.hollow_blocks.cell_1x1 at (11, 14): Valid placement.
+PASS T09 Kaing route foothold | expected: chicken jumps from the floor onto the 1x1 foothold (top y=448) | actual: on_foothold=true feet=447.93
+PASS arrange build.hollow_blocks.cell_1x1 at (14, 8): Valid placement.
+PASS T09 Kaing underside | expected: head stops at the solid underside y=288 with a ceiling contact | actual: highest_head=288.00 ceiling=true
+PASS arrange build.hollow_blocks.cell_1x1 at (14, 8): Valid placement.
+PASS T08 Kaing removal | expected: was supported; support is gone on the removal step; chicken falls to a different surface | actual: stood=true immediate=no support feet_after=351.96
+PASS arrange build.bamboo_bridge.span_4x1 at (14, 8): Valid placement.
+PASS T15 Tulay regions | expected: footprint 128x32, one-way strip 128x4 at the top, footprint != strip | actual: footprint (128.0, 32.0) strip [[P: (448.0, 256.0), S: (128.0, 4.0)]]
+PASS T15 Tulay has exactly one one-way collision shape and no solid underside/sides
+PASS T18 Tulay land from above | expected: lands with feet y=256 on the strip; eligible player-built support | actual: floor=true feet=255.98 reason=eligible built support
+PASS T18 Tulay jump off | expected: leaves the strip, rises about 96 wu, and lands back on it | actual: left=true apex_feet=159.94 feet_after=255.98
+PASS T18 Tulay walk off edge | expected: walks past x=576 and lands on a different surface | actual: x=836.33 feet=479.93 supported_by_tulay=false
+PASS arrange build.bamboo_bridge.span_4x1 at (22, 13): Valid placement.
+PASS T18 Tulay rise from below | expected: passes up through the strip, is never support while rising, then lands on top (y=416) | actual: min_feet=383.28 passed=true counted_rising=false final_feet=415.98 supported=true
+PASS arrange build.hollow_blocks.stack_2x3 at (10, 9): Valid placement.
+PASS arrange build.hollow_blocks.stack_2x3 at (13, 9): Valid placement.
+PASS arrange build.bamboo_bridge.span_4x1 at (14, 8): Valid placement.
+PASS T15 Tulay sides non-solid | expected: body overlapping the strip height walks through the footprint side (x passes 470) | actual: on_platform=true max_x=603.32
+PASS arrange build.bamboo_bridge.span_4x1 at (17, 12): Valid placement.
+PASS T18 Tulay strip at fall cap | expected: five drops reach ~900 wu/s and all land on the 4 wu strip (feet y=384), none tunnel | actual: peak_speed=878.9 all_landed=true
+PASS arrange build.bamboo_bridge.span_4x1 at (14, 3): Valid placement.
+PASS T18 Tulay under ceiling | expected: passes the strip, stops at the arena ceiling (head y>=0), then lands on top (feet y=96) | actual: highest_head=0.00 ceiling=true final_feet=95.99
+PASS T18 matrix: base floor | expected: base surface | actual: base surface
+PASS T18 matrix: airborne | expected: no support | actual: no support
+PASS arrange build.hollow_blocks.column_1x3 at (14, 8): Valid placement.
+PASS T09/T18 disabled variant: Kaing 1x3 column | expected: footprint (32.0, 96.0) and a chicken stands on its top at y=256 | actual: footprint (32.0, 96.0) feet=255.98 stands=true
+PASS arrange build.hollow_blocks.column_1x3 at (14, 8): Valid placement.
+PASS T09/T18 disabled variant: Kaing 1x3 rotated 3x1 | expected: footprint (96.0, 32.0) and a chicken stands on its top at y=256 | actual: footprint (96.0, 32.0) feet=255.98 stands=true
+PASS arrange build.bamboo_bridge.span_3x1 at (14, 8): Valid placement.
+PASS T09/T18 disabled variant: Tulay 3x1 | expected: footprint (96.0, 32.0) and a chicken stands on its top at y=256 | actual: footprint (96.0, 32.0) feet=255.98 stands=true
+PASS arrange build.bamboo_bridge.span_5x1 at (14, 8): Valid placement.
+PASS T09/T18 disabled variant: Tulay 5x1 | expected: footprint (160.0, 32.0) and a chicken stands on its top at y=256 | actual: footprint (160.0, 32.0) feet=255.98 stands=true
+PASS arrange build.bamboo_bridge.span_4x1 at (17, 6): Valid placement.
+PASS T15 gated vertical Tulay geometry | expected: 1x4 footprint, 4 wu strip on the right edge, one-way normal pointing right | actual: footprint (32.0, 128.0) strip [[P: (572.0, 192.0), S: (4.0, 128.0)]] normal [(1.0, 0.0)]
+PASS restoring tuning disables the 1x3 column again
+PASS arrange build.hollow_blocks.stack_2x3 at (10, 12): Valid placement.
+PASS T09 Kaing wall eligibility | expected: metadata ELIGIBLE and the wall probe finds the solid side | actual: metadata=1 probe=true
+PASS wall movement is enabled in the Item Lab by default
+PASS arrange build.hollow_blocks.stack_2x3 at (22, 10): Valid placement.
+PASS T09 Kaing wall slide and kick | expected: slides on the Kaing side at or below the 120 wu/s cap, then a fresh jump kicks away | actual: slid=true speed=120.0 kicked_away=true vx=-186.7
+PASS arrange build.hollow_blocks.stack_2x3 at (10, 9): Valid placement.
+PASS arrange build.hollow_blocks.stack_2x3 at (13, 9): Valid placement.
+PASS arrange build.bamboo_bridge.span_4x1 at (14, 8): Valid placement.
+PASS T18 Tulay wall eligibility | expected: metadata INELIGIBLE and no wall at the strip's side | actual: metadata=0 probe=false
+PASS Item Lab Place shows one cursor per joined seat
+PASS ghost is valid in open build space
+PASS ghost reports an actionable reason when it leaves the valid region: Outside the build region. Move it inside the green area. (outside build region)
+PASS 2x3 rotates to 3x2 in the lab
+PASS rotated ghost footprint is 3x2 cells
+PASS confirm places the piece
+PASS Variant button advances to the Tulay 4x1
+PASS Tulay ghost carries its one-way strip and an upward arrow
+PASS Tulay has no usable rotation while vertical is gated
+PASS Play frees ghosts and starts item lifecycle
+PASS Reset keeps construction and restarts the Play lifecycle
+PASS Clear all removes construction
+PASS one placeholder egg preview per enabled variant
+PASS each egg shows its exact variant and carries no name or description text
+PASS egg animation advances over time
+PASS egg animation loops with a fixed period
+PASS T10/T19 egg to ghost to piece identity | expected: claiming an egg yields a ghost and a placed piece of the same variant and size | actual: identity_ok=true
+PASS T12/T21 Library entry fields | expected: both families list name, sizes, placement, tell, counterplay, controls, modes, animation | actual: entries=2 fields_ok=true
+PASS Library marks defined-but-disabled sizes as not enabled yet
+PASS Library panel opens with entry text
+PASS release filter hides content that is not release-enabled
+PASS karera_slice catalog lists exactly the two families
+PASS Kaing 50 / Tulay 50 normalize to equal selection weights
+PASS karera_slice content and item pool now validate; only the unbuilt karera mode (P06) remains: ["Profile \'karera_slice\' requires mode \'karera\', which is not implemented and verified."]
+PASS profiles that do not list the seeds keep an empty item pool
+PASS movement_room lists no content
+PASS no seed family is marked release_target before P13 and P12 gates
+P04_TESTS checks=268 failures=0
+EXIT_CODE: 0

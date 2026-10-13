@@ -209,6 +209,26 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 		lifecycle.capture_source_id = ""
 
 
+## Moves a captured chicken with its bubble. Only a CAPTURED chicken may be carried, so a bubble
+## can never teleport an active, secured or eliminated player.
+func carry_captive_to(world_position: Vector2) -> bool:
+	if lifecycle.status != PlayerLifecycleState.Status.CAPTURED:
+		return false
+	global_position = world_position
+	velocity = Vector2.ZERO
+	return true
+
+
+## Clears forced motion and buffered input so a lower-priority state cannot resume after a
+## capture or release. Does not alter lifecycle status.
+func clear_external_motion() -> void:
+	external_velocity = Vector2.ZERO
+	locomotion_velocity = Vector2.ZERO
+	velocity = Vector2.ZERO
+	coyote_remaining = 0.0
+	jump_buffer_remaining = 0.0
+
+
 func set_opening_freeze(frozen: bool) -> void:
 	if lifecycle.is_terminal():
 		return
@@ -232,6 +252,25 @@ func secure(reason: String = "secured") -> bool:
 
 func eliminate(reason: String = "eliminated") -> bool:
 	return _set_terminal(PlayerLifecycleState.Status.ELIMINATED, reason)
+
+
+## Restores this seat for a new round without recreating its node or identity markers.
+func reset_for_round(spawn_position: Vector2) -> void:
+	_clear_support()
+	global_position = spawn_position
+	velocity = Vector2.ZERO
+	locomotion_velocity = Vector2.ZERO
+	external_velocity = Vector2.ZERO
+	coyote_remaining = 0.0
+	jump_buffer_remaining = 0.0
+	jump_was_held = false
+	_vertical_half_step = 0.0
+	intentional_input = false
+	containment_outcome_reported = false
+	lifecycle.status = PlayerLifecycleState.Status.ACTIVE
+	lifecycle.capture_source_id = ""
+	lifecycle.terminal_reason = ""
+	reset_wall_state()
 
 
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:

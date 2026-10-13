@@ -1,0 +1,110 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS arena is 1024 by 512 world units
+PASS shared spawn uses documented feet coordinate
+PASS center-origin controller feet align with floor top
+PASS floor top is y=480
+PASS valid footprint inside the build region is accepted
+PASS spawn footprint is rejected
+PASS goal sweep remains protected
+PASS goal effect region is protected regardless of flag visibility
+PASS base geometry overlap is rejected
+PASS out-of-build-region edit is rejected
+PASS player clearance expands the collider by four units
+PASS floor removal is rejected
+PASS known player construction can be registered
+PASS registered construction removal guard permits mutable geometry
+PASS unknown surface removal is rejected
+PASS rejected edits leave immutable geometry unchanged
+PASS missing eligibility metadata is rejected
+PASS explicitly ineligible surface metadata is valid
+PASS eligible player-built surface metadata validates
+PASS authored child accepts explicit provenance inheritance
+PASS child resolves to its construction identity
+PASS missing provenance parent is rejected
+PASS tracker rejects missing eligibility metadata
+PASS tracker accepts explicit ineligible metadata
+PASS scene validation rejects a support collider without metadata
+PASS project preserves the 16:9 virtual aspect
+PASS 2-actor framing contains full target extents
+PASS highest legal construction preview at build-region y=96 remains visible
+PASS 3-actor framing contains full target extents
+PASS 4-actor framing contains full target extents
+PASS launch and rotated-preview extents remain inside the usable viewport
+PASS camera honors its bounded zoom range
+PASS empty target set holds the last safe framing
+PASS viewport larger than bounds locks without inverted clamps or jitter
+PASS pause holds the camera at its safe framing
+PASS camera easing applies the reserved-HUD offset once without vertical drift
+PASS camera easing keeps the stationary target inside the usable viewport
+P03_CAMERA_EASE target_y=300.00 camera_y=277.14 expected_y=277.14 zoom=1.400 visible=true
+PASS maximum configured 900 wu/s launch reaches its measured apex
+PASS camera contains live identity and body extents through maximum launch
+P03_CAMERA_LAUNCH speed=900 target_top_y=190.38 frames=36 visible=true
+PASS floor takeoff rises through the clear head and body corridor
+PASS real controller lands on Base A from the floor
+PASS real controller clears the 64-unit rise and gap to Base B
+PASS Base A takeoff clears the underside of Base B
+PASS real controller lands on Base C across the descending gap
+PASS descending gap has clear headroom through its jump arc
+PASS real controller clears the 64-unit rise and gap to Base D
+PASS Base C takeoff clears the underside of Base D
+PASS ground braking reduces horizontal speed while the actor stays contained
+PASS real controller reaches the goal platform without teleporting
+PASS route remains within arena containment
+P03_ROUTE goal=true x=1012.00 y=360.00
+PASS Kaing-like built solid qualifies with actual upward support
+PASS support captures the real upward normal and contact
+PASS feet just above the wave boundary qualify
+PASS one-unit inclusive wave tolerance qualifies at its boundary
+PASS feet below the wave boundary fail without grace
+PASS launch immediately invalidates prior support
+PASS support invalidation does not teleport the actor
+PASS fixture support line 384 feet offset -0.1 evaluates eligible
+PASS fixture support line 384 feet offset 0.0 evaluates eligible
+PASS fixture support line 384 feet offset 1.1 evaluates below line
+PASS fixture support line 320 feet offset -0.1 evaluates eligible
+PASS fixture support line 320 feet offset 0.0 evaluates eligible
+PASS fixture support line 320 feet offset 1.1 evaluates below line
+PASS fixture support line 256 feet offset -0.1 evaluates eligible
+PASS fixture support line 256 feet offset 0.0 evaluates eligible
+PASS fixture support line 256 feet offset 1.1 evaluates below line
+PASS another player's eligible construction supports this actor
+PASS one-way bridge does not support a player rising through it
+PASS one-way bridge qualifies after a real landing
+PASS separate spring face qualifies only during actual upward support
+PASS spring launching loses support immediately after contact
+PASS explicit safe hazard face qualifies only while actually supporting
+PASS temporary platform construction provenance parent registers
+PASS temporary authored child qualifies through explicit inherited provenance
+PASS temporary child reports the parent construction identity
+PASS crumbling platform qualifies before collapse
+PASS same-step crumble invalidation removes support before evaluation
+PASS elevated base platform never qualifies regardless of height
+PASS explicitly ineligible built surface does not qualify
+PASS overlapping chickens do not push each other
+PASS overlapping chickens keep separate readable identity badges
+PASS another chicken is never treated as a supporting surface
+PASS bubble capture has no supporting contact
+PASS side-wall contact is not upward support
+PASS coyote permission without contact is not support
+PASS airborne crossing above a line is not support
+PASS real controller shape sweep intersects the projectile fixture
+PASS projectile collision never qualifies without explicit support metadata
+PASS moving platform metadata registers
+PASS moving platform supports only while carrying actual contact
+PASS moving surface starts below the measured wave support boundary
+PASS moving platform carries actual contact and uses its current height on the evaluation step
+PASS camera vertical framing stays stable across the former 80-unit badge-spacing threshold
+PASS Place camera includes unconfirmed pointers
+PASS one diagnostic pointer can be confirmed
+PASS confirmed pointer is excluded individually
+PASS rotated preview remains included by its current extents
+PASS Play camera includes both unfinished chickens
+PASS secured chicken leaves the Play target set
+PASS eliminated chicken leaves the Play target set
+PASS reset clears support and restores actors
+PASS return clears support registry for scene cleanup
+PASS cleanup keeps room-owned actors valid until scene release
+P03_TESTS checks=103 failures=0
+

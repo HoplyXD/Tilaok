@@ -12,6 +12,8 @@ enum Kind { UNSET = -1, SOLID, ONE_WAY_TOP, TRIGGER, SWEEP, LANE, EFFECT }
 @export var thickness_tuning_key: StringName = &""
 ## Sweep, lane and effect regions must declare themselves explicitly bounded.
 @export var declared_bounded := false
+## Lane, beam or path that solids may cut short: base-geometry overlap is allowed and clips it.
+@export var blockable := false
 
 
 static func kind_name(region_kind: Kind) -> String:

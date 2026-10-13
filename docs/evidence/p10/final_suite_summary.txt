@@ -1,0 +1,14 @@
+﻿run_foundation_tests     exit=0 fail_lines=0 secs=3 :: Harness lifecycle checks complete: 0 failure(s).
+run_p02_tests            exit=0 fail_lines=2 secs=16 :: P02_TESTS checks=83 failures=0
+run_p02_wall_tests       exit=0 fail_lines=0 secs=29 :: P02_WALL_TESTS checks=85 failures=0
+run_p03_tests            exit=0 fail_lines=0 secs=9 :: P03_TESTS checks=103 failures=0
+run_p04_tests            exit=0 fail_lines=0 secs=30 :: P04_TESTS checks=268 failures=0
+run_p05_tests            exit=0 fail_lines=0 secs=1 :: P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests            exit=0 fail_lines=0 secs=1 :: P06_TEST_SUMMARY checks=97 failures=0
+run_ui_tests             exit=0 fail_lines=0 secs=4 :: UI_TESTS checks=437 failures=0
+run_p10_tests            exit=0 fail_lines=0 secs=89 :: P10_TESTS checks=421 failures=0
+run_p03_interactive      exit=1 fail_lines=1 secs=3 :: P03_INTERACTIVE checks=14 failures=2 evidence=C:/Users/roman/AppData/Local/Temp/p10_iso/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
+run_p04_interactive      exit=0 fail_lines=0 secs=4 :: P04_INTERACTIVE checks=25 failures=0 place=(1920, 1080) play=(1920, 1080)
+run_p05_interactive      exit=0 fail_lines=0 secs=4 :: P05_INTERACTIVE checks=64 failures=0 captures=C:/Users/roman/AppData/Local/Temp/p10_iso/docs/evidence/p05
+run_p06_interactive      exit=0 fail_lines=0 secs=3 :: P06_INTERACTIVE_SUMMARY checks=17 failures=0 resolution=(1920, 1080)
+run_p10_interactive      exit=0 fail_lines=0 secs=10 :: P10_INTERACTIVE checks=56 failures=0 evidence=C:\Users\roman\.codex\worktrees\prd-phasetask\Tilaok\docs\evidence\p10

@@ -3,8 +3,22 @@ extends Resource
 
 const OWNERSHIP_PLACER := "placer"
 const SAFE_START_STATIC := "static_no_motion"
+const SAFE_START_ENDPOINT := "reset_to_endpoint"
+const SAFE_START_INACTIVE_CHARGE := "reset_inactive_charge"
+const SAFE_START_IDLE := "reset_idle"
+const SAFE_START_READY := "reset_ready"
 ## Moves during Play (e.g. a pushed Wood Box) and returns to its placed spot at Place/Play start.
 const SAFE_START_RESET_TO_PLACED := "reset_to_placed"
+const SAFE_START_STATES: PackedStringArray = [
+	SAFE_START_STATIC,
+	SAFE_START_ENDPOINT,
+	SAFE_START_INACTIVE_CHARGE,
+	SAFE_START_IDLE,
+	SAFE_START_READY,
+	SAFE_START_RESET_TO_PLACED,
+]
+const SUPPORT_ROLE_SUPPORT := "support"
+const SUPPORT_ROLE_NONE := "none"
 const REMOVAL_WALIS := "walis_cleanup"
 const PERSISTENCE_UNTIL_REMOVED := "until_removed"
 const WALL_ELIGIBLE := "eligible"
@@ -31,6 +45,11 @@ const WALL_INELIGIBLE := "ineligible"
 @export var independently_verified := false
 @export var runtime_enabled := false
 @export var release_target := false
+## "support": solid faces may carry feet for wave support; "none": launch/hazard bodies never do.
+@export var support_role := "support"
+## Walis-style construction edit: its footprint is a cleanup area, nothing is placed or persisted.
+@export var one_shot_edit := false
+@export var visual_set: ItemVisualSet
 
 
 func find_variant(variant_id_value: String) -> ItemVariantDefinition:

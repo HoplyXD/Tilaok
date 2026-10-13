@@ -78,6 +78,11 @@ The measured P02 baseline controls are left/right and jump only; that historical
 | wall slide cap / kick x / kick y / recontact | 120 / 240 / −520 / 8 | 240 / 480 / −1040 / 16 | Probe 1 wu and normal tolerance unchanged |
 | `item_tulay_strip_thickness_wu` | 4 | 8 | |
 | camera padding / view bounds | 64 / (−64,−64,1152,640) | 128 / (−128,−128,2304,1280) | |
+| P10 spring launch / boost / probe / caps | 775 / 849 / 2 / 480·900 | 1550 / 1698 / 4 / 960·1800 | Merged with P10 on 2026-10-14; windows/cooldown unchanged |
+| P10 trumpo speed / hit, Parol beam width | 160 / 20, 12 | 320 / 40, 24 | Pause/cycle times unchanged |
+| P10 launcher projectile speed / size | 360 / 14 | 720 / 28 | Delays unchanged |
+| P10 bubble rise / radius / release | 60 / 14 / 120 | 120 / 28 / 240 | Cadence/capture/immunity unchanged |
+| `SafeReleaseResolver` step / radius | 4 / 96 | 8 / 192 | Same candidate count |
 
 New keys (UNMEASURED candidates): `sneak_enabled` true, `sneak_height_wu` 56 (1×1 body), `glide_enabled` true, `glide_fall_cap_wu_s` 180 (wall slide is 240), `block_box_push_speed_wu_s` 160, `block_box_friction_wu_s2` 2400, `block_collapse_delay_s` 2.0, `block_collapse_respawn_s` 3.0, and item weights `item_solid_block_weight` / `item_wood_box_weight` / `item_collapsing_block_weight` 50. Synthetic measurements (Godot 4.7.stable, Item Lab, seed 12345, 60 Hz): glide max 180.0 wu/s; box push 120 wu over 45 ticks; collapse after 120 ticks (2.00 s); respawn after 181 ticks (3.02 s). See [blocks evidence](evidence/blocks/README.md). Human feel review is still needed.
 
@@ -176,7 +181,11 @@ Exact tests, captures and results are in [P03 verification evidence](evidence/p0
 | Tulay 4 wu strip at fall cap | All drops land | 5/5 landed; sampled peak 878.9 wu/s (cap 900) |
 | 48 pieces + 4 chickens, 1080p uncapped, 600 frames | ≤16.67 ms; ≤512 MiB | median 1.954 / p95 3.109 / worst 6.059 ms; peak working set 208.8 MiB, private 242.4 MiB |
 
-These are fixture measurements, not feel or balance evidence. The Kaing/Tulay equal selection weights are configuration only; no Pugad exists to use them yet.
+These P04 fixture measurements are not feel or balance evidence. At that earlier checkpoint the Kaing/Tulay equal weights were configuration only; P05 now uses the Pugad flow in the `karera_slice` profile.
+
+### P06 Karera and scoring runtime measurements — October 14, 2026
+
+The real ArenaDefinition goal trigger, race-clock policy, result binding, exact race awards and current elimination-placement arithmetic now run in the `karera_slice` development profile. The 97-check automated suite, 17-check two-seat live result, 64-check four-seat P05 flow and 2/3/4-seat frame sample passed. The P06 evidence record lists frame, static-memory, repeated-round and export results. These synthetic/scripted checks do not establish player feel, fairness or final balance. Hazard-owner candidates and Barya facts are test-only interfaces; P10 hazard contact, coin gameplay, Lagsanay, event stacks and full-match scoring orchestration remain future gates. No scoring design value changed from the GDD.
 
 ### Contact and temporary-state policy
 
@@ -258,6 +267,8 @@ Separate simulation invariants (one outcome, pass-through bodies, atomic edits, 
 | `transients.ttl_s` | P: projectile 3 s, empty bubble 4 s, cosmetic 2 s; capture C/P ≈2 s | 2–4, 3–5, 1–3 s; capture 1–2 s | Prevents accumulation; expiry must release captives safely before removal | Low |
 | `bubble.recapture_immunity_s` | P: 1.0 s against all bubbles | .75–1.5 s | Stops immediate recapture; not hazard immunity. Disable unsafe event pairing if chains remain unavoidable | Low |
 
+P06 maps the race row to `match_race_hard_cap_seconds = 60.0` and `match_race_after_first_finish_seconds = 15.0` in `gameplay_tuning.gd`; both are validated and copied into the match snapshot. The active-simulation clock freezes on pause. These defaults passed timing fixtures but are still provisional until human play sessions record finish and stall rates. Race score storage uses integer eighth-point units (80 units = 10 points; Bawi requires a 24-unit round-start gap). See the dated P06 runtime record below and [P06 verification evidence](evidence/p06/2026-10-14_p06_verification.md).
+
 Bounds/camera values live in STAGE_AND_PLACEMENT.md's graybox table; movement/contact values are above. Do not duplicate numeric sources in production code. Terminal velocity applies to ordinary gravity; external launch limits have their own keys.
 
 Timer policy: passing taya never resets its countdown. A new taya after elimination receives the timer for the new alive count. Race-stack reassignment when a taya secures the flag preserves the remaining countdown; the newly assigned taya has no opening freeze. The initial head start occurs once at Play start. These are P clarifications to test against the existing stack behavior.
@@ -331,3 +342,23 @@ Task edits: this NEW centralized defaults document; STAGE_AND_PLACEMENT graybox/
 Before any later commit, distinguish prerequisite user documentation from this task's edits and stage named files only. Commit only on the user's explicit `commit`; push/open PR only on explicit `push`; never merge. No Co-Authored-By trailer or AI attribution in commit/PR text; accurate disclosure belongs in AI_USAGE and Form 03. Do not rewrite history.
 
 **One next physical experiment:** with the target PC's keyboard, run the shared K1/K2 simultaneous-chord and rollover matrix in PLAYTEST.md; record exact make/model/layout and every supported chord. Then arrange two identical gamepads to complete the remaining isolation and reconnect checks. This resolves the open physical-input acceptance without treating synthetic events as hardware evidence.
+
+## P10 first-batch item keys (2026-10-14) — PROVISIONAL, UNMEASURED for feel
+
+All live in `GameplayTuning` and are validated. Values marked *doc* come from the spring gate and transient policy above; others are first proposals. Measured results are in [P10 verification index](evidence/p10/2026-10-14_p10_verification.md).
+
+| Key | Value | Source / measured |
+|---|---|---|
+| `item_spring_launch_wu_s` / `item_spring_boost_wu_s` | 775 / 849 | *doc*; measured rise 168.2 / 200.8 wu at 60 Hz |
+| `item_spring_boost_window_s` / `item_spring_cooldown_s` | 0.10 / 0.20 s | *doc*; press timestamped from the input edge |
+| `item_spring_horizontal_cap_wu_s` / `item_spring_upward_cap_wu_s` | 480 / 900 | *doc*; side launch measured 480.0 |
+| `item_spring_contact_probe_wu` | 2 | face-contact tolerance |
+| `item_trumpo_speed_wu_s` / `item_trumpo_pause_s` / `item_trumpo_hit_wu` | 160 / 0.75 / 20 | pause 45 frames, period 3.25 s on a 5×1 rail |
+| `item_parol_cycle_s` / `item_parol_active_s` / `item_parol_charge_s` / `item_parol_beam_width_wu` | 3.0 / 1.5 / 0.6 / 12 | item time: charge 0.900 s, active 1.500 s |
+| `item_launcher_initial_delay_s` / `_telegraph_s` / `_cooldown_s` | 0.5 / 0.8 / 1.7 | first shot at frame 76 after arming |
+| `item_launcher_projectile_speed_wu_s` / `_size_wu` | 360 / 14 | 6.00 wu per frame |
+| `item_bubble_cadence_s` / `_rise_wu_s` / `_radius_wu` | 2.5 / 60 / 14 | emits after the grace |
+| `item_bubble_capture_s` / `_release_wu_s` / `_recapture_immunity_s` | 2.0 / 120 / 1.0 | *doc* capture ≈2 s (121 frames) and 1.0 s immunity |
+| `item_spring_weight` / `item_trumpo_weight` / `item_parol_weight` / `item_launcher_weight` / `item_walis_weight` / `item_bubble_weight` | 15 / 50 each | spring 15 *doc* (Kaing 45 / Tulay 40 / spring 15 in `karera_spring`); `items_lab` applies equal 50 weights, labelled provisional |
+
+`items_lab` is a development profile applied by the Visualizer and `MatchRoomItemsLab` (`ItemEnabledProfiles`); it is not a `ProfileRegistry` profile, and `release_candidate` is unchanged. Measured stress at 48 persistent items, 16 projectiles and 4 bubbles: median 3.25 ms, p95 4.57 ms, worst 5.70 ms, 80.85 MiB at 1080p.

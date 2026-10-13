@@ -1,0 +1,36 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+PASS P03 arena opens through the visible foundation-harness button
+PASS opening P03 exposes the arena viewport
+PASS visible join controls add two identity-labeled chickens
+PASS Play camera follows the two live actors created through the UI
+PASS Play button enters Play context
+PASS synthetic keyboard input moves the real controller
+PASS Place button frames both unconfirmed pointer previews
+PASS confirm and rotate controls update the correct pointer extent
+PASS visible pause control pauses the game tree
+PASS visible pause control resumes the game tree
+PASS visible reset control clears previews and restores both actors
+PASS interactive 1080p harness frame saves as rendered evidence
+Godot_v4.7.2-stable_win64_console.exe : ERROR: FAIL visible Return control releases the P03 scene
+At C:\Users\roman\AppData\Local\Temp\claude\C--Users-roman-Desktop-Vscode-Projects-Tilaok\5cd27173-5e5e-4a8d-a556-1d829
+0b67d0c\scratchpad\run_all.ps1:13 char:12
++     $out = & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' @a  ...
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: FAIL vis...s the P03 scene:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_p03_interactive.gd:157)
+       [1] _run (res://tests/run_p03_interactive.gd:88)
+       [2] _wait_frames (res://tests/run_p03_interactive.gd:143)
+ERROR: FAIL return restores the foundation harness
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_p03_interactive.gd:157)
+       [1] _run (res://tests/run_p03_interactive.gd:89)
+       [2] _wait_frames (res://tests/run_p03_interactive.gd:143)
+P03_INTERACTIVE checks=14 failures=2 evidence=C:/Users/roman/AppData/Local/Temp/p10_iso/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
+

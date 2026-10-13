@@ -10,6 +10,8 @@ const ROOM_SCENES := {
 	"p03_stage_room": preload("res://scenes/fixtures/p03_stage_room.tscn"),
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"p05_match": preload("res://scenes/match/match_room.tscn"),
+	"item_visualizer": preload("res://scenes/fixtures/item_visualizer.tscn"),
+	"p05_match_items": preload("res://scenes/match/match_room_items_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 	"ui_gallery": UI_GALLERY_SCENE,
 	"ui_player_flow": UI_GALLERY_SCENE,
@@ -17,7 +19,9 @@ const ROOM_SCENES := {
 const FULL_VIEW_ROOMS: PackedStringArray = [
 	"p03_stage_room",
 	"item_lab",
+	"item_visualizer",
 	"p05_match",
+	"p05_match_items",
 	"ui_gallery",
 	"ui_player_flow",
 ]
@@ -74,6 +78,12 @@ func _ready() -> void:
 	$Layout/HarnessPanel/RoomRow/ItemRoomButton.pressed.connect(_open_room.bind("item_lab"))
 	$Layout/HarnessPanel/RoomRow/EventRoomButton.pressed.connect(_open_room.bind("event_lab"))
 	$Layout/HarnessPanel/RoomRow/P05MatchButton.pressed.connect(_open_room.bind("p05_match"))
+	$Layout/HarnessPanel/RoomRow/ItemVisualizerButton.pressed.connect(
+		_open_room.bind("item_visualizer")
+	)
+	$Layout/HarnessPanel/RoomRow/P05MatchItemsButton.pressed.connect(
+		_open_room.bind("p05_match_items")
+	)
 	$Layout/HarnessPanel/RoomRow/UiGalleryButton.pressed.connect(_open_room.bind("ui_gallery"))
 	$Layout/HarnessPanel/RoomRow/UiPlayerFlowButton.pressed.connect(
 		_open_room.bind("ui_player_flow")
@@ -126,7 +136,9 @@ func _current_catalog() -> DiagnosticContentCatalog:
 	var profile := ProfileRegistry.get_profile(selected_profile_id)
 	if profile == null:
 		return catalog
-	var definitions := ItemDefinitions.load_all(gameplay_tuning)
+	var catalog_tuning := gameplay_tuning.duplicate(true) as GameplayTuning
+	ItemEnabledProfiles.apply(catalog_tuning, selected_profile_id)
+	var definitions := ItemDefinitions.load_for_profile(catalog_tuning, selected_profile_id)
 	if not definitions.is_valid():
 		for message in definitions.errors:
 			_append_status("Item definitions rejected: %s" % message)
@@ -225,6 +237,17 @@ func _open_room(room_id: String) -> void:
 	elif room_id == "item_lab":
 		_append_status(
 			"Opened the P04 Item Lab; lab placement is immediate and is not the P05 resolver."
+		)
+	elif room_id == "item_visualizer":
+		_append_status(
+			(
+				"Opened the P10 Item Visualizer: all eight families, PLACEHOLDER art/audio, "
+				+ "immediate lab placement (not the P05 resolver). Nothing is release-enabled."
+			)
+		)
+	elif room_id == "p05_match_items":
+		_append_status(
+			"Opened the P05 match loop with the items_lab pool (all eight families, placeholder art)."
 		)
 	elif room_id == "p05_match":
 		_append_status(

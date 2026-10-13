@@ -18,6 +18,10 @@ var modes_allowed: PackedStringArray = PackedStringArray()
 var modes_pending_review: PackedStringArray = PackedStringArray()
 var release_enabled := false
 var animation_variant_key := ""
+## One line per variant: footprint plus every separate region (solid, trigger, sweep, lane, ...).
+var region_lines: PackedStringArray = PackedStringArray()
+## Presentation slots still using PLACEHOLDER art/audio (empty for the P04 families).
+var placeholder_slots: PackedStringArray = PackedStringArray()
 
 
 static func from_family(
@@ -34,6 +38,32 @@ static func from_family(
 			entry.sizes.append(size_text)
 		else:
 			entry.sizes.append("%s (not enabled yet)" % size_text)
+	for variant in family.variants:
+		var parts := PackedStringArray()
+		for region in variant.regions:
+			parts.append(
+				(
+					"%s %s×%s"
+					% [
+						ItemRegionSpec.kind_name(region.kind).replace("_", " "),
+						_cells(region.rect_cells.size.x),
+						_cells(region.rect_cells.size.y)
+					]
+				)
+			)
+		entry.region_lines.append(
+			(
+				"%s %d×%d: %s"
+				% [
+					variant.variant_id,
+					variant.footprint_cells.x,
+					variant.footprint_cells.y,
+					", ".join(parts)
+				]
+			)
+		)
+	if family.visual_set != null:
+		entry.placeholder_slots = family.visual_set.placeholder_slot_ids()
 	entry.placement = (
 		"Snaps to the grid inside the build region; cannot overlap stage ground, other "
 		+ "pieces, the spawn or goal areas, or a chicken. Rotate where the shape allows."
@@ -63,7 +93,21 @@ static func build_list(
 	return entries
 
 
+static func _cells(value: float) -> String:
+	return str(int(value)) if is_equal_approx(value, roundf(value)) else str(value)
+
+
 func text_block() -> String:
+	var core := _core_text_block()
+	if region_lines.is_empty() or placeholder_slots.is_empty():
+		return core
+	return (
+		"%s\nRegions: %s\nPLACEHOLDER art/audio slots: %s"
+		% [core, "; ".join(region_lines), ", ".join(placeholder_slots)]
+	)
+
+
+func _core_text_block() -> String:
 	return (
 		"%s\nSizes: %s\nPlacement: %s\nTell: %s\nCounter: %s\nControls: %s\nModes: %s%s"
 		% [

@@ -1,0 +1,6 @@
+﻿=== room item_visualizer exit=0
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=8 variants=20 profile=items_lab
+=== room p05_match_items exit=0
+P04_ITEM_LAB_READY families=8 enabled_variants=20 profile=items_lab
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345

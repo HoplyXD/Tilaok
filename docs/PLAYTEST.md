@@ -282,6 +282,22 @@ After M1/M3, run a short session at each of 2, 3 and 4 players: 5 minutes onboar
 
 Change only one related group (for example jump height/apex and derived gravity, not unrelated score values). Preserve the original named baseline; write hypothesis, changed keys, expected result and observed result. Reproduce hard defects immediately. For feel changes, seek the same issue across at least two sessions/participants and repeat the same trials after adjustment. These small samples justify iteration, not statistical claims of competitive balance. No public telemetry/backend is needed; local notes and optional clips suffice.
 
+### P06 engine verification — October 14, 2026
+
+**Build:** `P06-karera-scoring-dev`, source base `11352c7` plus the P06 working tree; Godot `4.7.2.stable.official.ed1daf0bf`; `karera_slice`; seed `12345`; Windows 13th Gen Intel Core i5-13420H, NVIDIA RTX 4050 Laptop GPU, Compatibility renderer. **Input:** K1/K2 routing and synthetic seat identities 3/4; scripted positioning at the actual goal trigger. No physical controllers or human participants were used.
+
+The 97-check P06 runner passed with 0 failures. It covered validated 60/15-second deadlines, active-time pause, boundary events, goal/elimination ordering, candidate permutations and deduplication, stale rounds, direct-owner rules, one-time score commits, 2/3/4-seat race scoring, suppression/waiver, snapshot Bawi, test-only Barya, every current legal placement tie, Last Cluck and exact eighth-point formatting. The P06 visible two-seat run passed 17 checks at 1920×1080, including tied same-step Una, exact 10-unit deltas, the two-player waiver explanation, all-ready next Pugad, score persistence and actor reset. The dependent four-seat P05 run passed 64 checks over two actual goal/results rounds; the P05 automated suite passed 137 checks, including the paused eight-second result advance.
+
+| Seat count | Race median / p95 / worst (ms) | Results median / p95 / worst (ms) | Static memory | Repeated rounds/pieces | Result |
+|---:|---:|---:|---:|---:|---|
+| 2 | 2.450 / 3.039 / 3.876 | 2.200 / 3.049 / 3.467 | 82.89 MiB | 10 / 10 | p95/worst under 16.67 ms; no orphans |
+| 3 | 2.350 / 3.036 / 3.801 | 2.193 / 3.061 / 4.057 | 83.10 MiB | 10 / 10 | p95/worst under 16.67 ms; no orphans |
+| 4 | 2.180 / 3.005 / 3.788 | 2.397 / 3.073 / 4.247 | 86.57 MiB | 10 / 10 | p95/worst under 16.67 ms; no orphans |
+
+Each performance sample used 300 rendered frames in active Play and 300 in live results at 1920×1080, V-sync off. The repeated-round fixture retained one construction piece per round. Godot static memory was below 512 MiB in all counts. OS process working-set memory was not sampled. Gameplay networking is absent by design (0 B/s). Godot 4.7.2 editor import/class registration, Windows Debug export with matching templates, and a five-second exported headless startup smoke all exited 0. Formatting and lint checks passed for the P06/P05 touched scripts; this is not a human review.
+
+Evidence, full commands, logs, captures, environmental details and boundaries are recorded in [P06 verification](evidence/p06/2026-10-14_p06_verification.md). The results are local engineering measurements, not player-feel, balance, physical-device, release-PC or independent-review evidence. Hazard attribution and Barya are fixture interfaces only; their gameplay integrations remain future gates.
+
 ## Documentation-only verification — completed 2026-10-13 (historical)
 
 This section records the documentation-only pass before the P02 implementation session above. Its unbuilt-project statements and pending implementation checks are historical; the P02 session table is the current evidence record.
@@ -299,3 +315,15 @@ Final task checks are listed here. Earlier import evidence above belongs to its 
 | Controller feel / exported performance / actual balance | COULD NOT RUN | No runnable game, physical-device tests or identified target PC |
 
 At that documentation-only review, no team milestone was marked complete. The current P02 task state is recorded in [PHASETASK](PHASETASK.md#p02--inputs-and-controller); historical statements about an unbuilt project apply only to that prose-only task.
+
+## P10 first-batch families — automated and rendered session (2026-10-14)
+
+| Field | Record |
+|---|---|
+| Build / engine | `main` `a368c96` + P10 working tree; Godot 4.7.2.stable.official.ed1daf0bf |
+| Profile / seed / players / input | `items_lab`, 12345, 1–4 seats, synthetic K1/K2 keyboard and synthetic gamepad seats 3/4 (no physical device) |
+| Procedure | `run_p10_tests.gd` (421 checks), `run_p10_interactive.gd` (56 checks through the harness Visualizer and the all-families P05 match), `capture_p10_evidence.gd` (sheets, tells, eggs, ghosts, 48-item stress, swap), file-level placeholder swap probe, Windows export + exported startup smoke |
+| Expected / actual | Every row in [P10 verification index](evidence/p10/2026-10-14_p10_verification.md) passed; no row failed |
+| Reviewer | Automated author only. **No human playtest, feel, balance or readability review is claimed.** |
+
+**Still needed from people:** a human read of Parol (charge/active/inactive at minimum zoom with several emitters), launcher lane/cover fairness, bubble capture length and release placement, Trumpo pause timing and Gulong boost feel; native-speaker review of every working name; physical-device runs.

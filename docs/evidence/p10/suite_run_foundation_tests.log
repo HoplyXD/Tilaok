@@ -1,0 +1,175 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default gameplay tuning validates
+PASS: invalid gameplay range is rejected
+PASS: non-finite gameplay values are rejected
+PASS: invalid presentation range is rejected
+PASS: non-finite presentation values are rejected
+PASS: gameplay settings are copied into run snapshot
+PASS: presentation snapshot starts as a copy
+PASS: presentation edit is rejected while unpaused
+PASS: presentation edit is accepted while paused
+PASS: invalid paused presentation values are rejected
+PASS: R1-R4 are inactive
+PASS: unknown profile IDs are rejected
+PASS: seven contract profiles are registered
+PASS: diagnostic bootstrap profile validates
+PASS: incomplete release profile is rejected
+PASS: profile with an empty required pool is rejected
+PASS: missing profile is rejected
+PASS: valid catalog entries pass validation
+PASS: only enabled, implemented, verified positive-weight entries are eligible
+PASS: runtime-enabled but unverified content is rejected
+PASS: eligible pool weights normalize after filtering
+PASS: empty required pool is observable
+PASS: weighted selector only returns eligible entries
+PASS: empty pool returns no fallback selection
+PASS: same profile and seed reproduce weighted selection sequence
+PASS: invalid IDs, weights, and references are rejected
+PASS: duplicate IDs are rejected
+PASS: same seed reproduces egg stream
+PASS: cosmetic draws do not affect egg stream
+PASS: egg draws do not affect event stream
+PASS: res://scenes/fixtures/movement_room.tscn exposes return signal
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: res://scenes/fixtures/item_lab.tscn exposes return signal
+PASS: res://scenes/fixtures/event_lab.tscn exposes return signal
+PASS: repeated P03 fixture loads release room and owned nodes
+PASS: res://scenes/fixtures/p03_stage_room.tscn exposes return signal
+PASS: repeated fixture cleanup returns to node baseline
+Foundation checks complete: 0 failure(s).
+PASS: ValidateButton has one action callback
+PASS: RunButton has one action callback
+PASS: ResetButton has one action callback
+PASS: ReloadButton has one action callback
+PASS: ExitButton has one action callback
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: movement_room connects one return callback
+PASS: movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+PASS: p02_movement_room connects one return callback
+PASS: p02_movement_room reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: item_lab connects one return callback
+PASS: item_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: event_lab connects one return callback
+PASS: event_lab reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: p03_stage_room connects one return callback
+PASS: p03_stage_room reset releases its fixture
+PASS: harness fixtures return root to baseline
+PASS: harness run creates a configuration snapshot
+PASS: scenario reset clears the run snapshot
+PASS: harness scene loads through the scene lifecycle
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+PASS: reload creates a fresh harness scene
+PASS: reload clears the diagnostic run snapshot
+PASS: reload releases the active fixture
+PASS: reload restores the diagnostic controls
+Harness lifecycle checks complete: 0 failure(s).
+

@@ -9,15 +9,40 @@ const DEFINITION_PATHS: PackedStringArray = [
 	"res://data/items/build.collapsing_block.tres",
 ]
 
+const FIRST_BATCH_PATHS: PackedStringArray = [
+	"res://data/items/build.hollow_blocks.tres",
+	"res://data/items/build.bamboo_bridge.tres",
+	"res://data/items/move.tire_spring.tres",
+	"res://data/items/hazard.rail_trumpo.tres",
+	"res://data/items/hazard.parol_pulse.tres",
+	"res://data/items/hazard.slipper_launcher.tres",
+	"res://data/items/utility.walis_cleanup.tres",
+	"res://data/items/hazard.bubble_planter.tres",
+	"res://data/items/build.solid_block.tres",
+	"res://data/items/build.wood_box.tres",
+	"res://data/items/build.collapsing_block.tres",
+]
+
 var families: Array[ItemFamilyDefinition] = []
 var errors := PackedStringArray()
 var tuning: GameplayTuning
 
 
 static func load_all(source_tuning: GameplayTuning) -> ItemDefinitions:
+	return _load_paths(source_tuning, DEFINITION_PATHS)
+
+
+## Profile-aware loader. Profiles outside `ItemEnabledProfiles` keep the exact P04 pair.
+static func load_for_profile(source_tuning: GameplayTuning, profile_id: String) -> ItemDefinitions:
+	if ItemEnabledProfiles.uses_first_batch(profile_id):
+		return _load_paths(source_tuning, FIRST_BATCH_PATHS)
+	return _load_paths(source_tuning, DEFINITION_PATHS)
+
+
+static func _load_paths(source_tuning: GameplayTuning, paths: PackedStringArray) -> ItemDefinitions:
 	var result := ItemDefinitions.new()
 	result.tuning = source_tuning
-	for path in DEFINITION_PATHS:
+	for path in paths:
 		var loaded := ResourceLoader.load(path) as ItemFamilyDefinition
 		if loaded == null:
 			result.errors.append("could not load item definition '%s'" % path)
@@ -57,6 +82,14 @@ func find_variant(variant_key: String) -> Dictionary:
 			if family.variant_key(variant) == variant_key:
 				return {"family": family, "variant": variant}
 	return {}
+
+
+## Short on-ghost label such as "Gulong Talon tire_2x2"; "Unknown item" for undefined keys.
+func short_label(variant_key: String) -> String:
+	var found := find_variant(variant_key)
+	if found.is_empty():
+		return "Unknown item"
+	return "%s %s" % [found.family.working_name, found.variant.variant_id]
 
 
 func is_variant_enabled(variant_key: String) -> bool:

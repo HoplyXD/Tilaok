@@ -47,3 +47,9 @@ At 1920×1080 with V-sync off, 600 completed rendered-frame samples were collect
 - No physical gamepads, physical keyboard rollover, human playtest, independent human review, human asset review or competition-organizer approval is claimed.
 - No Karera finish logic, score calculation, Walis Cleanup gameplay, save system, network traffic, production art or audio was added.
 - Export startup does not prove the exported game has physical input or release-ready content.
+
+## P06 dependent rerun — October 14, 2026
+
+This addendum supersedes the earlier blocked P05-T12 note above. After P06 result bindings were implemented, `run_p05_interactive.gd` was rerun with Godot 4.7.2. The four-seat synthetic-input harness completed two live Pugad→Place→real-goal→scored-results cycles and passed 64 checks with exit 0. It verified actual four-player all-finish suppression messaging, next-round all-ready advance, held-confirm consumption, next-Pugad construction retention and the second round. The 137-check P05 suite also passed, including the paused eight-second results timeout. Combined with the 17-check two-seat P06 live result, this closes P05-T12's programmed acceptance; see [P06 verification](../p06/2026-10-14_p06_verification.md).
+
+The rerun uses keyboard K1/K2 and synthetic gamepad identities for seats 3/4. It does not establish physical-controller support, participant comprehension, independent human review, final UI/art, full match orchestration or competition readiness. Screens remain code-drawn DEBUG placeholders.

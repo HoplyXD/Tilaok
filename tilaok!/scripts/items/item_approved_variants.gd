@@ -16,6 +16,35 @@ const TABLE := {
 		"span_4x1": Vector2i(4, 1),
 		"span_5x1": Vector2i(5, 1),
 	},
+	"move.tire_spring": {"tire_2x2": Vector2i(2, 2)},
+	"hazard.rail_trumpo":
+	{
+		"rail_4x1": Vector2i(4, 1),
+		"rail_5x1": Vector2i(5, 1),
+		"rail_6x1": Vector2i(6, 1),
+	},
+	"hazard.parol_pulse":
+	{
+		"span_3x1": Vector2i(3, 1),
+		"span_4x1": Vector2i(4, 1),
+		"span_5x1": Vector2i(5, 1),
+		"span_6x1": Vector2i(6, 1),
+	},
+	"hazard.slipper_launcher":
+	{
+		"lane_4x1": Vector2i(1, 1),
+		"lane_6x1": Vector2i(1, 1),
+	},
+	"utility.walis_cleanup":
+	{
+		"area_3x3": Vector2i(3, 3),
+		"area_5x5": Vector2i(5, 5),
+	},
+	"hazard.bubble_planter":
+	{
+		"path_1x3": Vector2i(1, 1),
+		"path_1x5": Vector2i(1, 1),
+	},
 	# Stage blocks (owner request 2026-10-14; docs/ITEMS.md "Stage blocks").
 	"build.solid_block": {"slab_3x1": Vector2i(3, 1)},
 	"build.wood_box": {"box_2x2": Vector2i(2, 2)},

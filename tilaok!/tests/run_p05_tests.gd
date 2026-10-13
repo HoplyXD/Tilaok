@@ -508,13 +508,17 @@ func _test_results_timeout_advances() -> void:
 		room.assignments[seat_index] = str(room.egg_pool[seat_index].egg_id)
 	room._enter_place()
 	room._enter_play()
-	room.end_round_diagnostic()
+	for actor_variant in room.actors.values():
+		(actor_variant as ChickenController).global_position = room.goal_area.global_position
+	for _frame in range(4):
+		await physics_frame
 	_check(
 		(
 			room.phase_controller.phase == MatchPhaseController.Phase.RESULTS
-			and is_equal_approx(room.phase_controller.remaining_seconds, 8.0)
+			and room.phase_controller.remaining_seconds <= 8.0
+			and room.phase_controller.remaining_seconds > 7.5
 		),
-		"diagnostic results use the configured eight-second advance"
+		"real goal results begin the configured eight-second advance"
 	)
 	var remaining := room.phase_controller.remaining_seconds
 	paused = true
@@ -524,7 +528,7 @@ func _test_results_timeout_advances() -> void:
 			room.phase_controller.phase == MatchPhaseController.Phase.RESULTS
 			and is_equal_approx(room.phase_controller.remaining_seconds, remaining)
 		),
-		"paused results timer does not advance the next round"
+		"paused live-results timer does not advance the next round"
 	)
 	paused = false
 	room._process(8.1)

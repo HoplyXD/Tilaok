@@ -167,11 +167,11 @@ Phase banner (Pugad / Place / Play), countdown ring, announce banner for next-ro
 
 ## 12. What development built (2026-10-14)
 
-Screen shells are real Godot scenes, not code. Status: **placeholder look, SAMPLE data, no final art.** They do not tick any P05-T11 or P13 checkbox: live modes, awards and content still come from later phases.
+Screen shells are real Godot scenes, not code. Status: **placeholder look, SAMPLE data, no final art.** The separate P05 match room now binds live P06 race awards, suppression reasons and totals to code-built placeholder panels; this does not complete P13 or connect the scene-authored screen shells to live data.
 
 - **Scenes:** `tilaok!/scenes/ui/screens/` (Title, Lobby, Tutorial prompt, Pugad, Place, Play HUD, Round result, Match result, Pause/Reconnect, Settings, Library, Event overlays) and `tilaok!/scenes/ui/components/` (player badge, prompt glyph, phase banner, countdown, score row, award line, toast, egg slot, ghost legend, confirm dialog, option row, lobby slot, taya marker, Kangaroo prompt).
 - **One Theme:** `tilaok!/assets/ui/theme/tilaok_theme.tres`.
-- **UI Gallery:** the foundation harness has **UI Gallery** and **Player flow (Title)** buttons; `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return (F9 hides the review panel). The P05 match room still uses its own code-built panels; converting them to these scenes is a follow-up.
+- **UI Gallery:** the foundation harness has **UI Gallery** and **Player flow (Title)** buttons; `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return (F9 hides the review panel). The match room still uses its own code-built panels. Its results now show live P06 data; converting those panels to these scenes remains a follow-up. See [P06 results capture](evidence/p06/02_explained_live_results_1920x1080.png).
 - **Tests:** `tilaok!/tests/run_ui_tests.gd`, captures `tilaok!/tests/capture_ui_evidence.gd`, evidence in `docs/evidence/ui-shells/`.
 
 ### How to edit the UI in Godot (for Shanti)
@@ -191,3 +191,18 @@ Questions: Francis or Carlos.
 ## 13. Source documents
 
 [UI_TUTORIAL.md](UI_TUTORIAL.md) · [GDD.md](GDD.md) · [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md) · [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md) · [ITEMS.md](ITEMS.md) · [ASSETS.md](ASSETS.md) · [PRODUCTION.md](PRODUCTION.md) · [COMPETITION.md](COMPETITION.md) · [PHASETASK.md](PHASETASK.md) (P05-T11, P13)
+
+## 14. P10 item tells and placeholder slots (Jorge/Ivie art, Shanti UI/audio)
+
+Every first-batch item is drawn through one `ItemVisualSet` per family (`tilaok!/data/items/visual/<family_id>.tres`). **Replace a placeholder by saving your file over `tilaok!/assets/items/<family_id>/PLACEHOLDER_<slot>.<ext>`, or set the slot's `frames`/`sound` in the inspector.** No code change is needed; the Item Visualizer's **Reload art** button shows the swap immediately and **Art slots** lists every slot and its owner. A missing slot falls back to a graybox shape.
+
+| Family | Slots | Tell to preserve (shape + motion + sound, never colour alone) |
+|---|---|---|
+| Gulong Talon | `body`, `body_compressed`, `sfx_launch` | Coil compresses before/at launch; arrow along the launch face; boing |
+| Trumpo sa Riles | `rail`, `top`, `sfx_pause` | Visible rail ends; top spins; pause marker and tick at each end |
+| Parol Pulse | `post`, `beam_on`, `sfx_charge`, `sfx_on` | Dotted line → thickening line → solid band (no flashing faster than ~1 Hz); rising tone, then a click |
+| Tsinelas Launcher | `launcher`, `launcher_charge`, `projectile`, `sfx_charge`, `sfx_fire` | Lane always visible and stops at the first solid; barrel pulls back; charge sound before the shot |
+| Walis Cleanup | `broom_outline`, `sfx_sweep` | Every target gets an X, protected areas are hatched; sweep sound on confirm |
+| Bula-Bulaklak | `pot`, `bubble`, `captive_icon`, `sfx_emit`, `sfx_capture`, `sfx_pop` | Upward path arrows; capture ring counts down the ~2 s hold |
+
+Slot sizes: textures are stretched into the region (body = footprint, beam = beam segment, lane/projectile = 14 wu). Final art keeps those rectangles; add frames to a slot for a loop (`fps` per slot). Egg, ghost, Library and the live piece all use the same slots. See [ASSETS.md](ASSETS.md) for the register.

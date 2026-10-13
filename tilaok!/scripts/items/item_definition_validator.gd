@@ -63,14 +63,15 @@ static func validate_family(
 			errors.append("%s: %s is required" % [label, required])
 	if family.ownership != ItemFamilyDefinition.OWNERSHIP_PLACER:
 		errors.append("%s: ownership must be '%s'" % [label, ItemFamilyDefinition.OWNERSHIP_PLACER])
-	if (
-		family.safe_start
-		not in [
-			ItemFamilyDefinition.SAFE_START_STATIC,
-			ItemFamilyDefinition.SAFE_START_RESET_TO_PLACED,
-		]
-	):
+	if not ItemFamilyDefinition.SAFE_START_STATES.has(family.safe_start):
 		errors.append("%s: safe_start is required and must be a documented state" % label)
+	if (
+		family.support_role
+		not in [ItemFamilyDefinition.SUPPORT_ROLE_SUPPORT, ItemFamilyDefinition.SUPPORT_ROLE_NONE]
+	):
+		errors.append("%s: support_role must be documented" % label)
+	if family.one_shot_edit and family.safe_start != ItemFamilyDefinition.SAFE_START_STATIC:
+		errors.append("%s: a one-shot edit has no Play state to reset" % label)
 	if family.removal_policy != ItemFamilyDefinition.REMOVAL_WALIS:
 		errors.append("%s: removal_policy is required and must be a documented policy" % label)
 	if family.persistence != ItemFamilyDefinition.PERSISTENCE_UNTIL_REMOVED:
@@ -147,6 +148,14 @@ static func _validate_variant(
 	var solid_rects: Array[Rect2] = []
 	var one_way_rects: Array[Rect2] = []
 	var has_collision := false
+	for occupied in variant.occupied_cells:
+		var occupied_rect := Rect2(Vector2(occupied.position), Vector2(occupied.size))
+		if (
+			occupied.size.x <= 0
+			or occupied.size.y <= 0
+			or not footprint_rect.encloses(occupied_rect)
+		):
+			errors.append("%s: occupied cells must be positive and inside the footprint" % label)
 	for region in variant.regions:
 		if region == null or region.kind == ItemRegionSpec.Kind.UNSET:
 			errors.append("%s: region kind is required" % label)
@@ -185,6 +194,6 @@ static func _validate_variant(
 		for solid in solid_rects:
 			if one_way.intersects(solid, false):
 				errors.append("%s: a one-way strip may not overlap a solid region" % label)
-	if not has_collision and not variant.regions.is_empty():
+	if variant.requires_collision and not has_collision and not variant.regions.is_empty():
 		errors.append("%s: no collision-bearing (solid or one-way) region is defined" % label)
 	return errors

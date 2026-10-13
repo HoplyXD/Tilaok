@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="ItemFamilyDefinition" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/item_family_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/items/item_variant_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/items/item_region_spec.gd" id="3"]
+[ext_resource type="Resource" path="res://data/items/visual/hazard.bubble_planter.tres" id="4"]
+
+[sub_resource type="Resource" id="Region_path_1x3_0"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_path_1x3_1"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(0, -3, 1, 3)
+declared_bounded = true
+blockable = true
+
+[sub_resource type="Resource" id="Variant_path_1x3"]
+script = ExtResource("2")
+variant_id = "path_1x3"
+footprint_cells = Vector2i(1, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_path_1x3_0"), SubResource("Region_path_1x3_1")])
+rotations = PackedInt32Array(0)
+
+[sub_resource type="Resource" id="Region_path_1x5_0"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_path_1x5_1"]
+script = ExtResource("3")
+kind = 5
+rect_cells = Rect2(0, -5, 1, 5)
+declared_bounded = true
+blockable = true
+
+[sub_resource type="Resource" id="Variant_path_1x5"]
+script = ExtResource("2")
+variant_id = "path_1x5"
+footprint_cells = Vector2i(1, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_path_1x5_0"), SubResource("Region_path_1x5_1")])
+rotations = PackedInt32Array(0)
+
+[resource]
+script = ExtResource("1")
+family_id = "hazard.bubble_planter"
+working_name = "Bula-Bulaklak"
+category = "hazard"
+variants = Array[ExtResource("2")]([SubResource("Variant_path_1x3"), SubResource("Variant_path_1x5")])
+ownership = "placer"
+safe_start = "reset_idle"
+removal_policy = "walis_cleanup"
+persistence = "until_removed"
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+wall_contact = "ineligible"
+weight_tuning_key = &"item_bubble_weight"
+preview_silhouette = "flower"
+preview_cue = "bubble_path"
+library_tell = "A visible upward bubble path, a steady cadence and a captive icon while someone is held."
+library_counterplay = "Time the gap, or let another direct hazard pass before you are released."
+implementation_complete = true
+independently_verified = true
+runtime_enabled = true
+release_target = false
+support_role = "none"
+visual_set = ExtResource("4")

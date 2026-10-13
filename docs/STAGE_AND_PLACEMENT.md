@@ -216,3 +216,17 @@ Future Kangaroo verification should test every surface row just above/on/below e
 | Gated vertical Tulay | 1×4 footprint, strip on the right edge, rightward normal | Geometry only; never driven by the controller; stays disabled behind `item_tulay_vertical_enabled` |
 
 Placement is validated against bounds, protected spawn/goal, build region, base geometry, 4 wu player clearance, other footprints, the 48-piece cap, enabled variants and documented rotations. Only footprints occupy cells; sweep, lane and effect regions never do. Removal invalidates registered support and unregisters the construction before the node is freed. Kaing solid sides declare `wall_movement_eligibility` ELIGIBLE and Tulay declares INELIGIBLE (one-way shapes never qualify); the metadata was checked with the wall extension's own `WallContactProbe` (Kaing side found, Tulay side not found). The extension itself is enabled by default (core movement, owner decision 2026-10-13). Item Lab placement is immediate and lab-only; the atomic resolver in this document remains a P05 task.
+
+## P10 first-batch results — implemented (2026-10-14)
+
+**C/P — implemented and verified with synthetic input; not enabled for release.** Evidence: [P10 verification index](evidence/p10/2026-10-14_p10_verification.md).
+
+| Surface/state | Result |
+|---|---|
+| Spring launching / resting on its face | Face reports `ineligible surface`; body is declared wave-support INELIGIBLE (fail closed). The conditional "separate safe face" row is a known limit. |
+| Launcher, Parol posts, bubble pot | Solid, wave-support INELIGIBLE, wall INELIGIBLE. |
+| Trumpo rail | No solid; its sweep occupies the whole rail footprint; the top is a swept sensor, never support. |
+| Projectile, bubble, captive | Never support; never occupy cells; counted by `TransientBudget` (16/2 per emitter, 4/1 per emitter/1 per player). |
+| Walis | One-shot edit with no footprint; targets come from the Place snapshot (`CleanupTargetResolver`), only earlier-round, removable, non-protected pieces; one union per resolution; removal invalidates support before the node is freed. |
+
+Placement notes: a variant may reserve only part of its footprint (`occupied_cells`: Parol reserves its two posts, so solids may sit between them and occlude the beam). Lanes, beams and bubble paths declare `blockable`: immutable base geometry may clip them (they are shown to their first blocker) but protected spawn/goal and the build region still reject them. Order inside one physics step: movers/timers advance in stable item-ID order; lethal contacts resolve by recorded time, item ID, then seat with one terminal outcome per player (handed to the race ledger during Karera); captures and carries run for survivors; spring launches apply last.

@@ -143,6 +143,14 @@ text = "Event Lab"
 layout_mode = 2
 text = "P05 Match Loop"
 
+[node name="ItemVisualizerButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "Item Visualizer"
+
+[node name="P05MatchItemsButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "P05 Match (all items)"
+
 [node name="UiGalleryButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
 layout_mode = 2
 text = "UI Gallery"
