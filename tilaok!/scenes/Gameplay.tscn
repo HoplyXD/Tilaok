@@ -1,0 +1,133 @@
+[gd_scene format=3 uid="uid://mkt6txdkmciv"]
+
+[ext_resource type="Script" uid="uid://b2mt85hsdjn81" path="res://scenes/gameplay.gd" id="1_4rwr5"]
+[ext_resource type="PackedScene" uid="uid://b2yd1mq6c0a5p" path="res://scenes/chicken.tscn" id="1_75vxi"]
+[ext_resource type="PackedScene" uid="uid://cda057uy6kkvg" path="res://scenes/flag.tscn" id="2_5sdaa"]
+[ext_resource type="PackedScene" uid="uid://bxi6rxc4p5wna" path="res://scenes/chicken2.tscn" id="3_5sdaa"]
+[ext_resource type="Texture2D" uid="uid://c8rur0xx0hv7v" path="res://icon.svg" id="3_a8mty"]
+[ext_resource type="PackedScene" uid="uid://derk50o0h5432" path="res://scenes/basic_block.tscn" id="5_gnmmn"]
+[ext_resource type="PackedScene" uid="uid://ddqbkgvgv6dcl" path="res://scenes/Wood Block.tscn" id="6_4rwr5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5vfr"]
+size = Vector2(335, 102)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v5vfr"]
+
+[sub_resource type="Environment" id="Environment_v5vfr"]
+background_mode = 2
+
+[sub_resource type="TileSet" id="TileSet_v5vfr"]
+tile_size = Vector2i(32, 32)
+
+[node name="Gameplay" type="Node2D" unique_id=1468489424]
+script = ExtResource("1_4rwr5")
+
+[node name="Chicken" parent="." unique_id=276891806 instance=ExtResource("1_75vxi")]
+position = Vector2(79, 428)
+
+[node name="Chicken2" parent="." unique_id=262750076 instance=ExtResource("3_5sdaa")]
+position = Vector2(17, 21)
+
+[node name="Flag" parent="." unique_id=257514190 instance=ExtResource("2_5sdaa")]
+position = Vector2(1087, 81)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=918723581]
+position = Vector2(573, 323)
+
+[node name="Blocks" type="Node2D" parent="." unique_id=2036904018 groups=["Blocks"]]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Blocks" unique_id=683439198 groups=["Player"]]
+position = Vector2(141, 588)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/StaticBody2D" unique_id=296144228]
+shape = SubResource("RectangleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Blocks/StaticBody2D" unique_id=1208706574]
+position = Vector2(9.536743e-06, -0.49997556)
+scale = Vector2(2.6250002, 0.7890627)
+texture = ExtResource("3_a8mty")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Blocks" unique_id=1255078403]
+position = Vector2(451, 432)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/StaticBody2D2" unique_id=1053409116]
+shape = SubResource("RectangleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Blocks/StaticBody2D2" unique_id=1514099081]
+position = Vector2(9.536743e-06, -0.49997556)
+scale = Vector2(2.6250002, 0.7890627)
+texture = ExtResource("3_a8mty")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Blocks" unique_id=1804576609]
+position = Vector2(670, 308)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/StaticBody2D3" unique_id=47070822]
+shape = SubResource("RectangleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Blocks/StaticBody2D3" unique_id=173226593]
+position = Vector2(9.536743e-06, -0.49997556)
+scale = Vector2(2.6250002, 0.7890627)
+texture = ExtResource("3_a8mty")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="Blocks" unique_id=935654820]
+position = Vector2(989, 198)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/StaticBody2D4" unique_id=468983725]
+shape = SubResource("RectangleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Blocks/StaticBody2D4" unique_id=852148147]
+position = Vector2(9.536743e-06, -0.49997556)
+scale = Vector2(2.6250002, 0.7890627)
+texture = ExtResource("3_a8mty")
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="Blocks" unique_id=1883445573 groups=["Player"]]
+position = Vector2(-15.0000305, 365.00003)
+rotation = 0.7853982
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/StaticBody2D5" unique_id=879317057]
+rotation = 0.7853982
+shape = SubResource("RectangleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Blocks/StaticBody2D5" unique_id=1407570060]
+position = Vector2(9.536743e-06, -0.49997556)
+rotation = 0.7853982
+scale = Vector2(2.6250002, 0.7890627)
+texture = ExtResource("3_a8mty")
+
+[node name="Player1Score" type="TextEdit" parent="." unique_id=1107963896]
+offset_left = 24.0
+offset_top = 19.0
+offset_right = 169.0
+offset_bottom = 58.0
+text = "Player 1: 0"
+
+[node name="Player2Score" type="TextEdit" parent="." unique_id=193487632]
+offset_left = 27.0
+offset_top = 64.0
+offset_right = 172.0
+offset_bottom = 103.0
+text = "Player 2: 0"
+
+[node name="Basic Block" parent="." unique_id=1914465192 instance=ExtResource("5_gnmmn")]
+position = Vector2(239, 483)
+
+[node name="Basic Block2" parent="." unique_id=299089622 instance=ExtResource("6_4rwr5")]
+position = Vector2(219, 343)
+
+[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=257090001]
+position = Vector2(353, 250)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=744036242]
+shape = SubResource("CircleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="RigidBody2D" unique_id=1585854399]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_a8mty")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1977519867]
+environment = SubResource("Environment_v5vfr")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1528422824]
+tile_set = SubResource("TileSet_v5vfr")
+
+[connection signal="child_entered_tree" from="Flag" to="." method="_on_flag_child_entered_tree"]

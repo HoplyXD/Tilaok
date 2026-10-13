@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://b2yd1mq6c0a5p"]
+
+[ext_resource type="Script" uid="uid://bxwt3snl1wcwq" path="res://scripts/chicken.gd" id="1_1yv3s"]
+[ext_resource type="Texture2D" uid="uid://de10xy3ot1n0k" path="res://assets/Tilaok PlaceHolder.png" id="1_8lku0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1yv3s"]
+size = Vector2(32, 64)
+
+[node name="Chicken" type="CharacterBody2D" unique_id=276891806 groups=["Player"]]
+script = ExtResource("1_1yv3s")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1995521348 groups=["Player"]]
+position = Vector2(3, 4)
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("1_8lku0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1396934750]
+position = Vector2(0, 10)
+shape = SubResource("RectangleShape2D_1yv3s")
+
+[node name="Timer" type="Timer" parent="." unique_id=649938785]
+wait_time = 0.4
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

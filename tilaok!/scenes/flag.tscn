@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cda057uy6kkvg"]
+
+[ext_resource type="Texture2D" uid="uid://c8rur0xx0hv7v" path="res://icon.svg" id="1_76ss4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5vfr"]
+size = Vector2(129, 130)
+
+[node name="Flag" type="Node2D" unique_id=257514190 groups=["Flag"]]
+
+[node name="StaticBody2D" type="Area2D" parent="." unique_id=984983382 groups=["Flag"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1981860872 groups=["Flag"]]
+position = Vector2(-0.5, 0)
+shape = SubResource("RectangleShape2D_v5vfr")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=62335267 groups=["Flag"]]
+modulate = Color(0, 1, 0, 1)
+texture = ExtResource("1_76ss4")

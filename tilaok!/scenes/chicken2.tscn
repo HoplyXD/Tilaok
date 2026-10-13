@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bxi6rxc4p5wna"]
+
+[ext_resource type="Texture2D" uid="uid://de10xy3ot1n0k" path="res://assets/Tilaok PlaceHolder.png" id="1_ttsdn"]
+[ext_resource type="Script" uid="uid://c7gyob7sd4720" path="res://scripts/chicken_2.gd" id="1_y58h6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ni72l"]
+size = Vector2(32, 64)
+
+[node name="Chicken" type="CharacterBody2D" unique_id=276891806 groups=["Player"]]
+script = ExtResource("1_y58h6")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1995521348 groups=["Player"]]
+modulate = Color(0.4, 1, 1, 1)
+position = Vector2(3, 4)
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("1_ttsdn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1305833895]
+position = Vector2(0, 10)
+shape = SubResource("RectangleShape2D_ni72l")
