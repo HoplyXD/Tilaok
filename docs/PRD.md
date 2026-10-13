@@ -2,7 +2,7 @@
 
 **Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
-**Product owner:** Producer, name TBD. **Development leads:** Francis (lead developer) and Carlos (co-lead developer); both use AI-assisted programming. Registration status, capacity, individual task owners and review completion remain unrecorded. This document was prepared with disclosed AI assistance; it is not evidence of a completed game.
+**Product owner:** Producer, name TBD. **Development leads:** Francis (lead developer) and Carlos (co-lead developer); both use AI-assisted programming. **Human production roles:** Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets without AI generation. Registration status, capacity, audio backup, individual task owners and review completion remain unrecorded. This document was prepared with disclosed AI assistance; it is not evidence of a completed game.
 
 ## Contents
 
@@ -40,11 +40,11 @@ Requirements below have separate scope and design labels. **REQUIRED** is submis
 
 **Scope:** REQUIRED · **Design status:** UNKNOWN · **Owner role:** Producer (name TBD).
 
-**Expected behavior:** Assign primary and reviewer/backup for production/integration, programming, art/UI, audio, QA/balance and compliance/media. Francis and Carlos are the supplied development leads; individual task assignments, reviewer/backup, registration status and hours remain unknown. A person may cover multiple roles only after capacity review.
+**Expected behavior:** Assign primary and reviewer/backup for production/integration, programming, art/UI, audio, QA/balance and compliance/media. Francis and Carlos are the supplied development leads; Shanti handles UI design and audio; Jorge and Ivie handle game assets. Individual task assignments, reviewer/backup, registration status and hours remain unknown. A person may cover multiple roles only after capacity review.
 
 **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md). **P00 evidence — October 13, 2026:** Francis supplied current roles after the earlier private-roster record: Francis — lead developer; Carlos — co-lead developer; both use AI-assisted programming. Human-team art/asset production remains unassigned to individuals. No surnames, hours, registration status, coach details or completed review are claimed. P00-T01/T02 remain open because the required role/capacity and review evidence is incomplete; see [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness). Runtime checks are not applicable to this team-record blocker.
+**Source:** [PRODUCTION.md](PRODUCTION.md). **P00 evidence — October 13, 2026:** Francis supplied current roles after the earlier private-roster record: Francis — lead developer; Carlos — co-lead developer; both use AI-assisted programming; Shanti — UI design and game audio; Jorge and Ivie — maps, characters, obstacles, traps, effects and related game assets, created without AI generation. No surnames/legal identities, hours, registration status, coach details, audio backup or completed review are claimed. P00-T01/T02 remain open because the required role/capacity and review evidence is incomplete; see [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness). Runtime checks are not applicable to this team-record blocker.
 
 
 ### REQ-PROD-002 — Ratify the release manifest and document authority
@@ -1533,7 +1533,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 | Eight initial families | October 13 approved submission target; Producer must approve any later cut, Bula first review candidate. |
 | UI priority / tally | Title/results/Library/essential cues required; tally session-only Should; GDD/ROADMAP aligned in this task. |
 | Engine and equipment | PARTIAL, Integration/Producer: intended Godot 4.7.2 binary and target PC are identified; exact template compatibility, export setup, keyboard details, and physical controller inventory remain open. See P00 evidence in PRODUCTION.md/PLAYTEST.md. |
-| Staffing/time | Francis and Carlos are recorded as development leads. Other assignments, reviewer identities, registration status and capacity remain unknown; P00-T01/T02 remain open. |
+| Staffing/time | Francis/Carlos lead development; Shanti handles UI design and audio; Jorge/Ivie handle game maps and assets. Remaining assignments, reviewer identities, registration status and capacity remain unknown; P00-T01/T02 remain open. |
 | Final 2D style/font/music/cultural reviewer | Art/UI, Audio, Compliance: select/register/review before release assets; does not block geometric movement testing. |
 | Tulay vertical orientation | Conditional controller-support gate; horizontal approved lengths remain targeted. |
 | Wave numerical equality tolerance | PROTOTYPE—UNTESTED; Gameplay/QA: boundary/contact tests; no player-visible grace or changed rule implied. |

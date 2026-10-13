@@ -1,6 +1,6 @@
 # Tilaok! Production Plan
 
-**Status:** pre-production planning document with an implemented P02 movement/input diagnostic slice. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Individual human-team art/asset assignments remain unspecified. `ROADMAP.md` remains the scope and schedule source of truth.
+**Status:** pre-production planning document with an implemented P02 movement/input diagnostic slice. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
 
 ## Delivery principle
 
@@ -15,8 +15,10 @@ Fill remaining individual assignments and backups before allocating production w
 | Workstream | Primary owner | Backup/reviewer | Responsibilities |
 |---|---|---|---|
 | Development leadership and programming | **Francis — lead developer**; **Carlos — co-lead developer** | **TBD** | Direct programming with AI/LLMs as primary code generators; retain integration, review, testing and delivery responsibility. Individual task assignments and capacity are not recorded. |
-| Human-team art and assets | **Human team; individual assignments TBD** | **TBD** | 2D visual direction, chicken readability, stage, item/event art, menus, accessibility cues and asset provenance. |
-| Audio and other production | **Human team; individual assignments TBD** | **TBD** | Audio and other production work; no individual creator or assignment is inferred. |
+| UI design | **Shanti** | **TBD** | Game UI design and related visual work; human-created without AI asset generation. |
+| Game audio | **Shanti** | **TBD** | Human-created game audio; no AI-generated audio. |
+| Game maps and assets | **Jorge and Ivie** | **TBD** | Human-created maps, characters, obstacles, traps, effects and related game assets; no AI asset generation. |
+| Other production | **Human team; individual assignments TBD** | **TBD** | Other production work; no individual creator or assignment is inferred. |
 | QA and balance | **TBD** | **TBD** | Test matrix, local multiplayer sessions, defect log, performance notes, balance evidence. |
 | Compliance and media | **TBD** | **TBD** | Forms, AI/asset register, cultural review, synopsis, trailer, demo video, and screenshots. |
 
@@ -28,7 +30,7 @@ Fill remaining individual assignments and backups before allocating production w
 
 ### Team ownership and capacity
 
-Historical record — October 13, 2026, before Francis supplied current roles: the user directed that assignments and available hours be handled privately, so the then-current TBD role sheet and the statement that names were not recorded were accurate at that time. Current roles supplied afterward are shown in the role sheet above. No surnames, membership/registration status, coach details, individual art/audio assignments, hours, reviewer identities or capacity are inferred. P00-T01 and P00-T02 remain open.
+Historical record — October 13, 2026, before Francis supplied current roles: the user directed that assignments and available hours be handled privately, so the then-current TBD role sheet and the statement that names were not recorded were accurate at that time. Current roles supplied afterward are shown in the role sheet above. No surnames or legal identities, membership/registration status, coach details, audio backup/review arrangements, hours, reviewer identities or capacity are inferred. At the earlier snapshot, no audio assignment had been supplied; Shanti's current audio role is recorded above. P00-T01 and P00-T02 remain open.
 
 ### Authority and release manifest
 
@@ -62,7 +64,7 @@ The user identified the current PC as the development/demo target. The following
 
 The historical P00 import results above remain unchanged. New P01 checks on the working project are recorded separately below; they do not retroactively change the P00 inspection record.
 
-**P00 exit:** not satisfied. Team ownership/capacity evidence is intentionally absent per user direction; P00-T06 also awaits its named owner and physical-device verification. Matching templates, working-project import, and a local export/runtime smoke check are now evidenced under P01. Keyboard details, physical controller inventory/testing, independent review and performance remain open. See [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness) for task-level status and blockers.
+**P00 exit:** not satisfied. Some current development and production roles are now recorded, but the complete ownership/capacity evidence (including registration, hours, review assignments and remaining workstream coverage) is incomplete. P00-T06 also awaits its named owner and physical-device verification. Matching templates, working-project import, and a local export/runtime smoke check are now evidenced under P01. Keyboard details, physical controller inventory/testing, independent review and performance remain open. See [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness) for task-level status and blockers.
 
 ### P01 foundation and export evidence
 
@@ -172,7 +174,7 @@ Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/rep
 
 ## Team and integration defaults
 
-**U — UNKNOWN FACT:** Francis and Carlos are the supplied development leads; individual task assignments, available hours and registration status remain unknown. Human-team art/asset work is acknowledged without individual assignments. Retain the workstreams above; combine responsibilities only where capacity permits. QA/review should involve someone other than the feature author where team size allows. Do not invent team members. Each active feature needs an assigned owner and an explicit review responsibility; record actual review only when performed.
+**U — UNKNOWN FACT:** Francis and Carlos are the supplied development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Individual task assignments, available hours, registration status and review/backup assignments remain unknown. Retain the workstreams above; combine responsibilities only where capacity permits. QA/review should involve someone other than the feature author where team size allows. Do not invent team members. Each active feature needs an assigned owner and an explicit review responsibility; record actual review only when performed.
 
 **P:** choose one gate and acceptance scenario at the start of a session. Use small feature branches and review behavior/provenance before integration. Produce a labeled daily build once runnable systems exist; record engine, build, profile, seed and blockers. A playable build launches on the selected PC, accepts its claimed devices, completes its stated loop, explains controls/results and restarts cleanly. A skeleton/import/document is never a playable build.
 

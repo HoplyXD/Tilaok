@@ -77,7 +77,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **Documentation/assets:** Keep linked source contracts, enabled-content manifest, test evidence and relevant asset/disclosure records current; original assets or documented permitted sources only.
 
-**Blocking decisions / conditional scope:** Francis and Carlos are recorded as development leads; other assignments, reviewer identities, registration status and capacity remain unknown. Producer and integration-owner assignments are not confirmed. Matching Godot 4.7.2 templates and an initial Windows export are verified; keyboard details and physical-controller inventory/testing remain unresolved. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
+**Blocking decisions / conditional scope:** Francis and Carlos are recorded as development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Remaining workstream assignments, reviewer identities, registration status and capacity remain unknown. Producer and integration-owner assignments are not confirmed. Matching Godot 4.7.2 templates and an initial Windows export are verified; keyboard details and physical-controller inventory/testing remain unresolved. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
 
 **Exit criteria:** Owners, scope manifest and confirmed toolchain/device records unblock their respective workstreams.
 
@@ -91,9 +91,9 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 - [ ] **Record team roles, reviewers and available hours**
   - **Status:** BLOCKED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name not recorded).
   - **Requirements:** [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity). **Dependencies:** None.
-  - **Work:** Record primary and reviewer/backup for production/integration, programming, art/UI, audio, QA/balance and compliance/media, plus per-person capacity through October 25 without double-counting. Historical note: on October 13 the user said assignments and hours would be handled privately; the then-current TBD roster record was accurate. Francis later supplied current roles (Francis, lead developer; Carlos, co-lead developer; both use AI-assisted programming). Individual assignments, reviewers, registration status and hours remain unknown; human-team art/asset assignments remain unspecified.
+  - **Work:** Record primary and reviewer/backup for production/integration, programming, art/UI, audio, QA/balance and compliance/media, plus per-person capacity through October 25 without double-counting. Historical note: on October 13 the user said assignments and hours would be handled privately; the then-current TBD roster record was accurate. Francis later supplied current roles: Francis (lead developer) and Carlos (co-lead developer), both using AI-assisted programming; Shanti (UI design and game audio); Jorge and Ivie (maps, characters, obstacles, traps, effects and related game assets, created without AI generation). Individual review assignments, registration status and hours remain unknown.
   - **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
-  - **Evidence:** Current development leads are recorded in `PRODUCTION.md`; no complete role/capacity sheet, registration confirmation, individual assignment or reviewer evidence is available. **Procedure / expected / actual:** compared current supplied lead roles with the complete acceptance requirement; expected registered members, role coverage, reviewer arrangement and hours, actual only two development-lead roles are known. **Verification result:** COULD-NOT-RUN — P00 ownership/capacity gate remains open. **Reviewer:** not recorded. **Next action:** complete remaining assignments/capacity and verify them under team direction.
+  - **Evidence:** Current development, UI, audio and game-asset roles are recorded in `PRODUCTION.md`; no complete role/capacity sheet, registration confirmation or reviewer evidence is available. **Procedure / expected / actual:** compared current supplied roles with the complete acceptance requirement; expected registered members, full role coverage, reviewer arrangement and hours, actual development leads, UI/audio and game-asset responsibilities are known but registration, remaining role coverage, review assignments and capacity are not. **Verification result:** COULD-NOT-RUN — P00 ownership/capacity gate remains open. **Reviewer:** not recorded. **Next action:** complete remaining assignments/capacity and verify them under team direction.
 
 
 #### P00-T02
@@ -103,7 +103,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
   - **Requirements:** [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity). **Dependencies:** [P00-T01](#p00-t01).
   - **Work:** Independently verify registered membership, role coverage, reviewer arrangement, date range, and non-duplicated person-level hours from a confirmed role sheet.
   - **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
-  - **Evidence:** Current development leads are recorded, but T01 has no complete repository role/capacity artifact. **Procedure / expected / actual:** dependency and available evidence checked; expected a dated role/capacity sheet and registration confirmation, actual two lead roles are known but registration, other assignments and capacity are not. **Verification result:** COULD-NOT-RUN — complete ownership/capacity evidence remains outstanding. **Reviewer:** not recorded. **Next action:** complete and verify remaining team facts under team direction.
+  - **Evidence:** Current development, UI, audio and game-asset roles are recorded, but T01 has no complete repository role/capacity artifact. **Procedure / expected / actual:** dependency and available evidence checked; expected a dated role/capacity sheet and registration confirmation, actual those role assignments are known but registration, reviewer arrangement and capacity are not. **Verification result:** COULD-NOT-RUN — complete ownership/capacity evidence remains outstanding. **Reviewer:** not recorded. **Next action:** complete and verify remaining team facts under team direction.
 
 
 #### P00-T03
@@ -4672,7 +4672,7 @@ All requirements have both implementation/non-code deliverables and verification
 
 ## Documentation delivery and implementation boundary
 
-The original PRD/tracker documentation could be complete while gameplay tasks remained open. This policy correction changes documentation and dependency wording; it does not complete gameplay tasks or P00 ownership/capacity gates. Francis and Carlos are recorded as development leads; registration, remaining assignments/capacity and some physical-device facts remain unknown. Those gaps do not impose a project-wide AI-use approval gate. The P02 diagnostic movement/input room already exists; future implementation follows approved scope and genuine technical dependencies.
+The original PRD/tracker documentation could be complete while gameplay tasks remained open. This policy correction changes documentation and dependency wording; it does not complete gameplay tasks or P00 ownership/capacity gates. Francis and Carlos are recorded as development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Registration, remaining assignments/capacity and some physical-device facts remain unknown. Those gaps do not impose a project-wide AI-use approval gate. The P02 diagnostic movement/input room already exists; future implementation follows approved scope and genuine technical dependencies.
 
 Documentation verification results are recorded below and summarized in `AI_USAGE.md`. A complete match is not implemented; P01/P02 harnesses and diagnostic rooms have separate evidence above. This documentation correction ran no gameplay tests. Official form/channel/eligibility rechecks remain submission tasks, not claims that current organizer instructions were independently verified here.
 
@@ -4701,7 +4701,7 @@ These checks cover this policy and tracker correction only. Documentation verifi
 | Check | Result | Evidence / limit |
 |---|---|---|
 | Full policy contradiction search | PASSED | Searched all 19 project-owned Markdown files for team-written/team-authored wording, authorship, exception/permission, ownership, eligibility and Form 03 terms. Remaining programming-authorship mentions are current provenance safeguards, scoped P01/P02 history, external §7/§8 notes, genuine human-review/ownership requirements, or unrelated gameplay uses of “exception.” |
-| Standing workflow consistency | PASSED | AGENTS.md and CLAUDE.md contain the canonical operational policy. Francis/Carlos roles and AI-assisted programming are recorded; AI_USAGE identifies generated P01/P02 programming and does not select/sign Form 03 extent. |
+| Standing workflow consistency | PASSED | AGENTS.md and CLAUDE.md contain the canonical operational policy. Francis/Carlos development roles and AI-assisted programming are recorded; AI_USAGE identifies generated P01/P02 programming and does not select/sign Form 03 extent. |
 | Competition-rule separation | PASSED | COMPETITION.md retains the local §7/§8 summary, labels the old internal interpretation as superseded, and makes no organizer-approval or eligibility claim. The source PDF/stable official URL is unavailable in this checkout, so the rule text was not independently rechecked here. |
 | Markdown links and anchors | PASSED | Validated local file targets and anchors across all 19 project-owned Markdown files. |
 | Requirement/task IDs and counts | PASSED | 116 unique requirements and 393 unique task IDs; task scopes count Required 207, Should 24, Conditional 4, Expansion 158. Checkboxes remain 17/393 (P00 0/6, P01 9/10, P02 8/14); this correction checked no gameplay or review item. |
@@ -4709,3 +4709,15 @@ These checks cover this policy and tracker correction only. Documentation verifi
 | Requested policy checks | PASSED | AGENTS and CLAUDE permit approved core-gameplay programming without another phase exception; current names/roles, AI disclosure, external-rule uncertainty, human review, synthetic-vs-physical limits and P02 implementation status are explicit. |
 | Whitespace and change scope | PASSED | `git diff --check` passed. Final review found Markdown-only edits; no gameplay source, assets, engine configuration or unrelated files changed. |
 | Gameplay/runtime verification | COULD-NOT-RUN | No gameplay tests were run for this documentation correction. Existing P02 synthetic evidence does not substitute for open physical controller, keyboard-rollover, reconnect or exported interactive-input checks. |
+
+## Documentation verification — production role clarification (October 13, 2026)
+
+These checks cover the user-supplied UI, audio and game-asset role clarification. They do not change gameplay scope or complete P00.
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Current roles and names | PASSED | PRODUCTION.md, AI_USAGE.md, PRD.md and P00 records list Francis/Carlos as development leads, Shanti for UI design and game audio, and Jorge/Ivie for maps, characters, obstacles, traps, effects and related game assets. No surnames or legal identities were inferred. |
+| Human asset/audio production | PASSED | Current assignments specify human-created UI, audio and game assets without AI generation. No asset completion or human review is claimed. |
+| P00 ownership/capacity status | PASSED | P00-T01/T02 remain unchecked and P00 remains 0/6; registration, capacity, reviewer/backups and remaining workstream coverage remain incomplete. |
+| Tracker scope and gameplay state | PASSED | No task IDs, dependencies or checkboxes were changed; total remains 17/393 checked (P01 9/10, P02 8/14). |
+| Gameplay/runtime verification | COULD-NOT-RUN | This was a documentation-only role update; no game or asset production was performed or tested. |

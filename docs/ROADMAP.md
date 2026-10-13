@@ -31,6 +31,8 @@ The repository now contains P01 foundations and a P02 diagnostic input/movement 
 | Oct 24 | Record trailer + demo video, fill forms, write synopsis |
 | Oct 25 | Submit |
 
+**Role update — October 13, 2026:** Francis and Carlos lead development; Shanti handles UI design and game audio; Jorge and Ivie handle maps and game assets without AI generation. See `PRODUCTION.md` for the role sheet. Registration, reviewer/backup assignments, capacity and remaining workstream coverage remain open; these role assignments do not close P00.
+
 ## PRD and tracker alignment
 
 [PRD](PRD.md) consolidates the approved product and acceptance; [PHASETASK](PHASETASK.md) records dependencies, verification and actual work. All eight families remain targeted until an explicit scope decision changes that baseline; no automatic cut occurs if dates slip. Prototype defaults remain untested. Title/results/Library and essential cues are required; optional Should work needs an include/defer decision before October 21 freeze. The schedule is high risk from a skeleton and unknown team capacity, not proof that all gates fit. Forms, synopsis, licences and media planning begin alongside early implementation; final footage waits for a tested build.
