@@ -75,71 +75,73 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **Documentation/assets:** Keep linked source contracts, enabled-content manifest, test evidence and relevant asset/disclosure records current; original assets or documented permitted sources only.
 
-**Blocking decisions / conditional scope:** Named owner and prerequisite evidence; engine/devices where relevant. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
+**Blocking decisions / conditional scope:** The user is handling team assignment/capacity privately; no team facts are stored. Producer and integration-owner identities are therefore not recorded. Exact export-template compatibility, export setup, keyboard details, and physical controller inventory/testing remain unresolved. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
 
 **Exit criteria:** Owners, scope manifest and confirmed toolchain/device records unblock their respective workstreams.
 
-**Evidence required:** Documentation baseline, role sheet, tool versions, device inventory and explicit unknowns.
+**Evidence required:** Documentation baseline, role-sheet disposition, tool versions, observed/reported device inventory, actual import/export outputs and explicit unknowns. **P00 exit: NOT SATISFIED.** All six task checkboxes remain open; phase summary counts are unchanged.
+
+**Evidence assessment:** October 13, 2026, 13:01 Asia/Manila; source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f` before P00 edits. This timestamp/revision applies to the six task records below; import commands and exact run times are preserved in their linked logs.
 
 
 #### P00-T01
 
 - [ ] **Record team roles, reviewers and available hours**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name TBD).
+  - **Status:** BLOCKED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name not recorded).
   - **Requirements:** [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity). **Dependencies:** None.
-  - **Work:** Assign primary and reviewer/backup for production/integration, team-authored gameplay, art/UI, audio, QA/balance and compliance/media. Names and hours are unknown. A person may cover multiple roles only after capacity review.
+  - **Work:** Record primary and reviewer/backup for production/integration, team-authored gameplay, art/UI, audio, QA/balance and compliance/media, plus per-person capacity through October 25 without double-counting. The user directed on October 13 that they will handle the team privately and that names/hours are not to be documented in the repository. The existing TBD role-sheet template is preserved.
   - **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** User direction recorded in `PRODUCTION.md`; no roster, registration, owner, reviewer, or hour data was supplied or added. **Procedure / expected / actual:** reviewed the existing role sheet and applied the user's privacy direction; expected confirmed assignments/capacity, actual no repository record by request. **Verification result:** COULD-NOT-RUN — team facts remain privately managed and are intentionally absent. **Reviewer:** not recorded. **Next action:** user completes team assignment/capacity work privately; no repository evidence is requested by this task.
 
 
 #### P00-T02
 
 - [ ] **Verify confirm registered owners and available capacity**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Producer (name TBD).
+  - **Status:** BLOCKED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Producer (name not recorded).
   - **Requirements:** [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity). **Dependencies:** [P00-T01](#p00-t01).
-  - **Work:** Record the procedure, expected and actual result, and review evidence. A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
+  - **Work:** Independently verify registered membership, role coverage, reviewer arrangement, date range, and non-duplicated person-level hours from a confirmed role sheet.
   - **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** T01 has no repository role/capacity artifact by user direction. **Procedure / expected / actual:** dependency and available evidence checked; expected a dated role/capacity sheet and registration confirmation, actual neither is available here. **Verification result:** COULD-NOT-RUN — dependent team facts are privately managed. **Reviewer:** not recorded. **Next action:** no repository verification until the user requests team facts be documented.
 
 
 #### P00-T03
 
 - [ ] **Record the reconciled authority and approved release baseline**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name TBD).
+  - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name not recorded).
   - **Requirements:** [REQ-PROD-002](PRD.md#req-prod-002--ratify-the-release-manifest-and-document-authority). **Dependencies:** None.
-  - **Work:** Use GDD for gameplay, specialized specifications for consistent details, prototype defaults for untested starting points, ROADMAP for scope/schedule, PRD for consolidation and PHASETASK for execution evidence. October 13 approval targets all eight initial families and applicable approved variants; cuts need an explicit decision.
+  - **Work:** Reconcile the authority chain and record the existing October 13 approved planning target: all eight initial families and applicable approved variants; preserve Required/Should/Conditional/Expansion dispositions and inactive R1–R4. `PRODUCTION.md` now records the source revision, existing approval statements, scope categories, implementation/verification boundary, and no-new-ratification caveat. No family cut or backlog promotion is made.
   - **Acceptance:** Producer records required/Should/conditional/expansion dispositions, eight-family target and inactive R1–R4; no automatic scope cut or promotion.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P00 baseline record](PRODUCTION.md#p00-baseline-record), GDD §12, PRD v1.0 §§1/12, ROADMAP priorities and item gates; source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. **Procedure / expected / actual:** cross-checked scope dispositions and authority; expected the recorded eight-family target, variants, inactive proposals, and explicit release categories; actual these agree across the cited sources and are recorded in PRODUCTION. **Verification result:** COULD-NOT-RUN for producer confirmation — the existing documents call the planning scope approved but do not identify a producer/approver; no new ratification is claimed. **Next action:** producer confirmation/provenance remains outstanding.
 
 
 #### P00-T04
 
 - [ ] **Verify ratify the release manifest and document authority**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Producer (name TBD).
+  - **Status:** BLOCKED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Producer (name not recorded).
   - **Requirements:** [REQ-PROD-002](PRD.md#req-prod-002--ratify-the-release-manifest-and-document-authority). **Dependencies:** [P00-T03](#p00-t03).
-  - **Work:** Record the procedure, expected and actual result, and review evidence. Producer records required/Should/conditional/expansion dispositions, eight-family target and inactive R1–R4; no automatic scope cut or promotion.
+  - **Work:** Verify the baseline against GDD, specialized specifications, PROTOTYPE_DEFAULTS, ROADMAP, PRD, and PHASETASK. Confirm item-family/variant coverage, scope categories, inactive proposals, and release-target versus implementation/runtime state; keep unresolved approval provenance explicit.
   - **Acceptance:** Producer records required/Should/conditional/expansion dispositions, eight-family target and inactive R1–R4; no automatic scope cut or promotion.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** Cross-document check recorded in the [P00 baseline record](PRODUCTION.md#p00-baseline-record); source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. **Procedure / expected / actual:** compared GDD, ITEMS, STAGE_AND_PLACEMENT, UI_TUTORIAL, PROTOTYPE_DEFAULTS, ROADMAP, PRD, and PHASETASK; expected one consistent authority/scope baseline without activating R1–R4 or implying implementation; actual no scope contradiction was found for the recorded manifest, and all game scope remains unimplemented. **Verification result:** COULD-NOT-RUN for final ratification verification — producer identity/confirmation is not recorded, so the documented baseline cannot be represented as newly ratified. **Reviewer:** not recorded. **Next action:** producer confirms the existing baseline or records an explicit decision; no scope change is inferred.
 
 
 #### P00-T05
 
 - [ ] **Confirm engine, templates and physical test inventory**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name TBD).
+  - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Integration/Producer (person not recorded).
   - **Requirements:** [REQ-PROD-003](PRD.md#req-prod-003--resolve-toolchain-and-hardware-facts). **Dependencies:** None.
-  - **Work:** Target remains Godot 4.7, but inspected CLI is 4.6.3 and gdlint/gdformat are 4.5.0. Confirm intended binary, matching export templates, target OS/CPU/GPU/RAM/display, keyboard layout and controller models/connections. Any version change needs a separately recorded decision.
+  - **Work:** Inventory Godot binaries, templates, lint/format tools, project/export setup, target PC, keyboard, and physical controller inventory. Do not infer device coverage from OS enumeration.
   - **Acceptance:** Named integration owner records executable/version/template paths and hardware/device inventory; target import and empty export checks either pass with logs or remain blocked with a reason.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P00 inventory](PRODUCTION.md#p00-baseline-record); [fresh target import](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log), [working-project editor initialization](evidence/p00-import-godot-4.7.2-2026-10-13.log), [cached import repeat](evidence/p00-import-only-godot-4.7.2-2026-10-13.log); source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. **Procedure / expected / actual:** inspected configured executable paths, `--version` outputs, template directories/version file, project settings/files, Windows system/device enumeration; expected target Godot 4.7.2, matching templates, selected-PC/device details, and export prerequisites. Actual: Godot 4.7.2 console/GUI are in `D:\Downloads`; PATH wrapper is 4.6.3; another executable is 4.5.1; templates report `4.7.stable`/`4.5.1.stable`; Godot documents patch-specific template IDs, so the installed 4.7 templates do not match the 4.7.2 editor; project declares 4.7/GL Compatibility; no export preset, entry scene, gameplay scenes/scripts; user confirms current PC target and its observed specs are recorded; Windows exposes generic keyboard devices but no controller, keyboard layout/model and team test inventory unknown. **Verification result:** import passed on an isolated copy; matching-template export and physical inventory verification are blocked. **Next action:** install matching 4.7.2 templates under the team's toolchain process, then an integration owner confirms physical test devices and export prerequisites.
 
 
 #### P00-T06
 
 - [ ] **Verify resolve toolchain and hardware facts**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Producer (name TBD).
+  - **Status:** BLOCKED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Integration/Producer (person not recorded).
   - **Requirements:** [REQ-PROD-003](PRD.md#req-prod-003--resolve-toolchain-and-hardware-facts). **Dependencies:** [P00-T05](#p00-t05).
-  - **Work:** Record the procedure, expected and actual result, and review evidence. Named integration owner records executable/version/template paths and hardware/device inventory; target import and empty export checks either pass with logs or remain blocked with a reason.
+  - **Work:** Verify toolchain and device inventory against the intended 4.7.2 target, actual templates/export setup, and named target PC; preserve the distinction between import, export, runtime, physical-input, and performance evidence.
   - **Acceptance:** Named integration owner records executable/version/template paths and hardware/device inventory; target import and empty export checks either pass with logs or remain blocked with a reason.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P00 inventory](PRODUCTION.md#p00-baseline-record), [PLAYTEST P00 checks](PLAYTEST.md#p00-production-readiness-evidence), [fresh target import](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log), and [editor initialization](evidence/p00-import-godot-4.7.2-2026-10-13.log); source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. **Procedure / expected / actual:** ran a fresh Godot 4.7.2 `--import --quit` against an isolated copy and a separate editor initialization against the working project; inspected available template/export/device facts. Expected a clean target import and export/device verification or precise blockers. Actual fresh import passed with exit 0 and no warnings/errors; the working-project editor invocation exited 0 but logged an engine ERROR and shutdown warning; installed templates are versioned `4.7.stable`, which does not match Godot's patch-specific `4.7.2.stable` identifier; export was not attempted because no preset/entry scene exists and matching templates are absent; no controller was enumerated and no physical input test occurred. **Verification result:** COULD-NOT-RUN for complete P00 verification — export/device/independent review evidence is missing; the import pass is limited to the copied skeleton. **Next action:** install matching 4.7.2 templates under the team's toolchain process, then complete export and physical-device checks when their prerequisites are available.
 
 
 ## P01 — Project foundations

@@ -209,19 +209,19 @@ Additional scope contradictions: PRODUCTION originally placed stacking before Ka
 
 | When | Decisions/defaults | What remains open |
 |---|---|---|
-| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | U: intended engine binary, gameplay owner, available test devices |
-| Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: target PC and tested baseline device combination |
+| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | U: gameplay owner and available physical test devices; intended Godot 4.7.2 binary is identified, but installed 4.7.stable templates mismatch its 4.7.2.stable version identifier |
+| Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: physical keyboard/controller inventory and tested baseline device combination; current PC target is selected and observed specs are in PRODUCTION.md |
 | Before relevant event | Current contact/command/support contracts, independent-mode gates; explicit R1–R4 decisions before any replacement behavior | U: owner/time for event review and physical tests |
 | Tune after playing | Movement feel, gaps, sensor dimensions, deadzones, egg weights, timers, force/caps and readability; one related parameter group at a time | All balance/feel confidence remains low |
 | Defer to production art | Final sprite scale/style, font choice, animation, sounds and cultural copy review | U: creators/licences and reviewer names |
 
 Essential factual questions, recorded rather than blocking this handoff:
 
-1. Who are the registered gameplay/integration owners, and how many hours can they spend before October 21?
-2. What target PC/display, keyboard model/layout and actual controllers/connections are available?
-3. Where is the intended Godot 4.7 binary with matching export templates, or does the team intend a separately reviewed version decision?
+1. Who are the registered gameplay/integration owners, and how many hours can they spend before October 21? The user will handle assignments privately; P00 does not record them.
+2. The user selected the current PC as target; what keyboard model/layout and physical controllers/connections can the team test?
+3. The intended Godot 4.7.2 binary is in `D:\Downloads`; obtain matching 4.7.2 templates before any export check. The installed `4.7.stable` templates have a different version identifier. No engine/version change or template installation was part of the P00 baseline.
 
-Equipment and names remain TBD; do not infer them from installed tools. No final font/art decision is needed before graybox tests. R1–R4 are design proposals, not unknown factual questions.
+Team names/registration/capacity and physical device details remain unknown; do not infer them from installed tools. The target PC and local machine specifications are recorded in `PRODUCTION.md`; this is not performance evidence. No final font/art decision is needed before graybox tests. R1–R4 are design proposals, not unknown factual questions.
 
 ## 7. Documentation-only delivery boundary
 

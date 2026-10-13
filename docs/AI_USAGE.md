@@ -26,6 +26,14 @@ OpenAI Codex inspected local and merged source documents plus external-repositor
 
 This is documentation synthesis, task decomposition and verification assistance. No game mechanics code, scene, production asset, prompt file or gameplay test was generated/executed. Temporary document assembly/validation scripts are tooling outside the repository, not game code. Team-authored core work remains pending. The team determines Form 03 extent across all assistance and retains this conversation/history. No commit or push is authorized by document approval alone.
 
+## P00 production-readiness work — October 13, 2026
+
+OpenAI Codex fetched the current remote baseline and used a new isolated `feat/p00-production-readiness` worktree at source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. It inspected the P00 requirements, current production/toolchain records, project settings, local executable/template inventory, and observable target-PC/device information. Per the user's direction, no team names, registration details, assignments, reviewer identities, or capacity were recorded; P00-T01/T02 remain open.
+
+Codex recorded the existing release-baseline evidence without creating a new ratification, documented local toolchain/PC observations and their limits, and ran a Godot 4.7.2 headless import of an isolated copy of the project skeleton. That import exited 0 with no warnings/errors. A separate working-project editor initialization exited 0 but logged an engine error and a shutdown-thread warning; this was recorded separately. No gameplay code, scene, asset, software installation, engine setting, export fixture, physical-device test, gameplay test, or performance measurement was produced. No export was attempted because the project has no export preset or entry scene and exact template compatibility is unconfirmed. Full console evidence is in `docs/evidence/p00-*.log`; task statuses and limitations are in `docs/PHASETASK.md` and `docs/PLAYTEST.md`.
+
+This is documentation, local inventory, and limited toolchain-verification assistance. It is not a signed Form 03; the team must choose the official extent category based on total project-wide AI use.
+
 
 ### Verification of this documentation delivery
 
