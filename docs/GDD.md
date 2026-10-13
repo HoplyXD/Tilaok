@@ -1,9 +1,9 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-11_
+_Last updated: 2026-10-13 — approved scope/wording reconciliation and P00 target-PC confirmation; gameplay values unchanged._
 
 ## 1. Pitch
-A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play. Most rounds are a race to the flag. Every 4th round, a **traditional Filipino game event** takes over the same stage and changes the rules entirely.
+A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
 
 **One-liner:** Build the level, survive the level, and every few rounds a laro ng lahi takes over.
 
@@ -12,35 +12,55 @@ All characters are chickens. Instead of the traditional sabong where roosters fi
 
 ## 3. Core Loop (every round)
 1. **Pugad:** a nest appears holding a random set of eggs (placeholder: players + 2); each player picks one and it hatches into an item.
-   - Each egg is see-through with its **item visible inside**, so players pick on purpose. Grabbing an egg cracks it open and the item pops out into your pointer.
+   - Each egg is see-through with its **item visible inside**, so players pick on purpose. The item/size variant plays a short looping visual animation, but shows no name or description during the party flow. Grabbing an egg cracks it open and the item pops out into your pointer; names, descriptions, controls, and event rules belong in the Library.
    - Picking is **simultaneous**: first to grab an egg gets it. ~8s to pick; leftover eggs are assigned at random.
 2. **Place:** players place their item anywhere on the shared stage.
-   - Placing is **simultaneous**, with grid snap; you can't place on a player or the flag.
+   - Placing is **simultaneous**, with grid snap; you can't place on a player or protected goal geometry.
    - Placement controls: **move**, **rotate** (one button) and **confirm** (one button). A ghost shows green/red for a valid/invalid spot.
    - ~15s to place. If time runs out, the item auto-places at the pointer if the spot is valid, otherwise it is discarded.
-   - Nothing is active during Place. When Play begins, every placed item resets to its starting position/state.
+   - Nothing is active during Place. The sole exception is the one-shot **Walis Cleanup** edit when confirmed; it is a construction action, never a Play-phase hazard. When Play begins, placed items reset to their defined starting position/state.
    - Pointers are visible to everyone, but nothing announces a placed Barya, so it can be tucked into the clutter.
 3. **Play:** either
-   - a **Race Round**: run from start to the flag, or
-   - an **Event Round**: play the active laro ng lahi on the same stage.
+   - a **Main Challenge**: Karera (run from start to the flag) or an active laro ng lahi event; and
+   - at most one compatible **Twist** event layered onto that main challenge.
 
 The stage **persists and grows** across rounds. Pugad and building continue during event rounds too, so traps become terrain for events.
 
-**Starting stage:** a hand-built base layout with a spawn on the left, a flag on the right, a solid floor and a few platforms, so round 1 already has something to run across. Base stage pieces, the spawn and the flag are indestructible. (Exact layout to be designed and playtested.)
+**Starting stage:** a hand-built base layout with a spawn on the left, a flag on the right, a solid floor and a few platforms, so round 1 already has something to run across. Base stage pieces, the spawn and the flag are indestructible. Raised player-built geometry is the intended way to prepare for Kangaroo's Rising wave; a team that does not build useful elevation can lose to it. (Exact layout to be designed and playtested.)
 
-**Round end (race rounds):** dying puts you out for the rest of the round (you can spectate and return next round). The round ends when every player has either reached the flag or died, so there can be one winner, several, or none. Once the first player reaches the flag, a ~15s countdown starts to prevent stalling. A hard cap of ~60s also ends the round; anyone not at the flag by then counts as failed. Dead players get a **cheer button** that triggers crowd reactions.
+**Construction rules (design contract):** the stage uses a logical tile grid whose pixel size is set from the team-authored player collision dimensions when the project is created. Validate simultaneous edits against a shared phase snapshot. If newly placed solid footprints conflict, reject the entire conflicting set rather than giving an advantage based on callback order. Intentional solid/trigger intersections are allowed only when the trigger remains readable and its danger region is shown. Walis Cleanup targets only removable player-built items in its preview; cleanup targets are resolved as one edit against the phase snapshot, then remaining placements are validated and committed as one set. It cannot affect base geometry, spawn safety, the goal platform/flag zone, or a hidden event goal zone. Removal persists across rounds. A removed support does not cause crushing: unsupported moving items return to their defined safe start or are removed according to their item contract. Layout solvability is not guaranteed.
 
-**Event cadence:** every **4th round** (4, 8, 12). The next event is **announced during the Pugad phase of the round before**, so players can build with it in mind. Until a second event exists, every event round is Lagsanay.
+Placement footprints, mover sweeps, projectile lanes and effect radii are distinct regions. Every new item defines rotation, bounding behavior and protected clearance. Moving hazards have bounded visible paths, reset to a deterministic direction at Play start, and remain inactive through Place. Use a short configurable activation grace so resets do not create unavoidable first-frame hits. Solids block Tsinelas Launcher projectiles. Item parameters are centralized data, not scattered constants. Exact pixel dimensions remain dependent on the team-created player and stage.
+
+**Round end (Karera):** dying puts you out for the rest of the round (you can spectate and return next round). The round ends when every player has either reached the flag or died, so there can be one winner, several, or none. Once the first player reaches the flag, a ~15s countdown starts to prevent stalling. A hard cap of ~60s also ends the round; anyone not at the flag by then counts as failed. Dead players get a **cheer button** that triggers crowd reactions.
+
+**Event cadence and stacking:** every round has exactly one Main Challenge. **Karera** is the default flag-race Main Challenge and the backbone of the match. Round 1 is always Karera so every match starts with the core build-and-race loop. Rounds 4, 8, and 12 are always standalone Lagsanay Main Challenges. On every other round after Round 1, select the Main Challenge from the active pool: Karera 70%, Lagsanay 20%, Kangaroo 10%. This gives Karera the clear majority while allowing standalone Lagsanay and Kangaroo rounds. The tutorial may temporarily override this schedule only for its guided first Karera.
+
+The next round's Main Challenge and any Twist are locked and announced during the preceding Pugad phase, so players can build for both. A Twist is a second, compatible event running at the same time as the Main Challenge. It is a core feature, not a post-launch add-on. There is never more than one Twist and a challenge cannot stack with itself. Only non-guaranteed rounds roll for a Twist: the chance is 0% in rounds 1–4, 10% in rounds 5–7, 20% in rounds 8–10, and 30% in rounds 11–12. Sudden Death never uses a Twist. A failed roll means a normal single-challenge round.
 
 ## 4. Events (Laro ng Lahi)
 Each event is its own mini game mode with its own win condition, played on the current stage. Placed traps stay active and can still kill. The flag is hidden in event rounds (its platform stays).
 
-**"Alam mo ba?" card:** before each event, a short card explains the real traditional game (what it is, where it's from, how it's played in real life) so the game communicates the theme, not just uses it.
+**"Alam mo ba?" card (Should, optional):** when included, before each event, a short card explains the real traditional game (what it is, where it's from, how it's played in real life) so the game communicates the theme, not just uses it.
+
+### Event stacks (core)
+
+The Main Challenge alone determines the round's end condition and scoring family. A Twist adds pressure and can eliminate players, but never creates a second score table. Objective Main Challenges use Tapos/Una/Bayani/Bawi and race-only Barya where applicable; elimination Main Challenges use Lagsanay placement scoring and Bawi. Patibong still belongs only to the direct placed hazard that eliminates a player. A taya timeout or Kangaroo command failure is an event elimination, not a Patibong.
+
+The first compatible stacks are:
+
+| Main Challenge | Twist | Combined rules |
+|---|---|---|
+| **Karera** | **Lagsanay** | The flag remains active while Bomb-Taya runs. Player bodies stay pass-through as in a normal race, but the tag sensor is active. A finisher becomes secured: they are no longer a taya/pass target and are immune to remaining hazards. If the current taya reaches the flag, they become secured and taya transfers immediately to a random unfinished live player; if none remains, the round resolves. The race ends when all players finish or are eliminated. Use race scoring only, including its too-easy/too-hard rule and Barya; Lagsanay placement points do not apply. |
+| **Karera** | **Kangaroo** | The flag remains active while Kangaroo commands run. A failed command adds a Kangaroo failure marker; the third marker eliminates that player. A finisher becomes secured and no longer receives commands or hazard effects. The race ends when all players finish or are eliminated. Use race scoring only, including its too-easy/too-hard rule and Barya; Kangaroo failures never create a second score table. |
+| **Kangaroo** | **Lagsanay** | Kangaroo remains the Main Challenge: its command cadence and three-failure elimination rule continue while Bomb-Taya passes, its timer runs, and its contact sensor remains active. Either a third Kangaroo failure, a taya timeout, or a trap can eliminate a player. The last survivor wins. Use Lagsanay placement scoring only; neither event grants an additional score table. |
+
+Only the combinations in this table are enabled initially. A new stack needs an explicit compatibility row that defines input, collision, terminal outcome, scoring family, player state after completion, and presentation before it can enter the Twist pool. The round-announcement UI must show the Main Challenge first and the Twist below it, for example: **KARERA** / **TWIST: BOMB-TAYA**.
 
 ### Lagsanay (locked)
 Ilonggo for tag (Tagalog: *habulan* / *taya-tayaan*). Tag + hot potato.
 - A random player becomes the **taya**, with a visible countdown over their head.
-- Touching another player passes the taya.
+- Touching another player passes the taya. If the taya touches more than one eligible chicken in the same physics step, pass taya to the nearest; an exact-distance tie goes to the lowest player slot/ID.
 - When the timer hits zero, the current taya is eliminated.
 - A new random player becomes taya; repeat until one survives.
 - Tuning ideas:
@@ -48,9 +68,10 @@ Ilonggo for tag (Tagalog: *habulan* / *taya-tayaan*). Tag + hot potato.
   - Taya moves slightly faster
   - Timer shortens as players are eliminated (e.g., 15s → 10s → 7s)
 - **Trap kills:** a trap death is an elimination, and the dead player takes the lowest remaining placement slot. If the taya is killed, a new taya is picked from the survivors.
-- **Simultaneous eliminations** share a placement, and the points are averaged.
+- **Simultaneous eliminations** share the affected placements, and their points are averaged. This does not apply when the simultaneous group contains every remaining player; use the Last Cluck rule below to determine one winner.
 - The Lagsanay floor is solid (no bottomless pits), so a fall never eliminates anyone.
-- **Start:** everyone spawns at the same spawn point. The first taya is frozen for ~3s, and their countdown only starts after that, so the others can run.
+- **Player contact:** chickens pass through each other; a separate tag sensor handles taya transfer. This prevents body-blocking and corner traps.
+- **Start:** everyone spawns at the same spawn point. The first taya is frozen for ~3s and is immune to hazards during that head start; their countdown only starts after it ends, so the others can run.
 
 ### Other events
 | Event | Idea | Status |
@@ -63,20 +84,40 @@ Ilonggo for tag (Tagalog: *habulan* / *taya-tayaan*). Tag + hot potato.
 
 _Naming: prefer local Hiligaynon names where they exist. Verify all names with a native speaker before finalizing._
 
+### Kangaroo (core Main Challenge)
+
+Kangaroo does not replace Langit-Lupa, which remains the GDD's second named laro ng lahi. Kangaroo is also a Main Challenge for the core event-stack system because Kangaroo + Lagsanay is an approved compatible stack. Its giant slipper is a background-only, non-colliding presenter. At each command, it lands in one of three equally likely poses: sole down/normal for Freeze, sole up/facing down for Rising wave, or sideways for Hug (33.33% each). Each command is announced through that readable slipper movement and landing, a large text/icon prompt, audio, and an impact screen shake; the prompt must have a non-colour identifier and a reduced-shake option.
+
+The command loop is: a one-second telegraph and slipper landing, a three-second response window, evaluation, then a 0.75-second reset. World movement, traps, projectiles, Bomb-Taya, and player input continue throughout; Kangaroo never pauses the match. A failed command adds one visible marker in order: **KANG** then **GA** then **ROO**. The third marker eliminates that player. Trap deaths still eliminate directly. The last survivor wins and uses the Lagsanay placement scoring family; command failures are event eliminations, never Patibong.
+
+The first command set is:
+
+- **Freeze:** during the response window, a chicken must not give intentional run or jump input. Controller deadzone and release grace prevent drift or a just-released control from counting. Passive movement from conveyors, launchers, knockback, or other forces does not fail this command.
+- **Rising wave:** the stage selects one world-space height band at equal probability: middle-low, middle, or middle-high. It never selects near-floor or near-ceiling heights and is not camera-relative. A red/orange target line appears at that height, then a cartoon danger wave rises to it during the response window. At evaluation, a chicken must be grounded on player-built solid geometry whose standing position is above the line; base-stage platforms, jumping through the line, bubble capture, or being airborne do not qualify. A player below the line receives one marker. The wave drains immediately after evaluation in a short exit animation. It does not reroll when no player-built raised support exists: building useful height is part of the match's risk and preparation.
+- **Hug:** this command uses pairs only. At evaluation, form contact pairs from the live chickens, beginning with the shortest eligible contact and resolving equal distances by player-slot order; a chicken can belong to only one pair. Every paired chicken passes and every unpaired chicken receives one marker. Contact is required only at the evaluation instant, not throughout the response window. A three-chicken cluster therefore leaves one chicken unpaired, while four chickens can form two pairs. If exactly two chickens remain, a sideways slipper rerolls before telegraphing; the reroll does not count as a command or affect the pressure level. Do not select Hug with one survivor because the round has already ended.
+
+Commands must use an icon, distinct audio cue, and clear timing ring as well as the slipper pose; screen shake has full, reduced, and off settings. Elimination removes a chicken from command checks and from Lagsanay tagging. Kangaroo + Lagsanay keeps Kangaroo's intentional-input rule, so a forced movement or tag contact does not itself fail Freeze.
+
+**Slipper Storm:** count completed commands since the most recent elimination from any source. After every two commands with no elimination, shorten the next response window by 0.5 seconds and the reset by 0.15 seconds, to a minimum one-second response and no reset. After eight such commands, enter Slipper Storm: a command lands every 0.5 seconds, an active command lasts one second, and at most two command requirements can be active at once. If two are active, delay the next landing until one resolves. The giant slipper uses intensified impact, audio, and visual effects. With two survivors, Hug continues to reroll and every two-command Storm set contains one Freeze and one Rising wave, forcing their requirements to overlap until an elimination occurs. This intentionally chaotic pressure continues until an elimination occurs, then the no-elimination count resets and the normal cadence resumes. If a storm eliminates every remaining player in the same physics tick, use the existing Last Cluck rule to select one winner. Keep local names and real-world rule claims provisional pending cultural review. See `docs/ITEMS.md` for event backlog notes.
+
 ## 5. Scoring (all rounds)
 Event rounds reuse the **same point types**, re-mapped to each event's objective, so players learn one system. Values are our own (multiples of 0.25) and are tuned in playtesting.
 
 ### Point types
-| Type | Name | Points | Race round | Event round |
+| Type | Name | Points | Karera Main Challenge | Other Main Challenge |
 |---|---|---|---|---|
-| Goal | **Tapos** | 1.0 | Reach the flag alive | Complete the event's objective |
-| First | **Una** | +0.25 | First to reach the flag | Best performer in the event |
-| Solo | **Bayani** | +0.5 | Only player to reach the flag (3–4 players) | Only player to complete the objective |
-| Trap | **Patibong** | +0.25 each | Each player killed by a trap you placed, as long as at least one player reached the flag that round (you score even if you lost). Dying to your own trap scores nothing | Same |
-| Comeback | **Bawi** | +0.75 | Underdog reaches the flag | Underdog completes the objective / places 1st in Lagsanay |
-| Coin | **Barya** | +0.5 | Reach the flag alive carrying the Barya | Race rounds only for now |
+| Goal | **Tapos** | 1.0 | Reach the flag alive | Complete the Main Challenge's objective |
+| First | **Una** | +0.25 | First to reach the flag | Best performer in the Main Challenge |
+| Solo | **Bayani** | +0.5 | Only player to reach the flag (2–4 players) | Only player to complete the Main Challenge's objective |
+| Trap | **Patibong** | +0.25 each | Each player killed by a trap you placed, as long as at least one player reached the flag that round (you score even if you lost). Dying to your own trap scores nothing | Same, according to the Main Challenge's scoring family |
+| Comeback | **Bawi** | +0.75 | Underdog reaches the flag | Underdog completes the Main Challenge's objective / places 1st in an elimination Main Challenge |
+| Coin | **Barya** | +0.5 | Reach the flag alive carrying the Barya | Karera only for now |
 
 **Underdog:** a player who is 3+ points behind the leader at the start of the round.
+
+**Karera finish awards:** every chicken that reaches the flag alive earns Tapos (+1.0), subject to the existing too-easy/too-hard rule. The earliest recorded flag crossing earns Una (+0.25). If multiple chickens cross on the exact same physics tick and the game cannot distinguish an earlier crossing, every tied first finisher earns Una.
+
+**Outcome and attribution contract (approved design):** record one terminal outcome per player per round and award it once. A self-elimination never grants Patibong. The directly eliminating hazard owns the elimination credit; bubbles, slowing, wind, or other setup effects receive no assist credit. If multiple hazards contact a player in one physics step, resolve from the earliest recorded contact time, with a stable item-ID tie-break for indistinguishable contacts; do not rely on signal/callback order. For race goal-versus-death in the same step, use recorded event time; if truly indistinguishable, elimination wins. Barya scores only for a race-round finisher carrying it. Too-easy/too-hard suppression applies to event Goal/First awards as written for non-Lagsanay events, while Lagsanay placement scoring is always used. Preserve values. Average tied placements exactly and store score in eighth-point units (or equivalent rational form), not rounded quarter-points.
 
 ### Too easy / too hard (all rounds except Lagsanay)
 - Everyone gets Tapos → **no points** that round (except Barya, which is earned by reaching the flag, so it only matters here).
@@ -85,7 +126,7 @@ Event rounds reuse the **same point types**, re-mapped to each event's objective
 - **2-player matches:** this rule is waived. Reaching the goal scores Tapos for each player, plus Una for the first, and Bayani if only one finishes.
 
 ### Event mapping
-| Event | Goal = | First = |
+| Main Challenge | Goal = | First = |
 |---|---|---|
 | **Lagsanay** | _Uses placement scoring, see below_ | — |
 | Langit-Lupa | Alive when the timer ends | Highest position at the end |
@@ -105,7 +146,7 @@ Lagsanay is elimination-based, so it uses survival placement instead of Goal/Fir
 - **Patibong** (+0.25 per kill) still applies; traps stay deadly during Lagsanay.
 - **Bawi** (+0.75) applies if an Underdog places 1st.
 - **No too easy / too hard rule**: there is always a winner.
-- Runs until one survivor remains (no fixed timer needed).
+- Runs until one survivor remains (no fixed timer needed). **Last Cluck exception:** if every remaining player is eliminated in the same physics tick, do not average first place. The player with the latest recorded elimination time wins; an exactly identical time is resolved by the lowest player slot/ID. The other players take the lower remaining placements. The result screen should make this understandable with a brief freeze frame and “Last Cluck!” callout.
 
 ### Barya (coin)
 - Barya is an **item that sometimes appears among the Pugad eggs** (about a 1-in-3 chance per round, replacing one egg). Whoever picks it places it, so they choose how hard it is to reach.
@@ -117,31 +158,27 @@ Lagsanay is elimination-based, so it uses survival placement instead of Goal/Fir
 ### Match settings
 - **First to 10 points**, or the highest score after **round 12**, whichever comes first (keeps matches time-bounded). This is checked at the **end of a round**; if more than one player passes 10 in the same round, the higher total wins. An equal total goes to Sudden Death.
 - If players tie at the end → **Sudden Death**: a Lagsanay between the tied players, which always produces exactly one winner.
-- A results screen shows a **local win tally** that persists between matches (leaderboard).
+- An optional results-screen **local win tally** may persist between matches within the current session only. It is Should scope, not a disk save or online leaderboard.
 
 ## 6. Characters
 - All players are **chickens** with different skins/colors (black, white, orange, etc.).
 - Ideas: Philippine native-chicken looks; accessories like salakot, bandana, tsinelas for readability.
 - **Accessibility:** each chicken has a second identifier besides color (a number or shape marker above the head), and UI colors must be readable for colorblind players.
 
-## 7. Items & Traps (brainstorm)
-Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. Filipino-themed obstacles:
-- Tsinelas launcher
-- Rolling niyog (coconut)
-- Sampayan (clothesline)
-- Kawali of hot oil
-- Charging tricycle
-- Banana-peel slip
-- **Bomb:** destroys player-placed items in a radius (any player's); this is the stage-clutter control. The starting stage, floor, spawn and flag are indestructible. A hard item cap is a playtesting question.
-- Plus basics: platforms and springs
-- _Full trap list: not decided yet; more items to be added later._
+## 7. Items & Traps
+Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. The design catalog contains 36 distinct item families, with an eight-family first batch and the remaining designs held as backlog. See `docs/ITEMS.md` for contracts, reference attribution and tuning needs.
+- **First batch:** Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, and Walis Cleanup. Bubble capture is scheduled last in the batch because it introduces temporary player state and forced movement. The original Bomb remains a brainstormed clutter-control item; Walis Cleanup is a distinct proposed placement-phase edit and does not silently replace Bomb.
+
+**Pugad weighting proposal:** keep construction and recovery tools available in the pool, but do not promise that every round contains a guaranteed item or that every resulting layout is solvable. Egg count, weights, item cap, and recovery availability remain playtest tunables.
+
+**Existing item brainstorm retained:** rolling niyog, sampayan, kawali of hot oil, charging tricycle, banana-peel slip, Bomb, and basic platforms/springs remain in the team's earlier brainstorm. The 36-family catalog adds detailed proposals but does not silently approve, delete, or implement these ideas. The existing Bomb proposal removes any player's placed items in a radius while protecting base geometry, floor, spawn, and flag; its range and item-cap behavior remain undecided.
 
 ## 8. Platform & Multiplayer
-- Engine: **Godot 4** (free and open source, so no license is needed to play or build).
+- Engine: **Godot 4.7** (free and open source, so no license is needed to play or build).
 - PC (free to play, no license needed).
 - **Local multiplayer** (2–4 players, **gamepads first**, shared keyboard as fallback). Online play is out of scope for the deadline.
 - **Controls:** run and jump only (no extra abilities for now).
-- **Player collision:** none in race rounds (chickens pass through each other). Lagsanay enables player contact for tagging; future modes can define their own.
+- **Player collision:** chicken bodies pass through each other in all supported modes. Separate contact sensors handle Lagsanay tagging and Kangaroo Hug; contact does not introduce body pushing. Future modes need their own explicit contract.
 - **Camera:** dynamic, always keeps everyone who matters in frame by zooming and panning smoothly.
   - **Play phase:** frames live players only. Dead players are excluded (finished players too, so the camera follows whoever is still running).
   - **Place phase:** frames the pointers of players who have **not placed yet**. Far-apart pointers zoom out to fit both; once a player places, their pointer drops out and the camera eases in on the remaining ones. When everyone has placed, the camera eases to the Play framing.
@@ -183,13 +220,22 @@ Driven by the competition criteria (see `docs/COMPETITION.md`):
 
 ## 11. Open Questions
 - [x] Engine choice: **Godot 4**
-- [x] Event cadence: every 4th round, announced a round ahead
+- [x] Target engine version: **Godot 4.7**
+- [x] Main Challenge cadence: laro ng lahi every 4th round, announced a round ahead
+- [x] Core event stacking: one compatible Twist, with round-scaled chance and no Sudden Death Twist
 - [x] Box/point naming and values (see §5; verify spelling with a native speaker)
 - [x] Coin: Barya, placeable item
 - [x] Death and race-round end rules (see §3)
 - [x] Stage-clutter control: bomb item
 - [x] Sudden Death: Lagsanay between the tied players
 - [x] Art: 2D (exact style undecided)
-- [ ] Final trap list (later); Pugad egg count/weighting (placeholder: players + 2)
+- [ ] Final item enablement and Pugad egg count/weighting (placeholder: players + 2); see `docs/ITEMS.md`
+- [x] Target team PC selected: current Acer Nitro ANV15-51; see `docs/PRODUCTION.md` for observed specifications.
+- [ ] Confirmed performance/memory limits; targets remain unmeasured (see `docs/PLAYTEST.md`).
+- [ ] Exact pixel grid and player dimensions when the Godot project exists
 - [ ] Audio direction
 - [ ] Team size and roles (later)
+
+## 12. Approved delivery scope — October 13, 2026
+
+All eight first-batch families and applicable approved size variants are submission targets. Prototype slices may enable a subset without deleting the full target; Tulay vertical orientation requires controller-support verification. Any later family cut requires an explicit team decision, with Bula-Bulaklak first for cut review. Title/results, Library, required tutorial, settings/help and essential audio/visual cues are required. Local session win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetic variants/accessories and reviewed educational cards remain Should. Include/defer Should work before freeze; included content must pass release gates. The other 28 catalog families remain expansion. See [PRD](PRD.md) and [PHASETASK](PHASETASK.md). No R1–R4 rule proposal is activated by this scope reconciliation.

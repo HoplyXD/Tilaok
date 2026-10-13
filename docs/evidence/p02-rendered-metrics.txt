@@ -1,0 +1,12 @@
+Build: P02-input-movement-dev; base revision: e2b4a555e8d45bec774ffebde7c46e595cd3abdb; local worktree
+Engine: Godot 4.7.2.stable.official.ed1daf0bf; date: 2026-10-13
+Profile: movement_room; seed: 12345; rendered window; 180 frames
+Viewport: 1152x648
+Seats: 4 active diagnostic actors; synthetic K1/K2 joins plus synthetic gamepad IDs 101/102
+Frame interval ms median=0.490 p95=0.893 worst=3.481
+Godot static memory bytes=76020421; object count=1788; node count=128
+Limit: rendered diagnostic fixture only; not late-game stress or physical-device evidence.
+Windows process sample during capture (PID 23152): PrivateMemorySize64=199815168 bytes; WorkingSet64=202584064 bytes.
+Renderer: NVIDIA GeForce RTX 4050 Laptop GPU, OpenGL 3.3 Compatibility.
+Captured p02-diagnostic-room.png (running four-seat fixture) and p02-reconnect-pause.png (synthetic assigned-device disconnect; visibly paused). This software-generated state is not physical unplug/replug evidence.
+Target note: one rendered diagnostic fixture sample at 1152x648; no pre-P02 rendered baseline or 1080p comparison. The worst-frame value is an observation from this 180-frame sample, not a stress-test bound.

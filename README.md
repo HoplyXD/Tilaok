@@ -10,9 +10,21 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 **Philippine Games and Sports.** Traditional Filipino games are the core of the gameplay, not just the art.
 
 ## Docs
+- [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
+- [Phased Implementation Tracker](docs/PHASETASK.md): ordered tasks, dependencies and completion evidence; P02 remains partially verified
+- [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured graybox results and remaining limits
+- [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters
+- [Item Catalog](docs/ITEMS.md): first batch and expansion item contracts
+- [Stage and Placement Specification](docs/STAGE_AND_PLACEMENT.md): stage rules and shared construction contract
+- [UI and Tutorial Specification](docs/UI_TUTORIAL.md): local multiplayer flow, onboarding, and accessibility
+- [Asset and Cultural Register](docs/ASSETS.md): provenance, licences, cultural review, and asset compliance
+- [Production Plan](docs/PRODUCTION.md): roles, gates, scope protection, and risks
+- [Submission Plan](docs/SUBMISSION.md): forms, synopsis, trailer/demo, and final review
+- [Verification and Playtest Plan](docs/PLAYTEST.md): required evidence before release
 - [Competition Notes](docs/COMPETITION.md): rules, deadlines, requirements, judging criteria
 - [Roadmap](docs/ROADMAP.md): scope and build priorities
+- [AI Assistance Record](docs/AI_USAGE.md): Form 03 preparation
 
 ## Key Dates
 | Date | Milestone |
@@ -22,8 +34,8 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 | Nov 26–27, 2026 | Game demo, judging, and awarding |
 
 ## Tech
-- **Engine:** Godot 4
+- **Engine:** Godot 4.7
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-Pre-production: design phase.
+P01 provides the foundation harness and typed provisional configuration. P02 adds a playable diagnostic movement/input room with numbered and shape-marked chickens, run/jump, collision/contact, pause/reclaim contracts and containment probes. It is not a full lobby-to-match game; physical controller, keyboard rollover, reconnect, team review and competition eligibility checks remain open. Eight of 14 P02 tasks are verified. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [tracker](docs/PHASETASK.md#p02--inputs-and-controller), and [playtest evidence](docs/PLAYTEST.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.

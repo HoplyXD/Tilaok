@@ -1,0 +1,10 @@
+Date: 2026-10-13
+Build: P02-input-movement-dev; source base e2b4a555e8d45bec774ffebde7c46e595cd3abdb
+Engine: Godot 4.7.2.stable.official.ed1daf0bf; rendered Windows desktop; RTX 4050 Laptop GPU/OpenGL 3.3 Compatibility
+Command: Godot 4.7.2 --path tilaok! --script res://tests/capture_p02_room.gd
+Procedure: render four seats for 180 frames; capture running screenshot, inject synthetic assigned-device disconnect, capture paused screenshot; sample frame intervals and memory.
+Expected: readable identity/control geometry and a visible paused disconnect state. Actual: both screenshots saved; pause label shows assigned device disconnected.
+Frame intervals ms: median 0.490; p95 0.893; worst 3.481; static memory 76020545 bytes; objects 1788; nodes 128.
+Windows process sample: PID 23152; private memory 199815168 bytes; working set 202584064 bytes.
+Physical disconnect/reconnect was not performed. Screenshots: p02-diagnostic-room.png and p02-reconnect-pause.png.
+Exit code: 0 (capture process observed active during memory sample; exited normally after its 20-second sampling window).

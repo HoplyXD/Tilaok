@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Tilaok!"
-run/main_scene="uid://mkt6txdkmciv"
+run/main_scene="res://scenes/harness/foundation_harness.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -63,6 +63,7 @@ player2jump={
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_ticks_per_second=60
 
 [rendering]
 
