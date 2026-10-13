@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-12_
+_Last updated: 2026-10-13 — approved scope/wording reconciliation; gameplay values unchanged._
 
 ## 1. Pitch
 A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
@@ -41,7 +41,7 @@ The next round's Main Challenge and any Twist are locked and announced during th
 ## 4. Events (Laro ng Lahi)
 Each event is its own mini game mode with its own win condition, played on the current stage. Placed traps stay active and can still kill. The flag is hidden in event rounds (its platform stays).
 
-**"Alam mo ba?" card:** before each event, a short card explains the real traditional game (what it is, where it's from, how it's played in real life) so the game communicates the theme, not just uses it.
+**"Alam mo ba?" card (Should, optional):** when included, before each event, a short card explains the real traditional game (what it is, where it's from, how it's played in real life) so the game communicates the theme, not just uses it.
 
 ### Event stacks (core)
 
@@ -158,7 +158,7 @@ Lagsanay is elimination-based, so it uses survival placement instead of Goal/Fir
 ### Match settings
 - **First to 10 points**, or the highest score after **round 12**, whichever comes first (keeps matches time-bounded). This is checked at the **end of a round**; if more than one player passes 10 in the same round, the higher total wins. An equal total goes to Sudden Death.
 - If players tie at the end → **Sudden Death**: a Lagsanay between the tied players, which always produces exactly one winner.
-- A results screen shows a **local win tally** that persists between matches (leaderboard).
+- An optional results-screen **local win tally** may persist between matches within the current session only. It is Should scope, not a disk save or online leaderboard.
 
 ## 6. Characters
 - All players are **chickens** with different skins/colors (black, white, orange, etc.).
@@ -178,7 +178,7 @@ Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. T
 - PC (free to play, no license needed).
 - **Local multiplayer** (2–4 players, **gamepads first**, shared keyboard as fallback). Online play is out of scope for the deadline.
 - **Controls:** run and jump only (no extra abilities for now).
-- **Player collision:** none in race rounds (chickens pass through each other). Lagsanay enables player contact for tagging; future modes can define their own.
+- **Player collision:** chicken bodies pass through each other in all supported modes. Separate contact sensors handle Lagsanay tagging and Kangaroo Hug; contact does not introduce body pushing. Future modes need their own explicit contract.
 - **Camera:** dynamic, always keeps everyone who matters in frame by zooming and panning smoothly.
   - **Play phase:** frames live players only. Dead players are excluded (finished players too, so the camera follows whoever is still running).
   - **Place phase:** frames the pointers of players who have **not placed yet**. Far-apart pointers zoom out to fit both; once a player places, their pointer drops out and the camera eases in on the remaining ones. When everyone has placed, the camera eases to the Play framing.
@@ -234,3 +234,7 @@ Driven by the competition criteria (see `docs/COMPETITION.md`):
 - [ ] Exact pixel grid and player dimensions when the Godot project exists
 - [ ] Audio direction
 - [ ] Team size and roles (later)
+
+## 12. Approved delivery scope — October 13, 2026
+
+All eight first-batch families and applicable approved size variants are submission targets. Prototype slices may enable a subset without deleting the full target; Tulay vertical orientation requires controller-support verification. Any later family cut requires an explicit team decision, with Bula-Bulaklak first for cut review. Title/results, Library, required tutorial, settings/help and essential audio/visual cues are required. Local session win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetic variants/accessories and reviewed educational cards remain Should. Include/defer Should work before freeze; included content must pass release gates. The other 28 catalog families remain expansion. See [PRD](PRD.md) and [PHASETASK](PHASETASK.md). No R1–R4 rule proposal is activated by this scope reconciliation.

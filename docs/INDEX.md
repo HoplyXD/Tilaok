@@ -10,6 +10,8 @@ Project documentation belongs in this directory. The repository root retains onl
 
 | Document | Purpose | Status |
 |---|---|---|
+| [PRD.md](PRD.md) | Consolidated product requirements, release/optional scope and acceptance, traceable to the GDD and specialized contracts. | Documentation complete; gameplay unimplemented |
+| [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | All game/delivery tasks unverified |
 | [GDD.md](GDD.md) | Source of truth for the game loop, events, scoring, items, presentation, and approved design decisions. | Active |
 | [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md) | NEW: coupled controller/input/tuning defaults, focused balance audit, and team handoff. | PROTOTYPE — UNTESTED |
 | [ITEMS.md](ITEMS.md) | 36-family item catalog, eight-item first batch, lifecycle contracts, and reference boundaries. | Active |
@@ -30,3 +32,7 @@ Complete these in this order. They turn the approved GDD into a team-ready pre-p
 The initial pre-production documentation package is complete. Keep these documents current as team owners, assets, platform measurements, and approved public copy become available.
 
 Each new document must identify its source of truth, label proposals separately from approved decisions, and avoid claiming implementation or playtesting until team-written systems exist.
+
+## Authority and execution
+
+GDD controls gameplay; specialized specs elaborate it consistently; PROTOTYPE_DEFAULTS supplies untested starting points; ROADMAP controls release scope/schedule. PRD consolidates what success requires. PHASETASK tracks work and evidence, never design approval as implementation completion. R1–R4 remain inactive proposals. The approved October 13 baseline targets all eight initial families, required title/results/Library/essential cues, and separately tracked Should/expansion/finalist scope.
