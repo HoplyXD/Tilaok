@@ -1,0 +1,14 @@
+Godot P01 export-template installation evidence
+Date: 2026-10-13
+Engine: Godot_v4.7.2-stable_win64_console.exe
+Engine identity: 4.7.2.stable.official.ed1daf0bf
+Official release archive: https://godotengine.org/download/archive/4.7.2-stable/
+Official template package URL: https://godot-releases.nbg1.your-objectstorage.com/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz
+Downloaded package SHA-256: F298490B8D44D934BE425A5A65A51BF15F422428B229A06A6E11D9FFEA248011
+Package templates/version.txt: 4.7.2.stable
+Install destination: %APPDATA%\Godot\export_templates\4.7.2.stable
+Installed templates/version.txt: 4.7.2.stable
+Windows x86_64 debug template: windows_debug_x86_64.exe (103176704 bytes)
+Windows x86_64 release template: windows_release_x86_64.exe (109268480 bytes)
+Method: extracted the official .tpz archive's templates/ subtree to the new versioned Godot template directory. Existing 4.7.stable and 4.5.1.stable directories were not renamed or modified. The editor's template-manager UI was not used in this installation; the standard versioned destination and exact package contents were verified directly.
+Verification: Godot 4.7.2 Windows Desktop release export completed; resulting executable launched on the selected PC, created a responsive Tilaok! window, accepted a clean close request, and exited.

@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/harness/diagnostic_fixture_room.gd" id="1"]
+
+[node name="ItemLabFixture" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+fixture_title = "Item Lab — Test Fixture"
+fixture_note = "Scenario-loading placeholder. Production items, placement, hazards, and lifecycle mechanics are not implemented."
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+
+[node name="Notice" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="ReturnButton" type="Button" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "Return to Harness"

@@ -34,6 +34,14 @@ Codex recorded the existing release-baseline evidence without creating a new rat
 
 This is documentation, local inventory, and limited toolchain-verification assistance. It is not a signed Form 03; the team must choose the official extent category based on total project-wide AI use.
 
+## P01 project foundations — October 13, 2026
+
+At the user's explicit direction, OpenAI Codex authored all P01 foundation scripts, scenes, diagnostic fixture rooms, focused checks, Windows export preset, project structure documentation, and P01 evidence updates in the existing main worktree. The work includes typed provisional settings/profile snapshots, profile/content validation, seeded diagnostic streams, and a local development harness. The fixture rooms are placeholders; no player movement, items, scoring, match lifecycle, or event mechanics were authored.
+
+This is a user-approved exception to the repository's current team-authored-code acceptance wording. Codex-authored work is not represented as team-authored, and this note does not establish that the work satisfies the DOST competition's team-code originality rule. Team review and competition eligibility confirmation remain open. This assistance must be considered in Form 03; the team must select the official extent category based on total project-wide AI use. No third-party gameplay code, tutorials, templates, or assets were used for core mechanics.
+
+Codex also downloaded the official Godot 4.7.2 export-template archive, verified its archive identity/hash and embedded version, installed it in the standard versioned template directory by extracting the package, ran the lint/format/import/headless/export checks, launched the exported executable locally, and recorded the results. The editor's template-manager UI was not used. Test results verify only foundation diagnostics and local export startup/exit; they do not establish gameplay, controller, performance, independent review, or competition acceptance.
+
 
 ### Verification of this documentation delivery
 

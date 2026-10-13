@@ -1,0 +1,153 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/harness/foundation_harness.gd" id="1"]
+
+[node name="FoundationHarness" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 20.0
+offset_right = -28.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Tilaok! — Development Foundation Harness"
+
+[node name="Subtitle" type="Label" parent="Layout"]
+layout_mode = 2
+text = "P01 diagnostics only • No movement, items, scoring, or events are implemented"
+
+[node name="Identity" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Build / profile / seed"
+
+[node name="HarnessPanel" type="VBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProfileRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
+layout_mode = 2
+
+[node name="ProfileLabel" type="Label" parent="Layout/HarnessPanel/ProfileRow"]
+layout_mode = 2
+text = "Configuration profile:"
+
+[node name="ProfilePicker" type="OptionButton" parent="Layout/HarnessPanel/ProfileRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SeedRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
+layout_mode = 2
+
+[node name="SeedLabel" type="Label" parent="Layout/HarnessPanel/SeedRow"]
+layout_mode = 2
+text = "Diagnostic seed:"
+
+[node name="SeedInput" type="LineEdit" parent="Layout/HarnessPanel/SeedRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+placeholder_text = "12345"
+
+[node name="ActionRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
+layout_mode = 2
+
+[node name="ValidateButton" type="Button" parent="Layout/HarnessPanel/ActionRow"]
+layout_mode = 2
+text = "Validate Profile"
+
+[node name="RunButton" type="Button" parent="Layout/HarnessPanel/ActionRow"]
+layout_mode = 2
+text = "Start Diagnostic Run"
+
+[node name="ResetButton" type="Button" parent="Layout/HarnessPanel/ActionRow"]
+layout_mode = 2
+text = "Reset Scenario"
+
+[node name="ReloadButton" type="Button" parent="Layout/HarnessPanel/ActionRow"]
+layout_mode = 2
+text = "Reload Harness"
+
+[node name="PresentationRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
+layout_mode = 2
+
+[node name="PauseToggle" type="CheckButton" parent="Layout/HarnessPanel/PresentationRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Paused"
+
+[node name="VolumeLabel" type="Label" parent="Layout/HarnessPanel/PresentationRow"]
+layout_mode = 2
+text = "Master volume"
+
+[node name="VolumeSlider" type="HSlider" parent="Layout/HarnessPanel/PresentationRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+
+[node name="ShakePicker" type="OptionButton" parent="Layout/HarnessPanel/PresentationRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RoomRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
+layout_mode = 2
+
+[node name="RoomLabel" type="Label" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "Prototype fixture rooms:"
+
+[node name="MovementRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "Movement Room"
+
+[node name="ItemRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "Item Lab"
+
+[node name="EventRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "Event Lab"
+
+[node name="RoomHost" type="Control" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatusTitle" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Local diagnostic output"
+
+[node name="Status" type="RichTextLabel" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = false
+scroll_following = true
+
+[node name="ExitButton" type="Button" parent="Layout"]
+layout_mode = 2
+text = "Exit Harness"

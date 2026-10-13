@@ -11,7 +11,8 @@ Project documentation belongs in this directory. The repository root retains onl
 | Document | Purpose | Status |
 |---|---|---|
 | [PRD.md](PRD.md) | Consolidated product requirements, release/optional scope and acceptance, traceable to the GDD and specialized contracts. | Documentation complete; gameplay unimplemented |
-| [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | All game/delivery tasks unverified |
+| [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | P01 foundation implementation and local export evidence recorded; authorship review and P00 verification remain open |
+| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | P01 project layout, responsibility map, authorship note, and foundation run commands. | Foundation harness only; gameplay unimplemented |
 | [GDD.md](GDD.md) | Source of truth for the game loop, events, scoring, items, presentation, and approved design decisions. | Active |
 | [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md) | NEW: coupled controller/input/tuning defaults, focused balance audit, and team handoff. | PROTOTYPE — UNTESTED |
 | [ITEMS.md](ITEMS.md) | 36-family item catalog, eight-item first batch, lifecycle contracts, and reference boundaries. | Active |

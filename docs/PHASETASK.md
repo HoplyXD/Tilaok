@@ -141,7 +141,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
   - **Requirements:** [REQ-PROD-003](PRD.md#req-prod-003--resolve-toolchain-and-hardware-facts). **Dependencies:** [P00-T05](#p00-t05).
   - **Work:** Verify toolchain and device inventory against the intended 4.7.2 target, actual templates/export setup, and named target PC; preserve the distinction between import, export, runtime, physical-input, and performance evidence.
   - **Acceptance:** Named integration owner records executable/version/template paths and hardware/device inventory; target import and empty export checks either pass with logs or remain blocked with a reason.
-  - **Evidence:** [P00 inventory](PRODUCTION.md#p00-baseline-record), [PLAYTEST P00 checks](PLAYTEST.md#p00-production-readiness-evidence), [fresh target import](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log), and [editor initialization](evidence/p00-import-godot-4.7.2-2026-10-13.log); source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. **Procedure / expected / actual:** ran a fresh Godot 4.7.2 `--import --quit` against an isolated copy and a separate editor initialization against the working project; inspected available template/export/device facts. Expected a clean target import and export/device verification or precise blockers. Actual fresh import passed with exit 0 and no warnings/errors; the working-project editor invocation exited 0 but logged an engine ERROR and shutdown warning; installed templates are versioned `4.7.stable`, which does not match Godot's patch-specific `4.7.2.stable` identifier; export was not attempted because no preset/entry scene exists and matching templates are absent; no controller was enumerated and no physical input test occurred. **Verification result:** COULD-NOT-RUN for complete P00 verification — export/device/independent review evidence is missing; the import pass is limited to the copied skeleton. **Next action:** install matching 4.7.2 templates under the team's toolchain process, then complete export and physical-device checks when their prerequisites are available.
+  - **Evidence:** [P00 inventory](PRODUCTION.md#p00-baseline-record), [PLAYTEST P00 checks](PLAYTEST.md#p00-production-readiness-evidence), [fresh target import](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log), and [editor initialization](evidence/p00-import-godot-4.7.2-2026-10-13.log); source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. **Procedure / expected / actual:** ran a fresh Godot 4.7.2 `--import --quit` against an isolated copy and inspected available template/export/device facts. Expected a clean target import and export/device verification or precise blockers. Actual fresh import passed; at the P00 inspection, matching templates, preset and entry scene were absent, and no controller/physical input test was available. **Verification result:** COULD-NOT-RUN for complete P00 verification. **P01 follow-up (October 13, 2026):** the official matching 4.7.2 template archive is now installed and a local P01 Windows export and executable startup/exit passed; see [P01 template](evidence/p01-template-install-2026-10-13.log), [export](evidence/p01-export-godot-4.7.2-2026-10-13.log) and [runtime](evidence/p01-export-runtime-2026-10-13.log). P00-T06 remains BLOCKED because its named-owner/physical-device verification and independent review are still missing. The template archive was extracted to the standard versioned path; Godot template-manager UI was not used.
 
 
 ## P01 — Project foundations
@@ -150,9 +150,11 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **Milestone / scope:** First playable and foundational delivery.
 
-**Entry:** Relevant P00 owner/toolchain tasks verified.
+**Entry:** P00-T06 remains the toolchain gate. Its matching template/import/export evidence is now present, while named-owner and physical-device evidence remain open. P00-T02 remains open, but is not a prerequisite to authoring this foundation; team acceptance still requires its private team facts.
 
-**External task dependencies:** [P00-T02](#p00-t02), [P00-T06](#p00-t06)
+P01 implementation proceeded under the user's explicit Codex-authorship exception while team review is pending. Implementation and local runtime checks do not count as registered-team authorship review or competition eligibility approval.
+
+**External task dependencies:** [P00-T06](#p00-t06). P00-T02 is not a prerequisite for P01 implementation by user decision; it remains open for team acceptance and competition eligibility review.
 
 **Owner roles:** Integration; person names TBD. **Systems touched:** NEW project organization, config resources, harness and export preset.
 
@@ -167,102 +169,101 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 #### P01-T01
 
-- [ ] **Create the project structure and responsibility map**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
-  - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-authored-project-responsibilities). **Dependencies:** [P00-T02](#p00-t02), [P00-T06](#p00-t06).
-  - **Work:** Organize input/identity, movement/contact, phase and match lifecycle, stage/placement, item definitions/runtime, event scheduling/evaluation, scoring/outcomes, presentation and local diagnostics. Proposed paths are NEW, not existing implementations. All core code/scenes are written and understood by registered team members.
-  - **Acceptance:** Project opens with a team-authored entry scene; responsibility map and authorship review exist; no copied tutorial/template/open-source core mechanics.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+- [x] **Create the project structure and responsibility map**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
+  - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-authored-project-responsibilities). **Dependencies:** [P00-T06](#p00-t06); P00-T02 dependency removed for implementation by user decision.
+  - **Work:** Created a runnable harness, responsibility map, typed configuration/diagnostics layout and test fixtures. No future gameplay responsibility is represented as implemented.
+  - **Evidence:** [project map](PROJECT_STRUCTURE.md), [Godot import](evidence/p01-import-godot-4.7.2-2026-10-13.log), [runtime smoke](evidence/p01-runtime-smoke-2026-10-13.log). **Procedure / expected / actual:** opened the project in Godot 4.7.2 and ran the harness; expected a working diagnostic entry and clear scope labels, actual build/profile/seed identity and controls displayed without script errors. Codex authored this P01 work under the user's explicit exception. It is not labeled team-authored and does not establish competition compliance. **Verification result:** PASSED for project structure/launch; team authorship review remains P01-T02. **Reviewer:** Codex for implementation/runtime evidence; no registered team reviewer recorded.
 
 
 #### P01-T02
 
 - [ ] **Verify establish team-authored project responsibilities**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+  - **Status:** COULD-NOT-RUN · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (person name not recorded).
   - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-authored-project-responsibilities). **Dependencies:** [P01-T01](#p01-t01).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Project opens with a team-authored entry scene; responsibility map and authorship review exist; no copied tutorial/template/open-source core mechanics.
   - **Acceptance:** Project opens with a team-authored entry scene; responsibility map and authorship review exist; no copied tutorial/template/open-source core mechanics.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [authorship disclosure and limitation](PROJECT_STRUCTURE.md#authorship-and-review); no team reviewer artifact is available. **Procedure / expected / actual:** inspected authored project files and disclosure; expected registered team member review and confirmation of competition eligibility, actual Codex authorship is recorded but team review and eligibility confirmation have not occurred. **Verification result:** COULD-NOT-RUN — user explicitly authorized the exception for implementation, not a claim that it satisfies competition rules. **Reviewer:** not recorded.
 
 
 #### P01-T03
 
-- [ ] **Author configuration resources and labeled test profiles**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Author configuration resources and labeled test profiles**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
   - **Requirements:** [REQ-CONFIG-001](PRD.md#req-config-001--centralize-provisional-configuration-and-profiles). **Dependencies:** [P01-T02](#p01-t02).
   - **Work:** Separate invariants, tunables and presentation. Use named movement_room, karera_slice, karera_spring, lagsanay_lab, kangaroo_contract_lab, stack_lab and release_candidate profiles. Snapshot gameplay tuning at match start; volume/shake may change while paused. Preserve defaults as untested; R1–R4 stay off.
   - **Acceptance:** No scattered gameplay tuning; changing gameplay keys requires a new test match. Logs identify profile/build/seed. All R proposals are off in contract/release profiles.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/config/` and [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). Seven contract profile IDs are available; prototype values remain labeled untested; snapshots copy gameplay/presentation values and keep R1–R4 off. **Procedure / expected / actual:** loaded the typed resources and registry in Godot 4.7.2; expected valid default/range checks and isolated snapshots, actual checks passed. **Verification result:** PASSED. **Reviewer:** Codex (implementation author); no registered team reviewer recorded.
 
 
 #### P01-T04
 
-- [ ] **Verify centralize provisional configuration and profiles**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify centralize provisional configuration and profiles**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (person name not recorded).
   - **Requirements:** [REQ-CONFIG-001](PRD.md#req-config-001--centralize-provisional-configuration-and-profiles). **Dependencies:** [P01-T03](#p01-t03).
   - **Work:** Record the procedure, expected and actual result, and review evidence. No scattered gameplay tuning; changing gameplay keys requires a new test match. Logs identify profile/build/seed. All R proposals are off in contract/release profiles.
   - **Acceptance:** No scattered gameplay tuning; changing gameplay keys requires a new test match. Logs identify profile/build/seed. All R proposals are off in contract/release profiles.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). **Procedure / expected / actual:** validated good/bad tuning and presentation ranges, unknown profiles, deep-copy snapshots, pause-only presentation changes and inactive R1–R4; all expected pass/reject results matched. Build/profile/seed identity was observed in the harness. **Verification result:** PASSED. **Reviewer:** Codex (AI-authored/automated; no independent team reviewer recorded).
 
 
 #### P01-T05
 
-- [ ] **Build content validation and seeded diagnostic selection**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Build content validation and seeded diagnostic selection**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
   - **Requirements:** [REQ-CONFIG-002](PRD.md#req-config-002--validate-content-pools-and-deterministic-diagnostics). **Dependencies:** [P01-T04](#p01-t04).
   - **Work:** Enable only implemented and verified content. Zero disabled weights and normalize positive eligible weights. Empty required pools are configuration errors. Release rejects missing scheduled or sudden-death modes. Separate seeded egg, event and permitted tie-lottery streams from cosmetic randomness; provisional debug seed 12345.
   - **Acceptance:** Disabled content cannot be selected; empty pools fail visibly in diagnostics; same seed/profile reproduces selections; race-only profile is visibly developmental and cannot masquerade as release.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/diagnostics/` and [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). **Procedure / expected / actual:** built the validator and selector, then checked valid and invalid catalogs; expected only implemented, verified and enabled positive-weight entries to enter eligible normalized pools, and empty required pools/incomplete release profiles to reject, actual all checks matched. **Verification result:** PASSED. **Reviewer:** Codex (implementation author); no registered team reviewer recorded.
 
 
 #### P01-T06
 
-- [ ] **Verify validate content pools and deterministic diagnostics**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify validate content pools and deterministic diagnostics**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (person name not recorded).
   - **Requirements:** [REQ-CONFIG-002](PRD.md#req-config-002--validate-content-pools-and-deterministic-diagnostics). **Dependencies:** [P01-T05](#p01-t05).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Disabled content cannot be selected; empty pools fail visibly in diagnostics; same seed/profile reproduces selections; race-only profile is visibly developmental and cannot masquerade as release.
   - **Acceptance:** Disabled content cannot be selected; empty pools fail visibly in diagnostics; same seed/profile reproduces selections; race-only profile is visibly developmental and cannot masquerade as release.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). **Procedure / expected / actual:** exercised empty required pools, disabled/unverified entries, bad references/IDs/weights, normalization, release rejection, same-seed weighted sequences and egg/event/cosmetic stream independence; all expected outcomes matched. R1–R4 remain off. **Verification result:** PASSED. **Reviewer:** Codex (AI-authored/automated; no independent team reviewer recorded).
 
 
 #### P01-T07
 
-- [ ] **Create local harness and lifecycle inspection controls**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Create local harness and lifecycle inspection controls**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
   - **Requirements:** [REQ-TECH-002](PRD.md#req-tech-002--provide-lifecycle-and-diagnostic-harnesses). **Dependencies:** [P01-T02](#p01-t02).
-  - **Work:** Provide team-authored movement, item and event test rooms with reset controls and local observation of phases, terminal events and object counts. Diagnostics stay out of the player HUD. No analytics service, account, backend or gameplay networking.
-  - **Acceptance:** Each harness resets without duplicate signals or retained state; diagnostic data is local and can identify build/profile/seed and a failing scenario.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Work:** Provide clearly labeled local movement, item and event placeholder rooms with scenario reset/reload controls and local diagnostic identity. P01 fixtures exercise scene lifecycle only and contain no P02+ gameplay, terminal-event simulation, scoring, or player HUD. No analytics service, account, backend or gameplay networking.
+  - **Acceptance:** Placeholder rooms open/close, reset and reload without duplicate callbacks or retained fixture/run state; diagnostics stay local and identify build/profile/seed. The fixtures do not claim gameplay readiness.
+  - **Evidence:** [harness scene](../tilaok!/scenes/harness/foundation_harness.tscn), [runtime smoke](evidence/p01-runtime-smoke-2026-10-13.log), [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). **Procedure / expected / actual:** opened the harness and exercised diagnostic run, fixture open/return, reset and reload; expected identity display and clean fixture lifecycle, actual controls responded and the headless lifecycle checks passed. The rooms are explicitly placeholders and display no gameplay. **Verification result:** PASSED. **Reviewer:** Codex (implementation author); team review remains open in P01-T02.
 
 
 #### P01-T08
 
-- [ ] **Verify provide lifecycle and diagnostic harnesses**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify provide lifecycle and diagnostic harnesses**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (person name not recorded).
   - **Requirements:** [REQ-TECH-002](PRD.md#req-tech-002--provide-lifecycle-and-diagnostic-harnesses). **Dependencies:** [P01-T07](#p01-t07).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Each harness resets without duplicate signals or retained state; diagnostic data is local and can identify build/profile/seed and a failing scenario.
   - **Acceptance:** Each harness resets without duplicate signals or retained state; diagnostic data is local and can identify build/profile/seed and a failing scenario.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [fixture cleanup checks](evidence/p01-foundation-checks-2026-10-13.log), [runtime smoke](evidence/p01-runtime-smoke-2026-10-13.log), [exported runtime](evidence/p01-export-runtime-2026-10-13.log). **Procedure / expected / actual:** instantiated, removed and freed each of three fixture rooms 10 times, checked exactly one return callback per instance, and compared root node count to baseline; opened/returned from a fixture, reset a run, then reloaded the scene with an active fixture. Expected no retained fixture or duplicate callback and fresh controls after reload; actual all assertions passed. **Verification result:** PASSED. **Reviewer:** Codex (AI-authored/automated; no independent team reviewer recorded).
 
 
 #### P01-T09
 
-- [ ] **Configure and smoke-test the initial PC export**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Integration (name TBD).
+- [x] **Configure and smoke-test the initial PC export**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Integration (person name not recorded).
   - **Requirements:** [REQ-EXPORT-001](PRD.md#req-export-001--prove-an-early-pc-export-path). **Dependencies:** [P01-T02](#p01-t02).
-  - **Work:** Use the confirmed target engine and matching templates to export a minimal team-authored runnable project early; repeat with the final release later. A successful editor import alone is not export or gameplay evidence.
+  - **Work:** Use the confirmed target engine and matching templates to export a minimal runnable P01 harness early; repeat with the final release later. The P01 harness is Codex-authored under the explicit documented exception, not represented as team-authored. A successful editor import alone is not export or gameplay evidence.
   - **Acceptance:** A versioned smoke export launches and exits on the intended PC; record engine/templates, preset, build and logs. Missing templates block the check.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [template install](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [exported runtime](evidence/p01-export-runtime-2026-10-13.log). **Procedure / expected / actual:** installed the matching official 4.7.2 templates in the versioned Godot path; exported with the Windows Desktop preset; expected an executable that starts and exits, actual the app opened a responsive `Tilaok!` window and exited after a clean close request. The archive was installed by extracting its verified `templates/` subtree into the standard version path; the editor template-manager UI was not used. **Verification result:** PASSED for local target-PC smoke export. The executable contains Codex-authored foundation code under the disclosed exception; no competition eligibility claim is made. **Reviewer:** Codex (implementation author); no registered team reviewer recorded.
 
 
 #### P01-T10
 
-- [ ] **Verify prove an early pc export path**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify prove an early pc export path**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (person name not recorded).
   - **Requirements:** [REQ-EXPORT-001](PRD.md#req-export-001--prove-an-early-pc-export-path). **Dependencies:** [P01-T09](#p01-t09).
   - **Work:** Record the procedure, expected and actual result, and review evidence. A versioned smoke export launches and exits on the intended PC; record engine/templates, preset, build and logs. Missing templates block the check.
   - **Acceptance:** A versioned smoke export launches and exits on the intended PC; record engine/templates, preset, build and logs. Missing templates block the check.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [exported runtime](evidence/p01-export-runtime-2026-10-13.log). **Procedure / expected / actual:** launched the exported Windows executable on the identified development/demo PC, checked the window responded, requested a normal close, and confirmed process exit; all expected observations passed. **Verification result:** PASSED. **Reviewer:** Codex (AI-authored/automated; no independent team reviewer recorded). No physical controller, performance, or clean-PC test is implied.
 
 
 ## P02 — Inputs and controller

@@ -1308,11 +1308,11 @@ The available engine does not verify the target version. Do not change project v
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Organize input/identity, movement/contact, phase and match lifecycle, stage/placement, item definitions/runtime, event scheduling/evaluation, scoring/outcomes, presentation and local diagnostics. Proposed paths are NEW, not existing implementations. All core code/scenes are written and understood by registered team members.
+**Expected behavior:** Organize input/identity, movement/contact, phase and match lifecycle, stage/placement, item definitions/runtime, event scheduling/evaluation, scoring/outcomes, presentation and local diagnostics. Proposed paths are NEW, not existing implementations. Competition acceptance requires team-authored code/scenes understood by registered members. P01 has an explicit user-authorized Codex authorship exception recorded in `PROJECT_STRUCTURE.md`; it does not establish competition compliance.
 
-**Acceptance:** Project opens with a team-authored entry scene; responsibility map and authorship review exist; no copied tutorial/template/open-source core mechanics.
+**Acceptance:** Project opens with a team-authored entry scene; responsibility map and team authorship review exist; no copied tutorial/template/open-source core mechanics. P01 foundation implementation is Codex-authored under a disclosed exception and remains pending team review/competition eligibility confirmation.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md); [COMPETITION.md](COMPETITION.md); [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md). **Implementation/evidence:** foundation structure and harness launched; authorship review and competition eligibility remain open. See [P01 evidence](PHASETASK.md#p01--project-foundations).
 
 
 ### REQ-CONFIG-001 — Centralize provisional configuration and profiles
@@ -1323,7 +1323,7 @@ The available engine does not verify the target version. Do not change project v
 
 **Acceptance:** No scattered gameplay tuning; changing gameplay keys requires a new test match. Logs identify profile/build/seed. All R proposals are off in contract/release profiles.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** typed resources, seven profiles and run snapshots are implemented; test evidence is in [P01-T03/T04](PHASETASK.md#p01-t03). Provisional values remain untested.
 
 
 ### REQ-CONFIG-002 — Validate content pools and deterministic diagnostics
@@ -1334,18 +1334,18 @@ The available engine does not verify the target version. Do not change project v
 
 **Acceptance:** Disabled content cannot be selected; empty pools fail visibly in diagnostics; same seed/profile reproduces selections; race-only profile is visibly developmental and cannot masquerade as release.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** eligible-content filtering, empty-pool rejection, weight normalization, independent seeded streams, and incomplete release rejection are implemented and covered by [P01-T05/T06](PHASETASK.md#p01-t05). No gameplay content is currently selectable.
 
 
 ### REQ-TECH-002 — Provide lifecycle and diagnostic harnesses
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Provide team-authored movement, item and event test rooms with reset controls and local observation of phases, terminal events and object counts. Diagnostics stay out of the player HUD. No analytics service, account, backend or gameplay networking.
+**Expected behavior:** Provide local movement, item and event test rooms with reset controls and diagnostic observation. P01 rooms are labeled placeholders and do not implement P02+ mechanics. Diagnostics stay out of the player HUD. No analytics service, account, backend or gameplay networking.
 
 **Acceptance:** Each harness resets without duplicate signals or retained state; diagnostic data is local and can identify build/profile/seed and a failing scenario.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** local diagnostic harness and placeholder fixtures are implemented; lifecycle evidence is in [P01-T07/T08](PHASETASK.md#p01-t07). No player HUD or gameplay mechanics are included.
 
 
 ### REQ-PERF-001 — Measure frame time, memory and bounded cleanup
@@ -1371,11 +1371,11 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Integration (name TBD).
 
-**Expected behavior:** Use the confirmed target engine and matching templates to export a minimal team-authored runnable project early; repeat with the final release later. A successful editor import alone is not export or gameplay evidence.
+**Expected behavior:** Use the confirmed target engine and matching templates to export a minimal runnable project early; repeat with the final release later. P01 export is Codex-authored under the documented exception, so it does not establish competition eligibility. A successful editor import alone is not export or gameplay evidence.
 
 **Acceptance:** A versioned smoke export launches and exits on the intended PC; record engine/templates, preset, build and logs. Missing templates block the check.
 
-**Source:** [PLAYTEST.md](PLAYTEST.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PLAYTEST.md](PLAYTEST.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** matching 4.7.2 templates, Windows export and local executable startup/clean exit passed; evidence is in [P01-T09/T10](PHASETASK.md#p01-t09). A later clean-PC/final-release export check remains required.
 
 
 ### REQ-SLICE-001 — Demonstrate the first playable build/race loop

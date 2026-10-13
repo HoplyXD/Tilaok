@@ -4,16 +4,17 @@ _Plan only, 2026-10-12. No runnable project or observed gameplay results were pr
 
 ## Current verification status
 
-The repository contains a Godot project skeleton at `tilaok!/project.godot` and its project icon, but no scenes, scripts, test framework, export preset, gameplay assets, or configured build pipeline were found. The user identifies Godot 4.7 in `D:\Downloads` as the intended toolchain and the current PC as the target. A fresh isolated-copy import with Godot 4.7.2 completed with exit code 0 and no logged warnings/errors. A separate editor initialization against the working project exited 0 but emitted an engine error and shutdown-thread warning; both outcomes are recorded below. Neither check demonstrates a playable build: no gameplay, item harness, controller test, or performance baseline exists.
+P01 now provides a Godot 4.7.2 foundation harness, configuration/content diagnostics, three clearly labeled placeholder fixtures, headless checks and a Windows export preset. The user identifies Godot 4.7.2 in `D:\Downloads` as the intended toolchain and the current PC as the target. Foundation diagnostics are runnable, but no gameplay, controller test or performance baseline exists. Historical P00 results remain below; current P01 evidence follows them.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
 | Historical headless project initialization/import | **PASSED** | `godot --headless --path "tilaok!" --editor --quit`, Godot 4.6.3; completed filesystem scan, icon import, and editor initialization with no errors/warnings in the captured historical output. This is not target-engine validation. |
-| Target Godot 4.7.2 fresh import | **PASSED** | Godot 4.7.2 imported `icon.svg` in a fresh temporary copy using `--headless --path <isolated-copy> --import --quit`; exit code 0, no warnings/errors. [Full log](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log). |
+| Target Godot 4.7.2 P01 project import/parse | **PASSED** | Godot 4.7.2 imported the working project after P01 foundation additions; [full log](evidence/p01-import-godot-4.7.2-2026-10-13.log). |
 | Godot 4.7.2 editor initialization on working project | **FAILED** | `--headless --path "tilaok!" --editor --quit`; exit code 0, but output includes `ERROR: Parameter "singleton" is null` and a thread-shutdown warning. [Full log](evidence/p00-import-godot-4.7.2-2026-10-13.log). Do not treat this invocation as clean editor verification. |
-| Runtime/gameplay, item harnesses, local multiplayer | **COULD NOT RUN** | No scenes or scripts exist. |
-| GDScript lint/format | **COULD NOT RUN** | No GDScript paths exist. |
-| Export / exported Windows build | **COULD NOT RUN** | No `export_presets.cfg` or entry scene; installed templates report `4.7.stable`, which does not match the selected editor's `4.7.2.stable` version identifier. Matching templates are absent. No temporary export fixture was created. |
+| P01 harness runtime | **PASSED** | Harness launched in Godot GUI; build/profile/seed displayed, a diagnostic run started, the movement placeholder loaded and returned, and reset released its fixture. This is harness evidence only, not gameplay. [Headless runtime log](evidence/p01-runtime-smoke-2026-10-13.log). |
+| P01 foundation checks | **PASSED** | Configuration ranges/snapshots, seven profiles, incomplete release and empty-pool rejection, bad IDs/references/weights, eligibility, weight normalization, deterministic selection, independent streams and 30 fixture cleanup iterations passed. [Full test output](evidence/p01-foundation-checks-2026-10-13.log). |
+| GDScript lint/format | **PASSED** | `gdlint` and `gdformat --check` pass; tools are version 4.5.0. See [lint](evidence/p01-lint-2026-10-13.log) and [format](evidence/p01-format-2026-10-13.log). |
+| Export / exported Windows build | **PASSED** | Official 4.7.2 templates installed in standard versioned path; Windows Desktop export succeeded. Executable opened a responsive `Tilaok!` window, accepted a normal close, and exited. [Template record](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [runtime record](evidence/p01-export-runtime-2026-10-13.log). Template-manager UI was not used. |
 | Physical keyboard/controller validation | **COULD NOT RUN** | Windows enumerated keyboard devices but no gamepad/controller; keyboard model/layout and actual button mapping are unknown. Device enumeration is not an input test. |
 | Playtest/performance baseline | **COULD NOT RUN** | No runnable gameplay. The user selected the current PC as target; specs are recorded in `PRODUCTION.md`, but performance remains unmeasured. |
 
@@ -26,6 +27,16 @@ The repository contains a Godot project skeleton at `tilaok!/project.godot` and 
 The clean target import used a temporary copy of `project.godot`, `icon.svg`, and `icon.svg.import`, avoiding any claim that gameplay or a production build was tested. It completed filesystem scan and icon reimport with no warnings/errors. The direct editor invocation on the working checkout is retained as a separate failed diagnostic; it returned exit 0 but logged both an error and warning. A cached import repeat is preserved in [its log](evidence/p00-import-only-godot-4.7.2-2026-10-13.log). No export was attempted because there is no export preset or entry scene and matching 4.7.2 templates are absent.
 
 Observed machine details do not establish which physical keyboard layout or controllers the team will use. No controller was found in the queried Windows device inventory. Button/axis mapping, rollover, simultaneous input, reconnect behavior, and multi-controller ownership remain untested. Performance budgets remain UNMEASURED.
+
+## P01 foundation verification
+
+**Date:** October 13, 2026. **Build identity:** `P01-foundation-dev`, Godot `4.7.2.stable.official.ed1daf0bf`, default profile `movement_room`, default seed `12345`. The default profile validates configuration only; no game content is selected or simulated. `release_candidate` is intentionally rejected until required modes and pools are implemented and verified.
+
+The headless test script passed checks for valid/invalid finite tuning and presentation ranges, unknown profiles, snapshot isolation, pause-only presentation updates, inactive R1–R4, required empty-pool rejection, invalid/duplicate IDs, unknown references, invalid weights, enabled-but-unverified content, eligibility before normalization, same-seed weighted selection and independent RNG streams. It also instantiated, detached and freed each fixture 10 times, asserted one return callback per instance, and compared root node count to baseline. A harness scene test started/reset a run, opened/closed each fixture repeatedly, reloaded with a fixture active and confirmed the new scene had no retained state. The GUI harness displayed identity/status, started a diagnostic run, opened/returned from a placeholder room, and reset. A registered independent team reviewer is not recorded.
+
+Formatting and lint passed using installed 4.5.0 tools. Godot 4.7.2 import/parse and headless run completed without warnings/errors. Matching 4.7.2 templates were installed by extracting the official package into the standard version directory; the manager UI was not used. Windows export succeeded and its executable launched/closed locally. Exact logs are linked in the current status table and in [PHASETASK P01](PHASETASK.md#p01--project-foundations).
+
+**Limitations:** Codex authored these foundations under the user's explicit exception; this is not described as team-authored and does not settle competition originality eligibility. No physical controller/input test, multiplayer gameplay, novice onboarding test, performance measurement, clean-PC install, or final-release export was performed. P00-T02 and P00-T06 remain open; see [PRODUCTION](PRODUCTION.md#p00-baseline-record).
 
 ## Completion status vocabulary
 
