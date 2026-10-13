@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. P02 and P03 implementation/evidence were added on 2026-10-13; this is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. P02, P03 and P04 implementation/evidence were added on 2026-10-13; P05 diagnostic-loop evidence was added on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts. These are development slices, not the lobby-to-match game. Hardware coverage, player feel and late-game performance limits remain explicit. Historical P00 results remain below; P01/P02/P03 evidence follows them.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts; P04 adds the item infrastructure and Kaing/Tulay seeds in an Item Lab; P05 adds the lobby/Pugad/atomic Place/diagnostic Play/results-shell/next-round loop. P05 has no race finish rules or scoring, and T12 awaits P06-T08 actual result bindings. These are development slices, not a complete game or release playtest. Hardware coverage, human player feel and release-device performance remain explicit. Historical P00 results remain below.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -31,6 +31,26 @@ P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and 
 | Export / exported Windows build | **PASSED** | Official 4.7.2 templates installed in standard versioned path; Windows Desktop export succeeded. Executable opened a responsive `Tilaok!` window, accepted a normal close, and exited. [Template record](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [runtime record](evidence/p01-export-runtime-2026-10-13.log). Template-manager UI was not used. |
 | Physical keyboard/controller validation | **COULD NOT RUN** | Windows enumerated keyboard devices but no gamepad/controller; keyboard model/layout and actual button mapping are unknown. Device enumeration is not an input test. |
 | P02 diagnostic performance / full playtest baseline | **PARTIAL** | One rendered P02 fixture sample is measured below; complete-player playtests, physical controls, comparable pre-change baseline, 1080p and late-game stress remain unverified. |
+
+## P05 diagnostic-loop session — October 14, 2026
+
+**Build/source:** updated main checkout at fa5a4e27f61f884cd726dc35fd800da8a0fef121; Godot 4.7.2.stable.official.ed1daf0bf; seeded match 12345. **Machine:** Windows, Intel Core i5-13420H, NVIDIA RTX 4050 Laptop GPU. **Devices:** keyboard seats K1/K2 and synthetic gamepad identities 3/4. **Review:** automated checks and Codex capture inspection; no independent human review or human playtest.
+
+| Check | Status | Result and evidence |
+|---|---|---|
+| Import/class registration | PASSED | Godot editor import exited 0 with no errors/warnings; [log](evidence/p05/import_parse.log). |
+| Lint/format | PASSED | gdformat check and gdlint on all 100 project GDScript files; no lint issues. |
+| Existing automated suites | PASSED | Foundation lifecycle 0 failures; P02 83, P02 wall 85, P03 103, P04 268 checks. Logs are indexed under [P05 evidence](evidence/p05/). |
+| P05 automated match checks | PASSED | 137 checks, 0 failures: claim order/ties/final-timeout tick, 2/3/4 seats under seeds 12345/7/991, pool eligibility, placement validation, atomic permutations/conflicts/cleanup, timeout commit/discard, pause, lobby gate, held edges, result advance and ten-round persistence/reset. [log](evidence/p05/p05_test_run.log). |
+| UI component gallery contract | **PASSED — isolated debug fixture** | 437 checks across scene/component instantiation, prompt/seat identity, owned-seat input, transitions, theme/layout, and resource-free lifecycle. Sample result data is not connected to P05 or the scoring engine. [log](evidence/p05/ui_gallery_smoke.log). |
+| Existing visible regression runners | PASSED | P03 14 checks and P04 Item Lab 25 checks; see [P03 log](evidence/p05/existing_p03_interactive_run.log) and [P04 log](evidence/p05/existing_p04_interactive_run.log). |
+| P05 visible loop | PASSED | 64 checks; traversed two round cycles through the harness with four fixed identities, contested egg/retry, exact-variant handoff, rotated 2×3 ghost, simultaneous confirmed edit batch, diagnostic Play/results and construction retention. [log](evidence/p05/p05_interactive_run.log). Seats 3/4 were synthetic. |
+| Rejection/variant captures | PASSED | 1920×1080 images; 12 expected validator codes matched actual codes and visible non-color reason text. Exact variant egg/ghost/placed handoff matrix and screenshots are in [P05 evidence](evidence/p05/). |
+| Four-seat crowded render/performance | PASSED — local diagnostic sample | 600 frames at 1920×1080, 48 persistent pieces after 12 rounds: median 2.356 ms, p95 4.616 ms, worst 8.577 ms; 79.80 MiB Godot static memory; 2,323 objects; 302 nodes; zero orphan nodes. P95/worst <16.67 ms and memory <512 MiB. P04 baseline was 1.954/3.109/6.059 ms and 70.97 MiB. [metrics](evidence/p05/p05_performance.txt), [crowded image](evidence/p05/crowded_post_round12_48_pieces_1920x1080.png). The stress capture had no removals; once-only cleanup and persistence were asserted separately. |
+| Gameplay traffic | PASSED — architectural inspection | Local-only flow has no sockets/network calls; 0 B/s gameplay traffic. No traffic monitor was used. |
+| Windows Debug export/startup | PASSED — startup only | Godot 4.7.2 Windows template export and exported headless P05 room smoke; final logs: [export](evidence/p05/windows_export.log), [runtime](evidence/p05/windows_export_runtime.log). This does not verify exported physical input. |
+
+The verification report and dated D3 scope note are [here](evidence/p05/2026-10-14_p05_verification.md) and [here](evidence/p05/2026-10-14_p05_scope_note.md). P05-T01–T11 are recorded as checked, T12 remains COULD-NOT-RUN until P06-T08 passes. No scoring/award calculation, real Karera finish handling, Walis Cleanup gameplay, saves or networking were tested or implemented. Synthetic pad events do not count as physical gamepad validation; final art/audio and human/competition review remain outstanding.
 
 ## P00 production-readiness evidence
 
@@ -89,7 +109,78 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 | P02 regression | PASSED | Existing P02 test suite rerun after integration: 83 checks, zero failures. | `2026-10-13_p02_regression.txt`; remains synthetic, not physical P02 acceptance. |
 | Windows export | PASSED — startup only | Export Release using matching 4.7.2.stable Windows templates; run exported main scene headlessly for three frames. Export and smoke exited 0. | `2026-10-13_windows_export_smoke.txt`; no exported interactive/device test. |
 
+## P04 item infrastructure and construction seeds — October 13, 2026
+
+**Build identity:** `P04-item-lab-dev`, `main` @ `765ed09` plus the P04 working tree; Godot `4.7.2.stable.official.ed1daf0bf`; profile `karera_slice`; seed `12345`; 60-Hz physics. **Machine:** Windows, 13th Gen Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU. **Input:** synthetic keyboard (K1/K2) routing and synthetic gamepad seats; no physical device or rollover was certified. **Reviewer:** Codex (automated); no human playtest. Full table and logs: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
+
+| Check | Result | Notes |
+|---|---|---|
+| Definition validation rejection table | **PASSED** | 31 rejection cases plus effect-region ≠ occupied-cell checks. |
+| Lifecycle, ten reset cycles, caps, rotating allocation | **PASSED** | Nodes 110→110, objects 1760→1760, orphans 0; caps 48/16/4/32; each of 6 emitters wins 4 of 6 rounds under cap 4; reversed callback order yields identical grants. |
+| Kaing real-controller trials | **PASSED — synthetic input** | Stand on 1×1, 2×3, rotated 3×2; side blocks at x=396; foothold route; underside head stop; same-step support loss on removal. |
+| Tulay real-controller trials | **PASSED — synthetic input** | Land from above, rise from below (never support while rising), walk off edge, jump off, side pass-through, ceiling pass, five fall-cap drops onto the 4 wu strip (peak sampled 878.9 wu/s). |
+| Interactive Item Lab (1920×1080) | **PASSED** | 22 checks, 4 consecutive runs. An earlier flaky run was caused by a focused HUD button receiving Enter and by OS-focus pause; HUD buttons are now non-focusable and the runner resumes a focus-paused game like a player would. |
+| 48-piece, four-chicken render sample | **PASSED — one diagnostic sample** | 600 uncapped 1080p frames: median 1.954 / p95 3.109 / worst 6.059 ms; peak working set 208.8 MiB. A first run's single 59.4 ms interval at the v-sync switch was fixed with a warm-up and is disclosed in the index. |
+| Windows export + exported startup of Item Lab | **PASSED — startup only** | Debug export exit 0; exported build loaded both `.tres` definitions from the PCK and exited 0. |
+| Lint/format/import | **PASSED** | `gdlint`/`gdformat --check` on 49 files; editor import exit 0 without diagnostics. |
+| Wall-extension suite (not P04) | **PASSED** | `run_p02_wall_tests.gd` re-run on the rebased tree: 85 checks, 0 failures. Wall movement is enabled by default as core movement (owner decision, 2026-10-13); P04 declares Kaing wall eligibility and its tests slide and kick on a placed Kaing block. |
+| Static checks over the whole project | **PASSED** | `gdlint`/`gdformat --check` on all 53 `.gd` files after the rebase. |
+| Placeholder egg previews and Library | **PASSED — placeholder** | Egg → ghost → piece identity for all 3 enabled variants, looping animation, no text on eggs, Library fields and release filter (265 checks total; GUI runner 25 checks). [Capture](evidence/p04/2026-10-13_eggs_library_1080p.png). |
+| Human feel/readability review | **COULD-NOT-RUN** | No human reviewer or physical device was available; crowd captures show crowded labels at 48 pieces. |
+
+## Wall movement — future verification
+
+**Status:** approved Should-scope extension, implemented and run on 2026-10-13 with automated synthetic checks (results in the dated session below). The cases in this table stay as the full future matrix; rows that still need a human or physical device are called out in the session. Evidence index: [wall evidence](evidence/p02-wall/README.md). Use actual Godot physics, rendered screenshots/clips, and human feel/balance review. Mathematical estimates alone do not establish playability. Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, artifact and reviewer. Mark each PASSED / FAILED / COULD-NOT-RUN. Keep synthetic and physical-device evidence separate.
+
+| Area | Future procedure and expected result |
+|---|---|
+| Left/right symmetry; wall approach/departure | Approach eligible walls from both directions, touch, slide, jump away, leave and lose contact. Both sides behave symmetrically; no slide or stale wall state remains after separation. |
+| Slide speed and vertical direction | Measure downward velocity against the configured descent cap. Verify the cap applies only while descending; selected ascending velocity remains uncapped by the slide rule. |
+| Eligible surface classes | Test base solids, player-built solids and moving solids. Moving contact must track actual valid contact and clear when the wall moves away or is removed. |
+| Excluded surfaces | Test one-way platform sides and undersides, triggers, ineligible hazard/effect surfaces, pass-through chicken bodies, and arena containment boundaries. None enables wall slide/jump. |
+| Fresh press / held input / OS repeat | Compare a new jump edge against a held button and operating-system key repeats. Only a fresh press may create one wall jump; holding must not auto-repeat. |
+| Buffer/grace consumption | Press just before, during and just after eligible contact, including the configured contact grace. A buffered jump is consumed exactly once and cleared on expiry or cancellation. |
+| Impulse / steering / contact repeat | Measure horizontal-away and vertical impulse on both sides; steer immediately using normal air acceleration. Same-wall repeat requires physical separation and fresh recontact. |
+| Corners, shafts and ceilings | Try corners, narrow shafts, rapid side switches, wall-to-wall climb routes and ceiling contact. No same-contact infinite climb, clipping, trapped state or unintended repeat occurs. |
+| Ground and coyote regression | Repeat normal ground jump, coyote jump, short/full jump and landing tests with wall contact nearby. Existing ground-jump behavior remains within its P02 contract. |
+| Bounds and maximum force | Combine the largest configured kick with approved external launch limits in every direction. Players remain inside visible bounds and cannot bypass immutable protection. |
+| Route and camera | Traverse the existing P03 base route; it must remain traversable with wall movement enabled (default) and with it forced off. Then test wall shortcuts and maximum kick trajectories with the camera at minimum zoom and supported player separations. Record intentional shortcuts for balance review. |
+| Built surfaces and support | Compare wall movement on base versus player-built sides. Assert wall contact never writes upward support/provenance or qualifies for Rising wave; verify actual landing on an eligible platform still does. |
+| Lifecycle states | Attempt contact/input during capture, opening freeze, secured and eliminated states. Higher-priority states suppress wall actions and cannot reactivate terminal players. |
+| External launches | Launch during wall slide/contact and while jump is buffered. Launch takes precedence, is not shortened or overwritten by wall logic, and clears wall eligibility/buffer. |
+| Pause, phase/reset/reload | Pause while sliding and resume; change phase, reset, remove a contacted wall and reload the scene. No simulation advances while paused and no stale contact, repeat lock or jump replays. |
+| Player-to-player interaction | Overlap chickens near an eligible wall and attempt to use another chicken as a wall. Bodies remain pass-through; no push, wall state, or wall-jump eligibility comes from players. |
+| Freeze input observability | Inspect intentional-input telemetry while pressing jump for a wall action and while captured/frozen. Preserve existing intentional-input visibility for the future Freeze gate; do not claim Kangaroo integration from this check. |
+| Keyboard/gamepad parity | Run synthetic seat-routed keyboard and gamepad events separately, then actual physical devices when available. Match press edges, buffering, direction and cancellation; synthetic checks do not satisfy physical-device acceptance. |
+| Future Lagsanay/event stacks | In actual multiplayer builds, test repeated wall movement as an escape route or stalling strategy in Lagsanay and each applicable event stack. Keep these checks attached to their event gates; do not make the controller depend on full event implementations. |
+| Feel and balance | Obtain human review of slide readability, jump response, repeated-contact rule, intended shortcuts, wall stalling and recovery. Record reviewer, players/devices, procedure and findings; calculations or agent-authored tests are not human feel evidence. |
+
+Capture at minimum zoom and inspect rendered evidence for clear contact/eligibility cues. If a shortcut is intentionally possible, document it; escaping bounds, bypassing immutable protection or violating an event contract is a failure. The required P03 base route remains playable without this Should feature.
+
 The full command/evidence inventory is in [P03 verification](evidence/p03/2026-10-13_p03_verification.md). This work does not certify physical controller behavior, player feel, final-art readability, late-game load, balance, full round/match lifecycle, item systems, or release readiness. The previous P02 device and P01 human-review tasks remain open.
+
+## Wall movement verification session — October 13, 2026
+
+**Build identity:** working tree on `9ee25c8` (base `765ed09`); Godot `4.7.2.stable.official.ed1daf0bf`; `movement_room`; seed `12345`; 60 Hz; three seats (synthetic K1, K2, gamepad). **Machine:** Windows, AMD Ryzen 5 5500 (12 logical CPUs), AMD Radeon RX 580, Compatibility renderer, 1920×1080 renders. **Reviewer:** Claude (AI, automated tests and screenshot inspection); no human reviewer, no physical devices. **Wall setting:** `wall_movement_enabled` = true only inside the wall test and capture scripts (shipped default false).
+
+| Check | Status | Procedure and observed result | Evidence/limit |
+|---|---|---|---|
+| Wall runner | PASSED | `run_p02_wall_tests.gd`: 85 checks, 0 failures; real physics, synthetic input. | [log](evidence/p02-wall/2026-10-13_wall_tests.txt) |
+| Existing regressions | PASSED | `run_foundation_tests.gd` 0 failures; `run_p02_tests.gd` 83/0; `run_p03_tests.gd` 103/0 (recorded with wall off; re-run 2026-10-13 with wall enabled by default: same counts, 0 failures). | `evidence/p02-wall/2026-10-13_regression_*.txt` |
+| Import/parse, lint, format | PASSED | Editor import: 0 error/warning lines. gdlint 4.5.0 and gdformat 4.5.0 clean on all scripts and tests. | [import](evidence/p02-wall/2026-10-13_import_parse.txt) |
+| Slide + symmetry | PASSED | 120.00 wu/s on left and right; ascent uncapped. | wall log |
+| Excluded surfaces | PASSED | Ineligible, one-way, metadata-less, trigger, chicken: no slide and no kick. One-way underside passes through. | wall log |
+| Kick, hold, echo, buffer | PASSED | 1 kick per fresh press on each device type; held 1 s with OS repeat → 1; echo → 0; pre-contact press → 1. | wall log |
+| Per-contact lock | PASSED | Same-contact press blocked; lock cleared at 12.10 wu gap; recontact kicks once. | wall log |
+| Lifecycle / pause / reset | PASSED | Launch, capture, freeze, terminal, pause/resume, phase change, reset, wall removal, moving wall away, stage reset, 5 reloads. | wall log |
+| Support / Rising wave | PASSED | P03 base side slide leaves support contacts empty and result "no support". | wall log |
+| Containment / camera | PASSED | Four kick+launch vectors stay in bounds; P03 camera keeps every target visible. | wall log, [capture log](evidence/p02-wall/2026-10-13_wall_render_capture.txt) |
+| Rendered stills | PASSED — inspected | 1920×1080: [slide](evidence/p02-wall/01_slide_base_side_1080p.png), [kick](evidence/p02-wall/02_kick_1080p.png), [excluded](evidence/p02-wall/03_excluded_surface_1080p.png), [max kick+launch](evidence/p02-wall/04_max_kick_launch_camera_1080p.png). Camera zoom was 1.11–1.36 (two chickens), not 1.0; debug bar and label were visible; fixture labels remain small. | Not a readability or final-art claim. |
+| Performance | PASSED — this machine only | 3 runs of `capture_p03_evidence.gd`: median 0.69–0.70 ms, p95 1.84–2.07 ms, worst 4.79–5.91 ms, static memory 68.95 MiB. Unmodified baseline `765ed09`, same machine, 3 runs: median 0.54–0.65, p95 2.05–2.20, worst 5.94–21.40 ms (one run over 16.67 ms), 68.74 MiB. Wall movement was disabled and no fixtures were built in these runs; enabled-mode cost is not separately measured. Different hardware from the P03 record, so not comparable to its 0.826/1.426/6.141 ms. | [current](evidence/p02-wall/2026-10-13_perf_current_tree_3runs.txt), [first run](evidence/p02-wall/2026-10-13_perf_rerun_this_machine.txt) |
+| Physical devices | COULD NOT RUN | No gamepads; no physical keyboard/rollover session. P02-T18 stays open. | — |
+| Human feel / balance | NOT DONE | Session sheet prepared, no reviewer. P02-T22 stays open; keep/defer PENDING. | [sheet](evidence/p02-wall/human_feel_session_sheet.md) |
+| Windows export + startup | PASSED — startup only | Release export (matching 4.7.2 templates) and `--headless --quit-after 90` of the exported executable both exit 0. | [export](evidence/p02-wall/2026-10-13_export.txt), [runtime](evidence/p02-wall/2026-10-13_export_runtime.txt) |
+| `--write-movie` clip | COULD NOT RUN | Not attempted; stills only. | — |
 
 ## Completion status vocabulary
 
@@ -114,7 +205,7 @@ Record build/commit, test date, local player count, input devices, scenario, ite
 
 ### Project implementation checks (when available)
 
-1. **Project/controls:** launch via documented Godot version; join local 2, 3, and 4 players; test gamepad-first and shared-keyboard fallback. Record physical-device limitations. Check run/jump only during Play and input deadzone behavior.
+1. **Project/controls:** launch via documented Godot version; join local 2, 3, and 4 players; test gamepad-first and shared-keyboard fallback. Record physical-device limitations. Check the implemented movement baseline and input deadzone during Play; add the wall-movement matrix only if the approved Should extension is implemented and selected. Do not infer physical-device parity from synthetic input.
 2. **Pugad/placement:** simultaneous egg claims cannot duplicate an egg; timeout handling is deterministic; invalid placements discard cleanly; colliding solid placements reject atomically independent of callback order; allowed solid/trigger overlaps remain readable; no object places on a player or protected clearance.
 3. **Cleanup/persistence:** preview names the exact target set; protected base/spawn/goal/hidden-event zone survive; same-phase new placements are not accidentally swept into cleanup; removed pieces stay removed; unsupported objects do not crush or permanently pin a player; item/transient counts stay bounded.
 4. **Lifecycle:** each item is inactive during Place; Play reset uses the defined position/phase/direction and activation grace; round end/restart/removal clears timers, signals, projectiles, bubbles, captures, and references; stage items persist according to the contract.

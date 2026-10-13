@@ -1,6 +1,6 @@
 # Tilaok! Item Catalog and Design Contracts
 
-_Approved design catalog, 2026-10-12. No items in this document are implemented or playtested._
+_Approved design catalog, 2026-10-12. As of 2026-10-13 only `build.hollow_blocks` and `build.bamboo_bridge` have code (P04, harness-verified with synthetic input, enabled for the development `karera_slice` profile only; nothing is release-enabled). No other item in this document is implemented or playtested._
 
 ## Purpose and boundaries
 
@@ -183,3 +183,17 @@ Barya remains the race-only scoring pickup already defined in GDD §5; it is not
 ## Approval and implementation gates
 
 All 36 families are approved as the Tilaok design catalog. This approval does not claim that all 36 will ship before the deadline: the eight-family first batch remains the implementation target, with the other 28 held behind scope and test gates. Before implementing mechanics, the team must choose the actual project grid/player dimensions and target PC, resolve GDD scoring/tie implementation gates, and decide final Pugad weights/caps. Event stacking is core; additional unlisted event pairs remain feature-switched off until accepted and tested. Follow the standing AI-assisted programming policy in `AI_USAGE.md`; implementation still requires approved task scope and actual verification.
+
+## Implementation status — October 13, 2026
+
+| Family / variant | Implemented | Prototype-enabled | Verified (harness, synthetic input) | Release-enabled |
+|---|---|---|---|---|
+| `build.hollow_blocks` 1×1 | yes | yes | yes | no |
+| `build.hollow_blocks` 2×3 (and rotated 3×2) | yes | yes | yes | no |
+| `build.hollow_blocks` 1×3 column (and rotated 3×1) | yes | no | geometry/standing only | no |
+| `build.bamboo_bridge` 4×1 horizontal | yes | yes | yes | no |
+| `build.bamboo_bridge` 3×1, 5×1 | yes | no | geometry/standing only | no |
+| `build.bamboo_bridge` vertical orientations | geometry only | no (gated) | no | no |
+| Every other family | no | no | no | no |
+
+Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Placeholder eggs, ghosts and Library entries exist (P04-T10/T12/T19/T21 passed on code-drawn DEBUG placeholders; final art is human-made and still open). Event/stack integration and release enablement (P04-T11/T13/T20/T22) remain blocked. Kaing declares solid-side wall eligibility and Tulay declares itself ineligible as data; wall movement itself is a separate extension that is enabled by default as core movement.

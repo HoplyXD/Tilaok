@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-13 — approved scope/wording reconciliation and P00 target-PC confirmation; gameplay values unchanged._
+_Last updated: 2026-10-13 — approved scope/wording reconciliation, P00 target-PC confirmation, and wall-movement extension; existing gameplay values unchanged._
 
 ## 1. Pitch
 A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
@@ -177,8 +177,16 @@ Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. T
 - Engine: **Godot 4.7** (free and open source, so no license is needed to play or build).
 - PC (free to play, no license needed).
 - **Local multiplayer** (2–4 players, **gamepads first**, shared keyboard as fallback). Online play is out of scope for the deadline.
-- **Controls:** run and jump only (no extra abilities for now).
+- **Controls baseline:** the measured P02 controller implements run and jump only. On October 13, wall slide/jump was approved as a separate Should-scope extension, implemented, verified on synthetic evidence and enabled by default as core movement (owner decision, 2026-10-13); see [Wall slide and wall jump](#wall-slide-and-wall-jump--approved-extension). Dash, double jump and drop-through remain excluded.
 - **Player collision:** chicken bodies pass through each other in all supported modes. Separate contact sensors handle Lagsanay tagging and Kangaroo Hug; contact does not introduce body pushing. Future modes need their own explicit contract.
+
+### Wall slide and wall jump — approved extension
+
+**Status — October 13, 2026:** Approved; implemented and covered by automated Godot checks, with human review and physical-device parity pending (see PHASETASK P02-T15–T22). Design rules below are unchanged. This adds a distinct optional movement mechanic to the existing measured run/jump baseline; it does not revise the historical P02-T09/T10 evidence. The extension is Should scope, scheduled after P03, and must not delay P04 or automatically become a required October submission feature. Decide whether to include it before the October 21 feature freeze.
+
+While airborne and touching an eligible solid side, a chicken slides down with a configurable cap on downward speed. Holding toward the wall is not required. Base and player-built solid sides qualify; moving solids qualify only while actual contact remains valid. One-way platform sides and undersides, pass-through chicken bodies and arena containment boundaries do not qualify. A fresh jump press kicks the chicken away; start with configurable prototype candidates of 240 wu/s horizontally and −520 wu/s vertically. Steering remains available immediately under ordinary air control. One kick is allowed per wall contact; the chicken must separate and make fresh contact before another. Holding jump and operating-system repeats do not repeat a kick; buffered input is consumed once.
+
+Terminal, opening-freeze, capture and external-force precedence remain unchanged. External launches preempt wall actions and clear wall eligibility/input. Pause freezes the action; phase changes, reset and reload clear stale wall contact or buffered input. Chicken bodies remain pass-through. Wall contact is not grounded support and never qualifies for Rising wave. Slide cap, grace/separation thresholds and impulse values remain provisional and require real physics trials and human feel review. Dash, double jump and drop-through remain out of scope. See [PRD REQ-MOVE-004](PRD.md#req-move-004--slide-on-eligible-walls-and-kick-away-with-a-fresh-jump-press) and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope).
 - **Camera:** dynamic, always keeps everyone who matters in frame by zooming and panning smoothly.
   - **Play phase:** frames live players only. Dead players are excluded (finished players too, so the camera follows whoever is still running).
   - **Place phase:** frames the pointers of players who have **not placed yet**. Far-apart pointers zoom out to fit both; once a player places, their pointer drops out and the camera eases in on the remaining ones. When everyone has placed, the camera eases to the Play framing.

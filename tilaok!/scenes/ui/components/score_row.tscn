@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_score_row.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="2"]
+
+[node name="ScoreRow" type="PanelContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_type_variation = &"RowPanel"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Badge" parent="Row" instance=ExtResource("2")]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ScoreLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = "0"
+theme_type_variation = &"HudLabel"
+custom_minimum_size = Vector2(52, 0)
+horizontal_alignment = 2
+unique_name_in_owner = true
+
+[node name="StateLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"HudLabel"
+unique_name_in_owner = true
+

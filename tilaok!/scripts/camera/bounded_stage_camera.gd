@@ -59,7 +59,7 @@ func _process(delta: float) -> void:
 		last_safe_position = desired
 		_initialized = true
 		return
-	var eased := _clamped_camera_position(position.lerp(desired, weight), zoom.x)
+	var eased := _clamp_camera_center(position.lerp(desired, weight), zoom.x)
 	if _bounds_visible(target_bounds, eased, zoom.x):
 		position = eased
 		last_safe_position = eased
@@ -88,10 +88,14 @@ func _usable_rect() -> Rect2:
 
 
 func _clamped_camera_position(target_center: Vector2, zoom_value: float) -> Vector2:
-	var viewport_size := Vector2(tuning.camera_virtual_width_px, tuning.camera_virtual_height_px)
 	var camera_center := (
 		target_center - Vector2(0.0, tuning.camera_hud_reservation_px * 0.5 / zoom_value)
 	)
+	return _clamp_camera_center(camera_center, zoom_value)
+
+
+func _clamp_camera_center(camera_center: Vector2, zoom_value: float) -> Vector2:
+	var viewport_size := Vector2(tuning.camera_virtual_width_px, tuning.camera_virtual_height_px)
 	var bounds := tuning.camera_view_bounds
 	var half_x := viewport_size.x * 0.5 / zoom_value
 	var low_x := bounds.position.x + half_x

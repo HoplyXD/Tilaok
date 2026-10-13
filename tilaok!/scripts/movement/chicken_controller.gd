@@ -4,6 +4,7 @@ extends CharacterBody2D
 signal intentional_input_changed(is_intentional: bool)
 signal terminal_state_changed(status: PlayerLifecycleState.Status, reason: String)
 signal escaped_bounds
+signal wall_kicked(side: int)
 
 @export var seat_index := 0
 @export var tuning: GameplayTuning
@@ -23,10 +24,21 @@ var jump_buffer_remaining := 0.0
 var jump_was_held := false
 var intentional_input := false
 var containment_outcome_reported := false
+## Wall slide/jump state (REQ-MOVE-004). Side: -1 wall on the left, +1 on the right, 0 none.
+var wall_side := 0
+var wall_lock_side := 0
+var wall_sliding := false
+var wall_kick_count := 0
+var show_wall_debug := false
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
 var _jump_impulse := -600.0
 var _vertical_half_step := 0.0
+var _wall_probe := WallContactProbe.new()
+var _wall_grace_remaining := 0.0
+var _wall_grace_side := 0
+var _wall_collider_id := 0
+var _wall_debug_signature := 0
 
 
 func _ready() -> void:
@@ -76,14 +88,17 @@ func _physics_process(delta: float) -> void:
 	if not in_play:
 		jump_buffer_remaining = 0.0
 		_vertical_half_step = 0.0
+		reset_wall_state()
 		return
 
 	if lifecycle.is_terminal():
 		_clear_support()
+		reset_wall_state()
 		locomotion_velocity = Vector2.ZERO
 		return
 	if lifecycle.status == PlayerLifecycleState.Status.OPENING_FREEZE:
 		_clear_support()
+		reset_wall_state()
 		locomotion_velocity = Vector2.ZERO
 		external_velocity = Vector2.ZERO
 		jump_buffer_remaining = 0.0
@@ -91,10 +106,12 @@ func _physics_process(delta: float) -> void:
 		return
 	if lifecycle.status == PlayerLifecycleState.Status.CAPTURED:
 		_clear_support()
+		reset_wall_state()
 		locomotion_velocity = Vector2.ZERO
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
 		return
+	_update_wall_contact(delta)
 	_update_horizontal(axis, delta)
 	_update_vertical(delta, jump_down)
 	var combined := locomotion_velocity + external_velocity
@@ -115,6 +132,7 @@ func _physics_process(delta: float) -> void:
 		coyote_remaining = tuning.coyote_seconds
 	elif external_velocity.length_squared() > 0.01:
 		coyote_remaining = 0.0
+	_refresh_wall_debug()
 	_check_bounds()
 
 
@@ -123,6 +141,7 @@ func set_snapshot(snapshot: ConfigurationSnapshot) -> void:
 		return
 	tuning = snapshot.gameplay
 	_apply_tuning()
+	reset_wall_state()
 
 
 func launch(force: Vector2, max_horizontal: float = 480.0, max_upward: float = 900.0) -> void:
@@ -135,6 +154,7 @@ func launch(force: Vector2, max_horizontal: float = 480.0, max_upward: float = 9
 	):
 		return
 	_clear_support()
+	reset_wall_state()
 	external_velocity += force
 	external_velocity.x = clampf(external_velocity.x, -max_horizontal, max_horizontal)
 	external_velocity.y = maxf(external_velocity.y, -max_upward)
@@ -151,6 +171,7 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 			return
 		lifecycle.status = PlayerLifecycleState.Status.CAPTURED
 		_clear_support()
+		reset_wall_state()
 		lifecycle.capture_source_id = source_id
 		locomotion_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -168,6 +189,7 @@ func set_opening_freeze(frozen: bool) -> void:
 	if frozen:
 		lifecycle.status = PlayerLifecycleState.Status.OPENING_FREEZE
 		_clear_support()
+		reset_wall_state()
 		locomotion_velocity = Vector2.ZERO
 		external_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -189,12 +211,90 @@ func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	if not lifecycle.set_status(status, reason):
 		return false
 	_clear_support()
+	reset_wall_state()
 	locomotion_velocity = Vector2.ZERO
 	external_velocity = Vector2.ZERO
 	jump_buffer_remaining = 0.0
 	coyote_remaining = 0.0
 	terminal_state_changed.emit(status, reason)
 	return true
+
+
+## Clears every wall contact/lock/grace field. Called from each reset, lifecycle and launch path.
+func reset_wall_state() -> void:
+	wall_side = 0
+	wall_lock_side = 0
+	wall_sliding = false
+	_wall_grace_remaining = 0.0
+	_wall_grace_side = 0
+	_wall_collider_id = 0
+	_wall_probe.clear()
+	_refresh_wall_debug()
+
+
+func _update_wall_contact(delta: float) -> void:
+	if (
+		not tuning.wall_movement_enabled
+		or is_on_floor()
+		or external_velocity.length_squared() > 0.01
+	):
+		if wall_side != 0 or wall_lock_side != 0 or _wall_grace_remaining > 0.0 or wall_sliding:
+			reset_wall_state()
+		return
+	if (
+		wall_lock_side != 0
+		and not _wall_probe.has_eligible_wall(
+			self, tuning, wall_lock_side, tuning.wall_jump_recontact_separation_wu
+		)
+	):
+		wall_lock_side = 0
+	var previous_side := wall_side
+	var preferred := previous_side if previous_side != 0 else _wall_grace_side
+	if _wall_probe.sample(self, tuning, preferred) != 0:
+		wall_side = _wall_probe.side
+		_wall_collider_id = _wall_probe.collider_id
+		_wall_grace_side = wall_side
+		_wall_grace_remaining = 0.0
+		return
+	wall_side = 0
+	if previous_side != 0 and tuning.wall_jump_contact_grace_s > 0.0:
+		_wall_grace_remaining = tuning.wall_jump_contact_grace_s
+		_wall_grace_side = previous_side
+	elif _wall_grace_remaining > 0.0:
+		_wall_grace_remaining = maxf(0.0, _wall_grace_remaining - delta)
+	if _wall_grace_remaining <= 0.0 or not WallContactProbe.collider_is_live(_wall_collider_id):
+		_wall_grace_remaining = 0.0
+		_wall_grace_side = 0
+		_wall_collider_id = 0
+
+
+func _try_wall_kick() -> void:
+	if not tuning.wall_movement_enabled:
+		return
+	var kick_side := wall_side
+	if kick_side == 0 and _wall_grace_remaining > 0.0:
+		kick_side = _wall_grace_side
+	if kick_side == 0 or kick_side == wall_lock_side:
+		return
+	locomotion_velocity.x = -float(kick_side) * tuning.wall_jump_horizontal_wu_s
+	locomotion_velocity.y = tuning.wall_jump_vertical_wu_s
+	jump_buffer_remaining = 0.0
+	wall_lock_side = kick_side
+	wall_side = 0
+	wall_sliding = false
+	_wall_grace_remaining = 0.0
+	_wall_grace_side = 0
+	wall_kick_count += 1
+	wall_kicked.emit(kick_side)
+
+
+func _refresh_wall_debug() -> void:
+	if not show_wall_debug:
+		return
+	var signature := wall_side * 9 + wall_lock_side * 3 + (1 if wall_sliding else 0)
+	if signature != _wall_debug_signature:
+		_wall_debug_signature = signature
+		queue_redraw()
 
 
 func _clear_support() -> void:
@@ -234,6 +334,7 @@ func _update_horizontal(axis: float, delta: float) -> void:
 
 func _update_vertical(delta: float, jump_down: bool) -> void:
 	_vertical_half_step = 0.0
+	wall_sliding = false
 	if external_velocity.length_squared() > 0.01:
 		coyote_remaining = 0.0
 		jump_buffer_remaining = 0.0
@@ -247,6 +348,9 @@ func _update_vertical(delta: float, jump_down: bool) -> void:
 		locomotion_velocity.y = _jump_impulse
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
+	elif jump_buffer_remaining > 0.0:
+		# Ground/coyote jump always wins above; this only runs when neither applies.
+		_try_wall_kick()
 	if locomotion_velocity.y < 0.0:
 		var gravity := _ascent_gravity
 		if not jump_down and external_velocity.y >= 0.0:
@@ -258,6 +362,15 @@ func _update_vertical(delta: float, jump_down: bool) -> void:
 		locomotion_velocity.y = minf(
 			locomotion_velocity.y + _fall_gravity * delta, tuning.fall_speed_cap_wu_s
 		)
+		if (
+			wall_side != 0
+			and tuning.wall_movement_enabled
+			and locomotion_velocity.y > tuning.wall_slide_fall_cap_wu_s
+		):
+			# Cap descent only; ascent and external forced motion are never touched.
+			locomotion_velocity.y = tuning.wall_slide_fall_cap_wu_s
+			_vertical_half_step = 0.0
+			wall_sliding = true
 	jump_was_held = jump_down
 
 
@@ -341,6 +454,24 @@ func _draw() -> void:
 			9,
 			Color.BLACK
 		)
+	if show_wall_debug:
+		_draw_wall_debug()
+
+
+func _draw_wall_debug() -> void:
+	# DEBUG cue only (code-drawn, not final art): bar on the touched side, label for state.
+	if wall_side == 0 and wall_lock_side == 0:
+		return
+	var shown := wall_side if wall_side != 0 else wall_lock_side
+	var bar_color := Color("#ffb703") if wall_side != 0 else Color("#8d99ae")
+	var x := float(shown) * 15.0
+	draw_rect(Rect2(Vector2(x - 2.0, -24.0), Vector2(4.0, 48.0)), bar_color)
+	var font := ThemeDB.fallback_font
+	if font != null:
+		var label := "DEBUG WALL SLIDE" if wall_sliding else "DEBUG WALL LOCK"
+		draw_string(
+			font, Vector2(-40.0, 40.0), label, HORIZONTAL_ALIGNMENT_LEFT, 120.0, 9, bar_color
+		)
 
 
 func _check_bounds() -> void:
@@ -368,3 +499,4 @@ func _on_phase_changed(
 	if next_phase != LocalInputRouter.Phase.PLAY:
 		jump_buffer_remaining = 0.0
 		jump_was_held = false
+		reset_wall_state()

@@ -1,0 +1,59 @@
+class_name UiSettingsScreen
+extends UiScreen
+
+signal shake_changed(mode: int)
+signal volume_changed(bus: String, level: float)
+
+const SHAKE_FULL := 0
+const SHAKE_REDUCED := 1
+const SHAKE_OFF := 2
+
+@onready var _menu: UiMenuList = %MenuList
+@onready var _shake_row: UiOptionRow = %ShakeRow
+@onready var _master_row: UiOptionRow = %MasterRow
+@onready var _music_row: UiOptionRow = %MusicRow
+@onready var _effects_row: UiOptionRow = %EffectsRow
+@onready var _crowd_row: UiOptionRow = %CrowdRow
+@onready var _back_button: Button = %BackButton
+
+
+func state_names() -> PackedStringArray:
+	return PackedStringArray(["Default", "Shake off, music 40%", "Back selected"])
+
+
+func bind_settings(settings: PresentationSettings) -> void:
+	_shake_row.set_choice(settings.screen_shake)
+	_master_row.set_level(settings.master_volume)
+	_music_row.set_level(settings.music_volume)
+	_effects_row.set_level(settings.effects_volume)
+	_crowd_row.set_level(settings.crowd_volume)
+
+
+func _on_screen_ready() -> void:
+	_shake_row.choice_changed.connect(func(index: int) -> void: shake_changed.emit(index))
+	_master_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("master", v))
+	_music_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("music", v))
+	_effects_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("effects", v))
+	_crowd_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("crowd", v))
+	_back_button.pressed.connect(func() -> void: back_requested.emit())
+	_menu.refresh_items()
+
+
+func _show_state(index: int, ctx: UiContext) -> void:
+	bind_settings(ctx.settings)
+	_menu.select(0)
+	if index == 1:
+		_shake_row.set_choice(SHAKE_OFF)
+		_music_row.set_level(0.4)
+	if index == 2:
+		_menu.select(_menu.items.size() - 1)
+
+
+func _navigate(_seat_index: int, direction: String) -> bool:
+	if direction in ["left", "right"]:
+		return _menu.adjust(-1 if direction == "left" else 1)
+	return _menu.move(direction)
+
+
+func _accept(_seat_index: int) -> bool:
+	return _menu.activate()

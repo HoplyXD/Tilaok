@@ -1,0 +1,11 @@
+---
+description: Read the shared Tilaok prompt-writing policy whenever creating or revising an implementation or phase prompt.
+alwaysApply: true
+---
+
+# Prompt-writing entry point
+
+When the user asks for a prompt, first read `docs/PROMPT_RULES.md` in full and follow it.
+Gather current repository context; do not implement the requested feature while drafting its prompt.
+Deliver individual task prompts in chat, not files.
+Use the shared document as the canonical policy rather than maintaining a second copy here.

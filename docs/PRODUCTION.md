@@ -1,6 +1,6 @@
 # Tilaok! Production Plan
 
-**Status:** pre-production planning document with implemented P02 movement/input and P03 graybox stage/camera/support diagnostic slices. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
+**Status:** pre-production planning document with implemented P02 movement/input, P03 graybox stage/camera/support and P04 item-infrastructure/Kaing/Tulay diagnostic slices. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
 
 ## Delivery principle
 
@@ -41,7 +41,7 @@ The release target below reuses the October 13 approval evidence already recorde
 | Disposition | Recorded target | Implementation / verification state at this baseline |
 |---|---|---|
 | **Required** | Team-directed local 2–4 player core loop under the standing AI-assisted programming workflow; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. P02 provides a diagnostic input/movement slice; no required item, complete mode, stack, match loop, tutorial or product UI is implemented/runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
-| **Should** | Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Include/defer decision remains pending before feature freeze. Not promoted by this baseline. |
+| **Should** | Approved optional wall slide/jump extension; Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Wall movement is approved, implemented and automated-test verified (now enabled by default as core movement by owner decision on 2026-10-13; no human review); keep/defer is PENDING; it is not a required October target and cannot delay P04. Decide include/defer before feature freeze. Other Should work remains pending. |
 | **Conditional finalist** | Qualification-dependent finalist materials and demonstration work. | Inactive unless the team qualifies. |
 | **Expansion** | The other 28 catalog families, extra stages/events, and unapproved event pairs. | Outside submission obligations; not promoted. |
 
@@ -76,7 +76,7 @@ Codex generated the P01 scripts/scenes/tests under the task authorization and in
 
 ## Implementation order after documentation sign-off
 
-1. Verify the intended engine toolchain; team-author input/movement, camera and graybox using PROTOTYPE_DEFAULTS.md. No engine-version change is implied.
+1. Verify the intended engine toolchain; implement input/movement, camera and graybox under the standing AI-assisted programming workflow using PROTOTYPE_DEFAULTS.md. No engine-version change is implied. The approved wall-movement extension is separate Should work after P03 and may not delay step 2 or required loop gates.
 2. Build Kaing Stack and Tulay na Kawayan with Pugad, atomic Place, Karera and one-time round scoring. Construction prerequisites precede Lagsanay.
 3. Verify persistent placement/reset, minimal onboarding and three/four-player input/camera. Add Gulong Talon after both construction pieces pass.
 4. Implement Lagsanay independently: tag, placement scoring, Last Cluck and solid-floor containment; enable items only after compatibility checks.
@@ -104,6 +104,7 @@ No step is evidence of completion until the implementation and required `PLAYTES
 
 - Preserve the Pugad → Place → Play loop, Karera, scoring, Lagsanay, tutorial, and clear local multiplayer controls.
 - Preserve all eight initial families as the approved October 13 submission target, with applicable approved variants and conditional Tulay orientation validation. If implementation capacity slips, seek an explicit team decision before cutting a family; the recommended first cut is Bula-Bulaklak because capture state and forced movement have the most dependencies.
+- Treat wall slide/jump as a separate approved Should extension, not an automatic submission requirement. Schedule it after P03 only when it does not delay P04 or the required loop; decide include/defer before October 21. Preserve the P03 base route without requiring wall movement.
 - Keep expanded catalog items, Langit-Lupa implementation, extra stages, cosmetics, and nonessential polish behind the core gates.
 - Do not silently replace an approved event, scoring rule, or compatibility contract.
 
@@ -156,7 +157,7 @@ A smaller milestone is not a release-scope cut. Each exit is binary; functionali
 |---|---|---|
 | M0 Movement and stage foundations | **PARTIAL:** P02 diagnostic room has four numbered/shape-marked seats, synthetic input routing, measured movement and bounds probes; P03's protected graybox route, bounded camera and support contract passed. Physical keyboard/gamepad coverage remains open; P03 does not complete a round or item system. | Items, events, final art |
 | M1 Two-player round | Lobby → Pugad → Place → Karera → score → next round twice; one egg/placement/outcome per player; timeout/invalid feedback; move/jump/place hints visible | Lagsanay, spring, hazards, match ties |
-| M2 Persistence | Ten round resets preserve construction and never duplicate score; Kaing/Tulay boundary/one-way tests pass; then spring passes launch/reset checks | Bubble and advanced first-batch hazards |
+| M2 Persistence | Ten round resets preserve construction and never duplicate score; Kaing/Tulay boundary/one-way tests pass; then spring passes launch/reset checks. **PARTIAL (2026-10-13):** P04 passes ten construction-persistence cycles and the Kaing/Tulay boundary/one-way harness tests (synthetic input); score duplication, spring and the full round loop are not yet implemented. | Bubble and advanced first-batch hazards |
 | M3 Three/four-player loop | Three rounds at each count; all targets visible; supported simultaneous input, slot/device rotation, disconnect/reclaim and pause/resume pass | Additional events or stages |
 | M4 Lagsanay alone | 2/3/4-player contact, stationary overlap, immunity, opening freeze, timer, placement ties, Last Cluck and containment pass; actual trap attribution checked when a hazard exists | Kangaroo and stacks |
 | M5 Full match/restart | First-to-10 and round-12 paths, equal scores → sudden death → one winner, tutorial replay, return/replay and ten complete restarts pass | Extra catalog and production art |
@@ -168,7 +169,7 @@ M1–M3 use the labeled race-only development profile. P02 is not a full lobby-t
 
 ### P02 delivery record — October 13, 2026
 
-P02 has an implemented diagnostic input/movement foundation and 8/14 task records verified. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 83 focused P02 assertions pass; the Windows export and headless startup pass. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
+Historical P02 delivery evidence records 8/14 original task records verified. With the October 13 approved wall-movement extension, the current P02 tracker has 14/22 tasks checked; six of the eight new Should tasks (T15–T17, T19–T21) are checked on automated evidence and T18/T22 stay open. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 83 focused P02 assertions pass; the Windows export and headless startup pass. Wall movement has its own automated evidence in `docs/evidence/p02-wall/`; it has no human review. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
 
 Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 human review evidence and competition eligibility interpretation remain unresolved. P02 was AI-generated under the authorization then in force; the standing workflow is now recorded in `AI_USAGE.md`. Neither implementation nor this policy records team review or organizer acceptance. P03 status is limited to the graybox contracts; do not treat these slices as a complete game or release candidate.
 
@@ -177,6 +178,10 @@ Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/rep
 P03-T01–T06 are verified. The arena uses the documented 1024×512-wu bounds and protected grid, and the real P02 controller traverses the base route with collision. The bounded Play/Place camera passed 2/3/4-target extent checks, a maximum 900-wu/s launch, target lifecycle transitions and rendered 1080p/wide-window checks. Explicit support provenance/contact/invalidation passed its focused fixture matrix. The uncapped 1080p sample recorded median 0.826 ms, p95 1.426 ms, worst 6.141 ms, 67.60 MiB Godot static memory, 199.91 MiB peak working set and 250.59 MiB peak private bytes over 600 frames on the local RTX 4050 machine. A Windows Desktop export and three-frame headless startup passed. Exact records are in `PLAYTEST.md`, `PHASETASK.md` and `docs/evidence/p03/2026-10-13_p03_verification.md`.
 
 This is diagnostic geometry and fixture-contract evidence. It is not player-feel or final-art review, late-game stress, Pugad/atomic placement, production item/event implementation, full match testing, physical-device coverage, independent human review or organizer acceptance. P03 programming and test/documentation assistance is recorded in `AI_USAGE.md`; no AI-generated final art or audio was created.
+
+### P04 item-infrastructure delivery record — October 13, 2026
+
+P04-T01–T09 and T14–T18 are verified (14/22; early exit met): typed item definitions with one validator, a lifecycle/cap manager, and the Kaing and Tulay seeds with real-controller harness evidence, an interactive Item Lab, 1080p captures, a 48-piece performance sample and a Windows export smoke. T10–T13 and T19–T22 are blocked on P05 preview infrastructure, later modes/stacks, the Library schema and human Art/UI assets. Art and cultural checks for Kaing/Tulay are recorded follow-ups (Jorge/Ivie; Compliance), not code gates, per the owner decision of 2026-10-13. Seeds are runtime-enabled for the development `karera_slice` profile only; `release_target` stays false. No human review, physical-device evidence or production asset exists for this slice.
 
 ## Team and integration defaults
 
@@ -194,4 +199,4 @@ Inspection on October 12 found only a skeleton. At documentation completion on O
 
 ## Product and execution handoff
 
-Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Development leads are recorded above; individual assignments/capacity remain unknown. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.
+Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Wall slide/jump joins session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards as Should work; decide include/defer before freeze. Wall movement is approved but unimplemented and may not delay P04. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Development leads are recorded above; individual assignments/capacity remain unknown. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.

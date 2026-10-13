@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UiLibraryText" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_library_text.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+categories = PackedStringArray("How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility")
+titles = PackedStringArray("How to Play", "Karera (race)", "Lagsanay (tag)", "Kangaroo", "Items", "Accessibility")
+bodies = PackedStringArray("SAMPLE: Pick an egg, place the item it hatches, then race to the flag. First to 10 points wins.", "SAMPLE: Reach the flag. Tapos 1.0, Una +0.25, Bayani +0.5, Patibong +0.25 per kill, Bawi +0.75.", "SAMPLE: Touch to pass the taya. When the timer ends the taya is out. Last chicken standing wins.", "SAMPLE: Match the slipper pose: KANG, GA, ROO. Three misses and you are out.", "Live entries from the item definitions.", "SAMPLE: Shake can be Full, Reduced or Off. Every cue also has a shape, text or motion, never colour alone.")

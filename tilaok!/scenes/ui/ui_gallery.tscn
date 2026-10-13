@@ -1,0 +1,279 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/title_screen.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/lobby_screen.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/tutorial_prompt.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/pugad_overlay.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/place_overlay.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/play_hud.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/round_result_screen.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/match_result_screen.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/pause_screen.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/settings_screen.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/library_screen.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/events_overlay.tscn" id="12"]
+[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="13"]
+[ext_resource type="Script" path="res://scripts/ui/ui_gallery.gd" id="14"]
+
+[node name="UiGallery" type="Control"]
+layout_mode = 3
+script = ExtResource("14")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("13")
+screen_scenes = Array[PackedScene]([ExtResource("1"), ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12")])
+
+[node name="Backdrop" type="PanelContainer" parent="."]
+layout_mode = 1
+theme_type_variation = &"Backdrop"
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stage" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+unique_name_in_owner = true
+
+[node name="Chrome" type="PanelContainer" parent="."]
+layout_mode = 1
+theme_type_variation = &"Card"
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 270.0
+grow_vertical = 2
+custom_minimum_size = Vector2(270, 0)
+unique_name_in_owner = true
+
+[node name="Scroll" type="ScrollContainer" parent="Chrome"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Col" type="VBoxContainer" parent="Chrome/Scroll"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="GalleryTitle" type="Label" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+text = "UI GALLERY - SAMPLE DATA"
+theme_type_variation = &"HudLabel"
+
+[node name="ScreenLabel" type="Label" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"CaptionLabel"
+unique_name_in_owner = true
+
+[node name="StateLabel" type="Label" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"CaptionLabel"
+autowrap_mode = 3
+unique_name_in_owner = true
+
+[node name="StateRow" type="HBoxContainer" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StatePrev" type="Button" parent="Chrome/Scroll/Col/StateRow"]
+layout_mode = 2
+focus_mode = 0
+text = "< State"
+toggle_mode = false
+unique_name_in_owner = true
+
+[node name="StateNext" type="Button" parent="Chrome/Scroll/Col/StateRow"]
+layout_mode = 2
+focus_mode = 0
+text = "State >"
+toggle_mode = false
+unique_name_in_owner = true
+
+[node name="ScreenList" type="VBoxContainer" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+theme_override_constants/separation = 4
+unique_name_in_owner = true
+
+[node name="Btn_0" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Title"
+toggle_mode = false
+
+[node name="Btn_1" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Lobby"
+toggle_mode = false
+
+[node name="Btn_2" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Tutorial prompt"
+toggle_mode = false
+
+[node name="Btn_3" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Pugad overlay"
+toggle_mode = false
+
+[node name="Btn_4" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Place overlay"
+toggle_mode = false
+
+[node name="Btn_5" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Play HUD (64 px)"
+toggle_mode = false
+
+[node name="Btn_6" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Round result"
+toggle_mode = false
+
+[node name="Btn_7" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Match result"
+toggle_mode = false
+
+[node name="Btn_8" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Pause / reconnect"
+toggle_mode = false
+
+[node name="Btn_9" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Settings"
+toggle_mode = false
+
+[node name="Btn_10" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Library"
+toggle_mode = false
+
+[node name="Btn_11" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Event overlays"
+toggle_mode = false
+
+[node name="DeviceHeading" type="Label" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+text = "Prompt glyphs"
+theme_type_variation = &"CaptionLabel"
+
+[node name="DeviceRow" type="HBoxContainer" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DeviceK1" type="Button" parent="Chrome/Scroll/Col/DeviceRow"]
+layout_mode = 2
+focus_mode = 0
+text = "K1"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="DeviceK2" type="Button" parent="Chrome/Scroll/Col/DeviceRow"]
+layout_mode = 2
+focus_mode = 0
+text = "K2"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="DevicePad" type="Button" parent="Chrome/Scroll/Col/DeviceRow"]
+layout_mode = 2
+focus_mode = 0
+text = "Pad"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="PlayersHeading" type="Label" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+text = "Players"
+theme_type_variation = &"CaptionLabel"
+
+[node name="PlayersRow" type="HBoxContainer" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Players1" type="Button" parent="Chrome/Scroll/Col/PlayersRow"]
+layout_mode = 2
+focus_mode = 0
+text = "1"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="Players2" type="Button" parent="Chrome/Scroll/Col/PlayersRow"]
+layout_mode = 2
+focus_mode = 0
+text = "2"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="Players3" type="Button" parent="Chrome/Scroll/Col/PlayersRow"]
+layout_mode = 2
+focus_mode = 0
+text = "3"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="Players4" type="Button" parent="Chrome/Scroll/Col/PlayersRow"]
+layout_mode = 2
+focus_mode = 0
+text = "4"
+toggle_mode = true
+unique_name_in_owner = true
+
+[node name="OwnerButton" type="Button" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+focus_mode = 0
+text = "Owner: seat 1"
+toggle_mode = false
+unique_name_in_owner = true
+
+[node name="ThemeSwapButton" type="Button" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+focus_mode = 0
+text = "Swap theme"
+toggle_mode = false
+unique_name_in_owner = true
+
+[node name="HideButton" type="Button" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+focus_mode = 0
+text = "Hide panel (F9)"
+toggle_mode = false
+unique_name_in_owner = true
+
+[node name="ReturnButton" type="Button" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+focus_mode = 0
+text = "Return"
+toggle_mode = false
+unique_name_in_owner = true
+
+[node name="Hint" type="Label" parent="Chrome/Scroll/Col"]
+layout_mode = 2
+text = "K1: WASD/F/G  K2: arrows/Enter/Backspace"
+theme_type_variation = &"CaptionLabel"
+autowrap_mode = 3
+

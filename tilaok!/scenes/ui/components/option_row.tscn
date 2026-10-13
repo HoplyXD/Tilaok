@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_option_row.gd" id="1"]
+
+[node name="OptionRow" type="PanelContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_type_variation = &"RowPanel"
+custom_minimum_size = Vector2(0, 48)
+row_title = "Option"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="NameLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = "Option"
+theme_type_variation = &"BodyLabel"
+custom_minimum_size = Vector2(220, 0)
+size_flags_horizontal = 3
+unique_name_in_owner = true
+
+[node name="Bar" type="ProgressBar" parent="Row"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 16)
+size_flags_vertical = 4
+show_percentage = false
+value = 100.0
+unique_name_in_owner = true
+
+[node name="ValueLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+horizontal_alignment = 2
+custom_minimum_size = Vector2(120, 0)
+unique_name_in_owner = true
+

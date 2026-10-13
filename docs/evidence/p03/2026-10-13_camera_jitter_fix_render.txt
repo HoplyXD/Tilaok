@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+CAMERA_SCREENSHOT path=C:/Users/roman/AppData/Local/Temp/Tilaok-p03-camera-diagnostic-20261013/docs/evidence/p03/2026-10-13_camera_jitter_fix_close_1080p.png size=(1920, 1080)
+CAMERA_SCREENSHOT path=C:/Users/roman/AppData/Local/Temp/Tilaok-p03-camera-diagnostic-20261013/docs/evidence/p03/2026-10-13_camera_jitter_fix_apart_1080p.png size=(1920, 1080)
+CAMERA_JITTER_RENDER resolution=1920x1080 actors=2 separation=78->82 close_y=268.1064 close_expected_y=268.1393 close_error=0.0329 apart_y=268.1384 apart_expected_y=268.1426 apart_error=0.0042 pair_delta_y=0.0320 zoom=1.39998 result=PASS

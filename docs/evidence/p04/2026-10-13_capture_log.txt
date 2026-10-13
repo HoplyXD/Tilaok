@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P04_SCREENSHOT file=2026-10-13_variants_enabled_1080p.png size=1920x1080 zoom=1.021 caption=enabled prototype variants
+P04_SCREENSHOT file=2026-10-13_variants_disabled_geometry_1080p.png size=1920x1080 zoom=1.023 caption=defined-but-disabled geometry (capture-only tuning)
+P04_SCREENSHOT file=2026-10-13_ghost_valid_invalid_1080p.png size=1920x1080 zoom=1.024 caption=valid vs invalid Tulay ghosts
+P04_SCREENSHOT file=2026-10-13_ghost_kaing_1080p.png size=1920x1080 zoom=1.024 caption=Kaing 2x3 ghosts incl. rotation and bounds
+P04_SCREENSHOT file=2026-10-13_eggs_library_1080p.png size=1920x1080 zoom=1.025 caption=placeholder eggs, ghost and Library panel
+P04_SCREENSHOT file=2026-10-13_crowd_48_1080p.png size=1920x1080 zoom=1.025 caption=48 persistent pieces and four chickens
+P04_PERFORMANCE samples=600 median=1.954ms p95=3.109ms worst=6.059ms memory=70.97MiB status=PASSED
+P04_MEMORY_WINDOW pid=11312 seconds=5.0

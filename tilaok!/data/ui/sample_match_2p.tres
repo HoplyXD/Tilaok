@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UiSampleMatch" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_sample_match.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+round_number = 5
+main_challenge = "Karera"
+twist = "TWIST: Wind"
+timer_text = "0:42"
+next_event = "R8: Lagsanay"
+scores = PackedFloat32Array(3.5, 2.25)
+states = PackedStringArray("SAFE", "RUN")
+outcomes = PackedStringArray("1st - reached the flag", "Did not finish")
+outcome_points = PackedFloat32Array(1.25, 0.0)
+awards = PackedStringArray("Tapos +1.0", "Una +0.25")
+award_seats = PackedInt32Array(0, 0)
+no_score_reason = "Both finished: points are waived in 2-player."
+winner_seat = 0
+last_cluck = false
+long_name = "Pambihirang Pagtitiis ng Mapagpakumbabang Manok"
+advance_seconds = 8.0
+tutorial_title = "Step 3 of 6"
+tutorial_body = "Pick an egg. It shows exactly what you will place."

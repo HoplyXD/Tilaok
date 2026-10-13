@@ -29,11 +29,11 @@ func _init(source_tuning: GameplayTuning = null) -> void:
 	spawn_feet = Vector2(3.0, 15.0) * cell
 	goal_trigger = tile_rect(30, 10, 31, 12)
 	_add_surface("arena.floor", tile_rect(0, 15, 32, 16), true)
-	_add_surface("arena.base_a", tile_rect(6, 13, 10, 15), true)
-	_add_surface("arena.base_b", tile_rect(12, 11, 16, 12), true)
-	_add_surface("arena.base_c", tile_rect(18, 13, 22, 15), true)
-	_add_surface("arena.base_d", tile_rect(24, 11, 28, 12), true)
-	_add_surface("arena.goal", tile_rect(28, 12, 32, 15), true)
+	_add_surface("arena.base_a", tile_rect(6, 13, 10, 15), true, true)
+	_add_surface("arena.base_b", tile_rect(12, 11, 16, 12), true, true)
+	_add_surface("arena.base_c", tile_rect(18, 13, 22, 15), true, true)
+	_add_surface("arena.base_d", tile_rect(24, 11, 28, 12), true, true)
+	_add_surface("arena.goal", tile_rect(28, 12, 32, 15), true, true)
 	_add_surface(
 		"arena.left_wall", Rect2(Vector2(-cell, 0.0), Vector2(cell, arena_bounds.size.y)), true
 	)
@@ -110,6 +110,10 @@ func register_player_construction(construction_id: String) -> bool:
 	return true
 
 
+func unregister_player_construction(construction_id: String) -> bool:
+	return _construction_ids.erase(construction_id)
+
+
 func can_remove_surface(surface_id: String) -> Dictionary:
 	if _immutable_ids.has(surface_id):
 		return _reject("immutable arena geometry")
@@ -118,12 +122,20 @@ func can_remove_surface(surface_id: String) -> Dictionary:
 	return {"allowed": true, "reason": "player construction"}
 
 
-func _add_surface(surface_id: String, rect: Rect2, immutable: bool) -> void:
+func _add_surface(
+	surface_id: String, rect: Rect2, immutable: bool, wall_eligible: bool = false
+) -> void:
 	var metadata := SupportSurfaceMetadata.new()
 	metadata.surface_id = surface_id
 	metadata.construction_id = surface_id if not immutable else ""
 	metadata.player_built = not immutable
 	metadata.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.INELIGIBLE
+	# Base platform sides may be wall-eligible; floor and containment/ceiling never are.
+	metadata.wall_movement_eligibility = (
+		SupportSurfaceMetadata.Eligibility.ELIGIBLE
+		if wall_eligible
+		else SupportSurfaceMetadata.Eligibility.INELIGIBLE
+	)
 	surface_specs.append(
 		{"id": surface_id, "rect": rect, "immutable": immutable, "metadata": metadata}
 	)

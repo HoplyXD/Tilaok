@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_toast_line.gd" id="1"]
+
+[node name="ToastLine" type="PanelContainer"]
+layout_mode = 3
+script = ExtResource("1")
+theme_type_variation = &"ToastPanel"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MarkLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = "!"
+theme_type_variation = &"HudLabel"
+
+[node name="TextLabel" type="Label" parent="Row"]
+layout_mode = 2
+text = "Reason"
+theme_type_variation = &"BodyLabel"
+autowrap_mode = 3
+size_flags_horizontal = 3
+unique_name_in_owner = true
+

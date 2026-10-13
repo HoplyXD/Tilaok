@@ -1,6 +1,6 @@
 # Tilaok! Prototype Defaults and Team Handoff
 
-**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, establish competition eligibility, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
+**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, or establish competition eligibility. The wall-movement extension below was approved October 13, 2026; its rule choices are active design direction, while numeric starting values remain untested. Other proposed rule changes remain inactive until explicitly accepted.
 
 ## 1. Recommendation and evidence
 
@@ -59,7 +59,40 @@ All distances are world units (wu), provisionally equal to unscaled 2D pixels; t
 | `contact.sensor_size_wu` | P: 28×48 wu centered on body; width 24–32 wu | 2 wu expansion per side, readable near-contact; may appear early | Stationary, edge and crossing tests; reduce if visible gaps seem too large | Low |
 | `contact.pass_back_s` | C/P: 1.0 s; 0.75–1.25 s | Stops immediate retaliation; temporary immunity can be exploited | Pursuit and overlap trials; change if repeated back-and-forth or no counterplay | Low |
 
-Normal controls are left/right and jump only. No wall jump, dash, double jump, or drop-through action. Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
+The measured P02 baseline controls are left/right and jump only; that historical implementation had no wall jump, dash, double jump, or drop-through. The separately approved wall extension is implemented, enabled by default as core movement (owner decision, 2026-10-13) and measured only in synthetic fixtures (below). Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
+
+### Wall movement — approved Should extension
+
+**Approved behavior, not implementation:** airborne actual contact with an eligible solid side enters a downward slide without requiring directional hold. Cap downward speed only. A fresh jump press kicks away once; allow immediate air steering. Require separation and fresh recontact before a repeat. Wall contact is not floor/ground/support contact. External launch preempts and clears wall eligibility and pending wall input; terminal > opening freeze > capture > forced motion > locomotion remains the state order. Pause freezes the action; phase/reset/reload clear stale contact and buffered input. Pass-through chicken bodies remain unchanged. See GDD, PRD REQ-MOVE-004 and PHASETASK P02-T15–T22.
+
+Only solid sides identified as eligible wall surfaces qualify: base and player-built solids, plus moving solids while their actual contact remains valid. Exclude one-way platform sides/undersides, triggers, ineligible hazard/effect surfaces, chickens and arena containment boundaries. A sensor overlap alone is insufficient. Wall contact must never publish upward support or Rising-wave eligibility.
+
+| Candidate tuning key | Starting candidate (unmeasured) | Experiment range / purpose |
+|---|---:|---|
+| `move.wall_slide_fall_cap_wu_s` | 120 wu/s downward | Compare 80–180 wu/s; measure descent over marked wall heights and review whether escape remains possible. |
+| `move.wall_jump_horizontal_wu_s` | 240 wu/s away | Compare 180–300 wu/s against the 280 wu/s run speed; test horizontal clearance and steering return. |
+| `move.wall_jump_vertical_wu_s` | −520 wu/s | Compare −440 to −600 wu/s against the −600 wu/s normal jump impulse; measure height/time and ceiling/bounds risk. |
+| `move.wall_jump_contact_grace_s` | 0.08 s | Compare 0–0.12 s; a fresh press just before contact may be buffered briefly, but held input never auto-repeats. |
+| `move.wall_jump_recontact_separation_wu` | 8 wu clear gap | Compare 4–16 wu; require observable physical separation before another kick on the same wall. |
+
+These values now live in `tilaok!/scripts/config/gameplay_tuning.gd` (`wall_movement_enabled`, `wall_slide_fall_cap_wu_s`, `wall_jump_horizontal_wu_s`, `wall_jump_vertical_wu_s`, `wall_jump_contact_grace_s`, `wall_jump_recontact_separation_wu`, plus `wall_contact_probe_wu` 1 and `wall_normal_tolerance_degrees` 10) with unchanged starting values; first synthetic-fixture measurements follow and are not feel or balance evidence. They are candidates for centralized configuration, not finalized parameters or balance claims. Run real Godot collision trials, rendered sessions and human feel/balance review. Compare route completion, unintended falls, ceiling/bound escapes, repeat-climb time, and players' ability to understand the contact/recontact rule. Do not change normal ground-jump tuning just to make wall movement pass.
+
+#### Wall movement runtime measurements — October 13, 2026
+
+Build `9ee25c8` + working tree; Godot `4.7.2.stable.official.ed1daf0bf`; P02 movement room and P03 stage; seed 12345; 60 Hz; synthetic input; [log](evidence/p02-wall/2026-10-13_wall_tests.txt). Values are the unchanged starting candidates, not tuned or balance-approved.
+
+| Measurement | Expected | Observed |
+|---|---:|---:|
+| Slide speed, wall on left / right | 120 wu/s cap | 120.00 / 120.00 wu/s |
+| Kick velocity (K1 / K2 / gamepad) | 240 away, −520 up | vx 240.00; vy −457.50 two ticks after the kick (−520 + 2×31.25) |
+| Kicks per fresh press | 1 | 1 (all three device types) |
+| Kicks over a 1 s held press with OS repeats | 1 | 1; echo alone 0 |
+| Same-contact second press | blocked | blocked; lock cleared at a 12.10 wu gap |
+| Steering after kick (3 ticks toward wall) | immediate | vx 240 → 160 wu/s |
+| Kick rise, jump held / released | ≈72.1 / lower | 72.07 / 33.84 wu |
+| Enabled full ground jump apex | 96 ± 2 wu | 96.06 wu |
+| Two-wall 64 wu shaft, 240 frames | measured only | 34 kicks; reaches the room ceiling; −2.0…+24.5 wu per cycle |
+| Kick + launch (±480,−900), (0,−900), (480,0) | inside bounds | contained in all four P02-room trials; P03 camera visible, peak y 264.08 |
 
 One-way Tulay: pass through underside/sides; land on its upward top only when descending relative to it and crossing the top from above. Start with horizontal 4×1-cell footprint and 4 wu visible/collision top strip; vertical orientation stays disabled because the existing contract makes it conditional on controller support. Leave via an edge or jump. Keep footprint reservation distinct from collision strip. Kaing starts with 1×1 and 2×3 variants (equal conditional weights), 90° rotation where shape changes. Other approved variants remain deferred, not deleted.
 
@@ -111,6 +144,19 @@ These results establish behavior only in this small authored collision fixture, 
 | Render throughput/memory | Median/p95/worst ≤16.67 ms; process memory ≤512 MiB | 600 uncapped rendered frames at 1920×1080, v-sync off: median 0.826 ms, p95 1.426 ms, worst 6.141 ms; Godot static memory 67.60 MiB; sampled Windows process peak working set 199.91 MiB/private bytes 250.59 MiB; elapsed 0.544 s. |
 
 Exact tests, captures and results are in [P03 verification evidence](evidence/p03/2026-10-13_p03_verification.md). These fixture measurements do not establish player feel, final-art readability, late-game stress, release readiness, or balance. No gameplay networking is instantiated by this local fixture; the sample is not a network-throughput test.
+
+### P04 item infrastructure measurements — October 13, 2026
+
+**Build/profile:** `P04-item-lab-dev`, `main` @ `765ed09` + P04 working tree; Godot `4.7.2.stable.official.ed1daf0bf`; `karera_slice`; seed `12345`; 60-Hz physics; synthetic input. **Tunable location:** every item knob is an `item_*` field in `tilaok!/scripts/config/gameplay_tuning.gd` (caps 48/16/2 per emitter/4/1/1/32, TTL 3/4/2 s, grace 1.0 s, Tulay strip 4 wu, vertical gate false, family weights 50/50, enabled variants); footprints, regions and rotations are typed `.tres` definition data in `tilaok!/data/items/`.
+
+| Measurement | Expected | Observed |
+|---|---|---|
+| Ten Play/round-end cycles, three pieces + test transients | Only construction persists; counts stable | Nodes 110→110; objects 1760→1760; orphans 0→0 |
+| Rotating allocation, 6 emitters, cap 4, 6 rounds | Equal wins independent of callback order | 4 wins each; reversed callback order identical |
+| Tulay 4 wu strip at fall cap | All drops land | 5/5 landed; sampled peak 878.9 wu/s (cap 900) |
+| 48 pieces + 4 chickens, 1080p uncapped, 600 frames | ≤16.67 ms; ≤512 MiB | median 1.954 / p95 3.109 / worst 6.059 ms; peak working set 208.8 MiB, private 242.4 MiB |
+
+These are fixture measurements, not feel or balance evidence. The Kaing/Tulay equal selection weights are configuration only; no Pugad exists to use them yet.
 
 ### Contact and temporary-state policy
 

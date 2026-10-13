@@ -1,0 +1,191 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/ui_pause_screen.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="6"]
+
+[node name="PauseScreen" type="Control"]
+layout_mode = 3
+script = ExtResource("2")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+standalone_theme = ExtResource("1")
+
+[node name="Scrim" type="PanelContainer" parent="."]
+layout_mode = 1
+theme_type_variation = &"Scrim"
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+layout_mode = 2
+theme_type_variation = &"Card"
+custom_minimum_size = Vector2(520, 0)
+
+[node name="Art_Panel" type="TextureRect" parent="Center/Panel"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+metadata/asset_id = "ui.pause.panel"
+
+[node name="Content" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PausedLabel" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "PAUSED"
+theme_type_variation = &"HeadingLabel"
+horizontal_alignment = 1
+
+[node name="Owner" type="HBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="OwnerLabel" type="Label" parent="Center/Panel/Content/Owner"]
+layout_mode = 2
+text = "Paused by"
+theme_type_variation = &"BodyLabel"
+unique_name_in_owner = true
+
+[node name="OwnerBadge" parent="Center/Panel/Content/Owner" instance=ExtResource("3")]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ReasonLabel" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "Reason"
+theme_type_variation = &"CaptionLabel"
+horizontal_alignment = 1
+unique_name_in_owner = true
+
+[node name="RosterHeading" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "Everyone must be ready to resume"
+theme_type_variation = &"BodyLabel"
+horizontal_alignment = 1
+
+[node name="Roster" type="VBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Roster1" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+layout_mode = 2
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="Roster2" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+layout_mode = 2
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="Roster3" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+layout_mode = 2
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="Roster4" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+layout_mode = 2
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="CountdownLabel" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "Resuming in 3"
+theme_type_variation = &"HeadingLabel"
+horizontal_alignment = 1
+unique_name_in_owner = true
+
+[node name="ReclaimPanel" type="PanelContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+theme_type_variation = &"ToastPanel"
+visible = false
+unique_name_in_owner = true
+
+[node name="ReclaimLabel" type="Label" parent="Center/Panel/Content/ReclaimPanel"]
+layout_mode = 2
+text = "Seat lost its controller"
+theme_type_variation = &"BodyLabel"
+autowrap_mode = 3
+unique_name_in_owner = true
+
+[node name="MenuList" type="VBoxContainer" parent="Center/Panel/Content"]
+layout_mode = 2
+script = ExtResource("5")
+theme_override_constants/separation = 8
+unique_name_in_owner = true
+
+[node name="ResumeButton" type="Button" parent="Center/Panel/Content/MenuList"]
+layout_mode = 2
+custom_minimum_size = Vector2(320, 38)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Ready / Resume"
+unique_name_in_owner = true
+
+[node name="SettingsButton" type="Button" parent="Center/Panel/Content/MenuList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Settings"
+unique_name_in_owner = true
+
+[node name="LibraryButton" type="Button" parent="Center/Panel/Content/MenuList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Library"
+unique_name_in_owner = true
+
+[node name="LeaveButton" type="Button" parent="Center/Panel/Content/MenuList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Leave match"
+unique_name_in_owner = true
+
+[node name="Tag" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "PLACEHOLDER pause / reconnect"
+theme_type_variation = &"PlaceholderTag"
+horizontal_alignment = 1
+
+[node name="LeaveConfirm" parent="." instance=ExtResource("6")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -70.0
+offset_right = 230.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+unique_name_in_owner = true
+

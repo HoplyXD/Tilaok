@@ -128,7 +128,7 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Art/UI (name TBD).
 
-**Expected behavior:** Lobby supports 2–4 joined ready seats with fixed markers; fewer than two cannot start. Round result explains outcomes, awards, no-score reason and total. Prototype result advance is all-ready or 8 s. Provide basic join/move/jump/egg/place hints early.
+**Expected behavior:** Lobby supports 2–4 joined ready seats with fixed markers; fewer than two cannot start. Round result explains outcomes, awards, no-score reason and total. Prototype result advance is all-ready or 8 s. Provide basic join/move/jump/egg/place hints early; add wall-movement instruction only if REQ-MOVE-004 is implemented, verified and selected for release.
 
 **Acceptance:** New participants can join and identify themselves; results explain actual awards; next round consumes held presses and retains construction correctly.
 
@@ -216,7 +216,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Scope:** REQUIRED · **Design status:** PROTOTYPE—UNTESTED · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Normal Play controls are left/right and jump, without dash, wall jump, double jump or drop-through. Prototype uses 32 wu grid, 24×48 collider, 96 wu jump apex at 0.32 s, 280 wu/s run speed, variable jump, coyote/buffer, acceleration/braking and launch limits from the defaults register. These are starting values, not balance claims.
+**Expected behavior — original P02 baseline:** This requirement's run/jump-only wording records the pre-extension controller scope; it does not exclude the separately approved REQ-MOVE-004. Preserve left/right, normal jump, ground/coyote behavior and the measured run/jump contract. Dash, double jump and drop-through remain excluded. Prototype uses 32 wu grid, 24×48 collider, 96 wu jump apex at 0.32 s, 280 wu/s run speed, variable jump, coyote/buffer, acceleration/braking and launch limits from the defaults register. These are starting values, not balance claims.
 
 **Acceptance:** Measure full/short jumps, braking, reversal and 64 wu gap/rise trials; investigate apex deviations above 2 wu or one physics step; consume each buffered jump once and never auto-repeat held jump.
 
@@ -243,6 +243,25 @@ Base stage is playable before construction; player changes may make it difficult
 **Acceptance:** Maximum launches cannot bypass bounds; injected breach cannot repeatedly award score, teleport an active taya while time runs, or convert a Lagsanay fall into elimination. Recovery is labeled a prototype safeguard.
 
 **Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-13):** visible floor/walls/ceiling, maximum configured launch containment and explicit Race/Lagsanay/Kangaroo breach recovery contract pass diagnostic tests; see [P02 evidence](evidence/p02-checks-2026-10-13.log) and [tracker P02-T13/T14](PHASETASK.md#p02-t13). Recovery is a labeled prototype safeguard, not a scoring or complete round-restart system.
+
+
+### REQ-MOVE-004 — Slide on eligible walls and kick away with a fresh jump press
+
+**Scope:** SHOULD · **Design status:** APPROVED; IMPLEMENTED, AUTOMATED CHECKS PASSED, HUMAN REVIEW PENDING (October 13, 2026) · **Owner role:** Gameplay (name TBD).
+
+**Existing baseline:** REQ-MOVE-001 and P02-T09/T10 accurately record the previously implemented and measured run/jump-only controller. That historical acceptance excluded wall jump; it is not evidence for this extension. The extension is separately approved; its implementation passes automated Godot physics, route, containment and camera checks (see [wall evidence](evidence/p02-wall/README.md)); human feel review and physical-device parity are pending.
+
+**Expected behavior:** While airborne and actually touching a qualifying solid side, slide down with a configurable cap on downward speed only. Contact does not require directional hold. Base and player-built solid sides qualify; moving solids qualify only while actual contact remains valid. Exclude one-way platform sides/undersides, triggers, pass-through chicken bodies and arena containment boundaries. A fresh jump press near eligible wall contact produces one kick away, using a configurable horizontal-away and vertical impulse. Air steering remains available immediately. One kick is allowed per contact; physical separation and fresh recontact are required before another. Normal ground jump/coyote behavior remains unchanged. Holding jump or OS key-repeat never auto-repeats a wall jump; buffered input is consumed exactly once.
+
+**State and system precedence:** Preserve terminal > opening freeze > capture > external forced motion > locomotion. External launches preempt and clear wall-action eligibility and pending wall jump input; wall jump must not shorten or overwrite an external launch. Pause freezes movement and input consumption. Phase changes, reset, and scene reload clear stale contact/buffer/repeat state. Keep intentional jump input observable for future Freeze evaluation. Player bodies remain pass-through. Wall contact is not grounded support, never populates upward support provenance, and never qualifies for Rising wave.
+
+**Configurable prototype tuning:** Start wall-jump candidates at 240 wu/s horizontal-away and −520 wu/s vertical. Centralize the descending slide cap, optional short contact grace, separation/recontact threshold and impulse values. All are provisional, unmeasured starting points, not balance-approved values. Compare alternatives in actual Godot physics and human feel sessions.
+
+**Acceptance:** Left/right eligible walls behave symmetrically; contact loss/removal clears state; only descent is speed-capped; each fresh press yields at most one jump and held/repeated input cannot chain; same-wall re-jump requires separation; excluded surfaces never activate; lifecycle/launch/pause/reset precedence is respected; support/Rising-wave state stays false; ground jump/coyote and pass-through-body behavior regressions pass; P03's base route remains traversable without wall movement; maximum kicks/launches remain contained and camera-visible. Actual feel/balance review and physical input parity must be recorded separately from synthetic tests.
+
+**Explicit non-goals:** Dash, double jump, drop-through, player-to-player wall interaction, AI-created final art/audio, changing P03 base route, implementing Lagsanay/Kangaroo/event logic, or promoting Should scope to a required October submission feature.
+
+**Source / tasks:** [GDD.md](GDD.md#wall-slide-and-wall-jump--approved-extension), [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md#wall-movement--approved-should-extension), [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md#wall-contact-and-upward-support-are-distinct), [PLAYTEST.md](PLAYTEST.md#wall-movement--future-verification), and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope). P02-T15–T17 and T19–T21 are checked on automated/synthetic evidence; T18 (physical devices) and T22 (human review) remain unchecked. Later event-stack integration belongs at the corresponding event gates; this requirement does not depend on unimplemented events.
 
 
 ### REQ-STAGE-001 — Build one protected barrio graybox arena
@@ -290,7 +309,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Definition validation rejects missing required fields, unbounded regions and undocumented variants; effect regions remain distinct from occupied grid cells.
 
-**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** implemented and verified 2026-10-13 (P04-T01/T02): typed definitions, one validator and a 31-case rejection table; effect regions never occupy cells. See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Synthetic-input harness evidence only; no human review.
 
 
 ### REQ-ITEMSYS-002 — Implement persistent items and bounded transient lifecycle
@@ -301,7 +320,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Ten reset cycles retain only intended construction and no transient state. Saturation/removal releases references and captives safely; spawn allocation follows reviewed rotating order, not callback order.
 
-**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** implemented and verified 2026-10-13 (P04-T03/T04): inert Place, deterministic Play reset with grace, persistence, match reset, caps 48/16/4/32, rotating allocation and captive-safe release; ten cycles stable. See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Transient items are test-only fixtures; no human review.
 
 
 ### REQ-PUGAD-001 — Show exact-variant animated egg previews
@@ -803,7 +822,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** core family implemented and harness-verified 2026-10-13 (P04-T05–T09): 1×1, 2×3, rotated 3×2 enabled; 1×3 defined but disabled. Preview/Library, event integration and release enablement remain open (P04-T10–T13). See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
 
 
 ### REQ-ITEM-002 — Tulay na Kawayan
@@ -814,7 +833,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** core family implemented and harness-verified 2026-10-13 (P04-T14–T18): horizontal 4×1 enabled; 3×1/5×1 defined but disabled; vertical orientation gated and geometry-only. Preview/Library, event integration, Lagsanay safe-floor review and release enablement remain open (P04-T19–T22). See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
 
 
 ### REQ-ITEM-003 — Gulong Talon
@@ -1544,7 +1563,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 | R4 pause taya during Freeze | PROPOSED—INACTIVE; timer continues under current contract. |
 | Capture/forced chains | Bubble last; Gameplay/QA: disable unsafe item/event eligibility until reviewed evidence permits it. |
 | Stage clutter/performance | QA/Gameplay: bounded persistent/transient counts, cleanup and measured minimum-zoom/frame-time tests. |
-| Should feature decisions | Producer: include/defer before freeze; optional is never hidden in required completion denominator. |
+| Should feature decisions | Producer: include/defer before freeze; optional is never hidden in required completion denominator. Wall slide/jump is approved Should scope, unimplemented, and may not delay P04. |
 
 ### Source register
 

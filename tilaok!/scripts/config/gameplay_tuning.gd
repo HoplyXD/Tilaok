@@ -40,6 +40,45 @@ extends Resource
 @export var support_normal_limit_degrees: float = 45.0
 @export var support_contact_tolerance_wu: float = 1.0
 @export var support_height_epsilon_wu: float = 1.0
+## Wall slide / wall jump (approved Should extension, REQ-MOVE-004). PROTOTYPE — UNMEASURED.
+## Core movement: enabled everywhere by default (owner decision, 2026-10-13).
+@export var wall_movement_enabled: bool = true
+@export var wall_slide_fall_cap_wu_s: float = 120.0
+@export var wall_jump_horizontal_wu_s: float = 240.0
+@export var wall_jump_vertical_wu_s: float = -520.0
+@export var wall_jump_contact_grace_s: float = 0.08
+@export var wall_jump_recontact_separation_wu: float = 8.0
+@export var wall_contact_probe_wu: float = 1.0
+@export var wall_normal_tolerance_degrees: float = 10.0
+## PROTOTYPE item infrastructure values: docs/PROTOTYPE_DEFAULTS.md §4 (items.*, transients.*).
+@export var item_persistent_cap: int = 48
+@export var item_projectile_cap: int = 16
+@export var item_projectiles_per_emitter: int = 2
+@export var item_bubble_cap: int = 4
+@export var item_bubbles_per_emitter: int = 1
+@export var item_bubbles_per_player: int = 1
+@export var item_vfx_cap: int = 32
+@export var item_projectile_ttl_s: float = 3.0
+@export var item_bubble_ttl_s: float = 4.0
+@export var item_vfx_ttl_s: float = 2.0
+@export var item_activation_grace_s: float = 1.0
+@export var item_tulay_strip_thickness_wu: float = 4.0
+@export var item_tulay_vertical_enabled: bool = false
+@export var item_kaing_weight: float = 50.0
+@export var item_tulay_weight: float = 50.0
+## P05 match-loop prototype values; copied into the match configuration snapshot.
+@export var match_pugad_extra_eggs: int = 2
+@export var match_pugad_seconds: float = 8.0
+@export var match_place_seconds: float = 15.0
+@export var match_results_advance_seconds: float = 8.0
+## Variant keys allowed into the prototype pool; each must be defined and approved.
+@export var item_enabled_variants: PackedStringArray = PackedStringArray(
+	[
+		"build.hollow_blocks.cell_1x1",
+		"build.hollow_blocks.stack_2x3",
+		"build.bamboo_bridge.span_4x1",
+	]
+)
 
 
 func validate() -> PackedStringArray:
@@ -80,6 +119,23 @@ func validate() -> PackedStringArray:
 		"support_normal_limit_degrees",
 		"support_contact_tolerance_wu",
 		"support_height_epsilon_wu",
+		"wall_slide_fall_cap_wu_s",
+		"wall_jump_horizontal_wu_s",
+		"wall_jump_vertical_wu_s",
+		"wall_jump_contact_grace_s",
+		"wall_jump_recontact_separation_wu",
+		"wall_contact_probe_wu",
+		"wall_normal_tolerance_degrees",
+		"item_projectile_ttl_s",
+		"item_bubble_ttl_s",
+		"item_vfx_ttl_s",
+		"item_activation_grace_s",
+		"item_tulay_strip_thickness_wu",
+		"item_kaing_weight",
+		"item_tulay_weight",
+		"match_pugad_seconds",
+		"match_place_seconds",
+		"match_results_advance_seconds",
 	]:
 		if not is_finite(get(field_name)):
 			errors.append("%s must be finite" % field_name)
@@ -121,8 +177,18 @@ func validate() -> PackedStringArray:
 		errors.append("support normal limit must be between zero and 90 degrees")
 	if support_contact_tolerance_wu < 0.0 or support_height_epsilon_wu < 0.0:
 		errors.append("support tolerances cannot be negative")
+	errors.append_array(_validate_wall_movement())
+	errors.append_array(_validate_item_tuning())
 	if camera_view_bounds.size.x <= 0.0 or camera_view_bounds.size.y <= 0.0:
 		errors.append("camera view bounds must have positive dimensions")
+	if match_pugad_extra_eggs < 0:
+		errors.append("match_pugad_extra_eggs cannot be negative")
+	if (
+		match_pugad_seconds <= 0.0
+		or match_place_seconds <= 0.0
+		or match_results_advance_seconds <= 0.0
+	):
+		errors.append("match phase durations must be greater than zero")
 	for bound_value in [
 		camera_view_bounds.position.x,
 		camera_view_bounds.position.y,
@@ -132,4 +198,46 @@ func validate() -> PackedStringArray:
 		if not is_finite(bound_value):
 			errors.append("camera view bounds must be finite")
 			break
+	return errors
+
+
+func _validate_wall_movement() -> PackedStringArray:
+	var errors := PackedStringArray()
+	if wall_slide_fall_cap_wu_s <= 0.0 or wall_slide_fall_cap_wu_s > fall_speed_cap_wu_s:
+		errors.append("wall slide cap must be positive and not exceed the fall speed cap")
+	if wall_jump_horizontal_wu_s < 0.0 or wall_jump_horizontal_wu_s > 480.0:
+		errors.append("wall jump horizontal speed must be between 0 and the 480 wu/s external cap")
+	if wall_jump_vertical_wu_s >= 0.0 or wall_jump_vertical_wu_s < -900.0:
+		errors.append("wall jump vertical speed must be upward and within the 900 wu/s launch cap")
+	if wall_jump_contact_grace_s < 0.0 or wall_jump_contact_grace_s > 0.25:
+		errors.append("wall jump contact grace must be between 0 and 0.25 seconds")
+	if wall_contact_probe_wu <= 0.0 or wall_contact_probe_wu > 4.0:
+		errors.append("wall contact probe distance must be between 0 and 4 wu")
+	if wall_jump_recontact_separation_wu <= wall_contact_probe_wu:
+		errors.append("wall recontact separation must exceed the contact probe distance")
+	if wall_normal_tolerance_degrees < 0.0 or wall_normal_tolerance_degrees > 45.0:
+		errors.append("wall normal tolerance must be between 0 and 45 degrees")
+	return errors
+
+
+func _validate_item_tuning() -> PackedStringArray:
+	var errors := PackedStringArray()
+	if item_persistent_cap <= 0:
+		errors.append("item_persistent_cap must be greater than zero")
+	if item_projectile_cap < 0 or item_bubble_cap < 0 or item_vfx_cap < 0:
+		errors.append("transient caps cannot be negative")
+	if (
+		item_projectiles_per_emitter < 0
+		or item_bubbles_per_emitter < 0
+		or item_bubbles_per_player < 0
+	):
+		errors.append("per-emitter and per-player transient limits cannot be negative")
+	if item_projectile_ttl_s <= 0.0 or item_bubble_ttl_s <= 0.0 or item_vfx_ttl_s <= 0.0:
+		errors.append("transient lifetimes must be greater than zero")
+	if item_activation_grace_s < 0.0:
+		errors.append("item activation grace cannot be negative")
+	if item_tulay_strip_thickness_wu <= 0.0 or item_tulay_strip_thickness_wu > grid_cell_wu:
+		errors.append("Tulay strip thickness must be positive and no larger than one cell")
+	if item_kaing_weight < 0.0 or item_tulay_weight < 0.0:
+		errors.append("item family weights cannot be negative")
 	return errors
