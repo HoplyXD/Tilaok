@@ -68,6 +68,10 @@ At Francis's direction, this documentation correction replaces the earlier inter
 
 Francis later supplied these current assignments: Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These assigned production visuals and audio will be created without AI generation. This records responsibilities only; it does not claim that assets are complete or establish registration, hours, review completion or competition eligibility.
 
+### Wall-movement planning and documentation — October 13, 2026
+
+At the user's approval, OpenAI Codex added the wall-slide/wall-jump extension to the Tilaok! planning documents as separate Should scope. This assistance updated the PRD, GDD, PHASETASK, prototype defaults, playtest plan, roadmap, production plan, stage/support contract, tutorial guidance, project-structure status, README/INDEX counts and this disclosure record. The approved behavior remains unimplemented; all eight new gameplay implementation/verification tasks are unchecked. Numeric tuning is provisional. No movement code, scene, test, tuning resource, production asset, runtime trial, human feel review or balance result was created or claimed in this documentation task. This record does not claim human review or make the extension a required submission feature.
+
 ### Verification of the PRD/tracker documentation delivery — October 13, 2026
 
 The earlier documentation delivery recorded structural and content checks for 116 requirements, 20 phases and 393 tasks (207 required, 24 Should, 4 conditional-finalist, 158 expansion), rendered IDs, dependency DAG, traceability, local links/anchors, family destinations, variants, untouched source/reference hashes and whitespace. All game/delivery tasks remained unchecked. Those documentation checks did not constitute gameplay verification. See [PHASETASK documentation verification](PHASETASK.md#documentation-verification--october-13-2026-original-prdtracker-delivery).

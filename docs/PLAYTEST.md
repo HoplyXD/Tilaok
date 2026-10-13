@@ -89,6 +89,35 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 | P02 regression | PASSED | Existing P02 test suite rerun after integration: 83 checks, zero failures. | `2026-10-13_p02_regression.txt`; remains synthetic, not physical P02 acceptance. |
 | Windows export | PASSED — startup only | Export Release using matching 4.7.2.stable Windows templates; run exported main scene headlessly for three frames. Export and smoke exited 0. | `2026-10-13_windows_export_smoke.txt`; no exported interactive/device test. |
 
+## Wall movement — future verification
+
+**Status:** approved Should-scope extension, not implemented. The cases below are planned; no wall-movement runtime test was run for this documentation change. Use actual Godot physics, rendered screenshots/clips, and human feel/balance review. Mathematical estimates alone do not establish playability. Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, artifact and reviewer. Mark each PASSED / FAILED / COULD-NOT-RUN. Keep synthetic and physical-device evidence separate.
+
+| Area | Future procedure and expected result |
+|---|---|
+| Left/right symmetry; wall approach/departure | Approach eligible walls from both directions, touch, slide, jump away, leave and lose contact. Both sides behave symmetrically; no slide or stale wall state remains after separation. |
+| Slide speed and vertical direction | Measure downward velocity against the configured descent cap. Verify the cap applies only while descending; selected ascending velocity remains uncapped by the slide rule. |
+| Eligible surface classes | Test base solids, player-built solids and moving solids. Moving contact must track actual valid contact and clear when the wall moves away or is removed. |
+| Excluded surfaces | Test one-way platform sides and undersides, triggers, ineligible hazard/effect surfaces, pass-through chicken bodies, and arena containment boundaries. None enables wall slide/jump. |
+| Fresh press / held input / OS repeat | Compare a new jump edge against a held button and operating-system key repeats. Only a fresh press may create one wall jump; holding must not auto-repeat. |
+| Buffer/grace consumption | Press just before, during and just after eligible contact, including the configured contact grace. A buffered jump is consumed exactly once and cleared on expiry or cancellation. |
+| Impulse / steering / contact repeat | Measure horizontal-away and vertical impulse on both sides; steer immediately using normal air acceleration. Same-wall repeat requires physical separation and fresh recontact. |
+| Corners, shafts and ceilings | Try corners, narrow shafts, rapid side switches, wall-to-wall climb routes and ceiling contact. No same-contact infinite climb, clipping, trapped state or unintended repeat occurs. |
+| Ground and coyote regression | Repeat normal ground jump, coyote jump, short/full jump and landing tests with wall contact nearby. Existing ground-jump behavior remains within its P02 contract. |
+| Bounds and maximum force | Combine the largest configured kick with approved external launch limits in every direction. Players remain inside visible bounds and cannot bypass immutable protection. |
+| Route and camera | Traverse the existing P03 base route with wall movement disabled; it must remain traversable. Then test wall shortcuts and maximum kick trajectories with the camera at minimum zoom and supported player separations. Record intentional shortcuts for balance review. |
+| Built surfaces and support | Compare wall movement on base versus player-built sides. Assert wall contact never writes upward support/provenance or qualifies for Rising wave; verify actual landing on an eligible platform still does. |
+| Lifecycle states | Attempt contact/input during capture, opening freeze, secured and eliminated states. Higher-priority states suppress wall actions and cannot reactivate terminal players. |
+| External launches | Launch during wall slide/contact and while jump is buffered. Launch takes precedence, is not shortened or overwritten by wall logic, and clears wall eligibility/buffer. |
+| Pause, phase/reset/reload | Pause while sliding and resume; change phase, reset, remove a contacted wall and reload the scene. No simulation advances while paused and no stale contact, repeat lock or jump replays. |
+| Player-to-player interaction | Overlap chickens near an eligible wall and attempt to use another chicken as a wall. Bodies remain pass-through; no push, wall state, or wall-jump eligibility comes from players. |
+| Freeze input observability | Inspect intentional-input telemetry while pressing jump for a wall action and while captured/frozen. Preserve existing intentional-input visibility for the future Freeze gate; do not claim Kangaroo integration from this check. |
+| Keyboard/gamepad parity | Run synthetic seat-routed keyboard and gamepad events separately, then actual physical devices when available. Match press edges, buffering, direction and cancellation; synthetic checks do not satisfy physical-device acceptance. |
+| Future Lagsanay/event stacks | In actual multiplayer builds, test repeated wall movement as an escape route or stalling strategy in Lagsanay and each applicable event stack. Keep these checks attached to their event gates; do not make the controller depend on full event implementations. |
+| Feel and balance | Obtain human review of slide readability, jump response, repeated-contact rule, intended shortcuts, wall stalling and recovery. Record reviewer, players/devices, procedure and findings; calculations or agent-authored tests are not human feel evidence. |
+
+Capture at minimum zoom and inspect rendered evidence for clear contact/eligibility cues. If a shortcut is intentionally possible, document it; escaping bounds, bypassing immutable protection or violating an event contract is a failure. The required P03 base route remains playable without this Should feature.
+
 The full command/evidence inventory is in [P03 verification](evidence/p03/2026-10-13_p03_verification.md). This work does not certify physical controller behavior, player feel, final-art readability, late-game load, balance, full round/match lifecycle, item systems, or release readiness. The previous P02 device and P01 human-review tasks remain open.
 
 ## Completion status vocabulary
@@ -114,7 +143,7 @@ Record build/commit, test date, local player count, input devices, scenario, ite
 
 ### Project implementation checks (when available)
 
-1. **Project/controls:** launch via documented Godot version; join local 2, 3, and 4 players; test gamepad-first and shared-keyboard fallback. Record physical-device limitations. Check run/jump only during Play and input deadzone behavior.
+1. **Project/controls:** launch via documented Godot version; join local 2, 3, and 4 players; test gamepad-first and shared-keyboard fallback. Record physical-device limitations. Check the implemented movement baseline and input deadzone during Play; add the wall-movement matrix only if the approved Should extension is implemented and selected. Do not infer physical-device parity from synthetic input.
 2. **Pugad/placement:** simultaneous egg claims cannot duplicate an egg; timeout handling is deterministic; invalid placements discard cleanly; colliding solid placements reject atomically independent of callback order; allowed solid/trigger overlaps remain readable; no object places on a player or protected clearance.
 3. **Cleanup/persistence:** preview names the exact target set; protected base/spawn/goal/hidden-event zone survive; same-phase new placements are not accidentally swept into cleanup; removed pieces stay removed; unsupported objects do not crush or permanently pin a player; item/transient counts stay bounded.
 4. **Lifecycle:** each item is inactive during Place; Play reset uses the defined position/phase/direction and activation grace; round end/restart/removal clears timers, signals, projectiles, bubbles, captures, and references; stage items persist according to the contract.

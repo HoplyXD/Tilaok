@@ -26,6 +26,12 @@ The initial hand-built stage includes a solid floor, left spawn, right flag, and
 
 Base-stage pieces, the floor, spawn, and flag are indestructible. They are not removable by Walis Cleanup or later demolition items. Base platforms do **not** satisfy Kangaroo Rising wave: only player-built solid geometry above the selected line qualifies.
 
+## Wall contact and upward support are distinct
+
+The approved wall-slide/wall-jump extension is Should scope and is not implemented. For its future implementation, actual contact with an eligible solid side may enable sliding or a wall jump, but side contact is never grounded/upward support. Do not record it as a `SupportContact`, set support provenance from it, or count it for Rising wave. Side normals, one-way platform sides/undersides, triggers, player bodies and arena containment boundaries are ineligible. Moving solid sides can qualify for wall movement only while actual contact remains valid; that does not make them upward support. The unchanged Rising-wave rule still requires actual eligible upward contact on player-built geometry above the line. The extension and regression contract are in [PRD REQ-MOVE-004](PRD.md#req-move-004--slide-on-eligible-walls-and-kick-away-with-a-fresh-jump-press) and [PHASETASK P02-T15–T22](PHASETASK.md#p02-wall-movement-extension--approved-unimplemented-should-scope).
+
+P03's verified base route must remain traversable without wall movement. Future route trials must verify that requirement and that maximum kicks/launches remain within visible containment and camera framing. New shortcuts may be intentional; leaving bounds, bypassing immutable protection, or breaking an event contract is not.
+
 The graybox below supplies provisional geometry coupled to PROTOTYPE_DEFAULTS.md. P03 verified the base route with Godot collision and the measured P02 controller; final art scale and player feel remain unverified.
 
 ```mermaid

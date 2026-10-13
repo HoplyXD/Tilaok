@@ -41,7 +41,7 @@ The release target below reuses the October 13 approval evidence already recorde
 | Disposition | Recorded target | Implementation / verification state at this baseline |
 |---|---|---|
 | **Required** | Team-directed local 2–4 player core loop under the standing AI-assisted programming workflow; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. P02 provides a diagnostic input/movement slice; no required item, complete mode, stack, match loop, tutorial or product UI is implemented/runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
-| **Should** | Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Include/defer decision remains pending before feature freeze. Not promoted by this baseline. |
+| **Should** | Approved optional wall slide/jump extension; Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Wall movement is approved but unimplemented; it is not a required October target and cannot delay P04. Decide include/defer before feature freeze. Other Should work remains pending. |
 | **Conditional finalist** | Qualification-dependent finalist materials and demonstration work. | Inactive unless the team qualifies. |
 | **Expansion** | The other 28 catalog families, extra stages/events, and unapproved event pairs. | Outside submission obligations; not promoted. |
 
@@ -76,7 +76,7 @@ Codex generated the P01 scripts/scenes/tests under the task authorization and in
 
 ## Implementation order after documentation sign-off
 
-1. Verify the intended engine toolchain; team-author input/movement, camera and graybox using PROTOTYPE_DEFAULTS.md. No engine-version change is implied.
+1. Verify the intended engine toolchain; implement input/movement, camera and graybox under the standing AI-assisted programming workflow using PROTOTYPE_DEFAULTS.md. No engine-version change is implied. The approved wall-movement extension is separate Should work after P03 and may not delay step 2 or required loop gates.
 2. Build Kaing Stack and Tulay na Kawayan with Pugad, atomic Place, Karera and one-time round scoring. Construction prerequisites precede Lagsanay.
 3. Verify persistent placement/reset, minimal onboarding and three/four-player input/camera. Add Gulong Talon after both construction pieces pass.
 4. Implement Lagsanay independently: tag, placement scoring, Last Cluck and solid-floor containment; enable items only after compatibility checks.
@@ -104,6 +104,7 @@ No step is evidence of completion until the implementation and required `PLAYTES
 
 - Preserve the Pugad → Place → Play loop, Karera, scoring, Lagsanay, tutorial, and clear local multiplayer controls.
 - Preserve all eight initial families as the approved October 13 submission target, with applicable approved variants and conditional Tulay orientation validation. If implementation capacity slips, seek an explicit team decision before cutting a family; the recommended first cut is Bula-Bulaklak because capture state and forced movement have the most dependencies.
+- Treat wall slide/jump as a separate approved Should extension, not an automatic submission requirement. Schedule it after P03 only when it does not delay P04 or the required loop; decide include/defer before October 21. Preserve the P03 base route without requiring wall movement.
 - Keep expanded catalog items, Langit-Lupa implementation, extra stages, cosmetics, and nonessential polish behind the core gates.
 - Do not silently replace an approved event, scoring rule, or compatibility contract.
 
@@ -168,7 +169,7 @@ M1–M3 use the labeled race-only development profile. P02 is not a full lobby-t
 
 ### P02 delivery record — October 13, 2026
 
-P02 has an implemented diagnostic input/movement foundation and 8/14 task records verified. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 83 focused P02 assertions pass; the Windows export and headless startup pass. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
+Historical P02 delivery evidence records 8/14 original task records verified. With the October 13 approved wall-movement extension, the current P02 tracker has 8/22 tasks checked; the eight new Should tasks remain unchecked. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 83 focused P02 assertions pass; the Windows export and headless startup pass. These facts do not verify wall movement. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
 
 Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 human review evidence and competition eligibility interpretation remain unresolved. P02 was AI-generated under the authorization then in force; the standing workflow is now recorded in `AI_USAGE.md`. Neither implementation nor this policy records team review or organizer acceptance. P03 status is limited to the graybox contracts; do not treat these slices as a complete game or release candidate.
 
@@ -194,4 +195,4 @@ Inspection on October 12 found only a skeleton. At documentation completion on O
 
 ## Product and execution handoff
 
-Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Development leads are recorded above; individual assignments/capacity remain unknown. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.
+Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Wall slide/jump joins session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards as Should work; decide include/defer before freeze. Wall movement is approved but unimplemented and may not delay P04. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Development leads are recorded above; individual assignments/capacity remain unknown. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.

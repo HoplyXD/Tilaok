@@ -1,6 +1,6 @@
 # Tilaok! Prototype Defaults and Team Handoff
 
-**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, establish competition eligibility, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
+**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, or establish competition eligibility. The wall-movement extension below was approved October 13, 2026; its rule choices are active design direction, while numeric starting values remain untested. Other proposed rule changes remain inactive until explicitly accepted.
 
 ## 1. Recommendation and evidence
 
@@ -59,7 +59,23 @@ All distances are world units (wu), provisionally equal to unscaled 2D pixels; t
 | `contact.sensor_size_wu` | P: 28×48 wu centered on body; width 24–32 wu | 2 wu expansion per side, readable near-contact; may appear early | Stationary, edge and crossing tests; reduce if visible gaps seem too large | Low |
 | `contact.pass_back_s` | C/P: 1.0 s; 0.75–1.25 s | Stops immediate retaliation; temporary immunity can be exploited | Pursuit and overlap trials; change if repeated back-and-forth or no counterplay | Low |
 
-Normal controls are left/right and jump only. No wall jump, dash, double jump, or drop-through action. Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
+The measured P02 baseline controls are left/right and jump only; that historical implementation had no wall jump, dash, double jump, or drop-through. The separately approved wall extension is not implemented. Neutral air input preserves horizontal speed; active air input approaches the signed run-speed target at the air acceleration rate. Ground reversal uses the reversal rate until the new target is reached. Consume each buffered press once; holding jump does not auto-repeat jumps. Clear coyote permission after a jump, launch, capture, or terminal outcome.
+
+### Wall movement — approved Should extension
+
+**Approved behavior, not implementation:** airborne actual contact with an eligible solid side enters a downward slide without requiring directional hold. Cap downward speed only. A fresh jump press kicks away once; allow immediate air steering. Require separation and fresh recontact before a repeat. Wall contact is not floor/ground/support contact. External launch preempts and clears wall eligibility and pending wall input; terminal > opening freeze > capture > forced motion > locomotion remains the state order. Pause freezes the action; phase/reset/reload clear stale contact and buffered input. Pass-through chicken bodies remain unchanged. See GDD, PRD REQ-MOVE-004 and PHASETASK P02-T15–T22.
+
+Only solid sides identified as eligible wall surfaces qualify: base and player-built solids, plus moving solids while their actual contact remains valid. Exclude one-way platform sides/undersides, triggers, ineligible hazard/effect surfaces, chickens and arena containment boundaries. A sensor overlap alone is insufficient. Wall contact must never publish upward support or Rising-wave eligibility.
+
+| Candidate tuning key | Starting candidate (unmeasured) | Experiment range / purpose |
+|---|---:|---|
+| `move.wall_slide_fall_cap_wu_s` | 120 wu/s downward | Compare 80–180 wu/s; measure descent over marked wall heights and review whether escape remains possible. |
+| `move.wall_jump_horizontal_wu_s` | 240 wu/s away | Compare 180–300 wu/s against the 280 wu/s run speed; test horizontal clearance and steering return. |
+| `move.wall_jump_vertical_wu_s` | −520 wu/s | Compare −440 to −600 wu/s against the −600 wu/s normal jump impulse; measure height/time and ceiling/bounds risk. |
+| `move.wall_jump_contact_grace_s` | 0.08 s | Compare 0–0.12 s; a fresh press just before contact may be buffered briefly, but held input never auto-repeats. |
+| `move.wall_jump_recontact_separation_wu` | 8 wu clear gap | Compare 4–16 wu; require observable physical separation before another kick on the same wall. |
+
+These values are candidates for centralized configuration, not finalized parameters or balance claims. Run real Godot collision trials, rendered sessions and human feel/balance review. Compare route completion, unintended falls, ceiling/bound escapes, repeat-climb time, and players' ability to understand the contact/recontact rule. Do not change normal ground-jump tuning just to make wall movement pass.
 
 One-way Tulay: pass through underside/sides; land on its upward top only when descending relative to it and crossing the top from above. Start with horizontal 4×1-cell footprint and 4 wu visible/collision top strip; vertical orientation stays disabled because the existing contract makes it conditional on controller support. Leave via an edge or jump. Keep footprint reservation distinct from collision strip. Kaing starts with 1×1 and 2×3 variants (equal conditional weights), 90° rotation where shape changes. Other approved variants remain deferred, not deleted.
 
