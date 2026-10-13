@@ -42,6 +42,7 @@ func _run() -> void:
 	await _capture_enabled_variants()
 	await _capture_disabled_variants()
 	await _capture_ghosts()
+	await _capture_eggs_and_library()
 	await _capture_crowd_and_performance()
 	room.queue_free()
 	await process_frame
@@ -119,6 +120,19 @@ func _capture_ghosts() -> void:
 	await _save(
 		"%s_ghost_kaing_1080p.png" % EVIDENCE_DATE, "Kaing 2x3 ghosts incl. rotation and bounds"
 	)
+
+
+func _capture_eggs_and_library() -> void:
+	room.items.reset_match()
+	room.selected_variant_key = KAING_2X3
+	room.enter_place()
+	room.select_variant(TULAY_4X1)
+	room.toggle_library()
+	await _wait_frames(30)
+	await _save(
+		"%s_eggs_library_1080p.png" % EVIDENCE_DATE, "placeholder eggs, ghost and Library panel"
+	)
+	room.toggle_library()
 
 
 func _capture_crowd_and_performance() -> void:

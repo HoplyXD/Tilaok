@@ -5,6 +5,9 @@ P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
 PASS Item Lab opens through the visible foundation-harness button
 PASS opening the lab exposes the arena viewport
 PASS visible join controls add two identity-labeled chickens
+PASS Library button opens the placeholder Library panel
+PASS clicking an egg claims its exact variant for the ghost
+PASS variant cycle wraps
 PASS Place button shows one ghost per seat
 PASS Variant button advances to the 2x3 stack (was build.hollow_blocks.cell_1x1)
 PASS K1 rotate key turns the 2x3 ghost to 3x2
@@ -24,4 +27,4 @@ PASS Reset keeps all three pieces and restarts Play
 PASS Clear all removes construction (match reset)
 PASS Return releases the Item Lab scene
 PASS return restores the foundation harness
-P04_INTERACTIVE checks=22 failures=0 place=(1920, 1080) play=(1920, 1080)
+P04_INTERACTIVE checks=25 failures=0 place=(1920, 1080) play=(1920, 1080)

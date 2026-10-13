@@ -1,5 +1,5 @@
-Date: 2026-10-13; command: Godot 4.7.2 --path tilaok! --script res://tests/capture_p04_evidence.gd (after rebase onto 9ee25c8)
+Date: 2026-10-13; command: Godot 4.7.2 --path tilaok! --script res://tests/capture_p04_evidence.gd (after rebase onto 647929f, with placeholder eggs/Library)
 Sampled process: Godot_v4.7.2-stable_win64 (child of the console wrapper), every ~50 ms, filtered by parent PID
-Whole run: samples=27 peak working set 201.89 MiB; peak private bytes 211.73 MiB
-Hold window after the 600-frame sample: samples=19 peak working set 201.89 MiB; peak private bytes 205.46 MiB
-Budget: <= 512 MiB. An earlier sampler matched every process named Godot and included an unrelated 790 MiB editor process; it was discarded.
+Whole run: samples=30 peak working set 208.84 MiB; peak private bytes 242.35 MiB
+Hold window after the 600-frame sample: samples=20 peak working set 207.34 MiB; peak private bytes 212.04 MiB
+Budget: <= 512 MiB.

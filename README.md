@@ -11,7 +11,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Phased Implementation Tracker](docs/PHASETASK.md): 43/401 task records checked; P04 is 14/22 (early exit met, 8 blocked on later phases and human assets), P03 is 6/6 and P02 is 14/22 (physical-device and human-review tasks open)
+- [Phased Implementation Tracker](docs/PHASETASK.md): 47/401 task records checked; P04 is 18/22 (early exit met; 4 blocked on later modes and release gates; art tasks are passed on placeholders), P03 is 6/6 and P02 is 14/22 (physical-device and human-review tasks open)
 - [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters

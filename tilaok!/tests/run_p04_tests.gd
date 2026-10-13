@@ -43,6 +43,7 @@ func _run() -> void:
 	await _test_disabled_variant_geometry()
 	await _test_wall_eligibility()
 	_test_lab_flow()
+	await _test_placeholder_previews_and_library()
 	await _test_catalog_and_harness()
 	room.queue_free()
 	await process_frame
@@ -1464,4 +1465,102 @@ func _test_wall_eligibility() -> void:
 			and not tulay_wall
 		)
 	)
+	room.items.reset_match()
+
+
+func _test_placeholder_previews_and_library() -> void:
+	var expected_keys := [KAING_1X1, KAING_2X3, TULAY_4X1]
+	_check(room.egg_previews.size() == 3, "one placeholder egg preview per enabled variant")
+	var text_free := true
+	for key in expected_keys:
+		var egg := room.egg_previews.get(key) as ItemEggPreview
+		if egg == null:
+			text_free = false
+			continue
+		text_free = text_free and egg.variant_key == key and egg.get_child_count() == 0
+	_check(text_free, "each egg shows its exact variant and carries no name or description text")
+	var sample := room.egg_previews[KAING_2X3] as ItemEggPreview
+	var first_phase := sample.loop_phase()
+	var start_elapsed := sample.elapsed
+	await create_timer(0.5).timeout
+	var moved := absf(sample.loop_phase() - first_phase) > 0.05 or sample.elapsed > start_elapsed
+	_check(moved, "egg animation advances over time")
+	sample.elapsed = 1.0
+	var mid := sample.loop_phase()
+	sample.elapsed = 1.0 + ItemEggPreview.LOOP_SECONDS
+	_check(is_equal_approx(mid, sample.loop_phase()), "egg animation loops with a fixed period")
+	room.items.reset_match()
+	room.enter_place()
+	var identity_ok := true
+	for key in expected_keys:
+		var egg := room.egg_previews[key] as ItemEggPreview
+		egg.claimed.emit(key)
+		var cursor: Dictionary = room.cursors[seat]
+		cursor.cell = Vector2i(14, 8)
+		room._refresh_all_ghosts()
+		var ghost := cursor.ghost as ItemGhost
+		var found := room.definitions.find_variant(key)
+		var variant := found.variant as ItemVariantDefinition
+		var matches_shape := ghost.footprint_rect.size == Vector2(variant.footprint_cells) * 32.0
+		var placed := room.confirm_cursor(seat)
+		var piece_key: String = (
+			(room.items.pieces[placed.instance_id] as PlacedItem).variant_key
+			if bool(placed.allowed)
+			else ""
+		)
+		identity_ok = (
+			identity_ok
+			and room.selected_variant_key == key
+			and egg.selected
+			and matches_shape
+			and piece_key == key
+		)
+		room.items.reset_match()
+		room.enter_place()
+	_row(
+		"T10/T19 egg to ghost to piece identity",
+		"claiming an egg yields a ghost and a placed piece of the same variant and size",
+		"identity_ok=%s" % identity_ok,
+		identity_ok
+	)
+	var entries := room.library_entries()
+	var fields_ok := entries.size() == 2
+	for entry in entries:
+		fields_ok = (
+			fields_ok
+			and not entry.display_name.is_empty()
+			and not entry.sizes.is_empty()
+			and not entry.placement.is_empty()
+			and not entry.tell.is_empty()
+			and not entry.counterplay.is_empty()
+			and not entry.controls.is_empty()
+			and not entry.modes_allowed.is_empty()
+			and not entry.animation_variant_key.is_empty()
+		)
+	_row(
+		"T12/T21 Library entry fields",
+		"both families list name, sizes, placement, tell, counterplay, controls, modes, animation",
+		"entries=%d fields_ok=%s" % [entries.size(), fields_ok],
+		fields_ok
+	)
+	var tulay_entry := entries[1] if entries[0].family_id == "build.hollow_blocks" else entries[0]
+	var has_disabled_note := false
+	for size_text in tulay_entry.sizes:
+		has_disabled_note = has_disabled_note or size_text.contains("not enabled yet")
+	_check(has_disabled_note, "Library marks defined-but-disabled sizes as not enabled yet")
+	room.toggle_library()
+	_check(
+		room.library_visible and room._library_panel.visible and room._library_label.text != "",
+		"Library panel opens with entry text"
+	)
+	room.set_release_filter(true)
+	_check(
+		(
+			room.library_entries().is_empty()
+			and room._library_label.text.contains("No release-enabled content")
+		),
+		"release filter hides content that is not release-enabled"
+	)
+	room.set_release_filter(false)
+	room.toggle_library()
 	room.items.reset_match()

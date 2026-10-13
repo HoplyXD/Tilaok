@@ -15,8 +15,15 @@ var definitions: ItemDefinitions
 var cursors: Dictionary = {}
 var selected_variant_key := ""
 var last_message := ""
+var egg_previews: Dictionary = {}
+var library_visible := false
+var release_filter := false
 var _variant_button: Button
 var _cursor_counter := 0
+var _overlay_layer: CanvasLayer
+var _library_panel: PanelContainer
+var _library_label: Label
+var _library_preview_host: Control
 
 
 func _init() -> void:
@@ -41,6 +48,7 @@ func _ready() -> void:
 	input_router.navigation_step.connect(_on_lab_navigation_step)
 	input_router.disabled_action_cue.connect(_on_lab_disabled_action)
 	_refresh_rotation_support()
+	_build_overlays()
 	_update_diagnostics()
 	print(
 		(
@@ -110,12 +118,63 @@ func cycle_variant() -> void:
 	if enabled.is_empty():
 		return
 	var index := enabled.find(selected_variant_key)
-	selected_variant_key = enabled[(index + 1) % enabled.size()]
+	select_variant(enabled[(index + 1) % enabled.size()])
+
+
+## Claiming an egg hands its exact variant to the placement ghost; identity is never substituted.
+func select_variant(variant_key: String) -> bool:
+	if not _enabled_variant_keys().has(variant_key):
+		return false
+	selected_variant_key = variant_key
 	for cursor in cursors.values():
 		cursor.turns = 0
+	for key in egg_previews:
+		(egg_previews[key] as ItemEggPreview).selected = key == variant_key
 	_refresh_rotation_support()
 	_refresh_all_ghosts()
 	_update_diagnostics()
+	return true
+
+
+func toggle_library() -> void:
+	library_visible = not library_visible
+	if _library_panel != null:
+		_library_panel.visible = library_visible
+	refresh_library()
+
+
+func set_release_filter(enabled: bool) -> void:
+	release_filter = enabled
+	refresh_library()
+
+
+func library_entries() -> Array[ItemLibraryEntry]:
+	return ItemLibraryEntry.build_list(definitions, release_filter)
+
+
+func refresh_library() -> void:
+	if _library_label == null:
+		return
+	var entries := library_entries()
+	var blocks := PackedStringArray()
+	for entry in entries:
+		blocks.append(entry.text_block())
+	_library_label.text = (
+		"\n\n".join(blocks)
+		if not entries.is_empty()
+		else "No release-enabled content yet (release filter is on)."
+	)
+	for child in _library_preview_host.get_children():
+		child.queue_free()
+	var offset := 0.0
+	for entry in entries:
+		if entry.animation_variant_key.is_empty():
+			continue
+		var preview := ItemEggPreview.new()
+		if preview.configure(definitions, entry.animation_variant_key, 0, tuning):
+			preview.position = Vector2(offset, 0.0)
+			_library_preview_host.add_child(preview)
+			offset += preview.custom_minimum_size.x + 6.0
 
 
 func rotate_cursor(seat_index: int) -> bool:
@@ -320,6 +379,52 @@ func _on_lab_disabled_action(_seat_index: int, action_name: String) -> void:
 		_update_diagnostics()
 
 
+func _build_overlays() -> void:
+	_overlay_layer = CanvasLayer.new()
+	_overlay_layer.name = "ItemLabOverlays"
+	_overlay_layer.layer = 21
+	add_child(_overlay_layer)
+	var row := HBoxContainer.new()
+	row.name = "EggPreviewRow"
+	row.position = Vector2(tuning.camera_virtual_width_px - 360.0, 70.0)
+	row.add_theme_constant_override("separation", 6)
+	_overlay_layer.add_child(row)
+	for key in _enabled_variant_keys():
+		var egg := ItemEggPreview.new()
+		if not egg.configure(definitions, key, 0, tuning):
+			continue
+		egg.name = "Egg_%s" % key.replace(".", "_")
+		egg.selected = key == selected_variant_key
+		egg.claimed.connect(select_variant)
+		row.add_child(egg)
+		egg_previews[key] = egg
+	_library_panel = PanelContainer.new()
+	_library_panel.name = "LibraryPanel"
+	_library_panel.position = Vector2(tuning.camera_virtual_width_px - 520.0, 180.0)
+	_library_panel.custom_minimum_size = Vector2(500.0, 0.0)
+	_library_panel.visible = false
+	_overlay_layer.add_child(_library_panel)
+	var column := VBoxContainer.new()
+	_library_panel.add_child(column)
+	var title := Label.new()
+	title.text = "LIBRARY • PLACEHOLDER (P13 owns the final Library)"
+	column.add_child(title)
+	var toggle := CheckButton.new()
+	toggle.text = "Release filter"
+	toggle.focus_mode = Control.FOCUS_NONE
+	toggle.toggled.connect(set_release_filter)
+	column.add_child(toggle)
+	_library_preview_host = Control.new()
+	_library_preview_host.custom_minimum_size = Vector2(0.0, 112.0)
+	column.add_child(_library_preview_host)
+	_library_label = Label.new()
+	_library_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_library_label.custom_minimum_size = Vector2(480.0, 0.0)
+	_library_label.add_theme_font_size_override("font_size", 11)
+	column.add_child(_library_label)
+	refresh_library()
+
+
 func _build_hud() -> void:
 	var canvas := CanvasLayer.new()
 	canvas.name = "ItemLabHudLayer"
@@ -345,6 +450,7 @@ func _build_hud() -> void:
 	_variant_button = _add_button(row, "Variant", cycle_variant)
 	_add_button(row, "Remove last", remove_last_piece)
 	_add_button(row, "Clear all", clear_all_construction)
+	_add_button(row, "Library", toggle_library)
 	_add_button(row, "Reset", reset_room)
 	_pause_button = _add_button(row, "Pause", _toggle_pause)
 	_add_button(row, "Return", request_return)

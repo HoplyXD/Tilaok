@@ -154,7 +154,7 @@ Exact tests, captures and results are in [P03 verification evidence](evidence/p0
 | Ten Play/round-end cycles, three pieces + test transients | Only construction persists; counts stable | Nodes 110→110; objects 1760→1760; orphans 0→0 |
 | Rotating allocation, 6 emitters, cap 4, 6 rounds | Equal wins independent of callback order | 4 wins each; reversed callback order identical |
 | Tulay 4 wu strip at fall cap | All drops land | 5/5 landed; sampled peak 878.9 wu/s (cap 900) |
-| 48 pieces + 4 chickens, 1080p uncapped, 600 frames | ≤16.67 ms; ≤512 MiB | median 1.465 / p95 1.961 / worst 2.659 ms; peak working set 201.9 MiB, private 211.7 MiB |
+| 48 pieces + 4 chickens, 1080p uncapped, 600 frames | ≤16.67 ms; ≤512 MiB | median 1.954 / p95 3.109 / worst 6.059 ms; peak working set 208.8 MiB, private 242.4 MiB |
 
 These are fixture measurements, not feel or balance evidence. The Kaing/Tulay equal selection weights are configuration only; no Pugad exists to use them yet.
 

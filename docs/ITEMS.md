@@ -196,4 +196,4 @@ All 36 families are approved as the Tilaok design catalog. This approval does no
 | `build.bamboo_bridge` vertical orientations | geometry only | no (gated) | no | no |
 | Every other family | no | no | no | no |
 
-Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Preview/ghost production art, Library entries, event/stack integration and release enablement are tracked as P04-T10–T13 and T19–T22 and remain blocked. Kaing declares solid-side wall eligibility and Tulay declares itself ineligible as data; wall movement itself is a separate, disabled-by-default extension.
+Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Placeholder eggs, ghosts and Library entries exist (P04-T10/T12/T19/T21 passed on code-drawn DEBUG placeholders; final art is human-made and still open). Event/stack integration and release enablement (P04-T11/T13/T20/T22) remain blocked. Kaing declares solid-side wall eligibility and Tulay declares itself ineligible as data; wall movement itself is a separate, disabled-by-default extension.

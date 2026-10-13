@@ -18,8 +18,14 @@ func _run() -> void:
 	DisplayServer.window_set_size(Vector2i(1920, 1080))
 	harness = HARNESS_SCENE.instantiate() as FoundationHarness
 	root.add_child(harness)
-	await _wait_frames(12)
+	await _wait_frames(30)
 	await _click_button(harness.get_node("Layout/HarnessPanel/RoomRow/ItemRoomButton") as Button)
+	if harness.active_room == null:
+		# The very first frames after a window resize can miss a click; retry once.
+		await _wait_frames(20)
+		await _click_button(
+			harness.get_node("Layout/HarnessPanel/RoomRow/ItemRoomButton") as Button
+		)
 	room = harness.active_room as ItemLabRoom
 	_check(room != null, "Item Lab opens through the visible foundation-harness button")
 	if room == null:
@@ -29,7 +35,19 @@ func _run() -> void:
 	await _click_text_button(room, "Join K1")
 	await _click_text_button(room, "Join K2")
 	_check(room.actors.size() == 2, "visible join controls add two identity-labeled chickens")
+	await _click_text_button(room, "Library")
+	_check(room._library_panel.visible, "Library button opens the placeholder Library panel")
+	await _click_text_button(room, "Library")
 	await _click_text_button(room, "Place")
+	var egg_button := room.egg_previews["build.hollow_blocks.stack_2x3"] as ItemEggPreview
+	await _click_button_at(egg_button.get_global_rect().get_center())
+	_check(
+		room.selected_variant_key == "build.hollow_blocks.stack_2x3",
+		"clicking an egg claims its exact variant for the ghost"
+	)
+	await _click_text_button(room, "Variant: stack_2x3")
+	await _click_text_button(room, "Variant: span_4x1")
+	_check(room.selected_variant_key == "build.hollow_blocks.cell_1x1", "variant cycle wraps")
 	_check(
 		room.input_router.phase == LocalInputRouter.Phase.PLACE and room.cursors.size() == 2,
 		"Place button shows one ghost per seat"
@@ -162,6 +180,18 @@ func _click_text_button(root_node: Node, text_value: String) -> void:
 			pending.append(child)
 	push_error("Could not find visible button '%s'" % text_value)
 	failures += 1
+
+
+func _click_button_at(center: Vector2) -> void:
+	await _wait_frames(2)
+	for pressed in [true, false]:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.position = center
+		event.global_position = center
+		event.pressed = pressed
+		root.push_input(event, true)
+		await process_frame
 
 
 func _click_button(button: Button) -> void:

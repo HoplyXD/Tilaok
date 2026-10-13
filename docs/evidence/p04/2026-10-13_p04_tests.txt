@@ -173,8 +173,8 @@ PASS cycle 10: test-only transients are active
 PASS cycle 10: round end clears transients and releases the captive
 PASS cycle 10: only the intended construction persists
 PASS cycle 10: static pieces return to their placed positions
-PASS T04 ten cycles: node count | expected: stable at 110 | actual: 110
-PASS T04 ten cycles: object count | expected: stable at 1764 | actual: 1764
+PASS T04 ten cycles: node count | expected: stable at 124 | actual: 124
+PASS T04 ten cycles: object count | expected: stable at 1797 | actual: 1797
 PASS T04 ten cycles: orphan nodes | expected: stable at 0 | actual: 0
 PASS three construction pieces remain in the world
 PASS construction is not removed during Play without force
@@ -251,10 +251,19 @@ PASS Tulay has no usable rotation while vertical is gated
 PASS Play frees ghosts and starts item lifecycle
 PASS Reset keeps construction and restarts the Play lifecycle
 PASS Clear all removes construction
+PASS one placeholder egg preview per enabled variant
+PASS each egg shows its exact variant and carries no name or description text
+PASS egg animation advances over time
+PASS egg animation loops with a fixed period
+PASS T10/T19 egg to ghost to piece identity | expected: claiming an egg yields a ghost and a placed piece of the same variant and size | actual: identity_ok=true
+PASS T12/T21 Library entry fields | expected: both families list name, sizes, placement, tell, counterplay, controls, modes, animation | actual: entries=2 fields_ok=true
+PASS Library marks defined-but-disabled sizes as not enabled yet
+PASS Library panel opens with entry text
+PASS release filter hides content that is not release-enabled
 PASS karera_slice catalog lists exactly the two families
 PASS Kaing 50 / Tulay 50 normalize to equal selection weights
 PASS karera_slice content and item pool now validate; only the unbuilt karera mode (P06) remains: ["Profile \'karera_slice\' requires mode \'karera\', which is not implemented and verified."]
 PASS profiles that do not list the seeds keep an empty item pool
 PASS movement_room lists no content
 PASS no seed family is marked release_target before P13 and P12 gates
-P04_TESTS checks=256 failures=0
+P04_TESTS checks=265 failures=0

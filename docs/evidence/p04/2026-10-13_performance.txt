@@ -11,9 +11,9 @@ Input: synthetic stick axes; no physical devices attached or certified
 Workload: 48 persistent pieces (24 Tulay 4x1 + 24 Kaing 1x1), cap 48
 Procedure: 600 uncapped completed render frames at 1920x1080, v-sync off, collision, support contacts, item lifecycle and live camera active
 Expected: median/p95/worst <= 16.67 ms; memory <= 512 MiB; no gameplay sockets
-Actual rendered interval: median 1.465 ms; p95 1.961 ms; worst 2.659 ms
-Actual memory: static 70.11 MiB; elapsed 0.899 s
+Actual rendered interval: median 1.954 ms; p95 3.109 ms; worst 6.059 ms
+Actual memory: static 70.97 MiB; elapsed 1.234 s
 Frames above 8 ms (index=interval): none
-Objects: 2053 total, 218 nodes, 0 orphan nodes
+Objects: 2089 total, 232 nodes, 0 orphan nodes
 Command: Godot 4.7.2 --path tilaok! --script res://tests/capture_p04_evidence.gd
 Reviewer: Codex automated fixture run; no human review claimed

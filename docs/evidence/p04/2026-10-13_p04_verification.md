@@ -1,6 +1,6 @@
 # P04 verification index — item infrastructure and Kaing/Tulay seeds
 
-**Status:** PASSED for P04-T01–T09 and T14–T18 (early exit). P04-T10–T13 and T19–T22 are BLOCKED and unchecked.
+**Status:** PASSED for P04-T01–T10, T12, T14–T19 and T21 (T10/T12/T19/T21 on code-drawn placeholders under a dated owner-approved scope note). P04-T11, T13, T20 and T22 are BLOCKED and unchecked.
 
 **Build:** `main` rebased onto `647929f` (verified wall extension) plus the P04 commit; the physics, regression, lint, import and export runs below were repeated after the rebase except the 1080p captures and the performance sample, which were taken on the `9ee25c8` base; the later `647929f` delta changed only movement/tuning/wall code and docs, and all suites above were re-run on it. **Engine:** Godot 4.7.2.stable.official.ed1daf0bf. **Date:** 2026-10-13. **Profile/seed:** `karera_slice` / 12345. **Players:** 1–4 seats. **Input:** synthetic K1/K2 keyboard routing and synthetic gamepad seats; no physical devices. **Reviewer:** Codex (automated, implementation author); no independent human review claimed.
 
@@ -8,12 +8,12 @@
 
 | Check | Command | Result |
 |---|---|---|
-| P04 logic + real physics | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p04_tests.gd'` | **PASSED**, 256 checks, 0 failures. [Log](2026-10-13_p04_tests.txt) |
+| P04 logic + real physics | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p04_tests.gd'` | **PASSED**, 265 checks, 0 failures. [Log](2026-10-13_p04_tests.txt) |
 | Foundation regression (incl. Item Lab open/free/reload) | `... --script 'res://tests/run_foundation_tests.gd'` | **PASSED**, 0 failures. [Log](2026-10-13_foundation_tests.txt) |
 | P02 regression | `... --script 'res://tests/run_p02_tests.gd'` | **PASSED**, 83 checks, 0 failures. [Log](2026-10-13_p02_tests.txt) |
 | P03 regression | `... --script 'res://tests/run_p03_tests.gd'` | **PASSED**, 103 checks, 0 failures. [Log](2026-10-13_p03_tests.txt) |
-| Interactive Item Lab (GUI, 1920×1080, harness button, K1/K2 join, place/rotate/confirm, Play, Reset, Clear, Return) | `... --path 'tilaok!' --script 'res://tests/run_p04_interactive.gd'` | **PASSED**, 22 checks, 0 failures (4 consecutive runs; an earlier flaky run was traced to a focused HUD button and window-focus pause and fixed). [Log](2026-10-13_interactive_test.txt) |
-| Rendered captures + 48-piece performance | `... --path 'tilaok!' --script 'res://tests/capture_p04_evidence.gd'` | **PASSED**: median 1.465 ms, p95 1.961 ms, worst 2.659 ms; static 70.11 MiB; process peak working set 201.89 MiB, private 211.73 MiB (hold window 201.89 / 205.46). [Performance](2026-10-13_performance.txt), [memory](2026-10-13_memory_sample.txt), [log](2026-10-13_capture_log.txt) |
+| Interactive Item Lab (GUI, 1920×1080, harness button, K1/K2 join, place/rotate/confirm, Play, Reset, Clear, Return) | `... --path 'tilaok!' --script 'res://tests/run_p04_interactive.gd'` | **PASSED**, 25 checks, 0 failures (4 consecutive runs; an earlier flaky run was traced to a focused HUD button and window-focus pause and fixed). [Log](2026-10-13_interactive_test.txt) |
+| Rendered captures + 48-piece performance | `... --path 'tilaok!' --script 'res://tests/capture_p04_evidence.gd'` | **PASSED**: median 1.954 ms, p95 3.109 ms, worst 6.059 ms; static 70.97 MiB; process peak working set 208.84 MiB, private 242.35 MiB (hold window 207.34 / 212.04, from the preceding identical-workload run). [Performance](2026-10-13_performance.txt), [memory](2026-10-13_memory_sample.txt), [log](2026-10-13_capture_log.txt) |
 | Lint / format | `gdlint` and `gdformat --check` 4.5.0 on all 53 `.gd` files | **PASSED**. [Log](2026-10-13_static_checks.txt) |
 | Wall-extension suite (not P04) | `... --script 'res://tests/run_p02_wall_tests.gd'` | **PASSED**, 85 checks, 0 failures on the rebased tree. [Log](2026-10-13_p02_wall_tests.txt) |
 | Import/parse | `... --headless --editor --path 'tilaok!' --quit` | **PASSED**, exit 0, 0 error/warning lines. [Log](2026-10-13_import.txt) |
@@ -21,7 +21,7 @@
 
 ## Performance versus the P03 baseline
 
-P03 baseline (4 chickens, no items): median 0.826 / p95 1.426 / worst 6.141 ms; 199.91 MiB working set. P04 (4 chickens + 48 persistent pieces): median 1.465 / p95 1.961 / worst 2.659 ms; 201.9 MiB peak working set. Both are inside 16.67 ms and 512 MiB. **Disclosure:** the first capture run showed one 59.4 ms interval at frame 0, caused by the v-sync mode switch immediately before sampling; a 10-frame warm-up was added and the subsequent runs have no interval above 8 ms. A first memory sampler also matched an unrelated 790 MiB Godot editor process and was discarded in favour of a parent-PID filter.
+P03 baseline (4 chickens, no items): median 0.826 / p95 1.426 / worst 6.141 ms; 199.91 MiB working set. P04 (4 chickens + 48 persistent pieces): median 1.954 / p95 3.109 / worst 6.059 ms; 208.8 MiB peak working set. Both are inside 16.67 ms and 512 MiB. **Disclosure:** the first capture run showed one 59.4 ms interval at frame 0, caused by the v-sync mode switch immediately before sampling; a 10-frame warm-up was added and the subsequent runs have no interval above 8 ms. A first memory sampler also matched an unrelated 790 MiB Godot editor process and was discarded in favour of a parent-PID filter.
 
 ## Rendered captures (1920×1080, minimum zoom ≈1.0)
 
@@ -32,6 +32,7 @@ P03 baseline (4 chickens, no items): median 0.826 / p95 1.426 / worst 6.141 ms; 
 - [2026-10-13_crowd_48_1080p.png](2026-10-13_crowd_48_1080p.png) — 48 persistent pieces and four chickens; pieces remain distinguishable but chevrons and DEBUG labels crowd each other.
 - [2026-10-13_item_lab_place_1080p.png](2026-10-13_item_lab_place_1080p.png) — Interactive Item Lab Place frame with two rotated crates, a Tulay and an invalid K2 ghost reason.
 - [2026-10-13_item_lab_play_1080p.png](2026-10-13_item_lab_play_1080p.png) — Interactive Item Lab Play frame, grace elapsed.
+- [2026-10-13_eggs_library_1080p.png](2026-10-13_eggs_library_1080p.png) — Placeholder egg previews (selected egg highlighted), ghost and the placeholder Library panel.
 
 ## Expected / actual rows (from the P04 test log)
 
@@ -86,8 +87,8 @@ P03 baseline (4 chickens, no items): median 0.826 / p95 1.426 / worst 6.141 ms; 
 | T06 placement: player clearance | player_clearance | player_clearance |
 | T06 placement: overlap | item_overlap | item_overlap |
 | T03 cap: 49th piece | persistent_cap | persistent_cap |
-| T04 ten cycles: node count | stable at 110 | 110 |
-| T04 ten cycles: object count | stable at 1764 | 1764 |
+| T04 ten cycles: node count | stable at 124 | 124 |
+| T04 ten cycles: object count | stable at 1797 | 1797 |
 | T04 ten cycles: orphan nodes | stable at 0 | 0 |
 | T09 Kaing 1x1 top | stands with feet at y=256 on build.hollow_blocks.cell_1x1#001, eligible player-built support | floor=true feet=255.98 reason=eligible built support |
 | T09 Kaing 2x3 top | stands with feet at y=256 on build.hollow_blocks.stack_2x3#001, eligible player-built support | floor=true feet=255.98 reason=eligible built support |
@@ -116,9 +117,12 @@ P03 baseline (4 chickens, no items): median 0.826 / p95 1.426 / worst 6.141 ms; 
 | T15 gated vertical Tulay geometry | 1x4 footprint, 4 wu strip on the right edge, one-way normal pointing right | footprint (32.0, 128.0) strip [[P: (572.0, 192.0), S: (4.0, 128.0)]] normal [(1.0, 0.0)] |
 | T09 Kaing wall eligibility | metadata ELIGIBLE and the wall probe finds the solid side | metadata=1 probe=true |
 | T18 Tulay wall eligibility | metadata INELIGIBLE and no wall at the strip's side | metadata=0 probe=false |
+| T10/T19 egg to ghost to piece identity | claiming an egg yields a ghost and a placed piece of the same variant and size | identity_ok=true |
+| T12/T21 Library entry fields | both families list name, sizes, placement, tell, counterplay, controls, modes, animation | entries=2 fields_ok=true |
 
 ## Known limits
 
+- Eggs, ghosts and the Library are code-drawn placeholders; the shared P05 preview components and the P13 Library shell do not exist, and final art is human-made.
 - No projectile, bubble or VFX item exists in P04: the transient budget is exercised only by labeled test-only emitters.
 - Kaing projectile cover is verified as occlusion-volume equality with the solid, not with a real projectile.
 - Tulay occlusion is undefined (no SOLID region); revisit with the first projectile item.
