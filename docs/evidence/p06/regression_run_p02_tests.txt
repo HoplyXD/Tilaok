@@ -1,0 +1,90 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS two gamepads receive isolated first seats
+PASS assigned device cannot join twice
+PASS number and shape identity order is permanent
+PASS unassigned changed device reclaims missing seat
+PASS reclaim keeps identity and clears ready state
+PASS one device cannot steal another assigned seat
+PASS South join press cannot ready the same gamepad seat
+PASS gamepad ready needs a separate fresh South press
+PASS gamepad jump edge stays in the assigned seat
+PASS second gamepad controls only its own seat
+PASS gamepad South maps to claim in diagnostic phase 2
+PASS gamepad South maps to confirm in diagnostic phase 3
+PASS gamepad South maps to confirm in diagnostic phase 1
+PASS gamepad South maps to confirm in diagnostic phase 5
+PASS gamepad South maps to confirm in diagnostic phase 6
+PASS left stick remains neutral below 0.25 activation
+PASS stick remains active until below 0.20 neutral
+PASS active D-pad direction takes precedence over stick
+PASS opposing D-pad directions cancel while remaining observable
+PASS Lagsanay breach is a prototype defect
+PASS breach is idempotent and grants no awards
+PASS recovery preserves pre-round score and construction snapshot
+PASS race escape produces one failed outcome
+PASS race failure has no automatic recovery/respawn
+PASS shared keyboard movement key cannot join a seat
+PASS fresh K1 join press does not also ready the seat
+PASS ready requires a separate fresh press after joining
+PASS fresh K2 Enter joins the second keyboard seat without readying it
+PASS K1 lobby-ready binding is ignored in Play
+PASS unsupported rotation produces a disabled cue
+PASS left Control does not alias the K2 jump key
+PASS right Control maps to K2 jump
+PASS K1 movement is isolated from K2
+PASS K2 movement is routed to its own seat
+PASS opposing keys cancel movement but preserve intent
+PASS OS key echo cannot create a ready edge
+PASS K1 jump maps in Play
+PASS transition consumes existing one-shot edge
+PASS release of a held key clears it after that key becomes unbound
+PASS K1 confirm maps to claim in Pugad
+PASS held claim cannot confirm after transition into Place
+PASS fresh K1 press confirms in Place
+PASS K1 layout does not acquire pause ownership outside pause
+PASS diagonal navigation does not emit two immediate moves
+PASS placement repeat uses 0.25s delay then 8 moves/s
+PASS K1 South/confirm maps in Menu
+PASS menu repeat uses 0.25s delay
+PASS pause freezes SceneTree simulation
+PASS first fresh confirm acquires menu ownership; all seats ready starts countdown
+PASS Timer callback and physics probe do not advance during resume countdown
+PASS device status change cancels resume countdown
+PASS focus changes clear pause readiness
+PASS all connected seats can begin the resume countdown
+PASS three-second countdown resumes the saved phase
+PASS synthetic gamepad can occupy a remaining local seat
+PASS bound gamepad disconnect pauses the whole simulation and retains its seat
+PASS controller cannot move during the Pugad phase
+PASS runtime run controller moves in intended direction
+PASS runtime ground braking reduces speed within the measured stopping distance
+PASS runtime ground reversal crosses zero within seven physics steps
+PASS independent contact sensor detects overlapping chickens
+PASS chicken bodies overlap without pushing
+P02_METRIC gap64_rise64 landed=true x=871.34 y=273.93
+PASS full jump traverses the dedicated 64 gap and 64 rise fixture
+PASS collision stops a normal jump against the ceiling fixture
+P02_METRIC jump_short_wu=44.27 jump_full_wu=96.06 apex_frames=19 displacement_30ticks=120.00 run_speed=280.00 stopped_speed=0.00 braking_distance=11.67 reversal_frames=6
+PASS short and full jump trajectories differ
+PASS fresh jump within the 0.10s ledge coyote window launches
+PASS one fresh jump press buffered just before landing is consumed once
+PASS held jump does not auto-repeat after landing
+PASS launch clears coyote permission
+PASS maximum configured diagonal launch stays inside visible containment
+P02_METRIC forced_launch_released_wu=101.12 forced_launch_held_wu=101.12
+PASS ordinary jump release does not shorten an external launch
+PASS Lagsanay containment breach pauses as a defect without eliminating the taya
+PASS prototype recovery restores fixture position without changing score/construction snapshot
+PASS Kangaroo-only containment breach also pauses as a prototype defect
+PASS race-only containment escape produces one failed terminal outcome
+PASS race failure neither repeats its outcome nor automatically respawns
+PASS explicit diagnostic trial reset restores terminal actor at its seat
+PASS opening freeze outranks capture and launch
+PASS intent remains observable while captured
+PASS capture blocks forced movement
+PASS terminal outcome is idempotent
+PASS terminal player ignores forced movement
+PASS five fixture reload cycles release their scene nodes and signal owners
+P02_TESTS checks=83 failures=0
+EXIT_CODE: 0

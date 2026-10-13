@@ -1,0 +1,8 @@
+Command: D:\Downloads\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\Users\roman\AppData\Local\Temp\tilaok-p06-staged-baddd3fc20c4411fa65348bad5e83a0d\tilaok! --script res://tests/run_p06_tests.gd
+Source: temporary snapshot of HEAD 11352c7 plus the complete staged index.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P06_TEST_SUMMARY checks=97 failures=0
+EXIT_CODE: 0

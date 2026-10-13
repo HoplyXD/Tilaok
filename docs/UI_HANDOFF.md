@@ -167,11 +167,11 @@ Phase banner (Pugad / Place / Play), countdown ring, announce banner for next-ro
 
 ## 12. What development built (2026-10-14)
 
-Screen shells are real Godot scenes, not code. Status: **placeholder look, SAMPLE data, no final art.** They do not tick any P05-T11 or P13 checkbox: live modes, awards and content still come from later phases.
+Screen shells are real Godot scenes, not code. Status: **placeholder look, SAMPLE data, no final art.** The separate P05 match room now binds live P06 race awards, suppression reasons and totals to code-built placeholder panels; this does not complete P13 or connect the scene-authored screen shells to live data.
 
 - **Scenes:** `tilaok!/scenes/ui/screens/` (Title, Lobby, Tutorial prompt, Pugad, Place, Play HUD, Round result, Match result, Pause/Reconnect, Settings, Library, Event overlays) and `tilaok!/scenes/ui/components/` (player badge, prompt glyph, phase banner, countdown, score row, award line, toast, egg slot, ghost legend, confirm dialog, option row, lobby slot, taya marker, Kangaroo prompt).
 - **One Theme:** `tilaok!/assets/ui/theme/tilaok_theme.tres`.
-- **UI Gallery:** the foundation harness has **UI Gallery** and **Player flow (Title)** buttons; `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return (F9 hides the review panel). The P05 match room still uses its own code-built panels; converting them to these scenes is a follow-up.
+- **UI Gallery:** the foundation harness has **UI Gallery** and **Player flow (Title)** buttons; `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return (F9 hides the review panel). The match room still uses its own code-built panels. Its results now show live P06 data; converting those panels to these scenes remains a follow-up. See [P06 results capture](evidence/p06/02_explained_live_results_1920x1080.png).
 - **Tests:** `tilaok!/tests/run_ui_tests.gd`, captures `tilaok!/tests/capture_ui_evidence.gd`, evidence in `docs/evidence/ui-shells/`.
 
 ### How to edit the UI in Godot (for Shanti)

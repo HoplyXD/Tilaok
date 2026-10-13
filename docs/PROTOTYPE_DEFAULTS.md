@@ -156,7 +156,11 @@ Exact tests, captures and results are in [P03 verification evidence](evidence/p0
 | Tulay 4 wu strip at fall cap | All drops land | 5/5 landed; sampled peak 878.9 wu/s (cap 900) |
 | 48 pieces + 4 chickens, 1080p uncapped, 600 frames | ≤16.67 ms; ≤512 MiB | median 1.954 / p95 3.109 / worst 6.059 ms; peak working set 208.8 MiB, private 242.4 MiB |
 
-These are fixture measurements, not feel or balance evidence. The Kaing/Tulay equal selection weights are configuration only; no Pugad exists to use them yet.
+These P04 fixture measurements are not feel or balance evidence. At that earlier checkpoint the Kaing/Tulay equal weights were configuration only; P05 now uses the Pugad flow in the `karera_slice` profile.
+
+### P06 Karera and scoring runtime measurements — October 14, 2026
+
+The real ArenaDefinition goal trigger, race-clock policy, result binding, exact race awards and current elimination-placement arithmetic now run in the `karera_slice` development profile. The 97-check automated suite, 17-check two-seat live result, 64-check four-seat P05 flow and 2/3/4-seat frame sample passed. The P06 evidence record lists frame, static-memory, repeated-round and export results. These synthetic/scripted checks do not establish player feel, fairness or final balance. Hazard-owner candidates and Barya facts are test-only interfaces; P10 hazard contact, coin gameplay, Lagsanay, event stacks and full-match scoring orchestration remain future gates. No scoring design value changed from the GDD.
 
 ### Contact and temporary-state policy
 
@@ -237,6 +241,8 @@ Separate simulation invariants (one outcome, pass-through bodies, atomic edits, 
 | `transients.projectiles`, `bubbles`, `vfx` | P: max 16 projectiles (2/emitter), 4 bubbles (1/emitter, 1/player), 32 cosmetic effects | 8–24, 2–4, 16–48 | Bounded future workload; baseline has none of these items enabled | Low |
 | `transients.ttl_s` | P: projectile 3 s, empty bubble 4 s, cosmetic 2 s; capture C/P ≈2 s | 2–4, 3–5, 1–3 s; capture 1–2 s | Prevents accumulation; expiry must release captives safely before removal | Low |
 | `bubble.recapture_immunity_s` | P: 1.0 s against all bubbles | .75–1.5 s | Stops immediate recapture; not hazard immunity. Disable unsafe event pairing if chains remain unavoidable | Low |
+
+P06 maps the race row to `match_race_hard_cap_seconds = 60.0` and `match_race_after_first_finish_seconds = 15.0` in `gameplay_tuning.gd`; both are validated and copied into the match snapshot. The active-simulation clock freezes on pause. These defaults passed timing fixtures but are still provisional until human play sessions record finish and stall rates. Race score storage uses integer eighth-point units (80 units = 10 points; Bawi requires a 24-unit round-start gap). See the dated P06 runtime record below and [P06 verification evidence](evidence/p06/2026-10-14_p06_verification.md).
 
 Bounds/camera values live in STAGE_AND_PLACEMENT.md's graybox table; movement/contact values are above. Do not duplicate numeric sources in production code. Terminal velocity applies to ordinary gravity; external launch limits have their own keys.
 

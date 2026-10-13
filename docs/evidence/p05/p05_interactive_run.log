@@ -2,7 +2,7 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
 
 P04_ITEM_LAB_READY families=2 enabled_variants=3 profile=karera_slice
-P05_MATCH_READY build=P05-match-loop-dev seed=12345
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
 P05_INTERACTIVE PASSED: P05 match room opens from the foundation harness at 1920x1080
 P05_INTERACTIVE PASSED: match room fills the viewport when opened
 P05_INTERACTIVE PASSED: K1/K2 plus two synthetic gamepads occupy four fixed identity seats
@@ -28,17 +28,17 @@ P05_INTERACTIVE PASSED: captured 04_place_exact_variant_pairs_1920x1080.png at (
 P05_INTERACTIVE PASSED: rotated Kaing 2x3 ghost changes expected footprint to 3x2 cells
 P05_INTERACTIVE PASSED: captured 05_place_rotated_2x3_ghost_1920x1080.png at (1920, 1080)
 P05_INTERACTIVE PASSED: 2x3 hatch retains its exact identity through the rotated ghost
-P05_INTERACTIVE PASSED: confirmed edits resolve together before diagnostic Play
+P05_INTERACTIVE PASSED: confirmed edits resolve together before live Karera Play
 P05_INTERACTIVE PASSED: valid Place submissions materialize one piece per assigned seat
 P05_INTERACTIVE PASSED: seat 1 placed exact hatched variant (build.bamboo_bridge.span_4x1)
 P05_INTERACTIVE PASSED: seat 2 placed exact hatched variant (build.hollow_blocks.stack_2x3)
 P05_INTERACTIVE PASSED: seat 4 placed exact hatched variant (build.hollow_blocks.stack_2x3)
 P05_INTERACTIVE PASSED: seat 3 placed exact hatched variant (build.hollow_blocks.cell_1x1)
 P05_INTERACTIVE PASSED: K1 keyboard input moves its chicken during diagnostic Play
-P05_INTERACTIVE PASSED: captured 06_diagnostic_play_1920x1080.png at (1920, 1080)
-P05_INTERACTIVE PASSED: diagnostic End Round opens the results shell
-P05_INTERACTIVE PASSED: P05 results shell contains no invented awards
-P05_INTERACTIVE PASSED: captured 07_results_shell_1920x1080.png at (1920, 1080)
+P05_INTERACTIVE PASSED: captured 06_live_karera_1920x1080.png at (1920, 1080)
+P05_INTERACTIVE PASSED: actual goal contact opens scored results
+P05_INTERACTIVE PASSED: four-player all-finish results explain the no-points rule
+P05_INTERACTIVE PASSED: captured 07_explained_results_1920x1080.png at (1920, 1080)
 P05_INTERACTIVE PASSED: all-ready result advance starts the next round
 P05_INTERACTIVE PASSED: held K1 confirm does not auto-claim in next Pugad
 P05_INTERACTIVE PASSED: results ready advances to the next Pugad
@@ -56,16 +56,17 @@ P05_INTERACTIVE PASSED: captured 04_place_exact_variant_pairs_1920x1080.png at (
 P05_INTERACTIVE PASSED: rotated Kaing 2x3 ghost changes expected footprint to 3x2 cells
 P05_INTERACTIVE PASSED: captured 05_place_rotated_2x3_ghost_1920x1080.png at (1920, 1080)
 P05_INTERACTIVE PASSED: 2x3 hatch retains its exact identity through the rotated ghost
-P05_INTERACTIVE PASSED: confirmed edits resolve together before diagnostic Play
+P05_INTERACTIVE PASSED: confirmed edits resolve together before live Karera Play
 P05_INTERACTIVE PASSED: valid Place submissions materialize one piece per assigned seat
 P05_INTERACTIVE PASSED: seat 4 placed exact hatched variant (build.bamboo_bridge.span_4x1)
 P05_INTERACTIVE PASSED: seat 1 placed exact hatched variant (build.hollow_blocks.stack_2x3)
 P05_INTERACTIVE PASSED: seat 2 placed exact hatched variant (build.bamboo_bridge.span_4x1)
 P05_INTERACTIVE PASSED: seat 3 placed exact hatched variant (build.bamboo_bridge.span_4x1)
-P05_INTERACTIVE PASSED: captured 06_diagnostic_play_1920x1080.png at (1920, 1080)
-P05_INTERACTIVE PASSED: diagnostic End Round opens the results shell
-P05_INTERACTIVE PASSED: P05 results shell contains no invented awards
-P05_INTERACTIVE PASSED: captured 07_results_shell_1920x1080.png at (1920, 1080)
+P05_INTERACTIVE PASSED: captured 06_live_karera_1920x1080.png at (1920, 1080)
+P05_INTERACTIVE PASSED: actual goal contact opens scored results
+P05_INTERACTIVE PASSED: four-player all-finish results explain the no-points rule
+P05_INTERACTIVE PASSED: captured 07_explained_results_1920x1080.png at (1920, 1080)
 P05_INTERACTIVE PASSED: second round keeps first-round construction intact
 P05_INTERACTIVE PASSED: Return releases the P05 room back to the harness
 P05_INTERACTIVE checks=64 failures=0 captures=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p05
+EXIT_CODE: 0

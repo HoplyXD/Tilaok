@@ -207,6 +207,25 @@ func eliminate(reason: String = "eliminated") -> bool:
 	return _set_terminal(PlayerLifecycleState.Status.ELIMINATED, reason)
 
 
+## Restores this seat for a new round without recreating its node or identity markers.
+func reset_for_round(spawn_position: Vector2) -> void:
+	_clear_support()
+	global_position = spawn_position
+	velocity = Vector2.ZERO
+	locomotion_velocity = Vector2.ZERO
+	external_velocity = Vector2.ZERO
+	coyote_remaining = 0.0
+	jump_buffer_remaining = 0.0
+	jump_was_held = false
+	_vertical_half_step = 0.0
+	intentional_input = false
+	containment_outcome_reported = false
+	lifecycle.status = PlayerLifecycleState.Status.ACTIVE
+	lifecycle.capture_source_id = ""
+	lifecycle.terminal_reason = ""
+	reset_wall_state()
+
+
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	if not lifecycle.set_status(status, reason):
 		return false

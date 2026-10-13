@@ -254,7 +254,7 @@ func _run_round(round_index: int) -> void:
 	await physics_frame
 	_check(
 		room.phase_controller.phase == MatchPhaseController.Phase.PLAY,
-		"confirmed edits resolve together before diagnostic Play"
+		"confirmed edits resolve together before live Karera Play"
 	)
 	_check(
 		room.last_resolution.commits.size() == room.assignments.size(),
@@ -276,7 +276,7 @@ func _run_round(round_index: int) -> void:
 		)
 		var piece_row := (
 			"| %d | P%d | `%s` | `%s` | `%s` | `%s` | `04_place_exact_variant_pairs` "
-			+ "→ `06_diagnostic_play` |"
+			+ "→ `06_live_karera` |"
 		)
 		(
 			_handoff_rows
@@ -303,20 +303,23 @@ func _run_round(round_index: int) -> void:
 			(room.actors[0] as ChickenController).global_position.x > before_x,
 			"K1 keyboard input moves its chicken during diagnostic Play"
 		)
-	await _capture("06_diagnostic_play_1920x1080.png")
+	await _capture("06_live_karera_1920x1080.png")
 	var signature_before_end := room.items.construction_signature()
 	if round_index == 0:
 		_round_one_signature = signature_before_end
-	await _click_text_button(room, "End Round • diagnostic")
+	var goal_position := room.goal_area.global_position
+	for actor_variant in room.actors.values():
+		(actor_variant as ChickenController).global_position = goal_position
+	await _wait_physics_frames(4)
 	_check(
 		room.phase_controller.phase == MatchPhaseController.Phase.RESULTS,
-		"diagnostic End Round opens the results shell"
+		"actual goal contact opens scored results"
 	)
 	_check(
-		room.last_results_model.award_rows.is_empty(),
-		"P05 results shell contains no invented awards"
+		room.last_results_model.suppression_reason.contains("Everyone reached the goal"),
+		"four-player all-finish results explain the no-points rule"
 	)
-	await _capture("07_results_shell_1920x1080.png")
+	await _capture("07_explained_results_1920x1080.png")
 	if round_index > 0:
 		_check(
 			room.items.construction_signature() == signature_before_end,

@@ -2,6 +2,7 @@ class_name P03StageRoom
 extends Control
 
 signal return_requested
+signal actor_created(actor: ChickenController)
 
 const BUILD_ID := "P03-graybox-dev"
 ## Top-left of the on-demand wall-movement debug fixtures (above the base route).
@@ -17,6 +18,7 @@ var pause_coordinator: PauseRecoveryCoordinator
 var camera_rig: BoundedStageCamera
 var world_layer: Node2D
 var actors: Dictionary = {}
+var goal_area: Area2D
 var wall_fixtures: Dictionary = {}
 var pointers: Array[Dictionary] = []
 var current_context := BoundedStageCamera.Context.PLAY
@@ -160,17 +162,7 @@ func reset_room() -> void:
 	for actor_variant in actors.values():
 		var actor := actor_variant as ChickenController
 		actor.support_tracker.invalidate_actor(actor.support_actor_id)
-		actor.global_position = arena.controller_origin_from_feet(arena.spawn_feet)
-		actor.velocity = Vector2.ZERO
-		actor.locomotion_velocity = Vector2.ZERO
-		actor.external_velocity = Vector2.ZERO
-		actor.coyote_remaining = 0.0
-		actor.jump_buffer_remaining = 0.0
-		actor.reset_wall_state()
-		actor.lifecycle.status = PlayerLifecycleState.Status.ACTIVE
-		actor.lifecycle.capture_source_id = ""
-		actor.lifecycle.terminal_reason = ""
-		actor.containment_outcome_reported = false
+		actor.reset_for_round(arena.controller_origin_from_feet(arena.spawn_feet))
 	clear_wall_fixtures()
 	for pointer in pointers:
 		(pointer.node as Polygon2D).queue_free()
@@ -368,6 +360,7 @@ func _build_actor(seat_index: int) -> ChickenController:
 	actor.set_meta("identity_badge", badge)
 	actor.set_meta("identity_leader", leader)
 	actors[seat_index] = actor
+	actor_created.emit(actor)
 	_update_identity_badges()
 	return actor
 
@@ -412,6 +405,19 @@ func _add_static_surface(spec: Dictionary) -> StaticBody2D:
 
 
 func _add_flag_trigger() -> void:
+	goal_area = Area2D.new()
+	goal_area.name = "KareraGoalTrigger"
+	goal_area.position = arena.goal_trigger.get_center()
+	goal_area.collision_layer = 0
+	goal_area.collision_mask = 2
+	goal_area.monitoring = true
+	goal_area.monitorable = false
+	world_layer.add_child(goal_area)
+	var goal_collision := CollisionShape2D.new()
+	var goal_shape := RectangleShape2D.new()
+	goal_shape.size = arena.goal_trigger.size
+	goal_collision.shape = goal_shape
+	goal_area.add_child(goal_collision)
 	var outline := Line2D.new()
 	outline.name = "FlagTriggerOutline"
 	outline.points = PackedVector2Array(
@@ -426,9 +432,7 @@ func _add_flag_trigger() -> void:
 	outline.width = 2.0
 	outline.default_color = Color("#f0d25d")
 	world_layer.add_child(outline)
-	_add_world_label(
-		"FLAG TRIGGER • FIXTURE ONLY", arena.goal_trigger.position + Vector2(-48.0, 16.0)
-	)
+	_add_world_label("KARERA GOAL", arena.goal_trigger.position + Vector2(-48.0, 16.0))
 
 
 func _add_support_line() -> void:

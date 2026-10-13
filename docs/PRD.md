@@ -132,7 +132,7 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 **Acceptance:** New participants can join and identify themselves; results explain actual awards; next round consumes held presses and retains construction correctly.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** minimal lobby, live explained race results and next-round loop pass P05-T12; see the [P05 verification record](evidence/p05/2026-10-14_p05_verification.md) and [P06 captures](evidence/p06/README.md). This is code-built DEBUG UI with synthetic inputs; final scene-based UI integration, human readability/onboarding and physical-device coverage remain open.
 
 
 ### REQ-MATCH-002 — Replay, return to lobby and reset all match state
@@ -401,7 +401,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Exercise none/some/all finish, both deadlines, last-frame finish and no live runners; resolve the round once and show the applicable reason.
 
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** implemented for the `karera_slice` development profile; see [P06 verification](evidence/p06/2026-10-14_p06_verification.md), [deadline test log](evidence/p06/regression_run_p06_tests.txt), and [live goal/results captures](evidence/p06/README.md). Automated and synthetic 2/4-seat paths pass. Physical-device, human playtest, final UI and full-release coverage remain open; 60/15 s values are provisional. Non-code decisions require their own documented review.
 
 
 ### REQ-SCORE-001 — Record one terminal outcome and direct attribution
@@ -412,7 +412,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Replay duplicated/reordered callbacks, competing hazards and goal/death ties; one outcome remains and direct ownership is stable. Actual hazard integration is retested when P10 hazards exist.
 
-**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** per-step `RaceOutcomeLedger` with event/round identity, deduplication, stable hazard ID ordering and exactly-once score commit; see [P06 verification](evidence/p06/2026-10-14_p06_verification.md) and [ledger tests](evidence/p06/regression_run_p06_tests.txt). Hazard-source attribution currently uses test-only candidate fixtures; P10 runtime hazard integration and retest are still required. No physical-device/human review is claimed.
 
 
 ### REQ-SCORE-002 — Calculate race awards and suppression exactly
@@ -423,7 +423,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Table-driven 2/3/4-player cases cover all/none/sole/multiple finishes, exact-first ties, dead trap owner, self kill, underdog snapshot and coin exception; totals are exact and awarded once.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** integer eighth-point `RaceScoreCalculator` feeds explained live results; 97 focused assertions cover 2/3/4-seat suppression, waiver, ties, awards, totals and snapshot-based Bawi ([P06 verification](evidence/p06/2026-10-14_p06_verification.md)). Barya is a test-only fact; no coin gameplay is included. Rendered result readability has a synthetic 1920×1080 check; human review remains open.
 
 
 ### REQ-SCORE-003 — Store elimination placement ties without rounding
@@ -434,7 +434,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Enumerate every legal group and compare exact totals at 10 points and underdog threshold; display eighth fractions or sufficient decimals. No claim that eighths cover arbitrary future scoring tables.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `PlacementScoreResolver` and `ScoreFormat` use exact eighth-units for current legal groups and Last Cluck ordering; see [P06 placement cases](evidence/p06/regression_run_p06_tests.txt) and [verification record](evidence/p06/2026-10-14_p06_verification.md). This does not claim arbitrary future scoring denominators or implement Lagsanay.
 
 
 ### REQ-MATCH-001 — Finish matches and run tied-player sudden death

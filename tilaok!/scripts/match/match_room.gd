@@ -1,8 +1,9 @@
 class_name P05MatchRoom
 extends ItemLabRoom
 
-const MATCH_BUILD_ID := "P05-match-loop-dev"
+const MATCH_BUILD_ID := "P06-karera-scoring-dev"
 const MARKS := {"CIRCLE": "●", "TRIANGLE": "▲", "SQUARE": "■", "DIAMOND": "◆"}
+const RACE_CANDIDATE_QUEUE_SCRIPT := preload("res://scripts/match/race_candidate_queue.gd")
 const PHASE_TO_INPUT := {
 	MatchPhaseController.Phase.LOBBY: LocalInputRouter.Phase.LOBBY,
 	MatchPhaseController.Phase.PUGAD: LocalInputRouter.Phase.PUGAD,
@@ -14,6 +15,8 @@ const PHASE_TO_INPUT := {
 var phase_controller := MatchPhaseController.new()
 var placement_controller := MatchPlacementController.new()
 var match_streams := SeededDiagnosticStreams.new()
+var race_round_controller := RaceRoundController.new()
+var race_candidate_queue := RACE_CANDIDATE_QUEUE_SCRIPT.new()
 var egg_pool: Array[Dictionary] = []
 var assignments: Dictionary = {}
 var selected_egg_by_seat: Dictionary = {}
@@ -25,6 +28,8 @@ var match_run_id := 1
 var match_snapshot: ConfigurationSnapshot
 var last_resolution: Dictionary = {}
 var last_results_model: MatchResultsViewModel
+var cumulative_score_units: Dictionary = {}
+var round_start_score_units: Dictionary = {}
 var _match_canvas: CanvasLayer
 var _top_bar: PanelContainer
 var _info_panel: PanelContainer
@@ -65,6 +70,11 @@ func _ready() -> void:
 		_overlay_layer.queue_free()
 		_overlay_layer = null
 	phase_controller.enter(MatchPhaseController.Phase.LOBBY)
+	if goal_area != null:
+		goal_area.body_entered.connect(_on_goal_body_entered)
+	actor_created.connect(_on_actor_created)
+	for actor_variant in actors.values():
+		_on_actor_created(actor_variant as ChickenController)
 	_set_input_phase()
 	last_message = "Join two to four seats, then mark every joined seat ready to start."
 	_move_build_region_label_below_controls()
@@ -103,8 +113,18 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
-	if not get_tree().paused and phase_controller.phase == MatchPhaseController.Phase.PUGAD:
+	if get_tree().paused:
+		return
+	if phase_controller.phase == MatchPhaseController.Phase.PUGAD:
 		_flush_claims()
+	elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
+		_collect_goal_overlaps()
+		var step_result := race_round_controller.advance_step(
+			delta, Engine.get_physics_frames(), race_candidate_queue.drain()
+		)
+		_apply_race_outcomes(step_result.new_outcomes)
+		if bool(step_result.ended):
+			_finish_race(str(step_result.end_reason))
 
 
 func _build_hud() -> void:
@@ -122,7 +142,7 @@ func _build_hud() -> void:
 	row.add_theme_constant_override("separation", 6)
 	_top_bar.add_child(row)
 	var title := Label.new()
-	title.text = "TILAOK! • P05 DEBUG"
+	title.text = "TILAOK! • KARERA"
 	title.add_theme_font_size_override("font_size", 13)
 	row.add_child(title)
 	_phase_label = Label.new()
@@ -134,8 +154,6 @@ func _build_hud() -> void:
 	_add_match_button(row, "Join K1", func() -> void: join_keyboard("K1"), "join_k1")
 	_add_match_button(row, "Join K2", func() -> void: join_keyboard("K2"), "join_k2")
 	_add_match_button(row, "Start match", start_match, "start")
-	_add_match_button(row, "End Round • diagnostic", end_round_diagnostic, "end_round")
-	_add_match_button(row, "Flag-touch stub", end_round_diagnostic, "flag_stub")
 	_pause_button = _add_match_button(row, "Pause", _toggle_pause, "pause")
 	_add_match_button(row, "Return", request_return, "return")
 	for child in row.get_children():
@@ -182,8 +200,6 @@ func _build_hud() -> void:
 	_match_canvas.add_child(_results_panel)
 	_status_label = _feedback_label
 	_support_label = _hints_label
-	_match_buttons["end_round"].hide()
-	_match_buttons["flag_stub"].hide()
 
 
 func _add_match_button(
@@ -203,11 +219,12 @@ func _update_diagnostics() -> void:
 		return
 	var phase_text: String = str(MatchPhaseController.Phase.keys()[phase_controller.phase])
 	_phase_label.text = phase_text
-	_timer_label.text = (
-		"%.1f s" % phase_controller.remaining_seconds
-		if phase_controller.remaining_seconds > 0.0
-		else ""
-	)
+	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
+		_timer_label.text = "%.1f s" % race_round_controller.remaining_seconds()
+	elif phase_controller.remaining_seconds > 0.0:
+		_timer_label.text = "%.1f s" % phase_controller.remaining_seconds
+	else:
+		_timer_label.text = ""
 	var rows := PackedStringArray()
 	for row in LobbyViewModel.seat_rows(input_router.registry):
 		var state := "READY" if row.ready else "NOT READY"
@@ -263,11 +280,6 @@ func _update_diagnostics() -> void:
 		_match_buttons.start.visible = phase_controller.phase == MatchPhaseController.Phase.LOBBY
 	for key in ["join_k1", "join_k2"]:
 		_match_buttons[key].visible = phase_controller.phase == MatchPhaseController.Phase.LOBBY
-	var in_play := phase_controller.phase == MatchPhaseController.Phase.PLAY
-	_match_buttons.end_round.visible = in_play
-	_match_buttons.flag_stub.visible = in_play
-	_match_buttons.end_round.disabled = not in_play
-	_match_buttons.flag_stub.disabled = not in_play
 	_egg_row.visible = phase_controller.phase == MatchPhaseController.Phase.PUGAD
 	_info_panel.visible = phase_controller.phase != MatchPhaseController.Phase.RESULTS
 	if _results_panel != null:
@@ -295,12 +307,17 @@ func start_match() -> bool:
 	input_router.tuning = tuning
 	definitions = ItemDefinitions.load_all(tuning)
 	items.configure(tuning, arena, support_tracker, definitions, world_layer)
+	cumulative_score_units.clear()
+	for seat in input_router.registry.joined_seats():
+		cumulative_score_units[int(seat.seat)] = 0
 	match_streams.seed_all(match_seed)
 	_begin_pugad()
 	return true
 
 
 func _begin_pugad() -> void:
+	_reset_actors_for_round()
+	race_candidate_queue.reset()
 	_free_match_ghosts()
 	placement_controller.cursors.clear()
 	assignments.clear()
@@ -759,31 +776,124 @@ func _enter_play() -> void:
 	current_context = BoundedStageCamera.Context.PLAY
 	camera_rig.set_context(current_context)
 	start_play()
-	last_message += (
-		"\nPLAY is diagnostic. Use End Round or Flag-touch stub; "
-		+ "finish rules and awards are not active."
+	round_start_score_units = cumulative_score_units.duplicate(true)
+	var seats: Array[int] = []
+	for seat in input_router.registry.joined_seats():
+		seats.append(int(seat.seat))
+	var round_id := "%d:%d" % [match_run_id, items.round_number + 1]
+	race_round_controller.configure(
+		tuning.match_race_hard_cap_seconds, tuning.match_race_after_first_finish_seconds
+	)
+	if not race_round_controller.begin(round_id, seats, round_start_score_units):
+		push_error("Could not initialize Karera round %s" % round_id)
+		return
+	race_candidate_queue.begin(round_id)
+	last_message = (
+		"Karera: reach the flag. Finished chickens are secured; "
+		+ "remaining runners fail at the deadline."
 	)
 	_refresh_match_ui()
 
 
-func end_round_diagnostic() -> void:
-	if phase_controller.phase != MatchPhaseController.Phase.PLAY:
+func _finish_race(reason: String) -> void:
+	if phase_controller.phase != MatchPhaseController.Phase.PLAY or not race_round_controller.ended:
 		return
+	var outcome_rows := race_round_controller.ledger.outcomes()
+	var seat_indices: Array[int] = []
+	for seat in input_router.registry.joined_seats():
+		seat_indices.append(int(seat.seat))
+	var score_result := RaceScoreCalculator.calculate(
+		seat_indices, outcome_rows, round_start_score_units
+	)
+	if not race_round_controller.ledger.commit_score_once(
+		race_round_controller.ledger.round_id, score_result
+	):
+		return
+	for seat_index in seat_indices:
+		cumulative_score_units[seat_index] = int(score_result.totals_units[seat_index])
 	items.end_round()
 	results_ready.clear()
 	for seat in input_router.registry.joined_seats():
 		var seat_index := int(seat.seat)
 		input_router.registry.set_ready(seat_index, false)
 		results_ready[seat_index] = false
-	last_results_model = MatchResultsViewModel.diagnostic(
-		items.round_number, input_router.registry.joined_seats()
+	last_results_model = MatchResultsViewModel.race(
+		items.round_number,
+		input_router.registry.joined_seats(),
+		outcome_rows,
+		score_result,
+		reason,
+		race_round_controller.hard_cap_seconds,
+		race_round_controller.post_first_finish_seconds
 	)
 	_results_panel.show_results(last_results_model)
 	phase_controller.enter(MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds)
 	_set_input_phase()
 	current_context = BoundedStageCamera.Context.PLAY
-	last_message = "Diagnostic Play ended. Construction persists; P06 owns awards and explanations."
+	last_message = (
+		"Karera ended (%s). Construction persists; scores carry into the next round." % reason
+	)
 	_refresh_match_ui()
+
+
+func _on_actor_created(actor: ChickenController) -> void:
+	if actor == null or not is_instance_valid(actor):
+		return
+	var callback := _on_actor_escaped.bind(actor.seat_index)
+	if not actor.escaped_bounds.is_connected(callback):
+		actor.escaped_bounds.connect(callback)
+
+
+func _on_actor_escaped(seat_index: int) -> void:
+	if phase_controller.phase != MatchPhaseController.Phase.PLAY:
+		return
+	var actor := actors.get(seat_index) as ChickenController
+	if actor == null or actor.lifecycle.status != PlayerLifecycleState.Status.ACTIVE:
+		return
+	race_candidate_queue.queue_elimination(
+		seat_index,
+		Engine.get_physics_frames(),
+		"",
+		-1,
+		(
+			"bounds:%s:%d:%d"
+			% [race_round_controller.ledger.round_id, Engine.get_physics_frames(), seat_index]
+		)
+	)
+
+
+func _on_goal_body_entered(body: Node2D) -> void:
+	if phase_controller.phase == MatchPhaseController.Phase.PLAY and body is ChickenController:
+		race_candidate_queue.queue_goal(body as ChickenController, Engine.get_physics_frames())
+
+
+func _collect_goal_overlaps() -> void:
+	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
+		race_candidate_queue.collect_goal_overlaps(goal_area, Engine.get_physics_frames())
+
+
+func _apply_race_outcomes(outcomes: Array) -> void:
+	for outcome in outcomes:
+		var actor := actors.get(int(outcome.seat_index)) as ChickenController
+		if actor == null or not is_instance_valid(actor):
+			continue
+		if str(outcome.outcome) == "finished":
+			actor.secure("reached_goal")
+		else:
+			actor.eliminate(str(outcome.get("cause", "eliminated")))
+	_update_camera_targets()
+
+
+func _reset_actors_for_round() -> void:
+	if arena == null:
+		return
+	var spawn := arena.controller_origin_from_feet(arena.spawn_feet)
+	for actor_variant in actors.values():
+		var actor := actor_variant as ChickenController
+		if actor != null and is_instance_valid(actor):
+			support_tracker.invalidate_actor(actor.support_actor_id)
+			actor.reset_for_round(spawn)
+	_update_camera_targets()
 
 
 func _all_results_ready() -> bool:
@@ -807,6 +917,10 @@ func reset_room() -> void:
 	if items != null:
 		items.reset_match()
 	phase_controller.enter(MatchPhaseController.Phase.LOBBY)
+	race_round_controller = RaceRoundController.new()
+	cumulative_score_units.clear()
+	round_start_score_units.clear()
+	race_candidate_queue.reset()
 	assignments.clear()
 	egg_pool.clear()
 	results_ready.clear()
@@ -839,7 +953,10 @@ func _phase_hint() -> String:
 		MatchPhaseController.Phase.PLACE:
 			return "Move: WASD / arrows / stick · Rotate: R / Right Shift · Confirm: F / Enter / Pad A"
 		MatchPhaseController.Phase.PLAY:
-			return "K1 WASD + Space · K2 arrows + Ctrl · Pad stick + A jump · End Round is diagnostic only"
+			return (
+				"K1 WASD + Space · K2 arrows + Ctrl · Pad stick + A jump · "
+				+ "reach the flag to finish"
+			)
 		MatchPhaseController.Phase.RESULTS:
 			return "F / Enter / Pad A ready · next round starts after 8 seconds"
 	return ""

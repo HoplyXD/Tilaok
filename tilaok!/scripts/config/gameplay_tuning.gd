@@ -71,6 +71,9 @@ extends Resource
 @export var match_pugad_seconds: float = 8.0
 @export var match_place_seconds: float = 15.0
 @export var match_results_advance_seconds: float = 8.0
+## P06 provisional active-simulation race deadlines; frozen with the match snapshot.
+@export var match_race_hard_cap_seconds: float = 60.0
+@export var match_race_after_first_finish_seconds: float = 15.0
 ## Variant keys allowed into the prototype pool; each must be defined and approved.
 @export var item_enabled_variants: PackedStringArray = PackedStringArray(
 	[
@@ -136,6 +139,8 @@ func validate() -> PackedStringArray:
 		"match_pugad_seconds",
 		"match_place_seconds",
 		"match_results_advance_seconds",
+		"match_race_hard_cap_seconds",
+		"match_race_after_first_finish_seconds",
 	]:
 		if not is_finite(get(field_name)):
 			errors.append("%s must be finite" % field_name)
@@ -187,6 +192,8 @@ func validate() -> PackedStringArray:
 		match_pugad_seconds <= 0.0
 		or match_place_seconds <= 0.0
 		or match_results_advance_seconds <= 0.0
+		or match_race_hard_cap_seconds <= 0.0
+		or match_race_after_first_finish_seconds <= 0.0
 	):
 		errors.append("match phase durations must be greater than zero")
 	for bound_value in [

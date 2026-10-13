@@ -7,6 +7,7 @@ var per_seat_outcomes: Array[Dictionary] = []
 var award_rows: Array[Dictionary] = []
 var suppression_reason := ""
 var totals: Dictionary = {}
+var deadline_explanation := ""
 
 
 static func diagnostic(round_value: int, seats: Array[Dictionary]) -> MatchResultsViewModel:
@@ -30,6 +31,76 @@ static func diagnostic(round_value: int, seats: Array[Dictionary]) -> MatchResul
 	return model
 
 
+static func race(
+	round_value: int,
+	seats: Array[Dictionary],
+	outcomes: Array[Dictionary],
+	score_result: Dictionary,
+	end_reason: String,
+	hard_cap_seconds: float,
+	post_finish_seconds: float
+) -> MatchResultsViewModel:
+	var model := MatchResultsViewModel.new()
+	model.round_number = round_value
+	model.diagnostic_label = _end_reason_text(end_reason, hard_cap_seconds, post_finish_seconds)
+	model.suppression_reason = str(score_result.get("suppression_reason", ""))
+	model.deadline_explanation = (
+		"Race limit %.0f s; after the first finish, remaining runners had %.0f s."
+		% [hard_cap_seconds, post_finish_seconds]
+	)
+	var seat_by_index: Dictionary = {}
+	for seat in seats:
+		seat_by_index[int(seat.seat)] = seat
+	var outcome_by_seat: Dictionary = {}
+	for outcome in outcomes:
+		outcome_by_seat[int(outcome.seat_index)] = outcome
+	var delta_units: Dictionary = score_result.get("delta_units", {})
+	var total_units: Dictionary = score_result.get("totals_units", {})
+	for seat_index in seat_by_index:
+		var seat: Dictionary = seat_by_index[seat_index]
+		var outcome: Dictionary = outcome_by_seat.get(seat_index, {})
+		var finished := str(outcome.get("outcome", "")) == "finished"
+		var result_text := "Reached the flag; secured."
+		if not finished:
+			result_text = _elimination_text(
+				str(outcome.get("cause", "eliminated")), hard_cap_seconds, post_finish_seconds
+			)
+		var delta := int(delta_units.get(seat_index, 0))
+		var total := int(total_units.get(seat_index, 0))
+		(
+			model
+			. per_seat_outcomes
+			. append(
+				{
+					"seat_index": seat_index,
+					"identity": int(seat.identity),
+					"shape": str(seat.shape),
+					"outcome": result_text,
+					"score_delta_units": delta,
+					"score_delta_text": _signed_score(delta),
+					"total_units": total,
+					"total_text": ScoreFormat.format_units(total),
+				}
+			)
+		)
+		model.totals[seat_index] = {
+			"identity": int(seat.identity),
+			"shape": str(seat.shape),
+			"units": total,
+			"text": ScoreFormat.format_units(total),
+			"delta_units": delta,
+			"delta_text": _signed_score(delta),
+		}
+	for award in score_result.get("award_rows", []):
+		var row: Dictionary = award.duplicate(true)
+		var seat: Dictionary = seat_by_index.get(int(row.get("seat_index", -1)), {})
+		row["identity"] = int(seat.get("identity", 0))
+		row["shape"] = str(seat.get("shape", ""))
+		row["score_text"] = "+" + ScoreFormat.format_units(int(row.get("units", 0)))
+		model.award_rows.append(row)
+	return model
+
+
 func as_dictionary() -> Dictionary:
 	return {
 		"round_number": round_number,
@@ -38,4 +109,38 @@ func as_dictionary() -> Dictionary:
 		"award_rows": award_rows.duplicate(true),
 		"suppression_reason": suppression_reason,
 		"totals": totals.duplicate(true),
+		"deadline_explanation": deadline_explanation,
 	}
+
+
+static func _signed_score(units: int) -> String:
+	return ("+" if units >= 0 else "") + ScoreFormat.format_units(units)
+
+
+static func _end_reason_text(
+	reason: String, hard_cap_seconds: float, post_finish_seconds: float
+) -> String:
+	match reason:
+		"all_terminal":
+			return "Every player finished or was eliminated."
+		"hard_cap":
+			return "The %.0f-second race limit ended the round." % hard_cap_seconds
+		"post_finish_deadline":
+			return "The %.0f-second finish window ended the round." % post_finish_seconds
+	return "Karera round complete."
+
+
+static func _elimination_text(
+	cause: String, hard_cap_seconds: float, post_finish_seconds: float
+) -> String:
+	match cause:
+		"hard_cap":
+			return "Did not reach the flag before the %.0f-second race limit." % hard_cap_seconds
+		"post_finish_deadline":
+			return (
+				"Did not reach the flag within %.0f seconds of the first finish."
+				% post_finish_seconds
+			)
+		"reached_goal":
+			return "Reached the flag; secured."
+	return "Eliminated before reaching the flag."
