@@ -124,7 +124,7 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 | Corners, shafts and ceilings | Try corners, narrow shafts, rapid side switches, wall-to-wall climb routes and ceiling contact. No same-contact infinite climb, clipping, trapped state or unintended repeat occurs. |
 | Ground and coyote regression | Repeat normal ground jump, coyote jump, short/full jump and landing tests with wall contact nearby. Existing ground-jump behavior remains within its P02 contract. |
 | Bounds and maximum force | Combine the largest configured kick with approved external launch limits in every direction. Players remain inside visible bounds and cannot bypass immutable protection. |
-| Route and camera | Traverse the existing P03 base route with wall movement disabled; it must remain traversable. Then test wall shortcuts and maximum kick trajectories with the camera at minimum zoom and supported player separations. Record intentional shortcuts for balance review. |
+| Route and camera | Traverse the existing P03 base route; it must remain traversable with wall movement enabled (default) and with it forced off. Then test wall shortcuts and maximum kick trajectories with the camera at minimum zoom and supported player separations. Record intentional shortcuts for balance review. |
 | Built surfaces and support | Compare wall movement on base versus player-built sides. Assert wall contact never writes upward support/provenance or qualifies for Rising wave; verify actual landing on an eligible platform still does. |
 | Lifecycle states | Attempt contact/input during capture, opening freeze, secured and eliminated states. Higher-priority states suppress wall actions and cannot reactivate terminal players. |
 | External launches | Launch during wall slide/contact and while jump is buffered. Launch takes precedence, is not shortened or overwritten by wall logic, and clears wall eligibility/buffer. |
@@ -146,7 +146,7 @@ The full command/evidence inventory is in [P03 verification](evidence/p03/2026-1
 | Check | Status | Procedure and observed result | Evidence/limit |
 |---|---|---|---|
 | Wall runner | PASSED | `run_p02_wall_tests.gd`: 85 checks, 0 failures; real physics, synthetic input. | [log](evidence/p02-wall/2026-10-13_wall_tests.txt) |
-| Existing regressions | PASSED | `run_foundation_tests.gd` 0 failures; `run_p02_tests.gd` 83/0; `run_p03_tests.gd` 103/0 (default tuning, wall disabled). | `evidence/p02-wall/2026-10-13_regression_*.txt` |
+| Existing regressions | PASSED | `run_foundation_tests.gd` 0 failures; `run_p02_tests.gd` 83/0; `run_p03_tests.gd` 103/0 (recorded with wall off; re-run 2026-10-13 with wall enabled by default: same counts, 0 failures). | `evidence/p02-wall/2026-10-13_regression_*.txt` |
 | Import/parse, lint, format | PASSED | Editor import: 0 error/warning lines. gdlint 4.5.0 and gdformat 4.5.0 clean on all scripts and tests. | [import](evidence/p02-wall/2026-10-13_import_parse.txt) |
 | Slide + symmetry | PASSED | 120.00 wu/s on left and right; ascent uncapped. | wall log |
 | Excluded surfaces | PASSED | Ineligible, one-way, metadata-less, trigger, chicken: no slide and no kick. One-way underside passes through. | wall log |
