@@ -10,6 +10,7 @@ const ROOM_SCENES := {
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 }
+const FULL_VIEW_ROOMS: PackedStringArray = ["p03_stage_room", "item_lab"]
 
 var gameplay_tuning := GameplayTuning.new()
 var presentation_settings := PresentationSettings.new()
@@ -66,6 +67,10 @@ func _ready() -> void:
 	profile_picker.select(0)
 	_update_identity()
 	_validate_selected_profile()
+	# Exported-build smoke hook: "-- --open-room=item_lab" opens a fixture at startup.
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--open-room="):
+			_open_room.call_deferred(argument.trim_prefix("--open-room="))
 	_append_status(
 		(
 			"Harness ready. P01 foundation checks and P02 movement/input diagnostics are available; "
@@ -102,7 +107,20 @@ func _update_identity() -> void:
 
 
 func _current_catalog() -> DiagnosticContentCatalog:
-	return DiagnosticContentCatalog.new()
+	var catalog := DiagnosticContentCatalog.new()
+	var profile := ProfileRegistry.get_profile(selected_profile_id)
+	if profile == null:
+		return catalog
+	var definitions := ItemDefinitions.load_all(gameplay_tuning)
+	if not definitions.is_valid():
+		for message in definitions.errors:
+			_append_status("Item definitions rejected: %s" % message)
+		return catalog
+	# Item rows are visible only to profiles that list them; other profiles keep empty pools.
+	for entry in definitions.catalog_entries():
+		if profile.required_content_ids.has(entry.content_id):
+			catalog.entries.append(entry)
+	return catalog
 
 
 func _validate_selected_profile() -> void:
@@ -173,7 +191,7 @@ func _open_room(room_id: String) -> void:
 		return
 	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
-	if room_id == "p03_stage_room":
+	if FULL_VIEW_ROOMS.has(room_id):
 		active_room.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		add_child(active_room)
 		$Layout.hide()
@@ -184,6 +202,10 @@ func _open_room(room_id: String) -> void:
 	if room_id == "p03_stage_room":
 		_append_status(
 			"Opened the P03 graybox arena; placement and wave visuals are diagnostic fixtures only."
+		)
+	elif room_id == "item_lab":
+		_append_status(
+			"Opened the P04 Item Lab; lab placement is immediate and is not the P05 resolver."
 		)
 	elif room_id == "p02_movement_room":
 		_append_status(

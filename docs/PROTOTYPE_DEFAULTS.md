@@ -145,6 +145,19 @@ These results establish behavior only in this small authored collision fixture, 
 
 Exact tests, captures and results are in [P03 verification evidence](evidence/p03/2026-10-13_p03_verification.md). These fixture measurements do not establish player feel, final-art readability, late-game stress, release readiness, or balance. No gameplay networking is instantiated by this local fixture; the sample is not a network-throughput test.
 
+### P04 item infrastructure measurements — October 13, 2026
+
+**Build/profile:** `P04-item-lab-dev`, `main` @ `765ed09` + P04 working tree; Godot `4.7.2.stable.official.ed1daf0bf`; `karera_slice`; seed `12345`; 60-Hz physics; synthetic input. **Tunable location:** every item knob is an `item_*` field in `tilaok!/scripts/config/gameplay_tuning.gd` (caps 48/16/2 per emitter/4/1/1/32, TTL 3/4/2 s, grace 1.0 s, Tulay strip 4 wu, vertical gate false, family weights 50/50, enabled variants); footprints, regions and rotations are typed `.tres` definition data in `tilaok!/data/items/`.
+
+| Measurement | Expected | Observed |
+|---|---|---|
+| Ten Play/round-end cycles, three pieces + test transients | Only construction persists; counts stable | Nodes 110→110; objects 1760→1760; orphans 0→0 |
+| Rotating allocation, 6 emitters, cap 4, 6 rounds | Equal wins independent of callback order | 4 wins each; reversed callback order identical |
+| Tulay 4 wu strip at fall cap | All drops land | 5/5 landed; sampled peak 878.9 wu/s (cap 900) |
+| 48 pieces + 4 chickens, 1080p uncapped, 600 frames | ≤16.67 ms; ≤512 MiB | median 1.465 / p95 1.961 / worst 2.659 ms; peak working set 201.9 MiB, private 211.7 MiB |
+
+These are fixture measurements, not feel or balance evidence. The Kaing/Tulay equal selection weights are configuration only; no Pugad exists to use them yet.
+
 ### Contact and temporary-state policy
 
 **C:** bodies pass through each other in every supported mode; tag/Hug use sensors, never pushing. This follows GDD.md:73 and the race-stack rules; the more general collision wording at :181 should be read consistently with them.

@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. P02 and P03 implementation/evidence were added on 2026-10-13; this is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. P02, P03 and P04 implementation/evidence were added on 2026-10-13; this is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts. These are development slices, not the lobby-to-match game. Hardware coverage, player feel and late-game performance limits remain explicit. Historical P00 results remain below; P01/P02/P03 evidence follows them.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts; P04 adds the item infrastructure and the Kaing/Tulay seeds in an Item Lab. These are development slices, not the lobby-to-match game. Hardware coverage, player feel and late-game performance limits remain explicit. Historical P00 results remain below; P01/P02/P03 evidence follows them.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -88,6 +88,24 @@ Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK
 | Reset/reload and Foundation regression | PASSED | Ten repeated P03 scene cleanup cycles, ten harness open/return cycles, harness reload and Foundation tests. All assertions passed; no exit warnings/errors. | `2026-10-13_foundation_regression.txt`. |
 | P02 regression | PASSED | Existing P02 test suite rerun after integration: 83 checks, zero failures. | `2026-10-13_p02_regression.txt`; remains synthetic, not physical P02 acceptance. |
 | Windows export | PASSED — startup only | Export Release using matching 4.7.2.stable Windows templates; run exported main scene headlessly for three frames. Export and smoke exited 0. | `2026-10-13_windows_export_smoke.txt`; no exported interactive/device test. |
+
+## P04 item infrastructure and construction seeds — October 13, 2026
+
+**Build identity:** `P04-item-lab-dev`, `main` @ `765ed09` plus the P04 working tree; Godot `4.7.2.stable.official.ed1daf0bf`; profile `karera_slice`; seed `12345`; 60-Hz physics. **Machine:** Windows, 13th Gen Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU. **Input:** synthetic keyboard (K1/K2) routing and synthetic gamepad seats; no physical device or rollover was certified. **Reviewer:** Codex (automated); no human playtest. Full table and logs: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
+
+| Check | Result | Notes |
+|---|---|---|
+| Definition validation rejection table | **PASSED** | 31 rejection cases plus effect-region ≠ occupied-cell checks. |
+| Lifecycle, ten reset cycles, caps, rotating allocation | **PASSED** | Nodes 110→110, objects 1760→1760, orphans 0; caps 48/16/4/32; each of 6 emitters wins 4 of 6 rounds under cap 4; reversed callback order yields identical grants. |
+| Kaing real-controller trials | **PASSED — synthetic input** | Stand on 1×1, 2×3, rotated 3×2; side blocks at x=396; foothold route; underside head stop; same-step support loss on removal. |
+| Tulay real-controller trials | **PASSED — synthetic input** | Land from above, rise from below (never support while rising), walk off edge, jump off, side pass-through, ceiling pass, five fall-cap drops onto the 4 wu strip (peak sampled 878.9 wu/s). |
+| Interactive Item Lab (1920×1080) | **PASSED** | 22 checks, 4 consecutive runs. An earlier flaky run was caused by a focused HUD button receiving Enter and by OS-focus pause; HUD buttons are now non-focusable and the runner resumes a focus-paused game like a player would. |
+| 48-piece, four-chicken render sample | **PASSED — one diagnostic sample** | 600 uncapped 1080p frames: median 1.465 / p95 1.961 / worst 2.659 ms; peak working set 201.9 MiB. A first run's single 59.4 ms interval at the v-sync switch was fixed with a warm-up and is disclosed in the index. |
+| Windows export + exported startup of Item Lab | **PASSED — startup only** | Debug export exit 0; exported build loaded both `.tres` definitions from the PCK and exited 0. |
+| Lint/format/import | **PASSED** | `gdlint`/`gdformat --check` on 49 files; editor import exit 0 without diagnostics. |
+| Wall-extension suite (not P04) | **PASSED** | `run_p02_wall_tests.gd` re-run on the rebased tree: 85 checks, 0 failures. Wall movement remains disabled by default; P04 only declares per-surface wall eligibility. |
+| Static checks over the whole project | **PASSED** | `gdlint`/`gdformat --check` on all 53 `.gd` files after the rebase. |
+| Human feel/readability review | **COULD-NOT-RUN** | No human reviewer or physical device was available; crowd captures show crowded labels at 48 pieces. |
 
 ## Wall movement — future verification
 

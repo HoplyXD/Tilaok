@@ -20,6 +20,7 @@ var actors: Dictionary = {}
 var wall_fixtures: Dictionary = {}
 var pointers: Array[Dictionary] = []
 var current_context := BoundedStageCamera.Context.PLAY
+var profile_id := "movement_room"
 var support_line_y := 384.0
 var _camera_targets: Array[StageCameraTarget] = []
 var _camera_target_cache: Dictionary = {}
@@ -44,7 +45,7 @@ func _ready() -> void:
 	input_router = LocalInputRouter.new()
 	pause_coordinator = PauseRecoveryCoordinator.new()
 	snapshot = ConfigurationSnapshot.create(
-		tuning, PresentationSettings.new(), "movement_room", _seed, _run_id
+		tuning, PresentationSettings.new(), profile_id, _seed, _run_id
 	)
 	tuning = snapshot.gameplay
 	arena = ArenaDefinition.new(tuning)

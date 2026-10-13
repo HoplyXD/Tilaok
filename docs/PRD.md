@@ -309,7 +309,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Definition validation rejects missing required fields, unbounded regions and undocumented variants; effect regions remain distinct from occupied grid cells.
 
-**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** implemented and verified 2026-10-13 (P04-T01/T02): typed definitions, one validator and a 31-case rejection table; effect regions never occupy cells. See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Synthetic-input harness evidence only; no human review.
 
 
 ### REQ-ITEMSYS-002 — Implement persistent items and bounded transient lifecycle
@@ -320,7 +320,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Ten reset cycles retain only intended construction and no transient state. Saturation/removal releases references and captives safely; spawn allocation follows reviewed rotating order, not callback order.
 
-**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** implemented and verified 2026-10-13 (P04-T03/T04): inert Place, deterministic Play reset with grace, persistence, match reset, caps 48/16/4/32, rotating allocation and captive-safe release; ten cycles stable. See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Transient items are test-only fixtures; no human review.
 
 
 ### REQ-PUGAD-001 — Show exact-variant animated egg previews
@@ -822,7 +822,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** core family implemented and harness-verified 2026-10-13 (P04-T05–T09): 1×1, 2×3, rotated 3×2 enabled; 1×3 defined but disabled. Preview/Library, event integration and release enablement remain open (P04-T10–T13). See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
 
 
 ### REQ-ITEM-002 — Tulay na Kawayan
@@ -833,7 +833,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** core family implemented and harness-verified 2026-10-13 (P04-T14–T18): horizontal 4×1 enabled; 3×1/5×1 defined but disabled; vertical orientation gated and geometry-only. Preview/Library, event integration, Lagsanay safe-floor review and release enablement remain open (P04-T19–T22). See [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
 
 
 ### REQ-ITEM-003 — Gulong Talon

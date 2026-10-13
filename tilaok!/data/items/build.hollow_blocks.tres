@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="ItemFamilyDefinition" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/item_family_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/items/item_variant_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/items/item_region_spec.gd" id="3"]
+
+[sub_resource type="Resource" id="Region_1x1_solid"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 1)
+
+[sub_resource type="Resource" id="Region_1x3_solid"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 1, 3)
+
+[sub_resource type="Resource" id="Region_2x3_solid"]
+script = ExtResource("3")
+kind = 0
+rect_cells = Rect2(0, 0, 2, 3)
+
+[sub_resource type="Resource" id="Variant_1x1"]
+script = ExtResource("2")
+variant_id = "cell_1x1"
+footprint_cells = Vector2i(1, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_1x1_solid")])
+rotations = PackedInt32Array(0)
+rotation_cue = "A 1x1 crate looks the same when turned; rotation is unavailable."
+
+[sub_resource type="Resource" id="Variant_1x3"]
+script = ExtResource("2")
+variant_id = "column_1x3"
+footprint_cells = Vector2i(1, 3)
+regions = Array[ExtResource("3")]([SubResource("Region_1x3_solid")])
+rotations = PackedInt32Array(0, 1)
+
+[sub_resource type="Resource" id="Variant_2x3"]
+script = ExtResource("2")
+variant_id = "stack_2x3"
+footprint_cells = Vector2i(2, 3)
+regions = Array[ExtResource("3")]([SubResource("Region_2x3_solid")])
+rotations = PackedInt32Array(0, 1)
+
+[resource]
+script = ExtResource("1")
+family_id = "build.hollow_blocks"
+working_name = "Hollow Blocks / Kaing Stack"
+category = "build"
+variants = Array[ExtResource("2")]([SubResource("Variant_1x1"), SubResource("Variant_1x3"), SubResource("Variant_2x3")])
+ownership = "placer"
+safe_start = "static_no_motion"
+removal_policy = "walis_cleanup"
+persistence = "until_removed"
+modes_allowed = PackedStringArray("karera", "lagsanay")
+wall_contact = "eligible"
+weight_tuning_key = &"item_kaing_weight"
+preview_silhouette = "crate"
+preview_cue = "ghost_outline"
+library_tell = "Strong, distinct crate silhouette and a placement ghost."
+library_counterplay = "Jump around or over it, use another route, or use Walis Cleanup."
+implementation_complete = true
+independently_verified = true
+runtime_enabled = true
+release_target = false

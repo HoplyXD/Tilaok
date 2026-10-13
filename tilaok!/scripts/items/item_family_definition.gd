@@ -1,0 +1,42 @@
+class_name ItemFamilyDefinition
+extends Resource
+
+const OWNERSHIP_PLACER := "placer"
+const SAFE_START_STATIC := "static_no_motion"
+const REMOVAL_WALIS := "walis_cleanup"
+const PERSISTENCE_UNTIL_REMOVED := "until_removed"
+const WALL_ELIGIBLE := "eligible"
+const WALL_INELIGIBLE := "ineligible"
+
+@export var family_id := ""
+@export var working_name := ""
+@export var category := ""
+@export var variants: Array[ItemVariantDefinition] = []
+@export var ownership := ""
+@export var safe_start := ""
+@export var removal_policy := ""
+@export var persistence := ""
+@export var modes_allowed: PackedStringArray = PackedStringArray()
+@export var modes_pending_review: PackedStringArray = PackedStringArray()
+@export var wall_contact := ""
+## GameplayTuning field that supplies this family's Pugad selection weight.
+@export var weight_tuning_key: StringName = &""
+@export var preview_silhouette := ""
+@export var preview_cue := ""
+@export var library_tell := ""
+@export var library_counterplay := ""
+@export var implementation_complete := false
+@export var independently_verified := false
+@export var runtime_enabled := false
+@export var release_target := false
+
+
+func find_variant(variant_id_value: String) -> ItemVariantDefinition:
+	for variant in variants:
+		if variant != null and variant.variant_id == variant_id_value:
+			return variant
+	return null
+
+
+func variant_key(variant: ItemVariantDefinition) -> String:
+	return "%s.%s" % [family_id, variant.variant_id]

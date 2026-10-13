@@ -110,6 +110,10 @@ func register_player_construction(construction_id: String) -> bool:
 	return true
 
 
+func unregister_player_construction(construction_id: String) -> bool:
+	return _construction_ids.erase(construction_id)
+
+
 func can_remove_surface(surface_id: String) -> Dictionary:
 	if _immutable_ids.has(surface_id):
 		return _reject("immutable arena geometry")

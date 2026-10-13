@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="ItemFamilyDefinition" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/item_family_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/items/item_variant_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/items/item_region_spec.gd" id="3"]
+
+[sub_resource type="Resource" id="Region_3x1_strip"]
+script = ExtResource("3")
+kind = 1
+rect_cells = Rect2(0, 0, 3, 1)
+thickness_tuning_key = &"item_tulay_strip_thickness_wu"
+
+[sub_resource type="Resource" id="Region_4x1_strip"]
+script = ExtResource("3")
+kind = 1
+rect_cells = Rect2(0, 0, 4, 1)
+thickness_tuning_key = &"item_tulay_strip_thickness_wu"
+
+[sub_resource type="Resource" id="Region_5x1_strip"]
+script = ExtResource("3")
+kind = 1
+rect_cells = Rect2(0, 0, 5, 1)
+thickness_tuning_key = &"item_tulay_strip_thickness_wu"
+
+[sub_resource type="Resource" id="Variant_3x1"]
+script = ExtResource("2")
+variant_id = "span_3x1"
+footprint_cells = Vector2i(3, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_3x1_strip")])
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Variant_4x1"]
+script = ExtResource("2")
+variant_id = "span_4x1"
+footprint_cells = Vector2i(4, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_4x1_strip")])
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array(1)
+
+[sub_resource type="Resource" id="Variant_5x1"]
+script = ExtResource("2")
+variant_id = "span_5x1"
+footprint_cells = Vector2i(5, 1)
+regions = Array[ExtResource("3")]([SubResource("Region_5x1_strip")])
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array(1)
+
+[resource]
+script = ExtResource("1")
+family_id = "build.bamboo_bridge"
+working_name = "Tulay na Kawayan"
+category = "build"
+variants = Array[ExtResource("2")]([SubResource("Variant_3x1"), SubResource("Variant_4x1"), SubResource("Variant_5x1")])
+ownership = "placer"
+safe_start = "static_no_motion"
+removal_policy = "walis_cleanup"
+persistence = "until_removed"
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay")
+wall_contact = "ineligible"
+weight_tuning_key = &"item_tulay_weight"
+preview_silhouette = "bamboo_bridge"
+preview_cue = "one_way_arrow"
+library_tell = "Narrow bamboo silhouette; the ghost shows a one-way arrow."
+library_counterplay = "Approach from below to pass through it, or use another path."
+implementation_complete = true
+independently_verified = true
+runtime_enabled = true
+release_target = false

@@ -220,11 +220,7 @@ func _run_harness_lifecycle_checks() -> void:
 		for _index in range(10):
 			harness._open_room(room_id)
 			await process_frame
-			var fixture: Node = (
-				harness.get_node("P03StageRoom")
-				if room_id == "p03_stage_room"
-				else room_host.get_child(0)
-			)
+			var fixture: Node = harness.active_room
 			_check(
 				fixture.get_signal_connection_list("return_requested").size() == 1,
 				"%s connects one return callback" % room_id
@@ -234,9 +230,10 @@ func _run_harness_lifecycle_checks() -> void:
 			if room_id == "p02_movement_room":
 				await physics_frame
 			var released := (
-				harness.get_node_or_null("P03StageRoom") == null
-				if room_id == "p03_stage_room"
-				else room_host.get_child_count() == 0
+				harness.active_room == null
+				and harness.get_node_or_null("P03StageRoom") == null
+				and harness.get_node_or_null("ItemLabRoom") == null
+				and room_host.get_child_count() == 0
 			)
 			_check(released, "%s reset releases its fixture" % room_id)
 	_check(root.get_child_count() == root_baseline, "harness fixtures return root to baseline")
