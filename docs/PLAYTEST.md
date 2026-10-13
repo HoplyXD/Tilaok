@@ -1,22 +1,30 @@
 # Tilaok! Verification and Playtest Plan
 
-_Plan only, 2026-10-12. No runnable project or observed gameplay results were present when this document was written._
+_Originally a plan only on 2026-10-12. P02 implementation and dated fixture evidence were added on 2026-10-13; this is not a full game or release playtest._
 
 ## Current verification status
 
-P01 now provides a Godot 4.7.2 foundation harness, configuration/content diagnostics, three clearly labeled placeholder fixtures, headless checks and a Windows export preset. The user identifies Godot 4.7.2 in `D:\Downloads` as the intended toolchain and the current PC as the target. Foundation diagnostics are runnable, but no gameplay, controller test or performance baseline exists. Historical P00 results remain below; current P01 evidence follows them.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room, synthetic phase routing, contact/pause/recovery probes, measured physics assertions and a rendered sample. P02 is a diagnostic foundation, not the lobby-to-match game. Hardware coverage and performance limits below remain explicit. Historical P00 results remain below; P01/P02 evidence follows them.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
 | Historical headless project initialization/import | **PASSED** | `godot --headless --path "tilaok!" --editor --quit`, Godot 4.6.3; completed filesystem scan, icon import, and editor initialization with no errors/warnings in the captured historical output. This is not target-engine validation. |
 | Target Godot 4.7.2 P01 project import/parse | **PASSED** | Godot 4.7.2 imported the working project after P01 foundation additions; [full log](evidence/p01-import-godot-4.7.2-2026-10-13.log). |
-| Godot 4.7.2 editor initialization on working project | **FAILED** | `--headless --path "tilaok!" --editor --quit`; exit code 0, but output includes `ERROR: Parameter "singleton" is null` and a thread-shutdown warning. [Full log](evidence/p00-import-godot-4.7.2-2026-10-13.log). Do not treat this invocation as clean editor verification. |
+| Historical P00 Godot 4.7.2 editor initialization | **FAILED — historical** | Earlier invocation exited 0 but logged `ERROR: Parameter "singleton" is null` and a thread-shutdown warning; [historical log](evidence/p00-import-godot-4.7.2-2026-10-13.log). The current P02 import/parse check below is clean. |
+| Current P02 Godot 4.7.2 editor import/parse | **PASSED** | `--headless --path 'tilaok!' --editor --quit`; exit 0, no ERROR/WARNING lines; [full log](evidence/p02-import-godot-4.7.2-2026-10-13.log). |
 | P01 harness runtime | **PASSED** | Harness launched in Godot GUI; build/profile/seed displayed, a diagnostic run started, the movement placeholder loaded and returned, and reset released its fixture. This is harness evidence only, not gameplay. [Headless runtime log](evidence/p01-runtime-smoke-2026-10-13.log). |
 | P01 foundation checks | **PASSED** | Configuration ranges/snapshots, seven profiles, incomplete release and empty-pool rejection, bad IDs/references/weights, eligibility, weight normalization, deterministic selection, independent streams and 30 fixture cleanup iterations passed. [Full test output](evidence/p01-foundation-checks-2026-10-13.log). |
+| P02 synthetic input, physics and recovery checks | **PASSED** | 83 Godot assertions cover seat isolation/identity, synthetic gamepad and K1/K2 routes, deadzone/D-pad priority, phase edges/repeats, pause timer+physics probes including the bound-device disconnect path, actual jump/braking/reversal/contact/containment/recovery behavior, coyote/buffer and cleanup. [Full output](evidence/p02-checks-2026-10-13.log). Synthetic events are not hardware evidence. |
+| P02 rendered room and frame sample | **PASSED — diagnostic only** | [Running fixture](evidence/p02-diagnostic-room.png), [synthetic disconnect pause](evidence/p02-reconnect-pause.png), [metrics](evidence/p02-rendered-metrics.txt). 1152×648 rendered window on RTX 4050, four diagnostic actors; no pre-P02 baseline, no 1080p comparison or late-game stress claim. |
+| P02 export build/startup | **PASSED — startup only** | Windows Desktop export succeeded and exported executable started headlessly with `--quit-after 90`, exit 0; [logs](evidence/p02-export-2026-10-13.log), [runtime](evidence/p02-export-runtime-2026-10-13.log). Interactive exported input/pause smoke was not verified. |
+| Physical gamepad isolation/reconnect | **COULD NOT RUN** | No gamepads available. Two identical controllers, mixed input, unplug/replug and exported physical input remain open. |
+| Physical K1/K2 keyboard rollover | **COULD NOT RUN** | Software tests synthesize keyboard events; physical chord/rollover and keyboard model/layout were not verified in this session. |
+| P02 rendered performance comparison | **COULD NOT RUN** | One post-change fixture sample only; no comparable pre-change rendered baseline. Single worst frame is not a stress bound. |
 | GDScript lint/format | **PASSED** | `gdlint` and `gdformat --check` pass; tools are version 4.5.0. See [lint](evidence/p01-lint-2026-10-13.log) and [format](evidence/p01-format-2026-10-13.log). |
+| P02 GDScript lint/format | **PASSED** | All P02-owned scripts/tests pass installed `gdlint` 4.5.0 and `gdformat --check` 4.5.0. [Lint](evidence/p02-lint-2026-10-13.log), [format](evidence/p02-format-2026-10-13.log). |
 | Export / exported Windows build | **PASSED** | Official 4.7.2 templates installed in standard versioned path; Windows Desktop export succeeded. Executable opened a responsive `Tilaok!` window, accepted a normal close, and exited. [Template record](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [runtime record](evidence/p01-export-runtime-2026-10-13.log). Template-manager UI was not used. |
 | Physical keyboard/controller validation | **COULD NOT RUN** | Windows enumerated keyboard devices but no gamepad/controller; keyboard model/layout and actual button mapping are unknown. Device enumeration is not an input test. |
-| Playtest/performance baseline | **COULD NOT RUN** | No runnable gameplay. The user selected the current PC as target; specs are recorded in `PRODUCTION.md`, but performance remains unmeasured. |
+| P02 diagnostic performance / full playtest baseline | **PARTIAL** | One rendered P02 fixture sample is measured below; complete-player playtests, physical controls, comparable pre-change baseline, 1080p and late-game stress remain unverified. |
 
 ## P00 production-readiness evidence
 
@@ -37,6 +45,26 @@ The headless test script passed checks for valid/invalid finite tuning and prese
 Formatting and lint passed using installed 4.5.0 tools. Godot 4.7.2 import/parse and headless run completed without warnings/errors. Matching 4.7.2 templates were installed by extracting the official package into the standard version directory; the manager UI was not used. Windows export succeeded and its executable launched/closed locally. Exact logs are linked in the current status table and in [PHASETASK P01](PHASETASK.md#p01--project-foundations).
 
 **Limitations:** Codex authored these foundations under the user's explicit exception; this is not described as team-authored and does not settle competition originality eligibility. No physical controller/input test, multiplayer gameplay, novice onboarding test, performance measurement, clean-PC install, or final-release export was performed. P00-T02 and P00-T06 remain open; see [PRODUCTION](PRODUCTION.md#p00-baseline-record).
+
+## P02 input and movement diagnostic session — October 13, 2026
+
+**Build identity:** `P02-input-movement-dev`, base `e2b4a555e8d45bec774ffebde7c46e595cd3abdb` plus the current local P02 changes; Godot `4.7.2.stable.official.ed1daf0bf`; movement room; seed `12345`; 60 Hz; local Windows PC with NVIDIA GeForce RTX 4050 Laptop GPU/OpenGL 3.3 Compatibility. P02 code was authorized as an AI-implementation exception; no independent team reviewer is recorded.
+
+| Check | Status | Procedure and observed result | Evidence/limit |
+|---|---|---|---|
+| Foundation regressions | PASSED | Existing `run_foundation_tests.gd`; configuration, content rules, seed isolation, fixture cleanup, harness lifecycle and reload checks passed with zero failures. | `p02-foundation-checks-2026-10-13.log`; no P01 regression failures. |
+| P02 automated checks | PASSED | `run_p02_tests.gd`; 83 assertions passed. Synthetic device/phase events plus Godot CharacterBody2D/Area2D physics, Timer callback, physics freeze probes, synthetic bound-device disconnect, mode breaches, explicit diagnostic reset and five load/unload cycles. | `p02-checks-2026-10-13.log`; device events are synthetic. |
+| Jump arc/timing | PASSED | Short release 44.27 wu; held jump 96.06 wu, apex at 19 physics frames (0.3167 s), within 2 wu/one-step target. Held jump landed once and did not auto-repeat; coyote jump and pre-landing buffered jump passed. | Automated physics output; fixture only, no player feel sample. |
+| Run, braking, reversal | PASSED | 30-tick run displacement 120.00 wu at 280 wu/s; stopping distance 11.67 wu; reversal crossed zero in 6 physics frames. | Automated physics output; provisional values, not balance findings. |
+| Collision/reachability | PASSED | Full jump traversed dedicated 64 wu gap + 64 wu rise and landed at x=871.34, y=273.93; ceiling blocked ordinary jump. | Diagnostic fixture only, not production arena reachability. Visible one-way test surface does not implement the item system. |
+| Contact and movement ownership | PASSED | Overlapping chickens did not push; separate 28×48 contact sensor reported overlap. Capture preserved intent and blocked forced motion; opening freeze and terminal state prevented lower-priority motion. External launch was 101.12 wu held/released on a clear path. | Synthetic/physics tests; no Lagsanay or Kangaroo gameplay implemented. |
+| Pause/reconnect software contract | PASSED synthetically | SceneTree pause held physics and a Timer callback; focus/device status cleared readiness/cancelled countdown; changed-ID seat reclaim preserved identity. | Does not prove physical disconnect/reconnect behavior. |
+| Containment/recovery | PASSED as diagnostic contract | Maximum diagonal configured launch stayed inside bounds. Race breach failed once without auto-respawn; Lagsanay and standalone Kangaroo breach paused as prototype defects; recovery kept pre-round score/construction snapshot and awarded zero. | Contract fixture only; no score engine or production round restart. |
+| Rendered sample | PASSED as observation | Captured four-seat markers, controls and graybox geometry. Median frame interval 0.490 ms, p95 0.893 ms, worst 3.481 ms; Godot static memory ~76.0 MB, process private memory 199,815,168 bytes, working set 202,584,064 bytes; 1,788 objects/128 nodes. | One 180-frame rendered sample at 1152×648. No pre-P02 baseline, 1080p comparison or late-game stress claim. |
+| Export | PASSED startup only | Windows Desktop preset exported and executable completed 90 headless frames with exit 0. | Exported interactive input/pause, physical devices and GUI response not tested. |
+| Physical devices | COULD NOT RUN | No gamepads; no two-identical-controller, mixed-input, physical unplug/replug or keyboard rollover test. | Keep P02-T01–T04 and T07–T08 open as recorded in PHASETASK. |
+
+Commands and complete captured outputs are linked from [PHASETASK P02](PHASETASK.md#p02--inputs-and-controller). The local-only slice has no networking or save migration; only in-memory diagnostic snapshots are preserved. Full gameplay clocks/items/events/scoring are not present to stress or migrate.
 
 ## Completion status vocabulary
 
@@ -89,13 +117,13 @@ For base, representative four-player, and worst-case 12-round scenes, record CPU
 
 ## Required final evidence report
 
-The prototype experiments and current documentation verification follow below; all implementation-dependent checks remain pending.
+The prototype experiments and documentation verification follow below. Current P02 results appear in the dated session above; full-game checks remain pending.
 
-When a project exists, append date/build and a table containing check, status, evidence, player count/input, and defect reference. Report actual logs, including new warnings/errors, and unresolved output. Export checks may be run only if the repository has a verified preset and matching installed templates. Headless import does not replace runtime playtesting. Never tick an unrun check.
+For each new session, append date/build and a table containing check, status, evidence, player count/input, and defect reference. Report actual logs, including new warnings/errors, and unresolved output. Headless import does not replace runtime playtesting. Never tick an unrun check.
 
-## Prototype test session and change discipline
+## Original prototype test plan and change discipline
 
-**PROTOTYPE — UNTESTED.** Baseline values are centralized in PROTOTYPE_DEFAULTS.md; geometry/support are in STAGE_AND_PLACEMENT.md. Do not copy tunables into this checklist. Registered team members implement the harness and core mechanics.
+**Written before P02 implementation.** Baseline values are centralized in PROTOTYPE_DEFAULTS.md; geometry/support are in STAGE_AND_PLACEMENT.md. Do not copy tunables into this checklist. The current P02 fixture now exists; its measurements and AI authorship are recorded above. Human playfeel and physical device checks still require the team.
 
 First session, once M0 exists: about 25 minutes with two actual available players/devices. Record hardware rather than assuming gamepads. Use `movement_room`, seed 12345, and the named baseline. Spend 3 minutes identifying controls, 8 minutes on ten full/short jumps and ten comfortable-gap/rise trials per player, 5 minutes on advanced landings/braking/reversal, 5 minutes swapping player slots/devices and repeating a subset, and 4 minutes collecting separate feedback. This is directional evidence, not enough to prove balance or equal win rates.
 
@@ -122,7 +150,9 @@ After M1/M3, run a short session at each of 2, 3 and 4 players: 5 minutes onboar
 
 Change only one related group (for example jump height/apex and derived gravity, not unrelated score values). Preserve the original named baseline; write hypothesis, changed keys, expected result and observed result. Reproduce hard defects immediately. For feel changes, seek the same issue across at least two sessions/participants and repeat the same trials after adjustment. These small samples justify iteration, not statistical claims of competitive balance. No public telemetry/backend is needed; local notes and optional clips suffice.
 
-## Documentation verification — completed 2026-10-13
+## Documentation-only verification — completed 2026-10-13 (historical)
+
+This section records the documentation-only pass before the P02 implementation session above. Its unbuilt-project statements and pending implementation checks are historical; the P02 session table is the current evidence record.
 
 Final task checks are listed here. Earlier import evidence above belongs to its recorded run and was not rerun as a gameplay check. Git emitted only LF-to-CRLF conversion notices during source/worktree comparisons; no line-ending configuration was changed.
 
@@ -136,4 +166,4 @@ Final task checks are listed here. Earlier import evidence above belongs to its 
 | Target-engine runtime and lint | COULD NOT RUN | No gameplay code/scenes; intended 4.7 CLI unavailable in inspected environment |
 | Controller feel / exported performance / actual balance | COULD NOT RUN | No runnable game, physical-device tests or identified target PC |
 
-No team milestone is marked complete by this documentation work.
+At that documentation-only review, no team milestone was marked complete. The current P02 task state is recorded in [PHASETASK](PHASETASK.md#p02--inputs-and-controller); historical statements about an unbuilt project apply only to that prose-only task.

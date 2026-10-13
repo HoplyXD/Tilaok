@@ -10,11 +10,11 @@ Project documentation belongs in this directory. The repository root retains onl
 
 | Document | Purpose | Status |
 |---|---|---|
-| [PRD.md](PRD.md) | Consolidated product requirements, release/optional scope and acceptance, traceable to the GDD and specialized contracts. | Documentation complete; gameplay unimplemented |
-| [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | ✅ P01 implementation and local export passed (9/10 tasks); P01-T02 authorship review and P00 verification remain open |
-| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | P01 project layout, responsibility map, authorship note, and foundation run commands. | Foundation harness only; gameplay unimplemented |
+| [PRD.md](PRD.md) | Consolidated product requirements, release/optional scope and acceptance, traceable to the GDD and specialized contracts. | P02 controller/input implementation and fixture evidence recorded; hardware coverage and full game remain open |
+| [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | P01 9/10; P02 8/14; physical input/reconnect checks and P01-T02 review remain open |
+| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | P01/P02 project layout, responsibility map, authorship note, run and test commands. | Runnable foundation harness with P02 diagnostic movement room; no full match loop |
 | [GDD.md](GDD.md) | Source of truth for the game loop, events, scoring, items, presentation, and approved design decisions. | Active |
-| [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md) | NEW: coupled controller/input/tuning defaults, focused balance audit, and team handoff. | PROTOTYPE — UNTESTED |
+| [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md) | Coupled controller/input/tuning defaults, focused balance audit, measured P02 fixture results, and remaining team handoff. | Values remain provisional; physical hardware and balance review open |
 | [ITEMS.md](ITEMS.md) | 36-family item catalog, eight-item first batch, lifecycle contracts, and reference boundaries. | Active |
 | [PLAYTEST.md](PLAYTEST.md) | Documentation review, future team-written verification, gameplay playtests, and performance evidence plan. | Active |
 | [ROADMAP.md](ROADMAP.md) | Scope priorities, feature gates, and delivery schedule. | Active |

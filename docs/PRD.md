@@ -1,6 +1,6 @@
 # Tilaok! — Product Requirements Document
 
-**Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; gameplay unimplemented.
+**Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
 **Product owner:** Producer, name TBD. **Gameplay owner/reviewer:** registered team members, names TBD. This document was prepared with disclosed documentation assistance; it is not evidence of a completed game.
 
@@ -31,7 +31,7 @@ The GDD controls gameplay design. Specialized contracts elaborate it consistentl
 
 Read [GDD](GDD.md), [prototype defaults](PROTOTYPE_DEFAULTS.md), [roadmap](ROADMAP.md), [tracker](PHASETASK.md), and [documentation index](INDEX.md). Requirement source links identify authoritative documents; section context is supplied by each requirement and the source register below. Inactive R1–R4 remain inactive after approval of this document.
 
-The inspected source checkout is `feat/filipino-obstacles-events` at `791084a`, with four modified and ten untracked documentation/guidance files. Remote main is `98ef17a74166b6ac10c7930dc48a00c488fe61c9`, merging PR #1 from `a44f1b8`. This documentation work is isolated on `feat/prd-phasetask` from that merged main. Its project contains only project settings and icon: no gameplay scripts/scenes, export preset or implemented features. Local origin/main was stale before the authorized fetch. Local GDD/ITEMS already match merged requirements, including Library and animated previews. Older local production/stage/UI/playtest files must not replace merged additions.
+Historical source inspection before P01/P02: checkout `feat/filipino-obstacles-events` at `791084a`, with four modified and ten untracked documentation/guidance files. Remote main was `98ef17a74166b6ac10c7930dc48a00c488fe61c9`, merging PR #1 from `a44f1b8`. The documentation work was isolated on `feat/prd-phasetask` from that merged main. At that inspection the project contained only project settings and icon: no gameplay scripts/scenes, export preset or implemented features. Local origin/main was stale before the authorized fetch. Local GDD/ITEMS already matched merged requirements, including Library and animated previews. This is a dated source-history record; current P02 status appears in the requirements below and the PHASETASK tracker.
 
 Requirements below have separate scope and design labels. **REQUIRED** is submission baseline; **SHOULD** needs an include/defer decision; **CONDITIONAL** is finalist-dependent; **EXPANSION** is outside submission. **CURRENT CONTRACT**, **PROTOTYPE—UNTESTED**, **UNKNOWN**, and **OPTIONAL** describe authority, not implementation. All gameplay requirements start unimplemented/unverified. A requirement with known behavior may still have provisional tuning.
 
@@ -170,7 +170,7 @@ Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pa
 
 **Acceptance:** Two identical gamepads and mixed input never control another seat, double-join or ready on the joining press; identifiers persist through phases and reconnect.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence (2026-10-13):** P02 seat assignment, fixed number/shape markers, separate join/ready edges and changed-ID reclaim are implemented; synthetic checks pass in [P02 evidence](evidence/p02-checks-2026-10-13.log). Two identical physical gamepads and mixed-input playtest remain COULD-NOT-RUN; see [tracker P02-T01/T02](PHASETASK.md#p02-t01).
 
 
 ### REQ-INPUT-002 — Implement phase-specific bindings and shared keyboard fallback
@@ -181,7 +181,7 @@ Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pa
 
 **Acceptance:** Each phase action works only for its assigned seat; no lost simultaneous supported chords. Unavailable/failed keyboard combinations are documented, remapped or excluded from supported claims.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence (2026-10-13):** phase-specific gamepad and K1/K2 routes, explicit shared-keyboard mode, stick/D-pad priority and thresholds are implemented; synthetic routes pass in [P02 evidence](evidence/p02-checks-2026-10-13.log). Physical rollover and supported chord verification remain COULD-NOT-RUN; see [tracker P02-T03/T04](PHASETASK.md#p02-t03).
 
 
 ### REQ-INPUT-003 — Consume held presses across phase transitions
@@ -192,7 +192,7 @@ Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pa
 
 **Acceptance:** Holding jump/confirm through every transition creates no unintended next action; diagonal pointer movement gains no speed; unsupported rotations give a disabled cue.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-13):** fresh press gating, phase edge consumption, jump-buffer clearing, OS echo rejection, diagonal navigation and Place/menu repeat timing passed synthetic Godot tests; see [P02 evidence](evidence/p02-checks-2026-10-13.log) and [tracker P02-T05/T06](PHASETASK.md#p02-t05). Physical keyboard rollover remains open under REQ-INPUT-002.
 
 
 ### REQ-INPUT-004 — Pause and reclaim disconnected seats safely
@@ -203,7 +203,7 @@ Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pa
 
 **Acceptance:** Unplug/replug including identical controllers preserves identity and timer values; assigned devices cannot steal seats; focus changes cancel resume; no simulation progresses during pause/countdown.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-13):** shared pause, focus/device status pause, seat reclaim, owner acquisition, all-ready countdown and timer/physics freeze probes are implemented and pass synthetic checks; see [P02 evidence](evidence/p02-checks-2026-10-13.log). Physical controller unplug/replug and identical-controller reclaim remain COULD-NOT-RUN; see [tracker P02-T07/T08](PHASETASK.md#p02-t07).
 
 ## 6. Controller, contact, stage and camera
 
@@ -220,7 +220,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Measure full/short jumps, braking, reversal and 64 wu gap/rise trials; investigate apex deviations above 2 wu or one physics step; consume each buffered jump once and never auto-repeat held jump.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-13):** run/jump-only controller and centralized provisional tuning are implemented and measured in the P02 movement fixture; full/short jumps, braking, reversal, held-jump, coyote/buffer, ceiling, launch and 64+64 gap/rise tests pass. See [P02 evidence](evidence/p02-checks-2026-10-13.log), [measurements](PROTOTYPE_DEFAULTS.md#p02-runtime-measurements--october-13-2026), and [tracker P02-T09/T10](PHASETASK.md#p02-t09). This does not establish balance or whole-stage reachability.
 
 
 ### REQ-MOVE-002 — Separate body collision, contact and intentional input
@@ -231,7 +231,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Overlap creates no pushing; intentional input is observable while captured; launch clears coyote state and is not shortened by jump release; terminal states ignore later movement/capture.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-13):** independent 28×48 contact sensing, pass-through body collision, input/force separation and lifecycle precedence are implemented and pass diagnostic checks; see [P02 evidence](evidence/p02-checks-2026-10-13.log) and [tracker P02-T11/T12](PHASETASK.md#p02-t11). These contracts do not implement Lagsanay, Kangaroo, scoring or a production match.
 
 
 ### REQ-MOVE-003 — Contain players and expose invalid escapes
@@ -242,7 +242,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Maximum launches cannot bypass bounds; injected breach cannot repeatedly award score, teleport an active taya while time runs, or convert a Lagsanay fall into elimination. Recovery is labeled a prototype safeguard.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-13):** visible floor/walls/ceiling, maximum configured launch containment and explicit Race/Lagsanay/Kangaroo breach recovery contract pass diagnostic tests; see [P02 evidence](evidence/p02-checks-2026-10-13.log) and [tracker P02-T13/T14](PHASETASK.md#p02-t13). Recovery is a labeled prototype safeguard, not a scoring or complete round-restart system.
 
 
 ### REQ-STAGE-001 — Build one protected barrio graybox arena
@@ -1447,7 +1447,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 Feature freeze **October 21, 2026**; stabilize October 22–23; final capture/package review October 24; submit **October 25**. Start forms/storyboard/synopsis/licensing now, not on the final polish day. Finals are scheduled **November 26–27, 2026**, with qualification announcement November 9; verify organizer instructions before acting.
 
-There are eight calendar days from the baseline to freeze and twelve to submission. Required scope is high risk with no runnable game and unknown staffing/hardware. These dates are decision checkpoints, not an effort estimate. If evidence slips, producer must explicitly revise scope; no silent cuts to Lagsanay, Kangaroo, stacks or an initial family. Content-freeze review must assign every Should feature an include/defer outcome.
+At the original baseline there were eight calendar days to freeze and twelve to submission, with no runnable game and unknown staffing/hardware. The P02 fixture now demonstrates a narrow input/movement foundation but does not change required scope or close the remaining gates. These dates are decision checkpoints, not an effort estimate. If evidence slips, producer must explicitly revise scope; no silent cuts to Lagsanay, Kangaroo, stacks or an initial family. Content-freeze review must assign every Should feature an include/defer outcome.
 
 
 ### REQ-SUB-001 — Prepare registration and official forms

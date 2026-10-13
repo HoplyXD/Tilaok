@@ -4,8 +4,7 @@ var failures := 0
 
 
 func _initialize() -> void:
-	_run()
-	call_deferred("_run_harness_lifecycle_checks")
+	call_deferred("_run")
 
 
 func _check(condition: bool, message: String) -> void:
@@ -180,8 +179,8 @@ func _run() -> void:
 		for _index in range(10):
 			var fixture := fixture_scene.instantiate()
 			fixture_parent.add_child(fixture)
-			fixture_parent.remove_child(fixture)
-			fixture.free()
+			fixture.queue_free()
+			await process_frame
 		var probe: Node = fixture_scene.instantiate()
 		_check(probe.has_signal("return_requested"), "%s exposes return signal" % fixture_path)
 		probe.free()
@@ -190,6 +189,7 @@ func _run() -> void:
 	)
 	fixture_parent.free()
 	print("Foundation checks complete: %d failure(s)." % failures)
+	await _run_harness_lifecycle_checks()
 
 
 func _run_harness_lifecycle_checks() -> void:
@@ -207,7 +207,7 @@ func _run_harness_lifecycle_checks() -> void:
 		_check(
 			button.pressed.get_connections().size() == 1, "%s has one action callback" % button_name
 		)
-	for room_id in ["movement_room", "item_lab", "event_lab"]:
+	for room_id in ["movement_room", "p02_movement_room", "item_lab", "event_lab"]:
 		for _index in range(10):
 			harness._open_room(room_id)
 			await process_frame
@@ -218,6 +218,8 @@ func _run_harness_lifecycle_checks() -> void:
 			)
 			harness._close_room()
 			await process_frame
+			if room_id == "p02_movement_room":
+				await physics_frame
 			_check(room_host.get_child_count() == 0, "%s reset releases its fixture" % room_id)
 	_check(root.get_child_count() == root_baseline, "harness fixtures return root to baseline")
 	harness._start_diagnostic_run()

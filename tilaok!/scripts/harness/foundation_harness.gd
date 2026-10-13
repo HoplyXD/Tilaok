@@ -5,6 +5,7 @@ const DEFAULT_SEED := 12345
 const BUILD_ID := "P01-foundation-dev"
 const ROOM_SCENES := {
 	"movement_room": preload("res://scenes/fixtures/movement_room.tscn"),
+	"p02_movement_room": preload("res://scenes/fixtures/p02_movement_room.tscn"),
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 }
@@ -52,13 +53,21 @@ func _ready() -> void:
 	$Layout/HarnessPanel/RoomRow/MovementRoomButton.pressed.connect(
 		_open_room.bind("movement_room")
 	)
+	$Layout/HarnessPanel/RoomRow/P02MovementRoomButton.pressed.connect(
+		_open_room.bind("p02_movement_room")
+	)
 	$Layout/HarnessPanel/RoomRow/ItemRoomButton.pressed.connect(_open_room.bind("item_lab"))
 	$Layout/HarnessPanel/RoomRow/EventRoomButton.pressed.connect(_open_room.bind("event_lab"))
 	$Layout/ExitButton.pressed.connect(_exit_harness)
 	profile_picker.select(0)
 	_update_identity()
 	_validate_selected_profile()
-	_append_status("Harness ready. Only the foundation diagnostics below are implemented.")
+	_append_status(
+		(
+			"Harness ready. P01 foundation checks and P02 movement/input diagnostics are available; "
+			+ "no full game loop is implemented."
+		)
+	)
 
 
 func _on_profile_selected(index: int) -> void:
@@ -139,11 +148,7 @@ func _start_diagnostic_run() -> void:
 
 
 func _reset_scenario() -> void:
-	if active_room != null and is_instance_valid(active_room):
-		room_host.remove_child(active_room)
-		active_room.queue_free()
-		active_room = null
-		harness_panel.show()
+	_release_active_room()
 	if active_snapshot != null:
 		active_snapshot = null
 		_append_status(
@@ -162,26 +167,42 @@ func _open_room(room_id: String) -> void:
 	if not ROOM_SCENES.has(room_id):
 		_append_status("Unknown diagnostic room '%s'." % room_id)
 		return
-	if active_room != null and is_instance_valid(active_room):
-		room_host.remove_child(active_room)
-		active_room.queue_free()
-		harness_panel.show()
+	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
 	room_host.add_child(active_room)
 	active_room.return_requested.connect(_close_room)
 	harness_panel.hide()
-	_append_status(
-		"Opened %s fixture. Placeholder only; mechanics are not implemented or verified." % room_id
-	)
+	if room_id == "p02_movement_room":
+		_append_status(
+			(
+				"Opened the P02 input/movement diagnostic fixture. These narrow contracts do not "
+				+ "implement the full match, Lagsanay, or Kangaroo systems."
+			)
+		)
+	else:
+		_append_status(
+			"Opened %s placeholder fixture. Mechanics are not implemented or verified." % room_id
+		)
 
 
 func _close_room() -> void:
-	if active_room != null and is_instance_valid(active_room):
-		room_host.remove_child(active_room)
-		active_room.queue_free()
-	active_room = null
+	_release_active_room()
 	harness_panel.show()
 	_append_status("Returned to foundation diagnostics; fixture released.")
+
+
+func _release_active_room() -> void:
+	if active_room == null or not is_instance_valid(active_room):
+		active_room = null
+		return
+	if active_room.has_signal("return_requested"):
+		var return_callback := Callable(self, "_close_room")
+		if active_room.is_connected("return_requested", return_callback):
+			active_room.disconnect("return_requested", return_callback)
+	room_host.remove_child(active_room)
+	active_room.queue_free()
+	active_room = null
+	harness_panel.show()
 
 
 func _on_pause_toggled(is_paused: bool) -> void:

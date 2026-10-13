@@ -1,6 +1,6 @@
 # Tilaok! Prototype Defaults and Team Handoff
 
-**PROTOTYPE — UNTESTED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. Approval to prepare this documentation does not prove balance, authorize gameplay implementation by AI, or approve previously unseen changes to GDD rules. Core code remains team-written. Proposed rule changes below remain inactive until explicitly accepted.
+**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The initial documentation approval did not authorize AI implementation. On 2026-10-13, the user separately authorized an AI-implementation exception for P02; its code and test evidence are recorded in `docs/AI_USAGE.md` and `docs/PHASETASK.md`. That exception does not prove balance, represent code as team-authored, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
 
 ## 1. Recommendation and evidence
 
@@ -14,7 +14,7 @@ Decision labels throughout:
 - **D — DEFERRED:** not needed at the indicated milestone.
 - **U — UNKNOWN FACT:** team information, never invented.
 
-### Reverified repository facts
+### Repository facts at the October 12 inspection (historical)
 
 On October 12, `git status --short`, remote/branch/history inspection, `rg --files`, CLI version checks, and the merged-PR query were run. The source branch is `feat/filipino-obstacles-events`; its HEAD and the remote main verified by `git ls-remote` were `791084a75ca06b3d130f3bacf58a29eb88356b59`. Remote: `https://github.com/HoplyXD/Tilaok.git`. The merged-PR query returned `[]`; that is the query result, not proof of all historical development activity.
 
@@ -23,8 +23,8 @@ The source checkout has modified CLAUDE.md, README.md, GDD.md and ROADMAP.md and
 | Area | Documented rules | Implemented system |
 |---|---|---|
 | Project | EXISTS: engine/platform intent | PARTIAL: project/icon only |
-| Controller | PARTIAL: run/jump and pass-through contact | NONE |
-| Input/lobby | PARTIAL: flow, no device/binding policy | NONE |
+| Controller | PARTIAL: run/jump and pass-through contact | At inspection: NONE; P02 diagnostic controller and independent sensor now exist, with measured results below |
+| Input/lobby | PARTIAL: flow, no device/binding policy | At inspection: NONE; P02 seat routing/pause implementation exists; physical device checks remain open |
 | Loop, placement, scoring | EXISTS: detailed contracts | NONE |
 | Stage/camera | PARTIAL: geometry deliberately pending | NONE |
 | Items/events/support | EXISTS: catalog and event contracts; tuning partial | NONE |
@@ -79,7 +79,23 @@ Choose H = 96 wu and t = 0.32 s first:
 - Immediate jump release gives ideal height **38.4 wu**, airtime **0.3022 s**, and full-speed displacement **84.6 wu**; real taps depend on sampled release time.
 - Landing 64 wu above takeoff occurs on descent at **0.4790 s**, giving **134.1 wu** ideal displacement.
 
-Assumptions: level takeoff, full hold unless stated, no obstruction, no moving platform/force, maximum speed maintained, and continuous equations. Margins include body width and landing control, not merely gap width. A 64 wu gap with each center 20 wu inside the respective edge needs 104 wu travel: a comfortable candidate even at a 64 wu rise. A 96 wu level gap with the same margins needs 136 wu: an advanced candidate. Do not describe 166.7 wu as a safe gap. All actual reachability is **UNTESTED**.
+Assumptions: level takeoff, full hold unless stated, no obstruction, no moving platform/force, maximum speed maintained, and continuous equations. Margins include body width and landing control, not merely gap width. A 64 wu gap with each center 20 wu inside the respective edge needs 104 wu travel: a comfortable candidate even at a 64 wu rise. A 96 wu level gap with the same margins needs 136 wu: an advanced candidate. Do not describe 166.7 wu as a safe gap. At the October 12 documentation inspection, all actual reachability was **UNTESTED**. P02 later measured the dedicated 64 wu gap + 64 wu rise in a collision fixture; see the dated implementation evidence below. Other stage reachability and balance remain untested.
+
+### P02 runtime measurements — October 13, 2026
+
+Build: local P02 implementation based on `e2b4a555e8d45bec774ffebde7c46e595cd3abdb`; Godot `4.7.2.stable.official.ed1daf0bf`; movement fixture; seed 12345; 60 Hz. `docs/evidence/p02-checks-2026-10-13.log` records physics output; `docs/evidence/p02-diagnostic-room.png` is the rendered fixture; `docs/evidence/p02-rendered-metrics.txt` records the separate rendered frame/memory sample.
+
+| Measurement | Expected | Observed fixture result |
+|---|---:|---:|
+| Full jump apex height/time | 96 wu / 0.32 s | 96.06 wu / 19 physics frames (0.3167 s) |
+| Short released jump | Lower than full jump | 44.27 wu |
+| Run | 280 wu/s | 280.00 wu/s; 120.00 wu displacement over 30 physics ticks |
+| Ground braking | Provisional stopping distance 14 wu | 11.67 wu; speed reached 0 |
+| Ground reversal | Provisional model crosses in about 11 ticks | Crossed zero in 6 ticks |
+| 64 wu gap + 64 wu rise | Land on the raised platform | Landed at x=871.34, y=273.93 in the dedicated fixture |
+| External launch jump release | Release must not shorten launch | 101.12 wu with jump released and held, on an unobstructed path |
+
+These results establish behavior only in this small authored collision fixture, not player feel, complete arena reachability or balance. The first launch comparison intersected overhead geometry; that invalid trial was replaced with a clear path and not used as evidence. No tuning values were changed from their provisional defaults.
 
 ### Contact and temporary-state policy
 
@@ -97,7 +113,7 @@ Freeze reads intentional run/jump input before movement-state suppression, with 
 
 ## 3. Input and local competition
 
-**P supported baseline to verify:** two gamepads, or one gamepad plus one keyboard seat. Release target remains 2–4 players using verified gamepads/mixed devices. Two shared-keyboard seats are an explicitly enabled fallback after rollover testing. Four-player keyboard-only support is not promised. Physical device availability is U.
+**P supported baseline still requiring physical verification:** two gamepads, or one gamepad plus one keyboard seat. Release target remains 2–4 players using verified gamepads/mixed devices. Two shared-keyboard seats are an explicitly enabled fallback after rollover testing. Four-player keyboard-only support is not promised. Synthetic routing/physics checks pass, but the supplied environment has K1/K2 keyboards and no gamepads; keyboard model/layout and physical rollover remain unknown.
 
 Gamepad labels are positions: South (Xbox A / PlayStation Cross), East (B / Circle), West (X / Square), Start/Options. Keyboard bindings below are provisional physical key positions.
 
@@ -135,7 +151,7 @@ Tradeoffs/tests: digital sticks sacrifice fine speed control; all-ready resume a
 
 ## 4. Central tuning data and enablement
 
-**P:** the team should author one small configuration resource (suggested future path `tilaok!/config/prototype_defaults.tres`) with named groups, plus ordinary per-item data for footprint/contact properties. No plugin, framework, live editor, public analytics or persistence. This Markdown document is the authoritative starting-value register; other documents link here rather than copy values.
+P02 uses the existing typed `tilaok!/scripts/config/gameplay_tuning.gd` resource and `configuration_snapshot.gd` run snapshot; values are editable centrally and validated. This document remains the provisional starting-value register; do not add parallel config files. No plugin, framework, live editor, public analytics or persistence is used.
 
 Separate simulation invariants (one outcome, pass-through bodies, atomic edits, scoring family), tunable data (movement, timers, bounds, weights), and presentation (markers, colors, shake/text). Gameplay values snapshot at match start. Changing them requires a new test match; never change collision, height bands, timers or weights mid-round. Presentation-only volume/shake may change in pause. Log the test profile, seed and build locally in human test notes, not the player HUD.
 
@@ -209,8 +225,8 @@ Additional scope contradictions: PRODUCTION originally placed stacking before Ka
 
 | When | Decisions/defaults | What remains open |
 |---|---|---|
-| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | U: gameplay owner and available physical test devices; intended Godot 4.7.2 binary is identified, but installed 4.7.stable templates mismatch its 4.7.2.stable version identifier |
-| Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: physical keyboard/controller inventory and tested baseline device combination; current PC target is selected and observed specs are in PRODUCTION.md |
+| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | P02 diagnostic implementation now exists under the user's AI-implementation exception; P01-T02 review and physical-device checks remain open |
+| Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: physical keyboard/controller inventory and tested baseline device combination; no gamepads are available and keyboard model/layout/rollover are unverified; matching Godot 4.7.2 templates were installed and a local export succeeded |
 | Before relevant event | Current contact/command/support contracts, independent-mode gates; explicit R1–R4 decisions before any replacement behavior | U: owner/time for event review and physical tests |
 | Tune after playing | Movement feel, gaps, sensor dimensions, deadzones, egg weights, timers, force/caps and readability; one related parameter group at a time | All balance/feel confidence remains low |
 | Defer to production art | Final sprite scale/style, font choice, animation, sounds and cultural copy review | U: creators/licences and reviewer names |
@@ -233,4 +249,4 @@ Task edits: this NEW centralized defaults document; STAGE_AND_PLACEMENT graybox/
 
 Before any later commit, distinguish prerequisite user documentation from this task's edits and stage named files only. Commit only on the user's explicit `commit`; push/open PR only on explicit `push`; never merge. No Co-Authored-By trailer or AI attribution in commit/PR text; accurate disclosure belongs in AI_USAGE and Form 03. Do not rewrite history.
 
-**One next team experiment:** implement only the M0 movement room with two assigned inputs, the proposed collider and jump/braking model, and 64 wu gap/64 wu rise targets. Measure the arc and ten attempts per player. This answers the most consequential coupled assumptions before building menus, events or art.
+**One next physical experiment:** with the target PC's keyboard, run the shared K1/K2 simultaneous-chord and rollover matrix in PLAYTEST.md; record exact make/model/layout and every supported chord. Then arrange two identical gamepads to complete the remaining isolation and reconnect checks. This resolves the open physical-input acceptance without treating synthetic events as hardware evidence.

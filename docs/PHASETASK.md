@@ -2,7 +2,7 @@
 
 **Version:** 1.0 · **Baseline:** October 13, 2026 · **Owner:** Producer (name TBD).
 
-**Implementation baseline:** no gameplay scenes/scripts, no export preset, no runnable game. Project/icon skeleton only. Documentation was prepared on `feat/prd-phasetask` from main `98ef17a74166b6ac10c7930dc48a00c488fe61c9`; original dirty `feat/filipino-obstacles-events` at `791084a` is preserved. The fetched merged source includes prototype defaults and newer Library/preview contracts. Engine declares 4.7; inspected CLI 4.6.3, lint/format 4.5.0. Historical import/document checks are not current gameplay evidence.
+**Historical implementation baseline (before P01/P02):** no gameplay scenes/scripts, no export preset, no runnable game. Project/icon skeleton only. Documentation was prepared on `feat/prd-phasetask` from main `98ef17a74166b6ac10c7930dc48a00c488fe61c9`; original dirty `feat/filipino-obstacles-events` at `791084a` is preserved. The fetched merged source includes prototype defaults and newer Library/preview contracts. Engine declares 4.7; inspected CLI 4.6.3, lint/format 4.5.0. Historical import/document checks are not current gameplay evidence.
 
 ## How to use this tracker
 
@@ -37,6 +37,8 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 ## Phase summary and counts
 
 **20 phases · 393 tasks · 116 requirements.** Initial checked tasks: **0**. Required release/submission: **207**; Should: **24**; conditional finals: **4**; expansion: **158**. Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
+
+**Current implementation check count (2026-10-13): 17/393 tasks checked** (P01 9/10; P02 8/14). This is the count of checked task records on disk, not a release-readiness percentage. P00 remains 0/6. P02 remains open because the physical input/reconnect acceptance is unavailable and P01-T02 team-authorship review remains open.
 
 | Phase | Purpose | Tasks | Scope |
 |---|---|---:|---|
@@ -288,145 +290,151 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 **Evidence required:** Measured arc, device chords, slot isolation and reconnect captures.
 
+**Phase roll-up (2026-10-13): 8/14 task records passed; P02 remains OPEN.** Passed: P02-T05/T06, P02-T09/T10, P02-T11/T12 and P02-T13/T14. Unchecked: P02-T01/T02 (two identical physical gamepads and mixed-input playtest unavailable), P02-T03/T04 (physical shared-keyboard rollover and supported-chord validation unavailable), and P02-T07/T08 (physical disconnect/reconnect and identical-controller reclaim unavailable). Synthetic device events are labeled synthetic and do not satisfy these hardware criteria. The controller, seat registry and pause/recovery code exist for the unchecked implementation records, but their task acceptance includes the corresponding physical checks. The supplied environment has K1/K2 keyboards and no gamepads.
+
+**Authorship/dependency disposition:** The user expressly authorized OpenAI Codex to implement P02 core code as an AI-implementation exception. This does not represent the work as team-authored, pass P01-T02, waive its recorded dependency, or establish DOST eligibility/organizer acceptance. P01-T02 remains open for registered-team review. Dependencies remain unchanged; this authorization allows this implementation/evidence work to proceed while the required review and hardware evidence stay open. No private team names or hours are recorded.
+
+**Build/evidence identity:** local implementation based on `e2b4a555e8d45bec774ffebde7c46e595cd3abdb`, Godot `4.7.2.stable.official.ed1daf0bf`, default fixture seed `12345`, 60 Hz; run date 2026-10-13. Automated synthetic coverage: [P02 checks](evidence/p02-checks-2026-10-13.log); P01 regression: [foundation checks](evidence/p02-foundation-checks-2026-10-13.log). Rendered fixture: [running room](evidence/p02-diagnostic-room.png), [synthetic disconnect pause](evidence/p02-reconnect-pause.png), [capture log](evidence/p02-render-capture-2026-10-13.log) and [metrics](evidence/p02-rendered-metrics.txt). [Godot import/parse](evidence/p02-import-godot-4.7.2-2026-10-13.log), [format](evidence/p02-format-2026-10-13.log), [lint](evidence/p02-lint-2026-10-13.log), [export](evidence/p02-export-2026-10-13.log) and [exported startup](evidence/p02-export-runtime-2026-10-13.log) records are retained. Reviewer: Codex, AI implementation author; independent registered-team review not recorded.
+
 
 #### P02-T01
 
 - [ ] **Implement isolated device assignment and player markers**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+  - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-INPUT-001](PRD.md#req-input-001--assign-devices-and-fixed-chicken-identity). **Dependencies:** [P01-T02](#p01-t02).
   - **Work:** Support 2–4 local seats, gamepads first. A device joins one seat; join and ready require separate fresh presses. Number/shape stay fixed until lobby return: prototype 1 circle, 2 triangle, 3 square, 4 diamond. Color supplements identity.
   - **Acceptance:** Two identical gamepads and mixed input never control another seat, double-join or ready on the joining press; identifiers persist through phases and reconnect.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/input/player_seat_registry.gd`, `tilaok!/scripts/input/local_input_router.gd`, the numbered/shape markers in `tilaok!/scripts/movement/chicken_controller.gd`, and synthetic seat isolation assertions in [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** automated synthetic tests join two distinct device IDs, reject duplicate assignment, enforce separate join/ready edges, check seat-isolated jump routing, and verify identity persistence after reclaim with a changed ID; all passed. **Verification result:** implementation is present; task acceptance remains open pending two identical physical gamepads and mixed-input playtest. **Reviewer:** Codex (implementation author). **Next action:** run the recorded physical-device procedure in PLAYTEST.md.
 
 
 #### P02-T02
 
 - [ ] **Verify assign devices and fixed chicken identity**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+  - **Status:** COULD-NOT-RUN · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-INPUT-001](PRD.md#req-input-001--assign-devices-and-fixed-chicken-identity). **Dependencies:** [P02-T01](#p02-t01).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Two identical gamepads and mixed input never control another seat, double-join or ready on the joining press; identifiers persist through phases and reconnect.
   - **Acceptance:** Two identical gamepads and mixed input never control another seat, double-join or ready on the joining press; identifiers persist through phases and reconnect.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** synthetic results only in [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** two identical physical gamepads and mixed keyboard/gamepad seats must be joined, exercised simultaneously, and checked for cross-control, duplicate joins, join-press readiness, and identity across reconnect. **Expected:** no cross-control and fixed numbered/shape identity. **Actual:** hardware procedure not run; no gamepads are available in the supplied environment. **Verification result:** COULD-NOT-RUN. **Reviewer:** not recorded. **Next action:** perform the physical-device session and append results/capture.
 
 
 #### P02-T03
 
 - [ ] **Implement phase bindings and opt-in keyboard seats**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+  - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-INPUT-002](PRD.md#req-input-002--implement-phase-specific-bindings-and-shared-keyboard-fallback). **Dependencies:** [P02-T02](#p02-t02).
   - **Work:** Use the provisional binding table below. Release target is 2–4 players on verified gamepads/mixed devices. Two keyboard seats require explicit shared-keyboard mode and physical rollover validation; four-player keyboard-only is not promised. Stick digital parity/deadzone/repeat values remain prototype settings.
   - **Acceptance:** Each phase action works only for its assigned seat; no lost simultaneous supported chords. Unavailable/failed keyboard combinations are documented, remapped or excluded from supported claims.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/input/local_input_router.gd`, `tilaok!/scripts/harness/p02_movement_room.gd`, and synthetic phase/key checks in [P02 checks](evidence/p02-checks-2026-10-13.log). Implemented pad South/East/West/Start, D-pad/stick hysteresis and priority, K1/K2 mappings, explicit shared-keyboard opt-in, and shared Escape pause. **Procedure / expected / actual:** synthetic phase bindings and seat routes pass, including Right Ctrl location handling; physical simultaneous chords and rollover have not been exercised. **Verification result:** implementation present, acceptance remains open until supported physical keyboard combinations are tested and any failed chords are remapped/excluded. **Reviewer:** Codex (implementation author). **Next action:** run the shared-keyboard chord matrix in PLAYTEST.md.
 
 
 #### P02-T04
 
 - [ ] **Verify implement phase-specific bindings and shared keyboard fallback**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+  - **Status:** COULD-NOT-RUN · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-INPUT-002](PRD.md#req-input-002--implement-phase-specific-bindings-and-shared-keyboard-fallback). **Dependencies:** [P02-T03](#p02-t03).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Each phase action works only for its assigned seat; no lost simultaneous supported chords. Unavailable/failed keyboard combinations are documented, remapped or excluded from supported claims.
   - **Acceptance:** Each phase action works only for its assigned seat; no lost simultaneous supported chords. Unavailable/failed keyboard combinations are documented, remapped or excluded from supported claims.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** synthetic binding checks in [P02 checks](evidence/p02-checks-2026-10-13.log); rendered identity/controls in [diagnostic room capture](evidence/p02-diagnostic-room.png). **Procedure / expected / actual:** exercise every documented simultaneous keyboard chord on the target physical keyboard, including movement+jump and menu/placement navigation+confirm/rotate. **Expected:** every claimed chord registers without rollover loss; unsupported chords are remapped or removed from supported claims. **Actual:** K1/K2 bindings pass synthetic events; physical keyboard model/layout and rollover result are not available. **Verification result:** COULD-NOT-RUN. **Reviewer:** not recorded. **Next action:** run the physical chord matrix and record exact keyboard/layout.
 
 
 #### P02-T05
 
-- [ ] **Gate input edges and pointer repeat by phase**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Gate input edges and pointer repeat by phase**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-INPUT-003](PRD.md#req-input-003--consume-held-presses-across-phase-transitions). **Dependencies:** [P02-T04](#p02-t04).
   - **Work:** Consume existing press edges on transitions; release is required before claim/confirm/rotate/jump/ready. Held direction may continue; jump buffers clear. Ignore OS key repeat for one-shot actions. Prototype placement repeat is one cell then 0.25 s delay at 8 cells/s; menu/Pugad repeats at 6/s.
   - **Acceptance:** Holding jump/confirm through every transition creates no unintended next action; diagonal pointer movement gains no speed; unsupported rotations give a disabled cue.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/input/local_input_router.gd` and [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** synthetic tests hold/release K1 actions across Play→Pugad→Place transitions, ignore OS echo, check one-shot release gating, diagonal navigation, 0.25 s repeat delay, 8/s Place repeat and disabled rotation cue; all assertions passed. **Verification result:** PASSED for the implemented routing/edge contract. **Reviewer:** Codex (implementation author); physical input limitations are recorded under P02-T04.
 
 
 #### P02-T06
 
-- [ ] **Verify consume held presses across phase transitions**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify consume held presses across phase transitions**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-INPUT-003](PRD.md#req-input-003--consume-held-presses-across-phase-transitions). **Dependencies:** [P02-T05](#p02-t05).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Holding jump/confirm through every transition creates no unintended next action; diagonal pointer movement gains no speed; unsupported rotations give a disabled cue.
   - **Acceptance:** Holding jump/confirm through every transition creates no unintended next action; diagonal pointer movement gains no speed; unsupported rotations give a disabled cue.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P02 synthetic/runtime checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** ran synthetic one-shot transition, held jump through phase change, diagonal step-count, 0.25 s/8 per second Place repeat, menu repeat timing, disabled-rotation cue and held-jump-through-landing assertions. All passed in Godot 4.7.2; the test does not claim physical rollover coverage. **Verification result:** PASSED for software phase-edge and repeat criteria. **Reviewer:** Codex (automated; no independent team reviewer recorded).
 
 
 #### P02-T07
 
 - [ ] **Implement shared pause, reconnect and all-ready resume**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+  - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-INPUT-004](PRD.md#req-input-004--pause-and-reclaim-disconnected-seats-safely). **Dependencies:** [P02-T02](#p02-t02), [P02-T06](#p02-t06).
   - **Work:** Any participant may pause; focus loss/device disconnect pauses all simulation, timers, immunity, physics, hazards and event windows. Preserve slot/score/taya/position. Reclaim missing slots using unassigned devices and visible slot confirmation. All participants ready, all missing seats reclaimed, then a paused 3 s resume countdown. Status changes cancel readiness.
   - **Acceptance:** Unplug/replug including identical controllers preserves identity and timer values; assigned devices cannot steal seats; focus changes cancel resume; no simulation progresses during pause/countdown.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/input/pause_recovery_coordinator.gd`, `tilaok!/scripts/input/local_input_router.gd`, and synthetic state/timer assertions in [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** synthetic focus/device status changes pause the tree, clear ready flags and cancel countdown; a Timer callback and physics probe remain frozen; owner acquisition, all-ready 3 s resume, and changed-ID seat reclaim pass. **Verification result:** implementation present; acceptance remains open pending physical unplug/replug, multiple missing seats and focus/device tests on the target PC. **Reviewer:** Codex (implementation author). **Next action:** run PLAYTEST.md's physical disconnect/reclaim matrix.
 
 
 #### P02-T08
 
 - [ ] **Verify pause and reclaim disconnected seats safely**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+  - **Status:** COULD-NOT-RUN · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-INPUT-004](PRD.md#req-input-004--pause-and-reclaim-disconnected-seats-safely). **Dependencies:** [P02-T07](#p02-t07).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Unplug/replug including identical controllers preserves identity and timer values; assigned devices cannot steal seats; focus changes cancel resume; no simulation progresses during pause/countdown.
   - **Acceptance:** Unplug/replug including identical controllers preserves identity and timer values; assigned devices cannot steal seats; focus changes cancel resume; no simulation progresses during pause/countdown.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [synthetic pause/reclaim checks](evidence/p02-checks-2026-10-13.log) and [rendered diagnostic room](evidence/p02-diagnostic-room.png). **Procedure / expected / actual:** use two identical physical controllers, disconnect/reconnect each (including changed IDs), test multiple missing seats, assigned-device theft rejection, focus loss, held action on resume, and all-ready countdown cancellation; inspect both timers and physics. **Expected:** full simulation freeze, preserved player state/identity, and safe fresh-input resume. **Actual:** synthetic focus/device-change and probe checks pass; physical controller disconnect/reconnect cannot run because no gamepads are available. **Verification result:** COULD-NOT-RUN. **Reviewer:** not recorded. **Next action:** complete the physical unplug/replug/reclaim session and record captures.
 
 
 #### P02-T09
 
-- [ ] **Implement and instrument the initial run/jump controller**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement and instrument the initial run/jump controller**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-MOVE-001](PRD.md#req-move-001--implement-responsive-run-and-jump-only). **Dependencies:** [P02-T04](#p02-t04), [P01-T04](#p01-t04).
   - **Work:** Normal Play controls are left/right and jump, without dash, wall jump, double jump or drop-through. Prototype uses 32 wu grid, 24×48 collider, 96 wu jump apex at 0.32 s, 280 wu/s run speed, variable jump, coyote/buffer, acceleration/braking and launch limits from the defaults register. These are starting values, not balance claims.
   - **Acceptance:** Measure full/short jumps, braking, reversal and 64 wu gap/rise trials; investigate apex deviations above 2 wu or one physics step; consume each buffered jump once and never auto-repeat held jump.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/movement/chicken_controller.gd`, centralized `tilaok!/scripts/config/gameplay_tuning.gd`, and visible measurement surfaces in `tilaok!/scenes/fixtures/p02_movement_room.tscn`. **Procedure / expected / actual:** instrumented fixed-step movement, collision, full/short jump, held-jump latch, coyote/buffer windows, braking/reversal and an explicit one-way test surface in the P02 fixture. **Actual:** implementation and diagnostics exist; values remain provisional. Measured details and test command appear under P02-T10. **Verification result:** PASSED as implementation; do not interpret as balance approval or a complete game controller. **Reviewer:** Codex (implementation author).
 
 
 #### P02-T10
 
-- [ ] **Verify implement responsive run and jump only**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify implement responsive run and jump only**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-MOVE-001](PRD.md#req-move-001--implement-responsive-run-and-jump-only). **Dependencies:** [P02-T09](#p02-t09).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Measure full/short jumps, braking, reversal and 64 wu gap/rise trials; investigate apex deviations above 2 wu or one physics step; consume each buffered jump once and never auto-repeat held jump.
   - **Acceptance:** Measure full/short jumps, braking, reversal and 64 wu gap/rise trials; investigate apex deviations above 2 wu or one physics step; consume each buffered jump once and never auto-repeat held jump.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P02 checks and measured physics output](evidence/p02-checks-2026-10-13.log); [rendered diagnostic capture](evidence/p02-diagnostic-room.png); [rendered performance sample](evidence/p02-rendered-metrics.txt). **Build/profile/seed:** Godot 4.7.2, local pre-commit implementation based on `e2b4a555`, movement room, seed 12345, 60 Hz. **Procedure / expected / actual:** headless fixture test measured full/short jump, acceleration/braking, reversal, ceiling, 64 wu gap + 64 wu rise, held-jump landing, launch and containment. Expected full apex 96 wu at about 0.32 s; actual full 96.06 wu at 19 frames (0.3167 s), short 44.27 wu; 30-tick full-run displacement 120.00 wu at 280 wu/s; stop distance 11.67 wu; reversal crossed zero in 6 ticks; gap/rise landing at x=871.34, y=273.93. Held jump did not auto-repeat. No balance claim. **Verification result:** PASSED for measured fixture/controller criteria. **Reviewer:** Codex (automated, implementation author); no independent team reviewer recorded.
 
 
 #### P02-T11
 
-- [ ] **Implement contact sensing and movement-state ownership**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement contact sensing and movement-state ownership**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-MOVE-002](PRD.md#req-move-002--separate-body-collision-contact-and-intentional-input). **Dependencies:** [P02-T10](#p02-t10).
   - **Work:** Chicken bodies pass through in Karera, Lagsanay and Kangaroo; independent sensors support tag/Hug. Forced movement is distinct from intentional input. Prototype precedence is terminal > opening taya freeze > capture > forced motion > locomotion. A lower state cannot reactivate a secured/eliminated player.
   - **Acceptance:** Overlap creates no pushing; intentional input is observable while captured; launch clears coyote state and is not shortened by jump release; terminal states ignore later movement/capture.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/movement/chicken_contact_sensor.gd`, `tilaok!/scripts/movement/player_lifecycle_state.gd`, `tilaok!/scripts/movement/chicken_controller.gd`, and the narrow Lagsanay/contact diagnostic fixture. **Procedure / expected / actual:** separate body collision from the 28×48 sensor, hold intentional input under capture, keep force in an external velocity field, and apply precedence terminal → opening freeze → capture → forced → normal. **Actual:** systems are implemented and the paired test evidence is recorded in P02-T12. This is a narrow integration contract, not Lagsanay/Kangaroo gameplay. **Verification result:** PASSED as implementation. **Reviewer:** Codex (implementation author).
 
 
 #### P02-T12
 
-- [ ] **Verify separate body collision, contact and intentional input**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify separate body collision, contact and intentional input**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-MOVE-002](PRD.md#req-move-002--separate-body-collision-contact-and-intentional-input). **Dependencies:** [P02-T11](#p02-t11).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Overlap creates no pushing; intentional input is observable while captured; launch clears coyote state and is not shortened by jump release; terminal states ignore later movement/capture.
   - **Acceptance:** Overlap creates no pushing; intentional input is observable while captured; launch clears coyote state and is not shortened by jump release; terminal states ignore later movement/capture.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** overlapping two diagnostic chickens at the same coordinates must leave both unpushed while the independent Area2D detects contact; captured input remains observable; capture blocks launch; launch clears coyote; held/released jump during unobstructed external launch yields the same height; opening freeze outranks capture/launch; terminal state rejects later movement. **Actual:** all assertions passed. External launch height was 101.12 wu both held and released; fixture path was moved clear of overhead geometry before measurement. **Verification result:** PASSED for the diagnostic movement/contact contract. Lagsanay and Kangaroo themselves are not implemented or claimed. **Reviewer:** Codex (automated, implementation author).
 
 
 #### P02-T13
 
-- [ ] **Implement bounds and diagnostic containment recovery**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement bounds and diagnostic containment recovery**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-MOVE-003](PRD.md#req-move-003--contain-players-and-expose-invalid-escapes). **Dependencies:** [P02-T12](#p02-t12).
   - **Work:** Visible floor/side/ceiling bounds contain ordinary and forced movement. Lagsanay has no fall elimination. Prototype unexpected race-only escape fails once; containment failure with Lagsanay or standalone Kangaroo pauses as a defect and restarts the round from pre-round scores and unchanged construction.
   - **Acceptance:** Maximum launches cannot bypass bounds; injected breach cannot repeatedly award score, teleport an active taya while time runs, or convert a Lagsanay fall into elimination. Recovery is labeled a prototype safeguard.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/harness/containment_recovery_contract.gd`, visible floor/walls/ceiling and explicit breach controls in `tilaok!/scripts/harness/p02_movement_room.gd`. **Procedure / expected / actual:** recover a Lagsanay/Kangaroo prototype defect from saved pre-round scores/construction token; fail a race escape once; verify no automatic race respawn or repeated outcome. **Actual:** implementation and paired checks are recorded in P02-T14. The UI clearly labels the prototype safeguard. **Verification result:** PASSED as a narrow diagnostic recovery contract; no scoring or full game recovery engine exists. **Reviewer:** Codex (implementation author).
 
 
 #### P02-T14
 
-- [ ] **Verify contain players and expose invalid escapes**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify contain players and expose invalid escapes**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-MOVE-003](PRD.md#req-move-003--contain-players-and-expose-invalid-escapes). **Dependencies:** [P02-T13](#p02-t13).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Maximum launches cannot bypass bounds; injected breach cannot repeatedly award score, teleport an active taya while time runs, or convert a Lagsanay fall into elimination. Recovery is labeled a prototype safeguard.
   - **Acceptance:** Maximum launches cannot bypass bounds; injected breach cannot repeatedly award score, teleport an active taya while time runs, or convert a Lagsanay fall into elimination. Recovery is labeled a prototype safeguard.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P02 checks](evidence/p02-checks-2026-10-13.log) and the screenshot [diagnostic room](evidence/p02-diagnostic-room.png). **Procedure / expected / actual:** apply maximum diagonal launch and track all physics positions against configured bounds; inject one breach in Race, Lagsanay and standalone Kangaroo; check one race terminal outcome/no respawn, defect pause for Lagsanay/Kangaroo, no elimination of the taya, and recovery from score/construction snapshot with zero awards. **Actual:** all checks passed; race outcome remained idempotent, Lagsanay/Kangaroo paused as prototype defects, and maximum configured diagonal launch remained contained. **Verification result:** PASSED for the fixture contract. The fixture does not implement production scoring, round restart, Lagsanay or Kangaroo. **Reviewer:** Codex (automated, implementation author).
 
 
 ## P03 — Graybox stage and camera

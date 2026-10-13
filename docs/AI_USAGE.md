@@ -42,6 +42,12 @@ This is a user-approved exception to the repository's current team-authored-code
 
 Codex also downloaded the official Godot 4.7.2 export-template archive, verified its archive identity/hash and embedded version, installed it in the standard versioned template directory by extracting the package, ran the lint/format/import/headless/export checks, launched the exported executable locally, and recorded the results. The editor's template-manager UI was not used. Test results verify only foundation diagnostics and local export startup/exit; they do not establish gameplay, controller, performance, independent review, or competition acceptance.
 
+## P02 inputs and controller — October 13, 2026
+
+At the user's explicit direction after Stage A plan approval and authorship clarification, OpenAI Codex implemented P02-T01–T14 systems and focused evidence tooling in the existing `main` checkout: local seat/device assignment and number/shape markers; phase-specific K1/K2/gamepad routing and fresh-edge/repeat handling; pause, focus/device-change, reclaim and all-ready resume coordination; typed run/jump movement, separate contact sensor and lifecycle state; visible movement/input fixtures and a narrow containment recovery contract; P02 automated tests, rendered capture, tracker and documentation updates. This is an expressly authorized AI-implementation exception for P02. The work is AI-authored and is not represented as team-authored.
+
+Godot 4.7.2 executed the P01 regression suite and P02 synthetic input/physics checks. The P02 fixture produced measured jump, braking, reversal, reachability, launch and rendered performance observations. Synthetic device events do not count as physical gamepad, keyboard rollover, unplug/replug or exported interactive-input tests. Those hardware checks remain open. P01-T02 registered-team authorship review is still open, and the user's implementation authorization does not establish DOST eligibility or organizer acceptance. Preserve the prompt/outputs and history; the team must make its own Form 03 extent selection from project-wide AI assistance. No private team names or hours were requested or recorded. R1–R4 remain inactive.
+
 
 ### Verification of this documentation delivery
 

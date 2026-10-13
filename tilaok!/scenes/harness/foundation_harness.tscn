@@ -121,7 +121,11 @@ text = "Prototype fixture rooms:"
 
 [node name="MovementRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
 layout_mode = 2
-text = "Movement Room"
+text = "P01 Movement Placeholder"
+
+[node name="P02MovementRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "P02 Movement Room"
 
 [node name="ItemRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
 layout_mode = 2

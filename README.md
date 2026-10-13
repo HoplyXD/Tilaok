@@ -11,8 +11,8 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Phased Implementation Tracker](docs/PHASETASK.md): ordered team tasks, dependencies and completion evidence; no gameplay is marked complete
-- [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional, untested controller/input/tuning starting points
+- [Phased Implementation Tracker](docs/PHASETASK.md): ordered tasks, dependencies and completion evidence; P02 remains partially verified
+- [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters
 - [Item Catalog](docs/ITEMS.md): first batch and expansion item contracts
@@ -38,4 +38,4 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-P01 establishes a runnable foundation diagnostic harness, typed provisional configuration, content validation, and clearly labeled placeholder rooms. No movement, item, scoring, round, or event mechanics are implemented. See the [responsibility map and run instructions](docs/PROJECT_STRUCTURE.md). Foundation checks run with the explicit Godot 4.7.2 executable; export evidence and team review status are recorded in [PLAYTEST](docs/PLAYTEST.md) and [PRODUCTION](docs/PRODUCTION.md). The PATH wrapper still launches 4.6.3.
+P01 provides the foundation harness and typed provisional configuration. P02 adds a playable diagnostic movement/input room with numbered and shape-marked chickens, run/jump, collision/contact, pause/reclaim contracts and containment probes. It is not a full lobby-to-match game; physical controller, keyboard rollover, reconnect, team review and competition eligibility checks remain open. Eight of 14 P02 tasks are verified. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), the [tracker](docs/PHASETASK.md#p02--inputs-and-controller), and [playtest evidence](docs/PLAYTEST.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.

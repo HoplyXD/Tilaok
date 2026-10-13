@@ -1,12 +1,12 @@
 # Tilaok! Production Plan
 
-**Status:** pre-production planning document. Team roles are unassigned as of 2026-10-12. `ROADMAP.md` remains the scope and schedule source of truth.
+**Status:** pre-production planning document with an implemented P02 movement/input diagnostic slice. Team roles remain privately managed and unnamed in this document. `ROADMAP.md` remains the scope and schedule source of truth.
 
 ## Delivery principle
 
 Ship a small, stable, understandable local-multiplayer game before adding breadth. The core loop, Karera, scoring, Lagsanay, tutorial, and the eight targeted first-batch families take priority over backlog content.
 
-All gameplay systems, controls, scenes, and game logic must be written and understood by registered team members. Documentation, research attribution, and review can be AI-assisted when accurately declared in Form 03.
+Competition requirements still call for team-written, team-understood gameplay. The user expressly authorized an AI-implementation exception for P02; this records permission to implement, not team authorship, DOST eligibility, or organizer acceptance. P01-T02 registered-team review remains open. Disclose the actual assistance extent in Form 03. See `AI_USAGE.md`.
 
 ## Role assignment sheet
 
@@ -39,7 +39,7 @@ The release target below reuses the October 13 approval evidence already recorde
 
 | Disposition | Recorded target | Implementation / verification state at this baseline |
 |---|---|---|
-| **Required** | Team-authored local 2–4 player core loop; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. The project remains a skeleton; no gameplay item, mode, stack, or UI is implemented or runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
+| **Required** | Team-authored local 2–4 player core loop; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. P02 provides a diagnostic input/movement slice; no required item, complete mode, stack, match loop, tutorial or product UI is implemented/runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
 | **Should** | Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Include/defer decision remains pending before feature freeze. Not promoted by this baseline. |
 | **Conditional finalist** | Qualification-dependent finalist materials and demonstration work. | Inactive unless the team qualifies. |
 | **Expansion** | The other 28 catalog families, extra stages/events, and unapproved event pairs. | Outside submission obligations; not promoted. |
@@ -147,13 +147,13 @@ A feature is done only when:
 4. Identify a native-speaker/cultural reviewer for final public copy.
 5. Confirm available controller models/connections and physical-test availability for the identified target PC.
 
-## Prototype milestones — all pending implementation
+## Prototype milestones — current status
 
 A smaller milestone is not a release-scope cut. Each exit is binary; functionality must be demonstrated, not merely described.
 
 | Milestone | What it proves / exit checks | Not yet needed |
 |---|---|---|
-| M0 Movement room | Two inputs control only their own marker; measured full/short jump, braking, bounds, pause and restart meet the specification | Items, events, final art |
+| M0 Movement room | **PARTIAL:** P02 diagnostic room has four numbered/shape-marked seats, synthetic input routing, measured full/short jump, braking, bounds, pause/reclaim state probes and fixture cleanup; physical keyboard/gamepad coverage and exported interactive input/reconnect remain open | Items, events, final art |
 | M1 Two-player round | Lobby → Pugad → Place → Karera → score → next round twice; one egg/placement/outcome per player; timeout/invalid feedback; move/jump/place hints visible | Lagsanay, spring, hazards, match ties |
 | M2 Persistence | Ten round resets preserve construction and never duplicate score; Kaing/Tulay boundary/one-way tests pass; then spring passes launch/reset checks | Bubble and advanced first-batch hazards |
 | M3 Three/four-player loop | Three rounds at each count; all targets visible; supported simultaneous input, slot/device rotation, disconnect/reclaim and pause/resume pass | Additional events or stages |
@@ -163,7 +163,13 @@ A smaller milestone is not a release-scope cut. Each exit is binary; functionali
 | M7 Required stacks | Each of the three pairs passes 2/3/4-player completion, Main-only scoring, secured exclusion, outcome ordering and announcements | Any additional pairing |
 | M8 Submission candidate | Export/full match/restart/onboarding/readability and performance measured on named hardware; licensed assets, AI disclosure, media/forms reviewed | Unaccepted optional scope |
 
-M1–M3 use the labeled race-only development profile. A tied-leader display does not claim resolved sudden death or a release-complete match. Required Lagsanay schedule and sudden death remain mandatory for release. Construction-only all-finish no-score rounds are expected at three/four players; preserve scoring rather than hiding that slice limitation.
+M1–M3 use the labeled race-only development profile. P02 is not a full lobby-to-match loop and does not complete M0's physical-device acceptance. A tied-leader display does not claim resolved sudden death or a release-complete match. Required Lagsanay schedule and sudden death remain mandatory for release. Construction-only all-finish no-score rounds are expected at three/four players; preserve scoring rather than hiding that slice limitation.
+
+### P02 delivery record — October 13, 2026
+
+P02 has an implemented diagnostic input/movement foundation and 8/14 task records verified. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 80 focused P02 assertions pass; the Windows export and headless startup pass. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
+
+Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 team-authorship review and DOST eligibility remain unresolved. The user authorized the P02 AI implementation exception; that authorization does not count as team review or organizer acceptance. Do not enter P03/full-game or release status based solely on this slice.
 
 ## Team and integration defaults
 
@@ -171,9 +177,9 @@ M1–M3 use the labeled race-only development profile. A tied-leader display doe
 
 **P:** choose one gate and acceptance scenario at the start of a session. Use small feature branches and review behavior/provenance before integration. Produce a labeled daily build once runnable systems exist; record engine, build, profile, seed and blockers. A playable build launches on the selected PC, accepts its claimed devices, completes its stated loop, explains controls/results and restarts cleanly. A skeleton/import/document is never a playable build.
 
-Required equipment facts: target OS/CPU/GPU/RAM/display resolution; keyboard model/layout; controller models/count and wired/wireless connection; intended engine binary and export-template availability. These facts can remain TBD in this handoff, but block unsupported runtime/coverage claims.
+Required equipment facts: target OS/CPU/GPU/RAM/display resolution; keyboard model/layout; controller models/count and wired/wireless connection; intended engine binary and export-template availability. The supplied workstation has K1/K2 keyboard input but no gamepads; the keyboard model/layout and physical rollover remain unrecorded. Godot 4.7.2 and matching export templates are installed and a Windows export was verified. Unknown facts block unsupported runtime/coverage claims.
 
-Device checklist: map every button/axis, verify neutral drift, simultaneous direction+jump for all seats, opposite-input neutralization, placement navigation/rotate/confirm rollover, unplug/replug without identity change, two identical controllers reclaiming the correct seats, focus pause and isolated mixed keyboard/gamepad input. Repeat on the exported build and intended connection type. Four-player keyboard-only support is not assumed.
+Device checklist: map every button/axis, verify neutral drift, simultaneous direction+jump for all seats, opposite-input neutralization, placement navigation/rotate/confirm rollover, unplug/replug without identity change, two identical controllers reclaiming the correct seats, focus pause and isolated mixed keyboard/gamepad input. P02 synthetic tests are not physical-device evidence; this session has no gamepads and has not tested keyboard rollover. Repeat on the exported build and intended connection type. Four-player keyboard-only support is not assumed.
 
 Temporary art: one short review chooses geometric chicken placeholders, clear solid/hazard silhouettes and number+shape markers. Use engine-provided typography for graybox; verify/register terms before export. Require legible numbers, needed Philippine-language glyphs, distinct symbols and readable 1080p/minimum-zoom text. Final art style/font family/audio and cultural review do not block movement testing. Record provenance in ASSETS.md.
 
@@ -181,4 +187,4 @@ Inspection on October 12 found only a skeleton. At documentation completion on O
 
 ## Product and execution handoff
 
-Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Team owners/capacity remain privately managed and unrecorded per user direction. The target PC is identified and inventoried above; physical keyboard/controller models and input verification remain unknown.
+Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Team owners/capacity remain privately managed and unrecorded per user direction. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.
