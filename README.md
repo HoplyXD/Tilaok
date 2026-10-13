@@ -55,6 +55,10 @@ Choose **P03 Graybox Arena** in the harness. Join K1/K2 with the visible buttons
 
 Launch the harness as above, then choose **Item Lab**. Join K1/K2 with the visible buttons, press **Place**, use **Variant** to cycle the enabled variants (Kaing 1×1, Kaing 2×3, Tulay 4×1), then move (K1 WASD / K2 arrows), rotate (K1 R / K2 Right Shift) and confirm (K1 F / K2 Enter). The ghost shows outline style, an OK/X mark and a text reason in addition to colour. **Play** starts the item lifecycle with a 1.0 s activation grace; **Reset** restarts Play and keeps construction; **Clear all** performs a match reset. Placement here is immediate and lab-only; use P05 Match Loop to exercise Pugad, exact-variant eggs and the atomic Place resolver. All visuals are code-drawn DEBUG graybox.
 
+## Review the UI shells
+
+Launch the harness with the command above and choose **UI Gallery** (every screen and state with SAMPLE data; **F9** hides the review panel) or **Player flow (Title)**. To edit them, open `tilaok!` in the Godot 4.7.2 editor and follow the "How to edit the UI in Godot" section of [docs/UI_HANDOFF.md](docs/UI_HANDOFF.md). Everything is placeholder: no final art, font or live scoring data.
+
 ## Run the P05 match loop
 
 Launch the harness with the command above and choose **P05 Match Loop**. Join at least two seats and mark every joined seat ready before **Start match** enables. Keyboard seats use K1 **WASD + Space**, K2 **arrows + Ctrl**; **F / Enter** readies and confirms, arrows select a Pugad egg, and **R / Right Shift** rotates a supported Place piece. During diagnostic Play, use **End Round • diagnostic** or the flag-touch stub to open the results shell. The shell advances when all seats are ready or after eight seconds. It awards no points. Construction remains for the next round.

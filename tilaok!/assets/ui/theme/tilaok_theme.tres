@@ -3,6 +3,8 @@
 ; PLACEHOLDER project UI Theme. Every UI colour, StyleBox, font size and layout margin lives here.
 ; Restyle freely in the Godot Theme editor. Type variations (TilaokMenuButton, GhostValid, ...) are used by
 ; name from the scenes: you may change what they look like, but do not rename them.
+; Base types (Button, PanelContainer...) keep engine-default shape so developer fixture HUDs do not shift;
+; the screens use the named type variations below. Restyle those.
 ; Fonts: engine default (no font file shipped). Set a font under Default Font to change all text.
 
 [sub_resource type="StyleBoxFlat" id="sb_card"]
@@ -290,12 +292,6 @@ Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/colors/font_disabled_color = Color(0.58, 0.6, 0.61, 1)
 Button/font_sizes/font_size = 16
-Button/styles/normal = SubResource("sb_button")
-Button/styles/hover = SubResource("sb_button_hover")
-Button/styles/pressed = SubResource("sb_button_hover")
-Button/styles/disabled = SubResource("sb_button_disabled")
-Button/styles/focus = SubResource("sb_empty")
-PanelContainer/styles/panel = SubResource("sb_card")
 ProgressBar/styles/background = SubResource("sb_bar_bg")
 ProgressBar/styles/fill = SubResource("sb_bar_fill")
 TilaokPolicy/constants/min_midround_font_px = 16

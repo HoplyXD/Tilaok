@@ -17,6 +17,7 @@ P01 foundation plus P02 input/movement, P03 graybox stage/camera/support, P04 it
 | Checks | `tilaok!/tests/` | `run_foundation_tests.gd` includes repeated P03 cleanup/reload regressions; `run_p02_tests.gd` preserves P02 tests; `run_p03_tests.gd` covers route/protection/camera/support; `run_p03_interactive.gd` drives the visible GUI; `capture_p03_evidence.gd` saves rendered views and performance observations; `capture_p03_camera_jitter.gd` renders the close-chicken camera regression at 1080p; `run_p04_tests.gd` covers item definitions/validation, lifecycle, caps and real-physics Kaing/Tulay trials; `run_p04_interactive.gd` drives the Item Lab GUI; `capture_p04_evidence.gd` saves 1080p captures and the 48-piece performance sample; `run_p02_wall_tests.gd` and `capture_p02_wall_evidence.gd` cover the wall extension. |
 | Items | `tilaok!/scripts/items/`, `tilaok!/scenes/items/`, `tilaok!/data/items/` | `ItemFamilyDefinition`/`ItemVariantDefinition`/`ItemRegionSpec` typed resources, `ItemApprovedVariants` (documented variant table), one `ItemDefinitionValidator`, `ItemDefinitions` loader/catalog rows, `ItemPlacementValidator` (reasoned rejections), `ItemManager` (placement, Walis-hook removal, Place/Play/round/match lifecycle, 48-piece cap), `TransientBudget` (16/4/32 caps, TTLs, rotating allocation, captive-safe release), `ConstructionPiece` + `kaing_piece.tscn`/`tulay_piece.tscn`, `ItemGhost`, placeholder `ItemEggPreview` (animated egg, click to claim a variant) and `ItemLibraryEntry` (placeholder Library model with a release filter). `.tres` definitions for `build.hollow_blocks` and `build.bamboo_bridge`. Item tunables are `item_*` fields in `gameplay_tuning.gd`. |
 | Item Lab | `tilaok!/scripts/harness/item_lab_room.gd`, `tilaok!/scenes/fixtures/item_lab.tscn` | No longer a placeholder: extends the P03 stage room with immediate lab-only placement, rotate/confirm, Play/Reset/Clear all, and an `--open-room=item_lab` startup hook for exported smoke tests. |
+| UI shells | `tilaok!/scenes/ui/`, `tilaok!/scripts/ui/`, `tilaok!/assets/ui/`, `tilaok!/data/ui/` | Scene-authored placeholder UI: screens, components, the single project Theme (`assets/ui/theme/tilaok_theme.tres`), SAMPLE data resources, `UiScreen` base, `UiMenuList`, `UiInputBridge` and the UI Gallery harness room. Scripts only bind data; layout/style live in scenes and the Theme. Not yet wired into the P05 match room. |
 | Future responsibilities | events, scoring, presentation and remaining item families | Karera finish rules, score calculation, Walis Cleanup gameplay, full Lagsanay/Kangaroo rules, save/network systems and production UI/assets remain unimplemented. P05 provides only the diagnostic lobby/construction/round shell. |
 
 ## Programming provenance and review
@@ -74,3 +75,13 @@ From the repository root:
 ```
 
 Choose **P05 Match Loop** in the harness. Join and ready two or more seats. K1 uses WASD/Space; K2 uses arrows/Ctrl. F/Enter confirms or readies, arrows select an egg, and R/Right Shift rotates supported variants. Diagnostic Play advances only through the labeled End Round/flag-touch controls. Synthetic gamepad seats 3/4 are used in the recorded harness evidence; physical gamepads are not certified. See the [P05 verification record](evidence/p05/2026-10-14_p05_verification.md). All newly drawn UI/item visuals are DEBUG placeholders.
+
+## UI shell commands
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_ui_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_ui_evidence.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' 'res://scenes/ui/ui_gallery.tscn'
+```
+
+In the harness, **UI Gallery** shows every screen/state with SAMPLE data and **Player flow (Title)** starts at Title with the review panel hidden (F9 shows it). Designers edit the scenes and Theme in the Godot editor; see the how-to in [UI_HANDOFF.md](UI_HANDOFF.md).

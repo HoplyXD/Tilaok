@@ -143,6 +143,14 @@ text = "Event Lab"
 layout_mode = 2
 text = "P05 Match Loop"
 
+[node name="UiGalleryButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "UI Gallery"
+
+[node name="UiPlayerFlowButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "Player flow (Title)"
+
 [node name="RoomHost" type="Control" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2

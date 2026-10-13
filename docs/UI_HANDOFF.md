@@ -50,8 +50,8 @@ Each seat has a fixed number and shape from join until return to lobby. **Colour
 
 | Seat | Number | Shape | Current placeholder colour |
 |---|---|---|---|
-| 1 | 1 | Shell built 2026-10-14: `scenes/ui/screens/title_screen.tscn` (SAMPLE data; live build label pending harness wiring) | `#f2c14e` |
-| 2 | 2 | Shell built: `lobby_screen.tscn`, binds seat dictionaries (live from `PlayerSeatRegistry` once wired) | `#63a7ff` |
+| 1 | 1 | Shell built 2026-10-14: `scenes/ui/screens/title_screen.tscn` (SAMPLE data) | `#f2c14e` |
+| 2 | 2 | Shell built: `lobby_screen.tscn`, binds seat dictionaries (live from `PlayerSeatRegistry` once connected to the match room) | `#63a7ff` |
 | 3 | 3 | Shell built: `tutorial_prompt.tscn` prompt box only; tutorial script not implemented | `#f07c6c` |
 | 4 | 4 | Shell built: `pugad_overlay.tscn` wrapping the existing `ItemEggPreview` (live eggs); claim rules are P05 | `#89c77b` |
 
@@ -90,8 +90,8 @@ Flow (LOCKED, from UI_TUTORIAL): Title → Lobby → Tutorial (first Karera) →
 
 | # | Screen | What it must show | Primary actions | Code status today | Tracker |
 |---|---|---|---|---|---|
-| 1 | **Title** | Game title, Start local match, Library, Settings, Quit; a clear build/version label while in development | Start, Library, Settings, Quit | Shell built 2026-10-14: `scenes/ui/screens/title_screen.tscn` (SAMPLE data; live build label pending harness wiring) | P13-T01/T02 |
-| 2 | **Local join lobby** | 2–4 join slots with device prompt; chicken colour plus number/shape; ready state; "need at least 2 players" | Join, choose identifier, ready, leave | Shell built: `lobby_screen.tscn`, binds seat dictionaries (live from `PlayerSeatRegistry` once wired) | P05-T11 (minimal), P13 |
+| 1 | **Title** | Game title, Start local match, Library, Settings, Quit; a clear build/version label while in development | Start, Library, Settings, Quit | Shell built 2026-10-14: `scenes/ui/screens/title_screen.tscn` (SAMPLE data) | P13-T01/T02 |
+| 2 | **Local join lobby** | 2–4 join slots with device prompt; chicken colour plus number/shape; ready state; "need at least 2 players" | Join, choose identifier, ready, leave | Shell built: `lobby_screen.tscn`, binds seat dictionaries (live from `PlayerSeatRegistry` once connected to the match room) | P05-T11 (minimal), P13 |
 | 3 | **Tutorial (guided first Karera)** | One instruction at a time: identify your chicken, move/jump to markers, claim an egg, place/rotate/confirm, reach the flag, read the results | Skippable once completed in the session | Shell built: `tutorial_prompt.tscn` prompt box only; tutorial script not implemented | P13-T07/T08 |
 | 4 | **Pugad** | Visible eggs, each showing its exact item and size by a short looping animation with **no name or description**; selection countdown; next-round event announcement; claim ownership change; lost-claim cue | Move, claim | Shell built: `pugad_overlay.tscn` wrapping the existing `ItemEggPreview` (live eggs); claim rules are P05 | P05-T01/T02 |
 | 5 | **Place** | Shared stage; each player's pointer with identity marker; valid/invalid ghost (colour **and** outline/icon/texture); footprint, rotation, size; sweep/lane/effect where relevant; rejection reason text; countdown; protected-zone feedback | Move, rotate, confirm | Shell built: `place_overlay.tscn` with ghost legend; ghost drawing stays in `ItemGhost` | P05-T05/T06 |
@@ -171,7 +171,7 @@ Screen shells are real Godot scenes, not code. Status: **placeholder look, SAMPL
 
 - **Scenes:** `tilaok!/scenes/ui/screens/` (Title, Lobby, Tutorial prompt, Pugad, Place, Play HUD, Round result, Match result, Pause/Reconnect, Settings, Library, Event overlays) and `tilaok!/scenes/ui/components/` (player badge, prompt glyph, phase banner, countdown, score row, award line, toast, egg slot, ghost legend, confirm dialog, option row, lobby slot, taya marker, Kangaroo prompt).
 - **One Theme:** `tilaok!/assets/ui/theme/tilaok_theme.tres`.
-- **UI Gallery:** `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return. It is not yet wired into the foundation harness (held until P05 lands); open it in the editor and press F6, or run `godot --path tilaok! res://scenes/ui/ui_gallery.tscn`.
+- **UI Gallery:** the foundation harness has **UI Gallery** and **Player flow (Title)** buttons; `tilaok!/scenes/ui/ui_gallery.tscn` shows every screen and state with SAMPLE data, a K1/K2/gamepad glyph switch, a 1-4 player switch, a theme swap and Return (F9 hides the review panel). The P05 match room still uses its own code-built panels; converting them to these scenes is a follow-up.
 - **Tests:** `tilaok!/tests/run_ui_tests.gd`, captures `tilaok!/tests/capture_ui_evidence.gd`, evidence in `docs/evidence/ui-shells/`.
 
 ### How to edit the UI in Godot (for Shanti)

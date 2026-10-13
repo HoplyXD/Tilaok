@@ -3,6 +3,7 @@ extends Control
 
 const DEFAULT_SEED := 12345
 const BUILD_ID := "P01-foundation-dev"
+const UI_GALLERY_SCENE := preload("res://scenes/ui/ui_gallery.tscn")
 const ROOM_SCENES := {
 	"movement_room": preload("res://scenes/fixtures/movement_room.tscn"),
 	"p02_movement_room": preload("res://scenes/fixtures/p02_movement_room.tscn"),
@@ -10,8 +11,16 @@ const ROOM_SCENES := {
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"p05_match": preload("res://scenes/match/match_room.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
+	"ui_gallery": UI_GALLERY_SCENE,
+	"ui_player_flow": UI_GALLERY_SCENE,
 }
-const FULL_VIEW_ROOMS: PackedStringArray = ["p03_stage_room", "item_lab", "p05_match"]
+const FULL_VIEW_ROOMS: PackedStringArray = [
+	"p03_stage_room",
+	"item_lab",
+	"p05_match",
+	"ui_gallery",
+	"ui_player_flow",
+]
 
 var gameplay_tuning := GameplayTuning.new()
 var presentation_settings := PresentationSettings.new()
@@ -65,6 +74,10 @@ func _ready() -> void:
 	$Layout/HarnessPanel/RoomRow/ItemRoomButton.pressed.connect(_open_room.bind("item_lab"))
 	$Layout/HarnessPanel/RoomRow/EventRoomButton.pressed.connect(_open_room.bind("event_lab"))
 	$Layout/HarnessPanel/RoomRow/P05MatchButton.pressed.connect(_open_room.bind("p05_match"))
+	$Layout/HarnessPanel/RoomRow/UiGalleryButton.pressed.connect(_open_room.bind("ui_gallery"))
+	$Layout/HarnessPanel/RoomRow/UiPlayerFlowButton.pressed.connect(
+		_open_room.bind("ui_player_flow")
+	)
 	$Layout/ExitButton.pressed.connect(_exit_harness)
 	profile_picker.select(0)
 	_update_identity()
@@ -202,6 +215,8 @@ func _open_room(room_id: String) -> void:
 	else:
 		room_host.add_child(active_room)
 		harness_panel.hide()
+	if room_id == "ui_player_flow" and active_room.has_method("set_chrome_visible"):
+		active_room.call("set_chrome_visible", false)
 	active_room.return_requested.connect(_close_room)
 	if room_id == "p03_stage_room":
 		_append_status(

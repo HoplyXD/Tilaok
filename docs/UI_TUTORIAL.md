@@ -1,6 +1,6 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
-**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style.
+**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI shell status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Play HUD, results, Pause/Reconnect, Settings and Library exist (SAMPLE data; see [UI_HANDOFF.md](UI_HANDOFF.md)); the guided tutorial script is not implemented.
 
 ## Experience goals
 
