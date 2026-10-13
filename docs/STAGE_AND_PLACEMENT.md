@@ -1,6 +1,6 @@
 # Tilaok! Stage and Placement Specification
 
-**Status:** pre-production contract. `GDD.md` remains the source of truth when this document conflicts with it. This document records the stage rules a team-written implementation must satisfy; it does not provide gameplay code.
+**Status:** pre-production contract with a verified P03 graybox implementation record (2026-10-13). `GDD.md` remains the source of truth when this document conflicts with it. The implementation is diagnostic geometry and reusable contracts, not production art or the complete placement/gameplay systems.
 
 ## Purpose
 
@@ -26,7 +26,7 @@ The initial hand-built stage includes a solid floor, left spawn, right flag, and
 
 Base-stage pieces, the floor, spawn, and flag are indestructible. They are not removable by Walis Cleanup or later demolition items. Base platforms do **not** satisfy Kangaroo Rising wave: only player-built solid geometry above the selected line qualifies.
 
-The graybox below supplies provisional geometry coupled to PROTOTYPE_DEFAULTS.md. Final art scale and actual collision-safe reach remain unverified.
+The graybox below supplies provisional geometry coupled to PROTOTYPE_DEFAULTS.md. P03 verified the base route with Godot collision and the measured P02 controller; final art scale and player feel remain unverified.
 
 ```mermaid
 flowchart LR
@@ -101,7 +101,7 @@ The game does not reroll a wave that no player can survive. Building useful elev
 
 ## Decisions still dependent on team implementation
 
-These are measurement and art/layout decisions, not unresolved gameplay rules:
+Production artwork and later tuning remain open; the following first graybox values are implemented defaults rather than unresolved prototype choices:
 
 - player collision width, height, jump height, movement speed, and logical tile size;
 - exact base-stage drawing, Pugad location, flag clearance, camera size, and world bounds;
@@ -111,11 +111,11 @@ These are measurement and art/layout decisions, not unresolved gameplay rules:
 
 ## Verification links
 
-See the prototype layout/support handoff below and the coupled movement model in [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md).
+See the implemented layout/support handoff below and the coupled movement model in [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md).
 
-Use `PLAYTEST.md` for the required simultaneous-placement, cleanup, support-removal, first-batch item, Rising wave, and match-persistence checks. No stage implementation exists yet, so those checks remain **COULD NOT RUN** until team-written systems are available.
+The P03 graybox is reachable from the foundation harness. Pugad, atomic placement, cleanup, production items, Rising-wave scheduling, scoring, and match persistence remain separate future checks; this slice does not implement them. See [PLAYTEST.md](PLAYTEST.md) for the P03 procedures and the remaining later-system checks.
 
-## Prototype graybox — actual reachability UNTESTED
+## Prototype graybox — implemented geometry and measured route
 
 **P — PROTOTYPE DEFAULT.** x points right, y down. Bounds below are tile edges, right/bottom exclusive. One tile = 32 world units (wu); player clearance is 1×2 tiles, collider 24×48 wu. All base pieces are indestructible solid rectangles. These dimensions do not lock production art.
 
@@ -136,9 +136,11 @@ Use `PLAYTEST.md` for the required simultaneous-placement, cleanup, support-remo
 | Build region | x 5–28, y 3–15 | reject base/protected overlap and out-of-bounds geometry |
 | Player build clearance | collider expanded 4 wu each side | additional protected body region |
 | Side/ceiling containment | inner edges x=0, x=1024, y=0 | visible barriers, launches cannot crush/escape |
-| Pugad | screen-space panel | disappears before Play, no arena collider |
+| Pugad | screen-space panel | not implemented in P03; the diagnostic HUD and previews are fixtures only |
 
-Paper route: floor → A (+64 wu) → B (+64) → C (−64) → D (+64) → goal (−32). A→B and C→D have 64 wu gaps: centers 20 wu inside each edge need 104 wu displacement, below the calculated 134.1 wu ideal reach at a 64 wu rise. Floor→A takeoff near x=128 wu at full speed reaches the leading-edge clearance after about 0.186 s, at about 79 wu of rise, above the 64 wu face. Landing/braking still need physical verification.
+**P03 route result — 2026-10-13:** the real `ChickenController` traversed floor → A → B → C → D → goal with Godot collision, including head/body clearance, takeoff, landing, braking and visible containment. The scene uses the controller's center origin: shared spawn feet `(96,480)` convert to center `(96,456)` for its 48-wu collider, so the chicken begins with its feet on the floor top instead of inside it. The optional upper E shortcut is omitted. See [P03 route assertions](evidence/p03/2026-10-13_p03_tests.txt) and [rendered arena capture](evidence/p03/2026-10-13_interactive_harness_1080p.png). No movement retune or geometry change was needed.
+
+The original paper-route estimate (before the P03 collision trial) was: floor → A (+64 wu) → B (+64) → C (−64) → D (+64) → goal (−32). A→B and C→D have 64 wu gaps; the estimated 104-wu center displacement is below the calculated 134.1-wu ideal reach. The actual P03 collision trial now supersedes the earlier note that landing/braking needed physical verification.
 
 Optional B→E has another 64 wu gap/rise. E→D crosses 128 wu while dropping 64 wu: ideal airtime ≈0.676 s and displacement ≈189 wu, versus 168 wu center travel with 20 wu margins. It bypasses C but needs a narrower landing. This is an advanced shortcut candidate, not a verified collision-safe route. Test full-body sweep and overhead clearance.
 
@@ -152,7 +154,9 @@ The floor catches mistakes but is slower than useful platforming: A/C interrupt 
 | `world_view_bounds` | x −64…1088, y −64…576 wu | neutral backdrop outside stage; center clamped by viewport extent |
 | `ease_seconds` | 0.20 s nominal | 0.15–0.30 s; visibility overrides smoothing |
 
-Start centered over the full arena at zoom 1.0 below the HUD. Padded arena =1152×640 wu, fitting the 1280×656 gameplay region. At 1080p/minimum zoom, a tile projects to 48 pixels and the body to 36×72 pixels. These are calculations, not readability measurements. HUD text/markers remain screen-sized. Play frames live unfinished players; Place frames unconfirmed pointers with their item extents; empty target sets hold the last safe framing through results. Zoom out immediately enough to contain a fast launch, ease inward only if all targets stay visible. Build ceiling y=96 wu prevents high construction expanding the world and shrinking everyone.
+Start centered over the full arena at zoom 1.0 below the HUD. Padded arena =1152×640 wu, fitting the 1280×656 gameplay region. At 1080p/minimum zoom, a tile projects to 48 pixels and the body to 36×72 pixels. These are calculations, not final-art readability measurements. HUD text/markers remain screen-sized. Play frames live unfinished players; Place frames unconfirmed pointers with their item extents; empty target sets hold the last safe framing through results. Zoom out immediately enough to contain a fast launch, ease inward only if all targets stay visible. Build ceiling y=96 wu prevents high construction expanding the world and shrinking everyone.
+
+**P03 camera result — 2026-10-13:** Play targets include each live body and identity badge; secured/eliminated targets drop individually. Place targets include each unconfirmed pointer's rotated preview extents; confirmed pointers drop individually. Tests covered 2/3/4 targets, opposite-corner extents, the highest legal build-region preview (y=96), and a real controller launched at the 900-wu/s upward cap. Rendered Play/Place captures are 1920×1080 at zoom 1.0. A 1920×800 window preserved the 1280×720 logical view (1422×800 game image), so extra window width does not reveal additional world. Captures and performance data are linked from [P03 verification](evidence/p03/2026-10-13_p03_verification.md). The graybox tests are not late-game stress or final-art readability evidence.
 
 Shared spawn has simultaneous input unlock, no slot-based x offset or physical pushing. Fan number/shape labels with leader lines until chickens separate. Lagsanay keeps its documented opening head start. Prototype baseline shake is off. Change geometry/camera only after testing maximum separation, topmost construction and launch trajectories with all supported player counts.
 
@@ -166,7 +170,7 @@ Shared spawn has simultaneous input unlock, no slot-based x offset or physical p
 | Any player-built standable surface | Player-facing rule | Needs a visible distinction between constructed platforms and effects |
 | Explicit eligible property plus contact | Internal rule | Each surface needs review/metadata; missing metadata must fail content validation |
 
-Player wording: **Stand above the wave line on a built platform. Anyone's platform counts.** Eligible upward faces share a platform-edge pattern; wave telegraph adds a non-color support symbol above the line. Launch faces/base terrain/effects must not display that pattern. Failure gives one reason: no support, base surface, ineligible surface, or feet below line. A support symbol never means immunity to its hazard.
+Player wording: **Stand above the wave line on a built platform. Anyone's platform counts.** Eligible upward faces share a platform-edge pattern; wave telegraph adds a non-color support symbol above the line. Launch faces/base terrain/effects must not display that pattern. Failure gives one reason: no support, base surface, ineligible surface, or feet below line. A support symbol never means immunity to its hazard. P03 implements diagnostic labels/reasons and stable surface identity; it does not add a player-facing event HUD or mark fixture content as enabled.
 
 | Surface/state | Yes/no/conditional | Requirement |
 |---|---|---|
@@ -186,10 +190,10 @@ Player wording: **Stand above the wave line on a built platform. Anyone's platfo
 | Coyote-time state | No | Jump permission is not contact |
 | Airborne crossing | No | Feet require support at evaluation |
 
-Standable means an upward normal within 45° of vertical with collision actually carrying/blocking downward foot motion; v1 tops are horizontal. Store current supporting surface/contact point, not just a stale grounded boolean. Moving supports use relative motion. Sensor proximity alone is insufficient.
+Standable means an upward normal within 45° of vertical with collision actually carrying/blocking downward foot motion; v1 tops are horizontal. Store current supporting surface/contact point, not just a stale grounded boolean. Moving supports use relative motion. Sensor proximity alone is insufficient. The P03 tracker records slide contacts after controller movement, then evaluates the same physics step after support invalidation; removal invalidates registered contacts before queued node deletion. Prototype contact-height and wave-height tolerances are 1 wu each, with zero gameplay-time grace. These values remain subject to future Kangaroo playtesting.
 
 Check feet/contact y, never head/sprite center. Above means smaller y. The numerical tolerance in PROTOTYPE_DEFAULTS allows `feet_y <= line_y + epsilon` to treat numerical equality consistently; it is not a visible grace band or grace duration. No coyote/buffer allowance applies. Provenance follows the placed construction and explicitly authored platform children, not ownership reassignment. Legal floating structures qualify without a structural-attachment simulation; accessibility of their elevation is the builders' responsibility.
 
 Order: finish movement/platform motion and support destruction for the physics step; invalidate destroyed support; resolve recorded direct hazard/goal outcomes under the existing time/tie contract; evaluate commands for remaining live unsecured players; commit one terminal outcome; resolve Main-Challenge placements. Same-step destroyed support is absent; a moving support below the line uses its final contact height. Earlier or indistinguishable lethal hazard takes terminal attribution over command failure; command failure never grants Patibong.
 
-Test every table row just above/on/below every band, another player's construction, removal and platform movement on the evaluation step. Increase numerical tolerance only for reproduced contact instability. Changing eligibility requires updated player-facing cues and rule review. Do not hide the deliberate consequence of failing to build useful elevation.
+Future Kangaroo verification should test every surface row just above/on/below each selected wave band, plus cross-owner construction, removal and moving-platform evaluation ordering. P03 does not select event bands: its numeric boundary regression places a real controller on eligible test-only support colliders at y=384, 320 and 256 wu and checks feet offsets of −0.1, 0 and +1.1 wu. Other surface-state rows are covered by applicable collision or metadata fixtures. These sample lines are not event values. Increase numerical tolerance only for reproduced contact instability. Changing eligibility requires updated player-facing cues and rule review. Do not hide the deliberate consequence of failing to build useful elevation.

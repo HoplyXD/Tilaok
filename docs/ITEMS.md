@@ -24,7 +24,7 @@ Names are working names. Filipino/Hiligaynon spelling, meaning, local usage, and
 ## Shared item contract
 
 - **Stable IDs:** `build.*`, `move.*`, `hazard.*`, `utility.*`, or `modifier.*` identifiers below are design IDs, not code paths.
-- **Placement unit:** use a logical tile grid sized from the team-authored player collider and stage scale. Pixel size is intentionally undecided until the Godot project exists. Placement footprint, solid region, trigger region, moving sweep, projectile lane, and effect radius are separate authored data.
+- **Placement unit:** use a logical tile grid sized from the project player collider and stage scale. Pixel size is intentionally undecided until it is selected and verified in the Godot project. Placement footprint, solid region, trigger region, moving sweep, projectile lane, and effect radius are separate authored data.
 - **Visible item identity:** the Pugad item display shows an animated visual preview of the exact item and size variant inside the egg. It deliberately shows no item name or description, so the party flow stays visual and fast. The Library holds names, descriptions, controls, tells, counterplay, and event rules.
 - **Size variants:** only the predefined variants in the grid matrix may appear. A size is visible in the egg/party-item animation and placement ghost; it never changes secretly after selection. Precision hazards keep one default size unless their row explicitly defines a variant.
 - **Placement:** all players submit edits against one Place-phase snapshot. Exact/conflicting solid overlaps reject the conflicting set atomically; the result does not depend on callback order. Intentional solid/trigger overlap is allowed only when the warning and danger region remain readable. Never place on a chicken. Protected base geometry, spawn clearance, goal zone, and hidden event-goal clearance are immutable.
@@ -39,7 +39,7 @@ Names are working names. Filipino/Hiligaynon spelling, meaning, local usage, and
 
 ## Provisional logical-grid matrix
 
-These dimensions are **proposed logical grid cells**, not final pixel measurements. The initial controller target is a chicken clearance of **1×2 cells**; the team must validate it against the actual team-authored collider before implementation. `W×H` means width × height in the item's default orientation. A rotated item swaps these dimensions where rotation is allowed. A footprint is what occupies the construction grid; a path, lane, sweep, or effect can extend beyond it.
+These dimensions are **proposed logical grid cells**, not final pixel measurements. The initial controller target is a chicken clearance of **1×2 cells**; validate it against the actual project collider before implementation. `W×H` means width × height in the item's default orientation. A rotated item swaps these dimensions where rotation is allowed. A footprint is what occupies the construction grid; a path, lane, sweep, or effect can extend beyond it.
 
 | Family | Grid footprint | Separate active region / travel bound | What it does |
 |---|---:|---:|---|
@@ -182,4 +182,4 @@ Barya remains the race-only scoring pickup already defined in GDD §5; it is not
 
 ## Approval and implementation gates
 
-All 36 families are approved as the Tilaok design catalog. This approval does not claim that all 36 will ship before the deadline: the eight-family first batch remains the implementation target, with the other 28 held behind scope and test gates. Before team mechanics code, the team must choose the actual project grid/player dimensions and target PC, resolve GDD scoring/tie implementation gates, and decide final Pugad weights/caps. Event stacking is core; additional unlisted event pairs remain feature-switched off until accepted and tested. The no-code/authorship boundary applies to movement, placement, hazards, events, scoring, and other core mechanics.
+All 36 families are approved as the Tilaok design catalog. This approval does not claim that all 36 will ship before the deadline: the eight-family first batch remains the implementation target, with the other 28 held behind scope and test gates. Before implementing mechanics, the team must choose the actual project grid/player dimensions and target PC, resolve GDD scoring/tie implementation gates, and decide final Pugad weights/caps. Event stacking is core; additional unlisted event pairs remain feature-switched off until accepted and tested. Follow the standing AI-assisted programming policy in `AI_USAGE.md`; implementation still requires approved task scope and actual verification.

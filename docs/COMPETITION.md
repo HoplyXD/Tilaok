@@ -1,6 +1,6 @@
 # Level Up 3.0 — Competition Notes
 
-Source: DOST *Level Up 3.0 Official Full Mechanics* (15 pages).
+Source recorded by the project: DOST *Level Up 3.0 Official Full Mechanics* (15 pages). The source PDF or a stable official URL is not currently stored in this checkout, so the original text was not independently rechecked for this policy correction. Treat the summaries below as project notes and verify current official instructions during submission preparation.
 
 ## Schedule
 | Date | Activity |
@@ -27,7 +27,7 @@ Source: DOST *Level Up 3.0 Official Full Mechanics* (15 pages).
 - **Publication:** not commercially published; itch.io prototypes are OK if not used in previous competitions.
 - **Code originality (§7):** all game logic, mechanics and source code must be created by the registered team members. No code from other competitions, no code copied from other developers, and no open-source/tutorial/template code for core mechanics. Personal libraries only if team-made, never in a prior submitted/published game, and declared. Violations can mean disqualification or prize forfeiture, even after the competition.
 - **Mechanics may be derived from existing games** if given a twist. No copied code, art, characters, sounds, or names.
-- **AI use (§8):** allowed for ideation, design, programming, debugging, writing, assets, prototyping, balancing, testing and documentation, but must be **disclosed** (Form 03). Organizers may request prompts, logs, source files or version-control records. Failure to disclose or misrepresenting authorship can mean disqualification. (§7 and §8 are in tension for AI-written code; our policy: the team writes and understands the core code, AI assists with explanation, review and docs.)
+- **AI use (§8), as recorded in the local notes:** allowed for ideation, design, programming, debugging, writing, assets, prototyping, balancing, testing and documentation, but must be **disclosed** (Form 03). Organizers may request prompts, logs, source files or version-control records. Failure to disclose or misrepresenting authorship can mean disqualification. The notes also record §7's registered-team code-originality requirement. These provisions raise an interpretation question for AI-generated code; the obsolete internal interpretation that team members must manually write core code is superseded by the standing workflow in [AI_USAGE.md](AI_USAGE.md). This internal policy change does not rewrite the recorded rules or establish organizer approval, originality acceptance or eligibility. The local notes record AI programming as an allowed disclosed use, but do not conclusively resolve every originality/eligibility question.
 - **Assets:** only team-made, engine-included, or properly licensed.
 - **Prohibited content:** anything infringing, inappropriate, indecent, obscene, hateful, **torturous**, defamatory, discriminatory or unlawful in the Philippines, including AI-generated content that violates these. For us: soft, comedic deaths only; no gore; no gambling or betting imagery.
 

@@ -1,6 +1,6 @@
 # Tilaok! Prototype Defaults and Team Handoff
 
-**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The initial documentation approval did not authorize AI implementation. On 2026-10-13, the user separately authorized an AI-implementation exception for P02; its code and test evidence are recorded in `docs/AI_USAGE.md` and `docs/PHASETASK.md`. That exception does not prove balance, represent code as team-authored, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
+**PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, establish competition eligibility, or approve GDD rule changes. Proposed rule changes below remain inactive until explicitly accepted.
 
 ## 1. Recommendation and evidence
 
@@ -96,6 +96,21 @@ Build: local P02 implementation based on `e2b4a555e8d45bec774ffebde7c46e595cd3ab
 | External launch jump release | Release must not shorten launch | 101.12 wu with jump released and held, on an unobstructed path |
 
 These results establish behavior only in this small authored collision fixture, not player feel, complete arena reachability or balance. The first launch comparison intersected overhead geometry; that invalid trial was replaced with a clear path and not used as evidence. No tuning values were changed from their provisional defaults.
+
+### P03 graybox route, camera and support measurements — October 13, 2026
+
+**Build/profile:** `P03-graybox-dev`, working tree based on `4cb31a9`; Godot `4.7.2.stable.official.ed1daf0bf`; `movement_room`; seed `12345`; 60-Hz physics. **Machine:** Windows, 13th Gen Intel Core i5-13420H (12 logical CPUs), NVIDIA GeForce RTX 4050 Laptop GPU, Godot Compatibility renderer. **Input:** synthetic fixtures; no physical controllers or keyboard rollover were certified.
+
+| Measurement | Expected | Observed |
+|---|---|---|
+| Base stage route | Actual collision path floor → A → B → C → D → goal | Passed with the P02 controller; no teleport between route platforms; final goal position `(1012,360)` wu and still within bounds. Head/body clearance, takeoff, landing and braking assertions passed. |
+| Spawn origin conversion | Controller feet begin on floor top at y=480 wu | Feet `(96,480)` convert to center `(96,456)` wu for the 48-wu controller. No geometry or movement tuning was changed. |
+| Maximum camera launch | Keep identity/body extents visible through the configured 900-wu/s upward launch | Camera target top reached y=208.38 wu within 36 physics frames; full target remained inside the HUD-safe viewport throughout. |
+| Camera target fitting | Full extents visible at 2/3/4 targets; highest legal preview at y=96; bounded zoom 1.0–1.4 | Assertions passed. 1920×1080 Play/Place captures ran at zoom 1.0. A 1920×800 window kept a 1280×720 logical viewport; no extra world was exposed. |
+| Support tolerance | Actual upward eligible contact only; one-wu height/contact tolerance, no grace | Real collision fixtures passed above/on/below sample lines y=384/320/256 wu, same-step support removal, moving contact, and the full support-state matrix. These lines are test fixtures, not event band settings. |
+| Render throughput/memory | Median/p95/worst ≤16.67 ms; process memory ≤512 MiB | 600 uncapped rendered frames at 1920×1080, v-sync off: median 0.826 ms, p95 1.426 ms, worst 6.141 ms; Godot static memory 67.60 MiB; sampled Windows process peak working set 199.91 MiB/private bytes 250.59 MiB; elapsed 0.544 s. |
+
+Exact tests, captures and results are in [P03 verification evidence](evidence/p03/2026-10-13_p03_verification.md). These fixture measurements do not establish player feel, final-art readability, late-game stress, release readiness, or balance. No gameplay networking is instantiated by this local fixture; the sample is not a network-throughput test.
 
 ### Contact and temporary-state policy
 
@@ -225,7 +240,7 @@ Additional scope contradictions: PRODUCTION originally placed stacking before Ka
 
 | When | Decisions/defaults | What remains open |
 |---|---|---|
-| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; team-written code | P02 diagnostic implementation now exists under the user's AI-implementation exception; P01-T02 review and physical-device checks remain open |
+| Before first controller prototype | P movement/collider/grid/input/camera and no extra abilities; use the standing AI-assisted programming workflow for approved implementation tasks | P02 diagnostic implementation exists; P01-T02 human review and physical-device checks remain open |
 | Before first complete round | P geometry, Kaing/Tulay variants, atomic placement, device isolation, timers and exact one-time score; current scoring preserved | U: physical keyboard/controller inventory and tested baseline device combination; no gamepads are available and keyboard model/layout/rollover are unverified; matching Godot 4.7.2 templates were installed and a local export succeeded |
 | Before relevant event | Current contact/command/support contracts, independent-mode gates; explicit R1–R4 decisions before any replacement behavior | U: owner/time for event review and physical tests |
 | Tune after playing | Movement feel, gaps, sensor dimensions, deadzones, egg weights, timers, force/caps and readability; one related parameter group at a time | All balance/feel confidence remains low |
@@ -233,7 +248,7 @@ Additional scope contradictions: PRODUCTION originally placed stacking before Ka
 
 Essential factual questions, recorded rather than blocking this handoff:
 
-1. Who are the registered gameplay/integration owners, and how many hours can they spend before October 21? The user will handle assignments privately; P00 does not record them.
+1. Francis and Carlos are the supplied development leads. Their registration status, individual gameplay/integration assignments and available hours through October 21 remain unrecorded; P00 does not claim them.
 2. The user selected the current PC as target; what keyboard model/layout and physical controllers/connections can the team test?
 3. The intended Godot 4.7.2 binary is in `D:\Downloads`; obtain matching 4.7.2 templates before any export check. The installed `4.7.stable` templates have a different version identifier. No engine/version change or template installation was part of the P00 baseline.
 

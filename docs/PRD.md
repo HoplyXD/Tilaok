@@ -2,7 +2,7 @@
 
 **Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
-**Product owner:** Producer, name TBD. **Gameplay owner/reviewer:** registered team members, names TBD. This document was prepared with disclosed documentation assistance; it is not evidence of a completed game.
+**Product owner:** Producer, name TBD. **Development leads:** Francis (lead developer) and Carlos (co-lead developer); both use AI-assisted programming. **Human production roles:** Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets without AI generation. Registration status, capacity, audio backup, individual task owners and review completion remain unrecorded. This document was prepared with disclosed AI assistance; it is not evidence of a completed game.
 
 ## Contents
 
@@ -33,18 +33,18 @@ Read [GDD](GDD.md), [prototype defaults](PROTOTYPE_DEFAULTS.md), [roadmap](ROADM
 
 Historical source inspection before P01/P02: checkout `feat/filipino-obstacles-events` at `791084a`, with four modified and ten untracked documentation/guidance files. Remote main was `98ef17a74166b6ac10c7930dc48a00c488fe61c9`, merging PR #1 from `a44f1b8`. The documentation work was isolated on `feat/prd-phasetask` from that merged main. At that inspection the project contained only project settings and icon: no gameplay scripts/scenes, export preset or implemented features. Local origin/main was stale before the authorized fetch. Local GDD/ITEMS already matched merged requirements, including Library and animated previews. This is a dated source-history record; current P02 status appears in the requirements below and the PHASETASK tracker.
 
-Requirements below have separate scope and design labels. **REQUIRED** is submission baseline; **SHOULD** needs an include/defer decision; **CONDITIONAL** is finalist-dependent; **EXPANSION** is outside submission. **CURRENT CONTRACT**, **PROTOTYPE—UNTESTED**, **UNKNOWN**, and **OPTIONAL** describe authority, not implementation. All gameplay requirements start unimplemented/unverified. A requirement with known behavior may still have provisional tuning.
+Requirements below have separate scope and design labels. **REQUIRED** is submission baseline; **SHOULD** needs an include/defer decision; **CONDITIONAL** is finalist-dependent; **EXPANSION** is outside submission. **CURRENT CONTRACT**, **PROTOTYPE—UNTESTED**, **UNKNOWN**, and **OPTIONAL** describe authority, not implementation. Requirements may be unimplemented, partially implemented or verified; [PHASETASK](PHASETASK.md) records current evidence. A requirement with known behavior may still have provisional tuning.
 
 
 ### REQ-PROD-001 — Confirm registered owners and available capacity
 
 **Scope:** REQUIRED · **Design status:** UNKNOWN · **Owner role:** Producer (name TBD).
 
-**Expected behavior:** Assign primary and reviewer/backup for production/integration, team-authored gameplay, art/UI, audio, QA/balance and compliance/media. Names and hours are unknown. A person may cover multiple roles only after capacity review.
+**Expected behavior:** Assign primary and reviewer/backup for production/integration, programming, art/UI, audio, QA/balance and compliance/media. Francis and Carlos are the supplied development leads; Shanti handles UI design and audio; Jorge and Ivie handle game assets. Individual task assignments, reviewer/backup, registration status and hours remain unknown. A person may cover multiple roles only after capacity review.
 
 **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md). **P00 evidence — October 13, 2026:** The user directed that team assignments and capacity be handled privately and not recorded in the repository. The TBD role sheet is preserved; no names/hours or registration/reviewer claims were added. P00-T01/T02 remain open; see [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness). Runtime checks are not applicable to this team-record blocker.
+**Source:** [PRODUCTION.md](PRODUCTION.md). **P00 evidence — October 13, 2026:** Francis supplied current roles after the earlier private-roster record: Francis — lead developer; Carlos — co-lead developer; both use AI-assisted programming; Shanti — UI design and game audio; Jorge and Ivie — maps, characters, obstacles, traps, effects and related game assets, created without AI generation. No surnames/legal identities, hours, registration status, coach details, audio backup or completed review are claimed. P00-T01/T02 remain open because the required role/capacity and review evidence is incomplete; see [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness). Runtime checks are not applicable to this team-record blocker.
 
 
 ### REQ-PROD-002 — Ratify the release manifest and document authority
@@ -132,7 +132,7 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 **Acceptance:** New participants can join and identify themselves; results explain actual awards; next round consumes held presses and retains construction correctly.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-MATCH-002 — Replay, return to lobby and reset all match state
@@ -143,7 +143,7 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 **Acceptance:** Ten complete restarts show no retained score/timer/immunity/capture or object growth; replay/lobby/quit routes work after ordinary and sudden-death endings.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 5. Inputs, identity and recovery
 
@@ -253,7 +253,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Base route is traversable before construction; bounds/protected zones are visible in tests; no placement/removal changes immutable geometry. Paper reachability is confirmed by actual collision trials.
 
-**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-13):** P03 builds the 32-wu tile-edge arena, protected spawn/goal/build regions, fixed bounds, immutable base geometry, and labeled debug overlays in `tilaok!/scripts/stage/arena_definition.gd` and `tilaok!/scripts/harness/p03_stage_room.gd`. The real controller traversed floor→A→B→C→D→goal with collision; protected footprint/sweep/effect edits and immutable removals were rejected and left the geometry signature unchanged. See [P03 assertions](evidence/p03/2026-10-13_p03_tests.txt), [rendered capture](evidence/p03/2026-10-13_interactive_harness_1080p.png), and [verification record](evidence/p03/2026-10-13_p03_verification.md). **Verification result:** PASSED for the P03 graybox contract. Future player edits are not guaranteed to remain solvable; no production placement system is claimed.
 
 
 ### REQ-STAGE-002 — Frame active players and unfinished placement pointers
@@ -264,7 +264,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** At 2/3/4 players, maximum separation/high construction/launches keep relevant targets visible and readable; finishing/confirming removes the correct target without unsafe snapping.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence (2026-10-13):** `tilaok!/scripts/camera/bounded_stage_camera.gd` fits real Play identity/body extents and unconfirmed Place preview rectangles inside the HUD-safe view, clamps pan to the actual viewport/bounds, and holds safe framing for empty sets. P03 verified 2/3/4 targets, opposite-corner preview extents, the highest legal preview, an actual 900-wu/s controller launch, and per-target finish/confirm exclusion. [Rendered evidence](evidence/p03/2026-10-13_play_1080p.png) is at zoom 1.0/1920×1080; [the wide-window capture](evidence/p03/2026-10-13_place_wide_window_1920x800.png) kept the same 1280×720 logical gameplay view. Full procedures/results are in [P03 verification](evidence/p03/2026-10-13_p03_verification.md). **Verification result:** PASSED for the diagnostic camera and renderer fixtures; this is not physical-controller or final-art readability certification.
 
 
 ### REQ-STAGE-003 — Track actual supporting contact and construction provenance
@@ -275,7 +275,7 @@ Base stage is playable before construction; player changes may make it difficult
 
 **Acceptance:** Support row matrix distinguishes base, Kaing, one-way bridge, launch, moving/removed surface, bubble, projectile, side contact and airborne state; missing eligibility metadata fails content validation.
 
-**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-13):** P03 implements explicit eligibility/provenance metadata, stable surface/construction IDs, post-movement upward collision contacts, feet-height evaluation, and same-step invalidation on launch, capture, reset and surface removal in `tilaok!/scripts/stage/`. The [100-check P03 suite](evidence/p03/2026-10-13_p03_tests.txt) covers base terrain, Kaing-like construction, one-way contact, launch, moving/removal, safe-face fixtures, another player's build, pass-through chickens, capture, projectile, side-wall, coyote and airborne states, missing metadata and inherited child provenance. Three fixture-only sample lines test above/on/below bounds; they do not define Kangaroo event heights or implement that event. **Verification result:** PASSED for the supporting-surface contract; later wave scheduling, scoring and hazards remain unimplemented.
 
 ## 7. Selection, construction and lifecycle
 
@@ -290,7 +290,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Definition validation rejects missing required fields, unbounded regions and undocumented variants; effect regions remain distinct from occupied grid cells.
 
-**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEMSYS-002 — Implement persistent items and bounded transient lifecycle
@@ -301,7 +301,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Ten reset cycles retain only intended construction and no transient state. Saturation/removal releases references and captives safely; spawn allocation follows reviewed rotating order, not callback order.
 
-**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-PUGAD-001 — Show exact-variant animated egg previews
@@ -312,7 +312,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** For every enabled variant, capture matching egg/ghost pairs; animation shows shape/effect extent and no descriptive name/text; no hidden size substitution.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-PUGAD-002 — Resolve simultaneous egg claims and timeouts
@@ -323,7 +323,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Contested claims and simultaneous timeout never duplicate eggs or ownership; selection uses eligible pool only and leaves each player with at most one item.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-PLACE-001 — Preview grid placement with actionable rejection reasons
@@ -334,7 +334,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Every allowed orientation and boundary gives the correct ghost and actionable protected-zone/player/bounds/solid-conflict/item-rule reason; no misleading exact trajectory.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-PLACE-002 — Commit placement and cleanup atomically
@@ -345,7 +345,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Permuting callbacks/submission order yields identical committed layout; overlapping cleanup executes once; rejected sets get no partial placement. Unsupported movers reset/remove safely without crushing.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-PLACE-003 — Handle phase timing and persistent construction
@@ -356,7 +356,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 
 **Acceptance:** Timeout, discard, confirmation and reset cannot create duplicates; repeated rounds retain exact valid construction and do not resurrect removed objects.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 8. Karera, exact scoring and match outcomes
 
@@ -382,7 +382,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Exercise none/some/all finish, both deadlines, last-frame finish and no live runners; resolve the round once and show the applicable reason.
 
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SCORE-001 — Record one terminal outcome and direct attribution
@@ -393,7 +393,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Replay duplicated/reordered callbacks, competing hazards and goal/death ties; one outcome remains and direct ownership is stable. Actual hazard integration is retested when P10 hazards exist.
 
-**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SCORE-002 — Calculate race awards and suppression exactly
@@ -404,7 +404,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Table-driven 2/3/4-player cases cover all/none/sole/multiple finishes, exact-first ties, dead trap owner, self kill, underdog snapshot and coin exception; totals are exact and awarded once.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SCORE-003 — Store elimination placement ties without rounding
@@ -415,7 +415,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Enumerate every legal group and compare exact totals at 10 points and underdog threshold; display eighth fractions or sufficient decimals. No claim that eighths cover arbitrary future scoring tables.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-MATCH-001 — Finish matches and run tied-player sudden death
@@ -426,7 +426,7 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Acceptance:** Verify threshold, round-12, unequal simultaneous threshold crossings and 2/3/4 tied-player sudden death; exactly one match winner and no extra score table.
 
-**Source:** [GDD.md](GDD.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 9. Lagsanay
 
@@ -450,7 +450,7 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Acceptance:** 2/3/4-player tests include stationary overlap, multiple candidates, immunity expiry, opening hazard contact and no opening tag; recorded countdown never resets on pass.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-LAG-002 — Resolve Lagsanay eliminations and placements
@@ -461,7 +461,7 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Acceptance:** Timeout/trap/taya death and simultaneous earlier deaths produce one placement set; verify all player-count tables and Bawi/Patibong with direct hazard tests when available.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-LAG-003 — Select exactly one Last Cluck winner
@@ -472,7 +472,7 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Acceptance:** Exercise 2/3/4 all-remaining eliminations, distinguishable times and exact ties; one winner only, no averaged first and no duplicate award; correct explanation appears.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 10. Kangaroo
 
@@ -489,7 +489,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Seeded selection checks distribution and two-survivor reroll; no commands after a sole survivor; presenter never collides; full/reduced/off shake preserves comprehension.
 
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-KANG-002 — Evaluate Freeze from intentional input
@@ -500,7 +500,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Test drift, held/released inputs, opposite keys, forced motion, capture and passive tag; input intent and movement outcome cannot be confused.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-KANG-003 — Evaluate Rising wave with actual built support
@@ -511,7 +511,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Test every support-table state just above/on/below each band, destroyed/moving support on evaluation tick and another player’s platform; empty layout remains intentionally unsolvable; drain clears.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-KANG-004 — Evaluate pair-only Hug deterministically
@@ -522,7 +522,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Verify all-contact three, two pairs of four, split groups, equal distances, entry/exit at evaluation, removed players and the two-survivor pre-telegraph reroll.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-KANG-005 — Integrate failure markers, elimination and cleanup
@@ -533,7 +533,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Test first/second/third failures, overlapping failures and trap same-step review cases; no fourth marker or duplicate placement. End/removal/restart clears scheduler, rings, wave and markers.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-KANG-006 — Implement no-elimination acceleration and Slipper Storm
@@ -544,7 +544,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Check each acceleration boundary, active cap, delayed landing, two-survivor overlap, elimination reset and all-remaining Last Cluck; reproduce unavoidable-choice risks without claiming balance.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 11. Scheduling, announcements and compatible stacks
 
@@ -565,7 +565,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** Seeded table covers all 12 rounds, guaranteed-round precedence, prior announcement consistency, zero/one compatible options and required missing-mode rejection.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-EVENT-002 — Review unresolved simultaneous terminal ordering
@@ -576,7 +576,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** A team-reviewed decision table resolves each uncovered same-step case with source or explicit approval and corresponding scenario; no callback-order dependence or silently invented PRD rule.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-STACK-001 — Integrate Karera with Lagsanay pressure
@@ -587,7 +587,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** 2/3/4 players: current taya finishes, last live runner finishes/dies, secured exclusion, timeout/goal conflict and direct trap awards; no placement score added.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-STACK-002 — Integrate Karera with Kangaroo pressure
@@ -598,7 +598,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** 2/3/4 players complete all commands under race deadlines; secured finishers never gain markers, failed runners cannot finish later, race suppression and terminal ordering hold.
 
-**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-STACK-003 — Integrate Kangaroo with Lagsanay pressure
@@ -609,7 +609,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** 2/3/4 players exercise low-countdown Freeze, tag during forced movement, multiple terminal causes, Storm and Last Cluck; one award table and continuous taya time.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 12. Content inventory and scope destinations
 
@@ -682,7 +682,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Test contested pickup/drop/death/finish, one-coin cap, suppression exception, stacked races, cleanup and disabled pool.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-OPT-002 — Local session win tally
@@ -693,7 +693,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Replay increments only the actual winner once; lobby return retains session tally; new process clears it; disabled option does not block results.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-OPT-003 — Enhanced crowd and spectator cheer
@@ -704,7 +704,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Each enabled reaction triggers once at the correct moment; no rapid spam/overload, critical cues remain audible/visible and all crowd assets are registered.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-OPT-004 — Reviewed educational cards
@@ -715,7 +715,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Every public claim has reviewed evidence/date; cards are concise/readable and do not misrepresent the implemented adaptation.
 
-**Source:** [COMPETITION.md](COMPETITION.md); [ASSETS.md](ASSETS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [COMPETITION.md](COMPETITION.md); [ASSETS.md](ASSETS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-OPT-005 — Langit-Lupa
@@ -726,7 +726,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Approve unresolved rules, then test 2/3/4 players, reachable/blocked layouts, terminal/scoring/reset and tutorial/Library before enablement.
 
-**Source:** [GDD.md](GDD.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-OPT-006 — Cosmetic skins and accessories
@@ -737,7 +737,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Optional cosmetics cannot obscure chicken number/shape or hazards, affect collisions, or imply gameplay advantages.
 
-**Source:** [GDD.md](GDD.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-BACKLOG-001 — Luksong Tinik / 10–20 Garter
@@ -748,7 +748,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Approved comparison and contract precede code; 2/3/4-player avoidance, scoring, reset and help pass.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-BACKLOG-002 — Agawan Buko / Jackstone comparison
@@ -759,7 +759,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Resolve ties and collection/ownership rules, then verify all counts, clutter, drops and impossible quotas before enablement.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-BACKLOG-003 — Sipa
@@ -770,7 +770,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Approved responsibility and recovery contract plus 2/3/4-player fairness/reset evidence precedes pool inclusion.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-BACKLOG-004 — Additional stages and event pairs
@@ -781,7 +781,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** New content remains disabled until a named promotion and complete compatibility/quality evidence; no silent third concurrent event.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md); [ROADMAP.md](ROADMAP.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-BACKLOG-005 — Retain parked events and earlier brainstorm dispositions
@@ -792,7 +792,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Disposition ledger names every idea, relationship to catalog if any and promotion/exclusion reason; no parked/cut idea is playable by default or counted as required.
 
-**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-001 — Hollow Blocks / Kaing Stack
@@ -803,7 +803,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-002 — Tulay na Kawayan
@@ -814,7 +814,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-003 — Gulong Talon
@@ -825,7 +825,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-004 — Trumpo sa Riles
@@ -836,7 +836,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-005 — Parol Pulse
@@ -847,7 +847,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-007 — Tsinelas Launcher
@@ -858,7 +858,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-008 — Walis Cleanup
@@ -869,7 +869,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-006 — Bula-Bulaklak
@@ -880,7 +880,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Complete the targeted family and applicable variants; conditional orientations require recorded support evidence.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-009 — Hagdan ng Bahay
@@ -891,7 +891,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-010 — Sulok na Kawayan
@@ -902,7 +902,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-011 — Marupok na Papag
@@ -913,7 +913,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-012 — Baliktad na Banig
@@ -924,7 +924,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-013 — Balsa sa Lubid
@@ -935,7 +935,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-014 — Angat-Kaing
@@ -946,7 +946,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-015 — Perya Wheel
@@ -957,7 +957,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-016 — Palay Conveyor
@@ -968,7 +968,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-017 — Bentilador
@@ -979,7 +979,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-018 — Bomba ng Tubig
@@ -990,7 +990,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-019 — Saranggola Ferry
@@ -1001,7 +1001,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-020 — Yelo ng Sorbetero
@@ -1012,7 +1012,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-021 — Malagkit Patch
@@ -1023,7 +1023,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-022 — Tinik-Tinik Strip
@@ -1034,7 +1034,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-023 — Gulat na Walis
@@ -1045,7 +1045,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-024 — Umiikot na Trumpo
@@ -1056,7 +1056,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-025 — Niyog Pendulum
@@ -1067,7 +1067,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-026 — Sipa ng Tsinelas
@@ -1078,7 +1078,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-027 — Gulat na Palayok
@@ -1089,7 +1089,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-028 — Tansan Ricochet
@@ -1100,7 +1100,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-029 — Niyog Chute
@@ -1111,7 +1111,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-030 — Singaw Steamer
@@ -1122,7 +1122,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-031 — Gulong Kuliglig
@@ -1133,7 +1133,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-032 — Ipo-Ipo
@@ -1144,7 +1144,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-033 — Kambal na Pinto
@@ -1155,7 +1155,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-034 — Balsa-Bentilador
@@ -1166,7 +1166,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-035 — Umiikot na Dram
@@ -1177,7 +1177,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ITEM-036 — Peryang Traysikel
@@ -1188,7 +1188,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Acceptance:** Exercise every approved enabled variant/rotation, valid/invalid placement, readable tell and counterplay, direct attribution, round/reset/removal and permitted event interactions. Approve unresolved mechanics and a named promotion before implementation; retain documented initial mode restrictions.
 
-**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ITEMS.md](ITEMS.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 13. UX, Library, tutorial and accessibility
 
@@ -1203,7 +1203,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Gamepad and keyboard traverse every screen/back/quit route without traps or accidental game input; opening Library from pause keeps simulation paused and preserves return context.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-UI-003 — Explain current play and results in the HUD
@@ -1214,7 +1214,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Spectators identify phase, objective, leader, taya, winner and no-score reason; overlapping command rings stay distinct at minimum zoom and with sound/shake off.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-LIB-001 — Provide enabled-content Library and animated entries
@@ -1225,7 +1225,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Every enabled family/variant/event has a readable entry and controller-operable category/back navigation; disabled content is absent from release browsing; Pugad remains visual-only.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-TUTORIAL-001 — Teach the first round and later event rules
@@ -1236,7 +1236,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** A novice follows the guided loop and explains objective/input/placement; record each facilitator intervention. Session skip and help replay work; no tutorial bonus or disk completion save is invented.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ACCESS-001 — Maintain color-independent readable play
@@ -1247,7 +1247,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** QA captures minimum-zoom crowded stage with muted audio and shake off; identifies every critical cue and all four players. Check Parol overlap/readability and no strobe; document supported display/device limits.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ASSETS.md](ASSETS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ASSETS.md](ASSETS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-UI-004 — Retain spectator cheer without gameplay effects
@@ -1258,7 +1258,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** An eliminated player can cheer using their assigned binding; repeated input respects cooldown, never moves a player, changes score/timers, triggers commands or obscures live HUD.
 
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 14. Presentation, audio and provenance
 
@@ -1273,7 +1273,7 @@ Required presentation expresses Filipino barrio identity through original chicke
 
 **Acceptance:** Release contains no unintended placeholder assets, silhouettes remain clear at minimum zoom, every imported asset/font is approved and credited; cultural copy has review evidence.
 
-**Source:** [GDD.md](GDD.md); [ASSETS.md](ASSETS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ASSETS.md](ASSETS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-AUDIO-001 — Deliver essential sound and music feedback
@@ -1284,7 +1284,7 @@ Required presentation expresses Filipino barrio identity through original chicke
 
 **Acceptance:** Muted play remains understandable; cues do not mask countdown/command information; volume/mute controls work, assets are registered and playback stops/cleans on transitions.
 
-**Source:** [ASSETS.md](ASSETS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ASSETS.md](ASSETS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-ASSET-001 — Maintain asset and cultural provenance
@@ -1295,24 +1295,24 @@ Required presentation expresses Filipino barrio identity through original chicke
 
 **Acceptance:** Shipped asset manifest matches register and credits; no missing licence/permission or unsupported cultural claim; Form 03 references agree with assistance records.
 
-**Source:** [ASSETS.md](ASSETS.md); [COMPETITION.md](COMPETITION.md); [AI_USAGE.md](AI_USAGE.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ASSETS.md](ASSETS.md); [COMPETITION.md](COMPETITION.md); [AI_USAGE.md](AI_USAGE.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 15. Technical and quality requirements
 
-This is a local-only Godot game, not a service. There are no public APIs, remote endpoints, accounts or network/save migrations. Proposed team-authored interfaces are responsibilities: assigned player inputs; actual support contacts; item definition/lifecycle; atomic stage edit set; terminal outcome ledger; exact score calculation; Main/Twist scheduling; presentation fed by resolved state. Names/paths in the tracker are suggested NEW components, not existing code or a mandated framework.
+This is a local-only Godot game, not a service. There are no public APIs, remote endpoints, accounts or network/save migrations. Proposed interfaces describe responsibilities: assigned player inputs; actual support contacts; item definition/lifecycle; atomic stage edit set; terminal outcome ledger; exact score calculation; Main/Twist scheduling; presentation fed by resolved state. Names/paths in the tracker are suggested NEW components, not existing code or a mandated framework.
 
 The available engine does not verify the target version. Do not change project version to make prose appear complete. Central tunables are provisional; capability switches prevent unverified content entering production. Memory/performance targets are budgets awaiting measurement, not achievements.
 
 
-### REQ-TECH-001 — Establish team-authored project responsibilities
+### REQ-TECH-001 — Establish team-directed project responsibilities
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Organize input/identity, movement/contact, phase and match lifecycle, stage/placement, item definitions/runtime, event scheduling/evaluation, scoring/outcomes, presentation and local diagnostics. Proposed paths are NEW, not existing implementations. Competition acceptance requires team-authored code/scenes understood by registered members. P01 has an explicit user-authorized Codex authorship exception recorded in `PROJECT_STRUCTURE.md`; it does not establish competition compliance.
+**Expected behavior:** Organize input/identity, movement/contact, phase and match lifecycle, stage/placement, item definitions/runtime, event scheduling/evaluation, scoring/outcomes, presentation and local diagnostics. Proposed paths are NEW, not existing implementations. Use the standing AI-assisted programming workflow in `AI_USAGE.md`; record actual provenance and do not copy tutorial/template/open-source core mechanics. The external originality/disclosure interpretation and submission eligibility remain separate compliance questions.
 
-**Acceptance:** Project opens with a team-authored entry scene; responsibility map and team authorship review exist; no copied tutorial/template/open-source core mechanics. P01 foundation implementation is Codex-authored under a disclosed exception and remains pending team review/competition eligibility confirmation.
+**Acceptance:** Project opens with an entry scene; the responsibility map and implementation provenance are documented; no copied tutorial/template/open-source core mechanics are used. Record actual human review when performed. Competition rule interpretation and eligibility are handled by the separate submission compliance gate.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [COMPETITION.md](COMPETITION.md); [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md). **Implementation/evidence:** foundation structure and harness launched; authorship review and competition eligibility remain open. See [P01 evidence](PHASETASK.md#p01--project-foundations).
+**Source:** [PRODUCTION.md](PRODUCTION.md); [COMPETITION.md](COMPETITION.md); [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md); [AI_USAGE.md](AI_USAGE.md). **Implementation/evidence:** foundation structure and harness launched; actual human review and competition eligibility interpretation remain open. See [P01 evidence](PHASETASK.md#p01--project-foundations).
 
 
 ### REQ-CONFIG-001 — Centralize provisional configuration and profiles
@@ -1356,7 +1356,7 @@ The available engine does not verify the target version. Do not change project v
 
 **Acceptance:** Evidence names OS/CPU/GPU/RAM, build, resolution, duration, counts and modes; compare against confirmed budgets, investigate spikes/growth, and record any budget revision explicitly. No measured results are fabricated.
 
-**Source:** [PLAYTEST.md](PLAYTEST.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PLAYTEST.md](PLAYTEST.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 16. Verification and release acceptance
 
@@ -1364,14 +1364,14 @@ Evidence records build/engine/profile/seed/date, players, devices, scenario, exp
 
 Critical defects include crash, softlock, wrong winner/score, cross-controlled seats, unrecoverable lifecycle state, missing required tutorial or release functionality. A release cannot bypass them with a checked planning box. Resolve critical defects, rerun affected regression and preserve known noncritical limitations in the package.
 
-Test layers: isolated team-authored harnesses; functional integration; 2/3/4-player physical-device tests; novice playtests; full matches/sudden death/restarts; minimum-zoom/muted/shake-off accessibility; capped stress/performance; clean-PC exported acceptance. Use [PLAYTEST](PLAYTEST.md) for detailed scenarios and measured results.
+Test layers: isolated test harnesses; functional integration; 2/3/4-player physical-device tests; novice playtests; full matches/sudden death/restarts; minimum-zoom/muted/shake-off accessibility; capped stress/performance; clean-PC exported acceptance. Use [PLAYTEST](PLAYTEST.md) for detailed scenarios and measured results.
 
 
 ### REQ-EXPORT-001 — Prove an early PC export path
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Integration (name TBD).
 
-**Expected behavior:** Use the confirmed target engine and matching templates to export a minimal runnable project early; repeat with the final release later. P01 export is Codex-authored under the documented exception, so it does not establish competition eligibility. A successful editor import alone is not export or gameplay evidence.
+**Expected behavior:** Use the confirmed target engine and matching templates to export a minimal runnable project early; repeat with the final release later. P01 export contains AI-generated foundation code disclosed in `AI_USAGE.md`; it does not establish human review or competition eligibility. A successful editor import alone is not export or gameplay evidence.
 
 **Acceptance:** A versioned smoke export launches and exits on the intended PC; record engine/templates, preset, build and logs. Missing templates block the check.
 
@@ -1386,7 +1386,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Acceptance:** Record two complete rounds and ten resets with no duplicate placement/score, plus guided first-loop comprehension; missing Lagsanay/sudden death remains explicit.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SLICE-002 — Extend slice coverage to three and four players
@@ -1397,7 +1397,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Acceptance:** 2/3/4-player matrix identifies devices and all unavailable combinations; no cross-controlled seat or hidden live player; pause/reclaim preserves state.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-QA-001 — Run balance sessions and first-batch interaction checks
@@ -1408,7 +1408,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Acceptance:** At least two sessions/participants support feel changes, hard defects reproduce, all five interactions have clips/notes and direct ownership results; no assertion of statistical balance from tiny samples.
 
-**Source:** [PLAYTEST.md](PLAYTEST.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PLAYTEST.md](PLAYTEST.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-QA-002 — Complete physical device and regression coverage
@@ -1419,7 +1419,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Acceptance:** Signed matrix distinguishes PASSED/FAILED/COULD-NOT-RUN with build/devices; no unsupported claim fills a missing physical test. Critical defects are fixed and affected regressions rerun.
 
-**Source:** [PLAYTEST.md](PLAYTEST.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PLAYTEST.md](PLAYTEST.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-RELEASE-001 — Freeze approved content and close critical defects
@@ -1430,7 +1430,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Acceptance:** Dated manifest enumerates enabled variants/modes/pairs, excluded/deferred content and reviewed defects; zero unresolved crash/softlock/wrong-score/winner/device/lifecycle/onboarding blockers.
 
-**Source:** [ROADMAP.md](ROADMAP.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [ROADMAP.md](ROADMAP.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-EXPORT-002 — Package and verify the final game on a clean PC
@@ -1441,7 +1441,7 @@ Test layers: isolated team-authored harnesses; functional integration; 2/3/4-pla
 
 **Acceptance:** Checksums and version identify the tested package; clean-PC procedure passes with real hardware; instructions reproduce launch and controls; packaged credits/provenance match assets.
 
-**Source:** [SUBMISSION.md](SUBMISSION.md); [PLAYTEST.md](PLAYTEST.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [SUBMISSION.md](SUBMISSION.md); [PLAYTEST.md](PLAYTEST.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 17. Delivery, schedule and conditional finals
 
@@ -1454,11 +1454,11 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Compliance (name TBD).
 
-**Expected behavior:** Start early: verify current official instructions/category, register, prepare Form 01 roles, Form 02 originality/waiver signatures and Form 03 asset/AI tool-area-extent disclosure with required signatures. Team chooses extent across the entire project. Preserve prompts/history and no false authorship claims.
+**Expected behavior:** Start early: verify current official instructions/category, register, prepare Form 01 roles, Form 02 originality/waiver signatures and Form 03 asset/AI tool-area-extent disclosure with required signatures. The team chooses Form 03 extent across the entire project. Preserve available prompts/history and do not make false authorship claims.
 
-**Acceptance:** Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual team-authored work.
+**Acceptance:** Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual programming provenance. Verify the recorded §7/§8 interpretation for submission; this compliance gate does not block ordinary approved programming tasks.
 
-**Source:** [SUBMISSION.md](SUBMISSION.md); [COMPETITION.md](COMPETITION.md); [AI_USAGE.md](AI_USAGE.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [SUBMISSION.md](SUBMISSION.md); [COMPETITION.md](COMPETITION.md); [AI_USAGE.md](AI_USAGE.md). **Implementation/evidence:** not yet available; submission and compliance review remain open. Non-code decisions require their own documented review.
 
 
 ### REQ-SUB-002 — Write the synopsis and plan media capture early
@@ -1469,7 +1469,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Acceptance:** Word count <=500; reviewed copy and shot list cover Pugad, Place, Karera, Lagsanay, theme and results; final-build reconciliation is scheduled before upload.
 
-**Source:** [SUBMISSION.md](SUBMISSION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [SUBMISSION.md](SUBMISSION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SUB-003 — Produce captioned trailer and explanatory demo
@@ -1480,7 +1480,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Acceptance:** Check duration/container/playback/caption legibility and muted trailer; footage matches release candidate, explains Lagsanay and distinguishes Main/Twist; licensed media and source captures archived.
 
-**Source:** [SUBMISSION.md](SUBMISSION.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [SUBMISSION.md](SUBMISSION.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SUB-004 — Review, submit and preserve delivery evidence
@@ -1491,7 +1491,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Acceptance:** Final review names approver/date, package hash/version and all deliverables; successful upload receipt records time/channel and archived package. Failed upload is not marked submitted.
 
-**Source:** [SUBMISSION.md](SUBMISSION.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [SUBMISSION.md](SUBMISSION.md); [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-SUB-005 — Hand off source, build and operating instructions
@@ -1502,7 +1502,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Acceptance:** Another registered member can locate the archive, identify the delivered build and run the documented demo/recovery without the original implementer.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [SUBMISSION.md](SUBMISSION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md); [SUBMISSION.md](SUBMISSION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-FINAL-001 — Prepare qualification-dependent finalist materials
@@ -1513,7 +1513,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Acceptance:** Organizer checklist and category match delivered extras, permissions and poster specifications; record submission confirmation without exposing private ID data.
 
-**Source:** [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [COMPETITION.md](COMPETITION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
 ### REQ-FINAL-002 — Rehearse and deliver the finalist demonstration
@@ -1524,7 +1524,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 
 **Acceptance:** Timed rehearsal passes on event hardware, backup launches, team knows controls/recovery and speaking roles; final delivered build and materials are recorded.
 
-**Source:** [COMPETITION.md](COMPETITION.md); [SUBMISSION.md](SUBMISSION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [COMPETITION.md](COMPETITION.md); [SUBMISSION.md](SUBMISSION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 ## 18. Decisions, risks, sources and traceability
 
@@ -1533,7 +1533,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 | Eight initial families | October 13 approved submission target; Producer must approve any later cut, Bula first review candidate. |
 | UI priority / tally | Title/results/Library/essential cues required; tally session-only Should; GDD/ROADMAP aligned in this task. |
 | Engine and equipment | PARTIAL, Integration/Producer: intended Godot 4.7.2 binary and target PC are identified; exact template compatibility, export setup, keyboard details, and physical controller inventory remain open. See P00 evidence in PRODUCTION.md/PLAYTEST.md. |
-| Staffing/time | UNKNOWN, user-managed privately by direction; no roster, reviewer, registration, or capacity data is recorded in the repository. P00-T01/T02 remain open. |
+| Staffing/time | Francis/Carlos lead development; Shanti handles UI design and audio; Jorge/Ivie handle game maps and assets. Remaining assignments, reviewer identities, registration status and capacity remain unknown; P00-T01/T02 remain open. |
 | Final 2D style/font/music/cultural reviewer | Art/UI, Audio, Compliance: select/register/review before release assets; does not block geometric movement testing. |
 | Tulay vertical orientation | Conditional controller-support gate; horizontal approved lengths remain targeted. |
 | Wave numerical equality tolerance | PROTOTYPE—UNTESTED; Gameplay/QA: boundary/contact tests; no player-visible grace or changed rule implied. |
@@ -1559,7 +1559,7 @@ At the original baseline there were eight calendar days to freeze and twelve to 
 | [PLAYTEST](PLAYTEST.md) | Runtime evidence procedures and earlier explicitly dated checks. |
 | [ASSETS](ASSETS.md), [AI_USAGE](AI_USAGE.md) | Provenance/cultural/AI evidence, not signed official forms. |
 | [COMPETITION](COMPETITION.md), [SUBMISSION](SUBMISSION.md) | Recorded competition requirements and package plan; verify official instructions at delivery. |
-| [AGENTS](../AGENTS.md), [CLAUDE](../CLAUDE.md), [README](../README.md), [INDEX](INDEX.md) | Repo context, authorship boundary and navigation. |
+| [AGENTS](../AGENTS.md), [CLAUDE](../CLAUDE.md), [README](../README.md), [INDEX](INDEX.md) | Repo context, programming-provenance policy and navigation. |
 
 Structural references only: IT game act PRD/PHASETASK and Cipher-Booth-Leaderboard PRD/phasetask were inspected in their separate local repositories. Their feature scope, technology, done marks and automatic commit behavior do not apply here.
 

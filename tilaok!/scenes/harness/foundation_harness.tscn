@@ -31,7 +31,7 @@ text = "Tilaok! — Development Foundation Harness"
 
 [node name="Subtitle" type="Label" parent="Layout"]
 layout_mode = 2
-text = "P01 diagnostics only • No movement, items, scoring, or events are implemented"
+text = "P01–P03 development diagnostics • No full match loop, items, scoring, or events are implemented"
 
 [node name="Identity" type="Label" parent="Layout"]
 unique_name_in_owner = true
@@ -126,6 +126,10 @@ text = "P01 Movement Placeholder"
 [node name="P02MovementRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
 layout_mode = 2
 text = "P02 Movement Room"
+
+[node name="P03StageRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
+layout_mode = 2
+text = "P03 Graybox Arena"
 
 [node name="ItemRoomButton" type="Button" parent="Layout/HarnessPanel/RoomRow"]
 layout_mode = 2

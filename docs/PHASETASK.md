@@ -10,12 +10,12 @@
 - `[ ]` = not verified complete; `[x]` = complete with evidence. Planned, designed, approved or implemented-but-untested is not checked. No game task is completed by writing this file.
 - Status metadata: **TODO**, **IN PROGRESS**, **BLOCKED**, **DEFERRED**. TODO tasks with unmet dependency IDs cannot start; mark BLOCKED when an actual unresolved impediment needs tracking. Deferred/conditional work needs an explicit activation decision.
 - Follow task dependencies rather than requiring every earlier phase to finish. Seed-item core gates precede the slice; later seed compatibility/Library checks intentionally wait for events/UI. Phase exit criteria distinguish these gates.
-- Every task names requirement(s), dependency IDs, owner role, acceptance and evidence. Person names remain TBD until assigned. Proposed systems/paths are **NEW** and are not a claim they exist.
+- Every task names requirement(s), dependency IDs, owner role, acceptance and evidence. Project development leads are recorded in PRODUCTION; person names for individual task ownership remain TBD until assigned. Proposed systems/paths are **NEW** and are not a claim they exist.
 - Completion evidence records build/commit, engine/profile/seed, date, scenario, expected/actual result, artifact location and reviewer; hardware/devices/player count when relevant. Tests use PASSED/FAILED/COULD-NOT-RUN. Missing runtime evidence stays COULD-NOT-RUN, never “passed by design.”
 - A requirement is complete only when all applicable implementation and verification tasks pass. Check partial work separately. Update [PLAYTEST](PLAYTEST.md), [ASSETS](ASSETS.md) and [AI_USAGE](AI_USAGE.md) when their evidence changes.
 - Scope change requires owner/date/reason and updated GDD if gameplay changes, ROADMAP, PRD, tracker, content manifest and verification. Preserve IDs/history. Eight initial families remain targeted; Bula is the first cut-review candidate, not an automatic cut.
 - Decide each Should feature include/defer before freeze. Included Should tasks become release obligations; retain original IDs and record promotion. Conditional finals and unpromoted expansion never enter the required-release denominator.
-- No automatic commit/push rule: commit only after explicit “commit”, named files only; push/open PR only after “push”; never merge as part of this documentation task. No AI trailers/lines in commit/PR metadata; truthful disclosure stays in dedicated docs/Form 03.
+- Commit/push follow the authorization in the active task; for this approved documentation correction, commit named documentation files and push existing `main` after successful verification. No AI trailers/lines in commit metadata; truthful disclosure stays in dedicated docs/Form 03.
 
 ## Milestones, critical path and parallel work
 
@@ -38,7 +38,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **20 phases · 393 tasks · 116 requirements.** Initial checked tasks: **0**. Required release/submission: **207**; Should: **24**; conditional finals: **4**; expansion: **158**. Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
 
-**Current implementation check count (2026-10-13): 17/393 tasks checked** (P01 9/10; P02 8/14). This is the count of checked task records on disk, not a release-readiness percentage. P00 remains 0/6. P02 remains open because the physical input/reconnect acceptance is unavailable and P01-T02 team-authorship review remains open.
+**Current implementation check count (2026-10-13): 23/393 tasks checked** (P00 0/6; P01 9/10; P02 8/14; P03 6/6). This is the count of checked task records on disk, not a release-readiness percentage. P02 remains open because physical input/reconnect acceptance is unavailable. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
 
 | Phase | Purpose | Tasks | Scope |
 |---|---|---:|---|
@@ -77,7 +77,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **Documentation/assets:** Keep linked source contracts, enabled-content manifest, test evidence and relevant asset/disclosure records current; original assets or documented permitted sources only.
 
-**Blocking decisions / conditional scope:** The user is handling team assignment/capacity privately; no team facts are stored. Producer and integration-owner identities are therefore not recorded. Exact export-template compatibility, export setup, keyboard details, and physical controller inventory/testing remain unresolved. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
+**Blocking decisions / conditional scope:** Francis and Carlos are recorded as development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Remaining workstream assignments, reviewer identities, registration status and capacity remain unknown. Producer and integration-owner assignments are not confirmed. Matching Godot 4.7.2 templates and an initial Windows export are verified; keyboard details and physical-controller inventory/testing remain unresolved. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
 
 **Exit criteria:** Owners, scope manifest and confirmed toolchain/device records unblock their respective workstreams.
 
@@ -91,9 +91,9 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 - [ ] **Record team roles, reviewers and available hours**
   - **Status:** BLOCKED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Producer (name not recorded).
   - **Requirements:** [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity). **Dependencies:** None.
-  - **Work:** Record primary and reviewer/backup for production/integration, team-authored gameplay, art/UI, audio, QA/balance and compliance/media, plus per-person capacity through October 25 without double-counting. The user directed on October 13 that they will handle the team privately and that names/hours are not to be documented in the repository. The existing TBD role-sheet template is preserved.
+  - **Work:** Record primary and reviewer/backup for production/integration, programming, art/UI, audio, QA/balance and compliance/media, plus per-person capacity through October 25 without double-counting. Historical note: on October 13 the user said assignments and hours would be handled privately; the then-current TBD roster record was accurate. Francis later supplied current roles: Francis (lead developer) and Carlos (co-lead developer), both using AI-assisted programming; Shanti (UI design and game audio); Jorge and Ivie (maps, characters, obstacles, traps, effects and related game assets, created without AI generation). Individual review assignments, registration status and hours remain unknown.
   - **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
-  - **Evidence:** User direction recorded in `PRODUCTION.md`; no roster, registration, owner, reviewer, or hour data was supplied or added. **Procedure / expected / actual:** reviewed the existing role sheet and applied the user's privacy direction; expected confirmed assignments/capacity, actual no repository record by request. **Verification result:** COULD-NOT-RUN — team facts remain privately managed and are intentionally absent. **Reviewer:** not recorded. **Next action:** user completes team assignment/capacity work privately; no repository evidence is requested by this task.
+  - **Evidence:** Current development, UI, audio and game-asset roles are recorded in `PRODUCTION.md`; no complete role/capacity sheet, registration confirmation or reviewer evidence is available. **Procedure / expected / actual:** compared current supplied roles with the complete acceptance requirement; expected registered members, full role coverage, reviewer arrangement and hours, actual development leads, UI/audio and game-asset responsibilities are known but registration, remaining role coverage, review assignments and capacity are not. **Verification result:** COULD-NOT-RUN — P00 ownership/capacity gate remains open. **Reviewer:** not recorded. **Next action:** complete remaining assignments/capacity and verify them under team direction.
 
 
 #### P00-T02
@@ -103,7 +103,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
   - **Requirements:** [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity). **Dependencies:** [P00-T01](#p00-t01).
   - **Work:** Independently verify registered membership, role coverage, reviewer arrangement, date range, and non-duplicated person-level hours from a confirmed role sheet.
   - **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
-  - **Evidence:** T01 has no repository role/capacity artifact by user direction. **Procedure / expected / actual:** dependency and available evidence checked; expected a dated role/capacity sheet and registration confirmation, actual neither is available here. **Verification result:** COULD-NOT-RUN — dependent team facts are privately managed. **Reviewer:** not recorded. **Next action:** no repository verification until the user requests team facts be documented.
+  - **Evidence:** Current development, UI, audio and game-asset roles are recorded, but T01 has no complete repository role/capacity artifact. **Procedure / expected / actual:** dependency and available evidence checked; expected a dated role/capacity sheet and registration confirmation, actual those role assignments are known but registration, reviewer arrangement and capacity are not. **Verification result:** COULD-NOT-RUN — complete ownership/capacity evidence remains outstanding. **Reviewer:** not recorded. **Next action:** complete and verify remaining team facts under team direction.
 
 
 #### P00-T03
@@ -148,17 +148,17 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 ## P01 — Project foundations
 
-**Phase roll-up:** ✅ Foundation implementation and local verification complete (P01-T01, P01-T03–T10: 9/10 tasks PASSED). ⏳ P01-T02 remains COULD-NOT-RUN pending registered-team authorship review, so the full phase is not yet closed.
+**Phase roll-up:** ✅ Foundation implementation and local verification complete (P01-T01, P01-T03–T10: 9/10 tasks PASSED). ⏳ P01-T02 remains COULD-NOT-RUN pending actual human review of implementation and provenance, so the full phase is not yet closed. This review task does not block other approved implementation work.
 
 **Goal / player-visible result:** Launch an original harness and establish an early export path.
 
 **Milestone / scope:** First playable and foundational delivery.
 
-**Entry:** P00-T06 remains the toolchain gate. Its matching template/import/export evidence is now present, while named-owner and physical-device evidence remain open. P00-T02 remains open, but is not a prerequisite to authoring this foundation; team acceptance still requires its private team facts.
+**Entry:** P00-T06 remains the toolchain gate. Its matching template/import/export evidence is now present, while owner/capacity and physical-device evidence remain open. P00-T02 remains open and is not a prerequisite for approved programming work.
 
-P01 implementation proceeded under the user's explicit Codex-authorship exception while team review is pending. Implementation and local runtime checks do not count as registered-team authorship review or competition eligibility approval.
+P01 code was generated by Codex under the task authorization and internal policy in force at that time; it is disclosed in `AI_USAGE.md` and is not represented as manually team-written. Implementation and local runtime checks do not count as human review or competition eligibility approval.
 
-**External task dependencies:** [P00-T06](#p00-t06). P00-T02 is not a prerequisite for P01 implementation by user decision; it remains open for team acceptance and competition eligibility review.
+**External task dependencies:** [P00-T06](#p00-t06). P01's relevant Godot 4.7.2 toolchain subset is verified; P00-T06 remains open for residual named-owner/device evidence, which is not a gate on ordinary programming. P00-T02 is not an implementation prerequisite and remains open for owner/capacity evidence. Competition compliance is handled separately in P17.
 
 **Owner roles:** Integration; person names TBD. **Systems touched:** NEW project organization, config resources, harness and export preset.
 
@@ -168,33 +168,33 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 **Exit criteria:** Entry scene, config/profile validation, diagnostic harness and initial smoke export pass.
 
-**Evidence required:** Team-authorship review, import/export logs, profile validation results.
+**Evidence required:** Human review of implementation/provenance, import/export logs, profile validation results.
 
 
 #### P01-T01
 
 - [x] **Create the project structure and responsibility map**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
-  - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-authored-project-responsibilities). **Dependencies:** [P00-T06](#p00-t06); P00-T02 dependency removed for implementation by user decision.
+  - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-directed-project-responsibilities). **Dependencies:** [P00-T06](#p00-t06). P01's Godot 4.7.2 project-open/import sub-check is verified in the linked evidence; the still-open P00-T06 named-owner/device portions do not block this foundation task. P00-T02 is a separate owner/capacity record, not an implementation gate.
   - **Work:** Created a runnable harness, responsibility map, typed configuration/diagnostics layout and test fixtures. No future gameplay responsibility is represented as implemented.
-  - **Evidence:** [project map](PROJECT_STRUCTURE.md), [Godot import](evidence/p01-import-godot-4.7.2-2026-10-13.log), [runtime smoke](evidence/p01-runtime-smoke-2026-10-13.log). **Procedure / expected / actual:** opened the project in Godot 4.7.2 and ran the harness; expected a working diagnostic entry and clear scope labels, actual build/profile/seed identity and controls displayed without script errors. Codex authored this P01 work under the user's explicit exception. It is not labeled team-authored and does not establish competition compliance. **Verification result:** PASSED for project structure/launch; team authorship review remains P01-T02. **Reviewer:** Codex for implementation/runtime evidence; no registered team reviewer recorded.
+  - **Evidence:** [project map](PROJECT_STRUCTURE.md), [Godot import](evidence/p01-import-godot-4.7.2-2026-10-13.log), [runtime smoke](evidence/p01-runtime-smoke-2026-10-13.log). **Procedure / expected / actual:** opened the project in Godot 4.7.2 and ran the harness; expected a working diagnostic entry and clear scope labels, actual build/profile/seed identity and controls displayed without script errors. Codex generated this P01 work under the task authorization and internal policy in force then; its provenance is recorded and it is not represented as manually team-written. **Verification result:** PASSED for project structure/launch; actual human review remains P01-T02. **Reviewer:** Codex for implementation/runtime evidence; no human reviewer recorded.
 
 
 #### P01-T02
 
-- [ ] **Verify establish team-authored project responsibilities**
+- [ ] **Review foundation implementation and provenance**
   - **Status:** COULD-NOT-RUN · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (person name not recorded).
-  - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-authored-project-responsibilities). **Dependencies:** [P01-T01](#p01-t01).
-  - **Work:** Record the procedure, expected and actual result, and review evidence. Project opens with a team-authored entry scene; responsibility map and authorship review exist; no copied tutorial/template/open-source core mechanics.
-  - **Acceptance:** Project opens with a team-authored entry scene; responsibility map and authorship review exist; no copied tutorial/template/open-source core mechanics.
-  - **Evidence:** [authorship disclosure and limitation](PROJECT_STRUCTURE.md#authorship-and-review); no team reviewer artifact is available. **Procedure / expected / actual:** inspected authored project files and disclosure; expected registered team member review and confirmation of competition eligibility, actual Codex authorship is recorded but team review and eligibility confirmation have not occurred. **Verification result:** COULD-NOT-RUN — user explicitly authorized the exception for implementation, not a claim that it satisfies competition rules. **Reviewer:** not recorded.
+  - **Requirements:** [REQ-TECH-001](PRD.md#req-tech-001--establish-team-directed-project-responsibilities). **Dependencies:** [P01-T01](#p01-t01).
+  - **Work:** A human reviewer inspects the P01 project structure, generated implementation, provenance/disclosure and evidence; records reviewer, date, findings and any follow-up. Confirm the project opens and that no tutorial/template/open-source core mechanics were copied. This is human review, not a manual-authorship test or competition-eligibility decision.
+  - **Acceptance:** Project structure and provenance are reviewed by a human; reviewer/date/findings are recorded; project opens; no copied tutorial/template/open-source core mechanics are found. Competition rule interpretation remains in the separate submission gate.
+  - **Evidence:** [programming provenance and review](PROJECT_STRUCTURE.md#programming-provenance-and-review); historical result: the prior review inspection found no human reviewer artifact. **Procedure / expected / actual:** Codex inspected files and disclosure; expected a human review record plus technical/provenance findings, actual no human review has been recorded. **Verification result:** COULD-NOT-RUN — actual human review remains outstanding. **Policy/dependency update (2026-10-13):** Francis directed a standing project-wide AI-assisted programming workflow, superseding the earlier internal manual-authorship rule. This task remains open for genuine human review but is not a prerequisite for downstream implementation. **Reviewer:** not recorded.
 
 
 #### P01-T03
 
 - [x] **Author configuration resources and labeled test profiles**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
-  - **Requirements:** [REQ-CONFIG-001](PRD.md#req-config-001--centralize-provisional-configuration-and-profiles). **Dependencies:** [P01-T02](#p01-t02).
+  - **Requirements:** [REQ-CONFIG-001](PRD.md#req-config-001--centralize-provisional-configuration-and-profiles). **Dependencies:** [P01-T01](#p01-t01). **Dated dependency update (2026-10-13):** the earlier P01-T02 authorization dependency is removed because Francis's standing workflow approval settles AI-use permission; P01-T02 remains open for human review and does not block programming.
   - **Work:** Separate invariants, tunables and presentation. Use named movement_room, karera_slice, karera_spring, lagsanay_lab, kangaroo_contract_lab, stack_lab and release_candidate profiles. Snapshot gameplay tuning at match start; volume/shake may change while paused. Preserve defaults as untested; R1–R4 stay off.
   - **Acceptance:** No scattered gameplay tuning; changing gameplay keys requires a new test match. Logs identify profile/build/seed. All R proposals are off in contract/release profiles.
   - **Evidence:** `tilaok!/scripts/config/` and [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). Seven contract profile IDs are available; prototype values remain labeled untested; snapshots copy gameplay/presentation values and keep R1–R4 off. **Procedure / expected / actual:** loaded the typed resources and registry in Godot 4.7.2; expected valid default/range checks and isolated snapshots, actual checks passed. **Verification result:** PASSED. **Reviewer:** Codex (implementation author); no registered team reviewer recorded.
@@ -234,7 +234,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 - [x] **Create local harness and lifecycle inspection controls**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (person name not recorded).
-  - **Requirements:** [REQ-TECH-002](PRD.md#req-tech-002--provide-lifecycle-and-diagnostic-harnesses). **Dependencies:** [P01-T02](#p01-t02).
+  - **Requirements:** [REQ-TECH-002](PRD.md#req-tech-002--provide-lifecycle-and-diagnostic-harnesses). **Dependencies:** [P01-T01](#p01-t01). **Dated dependency update (2026-10-13):** P01-T02 is review evidence, not a prerequisite for implementing or verifying the diagnostic harness.
   - **Work:** Provide clearly labeled local movement, item and event placeholder rooms with scenario reset/reload controls and local diagnostic identity. P01 fixtures exercise scene lifecycle only and contain no P02+ gameplay, terminal-event simulation, scoring, or player HUD. No analytics service, account, backend or gameplay networking.
   - **Acceptance:** Placeholder rooms open/close, reset and reload without duplicate callbacks or retained fixture/run state; diagnostics stay local and identify build/profile/seed. The fixtures do not claim gameplay readiness.
   - **Evidence:** [harness scene](../tilaok!/scenes/harness/foundation_harness.tscn), [runtime smoke](evidence/p01-runtime-smoke-2026-10-13.log), [foundation checks](evidence/p01-foundation-checks-2026-10-13.log). **Procedure / expected / actual:** opened the harness and exercised diagnostic run, fixture open/return, reset and reload; expected identity display and clean fixture lifecycle, actual controls responded and the headless lifecycle checks passed. The rooms are explicitly placeholders and display no gameplay. **Verification result:** PASSED. **Reviewer:** Codex (implementation author); team review remains open in P01-T02.
@@ -254,10 +254,10 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 - [x] **Configure and smoke-test the initial PC export**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Integration (person name not recorded).
-  - **Requirements:** [REQ-EXPORT-001](PRD.md#req-export-001--prove-an-early-pc-export-path). **Dependencies:** [P01-T02](#p01-t02).
-  - **Work:** Use the confirmed target engine and matching templates to export a minimal runnable P01 harness early; repeat with the final release later. The P01 harness is Codex-authored under the explicit documented exception, not represented as team-authored. A successful editor import alone is not export or gameplay evidence.
+  - **Requirements:** [REQ-EXPORT-001](PRD.md#req-export-001--prove-an-early-pc-export-path). **Dependencies:** [P01-T01](#p01-t01).
+  - **Work:** Use the confirmed target engine and matching templates to export a minimal runnable P01 harness early; repeat with the final release later. The P01 harness is AI-generated and disclosed in `AI_USAGE.md`, not represented as manually team-written. A successful editor import alone is not export or gameplay evidence.
   - **Acceptance:** A versioned smoke export launches and exits on the intended PC; record engine/templates, preset, build and logs. Missing templates block the check.
-  - **Evidence:** [template install](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [exported runtime](evidence/p01-export-runtime-2026-10-13.log). **Procedure / expected / actual:** installed the matching official 4.7.2 templates in the versioned Godot path; exported with the Windows Desktop preset; expected an executable that starts and exits, actual the app opened a responsive `Tilaok!` window and exited after a clean close request. The archive was installed by extracting its verified `templates/` subtree into the standard version path; the editor template-manager UI was not used. **Verification result:** PASSED for local target-PC smoke export. The executable contains Codex-authored foundation code under the disclosed exception; no competition eligibility claim is made. **Reviewer:** Codex (implementation author); no registered team reviewer recorded.
+  - **Evidence:** [template install](evidence/p01-template-install-2026-10-13.log), [export log](evidence/p01-export-godot-4.7.2-2026-10-13.log), [exported runtime](evidence/p01-export-runtime-2026-10-13.log). **Procedure / expected / actual:** installed the matching official 4.7.2 templates in the versioned Godot path; exported with the Windows Desktop preset; expected an executable that starts and exits, actual the app opened a responsive `Tilaok!` window and exited after a clean close request. The archive was installed by extracting its verified `templates/` subtree into the standard version path; the editor template-manager UI was not used. **Verification result:** PASSED for local target-PC smoke export. The executable contains AI-generated foundation code under the disclosed historical authorization; no human-review or competition-eligibility claim is made. **Reviewer:** Codex (implementation author); no human reviewer recorded.
 
 
 #### P01-T10
@@ -278,7 +278,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 **Entry:** P01 harness and config available.
 
-**External task dependencies:** [P01-T02](#p01-t02), [P01-T04](#p01-t04)
+**External task dependencies:** [P01-T04](#p01-t04). **Dated dependency update (2026-10-13):** Francis's standing AI-assisted programming direction supersedes the internal manual-authorship authorization gate. P01-T02 remains open for genuine human review but does not block P02 implementation.
 
 **Owner roles:** Gameplay; person names TBD. **Systems touched:** NEW input, chicken controller, sensors and pause/reconnect flow.
 
@@ -292,7 +292,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 **Phase roll-up (2026-10-13): 8/14 task records passed; P02 remains OPEN.** Passed: P02-T05/T06, P02-T09/T10, P02-T11/T12 and P02-T13/T14. Unchecked: P02-T01/T02 (two identical physical gamepads and mixed-input playtest unavailable), P02-T03/T04 (physical shared-keyboard rollover and supported-chord validation unavailable), and P02-T07/T08 (physical disconnect/reconnect and identical-controller reclaim unavailable). Synthetic device events are labeled synthetic and do not satisfy these hardware criteria. The controller, seat registry and pause/recovery code exist for the unchecked implementation records, but their task acceptance includes the corresponding physical checks. The supplied environment has K1/K2 keyboards and no gamepads.
 
-**Authorship/dependency disposition:** The user expressly authorized OpenAI Codex to implement P02 core code as an AI-implementation exception. This does not represent the work as team-authored, pass P01-T02, waive its recorded dependency, or establish DOST eligibility/organizer acceptance. P01-T02 remains open for registered-team review. Dependencies remain unchanged; this authorization allows this implementation/evidence work to proceed while the required review and hardware evidence stay open. No private team names or hours are recorded.
+**Programming provenance and dependency disposition:** P02 was AI-generated under the task authorization and internal policy in force at the time; this remains historical provenance, not a current P02-only exception. Francis's October 13 standing workflow direction supersedes the internal manual-authorship gate. P01-T02 remains unchecked for actual human review, but it no longer blocks implementation. The external §7/§8 interpretation, competition eligibility and organizer acceptance are not established here and remain in the centralized P17 submission gate. Physical input/reconnect checks remain open; synthetic evidence does not satisfy them. Francis and Carlos are recorded as development leads in `PRODUCTION.md`; no hours or registration status are inferred.
 
 **Build/evidence identity:** local implementation based on `e2b4a555e8d45bec774ffebde7c46e595cd3abdb`, Godot `4.7.2.stable.official.ed1daf0bf`, default fixture seed `12345`, 60 Hz; run date 2026-10-13. Automated synthetic coverage: [P02 checks](evidence/p02-checks-2026-10-13.log); P01 regression: [foundation checks](evidence/p02-foundation-checks-2026-10-13.log). Rendered fixture: [running room](evidence/p02-diagnostic-room.png), [synthetic disconnect pause](evidence/p02-reconnect-pause.png), [capture log](evidence/p02-render-capture-2026-10-13.log) and [metrics](evidence/p02-rendered-metrics.txt). [Godot import/parse](evidence/p02-import-godot-4.7.2-2026-10-13.log), [format](evidence/p02-format-2026-10-13.log), [lint](evidence/p02-lint-2026-10-13.log), [export](evidence/p02-export-2026-10-13.log) and [exported startup](evidence/p02-export-runtime-2026-10-13.log) records are retained. Reviewer: Codex, AI implementation author; independent registered-team review not recorded.
 
@@ -301,7 +301,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 - [ ] **Implement isolated device assignment and player markers**
   - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
-  - **Requirements:** [REQ-INPUT-001](PRD.md#req-input-001--assign-devices-and-fixed-chicken-identity). **Dependencies:** [P01-T02](#p01-t02).
+  - **Requirements:** [REQ-INPUT-001](PRD.md#req-input-001--assign-devices-and-fixed-chicken-identity). **Dependencies:** [P01-T04](#p01-t04). P01-T02 is not an implementation gate under the standing workflow; this dated dependency revision (2026-10-13) removes only that obsolete authorization constraint.
   - **Work:** Support 2–4 local seats, gamepads first. A device joins one seat; join and ready require separate fresh presses. Number/shape stay fixed until lobby return: prototype 1 circle, 2 triangle, 3 square, 4 diamond. Color supplements identity.
   - **Acceptance:** Two identical gamepads and mixed input never control another seat, double-join or ready on the joining press; identifiers persist through phases and reconnect.
   - **Evidence:** `tilaok!/scripts/input/player_seat_registry.gd`, `tilaok!/scripts/input/local_input_router.gd`, the numbered/shape markers in `tilaok!/scripts/movement/chicken_controller.gd`, and synthetic seat isolation assertions in [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** automated synthetic tests join two distinct device IDs, reject duplicate assignment, enforce separate join/ready edges, check seat-isolated jump routing, and verify identity persistence after reclaim with a changed ID; all passed. **Verification result:** implementation is present; task acceptance remains open pending two identical physical gamepads and mixed-input playtest. **Reviewer:** Codex (implementation author). **Next action:** run the recorded physical-device procedure in PLAYTEST.md.
@@ -321,7 +321,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 - [ ] **Implement phase bindings and opt-in keyboard seats**
   - **Status:** IN PROGRESS · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
-  - **Requirements:** [REQ-INPUT-002](PRD.md#req-input-002--implement-phase-specific-bindings-and-shared-keyboard-fallback). **Dependencies:** [P02-T02](#p02-t02).
+  - **Requirements:** [REQ-INPUT-002](PRD.md#req-input-002--implement-phase-specific-bindings-and-shared-keyboard-fallback). **Dependencies:** [P02-T01](#p02-t01). The seat-assignment implementation is the programming prerequisite; P02-T02's physical two-gamepad verification remains open and is not an implementation authorization gate.
   - **Work:** Use the provisional binding table below. Release target is 2–4 players on verified gamepads/mixed devices. Two keyboard seats require explicit shared-keyboard mode and physical rollover validation; four-player keyboard-only is not promised. Stick digital parity/deadzone/repeat values remain prototype settings.
   - **Acceptance:** Each phase action works only for its assigned seat; no lost simultaneous supported chords. Unavailable/failed keyboard combinations are documented, remapped or excluded from supported claims.
   - **Evidence:** `tilaok!/scripts/input/local_input_router.gd`, `tilaok!/scripts/harness/p02_movement_room.gd`, and synthetic phase/key checks in [P02 checks](evidence/p02-checks-2026-10-13.log). Implemented pad South/East/West/Start, D-pad/stick hysteresis and priority, K1/K2 mappings, explicit shared-keyboard opt-in, and shared Escape pause. **Procedure / expected / actual:** synthetic phase bindings and seat routes pass, including Right Ctrl location handling; physical simultaneous chords and rollover have not been exercised. **Verification result:** implementation present, acceptance remains open until supported physical keyboard combinations are tested and any failed chords are remapped/excluded. **Reviewer:** Codex (implementation author). **Next action:** run the shared-keyboard chord matrix in PLAYTEST.md.
@@ -341,7 +341,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 - [x] **Gate input edges and pointer repeat by phase**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
-  - **Requirements:** [REQ-INPUT-003](PRD.md#req-input-003--consume-held-presses-across-phase-transitions). **Dependencies:** [P02-T04](#p02-t04).
+  - **Requirements:** [REQ-INPUT-003](PRD.md#req-input-003--consume-held-presses-across-phase-transitions). **Dependencies:** [P02-T03](#p02-t03). The binding implementation is the programming prerequisite; P02-T04's physical keyboard-rollover acceptance remains open and is not an implementation authorization gate.
   - **Work:** Consume existing press edges on transitions; release is required before claim/confirm/rotate/jump/ready. Held direction may continue; jump buffers clear. Ignore OS key repeat for one-shot actions. Prototype placement repeat is one cell then 0.25 s delay at 8 cells/s; menu/Pugad repeats at 6/s.
   - **Acceptance:** Holding jump/confirm through every transition creates no unintended next action; diagonal pointer movement gains no speed; unsupported rotations give a disabled cue.
   - **Evidence:** `tilaok!/scripts/input/local_input_router.gd` and [P02 checks](evidence/p02-checks-2026-10-13.log). **Procedure / expected / actual:** synthetic tests hold/release K1 actions across Play→Pugad→Place transitions, ignore OS echo, check one-shot release gating, diagonal navigation, 0.25 s repeat delay, 8/s Place repeat and disabled rotation cue; all assertions passed. **Verification result:** PASSED for the implemented routing/edge contract. **Reviewer:** Codex (implementation author); physical input limitations are recorded under P02-T04.
@@ -381,7 +381,7 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 - [x] **Implement and instrument the initial run/jump controller**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
-  - **Requirements:** [REQ-MOVE-001](PRD.md#req-move-001--implement-responsive-run-and-jump-only). **Dependencies:** [P02-T04](#p02-t04), [P01-T04](#p01-t04).
+  - **Requirements:** [REQ-MOVE-001](PRD.md#req-move-001--implement-responsive-run-and-jump-only). **Dependencies:** [P02-T06](#p02-t06), [P01-T04](#p01-t04). The phase-edge implementation/verification is the input prerequisite; P02-T04's physical keyboard-rollover acceptance remains open and does not block the controller implementation.
   - **Work:** Normal Play controls are left/right and jump, without dash, wall jump, double jump or drop-through. Prototype uses 32 wu grid, 24×48 collider, 96 wu jump apex at 0.32 s, 280 wu/s run speed, variable jump, coyote/buffer, acceleration/braking and launch limits from the defaults register. These are starting values, not balance claims.
   - **Acceptance:** Measure full/short jumps, braking, reversal and 64 wu gap/rise trials; investigate apex deviations above 2 wu or one physics step; consume each buffered jump once and never auto-repeat held jump.
   - **Evidence:** `tilaok!/scripts/movement/chicken_controller.gd`, centralized `tilaok!/scripts/config/gameplay_tuning.gd`, and visible measurement surfaces in `tilaok!/scenes/fixtures/p02_movement_room.tscn`. **Procedure / expected / actual:** instrumented fixed-step movement, collision, full/short jump, held-jump latch, coyote/buffer windows, braking/reversal and an explicit one-way test surface in the P02 fixture. **Actual:** implementation and diagnostics exist; values remain provisional. Measured details and test command appear under P02-T10. **Verification result:** PASSED as implementation; do not interpret as balance approval or a complete game controller. **Reviewer:** Codex (implementation author).
@@ -457,65 +457,67 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 
 **Evidence required:** Route trials, bounds/zoom captures and support matrix.
 
+**Phase roll-up (2026-10-13): 6/6 task records passed; P03 is complete for the graybox stage, camera and support contracts.** Passed: P03-T01–T06. Dependencies P02-T10, P02-T12 and P02-T14 were rechecked as passed; P02 remains 8/14 because its physical input/reconnect tasks are still open. P03 uses a 32-wu grid and a 1024×512-wu scene; the real-controller route, target fitting, rendered screenshots and support fixtures are recorded below and in [the P03 verification index](evidence/p03/2026-10-13_p03_verification.md). This phase does not implement the full Pugad/Place/match loop, item placement or removal, Kangaroo scheduling, scoring, hazards, or production presentation.
+
 
 #### P03-T01
 
-- [ ] **Build the arena and protected-zone data**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Build the arena and protected-zone data**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-STAGE-001](PRD.md#req-stage-001--build-one-protected-barrio-graybox-arena). **Dependencies:** [P02-T10](#p02-t10), [P02-T14](#p02-t14).
   - **Work:** Start with solid floor, left spawn, right flag, few base platforms and fixed bounds. Base/floor/spawn/goal are indestructible; hidden event goal clearance remains protected. Use the provisional 1024×512 wu graybox only after controller measurement. Layouts created by players need not remain solvable.
   - **Acceptance:** Base route is traversable before construction; bounds/protected zones are visible in tests; no placement/removal changes immutable geometry. Paper reachability is confirmed by actual collision trials.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/stage/arena_definition.gd`, `tilaok!/scripts/harness/p03_stage_room.gd`, `tilaok!/scenes/fixtures/p03_stage_room.tscn`, and [P03 tests](evidence/p03/2026-10-13_p03_tests.txt). The table uses tile-edge coordinates, a 32-wu grid and a 1024×512-wu arena. Feet `(96,480)` convert to the controller center `(96,456)` using its 48-wu body height. **Procedure / expected / actual:** instantiate the real arena data, validate footprint/sweep/effect regions against protected spawn/goal, bounds and base pieces, attempt guarded base edits/removal, and compare the immutable-geometry signature. Expected: visible labeled zones and unchanged immutable geometry after rejected edits; actual: every guard assertion passed and the signature stayed unchanged. The optional upper E platform was omitted. **Verification result:** PASSED as implementation; the paired collision trial is P03-T02. **Reviewer:** Codex (automated, implementation author); no human review claimed.
 
 
 #### P03-T02
 
-- [ ] **Verify build one protected barrio graybox arena**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify build one protected barrio graybox arena**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-STAGE-001](PRD.md#req-stage-001--build-one-protected-barrio-graybox-arena). **Dependencies:** [P03-T01](#p03-t01).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Base route is traversable before construction; bounds/protected zones are visible in tests; no placement/removal changes immutable geometry. Paper reachability is confirmed by actual collision trials.
   - **Acceptance:** Base route is traversable before construction; bounds/protected zones are visible in tests; no placement/removal changes immutable geometry. Paper reachability is confirmed by actual collision trials.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [100 P03 assertions](evidence/p03/2026-10-13_p03_tests.txt), [interactive 1080p harness capture](evidence/p03/2026-10-13_interactive_harness_1080p.png), and [capture set](evidence/p03/2026-10-13_play_1080p.png). **Build/profile/seed:** Godot 4.7.2, `P03-graybox-dev` on the local `4cb31a9` working tree, `movement_room`, seed 12345, 60-Hz physics. **Procedure / expected / actual:** run the route with the real `ChickenController` and Godot collision from floor→A→B→C→D→goal, without teleporting between route platforms; check head/body clearance, takeoffs, landings, braking and bounds; exercise edit/removal guards on the arena definition. Expected: goal reached inside bounds and rejected edits preserve immutable geometry; actual: route reached the goal at `(1012,360)` and all route/protection assertions passed. **Verification result:** PASSED for the graybox route/protection contract; no claim that later player construction remains solvable. **Reviewer:** Codex (automated, implementation author); no independent human review claimed.
 
 
 #### P03-T03
 
-- [ ] **Implement bounded dynamic camera and readability probes**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement bounded dynamic camera and readability probes**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-STAGE-002](PRD.md#req-stage-002--frame-active-players-and-unfinished-placement-pointers). **Dependencies:** [P03-T02](#p03-t02).
   - **Work:** Play frames live unfinished chickens; eliminated/secured chickens are excluded. Place frames unconfirmed pointers including item extents. Ease framing changes with bounded zoom/pan; zoom out fast enough for launches. Empty sets hold safe framing. HUD remains screen-sized.
   - **Acceptance:** At 2/3/4 players, maximum separation/high construction/launches keep relevant targets visible and readable; finishing/confirming removes the correct target without unsafe snapping.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/camera/bounded_stage_camera.gd`, `tilaok!/scripts/camera/stage_camera_target.gd`, and `tilaok!/scripts/harness/p03_stage_room.gd`. **Procedure / expected / actual:** configure the target rectangles and viewport/HUD defaults; run Play and Place contexts; fit actual body/badge or preview extents, clamp with viewport bounds, and retain the last safe framing for empty targets. Expected: launches zoom out before targets leave the usable area, zoom-in easing never hides targets, and the HUD remains screen-sized; actual: bounded fitting, safe clamps and target filtering are implemented and pass the paired checks in P03-T04. **Verification result:** PASSED as implementation; runtime coverage is P03-T04. **Reviewer:** Codex (implementation author); no human review claimed.
 
 
 #### P03-T04
 
-- [ ] **Verify frame active players and unfinished placement pointers**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify frame active players and unfinished placement pointers**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-STAGE-002](PRD.md#req-stage-002--frame-active-players-and-unfinished-placement-pointers). **Dependencies:** [P03-T03](#p03-t03).
   - **Work:** Record the procedure, expected and actual result, and review evidence. At 2/3/4 players, maximum separation/high construction/launches keep relevant targets visible and readable; finishing/confirming removes the correct target without unsafe snapping.
   - **Acceptance:** At 2/3/4 players, maximum separation/high construction/launches keep relevant targets visible and readable; finishing/confirming removes the correct target without unsafe snapping.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P03 tests](evidence/p03/2026-10-13_p03_tests.txt), [Play at 1080p](evidence/p03/2026-10-13_play_1080p.png), [Place at 1080p](evidence/p03/2026-10-13_place_1080p.png), [wide-window Place capture](evidence/p03/2026-10-13_place_wide_window_1920x800.png), and [interactive UI test](evidence/p03/2026-10-13_interactive_test.txt). **Procedure / expected / actual:** fit 2/3/4 targets at opposite bounds and high construction; check full preview rectangles, rotated extents, 900-wu/s controller launch, Play/Place target membership, individual finishing/elimination/confirmation, empty-set hold, oversized bounds and pause; render at 1920×1080, then resize the window to 1920×800. Expected: each full target stays in the HUD-safe area, 16:9 gameplay world remains fixed, and identity/geometry stay legible at zoom 1.0; actual: all screen-containment assertions passed, the GUI flow passed 14/14, the 1920×1080 captures rendered at zoom 1.0, and the wide window retained a 1280×720 logical viewport (1422×800 game image). **Verification result:** PASSED for synthetic camera fixtures and the rendered graybox; camera fixture movement is not physical-controller certification. **Reviewer:** Codex inspected the screenshots and ran automated checks; no independent human review claimed.
 
 
 #### P03-T05
 
-- [ ] **Implement supporting-surface provenance and invalidation**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement supporting-surface provenance and invalidation**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-STAGE-003](PRD.md#req-stage-003--track-actual-supporting-contact-and-construction-provenance). **Dependencies:** [P03-T02](#p03-t02), [P02-T12](#p02-t12).
-  - **Work:** Track player-built provenance and explicit wave-support eligibility on authored surfaces. Actual upward supporting contact after movement/destruction is required; stale grounded/coyote/sensor states are insufficient. Prototype upward normal is within 45 degrees, v1 horizontal tops; numeric epsilon is untested.
+  - **Work:** Track player-built provenance and explicit wave-support eligibility on authored surfaces. Actual upward supporting contact after movement/destruction is required; stale grounded/coyote/sensor states are insufficient. The tested prototype normal limit is within 45 degrees, v1 tops are horizontal, and contact/height tolerances are 1 wu; player feel remains for future Kangaroo playtesting.
   - **Acceptance:** Support row matrix distinguishes base, Kaing, one-way bridge, launch, moving/removed surface, bubble, projectile, side contact and airborne state; missing eligibility metadata fails content validation.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** `tilaok!/scripts/stage/support_surface_metadata.gd`, `tilaok!/scripts/stage/support_contact.gd`, `tilaok!/scripts/stage/support_tracker.gd`, `tilaok!/scripts/movement/chicken_controller.gd`, and [P03 tests](evidence/p03/2026-10-13_p03_tests.txt). **Procedure / expected / actual:** validate required eligibility/provenance, record only actual post-movement upward slide contacts with stable surface/construction IDs, and invalidate support synchronously on launch, capture, terminal/reset, or surface removal. Expected: a same-step queued removal cannot qualify and freed support nodes are not dereferenced; actual: contact, lifecycle and invalidation checks passed with 1-wu height/contact tolerances and no gameplay-time grace. Authored children inherit provenance only through an explicit eligible parent contract; any player's construction can support any actor. **Verification result:** PASSED as implementation; the collision matrix is P03-T06. This does not implement a Kangaroo event, wave scheduler or score outcome. **Reviewer:** Codex (implementation author); no human review claimed.
 
 
 #### P03-T06
 
-- [ ] **Verify track actual supporting contact and construction provenance**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify track actual supporting contact and construction provenance**
+  - **Status:** PASSED · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-STAGE-003](PRD.md#req-stage-003--track-actual-supporting-contact-and-construction-provenance). **Dependencies:** [P03-T05](#p03-t05).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Support row matrix distinguishes base, Kaing, one-way bridge, launch, moving/removed surface, bubble, projectile, side contact and airborne state; missing eligibility metadata fails content validation.
   - **Acceptance:** Support row matrix distinguishes base, Kaing, one-way bridge, launch, moving/removed surface, bubble, projectile, side contact and airborne state; missing eligibility metadata fails content validation.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [100 P03 physics/assertion results](evidence/p03/2026-10-13_p03_tests.txt) and [support diagnostic rendering](evidence/p03/2026-10-13_play_1080p.png). **Procedure / expected / actual:** exercise real upward contacts for Kaing-like and one-way platforms; separate spring support from a launch; test marked safe hazard faces, moving/collapsing supports, inherited child provenance, elevated base platforms, another player's construction, overlapping chickens, capture, projectile collision, side-wall contact, coyote state and airborne crossing. Test just above/on/below sample boundaries y=384/320/256 wu using actual colliders. Expected: only explicit player-built eligible upward contact at `feet_y <= line_y + 1 wu` qualifies, and removal/launch invalidates it in the evaluation step; actual: all matrix and metadata assertions passed. The three lines are labeled test fixtures because P03 does not define the future event's selected wave heights. **Verification result:** PASSED for the support contract and diagnostic fixtures; no hazards, springs or temporary items are enabled in the production catalog. **Reviewer:** Codex (automated, implementation author); no independent human review claimed.
 
 
 ## P04 — Item infrastructure and construction seeds
@@ -2451,8 +2453,8 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 - [ ] **Prepare and review registration and Forms 01–03**
   - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Compliance (name TBD).
   - **Requirements:** [REQ-SUB-001](PRD.md#req-sub-001--prepare-registration-and-official-forms). **Dependencies:** [P00-T02](#p00-t02).
-  - **Work:** Start early: verify current official instructions/category, register, prepare Form 01 roles, Form 02 originality/waiver signatures and Form 03 asset/AI tool-area-extent disclosure with required signatures. Team chooses extent across the entire project. Preserve prompts/history and no false authorship claims.
-  - **Acceptance:** Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual team-authored work.
+  - **Work:** Start early: verify current official instructions/category, register, prepare Form 01 roles, Form 02 originality/waiver signatures and Form 03 asset/AI tool-area-extent disclosure with required signatures. The team chooses the Form 03 extent across the entire project. Preserve available prompts/history and no false authorship claims. Verify the recorded §7/§8 code-originality and disclosed-AI interpretation against current official instructions as one submission/compliance item; it is not a per-feature implementation authorization gate.
+  - **Acceptance:** Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual programming provenance; the unresolved §7/§8 interpretation is checked and recorded for submission without claiming organizer approval.
   - **Evidence:** not yet available. **Verification result:** not yet available.
 
 
@@ -2461,9 +2463,9 @@ P01 implementation proceeded under the user's explicit Codex-authorship exceptio
 - [ ] **Verify prepare registration and official forms**
   - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** Compliance (name TBD).
   - **Requirements:** [REQ-SUB-001](PRD.md#req-sub-001--prepare-registration-and-official-forms). **Dependencies:** [P17-T01](#p17-t01).
-  - **Work:** Record the procedure, expected and actual result, and review evidence. Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual team-authored work.
-  - **Acceptance:** Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual team-authored work.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Work:** Record the procedure, expected and actual result, and review evidence. Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual programming provenance; current official guidance on the recorded §7/§8 interpretation is consulted and documented.
+  - **Acceptance:** Compliance checks current organizer forms, category eligibility and signatures against registered members; completed forms agree with asset/AI records and actual programming provenance; the §7/§8 submission interpretation is recorded without representing it as approval.
+  - **Evidence:** no completed forms, required signatures, current official-source verification or interpretation record is available. **Verification result:** COULD-NOT-RUN — submission/compliance evidence remains outstanding; no build or physical-device result is substituted for it.
 
 
 #### P17-T03
@@ -4556,7 +4558,7 @@ All requirements have both implementation/non-code deliverables and verification
 | [REQ-PROD-001](PRD.md#req-prod-001--confirm-registered-owners-and-available-capacity) | [P00-T01](#p00-t01) | [P00-T02](#p00-t02) | REQUIRED |
 | [REQ-PROD-002](PRD.md#req-prod-002--ratify-the-release-manifest-and-document-authority) | [P00-T03](#p00-t03) | [P00-T04](#p00-t04) | REQUIRED |
 | [REQ-PROD-003](PRD.md#req-prod-003--resolve-toolchain-and-hardware-facts) | [P00-T05](#p00-t05) | [P00-T06](#p00-t06) | REQUIRED |
-| [REQ-TECH-001](PRD.md#req-tech-001--establish-team-authored-project-responsibilities) | [P01-T01](#p01-t01) | [P01-T02](#p01-t02) | REQUIRED |
+| [REQ-TECH-001](PRD.md#req-tech-001--establish-team-directed-project-responsibilities) | [P01-T01](#p01-t01) | [P01-T02](#p01-t02) | REQUIRED |
 | [REQ-CONFIG-001](PRD.md#req-config-001--centralize-provisional-configuration-and-profiles) | [P01-T03](#p01-t03) | [P01-T04](#p01-t04) | REQUIRED |
 | [REQ-CONFIG-002](PRD.md#req-config-002--validate-content-pools-and-deterministic-diagnostics) | [P01-T05](#p01-t05) | [P01-T06](#p01-t06) | REQUIRED |
 | [REQ-TECH-002](PRD.md#req-tech-002--provide-lifecycle-and-diagnostic-harnesses) | [P01-T07](#p01-t07) | [P01-T08](#p01-t08) | REQUIRED |
@@ -4672,13 +4674,13 @@ All requirements have both implementation/non-code deliverables and verification
 
 ## Documentation delivery and implementation boundary
 
-The PRD/tracker documentation can be complete while every gameplay checkbox remains open. The documentation task does not execute P00 decisions on behalf of the team or any later implementation task. First unblocked team action: confirm the registered owners/capacity and actual engine/device inventory in P00. First gameplay experiment after readiness: team-author the movement room, measure full/short jump and braking with two assigned inputs, and test the proposed 64 wu gap/rise targets.
+The original PRD/tracker documentation could be complete while gameplay tasks remained open. This policy correction changes documentation and dependency wording; it does not complete gameplay tasks or P00 ownership/capacity gates. Francis and Carlos are recorded as development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Registration, remaining assignments/capacity and some physical-device facts remain unknown. Those gaps do not impose a project-wide AI-use approval gate. The P02 diagnostic movement/input room already exists; future implementation follows approved scope and genuine technical dependencies.
 
-Documentation verification results are recorded in AI_USAGE after checks. Gameplay/controller/performance/export checks remain COULD-NOT-RUN because no suitable runnable game exists. Official form/channel/eligibility rechecks remain submission tasks, not claims that current organizer instructions were independently verified by this documentation work.
+Documentation verification results are recorded below and summarized in `AI_USAGE.md`. A complete match is not implemented; P01/P02 harnesses and diagnostic rooms have separate evidence above. This documentation correction ran no gameplay tests. Official form/channel/eligibility rechecks remain submission tasks, not claims that current organizer instructions were independently verified here.
 
-## Documentation verification — October 13, 2026
+## Documentation verification — October 13, 2026 (original PRD/tracker delivery)
 
-These results concern this documentation delivery only. They do not check any game task above.
+These are historical results from the original PRD/tracker documentation delivery, before P01/P02 implementation. They do not describe current task counts or check any game task above.
 
 | Check | Result | Evidence / limit |
 |---|---|---|
@@ -4692,4 +4694,32 @@ These results concern this documentation delivery only. They do not check any ga
 | Whitespace and conflict markers | PASSED | git diff --check plus explicit scans of both untracked new documents. |
 | Gameplay, controllers, balance, performance and final export | COULD-NOT-RUN | No suitable runnable game exists; target engine/templates, actual devices and named target hardware remain implementation gates. No runtime checks were run merely to validate prose. |
 
-Temporary document assembly/validation tools and their output were kept outside the repository. The reviewable artifacts are these Markdown documents and the narrow approved consistency/navigation/disclosure edits. No game code, production asset, prompt file, commit or push was produced.
+Temporary document assembly/validation tools and their output were kept outside the repository for that historical delivery. At that time, no game code, production asset, prompt file, commit or push was produced.
+
+## Documentation verification — AI workflow correction (October 13, 2026)
+
+These checks cover this policy and tracker correction only. Documentation verification is not gameplay testing.
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Full policy contradiction search | PASSED | Searched all 19 project-owned Markdown files for team-written/team-authored wording, authorship, exception/permission, ownership, eligibility and Form 03 terms. Remaining programming-authorship mentions are current provenance safeguards, scoped P01/P02 history, external §7/§8 notes, genuine human-review/ownership requirements, or unrelated gameplay uses of “exception.” |
+| Standing workflow consistency | PASSED | AGENTS.md and CLAUDE.md contain the canonical operational policy. Francis/Carlos development roles and AI-assisted programming are recorded; AI_USAGE identifies generated P01/P02 programming and does not select/sign Form 03 extent. |
+| Competition-rule separation | PASSED | COMPETITION.md retains the local §7/§8 summary, labels the old internal interpretation as superseded, and makes no organizer-approval or eligibility claim. The source PDF/stable official URL is unavailable in this checkout, so the rule text was not independently rechecked here. |
+| Markdown links and anchors | PASSED | Validated local file targets and anchors across all 19 project-owned Markdown files. |
+| Requirement/task IDs and counts | PASSED | 116 unique requirements and 393 unique task IDs; task scopes count Required 207, Should 24, Conditional 4, Expansion 158. Checkboxes remain 17/393 (P00 0/6, P01 9/10, P02 8/14); this correction checked no gameplay or review item. |
+| Dependencies | PASSED | All referenced task IDs resolve and the dependency graph has no cycles. P01-T02 is no longer an implementation dependency. The P01-T01/P00-T06 and P02-T05/P02-T03 relationships are documented against their already-verified technical implementation subsets; residual owner/device and physical-keyboard acceptance remain open. |
+| Requested policy checks | PASSED | AGENTS and CLAUDE permit approved core-gameplay programming without another phase exception; current names/roles, AI disclosure, external-rule uncertainty, human review, synthetic-vs-physical limits and P02 implementation status are explicit. |
+| Whitespace and change scope | PASSED | `git diff --check` passed. Final review found Markdown-only edits; no gameplay source, assets, engine configuration or unrelated files changed. |
+| Gameplay/runtime verification | COULD-NOT-RUN | No gameplay tests were run for this documentation correction. Existing P02 synthetic evidence does not substitute for open physical controller, keyboard-rollover, reconnect or exported interactive-input checks. |
+
+## Documentation verification — production role clarification (October 13, 2026)
+
+These checks cover the user-supplied UI, audio and game-asset role clarification. They do not change gameplay scope or complete P00.
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Current roles and names | PASSED | PRODUCTION.md, AI_USAGE.md, PRD.md and P00 records list Francis/Carlos as development leads, Shanti for UI design and game audio, and Jorge/Ivie for maps, characters, obstacles, traps, effects and related game assets. No surnames or legal identities were inferred. |
+| Human asset/audio production | PASSED | Current assignments specify human-created UI, audio and game assets without AI generation. No asset completion or human review is claimed. |
+| P00 ownership/capacity status | PASSED | P00-T01/T02 remain unchecked and P00 remains 0/6; registration, capacity, reviewer/backups and remaining workstream coverage remain incomplete. |
+| Tracker scope and gameplay state | PASSED | No task IDs, dependencies or checkboxes were changed; total remains 17/393 checked (P01 9/10, P02 8/14). |
+| Gameplay/runtime verification | COULD-NOT-RUN | This was a documentation-only role update; no game or asset production was performed or tested. |

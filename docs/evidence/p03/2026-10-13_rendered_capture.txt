@@ -1,0 +1,25 @@
+Status: PASSED
+Build: 4cb31a9 + P03 working tree (uncommitted at run time)
+Engine: Godot 4.7.2-stable official; OpenGL 3.3 Compatibility; NVIDIA GeForce RTX 4050 Laptop GPU
+Profile: P03 render/performance capture
+Seed: 12345
+Date: 2026-10-13
+Actors: 4 ChickenController instances during the 1080p performance sample
+Input: synthetic axes; no physical devices attached or certified
+Procedure: render 1920x1080 Play/Place captures and 600 uncapped frames; Windows samples the non-console Godot engine process every 50 ms during the 5-second observation hold
+Expected: capture passes and engine process peak working set/private bytes stay below 512 MiB
+Observed engine process peak: working set 199.91 MiB; private bytes 250.59 MiB; matching processes 1; samples 32
+Command: Godot --path tilaok! --script res://tests/capture_p03_evidence.gd; Windows PowerShell sampled the matching Godot process tree every 50 ms
+Exit code: 0
+Evidence: docs/evidence/p03/2026-10-13_rendered_capture.txt and docs/evidence/p03/2026-10-13_performance.txt
+Reviewer: Codex automated capture and screenshot inspection; no human review claimed
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P03_SCREENSHOT path=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_play_1080p.png size=1920x1080 zoom=1.000 context=PLAY targets=4 viewport=(1280.0, 720.0) window=(1920, 1080)
+P03_SCREENSHOT path=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_place_1080p.png size=1920x1080 zoom=1.000 context=PLACE targets=3 viewport=(1280.0, 720.0) window=(1920, 1080)
+P03_SCREENSHOT path=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_place_wide_window_1920x800.png size=1422x800 zoom=1.000 context=PLACE targets=3 viewport=(1280.0, 720.0) window=(1920, 800)
+P03_CAPTURE play=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_play_1080p.png place=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_place_1080p.png wide=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/p03/2026-10-13_place_wide_window_1920x800.png
+P03_PERFORMANCE samples=600 elapsed=0.544s render_median=0.826ms render_p95=1.426ms render_worst=6.141ms memory=67.60MiB viewport=(1280.0, 720.0) window=(1920, 1080) status=PASSED
+P03_MEMORY_WINDOW pid=2292 seconds=5.0

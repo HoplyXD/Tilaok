@@ -1,23 +1,24 @@
 # Tilaok! Production Plan
 
-**Status:** pre-production planning document with an implemented P02 movement/input diagnostic slice. Team roles remain privately managed and unnamed in this document. `ROADMAP.md` remains the scope and schedule source of truth.
+**Status:** pre-production planning document with implemented P02 movement/input and P03 graybox stage/camera/support diagnostic slices. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
 
 ## Delivery principle
 
 Ship a small, stable, understandable local-multiplayer game before adding breadth. The core loop, Karera, scoring, Lagsanay, tutorial, and the eight targeted first-batch families take priority over backlog content.
 
-Competition requirements still call for team-written, team-understood gameplay. The user expressly authorized an AI-implementation exception for P02; this records permission to implement, not team authorship, DOST eligibility, or organizer acceptance. P01-T02 registered-team review remains open. Disclose the actual assistance extent in Form 03. See `AI_USAGE.md`.
+AI/LLM-assisted programming, including core gameplay generation, is the standing project workflow directed by Francis. Francis and Carlos direct development and retain integration, review, testing and delivery responsibility. See `AI_USAGE.md` for the detailed policy and disclosure record. This policy does not establish organizer approval or competition eligibility; P01-T02's actual human review evidence remains open, and Form 03 is a separate submission obligation.
 
 ## Role assignment sheet
 
-Fill names before production work begins. A person may hold more than one role only when the workload remains realistic.
+Fill remaining individual assignments and backups before allocating production work. A person may hold more than one role only when the workload remains realistic.
 
 | Workstream | Primary owner | Backup/reviewer | Responsibilities |
 |---|---|---|---|
-| Production and integration | **TBD** | **TBD** | Scope calls, branch/integration hygiene, daily build, schedule, and final submission. |
-| Team-authored gameplay | **TBD** | **TBD** | Godot project, controls, stages, round lifecycle, placement, scoring, items, events, and save-free local match flow. |
-| Art and UI | **TBD** | **TBD** | 2D visual direction, chicken readability, stage, item/event art, menus, accessibility cues. |
-| Audio | **TBD** | **TBD** | SFX, crowd reactions, music direction, mixing, and asset provenance. |
+| Development leadership and programming | **Francis — lead developer**; **Carlos — co-lead developer** | **TBD** | Direct programming with AI/LLMs as primary code generators; retain integration, review, testing and delivery responsibility. Individual task assignments and capacity are not recorded. |
+| UI design | **Shanti** | **TBD** | Game UI design and related visual work; human-created without AI asset generation. |
+| Game audio | **Shanti** | **TBD** | Human-created game audio; no AI-generated audio. |
+| Game maps and assets | **Jorge and Ivie** | **TBD** | Human-created maps, characters, obstacles, traps, effects and related game assets; no AI asset generation. |
+| Other production | **Human team; individual assignments TBD** | **TBD** | Other production work; no individual creator or assignment is inferred. |
 | QA and balance | **TBD** | **TBD** | Test matrix, local multiplayer sessions, defect log, performance notes, balance evidence. |
 | Compliance and media | **TBD** | **TBD** | Forms, AI/asset register, cultural review, synopsis, trailer, demo video, and screenshots. |
 
@@ -29,7 +30,7 @@ Fill names before production work begins. A person may hold more than one role o
 
 ### Team ownership and capacity
 
-Per the user's October 13 direction, team assignments and available hours will be handled privately and are not recorded in this repository. The TBD role sheet above is preserved. No membership, registration, ownership, reviewer, or capacity claim is made; P00-T01 and P00-T02 remain open.
+Historical record — October 13, 2026, before Francis supplied current roles: the user directed that assignments and available hours be handled privately, so the then-current TBD role sheet and the statement that names were not recorded were accurate at that time. Current roles supplied afterward are shown in the role sheet above. No surnames or legal identities, membership/registration status, coach details, audio backup/review arrangements, hours, reviewer identities or capacity are inferred. At the earlier snapshot, no audio assignment had been supplied; Shanti's current audio role is recorded above. P00-T01 and P00-T02 remain open.
 
 ### Authority and release manifest
 
@@ -39,7 +40,7 @@ The release target below reuses the October 13 approval evidence already recorde
 
 | Disposition | Recorded target | Implementation / verification state at this baseline |
 |---|---|---|
-| **Required** | Team-authored local 2–4 player core loop; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. P02 provides a diagnostic input/movement slice; no required item, complete mode, stack, match loop, tutorial or product UI is implemented/runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
+| **Required** | Team-directed local 2–4 player core loop under the standing AI-assisted programming workflow; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. P02 provides a diagnostic input/movement slice; no required item, complete mode, stack, match loop, tutorial or product UI is implemented/runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
 | **Should** | Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Include/defer decision remains pending before feature freeze. Not promoted by this baseline. |
 | **Conditional finalist** | Qualification-dependent finalist materials and demonstration work. | Inactive unless the team qualifies. |
 | **Expansion** | The other 28 catalog families, extra stages/events, and unapproved event pairs. | Outside submission obligations; not promoted. |
@@ -63,7 +64,7 @@ The user identified the current PC as the development/demo target. The following
 
 The historical P00 import results above remain unchanged. New P01 checks on the working project are recorded separately below; they do not retroactively change the P00 inspection record.
 
-**P00 exit:** not satisfied. Team ownership/capacity evidence is intentionally absent per user direction; P00-T06 also awaits its named owner and physical-device verification. Matching templates, working-project import, and a local export/runtime smoke check are now evidenced under P01. Keyboard details, physical controller inventory/testing, independent review and performance remain open. See [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness) for task-level status and blockers.
+**P00 exit:** not satisfied. Some current development and production roles are now recorded, but the complete ownership/capacity evidence (including registration, hours, review assignments and remaining workstream coverage) is incomplete. P00-T06 also awaits its named owner and physical-device verification. Matching templates, working-project import, and a local export/runtime smoke check are now evidenced under P01. Keyboard details, physical controller inventory/testing, independent review and performance remain open. See [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness) for task-level status and blockers.
 
 ### P01 foundation and export evidence
 
@@ -71,7 +72,7 @@ The historical P00 import results above remain unchanged. New P01 checks on the 
 
 P01 created the diagnostic harness, typed config/profile resources, content validation and seeded streams, three placeholder-only fixtures, Windows preset, and headless tests. Godot import/parse, test script, runtime smoke, formatting and lint checks passed. The release export created `build/tilaok-p01.exe`; the executable opened a responsive window and exited after a normal close request. Logs and test boundaries are linked from [PHASETASK P01](PHASETASK.md#p01--project-foundations) and [PLAYTEST](PLAYTEST.md#p01-foundation-verification).
 
-Codex authored the P01 scripts/scenes/tests by the user's explicit exception. This is disclosed and is not described as team-authored; team review and competition code-originality eligibility remain unconfirmed. Placeholder rooms are not gameplay. No controller, multiplayer, performance, clean-PC, or final-release evidence is implied. P00-T02 remains open and is not a prerequisite to P01 implementation; P00-T06 remains open until its owner/device/toolchain verification is completed.
+Codex generated the P01 scripts/scenes/tests under the task authorization and internal policy in force at that time; see the historical disclosure in `AI_USAGE.md`. This is not described as manually team-written. P01-T02's human review evidence remains open; competition interpretation and submission obligations remain separate. Placeholder rooms are not gameplay. No controller, multiplayer, performance, clean-PC, or final-release evidence is implied. P00-T02 remains open and is not a prerequisite to P01 implementation. P00-T06 remains open for its required named-owner and physical-device verification; matching templates, import and an initial export are recorded as complete evidence.
 
 ## Implementation order after documentation sign-off
 
@@ -84,14 +85,14 @@ Codex authored the P01 scripts/scenes/tests by the user's explicit exception. Th
 7. Implement all three core stacks after their components pass. Karera + Lagsanay can be tested earlier once both work; Kangaroo-dependent stacks wait for Kangaroo.
 8. Complete all eight targeted families and applicable approved variants, art/audio, performance and submission evidence where dependencies permit. Bubble capture stays last; stacking remains release scope.
 
-No step is evidence of completion until it has the required team-written implementation and `PLAYTEST.md` evidence.
+No step is evidence of completion until the implementation and required `PLAYTEST.md` evidence are actually verified. Programming may be AI-assisted under the standing workflow; do not claim human review unless it occurred.
 
 ## Feature gates
 
 | Gate | Entry condition | Exit condition |
 |---|---|---|
 | Documentation sign-off | GDD, item, stage, UI, asset, production, submission, and verification documents reviewed by the team. | Remaining unknowns are assigned an owner or explicitly deferred. |
-| Core loop | Team-authored project and basic player controller exist. | 2–4 local players can complete Pugad → Place → Karera → results → next round without duplicate placement/scoring. |
+| Core loop | Project and basic player controller exist, with implementation provenance recorded. | 2–4 local players can complete Pugad → Place → Karera → results → next round without duplicate placement/scoring. |
 | Lagsanay | Core loop and scoring work. | Tag, taya timer, elimination placement, Last Cluck, and 2/3/4-player tests pass. |
 | Construction seed set | Movement, stage and atomic placement work. | Kaing/Tulay enable the base loop before Lagsanay; spring follows their validation. |
 | Remaining first item set | Core loop and relevant event foundations are stable. | Accepted items satisfy lifecycle and counterplay contracts. |
@@ -121,7 +122,7 @@ A feature may enter team implementation only when it has:
 
 A feature is done only when:
 
-- team-written implementation is integrated into the target Godot 4.7 project;
+- implementation is integrated into the target Godot 4.7 project, with actual AI assistance and provenance disclosed;
 - its intended controls and local multiplayer behavior work for supported player counts;
 - it passes documented functional, reset, scoring, and accessibility checks;
 - new or changed assets are registered and licensed;
@@ -153,7 +154,7 @@ A smaller milestone is not a release-scope cut. Each exit is binary; functionali
 
 | Milestone | What it proves / exit checks | Not yet needed |
 |---|---|---|
-| M0 Movement room | **PARTIAL:** P02 diagnostic room has four numbered/shape-marked seats, synthetic input routing, measured full/short jump, braking, bounds, pause/reclaim state probes and fixture cleanup; physical keyboard/gamepad coverage and exported interactive input/reconnect remain open | Items, events, final art |
+| M0 Movement and stage foundations | **PARTIAL:** P02 diagnostic room has four numbered/shape-marked seats, synthetic input routing, measured movement and bounds probes; P03's protected graybox route, bounded camera and support contract passed. Physical keyboard/gamepad coverage remains open; P03 does not complete a round or item system. | Items, events, final art |
 | M1 Two-player round | Lobby → Pugad → Place → Karera → score → next round twice; one egg/placement/outcome per player; timeout/invalid feedback; move/jump/place hints visible | Lagsanay, spring, hazards, match ties |
 | M2 Persistence | Ten round resets preserve construction and never duplicate score; Kaing/Tulay boundary/one-way tests pass; then spring passes launch/reset checks | Bubble and advanced first-batch hazards |
 | M3 Three/four-player loop | Three rounds at each count; all targets visible; supported simultaneous input, slot/device rotation, disconnect/reclaim and pause/resume pass | Additional events or stages |
@@ -167,13 +168,19 @@ M1–M3 use the labeled race-only development profile. P02 is not a full lobby-t
 
 ### P02 delivery record — October 13, 2026
 
-P02 has an implemented diagnostic input/movement foundation and 8/14 task records verified. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 80 focused P02 assertions pass; the Windows export and headless startup pass. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
+P02 has an implemented diagnostic input/movement foundation and 8/14 task records verified. The fixture supports synthetic four-seat routing, identity markers, measured run/jump, pass-through bodies with contact sensing, pause/reconnect state probes, and labeled containment defect recovery. Godot 4.7.2 foundation regressions and 83 focused P02 assertions pass; the Windows export and headless startup pass. See `PLAYTEST.md` and `PHASETASK.md` for exact procedures and evidence.
 
-Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 team-authorship review and DOST eligibility remain unresolved. The user authorized the P02 AI implementation exception; that authorization does not count as team review or organizer acceptance. Do not enter P03/full-game or release status based solely on this slice.
+Physical identical-gamepad isolation, mixed input, keyboard rollover, unplug/replug, and exported interactive-input checks remain open. The P02 rendered sample is one 1152×648 graybox run, not the 1080p/late-game performance gate; no pre-P02 rendered comparison exists. P01-T02 human review evidence and competition eligibility interpretation remain unresolved. P02 was AI-generated under the authorization then in force; the standing workflow is now recorded in `AI_USAGE.md`. Neither implementation nor this policy records team review or organizer acceptance. P03 status is limited to the graybox contracts; do not treat these slices as a complete game or release candidate.
+
+### P03 graybox delivery record — October 13, 2026
+
+P03-T01–T06 are verified. The arena uses the documented 1024×512-wu bounds and protected grid, and the real P02 controller traverses the base route with collision. The bounded Play/Place camera passed 2/3/4-target extent checks, a maximum 900-wu/s launch, target lifecycle transitions and rendered 1080p/wide-window checks. Explicit support provenance/contact/invalidation passed its focused fixture matrix. The uncapped 1080p sample recorded median 0.826 ms, p95 1.426 ms, worst 6.141 ms, 67.60 MiB Godot static memory, 199.91 MiB peak working set and 250.59 MiB peak private bytes over 600 frames on the local RTX 4050 machine. A Windows Desktop export and three-frame headless startup passed. Exact records are in `PLAYTEST.md`, `PHASETASK.md` and `docs/evidence/p03/2026-10-13_p03_verification.md`.
+
+This is diagnostic geometry and fixture-contract evidence. It is not player-feel or final-art review, late-game stress, Pugad/atomic placement, production item/event implementation, full match testing, physical-device coverage, independent human review or organizer acceptance. P03 programming and test/documentation assistance is recorded in `AI_USAGE.md`; no AI-generated final art or audio was created.
 
 ## Team and integration defaults
 
-**U — UNKNOWN FACT:** all owner names and available hours remain TBD. Retain the six workstreams above; combine production with compliance/media, gameplay with integration, and art/UI with audio where capacity permits. QA/review should involve someone other than the feature author where team size allows. Do not invent team members. Each active feature needs a named registered-team owner and an explicit review responsibility.
+**U — UNKNOWN FACT:** Francis and Carlos are the supplied development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Individual task assignments, available hours, registration status and review/backup assignments remain unknown. Retain the workstreams above; combine responsibilities only where capacity permits. QA/review should involve someone other than the feature author where team size allows. Do not invent team members. Each active feature needs an assigned owner and an explicit review responsibility; record actual review only when performed.
 
 **P:** choose one gate and acceptance scenario at the start of a session. Use small feature branches and review behavior/provenance before integration. Produce a labeled daily build once runnable systems exist; record engine, build, profile, seed and blockers. A playable build launches on the selected PC, accepts its claimed devices, completes its stated loop, explains controls/results and restarts cleanly. A skeleton/import/document is never a playable build.
 
@@ -187,4 +194,4 @@ Inspection on October 12 found only a skeleton. At documentation completion on O
 
 ## Product and execution handoff
 
-Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Team owners/capacity remain privately managed and unrecorded per user direction. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.
+Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Development leads are recorded above; individual assignments/capacity remain unknown. The target PC is identified and inventoried above; keyboard rollover and physical controller verification remain open.
