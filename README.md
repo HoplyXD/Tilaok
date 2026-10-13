@@ -38,4 +38,4 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-Pre-production: reconciled specifications, PRD and phased tracker are available. The Godot project remains a skeleton with no gameplay scenes/scripts. Documentation completion is not a playable or tested game. Target engine is 4.7; inspected CLI is 4.6.3, so target toolchain and export verification remain pending.
+Pre-production: reconciled specifications, PRD and phased tracker are available. The Godot project remains a skeleton with no gameplay scenes/scripts. Documentation completion is not a playable or tested game. The intended Godot 4.7.2 executable completed a clean headless import of an isolated project copy; the PATH wrapper still launches 4.6.3. Export verification remains pending because no export preset/entry scene exists and the installed `4.7.stable` templates do not match the editor's `4.7.2.stable` version. See [P00 evidence](docs/PRODUCTION.md#p00-baseline-record) and [verification status](docs/PLAYTEST.md#current-verification-status).

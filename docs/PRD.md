@@ -44,7 +44,7 @@ Requirements below have separate scope and design labels. **REQUIRED** is submis
 
 **Acceptance:** A dated role/capacity sheet names registered members, review responsibilities and available hours through October 25; no invented names.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md). **P00 evidence — October 13, 2026:** The user directed that team assignments and capacity be handled privately and not recorded in the repository. The TBD role sheet is preserved; no names/hours or registration/reviewer claims were added. P00-T01/T02 remain open; see [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness). Runtime checks are not applicable to this team-record blocker.
 
 
 ### REQ-PROD-002 — Ratify the release manifest and document authority
@@ -55,18 +55,18 @@ Requirements below have separate scope and design labels. **REQUIRED** is submis
 
 **Acceptance:** Producer records required/Should/conditional/expansion dispositions, eight-family target and inactive R1–R4; no automatic scope cut or promotion.
 
-**Source:** [GDD.md](GDD.md); [ROADMAP.md](ROADMAP.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [ROADMAP.md](ROADMAP.md); [PRODUCTION.md](PRODUCTION.md). **P00 evidence — October 13, 2026:** The documented release target and authority chain are recorded in [PRODUCTION.md](PRODUCTION.md#p00-baseline-record) and cross-checked against GDD, ITEMS, specialized specifications, ROADMAP, and PHASETASK at source revision `fa6145839bff96ecb6e1afdb112e804bfb72260f`. Existing GDD/PRD approval statements were reused; no approver was named and no new ratification is claimed. P00-T03/T04 remain open pending producer confirmation/provenance; see [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness). No gameplay implementation is claimed.
 
 
 ### REQ-PROD-003 — Resolve toolchain and hardware facts
 
 **Scope:** REQUIRED · **Design status:** UNKNOWN · **Owner role:** Producer (name TBD).
 
-**Expected behavior:** Target remains Godot 4.7, but inspected CLI is 4.6.3 and gdlint/gdformat are 4.5.0. Confirm intended binary, matching export templates, target OS/CPU/GPU/RAM/display, keyboard layout and controller models/connections. Any version change needs a separately recorded decision.
+**Expected behavior:** Target remains Godot 4.7. The intended console binary is now user-identified in `D:\Downloads` and reports 4.7.2; the PATH wrapper remains 4.6.3, another installed executable reports 4.5.1, and gdlint/gdformat report 4.5.0. Confirm exact template compatibility, target OS/CPU/GPU/RAM/display, keyboard layout and physical controller models/connections. Any version change needs a separately recorded decision.
 
 **Acceptance:** Named integration owner records executable/version/template paths and hardware/device inventory; target import and empty export checks either pass with logs or remain blocked with a reason.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [PLAYTEST.md](PLAYTEST.md); [../tilaok!/project.godot](../tilaok!/project.godot). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until suitable team-authored build/hardware exists. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [PLAYTEST.md](PLAYTEST.md); [../tilaok!/project.godot](../tilaok!/project.godot). **P00 evidence — October 13, 2026:** Exact paths/versions, target-PC observations, generic keyboard enumeration, absent controller enumeration, installed `4.7.stable` templates (mismatched with editor `4.7.2.stable`), missing export preset/entry scene, and test outcomes are recorded in [PRODUCTION.md](PRODUCTION.md#p00-baseline-record) and [PLAYTEST.md](PLAYTEST.md#p00-production-readiness-evidence). A fresh isolated-copy Godot 4.7.2 import passed; a separate editor invocation logged an error/warning; no export or physical input test was performed. P00-T05/T06 remain open pending matching templates/export prerequisites, physical inventory, and owner/reviewer confirmation. No software was installed and no engine setting changed.
 
 ## 2. Product identity, players and terminology
 
@@ -1532,8 +1532,8 @@ There are eight calendar days from the baseline to freeze and twelve to submissi
 |---|---|
 | Eight initial families | October 13 approved submission target; Producer must approve any later cut, Bula first review candidate. |
 | UI priority / tally | Title/results/Library/essential cues required; tally session-only Should; GDD/ROADMAP aligned in this task. |
-| Engine and equipment | UNKNOWN, Integration/Producer: record intended binary/templates and actual target/device inventory before coverage claims. |
-| Staffing/time | UNKNOWN, Producer: name registered owners/reviewers and realistic hours before committing implementation capacity. |
+| Engine and equipment | PARTIAL, Integration/Producer: intended Godot 4.7.2 binary and target PC are identified; exact template compatibility, export setup, keyboard details, and physical controller inventory remain open. See P00 evidence in PRODUCTION.md/PLAYTEST.md. |
+| Staffing/time | UNKNOWN, user-managed privately by direction; no roster, reviewer, registration, or capacity data is recorded in the repository. P00-T01/T02 remain open. |
 | Final 2D style/font/music/cultural reviewer | Art/UI, Audio, Compliance: select/register/review before release assets; does not block geometric movement testing. |
 | Tulay vertical orientation | Conditional controller-support gate; horizontal approved lengths remain targeted. |
 | Wave numerical equality tolerance | PROTOTYPE—UNTESTED; Gameplay/QA: boundary/contact tests; no player-visible grace or changed rule implied. |

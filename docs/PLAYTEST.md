@@ -4,16 +4,28 @@ _Plan only, 2026-10-12. No runnable project or observed gameplay results were pr
 
 ## Current verification status
 
-The repository contains a Godot project skeleton at `tilaok!/project.godot` and its project icon, but no scenes, scripts, test framework, export preset, gameplay assets, or configured build pipeline were found. The team has confirmed Godot 4.7 as the target. A headless editor initialization/import was run with the available Godot 4.6.3 CLI and completed successfully, but this does not verify the project on its target engine. This import check is not a playable build check: there is no runtime gameplay, item harness, gameplay test result, or performance baseline to report. Do not convert the import result into a passing gameplay claim.
+The repository contains a Godot project skeleton at `tilaok!/project.godot` and its project icon, but no scenes, scripts, test framework, export preset, gameplay assets, or configured build pipeline were found. The user identifies Godot 4.7 in `D:\Downloads` as the intended toolchain and the current PC as the target. A fresh isolated-copy import with Godot 4.7.2 completed with exit code 0 and no logged warnings/errors. A separate editor initialization against the working project exited 0 but emitted an engine error and shutdown-thread warning; both outcomes are recorded below. Neither check demonstrates a playable build: no gameplay, item harness, controller test, or performance baseline exists.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
-| Headless project initialization/import | **PASSED** | `godot --headless --path "tilaok!" --editor --quit`, Godot 4.6.3; completed filesystem scan, icon import, and editor initialization with no errors/warnings in captured output. |
-| Target-engine initialization on Godot 4.7 | **COULD NOT RUN** | Godot 4.7 is confirmed as the target, but the available CLI is Godot 4.6.3. |
+| Historical headless project initialization/import | **PASSED** | `godot --headless --path "tilaok!" --editor --quit`, Godot 4.6.3; completed filesystem scan, icon import, and editor initialization with no errors/warnings in the captured historical output. This is not target-engine validation. |
+| Target Godot 4.7.2 fresh import | **PASSED** | Godot 4.7.2 imported `icon.svg` in a fresh temporary copy using `--headless --path <isolated-copy> --import --quit`; exit code 0, no warnings/errors. [Full log](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log). |
+| Godot 4.7.2 editor initialization on working project | **FAILED** | `--headless --path "tilaok!" --editor --quit`; exit code 0, but output includes `ERROR: Parameter "singleton" is null` and a thread-shutdown warning. [Full log](evidence/p00-import-godot-4.7.2-2026-10-13.log). Do not treat this invocation as clean editor verification. |
 | Runtime/gameplay, item harnesses, local multiplayer | **COULD NOT RUN** | No scenes or scripts exist. |
 | GDScript lint/format | **COULD NOT RUN** | No GDScript paths exist. |
-| Export / exported Windows build | **COULD NOT RUN** | No export preset or verified templates. |
-| Playtest/performance baseline | **COULD NOT RUN** | No runnable gameplay or selected target PC. |
+| Export / exported Windows build | **COULD NOT RUN** | No `export_presets.cfg` or entry scene; installed templates report `4.7.stable`, which does not match the selected editor's `4.7.2.stable` version identifier. Matching templates are absent. No temporary export fixture was created. |
+| Physical keyboard/controller validation | **COULD NOT RUN** | Windows enumerated keyboard devices but no gamepad/controller; keyboard model/layout and actual button mapping are unknown. Device enumeration is not an input test. |
+| Playtest/performance baseline | **COULD NOT RUN** | No runnable gameplay. The user selected the current PC as target; specs are recorded in `PRODUCTION.md`, but performance remains unmeasured. |
+
+## P00 production-readiness evidence
+
+**Date:** October 13, 2026.
+
+**Inspection revision:** `fa6145839bff96ecb6e1afdb112e804bfb72260f` (`origin/main` before P00 documentation edits). The intended console executable reports `4.7.2.stable.official.ed1daf0bf`. The user-reported current PC target and observed system inventory, all discovered Godot executables, template paths, lint tools, and missing export setup are recorded in [PRODUCTION.md](PRODUCTION.md#p00-baseline-record).
+
+The clean target import used a temporary copy of `project.godot`, `icon.svg`, and `icon.svg.import`, avoiding any claim that gameplay or a production build was tested. It completed filesystem scan and icon reimport with no warnings/errors. The direct editor invocation on the working checkout is retained as a separate failed diagnostic; it returned exit 0 but logged both an error and warning. A cached import repeat is preserved in [its log](evidence/p00-import-only-godot-4.7.2-2026-10-13.log). No export was attempted because there is no export preset or entry scene and matching 4.7.2 templates are absent.
+
+Observed machine details do not establish which physical keyboard layout or controllers the team will use. No controller was found in the queried Windows device inventory. Button/axis mapping, rollover, simultaneous input, reconnect behavior, and multi-controller ownership remain untested. Performance budgets remain UNMEASURED.
 
 ## Completion status vocabulary
 
@@ -60,7 +72,7 @@ Record build/commit, test date, local player count, input devices, scenario, ite
 
 ## Performance measurement plan
 
-Provisional targets from the approved design plan: **60 FPS / 16.67 ms frame time at 1080p** on an identified team PC; **512 MiB process memory** provisional ceiling; **0 B/s gameplay networking** (local-only). These are proposed budgets, not measured results, and the actual target hardware remains unknown.
+Provisional targets from the approved design plan: **60 FPS / 16.67 ms frame time at 1080p** on the identified target PC; **512 MiB process memory** provisional ceiling; **0 B/s gameplay networking** (local-only). The user selected the current PC and its observed specifications are in `PRODUCTION.md`; these targets remain proposed budgets, not measured results.
 
 For base, representative four-player, and worst-case 12-round scenes, record CPU/GPU if available, OS, CPU/GPU/RAM, resolution, build type, duration, persistent item count, transient projectile/bubble count, and enabled event. Report frame-time median/p95/worst spike, process memory, and object/node counts. Compare before/after repeated match restarts. Profile a normal four-player match and stress at up to 48 placements before cleanup, plus separately bounded transients. Do not optimize from node-count assumptions alone; use an observed profiler capture. If target hardware is not selected, mark baseline **COULD NOT RUN — target not specified**.
 
@@ -105,7 +117,7 @@ Final task checks are listed here. Earlier import evidence above belongs to its 
 
 | Check | Status | Evidence / boundary |
 |---|---|---|
-| Repository/toolchain reinspection | PASSED | Skeleton only; no gameplay scripts/scenes; Godot CLI 4.6.3 versus declared 4.7; gdlint/gdformat 4.5.0; merged-PR query empty |
+| Historical repository/toolchain reinspection (prior documentation run) | PASSED | At that recorded inspection: skeleton only; no gameplay scripts/scenes; PATH Godot CLI 4.6.3 versus declared 4.7; gdlint/gdformat 4.5.0; merged-PR query empty. Current toolchain findings are in the P00 record above. |
 | Movement equations and paper dimensions | PASSED | Recomputed g=1875 wu/s², impulse=600 wu/s, flight≈0.5954 s; raised reach 134.1 wu exceeds 104 wu candidate travel; descending shortcut reach 189.2 wu exceeds 168 wu; padded world fits viewport. Collision safety remains untested |
 | Binding logic / dependency order / inactive modes | PASSED | Distinct keyboard seat bindings, phase-gated shared actions and system Escape; construction before Lagsanay; stacks after components; disabled weights filtered; required missing release modes reject configuration. Documentation review only |
 | Legal placement average enumeration | PASSED | All current non-winning tie groups fit eighth units, including three-way places 2–4; first-place averages excluded by Last Cluck |

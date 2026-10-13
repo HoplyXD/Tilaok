@@ -21,6 +21,50 @@ Fill names before production work begins. A person may hold more than one role o
 | QA and balance | **TBD** | **TBD** | Test matrix, local multiplayer sessions, defect log, performance notes, balance evidence. |
 | Compliance and media | **TBD** | **TBD** | Forms, AI/asset register, cultural review, synopsis, trailer, demo video, and screenshots. |
 
+## P00 baseline record
+
+**Date:** October 13, 2026.
+
+**Source revision:** `fa6145839bff96ecb6e1afdb112e804bfb72260f` (`origin/main` at inspection). P00 work is isolated on `feat/p00-production-readiness`. The original Desktop checkout remains at detached `791084a` with its user changes preserved. The Markdown inventory at checkout creation contains 18 project files: `AGENTS.md`, `CLAUDE.md`, `README.md`, and `docs/{AI_USAGE,ASSETS,COMPETITION,GDD,INDEX,ITEMS,PHASETASK,PLAYTEST,PRD,PRODUCTION,PROTOTYPE_DEFAULTS,ROADMAP,STAGE_AND_PLACEMENT,SUBMISSION,UI_TUTORIAL}.md`. Git internals are excluded; no `.godot` cache or third-party `addons` directory existed at inventory time. Godot's later diagnostics created only an ignored `.godot` cache in this worktree.
+
+### Team ownership and capacity
+
+Per the user's October 13 direction, team assignments and available hours will be handled privately and are not recorded in this repository. The TBD role sheet above is preserved. No membership, registration, ownership, reviewer, or capacity claim is made; P00-T01 and P00-T02 remain open.
+
+### Authority and release manifest
+
+Authority for this baseline is reconciled as follows: **GDD** governs gameplay; specialized specifications elaborate their domains consistently; **PROTOTYPE_DEFAULTS** contains untested starting points; **ROADMAP** governs release priority and schedule; **PRD** consolidates requirements; **PHASETASK** records execution and verification evidence. A contradiction requires an explicit decision against the governing source; it does not promote a proposal or silently revise gameplay.
+
+The release target below reuses the October 13 approval evidence already recorded in the GDD, PRD, and ROADMAP. This entry records that baseline and does not create a new ratification or identify an unnamed approver.
+
+| Disposition | Recorded target | Implementation / verification state at this baseline |
+|---|---|---|
+| **Required** | Team-authored local 2–4 player core loop; Karera and scoring; Lagsanay; independent Kangaroo; the three approved event stacks; tutorial/onboarding; title/results, Library, settings/help, and essential audio/visual cues; all eight first-batch families (Hollow Blocks / Kaing Stack, Tulay na Kawayan, Gulong Talon, Trumpo sa Riles, Parol Pulse, Bula-Bulaklak, Tsinelas Launcher, Walis Cleanup) and applicable approved variants. Tulay vertical orientation remains conditional on controller-support verification. | Targets only. The project remains a skeleton; no gameplay item, mode, stack, or UI is implemented or runtime-enabled. Variant contracts remain in `ITEMS.md` and `PRD.md`. |
+| **Should** | Langit-Lupa; richer skins/accessories; enhanced crowd audio; Barya; reviewed “Alam mo ba?” cards; session-only local win tally. | Include/defer decision remains pending before feature freeze. Not promoted by this baseline. |
+| **Conditional finalist** | Qualification-dependent finalist materials and demonstration work. | Inactive unless the team qualifies. |
+| **Expansion** | The other 28 catalog families, extra stages/events, and unapproved event pairs. | Outside submission obligations; not promoted. |
+
+R1–R4 remain inactive. No family is cut, no backlog item is promoted, and no prototype profile changes the release target. The uncovered same-step ordering among command evaluation, timeout, pass, goal, and support destruction remains assigned to [REQ-EVENT-002](PRD.md#req-event-002--review-unresolved-simultaneous-terminal-ordering) / [P12-T03](PHASETASK.md#p12-t03) and [P12-T04](PHASETASK.md#p12-t04); existing recorded-time/tie rules remain active until that review. Prototype budgets remain **UNMEASURED**: 60 FPS / 16.67 ms at 1080p, provisional 512 MiB process memory, and 0 B/s gameplay networking.
+
+### Toolchain and target-PC inventory
+
+The user identified the current PC as the development/demo target. The following are local observations, not controller compatibility or gameplay-performance results.
+
+| Area | Observed / reported fact | Evidence boundary |
+|---|---|---|
+| Target PC | User-reported target: current PC. Windows reports Acer Nitro ANV15-51; Windows 10 Home Single Language, DisplayVersion 25H2, build 26200, 64-bit; Intel Core i5-13420H (8 cores / 12 logical processors); 34,049,220,608 bytes RAM (about 31.7 GiB); NVIDIA GeForce RTX 4050 Laptop GPU and Intel UHD; reported current output 1920×1080. | OS/API inventory only; performance is unmeasured. The OS product/build fields are recorded as reported by Windows and not independently reconciled. |
+| Keyboard | Windows enumerated a Standard PS/2 Keyboard and HID Keyboard Device entries. | Physical model, layout, rollover, and intended player assignment are unknown; no key-chord test was performed. |
+| Controllers | No gamepad/controller appeared in the queried Windows device inventory. | No model, count, connection type, button mapping, simultaneous-input, reconnect, or multi-controller test is confirmed. |
+| Intended Godot | User reported Godot 4.7 in `D:\Downloads`; both `Godot_v4.7.2-stable_win64_console.exe` and its GUI sibling are present and report `4.7.2.stable.official.ed1daf0bf`. | The 4.7.2 console binary was used for the fresh diagnostic import below. |
+| PATH Godot | `C:\Users\roman\tools\bin\godot.cmd` invokes `C:\Users\roman\Downloads\Godot_v4.6.3-stable_win64_console.exe`; `godot --version` reports `4.6.3.stable.official.7d41c59c4`. `C:\Users\roman\Desktop\Godot\godot.exe` reports `4.5.1.stable.official.f62fdbde1`. | Do not use the PATH wrapper as evidence of the intended editor. |
+| Export templates | `C:\Users\roman\AppData\Roaming\Godot\export_templates\4.7.stable` (`version.txt`: `4.7.stable`) and `4.5.1.stable` are installed. | **Mismatch confirmed:** the selected editor identifies as `4.7.2.stable`, while the installed templates identify as `4.7.stable`. Godot's version identifier includes the patch version and official templates must match the editor version ([Godot build system](https://docs.godotengine.org/en/latest/engine_details/development/compiling/introduction_to_the_buildsystem.html), [4.7.2 downloads](https://godotengine.org/download/archive/4.7.2-stable/)). Matching 4.7.2 templates are not installed. No template was installed or changed. |
+| Lint / format | `gdlint.exe` and `gdformat.exe` at `C:\Users\roman\AppData\Local\Programs\Python\Python312\Scripts\` both report 4.5.0. | No GDScript files exist, so lint/format were not run. |
+| Project/export setup | `tilaok!/project.godot` declares feature `4.7` and GL Compatibility. No `run/main_scene`, `export_presets.cfg`, `.gd`, `.tscn`, or `.scn` file exists. | Empty export was not attempted: there is no entry scene or preset, and matching 4.7.2 templates are not installed. |
+
+Godot 4.7.2 ran a fresh `--headless --path <isolated-copy> --import --quit` against a temporary copy of the project settings and icon. It scanned the project and imported `icon.svg`, exited 0, and logged no errors or warnings. See the [fresh-import log](evidence/p00-clean-import-godot-4.7.2-2026-10-13.log). A separate `--editor --quit` invocation against the working project also exited 0 but logged `ERROR: Parameter "singleton" is null` and a thread-shutdown warning; see the [editor-initialization log](evidence/p00-import-godot-4.7.2-2026-10-13.log). That noisy invocation is not counted as the clean import result. A cached `--import --quit` repeat exited 0 without reimport; see [cached-import log](evidence/p00-import-only-godot-4.7.2-2026-10-13.log). No export, runtime, gameplay, physical-device, or performance test was run.
+
+**P00 exit:** not satisfied. Team ownership/capacity evidence is intentionally absent per user direction; matching 4.7.2 templates/export setup, keyboard details, and physical controller inventory/testing remain open. See [PHASETASK](PHASETASK.md#p00--baseline-and-production-readiness) for task-level status and blockers and [PLAYTEST](PLAYTEST.md) for dated check results.
+
 ## Implementation order after documentation sign-off
 
 1. Verify the intended engine toolchain; team-author input/movement, camera and graybox using PROTOTYPE_DEFAULTS.md. No engine-version change is implied.
@@ -85,7 +129,7 @@ A feature is done only when:
 | Persistent stage clutter | Unfair locks, unreadability, performance problems. | Atomic placement rules, Walis Cleanup, item caps, protected zones, and repeated-match profiling. |
 | Cultural claim error | Theme and credibility risk. | Use the cultural ledger, evidence, and native-speaker review. |
 | Asset/compliance gap | Competition eligibility risk. | Register every imported asset and keep Form 03 evidence current. |
-| Local-device limits | Controls or performance fail at demo time. | Identify the target team PC and test all intended controllers early. |
+| Local-device limits | Controls or performance fail at demo time. | Target PC is identified in P00; confirm available controllers and test them early. |
 
 ## Immediate non-code tasks
 
@@ -93,7 +137,7 @@ A feature is done only when:
 2. Review the full documentation package and resolve only player-facing wording changes.
 3. Choose the 2D art direction and font approach; record both in `ASSETS.md`.
 4. Identify a native-speaker/cultural reviewer for final public copy.
-5. Identify the target team PC and available controllers for future verification.
+5. Confirm available controller models/connections and physical-test availability for the identified target PC.
 
 ## Prototype milestones — all pending implementation
 
@@ -129,4 +173,4 @@ Inspection on October 12 found only a skeleton. At documentation completion on O
 
 ## Product and execution handoff
 
-Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. All owners and physical hardware facts remain TBD until the team supplies evidence.
+Use [PRD](PRD.md) for consolidated requirements and [PHASETASK](PHASETASK.md) for stable task IDs and evidence. Title/results, Library, settings/help, tutorial and essential audio/visual cues are required. Session-only win tally, enhanced crowd, Barya, Langit-Lupa, richer cosmetics and reviewed educational cards are Should; decide include/defer before freeze. No source decision checkbox is implementation evidence. Registration/forms/synopsis/storyboards and provenance preparation run early in parallel; final media uses the tested RC. Team owners/capacity remain privately managed and unrecorded per user direction. The target PC is identified and inventoried above; physical keyboard/controller models and input verification remain unknown.

@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-13 — approved scope/wording reconciliation; gameplay values unchanged._
+_Last updated: 2026-10-13 — approved scope/wording reconciliation and P00 target-PC confirmation; gameplay values unchanged._
 
 ## 1. Pitch
 A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
@@ -230,7 +230,8 @@ Driven by the competition criteria (see `docs/COMPETITION.md`):
 - [x] Sudden Death: Lagsanay between the tied players
 - [x] Art: 2D (exact style undecided)
 - [ ] Final item enablement and Pugad egg count/weighting (placeholder: players + 2); see `docs/ITEMS.md`
-- [ ] Target team PC and confirmed performance/memory limits
+- [x] Target team PC selected: current Acer Nitro ANV15-51; see `docs/PRODUCTION.md` for observed specifications.
+- [ ] Confirmed performance/memory limits; targets remain unmeasured (see `docs/PLAYTEST.md`).
 - [ ] Exact pixel grid and player dimensions when the Godot project exists
 - [ ] Audio direction
 - [ ] Team size and roles (later)
