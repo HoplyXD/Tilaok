@@ -46,10 +46,7 @@ static func enabled_variants(profile_id: String) -> PackedStringArray:
 	var keys := PackedStringArray()
 	if profile_id != ITEMS_LAB:
 		return keys
-	for family_id in ItemApprovedVariants.TABLE:
-		for variant_id in ItemApprovedVariants.TABLE[family_id] as Dictionary:
-			keys.append("%s.%s" % [family_id, variant_id])
-	return keys
+	return BlockCatalog.lab_keys()
 
 
 ## Applies the profile's pool and PROVISIONAL weights to a (snapshot) tuning copy.

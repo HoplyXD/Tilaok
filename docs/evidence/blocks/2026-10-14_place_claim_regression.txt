@@ -1,0 +1,38 @@
+Build: working tree on a9eb75f; Godot 4.7.stable.official.5b4e0cb0f; 2026-10-14; headless --fixed-fps 60; synthetic input
+run_blocks_tests exit=0 | BLOCKS_TESTS checks=110 failures=0
+run_foundation_tests exit=0 | Harness lifecycle checks complete: 0 failure(s).
+run_match_ui_binding_tests exit=0 | MATCH_UI_BINDING_TESTS checks=185 failures=0
+run_match_ui_mode_tests exit=0 | MATCH_UI_MODE_TESTS checks=62 failures=0
+run_match_ui_tests exit=0 | MATCH_UI_TESTS checks=198 failures=0
+run_p02_tests exit=0 | P02_TESTS checks=83 failures=0
+run_p02_wall_tests exit=0 | P02_WALL_TESTS checks=85 failures=0
+run_p03_tests exit=0 | P03_TESTS checks=103 failures=0
+run_p04_tests exit=1 | P04_TESTS checks=269 failures=2
+run_p05_tests exit=0 | P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests exit=0 | P06_TEST_SUMMARY checks=97 failures=0
+run_p07_reset_audit exit=0 | P07_RESET_AUTOMATION resets=10 checks=172 failures=0 participants=synthetic
+run_p08_tests exit=0 | P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests exit=0 | P09_TEST_SUMMARY checks=77 failures=0
+run_p10_tests exit=0 | P10_TESTS checks=432 failures=0
+run_p11_tests exit=0 | P11_TEST_SUMMARY checks=78 failures=0
+run_place_claim_tests exit=0 | PLACE_CLAIM_TESTS checks=12 failures=0
+run_tutorial_gate_tests exit=0 | TUTORIAL_GATE_TESTS checks=48 failures=0 attempts=3341
+run_tutorial_tests exit=0 | TUTORIAL_TESTS checks=140 failures=0
+run_ui_tests exit=0 | UI_TESTS checks=448 failures=0
+run_p07_tests (rerun after updating its pool expectations to the catalog-driven selector) | P07_TESTS checks=591 failures=0
+P04: the same 2 checks that already failed on origin/main before this work.
+
+--- run_place_claim_tests
+PASS the match selector offers Spikes, Cannon and the construction blocks: ["build.hollow_blocks.cell_1x1", "build.hollow_blocks.stack_2x3", "build.bamboo_bridge.span_4x1", "build.solid_block.slab_3x1", "build.wood_box.box_2x2", "build.collapsing_block.cell_1x1", "block.spikes.main", "block.cannon.main"]
+PASS seeded Pugad eggs include Spikes and Cannon (8 variants seen)
+PASS single-size blocks are labelled by name only
+PASS the seat that confirmed first keeps a contested spot (not the lower seat number)
+PASS before anyone confirms, both players may aim at the same free spot
+PASS P2 confirms first and claims the spot
+PASS P1's ghost now shows the spot as taken by P2: Taken by P2 (first come, first served)
+PASS P1's ghost turned invalid as soon as P2 confirmed
+PASS P1 cannot confirm on the claimed spot (first come, first served)
+PASS a free spot elsewhere is still allowed
+PASS both placements commit: P2 owns the contested spot, P1 its free one
+PASS at the timer, an unconfirmed placement on a claimed spot is discarded ([1])
+PLACE_CLAIM_TESTS checks=12 failures=0

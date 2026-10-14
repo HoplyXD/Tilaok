@@ -85,7 +85,7 @@ These dimensions are **proposed logical grid cells**, not final pixel measuremen
 
 ### Approved size variants
 
-Only some families vary in size. These variants create more placement choices while keeping the selected size readable before a player picks or places it.
+Implementation note (2026-10-14): the runtime variant table is now the block scene folder (`tilaok!/scenes/blocks/`, see "Block scenes"); this design table still lists the intended sizes, and new sizes need a scene. Only some families vary in size. These variants create more placement choices while keeping the selected size readable before a player picks or places it.
 
 | Family | Visible variant sizes | Notes |
 |---|---|---|
@@ -188,9 +188,27 @@ Barya remains the race-only scoring pickup already defined in GDD §5; it is not
 
 All 36 families are approved as the Tilaok design catalog. This approval does not claim that all 36 will ship before the deadline: the eight-family first batch remains the implementation target, with the other 28 held behind scope and test gates. Before implementing mechanics, the team must choose the actual project grid/player dimensions and target PC, resolve GDD scoring/tie implementation gates, and decide final Pugad weights/caps. Event stacking is core; additional unlisted event pairs remain feature-switched off until accepted and tested. Follow the standing AI-assisted programming policy in `AI_USAGE.md`; implementation still requires approved task scope and actual verification.
 
+## Block scenes — how every placeable item is authored (2026-10-14)
+
+Requested by Jorge: every placeable item is now its own editable scene in `tilaok!/scenes/blocks/` (one scene per size variant), with a **BlockData** customization node in the style of aLima's `ArtifactScannerData`. `BlockCatalog` scans that folder (recursively) whenever item definitions load, so **dropping a new block scene into the folder makes it appear in the Pugad eggs, the Item Lab and the Library with no code, `.tres` or table edit**. The old `data/items/*.tres` families and the `ItemApprovedVariants` table were converted into these scenes (region-for-region identical; checked by a parity script during migration) and removed: the scene folder is now the documented variant table.
+
+Folders: `construction/` (Kaing 1x1 / 1x3 / 2x3, Tulay 3x1 / 4x1 / 5x1, Solid Block, Wood Box, Collapsing Block), `traps/` (Spikes, Cannon), `hazards/` (Gulong, Trumpo rails, Parol spans, Tsinelas lanes, Walis areas, Bula paths).
+
+**Scene layout** (authored at rotation 0, centred on the block root, which uses `scripts/items/blocks/stage_block.gd`):
+
+| Node | Purpose |
+|---|---|
+| `BlockData` | Block name, family/variant IDs, Library text, modes; **Placement Box Size** (columns × rows); allowed rotations; **Anchor/Gravity** (Anchored = stays in its tile, Heavy = falls but players can't push it, Light = falls and is pushed); **Effects** (Kill, Stun + stun seconds/knockback); **Special** (Spawn Projectiles, Follow Rail, Timed Hitbox, Launch, Collapse, Cleanup) and per-block overrides (-1 = global tuning); selection pool flags and weight. In the editor it draws the placement box and grid. |
+| `CollisionShape2D` children of the root | The **solid hitbox**. Independent of the placement box (a 2x2 block may have a 1x1 solid). `one_way_collision` makes a one-way platform. |
+| `BlockHitbox` (Area2D) children | **Kill / Stun / Launch** touch hitboxes and Sweep / Beam / Capture path / Cleanup area regions, each with RectangleShape2D children you resize freely. Kill and Stun act only when the block's Kill/Stun effect is on; kills are credited to the placer (Patibong), stuns are uncredited setup effects. |
+| `Visual` | Everything players see; replace with final art. Eggs and the Library show it too when no legacy painter silhouette is set. |
+| Projectile template (Spawn Projectiles) | A Node2D with a `Path2D` child the projectile follows and a `BlockHitbox` (Kill or Stun; Capture path for bubbles); its own `Visual` is shown for each live projectile. Straight paths fire like the Tsinelas lane and are stopped by solids. |
+
+To add a block: duplicate a scene in `scenes/blocks/` (e.g. `traps/spikes.tscn`), rename it, change BlockData and the shapes, save. Hitbox shapes are rectangles; keep touch hitboxes inside the placement box.
+
 ## Stage blocks — October 14, 2026
 
-Requested by Jorge on 2026-10-14 and implemented as three construction families, each with its own editable scene (collision + DEBUG visual) under `tilaok!/scenes/blocks/`. The definition footprint in `tilaok!/data/items/` is authoritative; `run_blocks_tests.gd` checks that each scene's authored collision matches it. All declare solid-side wall eligibility, `modes_allowed` karera/lagsanay, Walis removal and persistence until removed; weights are 50 like Kaing/Tulay (tunable).
+Requested by Jorge on 2026-10-14 and implemented as three construction families, each with its own editable scene (collision + DEBUG visual) under `tilaok!/scenes/blocks/`. Since the block-scene migration (see "Block scenes" above) each scene's BlockData placement box is authoritative and the scene is the only definition. All declare solid-side wall eligibility, `modes_allowed` karera/lagsanay, Walis removal and persistence until removed; weights are 50 like Kaing/Tulay (tunable).
 
 | Family / variant | Behavior | Safe start |
 |---|---|---|

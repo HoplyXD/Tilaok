@@ -9,20 +9,6 @@ extends Node
 signal item_placed(instance_id: String)
 signal item_removed(instance_id: String, reason: String)
 
-const HAZARD_PIECE_SCENE := preload("res://scenes/items/hazard_piece.tscn")
-const PIECE_SCENES := {
-	"build.hollow_blocks": preload("res://scenes/items/kaing_piece.tscn"),
-	"build.bamboo_bridge": preload("res://scenes/items/tulay_piece.tscn"),
-	"move.tire_spring": HAZARD_PIECE_SCENE,
-	"hazard.rail_trumpo": HAZARD_PIECE_SCENE,
-	"hazard.parol_pulse": HAZARD_PIECE_SCENE,
-	"hazard.slipper_launcher": HAZARD_PIECE_SCENE,
-	"hazard.bubble_planter": HAZARD_PIECE_SCENE,
-	"build.solid_block": preload("res://scenes/blocks/solid_block.tscn"),
-	"build.wood_box": preload("res://scenes/blocks/wood_box.tscn"),
-	"build.collapsing_block": preload("res://scenes/blocks/collapsing_block.tscn"),
-}
-
 var tuning: GameplayTuning
 var arena: ArenaDefinition
 var support_tracker: SupportTracker
@@ -273,20 +259,27 @@ func _materialize_placement(
 		arena.unregister_player_construction(record.instance_id)
 		return {"allowed": false, "code": "metadata", "reason": "Support metadata rejected."}
 	_serial += 1
-	# ConstructionPiece and the scene-authored stage blocks share this duck-typed interface.
-	var piece := (PIECE_SCENES[family.family_id] as PackedScene).instantiate() as Node2D
-	piece.call(
-		"configure",
-		record,
-		ItemGeometry.resolve_regions(variant, turns, tuning),
-		metadata,
-		family.wall_contact,
-		tuning
-	)
-	var behavior := ItemBehaviorFactory.create(family.family_id)
+	var piece := _instantiate_piece(family, variant)
+	if piece == null:
+		arena.unregister_player_construction(record.instance_id)
+		support_tracker.invalidate_surface(record.instance_id)
+		return {"allowed": false, "code": "scene", "reason": "Block scene could not be loaded."}
+	# A block that overrides tuning (e.g. a faster cannon) gets its own copy for its behavior.
+	var piece_tuning := tuning
+	if not variant.tuning_overrides.is_empty():
+		piece_tuning = tuning.duplicate() as GameplayTuning
+		for field in variant.tuning_overrides:
+			piece_tuning.set(field, variant.tuning_overrides[field])
+	var regions := ItemGeometry.resolve_regions(variant, turns, tuning)
+	piece.call("configure", record, regions, metadata, family.wall_contact, piece_tuning)
+	var behavior := ItemBehaviorFactory.create_for(family)
 	if behavior != null and piece is HazardPiece:
-		behavior.configure(record, ItemGeometry.resolve_regions(variant, turns, tuning), tuning)
-		(piece as HazardPiece).attach_behavior(family, variant, behavior, tuning)
+		behavior.stun_seconds = float(variant.effect_params.get("stun_seconds", 1.0))
+		behavior.stun_knockback_wu_s = float(
+			variant.effect_params.get("stun_knockback_wu_s", 480.0)
+		)
+		behavior.configure(record, regions, piece_tuning)
+		(piece as HazardPiece).attach_behavior(family, variant, behavior, piece_tuning)
 	if piece.has_method("set_block_active"):
 		piece.call("set_block_active", in_play)
 	record.node = piece
@@ -295,6 +288,14 @@ func _materialize_placement(
 	item_placed.emit(record.instance_id)
 	result["instance_id"] = record.instance_id
 	return result
+
+
+## Every variant is a block scene in scenes/blocks/ (BlockCatalog records its path).
+func _instantiate_piece(_family: ItemFamilyDefinition, variant: ItemVariantDefinition) -> Node2D:
+	if variant.scene_path.is_empty():
+		return null
+	var packed := load(variant.scene_path) as PackedScene
+	return packed.instantiate() as Node2D if packed != null else null
 
 
 ## The removal API Walis Cleanup (P10) will call. force is for reset/teardown only.
@@ -405,7 +406,7 @@ func piece_for(instance_id: String) -> ConstructionPiece:
 	return (pieces[instance_id] as PlacedItem).node as ConstructionPiece
 
 
-## Any placed node (ConstructionPiece or a scene-authored stage block).
+## Any placed node (every placed block is a StageBlock, which is a ConstructionPiece).
 func node_for(instance_id: String) -> Node2D:
 	if not pieces.has(instance_id):
 		return null

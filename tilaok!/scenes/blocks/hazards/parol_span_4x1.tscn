@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_ubdxa"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_vplog"]
+[ext_resource type="Resource" path="res://data/items/visual/hazard.parol_pulse.tres" id="3_hmh4r"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_51hji"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xpt5f"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jrigg"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_icgqd"]
+size = Vector2(128, 64)
+
+[node name="ParolSpan4x1" type="AnimatableBody2D" unique_id=1490565831]
+sync_to_physics = false
+script = ExtResource("1_ubdxa")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=125803304]
+script = ExtResource("2_vplog")
+block_name = "Parol Pulse"
+family_id = "hazard.parol_pulse"
+variant_id = "span_4x1"
+category = "hazard"
+catalog_order = 4
+library_tell = "Two lantern posts; a dotted line, then a thickening charge line, then a solid beam band."
+library_counterplay = "Cross while the beam is inactive, or use solid cover that truly blocks it."
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+placement_size = Vector2i(4, 1)
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array()
+reserve_only_solid_cells = true
+wall_slide_eligible = false
+counts_as_support = false
+in_main_game = false
+weight_tuning_key = &"item_parol_weight"
+special = 3
+preview_silhouette = "parol"
+preview_cue = "beam_phase"
+visual_set = ExtResource("3_hmh4r")
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=1009693121]
+position = Vector2(-96, 0)
+shape = SubResource("RectangleShape2D_xpt5f")
+
+[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="." unique_id=1283885332]
+position = Vector2(96, 0)
+shape = SubResource("RectangleShape2D_jrigg")
+
+[node name="BeamHitbox" type="Area2D" parent="." unique_id=1660879833]
+script = ExtResource("4_51hji")
+role = 4
+
+[node name="Shape" type="CollisionShape2D" parent="BeamHitbox" unique_id=28389817]
+shape = SubResource("RectangleShape2D_icgqd")
+
+[node name="Visual" type="Node2D" parent="." unique_id=488633218]

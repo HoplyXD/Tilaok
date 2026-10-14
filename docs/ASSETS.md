@@ -145,6 +145,15 @@ No human art review is claimed by the P05 implementation record. P05 capture scr
 
 Cells: row 1 = idle, moving/wall-sliding right, moving/wall-sliding left, sneaking; row 2 = jump/glide still, jump/glide right, jump/glide left, (empty). Shown at ×0.25 (one cell = 128×128 wu = 2 tiles tall) and tinted by seat colour.
 
+## Block scene visuals and death sprite — 2026-10-14
+
+No production asset was created. Each block scene's `Visual` node (Polygon2D/Line2D/Label placeholders written by `tools/make_block_scenes.gd`; Solid/Wood/Collapsing visuals carried over from their earlier scenes) is a DEBUG placeholder for Jorge/Ivie to replace inside the scene. P10 hazards keep their existing PLACEHOLDER visual sets (`data/items/visual/`). The chicken death pose is Jorge's sprite sheet cell row 2, column 4 (`assets/character/Chicken Placeholder Sprite Sheet.png`, supplied by Jorge, PLACEHOLDER). `assets/character/Blocks Sprite Sheet.png` is currently a copy of the chicken sheet and is not used by the game.
+
+| Placeholder | Used in | Final owner |
+|---|---|---|
+| Spikes base + points, Cannon body/barrel/wheel and ball (`scenes/blocks/traps/`) | Spikes, Cannon | Jorge/Ivie (traps) |
+| Kaing crate slats, Tulay strip (`scenes/blocks/construction/`) | Kaing, Tulay | Jorge/Ivie (obstacles) |
+
 ## Stage tiles and block placeholders recorded — 2026-10-14
 
 No production asset was created or imported. The stage tile atlas is a flat three-colour image written by a code tool, and the block visuals are Polygon2D/Line2D/Label nodes authored in the block scenes. All are DEBUG placeholders for the art team to replace.

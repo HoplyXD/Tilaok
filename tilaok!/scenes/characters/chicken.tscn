@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/movement/chicken_controller.gd" id="1_controller"]
 [ext_resource type="Script" path="res://scripts/movement/chicken_sprite_animator.gd" id="2_animator"]
@@ -31,6 +31,10 @@ region = Rect2(512, 512, 512, 512)
 [sub_resource type="AtlasTexture" id="Atlas_air_left"]
 atlas = ExtResource("3_sheet")
 region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_dead"]
+atlas = ExtResource("3_sheet")
+region = Rect2(1536, 512, 512, 512)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_chicken"]
 animations = [{
@@ -128,6 +132,22 @@ animations = [{
 }],
 "loop": true,
 "name": &"glide_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_idle")
+}],
+"loop": true,
+"name": &"stun",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_dead")
+}],
+"loop": true,
+"name": &"dead",
 "speed": 5.0
 }]
 

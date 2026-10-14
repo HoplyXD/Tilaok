@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_4sy8y"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_7qfvx"]
+[ext_resource type="Resource" path="res://data/items/visual/utility.walis_cleanup.tres" id="3_ovr0o"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_5xilf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k1j5l"]
+size = Vector2(192, 192)
+
+[node name="WalisArea3x3" type="AnimatableBody2D" unique_id=632116792]
+sync_to_physics = false
+script = ExtResource("1_4sy8y")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=751668877]
+script = ExtResource("2_7qfvx")
+block_name = "Walis Cleanup"
+family_id = "utility.walis_cleanup"
+variant_id = "area_3x3"
+category = "utility"
+catalog_order = 6
+library_tell = "The broom outline marks every piece it will remove and every protected area it will skip."
+library_counterplay = "Place thoughtfully: cleanup is one use, a fixed area, and removed pieces never return."
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+placement_size = Vector2i(3, 3)
+rotations = PackedInt32Array(0)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+in_main_game = false
+weight_tuning_key = &"item_walis_weight"
+special = 6
+preview_silhouette = "broom"
+preview_cue = "area_sweep"
+visual_set = ExtResource("3_ovr0o")
+
+[node name="CleanupArea" type="Area2D" parent="." unique_id=70443087]
+script = ExtResource("4_5xilf")
+role = 6
+
+[node name="Shape" type="CollisionShape2D" parent="CleanupArea" unique_id=1874125029]
+shape = SubResource("RectangleShape2D_k1j5l")
+
+[node name="Visual" type="Node2D" parent="." unique_id=1521654981]

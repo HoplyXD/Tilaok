@@ -19,3 +19,14 @@ Reproduce from the repository root:
 ```
 
 Open items: human feel/balance review of glide/sneak/push/collapse timings and physical keyboard/gamepad parity (PHASETASK P02-T26). Visuals are DEBUG placeholders (see ASSETS.md).
+
+## Block scenes, Spikes, Cannon, stun and death sprite (2026-10-14, later the same day)
+
+Build: working tree on `a9eb75f`; Godot 4.7.stable.official.5b4e0cb0f; headless `--fixed-fps 60`; synthetic input. Reviewer: Claude (AI, automated).
+
+| File | What it shows | Result |
+|---|---|---|
+| [2026-10-14_block_scenes_regression.txt](2026-10-14_block_scenes_regression.txt) | All 21 headless suites after the migration | PASSED except 2 P04 checks that already failed on origin/main before this work |
+| [2026-10-14_block_scenes_tests.txt](2026-10-14_block_scenes_tests.txt) | 110 checks: drop-in scene joins catalog/pool/eggs, Heavy anchor, Spikes kill + credit, standable flipped spikes, Cannon path/kill/cover, stun knockback/freeze/immunity, death sprite | PASSED |
+| [2026-10-14_spikes_cannon_1080p.png](2026-10-14_spikes_cannon_1080p.png) | Upright and ceiling Spikes, Cannon ball in flight, stunned chicken, death pose, scene-visual eggs | Rendered |
+

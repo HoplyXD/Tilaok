@@ -9,10 +9,13 @@ const ROOM_SCENE := preload("res://scenes/fixtures/item_lab.tscn")
 const SOLID := "build.solid_block.slab_3x1"
 const BOX := "build.wood_box.box_2x2"
 const COLLAPSE := "build.collapsing_block.cell_1x1"
+const SPIKES := "block.spikes.main"
+const CANNON := "block.cannon.main"
+const KAING_1X1 := "build.hollow_blocks.cell_1x1"
 const BLOCK_SCENES := {
-	SOLID: "res://scenes/blocks/solid_block.tscn",
-	BOX: "res://scenes/blocks/wood_box.tscn",
-	COLLAPSE: "res://scenes/blocks/collapsing_block.tscn",
+	SOLID: "res://scenes/blocks/construction/solid_block.tscn",
+	BOX: "res://scenes/blocks/construction/wood_box.tscn",
+	COLLAPSE: "res://scenes/blocks/construction/collapsing_block.tscn",
 }
 const FLOOR_Y := 960.0
 const TOLERANCE := 1.0
@@ -46,8 +49,12 @@ func _run() -> void:
 	await _test_wood_box()
 	await _test_collapsing_block()
 	await _test_chicken_animations()
+	await _test_spikes()
+	await _test_cannon()
+	await _test_stun_controls_and_death()
 	room.queue_free()
 	await process_frame
+	await _test_drop_in_block()
 	print("BLOCKS_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -100,6 +107,15 @@ func _put_actor_feet(feet: Vector2) -> void:
 	room.support_tracker.invalidate_actor(actor.support_actor_id)
 
 
+## Runtime collision shapes of a placed block (rebuilt from its catalog regions).
+func _block_shapes(block: Node) -> Array[CollisionShape2D]:
+	var result: Array[CollisionShape2D] = []
+	for child in block.get_children():
+		if child is CollisionShape2D:
+			result.append(child)
+	return result
+
+
 func _body_shape() -> CollisionShape2D:
 	for child in actor.get_children():
 		if child is CollisionShape2D:
@@ -127,6 +143,252 @@ func _arrange(entries: Array) -> Array[String]:
 	items.begin_play()
 	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)
 	return ids
+
+
+# ---------------------------------------------------------------- spikes, cannon, stun, drop-in
+
+
+func _records(kind: AttributionRecord.Kind) -> Array[AttributionRecord]:
+	var result: Array[AttributionRecord] = []
+	for record in room.items.director.records:
+		if record.kind == kind:
+			result.append(record)
+	return result
+
+
+func _revive() -> void:
+	actor.lifecycle.status = PlayerLifecycleState.Status.ACTIVE
+	actor.lifecycle.terminal_reason = ""
+	actor.clear_stun()
+
+
+## Places entries as one fresh set (owner seat per entry) and waits out the activation grace.
+func _arm(entries: Array, owner: int = 1) -> Array[String]:
+	_release_all()
+	room.items.reset_match()
+	room.items.director.records.clear()
+	var ids: Array[String] = []
+	var no_rects: Array[Rect2] = []
+	for entry in entries:
+		var turns := int(entry[2]) if entry.size() > 2 else 0
+		var result := room.items.place(str(entry[0]), entry[1] as Vector2i, turns, owner, no_rects)
+		_check(bool(result.allowed), "place %s at %s: %s" % [entry[0], entry[1], result.reason])
+		ids.append(str(result.get("instance_id", "")))
+	room.items.begin_play()
+	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)
+	return ids
+
+
+func _test_spikes() -> void:
+	var definitions := room.definitions
+	var spikes := definitions.find_variant(SPIKES)
+	_check(not spikes.is_empty(), "Spikes is in the catalog with no code or data edit")
+	if spikes.is_empty():
+		return
+	var regions := (spikes.variant as ItemVariantDefinition).regions
+	var kinds := {}
+	for region in regions:
+		kinds[region.kind] = region.rect_cells
+	_check(
+		(
+			kinds.get(ItemRegionSpec.Kind.SOLID) == Rect2(0, 0.5, 1, 0.5)
+			and kinds.has(ItemRegionSpec.Kind.TRIGGER)
+		),
+		"Spikes: solid bottom half and a kill hitbox, independent of its 1x1 placement box"
+	)
+	# Upright spikes on the floor: walking onto them eliminates, credited to the placer.
+	_revive()
+	var ids := _arm([[SPIKES, Vector2i(16, 14)]], 1)
+	_put_actor_feet(Vector2(14.0 * 64.0 + 32.0, FLOOR_Y))
+	await _frames(70)
+	_check(actor.lifecycle.is_terminal() == false, "a chicken beside the spikes is safe")
+	_key(KEY_D, true)
+	var died := false
+	for _frame in range(60):
+		await physics_frame
+		if actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
+			died = true
+			break
+	_key(KEY_D, false)
+	var kills := _records(AttributionRecord.Kind.ELIMINATION)
+	_check(died, "walking into the spike points eliminates the chicken")
+	_check(
+		(
+			kills.size() == 1
+			and kills[0].source_item_id == ids[0]
+			and kills[0].owner_seat == 1
+			and kills[0].credit_eligible()
+		),
+		"the spikes kill is credited to the placer (Patibong)"
+	)
+	# Ceiling spikes (turned 180): the solid half is on top and can be stood on.
+	_revive()
+	ids = _arm([[SPIKES, Vector2i(22, 10), 2]], 1)
+	var top := 10.0 * 64.0
+	_put_actor_feet(Vector2(22.0 * 64.0 + 32.0, top - 40.0))
+	await _frames(80)
+	_check(
+		(
+			not actor.lifecycle.is_terminal()
+			and actor.is_on_floor()
+			and absf(_feet_y() - top) <= TOLERANCE
+		),
+		"turned spikes: a chicken stands safely on the solid half"
+	)
+	_revive()
+	room.items.reset_match()
+
+
+func _test_cannon() -> void:
+	_revive()
+	var ids := _arm([[CANNON, Vector2i(12, 14)]], 1)
+	var cannon := room.items.piece_for(ids[0]) as StageBlock
+	var behavior := cannon.behavior as LauncherBehavior
+	_check(
+		(
+			behavior != null
+			and behavior.lane_dir == Vector2.RIGHT
+			and is_equal_approx(behavior.lane_length, 5.0 * 64.0)
+		),
+		"Cannon fires right along its 5-cell Path2D"
+	)
+	_check(
+		is_equal_approx(cannon.behavior.tuning.item_launcher_cooldown_s, 2.0),
+		"Cannon's own fire interval (2 s) overrides the global launcher cooldown"
+	)
+	_put_actor_feet(Vector2(15.0 * 64.0 + 32.0, FLOOR_Y))
+	var died := false
+	var saw_ball := false
+	for _frame in range(240):
+		_put_actor_feet(Vector2(15.0 * 64.0 + 32.0, FLOOR_Y))
+		await physics_frame
+		await process_frame
+		saw_ball = saw_ball or cannon.get_node_or_null("ProjectileVisual0") != null
+		if actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
+			died = true
+			break
+	var kills := _records(AttributionRecord.Kind.ELIMINATION)
+	_check(died, "a cannon ball eliminates a chicken in its path")
+	_check(saw_ball, "the projectile template's Visual is shown for each live ball")
+	_check(
+		not kills.is_empty() and kills[0].source_family_id == "block.cannon",
+		"the cannon kill names the cannon family"
+	)
+	# Cover: a Kaing block in the path stops the ball.
+	_revive()
+	ids = _arm([[CANNON, Vector2i(12, 14)], [KAING_1X1, Vector2i(14, 14)]], 1)
+	cannon = room.items.piece_for(ids[0]) as StageBlock
+	behavior = cannon.behavior as LauncherBehavior
+	for _frame in range(240):
+		_put_actor_feet(Vector2(16.0 * 64.0 + 32.0, FLOOR_Y))
+		await physics_frame
+	_check(
+		behavior.shots_fired >= 1 and actor.lifecycle.status == PlayerLifecycleState.Status.ACTIVE,
+		"a solid block in the path stops the ball; the chicken behind it survives"
+	)
+	_revive()
+	room.items.reset_match()
+
+
+func _test_stun_controls_and_death() -> void:
+	_revive()
+	room.items.reset_match()
+	room.items.begin_play()
+	_put_actor_feet(Vector2(736.0, FLOOR_Y))
+	await _frames(10)
+	var x_before := actor.global_position.x
+	_check(actor.apply_stun(1.0, Vector2(480.0, -240.0)), "apply_stun accepts an active chicken")
+	_key(KEY_A, true)
+	_key(KEY_W, true)
+	await _frames(20)
+	_check(
+		actor.is_stunned() and actor.global_position.x > x_before + 20.0,
+		"a stunned chicken is knocked back and ignores walking left"
+	)
+	_check(await _anim_after(1) == &"stun", "a stunned chicken plays the stun animation")
+	_check(not actor.apply_stun(1.0), "no re-stun while the stun and its immunity last")
+	_key(KEY_A, false)
+	_key(KEY_W, false)
+	await _frames(70)
+	_check(not actor.is_stunned(), "the stun wears off after its duration")
+	actor.eliminate("test")
+	_check(await _anim_after(2) == &"dead", "an eliminated chicken shows the death sprite")
+	_revive()
+	actor.reset_for_round(actor.global_position)
+
+
+## A block scene saved into scenes/blocks/ joins the catalog, the default pool, the Item Lab eggs
+## and play with no other edit. Built from the Spikes scene: Heavy anchor + a STUN hitbox.
+func _test_drop_in_block() -> void:
+	var path := "res://scenes/blocks/zz_test_drop_in.tscn"
+	var source := (load("res://scenes/blocks/traps/spikes.tscn") as PackedScene).instantiate()
+	var data := source.get_node("BlockData") as BlockData
+	data.block_name = "Test Stun Weight"
+	data.catalog_order = 999
+	data.kill = false
+	data.stun = true
+	data.stun_seconds = 0.5
+	data.anchor = BlockData.Anchor.HEAVY
+	data.rotations = PackedInt32Array([0])
+	(source.get_node("KillHitbox") as BlockHitbox).role = BlockHitbox.Role.STUN
+	var packed := PackedScene.new()
+	packed.pack(source)
+	source.free()
+	_check(ResourceSaver.save(packed, path) == OK, "drop-in scene saved into scenes/blocks/")
+	BlockCatalog.reload()
+	var key := "block.zz_test_drop_in.main"
+	_check(
+		ItemDefinitions.load_all(GameplayTuning.new()).find_variant(key).size() == 2,
+		"the dropped-in scene is a defined block"
+	)
+	_check(
+		GameplayTuning.new().item_enabled_variants.has(key),
+		"the dropped-in block is in the default selection pool"
+	)
+	room = ROOM_SCENE.instantiate() as ItemLabRoom
+	root.add_child(room)
+	await _frames(3)
+	_check(room.egg_previews.has(key), "the Item Lab shows an egg for the dropped-in block")
+	seat = room.join_keyboard("K1")
+	actor = room.actors[seat] as ChickenController
+	room.start_play()
+	await _frames(3)
+	var ids := _arm([[key, Vector2i(11, 8)]], 1)
+	var block := room.items.piece_for(ids[0]) as StageBlock
+	var start_y := block.position.y
+	await _frames(80)
+	_check(block.position.y > start_y + 100.0, "a Heavy block falls under gravity")
+	var resting_x := block.position.x
+	_put_actor_feet(Vector2(block.position.x + 64.0 + 29.0, FLOOR_Y))
+	_key(KEY_A, true)
+	await _frames(30)
+	_key(KEY_A, false)
+	_check(
+		absf(block.position.x - resting_x) < 0.5,
+		"a Heavy block cannot be pushed by a walking chicken"
+	)
+	_revive()
+	_put_actor_feet(Vector2(block.position.x + 32.0, block.position.y - 30.0))
+	var stunned := false
+	for _frame in range(20):
+		await physics_frame
+		stunned = stunned or actor.is_stunned()
+	_check(stunned, "touching a STUN hitbox stuns the chicken")
+	_check(not actor.lifecycle.is_terminal(), "a stun never eliminates")
+	var setups := _records(AttributionRecord.Kind.SETUP)
+	_check(
+		not setups.is_empty() and setups[0].detail == "stun" and not setups[0].credit_eligible(),
+		"a stun is recorded as an uncredited setup effect"
+	)
+	room.items.reset_match()
+	room.queue_free()
+	await process_frame
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	BlockCatalog.reload()
+	_check(
+		not GameplayTuning.new().item_enabled_variants.has(key),
+		"removing the scene removes the block again"
+	)
 
 
 # ---------------------------------------------------------------- chicken scene and animations
@@ -267,7 +529,7 @@ func _test_block_scene_authoring() -> void:
 		var variant := found.variant as ItemVariantDefinition
 		var scene := load(BLOCK_SCENES[key]) as PackedScene
 		var node := scene.instantiate()
-		var collision := node.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		var collision := node.get_node_or_null("Solid") as CollisionShape2D
 		var visual := node.get_node_or_null("Visual")
 		var authored := (
 			(collision.shape as RectangleShape2D).size if collision != null else Vector2.ZERO
@@ -462,15 +724,15 @@ func _test_solid_block() -> void:
 	var flat_rect: Rect2 = flat.call("footprint_world_rect")
 	var upright_rect: Rect2 = upright.call("footprint_world_rect")
 	_check(
-		flat is SolidBlock and flat_rect.size == Vector2(192.0, 64.0), "solid block is 3x1 (192x64)"
+		flat is StageBlock and flat_rect.size == Vector2(192.0, 64.0), "solid block is 3x1 (192x64)"
 	)
 	_check(upright_rect.size == Vector2(64.0, 192.0), "R rotates the solid block to 1x3 (64x192)")
 	_check(
 		(
-			is_equal_approx(upright.rotation, PI * 0.5)
-			and upright.position == upright_rect.get_center()
+			is_equal_approx((upright.get_node("Visual") as Node2D).rotation, PI * 0.5)
+			and upright.position == upright_rect.position
 		),
-		"rotated block root is centered on its footprint and turned 90 degrees"
+		"rotated block sits on its footprint and its Visual is turned 90 degrees"
 	)
 	var metadata := room.support_tracker.surfaces[ids[0]] as SupportSurfaceMetadata
 	_check(
@@ -491,20 +753,20 @@ func _test_solid_block() -> void:
 func _test_wood_box() -> void:
 	# Placed one cell above the floor under Base B; it falls once Play starts.
 	var ids := _arrange([[BOX, Vector2i(14, 12)]])
-	var box := room.items.node_for(ids[0]) as WoodBox
+	var box := room.items.node_for(ids[0]) as StageBlock
 	var start := box.position
 	_check(
 		box != null and box.footprint_world_rect().size == Vector2(128.0, 128.0), "wood box is 2x2"
 	)
 	await _frames(60)
 	_check(
-		box.is_on_floor() and absf(box.position.y + 64.0 - FLOOR_Y) <= TOLERANCE,
+		box.is_on_ground() and absf(box.position.y + 128.0 - FLOOR_Y) <= TOLERANCE,
 		(
 			"wood box falls under gravity and lands on the floor (bottom y=%.1f)"
-			% (box.position.y + 64.0)
+			% (box.position.y + 128.0)
 		)
 	)
-	var box_right := box.position.x + 64.0
+	var box_right := box.position.x + 128.0
 	_put_actor_feet(Vector2(box_right + room.tuning.body_width_wu * 0.5 + 1.0, FLOOR_Y))
 	await _frames(5)
 	var box_x := box.position.x
@@ -514,7 +776,7 @@ func _test_wood_box() -> void:
 	var moved := box_x - box.position.x
 	_check(moved > 40.0, "a grounded chicken walking into the box pushes it (%.1f wu)" % moved)
 	_check(
-		actor.global_position.x > box.position.x + 64.0 - 0.5,
+		actor.global_position.x > box.position.x + 128.0 - 0.5,
 		"the chicken never passes through the box"
 	)
 	await _frames(30)
@@ -532,15 +794,15 @@ func _test_wood_box() -> void:
 	_check(box.position == start, "the box stays put during Place")
 	room.items.begin_play()
 	await _frames(60)
-	_check(box.is_on_floor(), "the next Play start drops the box again from its placed spot")
+	_check(box.is_on_ground(), "the next Play start drops the box again from its placed spot")
 	# Open sky between Base C and Base D: stand on top of a landed box.
 	ids = _arrange([[BOX, Vector2i(22, 12)]])
-	box = room.items.node_for(ids[0]) as WoodBox
+	box = room.items.node_for(ids[0]) as StageBlock
 	await _frames(30)
-	_put_actor_feet(Vector2(box.position.x, box.position.y - 64.0 - 60.0))
+	_put_actor_feet(Vector2(box.position.x + 64.0, box.position.y - 60.0))
 	await _frames(30)
 	_check(
-		actor.is_on_floor() and absf(_feet_y() - (box.position.y - 64.0)) <= TOLERANCE,
+		actor.is_on_floor() and absf(_feet_y() - box.position.y) <= TOLERANCE,
 		"a chicken can stand on the box"
 	)
 	room.items.reset_match()
@@ -548,7 +810,7 @@ func _test_wood_box() -> void:
 
 func _test_collapsing_block() -> void:
 	var ids := _arrange([[COLLAPSE, Vector2i(22, 11)]])
-	var block := room.items.node_for(ids[0]) as CollapsingBlock
+	var block := room.items.node_for(ids[0]) as StageBlock
 	var top := block.footprint_world_rect().position.y
 	_check(
 		block != null and block.footprint_world_rect().size == Vector2(64.0, 64.0),
@@ -558,20 +820,20 @@ func _test_collapsing_block() -> void:
 	var landed := false
 	for _frame in range(30):
 		await physics_frame
-		if block.state == CollapsingBlock.State.CRUMBLING:
+		if block.collapse_state == StageBlock.CollapseState.CRUMBLING:
 			landed = actor.is_on_floor() and absf(_feet_y() - top) <= TOLERANCE
 			break
 	_check(landed, "standing on the collapsing block starts its timer")
 	var crumble_frames := 0
-	while block.state == CollapsingBlock.State.CRUMBLING and crumble_frames < 400:
+	while block.collapse_state == StageBlock.CollapseState.CRUMBLING and crumble_frames < 400:
 		await physics_frame
 		crumble_frames += 1
 	var expected_crumble := roundi(room.tuning.block_collapse_delay_s * 60.0)
 	_check(
 		(
 			absi(crumble_frames - expected_crumble) <= 2
-			and block.state == CollapsingBlock.State.GONE
-			and StageBlockSupport.shape_of(block).disabled
+			and block.collapse_state == StageBlock.CollapseState.GONE
+			and _block_shapes(block)[0].disabled
 		),
 		(
 			"it loses collision %d frames (%.2f s) after contact"
@@ -580,19 +842,22 @@ func _test_collapsing_block() -> void:
 	)
 	var gone_frames := 0
 	var fell := false
-	while block.state == CollapsingBlock.State.GONE and gone_frames < 600:
+	while block.collapse_state == StageBlock.CollapseState.GONE and gone_frames < 600:
 		await physics_frame
 		gone_frames += 1
 		fell = fell or _feet_y() > top + 100.0
 	_check(fell, "the chicken falls through once it collapses")
 	var expected_gone := roundi(room.tuning.block_collapse_respawn_s * 60.0)
 	_check(
-		absi(gone_frames - expected_gone) <= 2 and block.state == CollapsingBlock.State.SOLID,
+		(
+			absi(gone_frames - expected_gone) <= 2
+			and block.collapse_state == StageBlock.CollapseState.SOLID
+		),
 		"it respawns %d frames (%.2f s) after collapsing" % [gone_frames, gone_frames / 60.0]
 	)
 	# Wall-slide contact also starts the timer.
 	ids = _arrange([[COLLAPSE, Vector2i(22, 9)]])
-	block = room.items.node_for(ids[0]) as CollapsingBlock
+	block = room.items.node_for(ids[0]) as StageBlock
 	var face := block.footprint_world_rect().end.x
 	_put_actor_feet(Vector2(face + room.tuning.body_width_wu * 0.5 + 0.1, 700.0))
 	var slid := false
@@ -600,12 +865,15 @@ func _test_collapsing_block() -> void:
 		await physics_frame
 		slid = slid or actor.wall_sliding
 	_check(
-		slid and block.state == CollapsingBlock.State.CRUMBLING,
+		slid and block.collapse_state == StageBlock.CollapseState.CRUMBLING,
 		"wall-sliding on the collapsing block starts its timer"
 	)
 	# Respawn waits while a chicken overlaps the footprint.
 	await _frames(int(room.tuning.block_collapse_delay_s * 60.0) + 5)
-	_check(block.state == CollapsingBlock.State.GONE, "wall-slide contact collapses it after 2 s")
+	_check(
+		block.collapse_state == StageBlock.CollapseState.GONE,
+		"wall-slide contact collapses it after 2 s"
+	)
 	_put_actor_feet(
 		Vector2(
 			block.footprint_world_rect().get_center().x, block.footprint_world_rect().end.y + 20.0
@@ -613,15 +881,21 @@ func _test_collapsing_block() -> void:
 	)
 	actor.set_opening_freeze(true)
 	await _frames(int(room.tuning.block_collapse_respawn_s * 60.0) + 20)
-	_check(block.state == CollapsingBlock.State.GONE, "it does not respawn inside a chicken")
+	_check(
+		block.collapse_state == StageBlock.CollapseState.GONE,
+		"it does not respawn inside a chicken"
+	)
 	actor.set_opening_freeze(false)
 	_put_actor_feet(Vector2(1000.0, FLOOR_Y))
 	await _frames(5)
-	_check(block.state == CollapsingBlock.State.SOLID, "it respawns once the footprint is clear")
+	_check(
+		block.collapse_state == StageBlock.CollapseState.SOLID,
+		"it respawns once the footprint is clear"
+	)
 	block.notify_chicken_contact(actor)
 	room.items.enter_place()
 	_check(
-		block.state == CollapsingBlock.State.SOLID and not block.active,
+		block.collapse_state == StageBlock.CollapseState.SOLID and not block.active,
 		"entering Place restores a crumbling block and freezes it"
 	)
 	room.items.reset_match()

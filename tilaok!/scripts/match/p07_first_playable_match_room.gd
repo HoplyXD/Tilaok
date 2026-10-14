@@ -2,20 +2,21 @@ class_name P07FirstPlayableMatchRoom
 extends P05MatchRoom
 
 const P07_BUILD_ID := "P07-first-playable-dev"
-const P07_ALLOWED_VARIANTS: PackedStringArray = [
-	"build.hollow_blocks.cell_1x1",
-	"build.hollow_blocks.stack_2x3",
-	"build.bamboo_bridge.span_4x1",
-]
 
 var reset_audit_rows: Array[Dictionary] = []
 
 
 func _init() -> void:
 	profile_id = "karera_slice"
-	tuning.item_enabled_variants = P07_ALLOWED_VARIANTS.duplicate()
+	tuning.item_enabled_variants = allowed_variants()
 	# The route starts from player-ready input; there is no Start click (see the base room).
 	auto_start_on_ready = true
+
+
+## The match's egg pool: every main-game block scene marked "enabled by default" (BlockCatalog),
+## so new blocks dropped into scenes/blocks/ reach the selector without a code change.
+static func allowed_variants() -> PackedStringArray:
+	return BlockCatalog.default_enabled_keys()
 
 
 func _ready() -> void:
@@ -44,10 +45,11 @@ func _begin_pugad() -> void:
 
 func _validate_p07_egg_pool(pool: Array[Dictionary]) -> String:
 	if pool.is_empty():
-		return "P07 pool validation failed: no eligible Kaing/Tulay eggs were generated."
+		return "P07 pool validation failed: no eligible block eggs were generated."
+	var allowed := allowed_variants()
 	for egg in pool:
 		var variant_key := str(egg.get("variant_key", ""))
-		if not P07_ALLOWED_VARIANTS.has(variant_key):
+		if not allowed.has(variant_key):
 			return "P07 pool validation failed: unsupported variant '%s'." % variant_key
 	return ""
 

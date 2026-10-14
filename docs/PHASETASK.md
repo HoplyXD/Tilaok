@@ -36,15 +36,17 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 ## Phase summary and counts
 
-**20 phases · 405 tasks · 119 requirements.** Initial checked tasks: **0**. Required release/submission: **207**; Should: **36**; conditional finals: **4**; expansion: **158**. Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
+**20 phases · 409 tasks · 120 requirements.** Initial checked tasks: **0**. Required release/submission: **207**; Should: **40**; conditional finals: **4**; expansion: **158**. Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
 
-**Current implementation check count (2026-10-14): 135/405 tasks checked** (P00 0/6; P01 9/10; P02 17/26; P03 6/6; P04 18/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 42/54; P11 13/13 technical). The October 14 sneak/glide/64 wu grid/stage-blocks extension adds P02-T23–T26 (Should): T23–T25 checked on automated evidence, T26 human review open. This is the count of checked task records on disk, not a release-readiness percentage. P05-T12 was rerun against live P06 results, including held-edge handling, all-ready advance, the tested eight-second timeout and construction retention. P07 now has a scoped route and passing synthetic pool/reset checks, but its player sessions and human review remain open; no P07 checkbox is counted. P08's six engineering tasks passed under the explicitly authorized provisional development-only prerequisite disposition below; P07-T04 remains open and the P08 release/entry gate is unresolved. P09's four technical implementation/verification tasks pass on the development route; P07 player/device/human acceptance, P08 entry/release gate, performance target and P12 schedule remain separate and open. P11's 13 implementation and automated/rendered verification tasks pass on the standalone development route; player comprehension, physical controllers, balance/cultural and production-asset reviews, performance acceptance and every P12 stack/schedule gate remain open. The 1080p synthetic debug sample exceeded the provisional 16.67 ms frame target; a 14-second Windows process sample measured 306.7 MiB working set and 420.5 MiB private bytes, which does not establish target-PC acceptance. P02 remains open because physical input/reconnect acceptance is unavailable. Six of the eight approved wall-movement extension tasks (P02-T15–T17, T19–T21) are checked on automated/synthetic evidence; P02-T18 (physical devices) and P02-T22 (human review) remain open. They are Should scope; this does not make them required October submission work or delay P05. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
+**Path note (2026-10-14):** evidence recorded before P02-T27 cites `tilaok!/data/items/*.tres`, `scenes/items/*_piece.tscn`, `ItemApprovedVariants.TABLE` and the stage-block scripts. Those were migrated region-for-region into one scene per variant under `tilaok!/scenes/blocks/` (parity check: 0 differences) and removed; the historical references are kept as recorded.
+
+**Current implementation check count (2026-10-14): 138/409 tasks checked** (P00 0/6; P01 9/10; P02 20/30; P03 6/6; P04 18/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 42/54; P11 13/13 technical). The October 14 sneak/glide/64 wu grid/stage-blocks extension adds P02-T23–T26 (Should): T23–T25 checked on automated evidence, T26 human review open. The block-scene/Spikes/Cannon/stun extension adds P02-T27–T30: T27, T28 and T30 (selector + first come, first served Place) checked on automated evidence, T29 human review open. This is the count of checked task records on disk, not a release-readiness percentage. P05-T12 was rerun against live P06 results, including held-edge handling, all-ready advance, the tested eight-second timeout and construction retention. P07 now has a scoped route and passing synthetic pool/reset checks, but its player sessions and human review remain open; no P07 checkbox is counted. P08's six engineering tasks passed under the explicitly authorized provisional development-only prerequisite disposition below; P07-T04 remains open and the P08 release/entry gate is unresolved. P09's four technical implementation/verification tasks pass on the development route; P07 player/device/human acceptance, P08 entry/release gate, performance target and P12 schedule remain separate and open. P11's 13 implementation and automated/rendered verification tasks pass on the standalone development route; player comprehension, physical controllers, balance/cultural and production-asset reviews, performance acceptance and every P12 stack/schedule gate remain open. The 1080p synthetic debug sample exceeded the provisional 16.67 ms frame target; a 14-second Windows process sample measured 306.7 MiB working set and 420.5 MiB private bytes, which does not establish target-PC acceptance. P02 remains open because physical input/reconnect acceptance is unavailable. Six of the eight approved wall-movement extension tasks (P02-T15–T17, T19–T21) are checked on automated/synthetic evidence; P02-T18 (physical devices) and P02-T22 (human review) remain open. They are Should scope; this does not make them required October submission work or delay P05. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
 
 | Phase | Purpose | Tasks | Scope |
 |---|---|---:|---|
 | [P00](#p00--baseline-and-production-readiness) — Baseline and production readiness | Own the decisions and establish what can actually be built. | 6 | Required |
 | [P01](#p01--project-foundations) — Project foundations | Launch an original harness and establish an early export path. | 10 | Required |
-| [P02](#p02--inputs-and-controller) — Inputs and controller | Players control only their own readable chicken and recover from device loss; wall movement and sneak/glide/stage blocks are separately scoped Should extensions. | 26 | Required + Should extensions |
+| [P02](#p02--inputs-and-controller) — Inputs and controller | Players control only their own readable chicken and recover from device loss; wall movement, sneak/glide/stage blocks and block scenes are separately scoped Should extensions. | 30 | Required + Should extensions |
 | [P03](#p03--graybox-stage-and-camera) — Graybox stage and camera | Players can traverse one bounded stage and remain visible. | 6 | Required |
 | [P04](#p04--item-infrastructure-and-construction-seeds) — Item infrastructure and construction seeds | Kaing and Tulay make the initial buildable course. | 22 | Required |
 | [P05](#p05--lobby-pugad-and-construction-loop) — Lobby, Pugad and construction loop | Players join, recognize eggs and commit fair shared construction. | 12 | Required |
@@ -579,6 +581,42 @@ P01 code was generated by Codex under the task authorization and internal policy
   - **Work:** Play real multiplayer sessions on keyboards and gamepads; judge glide/sneak/push/collapse timings and shortcut/stalling risks; record findings.
   - **Acceptance:** Named reviewer, devices, player count, procedure and findings recorded.
   - **Evidence:** **Current result (2026-10-14):** NOT DONE. **Next action:** a named reviewer plays the Item Lab / P05 match with the new controls.
+
+#### P02-T27
+
+- [x] **Make every placeable item a BlockData scene in a scanned folder**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** SHOULD · **Owner:** Gameplay (name TBD); visuals Jorge/Ivie.
+  - **Requirements:** [REQ-STAGE-005](PRD.md#req-stage-005--scene-authored-block-catalog-with-kill-and-stun-hitboxes). **Dependencies:** [P02-T25](#p02-t25), [P04-T05](#p04-t05).
+  - **Work:** `BlockData`/`BlockHitbox` authoring nodes, folder-scanning `BlockCatalog` (definitions, pool, approved table, lab keys), `StageBlock` runtime (anchor/gravity, push, collapse), migration of all 23 legacy variants (Kaing, Tulay, Solid, Wood Box, Collapsing and the six P10 hazards) to one scene each with 0 region differences, removal of the `.tres` families and variant table.
+  - **Acceptance:** A scene dropped into `scenes/blocks/` appears in definitions, the default pool and Item Lab eggs with no other edit; existing P04/P10 behavior suites pass unchanged except counts/node access.
+  - **Evidence:** [block-scene regression](evidence/blocks/2026-10-14_block_scenes_regression.txt), [blocks tests](evidence/blocks/2026-10-14_block_scenes_tests.txt) (drop-in, Heavy anchor). **Result:** PASSED. **Build:** Godot 4.7.stable.official.5b4e0cb0f, Windows 11, Item Lab / Item Visualizer, seed 12345, 60 Hz (`--fixed-fps 60`), working tree on `a9eb75f`, 2026-10-14, synthetic K1 keyboard events, 1-2 seats, reviewer: Claude (AI, automated; no human reviewer).
+
+#### P02-T28
+
+- [x] **Add kill/stun hitboxes, Spikes, Cannon, stun and the chicken death sprite**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** SHOULD · **Owner:** Gameplay (name TBD).
+  - **Requirements:** [REQ-STAGE-005](PRD.md#req-stage-005--scene-authored-block-catalog-with-kill-and-stun-hitboxes). **Dependencies:** [P02-T27](#p02-t27), [P10-T04](#p10-t04).
+  - **Work:** Touch kill/stun regions in the deterministic director (kills credited to the placer, stuns as uncredited setup), stun-capable projectiles, per-block tuning overrides, `apply_stun` (knockback + control freeze + 0.5 s immunity), Spikes and Cannon scenes, stun and death animations.
+  - **Acceptance:** Spikes kill on the points and are standable on the solid half; the Cannon fires along its path, kills and is stopped by cover; stun knocks back and freezes controls for its time; eliminated chickens show the death sprite.
+  - **Evidence:** [blocks tests](evidence/blocks/2026-10-14_block_scenes_tests.txt), [capture](evidence/blocks/2026-10-14_spikes_cannon_1080p.png). **Result:** PASSED. **Build:** Godot 4.7.stable.official.5b4e0cb0f, Windows 11, Item Lab / Item Visualizer, seed 12345, 60 Hz (`--fixed-fps 60`), working tree on `a9eb75f`, 2026-10-14, synthetic K1 keyboard events, 1-2 seats, reviewer: Claude (AI, automated; no human reviewer).
+
+#### P02-T30
+
+- [x] **Offer every main-game block in the selector and make Place first come, first served**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** SHOULD · **Owner:** Gameplay (name TBD).
+  - **Requirements:** [REQ-STAGE-005](PRD.md#req-stage-005--scene-authored-block-catalog-with-kill-and-stun-hitboxes). **Dependencies:** [P02-T27](#p02-t27), [P05-T05](#p05-t05).
+  - **Work:** The match egg pool (P07/P09 rooms and the Library) comes from the block catalog instead of a hardcoded Kaing/Tulay list. A confirmed placement claims its cells at once: other ghosts show "Taken by P#", later confirms there are refused, edits resolve in confirmation order, and unconfirmed placements on claimed cells are discarded at the timer.
+  - **Acceptance:** Spikes and Cannon appear in seeded Pugad eggs; the first confirmer keeps a contested spot regardless of seat number; the loser can still place elsewhere.
+  - **Evidence:** `tests/run_place_claim_tests.gd` (12 checks), [regression](evidence/blocks/2026-10-14_place_claim_regression.txt). **Result:** PASSED (synthetic input; human pace/fairness review is P02-T29). **Build:** Godot 4.7.stable.official.5b4e0cb0f, working tree on `a9eb75f`, 2026-10-14, reviewer: Claude (AI, automated; no human reviewer).
+
+#### P02-T29
+
+- [ ] **Verify block scenes, Spikes, Cannon and stun with players**
+  - **Status:** BLOCKED (human review) · **Kind:** VERIFY · **Scope:** SHOULD · **Owner:** QA / Human playtester (names TBD).
+  - **Requirements:** [REQ-STAGE-005](PRD.md#req-stage-005--scene-authored-block-catalog-with-kill-and-stun-hitboxes). **Dependencies:** [P02-T27](#p02-t27), [P02-T28](#p02-t28).
+  - **Work:** Edit a block in the Godot editor and play it; judge spike/cannon fairness, stun time and knockback, readability of hitboxes, and whether first-come-first-served Place feels fair (P02-T30).
+  - **Acceptance:** Named reviewer, devices, player count, procedure and findings recorded.
+  - **Evidence:** **Current result (2026-10-14):** NOT DONE.
 
 ## P03 — Graybox stage and camera
 
@@ -4748,6 +4786,7 @@ All requirements have both implementation/non-code deliverables and verification
 | [REQ-MOVE-004](PRD.md#req-move-004--slide-on-eligible-walls-and-kick-away-with-a-fresh-jump-press) | [P02-T15](#p02-t15), [P02-T17](#p02-t17), [P02-T19](#p02-t19), [P02-T21](#p02-t21) | [P02-T16](#p02-t16), [P02-T18](#p02-t18), [P02-T20](#p02-t20), [P02-T22](#p02-t22) | SHOULD |
 | [REQ-MOVE-005](PRD.md#req-move-005--sneak-into-a-one-tile-body-and-glide-while-holding-jump) | [P02-T24](#p02-t24) | [P02-T26](#p02-t26) | SHOULD |
 | [REQ-STAGE-004](PRD.md#req-stage-004--64-px-tile-stage-and-scene-authored-stage-blocks) | [P02-T23](#p02-t23), [P02-T25](#p02-t25) | [P02-T26](#p02-t26) | SHOULD |
+| [REQ-STAGE-005](PRD.md#req-stage-005--scene-authored-block-catalog-with-kill-and-stun-hitboxes) | [P02-T27](#p02-t27), [P02-T28](#p02-t28), [P02-T30](#p02-t30) | [P02-T29](#p02-t29) | SHOULD |
 | [REQ-STAGE-001](PRD.md#req-stage-001--build-one-protected-barrio-graybox-arena) | [P03-T01](#p03-t01) | [P03-T02](#p03-t02) | REQUIRED |
 | [REQ-STAGE-002](PRD.md#req-stage-002--frame-active-players-and-unfinished-placement-pointers) | [P03-T03](#p03-t03) | [P03-T04](#p03-t04) | REQUIRED |
 | [REQ-STAGE-003](PRD.md#req-stage-003--track-actual-supporting-contact-and-construction-provenance) | [P03-T05](#p03-t05) | [P03-T06](#p03-t06) | REQUIRED |

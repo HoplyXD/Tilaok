@@ -180,8 +180,11 @@ func _test_definitions() -> void:
 	_check(
 		definitions.is_valid(), "T01 eight definitions load and validate: %s" % [definitions.errors]
 	)
-	# 8 first-batch families plus the three 2026-10-14 stage blocks.
-	_check(definitions.families.size() == 11, "T01 eight families (+3 stage blocks) are defined")
+	# 8 first-batch families plus the 2026-10-14 stage blocks, Spikes and Cannon.
+	_check(
+		definitions.families.size() == 13,
+		"T01 eight families (+3 stage blocks, Spikes and Cannon) are defined"
+	)
 	var expected := {
 		"move.tire_spring": {"tire_2x2": Vector2i(2, 2)},
 		"hazard.rail_trumpo":
@@ -317,18 +320,22 @@ func _test_definitions() -> void:
 
 func _test_baseline_isolation() -> void:
 	var base := ItemDefinitions.load_all(GameplayTuning.new())
-	# The default pool is Kaing/Tulay plus the 2026-10-14 stage blocks; P10 hazards stay out.
-	_check(base.families.size() == 5, "baseline load_all defines Kaing, Tulay and the stage blocks")
+	# The default pool is Kaing/Tulay plus the stage blocks, Spikes and Cannon; P10 hazards stay out.
+	_check(
+		base.families.size() == 7,
+		"baseline load_all defines Kaing, Tulay, the stage blocks, Spikes and Cannon"
+	)
 	var default_tuning := GameplayTuning.new()
 	_check(
-		default_tuning.item_enabled_variants.size() == 6,
-		"default enabled pool has no P10 hazard variants (6)"
+		default_tuning.item_enabled_variants.size() == 8,
+		"default enabled pool has no P10 hazard variants (8)"
 	)
 	var spring_pool := ItemEnabledProfiles.enabled_variants("karera_spring")
 	_check(spring_pool.has(SPRING), "karera_spring now includes the spring variant")
 	var karera_slice := ItemDefinitions.load_for_profile(GameplayTuning.new(), "karera_slice")
 	_check(
-		karera_slice.families.size() == 5, "karera_slice keeps the P04 pair plus the stage blocks"
+		karera_slice.families.size() == 7,
+		"karera_slice loads the main-game blocks (P04 pair, stage blocks, Spikes, Cannon)"
 	)
 
 
@@ -1574,7 +1581,10 @@ func _test_previews_and_library() -> void:
 
 func _test_visualizer() -> void:
 	await _fresh()
-	_check(room.family_ids().size() == 11, "Visualizer lists all eight families (+3 stage blocks)")
+	_check(
+		room.family_ids().size() == 13,
+		"Visualizer lists all eight families (+3 stage blocks, Spikes and Cannon)"
+	)
 	for family_id in room.family_ids():
 		var selected := room.select_family(family_id)
 		_check(

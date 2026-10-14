@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_06nvt"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_3mnxt"]
+[ext_resource type="Resource" path="res://data/items/visual/hazard.rail_trumpo.tres" id="3_wiflx"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_vljuh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aof5b"]
+size = Vector2(384, 64)
+
+[node name="TrumpoRail6x1" type="AnimatableBody2D" unique_id=89870559]
+sync_to_physics = false
+script = ExtResource("1_06nvt")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1028082722]
+script = ExtResource("2_3mnxt")
+block_name = "Trumpo sa Riles"
+family_id = "hazard.rail_trumpo"
+variant_id = "rail_6x1"
+category = "hazard"
+catalog_order = 3
+library_tell = "A visible rail, a spinning top, an endpoint pause marker and a tick sound."
+library_counterplay = "Cross during the pause or gap, or route above or below the rail."
+modes_allowed = PackedStringArray("karera", "lagsanay", "kangaroo")
+modes_pending_review = PackedStringArray()
+placement_size = Vector2i(6, 1)
+rotations = PackedInt32Array(0, 1, 2, 3)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+in_main_game = false
+weight_tuning_key = &"item_trumpo_weight"
+special = 2
+preview_silhouette = "rail_top"
+preview_cue = "rail_pause"
+visual_set = ExtResource("3_wiflx")
+
+[node name="RailSweep" type="Area2D" parent="." unique_id=257010142]
+script = ExtResource("4_vljuh")
+role = 3
+
+[node name="Shape" type="CollisionShape2D" parent="RailSweep" unique_id=1481478067]
+shape = SubResource("RectangleShape2D_aof5b")
+
+[node name="Visual" type="Node2D" parent="." unique_id=699692950]

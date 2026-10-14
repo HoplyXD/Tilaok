@@ -88,7 +88,10 @@ static func validate_family(
 			errors.append("%s: unknown mode '%s'" % [label, mode_id])
 	if family.wall_contact not in ALLOWED_WALL_CONTACT:
 		errors.append("%s: wall_contact declaration is required" % label)
-	if family.weight_tuning_key == &"" or tuning.get(family.weight_tuning_key) == null:
+	if family.uses_pool_weight:
+		if family.pool_weight < 0.0:
+			errors.append("%s: pool_weight cannot be negative" % label)
+	elif family.weight_tuning_key == &"" or tuning.get(family.weight_tuning_key) == null:
 		errors.append("%s: weight_tuning_key must name a tuning field" % label)
 	if (
 		family.runtime_enabled
@@ -181,7 +184,9 @@ static func _validate_variant(
 			errors.append("%s: region must lie inside the footprint" % kind_label)
 		if region.kind == ItemRegionSpec.Kind.ONE_WAY_TOP:
 			var thickness: Variant = tuning.get(region.thickness_tuning_key)
-			if region.thickness_tuning_key == &"" or thickness == null:
+			if region.thickness_tuning_key == &"" and region.thickness_wu > 0.0:
+				thickness = region.thickness_wu
+			if thickness == null:
 				errors.append("%s: one-way strip needs a thickness tuning key" % kind_label)
 			elif float(thickness) <= 0.0 or float(thickness) > rect.size.y * tuning.grid_cell_wu:
 				errors.append("%s: strip thickness is outside its region" % kind_label)

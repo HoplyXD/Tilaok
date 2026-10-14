@@ -1,5 +1,5 @@
 class_name ConstructionPiece
-extends StaticBody2D
+extends AnimatableBody2D
 
 ## One placed construction piece: collision plus a code-drawn graybox silhouette.
 ## Visuals are labeled DEBUG placeholders; final art belongs to the human art team.
@@ -22,6 +22,12 @@ var cell_wu := 32.0
 var _solid_rects: Array[Rect2] = []
 var _strip_rects: Array[Rect2] = []
 var _strip_normals: Array[Vector2] = []
+
+
+## An AnimatableBody2D (still a StaticBody2D) so scene blocks with gravity can move through
+## move_and_collide; unmoved pieces behave exactly like static bodies.
+func _init() -> void:
+	sync_to_physics = false
 
 
 ## regions: output of ItemGeometry.resolve_regions (rects are relative to the footprint corner).

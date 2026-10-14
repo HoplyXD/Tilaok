@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_x1rgl"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_lp4j3"]
+[ext_resource type="Resource" path="res://data/items/visual/move.tire_spring.tres" id="3_ecn56"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_ykbkr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0fdtb"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4mhpq"]
+size = Vector2(128, 64)
+
+[node name="GulongTire2x2" type="AnimatableBody2D" unique_id=1495161671]
+sync_to_physics = false
+script = ExtResource("1_x1rgl")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1782289281]
+script = ExtResource("2_lp4j3")
+block_name = "Gulong Talon"
+family_id = "move.tire_spring"
+variant_id = "tire_2x2"
+category = "move"
+catalog_order = 2
+library_tell = "Visible tire compression and an arrow along the launch face; a bounce arc follows."
+library_counterplay = "Approach slowly, decline the timed-jump boost, or time the jump."
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+placement_size = Vector2i(2, 2)
+rotations = PackedInt32Array(0, 1, 2, 3)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+in_main_game = false
+weight_tuning_key = &"item_spring_weight"
+special = 4
+preview_silhouette = "tire"
+preview_cue = "coil_arrow"
+visual_set = ExtResource("3_ecn56")
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=1587871264]
+shape = SubResource("RectangleShape2D_0fdtb")
+
+[node name="LaunchHitbox" type="Area2D" parent="." unique_id=1882756883]
+script = ExtResource("4_ykbkr")
+role = 2
+
+[node name="Shape" type="CollisionShape2D" parent="LaunchHitbox" unique_id=306826641]
+position = Vector2(0, -32)
+shape = SubResource("RectangleShape2D_4mhpq")
+
+[node name="Visual" type="Node2D" parent="." unique_id=181300582]

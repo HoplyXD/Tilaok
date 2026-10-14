@@ -50,6 +50,24 @@ const WALL_INELIGIBLE := "ineligible"
 ## Walis-style construction edit: its footprint is a cleanup area, nothing is placed or persisted.
 @export var one_shot_edit := false
 @export var visual_set: ItemVisualSet
+## Scene-authored block families (scenes/blocks/, built by BlockCatalog from each BlockData).
+@export var scene_authored := false
+## Runtime behavior chosen from the block's special: "", "hitbox", "spring", "trumpo", "parol",
+## "launcher", "bubble". Empty families use the legacy family-ID mapping.
+@export var behavior_kind: StringName = &""
+## Selection weight used when `uses_pool_weight` is set (scene blocks without a tuning key).
+@export var pool_weight := 50.0
+@export var uses_pool_weight := false
+## Catalog membership: the main game (load_all) and the development item labs.
+@export var in_main_game := true
+@export var in_dev_labs := true
+
+
+## Pugad family weight: the tuning field when one is named, else the authored pool weight.
+func selection_weight(tuning: GameplayTuning) -> float:
+	if weight_tuning_key != &"" and tuning != null and tuning.get(weight_tuning_key) != null:
+		return float(tuning.get(weight_tuning_key))
+	return pool_weight if uses_pool_weight else 0.0
 
 
 func find_variant(variant_id_value: String) -> ItemVariantDefinition:

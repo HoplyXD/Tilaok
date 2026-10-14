@@ -487,9 +487,7 @@ func _refresh_match_ghost(seat_index: int) -> void:
 	if found.is_empty():
 		return
 	var variant := found.variant as ItemVariantDefinition
-	var verdict := items.validate_placement(
-		str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns), _actor_rects()
-	)
+	var verdict := _placement_verdict(seat_index)
 	placement_verdicts[seat_index] = {
 		"allowed": bool(verdict.allowed), "reason": str(verdict.reason)
 	}
@@ -613,9 +611,7 @@ func _confirm_placement(seat_index: int) -> void:
 	var cursor: Dictionary = placement_controller.cursors[seat_index]
 	if bool(cursor.confirmed):
 		return
-	var verdict := items.validate_placement(
-		str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns), _actor_rects()
-	)
+	var verdict := _placement_verdict(seat_index)
 	if not bool(verdict.allowed):
 		last_message = "P%d cannot confirm: %s" % [seat_index + 1, verdict.reason]
 		place_notices[seat_index] = "Cannot confirm: %s" % verdict.reason
@@ -625,13 +621,35 @@ func _confirm_placement(seat_index: int) -> void:
 	place_notices.erase(seat_index)
 	placement_controller.set_confirmed(seat_index, true)
 	last_message = (
-		"P%d edit is pending. Nothing changes until everyone confirms or the timer ends."
-		% (seat_index + 1)
+		"P%d claimed that spot first; other players can no longer place there." % (seat_index + 1)
 	)
 	_refresh_all_match_ghosts()
 	_refresh_match_ui()
 	if placement_controller.all_confirmed():
 		_resolve_place_edits(placement_controller.confirmed_edits())
+
+
+## Placement check for a seat's cursor: the stage rules plus first come, first served. Cells
+## already claimed by an earlier confirmed placement are taken for this Place phase.
+func _placement_verdict(seat_index: int) -> Dictionary:
+	var cursor: Dictionary = placement_controller.cursors[seat_index]
+	var verdict := items.validate_placement(
+		str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns), _actor_rects()
+	)
+	if not bool(verdict.allowed) or bool(cursor.confirmed):
+		return verdict
+	var owner := placement_controller.claimed_by(
+		seat_index, str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns)
+	)
+	if owner < 0:
+		return verdict
+	var seat := input_router.registry.get_seat(owner)
+	var label := int(seat.identity) if not seat.is_empty() else owner + 1
+	return {
+		"allowed": false,
+		"code": "claimed",
+		"reason": "Taken by P%d (first come, first served)" % label,
+	}
 
 
 func _show_placement_locked(seat_index: int) -> void:
@@ -649,11 +667,7 @@ func _finish_place_timeout() -> void:
 		return
 	var validity: Dictionary = {}
 	for seat_index in placement_controller.cursors:
-		var cursor: Dictionary = placement_controller.cursors[seat_index]
-		var verdict := items.validate_placement(
-			str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns), _actor_rects()
-		)
-		validity[int(seat_index)] = bool(verdict.allowed)
+		validity[int(seat_index)] = bool(_placement_verdict(int(seat_index)).allowed)
 	_resolve_place_edits(placement_controller.timeout_edits(validity))
 
 

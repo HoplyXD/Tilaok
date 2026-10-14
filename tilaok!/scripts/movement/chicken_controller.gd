@@ -6,6 +6,7 @@ signal terminal_state_changed(status: PlayerLifecycleState.Status, reason: Strin
 signal escaped_bounds
 signal wall_kicked(side: int)
 signal sneak_changed(is_sneaking: bool)
+signal stunned(seconds: float)
 
 @export var seat_index := 0
 @export var tuning: GameplayTuning
@@ -37,6 +38,9 @@ var show_wall_debug := false
 ## Sneak (hold down while grounded): body shrinks to sneak_height_wu at the feet; no walking or
 ## jumping. Glide (hold jump while falling): descent capped at glide_fall_cap_wu_s.
 var sneaking := false
+## Stun (block STUN hitboxes): controls frozen while > 0; a short immunity follows each stun.
+var stun_remaining := 0.0
+var stun_immunity_remaining := 0.0
 var gliding := false
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
@@ -104,6 +108,7 @@ func _physics_process(delta: float) -> void:
 		_vertical_half_step = 0.0
 		reset_wall_state()
 		reset_sneak()
+		clear_stun()
 		return
 
 	if lifecycle.is_terminal():
@@ -126,7 +131,15 @@ func _physics_process(delta: float) -> void:
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
 		return
-	_update_sneak(input_router.is_action_held(seat_index, "down"))
+	stun_immunity_remaining = maxf(0.0, stun_immunity_remaining - delta)
+	var stunned_now := stun_remaining > 0.0
+	if stunned_now:
+		# Stunned: no walking, jumping, gliding or sneaking until the timer runs out.
+		stun_remaining = maxf(0.0, stun_remaining - delta)
+		axis = 0.0
+		jump_down = false
+		jump_buffer_remaining = 0.0
+	_update_sneak(input_router.is_action_held(seat_index, "down") and not stunned_now)
 	if sneaking:
 		# Sneaking chickens hold still: no walking and no jump (buffered presses are dropped).
 		axis = 0.0
@@ -280,6 +293,34 @@ func reset_for_round(spawn_position: Vector2) -> void:
 	lifecycle.capture_source_id = ""
 	lifecycle.terminal_reason = ""
 	reset_wall_state()
+	clear_stun()
+
+
+## Stun touch: freeze controls for `seconds` and knock back (through launch, so all launch caps
+## and precedence apply). Refused while terminal, captured, frozen or stun-immune.
+func apply_stun(seconds: float, knockback: Vector2 = Vector2.ZERO) -> bool:
+	if seconds <= 0.0 or stun_immunity_remaining > 0.0 or lifecycle.is_terminal():
+		return false
+	if (
+		lifecycle.status
+		in [PlayerLifecycleState.Status.CAPTURED, PlayerLifecycleState.Status.OPENING_FREEZE]
+	):
+		return false
+	if knockback != Vector2.ZERO:
+		launch(knockback)
+	stun_remaining = seconds
+	stun_immunity_remaining = seconds + tuning.stun_immunity_s
+	stunned.emit(seconds)
+	return true
+
+
+func is_stunned() -> bool:
+	return stun_remaining > 0.0
+
+
+func clear_stun() -> void:
+	stun_remaining = 0.0
+	stun_immunity_remaining = 0.0
 
 
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
@@ -288,6 +329,7 @@ func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	_clear_support()
 	reset_wall_state()
 	reset_sneak()
+	clear_stun()
 	locomotion_velocity = Vector2.ZERO
 	external_velocity = Vector2.ZERO
 	jump_buffer_remaining = 0.0
@@ -702,3 +744,4 @@ func _on_phase_changed(
 		jump_buffer_remaining = 0.0
 		jump_was_held = false
 		reset_wall_state()
+		clear_stun()

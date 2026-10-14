@@ -6,6 +6,10 @@ extends RefCounted
 ## Time is accumulated only while the item is active (after Play start and the activation grace),
 ## so the Play reset and a pause mid-cycle are both exact.
 
+## Touching counts: a chicken pressed against a block's solid sits a physics safe margin away,
+## so touch regions are tested with this tolerance.
+const TOUCH_TOLERANCE_WU := 2.0
+
 var item_id := ""
 var family_id := ""
 var owner_seat := -1
@@ -19,6 +23,9 @@ var regions: Array[Dictionary] = []
 var elapsed := 0.0
 ## Slot IDs of sounds to play; the piece drains this each frame.
 var pending_sounds: Array[String] = []
+## Scene-authored touch effects (TRIGGER regions tagged "kill"/"stun"; see BlockHitbox).
+var stun_seconds := 1.0
+var stun_knockback_wu_s := 480.0
 
 
 func configure(
@@ -42,6 +49,55 @@ func reset_to_start() -> void:
 
 func step(_ctx: ItemStepContext) -> void:
 	pass
+
+
+## Kill/stun touch regions, checked by the director after `step` for every behavior. A static
+## block with only hitboxes uses this base class as its whole behavior.
+func apply_touch_effects(ctx: ItemStepContext) -> void:
+	var kill_rects := effect_rects(&"kill")
+	var stun_rects := effect_rects(&"stun")
+	if kill_rects.is_empty() and stun_rects.is_empty():
+		return
+	for actor in ctx.actors:
+		if not ctx.is_hazard_target(actor):
+			continue
+		var body := ctx.body_of(actor)
+		var killed := false
+		for rect in kill_rects:
+			if body.intersects(rect.grow(TOUCH_TOLERANCE_WU), false):
+				ctx.report_lethal(actor.seat_index, ctx.time_start, item_id, "kill hitbox")
+				killed = true
+				break
+		if killed:
+			continue
+		for rect in stun_rects:
+			if body.intersects(rect.grow(TOUCH_TOLERANCE_WU), false):
+				var away := body.get_center() - rect.get_center()
+				var direction := Vector2(signf(away.x) if absf(away.x) > 0.01 else 0.0, -0.5)
+				ctx.request_stun(
+					actor.seat_index,
+					item_id,
+					direction.normalized() * stun_knockback_wu_s,
+					stun_seconds
+				)
+				break
+
+
+## Launch faces: TRIGGER regions tagged "launch" (or untagged legacy spring faces).
+func launch_faces() -> Array[Rect2]:
+	var result := effect_rects(&"launch")
+	result.append_array(effect_rects(&""))
+	return result
+
+
+## World rects of TRIGGER regions carrying `effect`.
+func effect_rects(effect: StringName) -> Array[Rect2]:
+	var result: Array[Rect2] = []
+	for region in regions:
+		if region.kind == ItemRegionSpec.Kind.TRIGGER and region.get("effect", &"") == effect:
+			var rect: Rect2 = region.rect
+			result.append(Rect2(rect.position + origin, rect.size))
+	return result
 
 
 ## Pose this behavior would have `seconds` after an uninterrupted Play start. Used by egg previews,

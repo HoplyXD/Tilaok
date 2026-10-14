@@ -111,7 +111,7 @@ func show_library() -> void:
 	var library := LIBRARY_SCENE.instantiate() as UiLibraryScreen
 	add_child(library)
 	var tuning := GameplayTuning.new()
-	tuning.item_enabled_variants = P07FirstPlayableMatchRoom.P07_ALLOWED_VARIANTS.duplicate()
+	tuning.item_enabled_variants = P07FirstPlayableMatchRoom.allowed_variants()
 	ItemEnabledProfiles.apply(tuning, PLAYTEST_PROFILE)
 	var definitions := ItemDefinitions.load_for_profile(tuning, PLAYTEST_PROFILE)
 	library.replay_tutorial_enabled = true

@@ -24,7 +24,7 @@ func step(ctx: ItemStepContext) -> void:
 	advance(ctx.dt)
 	compress = maxf(0.0, compress - ctx.dt / COMPRESS_DECAY_S)
 	var normal := launch_normal()
-	for face in world_rects(ItemRegionSpec.Kind.TRIGGER):
+	for face in launch_faces():
 		for actor in ctx.actors:
 			if not ctx.is_hazard_target(actor):
 				continue

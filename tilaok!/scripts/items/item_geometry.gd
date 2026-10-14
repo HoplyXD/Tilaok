@@ -41,8 +41,10 @@ static func resolve_regions(
 		var rect := Rect2(region.rect_cells.position * cell, region.rect_cells.size * cell)
 		var normal := Vector2.ZERO
 		if region.kind == ItemRegionSpec.Kind.ONE_WAY_TOP:
-			var thickness := float(tuning.get(region.thickness_tuning_key))
-			rect.size.y = thickness
+			if region.thickness_tuning_key != &"":
+				rect.size.y = float(tuning.get(region.thickness_tuning_key))
+			elif region.thickness_wu > 0.0:
+				rect.size.y = region.thickness_wu
 			normal = rotate_vector(Vector2.UP, turns)
 		(
 			resolved
@@ -51,6 +53,7 @@ static func resolve_regions(
 					"kind": region.kind,
 					"rect": rotate_rect(rect, box, turns),
 					"normal": normal,
+					"effect": region.effect,
 					"blockable": region.blockable,
 				}
 			)

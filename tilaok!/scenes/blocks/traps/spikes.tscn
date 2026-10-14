@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_fwcnx"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_1wg4n"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="3_lb3kf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tabe0"]
+size = Vector2(64, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ee02y"]
+size = Vector2(64, 30)
+
+[node name="Spikes" type="AnimatableBody2D" unique_id=51727779]
+sync_to_physics = false
+script = ExtResource("1_fwcnx")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=959191448]
+script = ExtResource("2_1wg4n")
+block_name = "Spikes"
+category = "trap"
+catalog_order = 11
+library_tell = "A low stone base with a row of sharp points on top; the points are deadly."
+library_counterplay = "Jump over it, or place a block on top to cover the points."
+modes_allowed = PackedStringArray("karera", "lagsanay", "kangaroo")
+modes_pending_review = PackedStringArray()
+rotations = PackedInt32Array(0, 1, 2, 3)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+kill = true
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=403637196]
+position = Vector2(0, 16)
+shape = SubResource("RectangleShape2D_tabe0")
+
+[node name="KillHitbox" type="Area2D" parent="." unique_id=848472530]
+script = ExtResource("3_lb3kf")
+
+[node name="Shape" type="CollisionShape2D" parent="KillHitbox" unique_id=438441623]
+position = Vector2(0, -15)
+shape = SubResource("RectangleShape2D_ee02y")
+
+[node name="Visual" type="Node2D" parent="." unique_id=170230739]
+
+[node name="Base" type="Polygon2D" parent="Visual" unique_id=1577623480]
+color = Color(0.4, 0.42, 0.45, 1)
+polygon = PackedVector2Array(-32, 0, 32, 0, 32, 32, -32, 32)
+
+[node name="Points" type="Polygon2D" parent="Visual" unique_id=1370427568]
+color = Color(0.85, 0.85, 0.88, 1)
+polygon = PackedVector2Array(-32, 0, -24, -30, -16, 0, -8, -30, 0, 0, 8, -30, 16, 0, 24, -30, 32, 0)
+
+[node name="Outline" type="Line2D" parent="Visual" unique_id=594978580]
+points = PackedVector2Array(-32, 32, -32, 0, -32, 0, -24, -30, -16, 0, -8, -30, 0, 0, 8, -30, 16, 0, 24, -30, 32, 0, 32, 32, -32, 32)
+width = 2.0
+default_color = Color(0.15, 0.15, 0.18, 1)

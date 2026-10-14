@@ -86,6 +86,18 @@ The measured P02 baseline controls are left/right and jump only; that historical
 
 New keys (UNMEASURED candidates): `sneak_enabled` true, `sneak_height_wu` 56 (1×1 body), `glide_enabled` true, `glide_fall_cap_wu_s` 180 (wall slide is 240), `block_box_push_speed_wu_s` 160, `block_box_friction_wu_s2` 2400, `block_collapse_delay_s` 2.0, `block_collapse_respawn_s` 3.0, and item weights `item_solid_block_weight` / `item_wood_box_weight` / `item_collapsing_block_weight` 50. Synthetic measurements (Godot 4.7.stable, Item Lab, seed 12345, 60 Hz): glide max 180.0 wu/s; box push 120 wu over 45 ticks; collapse after 120 ticks (2.00 s); respawn after 181 ticks (3.02 s). See [blocks evidence](evidence/blocks/README.md). Human feel review is still needed.
 
+### Block scenes, Spikes, Cannon and stun — October 14, 2026
+
+**PROTOTYPE VALUES — UNMEASURED by players.** Per-block values live in each scene's BlockData (`tilaok!/scenes/blocks/`); -1 means the global GameplayTuning value. New/changed numbers:
+
+| Key | Value | Note |
+|---|---|---|
+| Spikes | 1×1; solid 64×32 (bottom half); kill hitbox 56×30 above it | Rotations 0/90/180/270; no wall slide; not raised support |
+| Cannon | 1×1 solid; path 5 tiles; fire interval 2.0 s; ball 640 wu/s, 28 wu | Initial delay 0.5 s and telegraph 0.8 s use the global launcher values |
+| BlockData `stun_seconds` / `stun_knockback_wu_s` | 1.0 s / 480 wu/s (per block) | Knockback goes through `launch()` caps |
+| `stun_immunity_s` (GameplayTuning) | 0.5 s after each stun | Prevents stun-lock |
+| BlockData `pool_weight` | 50 | Blocks without a weight tuning key (Spikes, Cannon, new scenes) |
+
 ### Wall movement — approved Should extension
 
 **Approved behavior, not implementation:** airborne actual contact with an eligible solid side enters a downward slide without requiring directional hold. Cap downward speed only. A fresh jump press kicks away once; allow immediate air steering. Require separation and fresh recontact before a repeat. Wall contact is not floor/ground/support contact. External launch preempts and clears wall eligibility and pending wall input; terminal > opening freeze > capture > forced motion > locomotion remains the state order. Pause freezes the action; phase/reset/reload clear stale contact and buffered input. Pass-through chicken bodies remain unchanged. See GDD, PRD REQ-MOVE-004 and PHASETASK P02-T15–T22.

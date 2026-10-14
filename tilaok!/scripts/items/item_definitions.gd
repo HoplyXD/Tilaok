@@ -1,53 +1,29 @@
 class_name ItemDefinitions
 extends RefCounted
 
-const DEFINITION_PATHS: PackedStringArray = [
-	"res://data/items/build.hollow_blocks.tres",
-	"res://data/items/build.bamboo_bridge.tres",
-	"res://data/items/build.solid_block.tres",
-	"res://data/items/build.wood_box.tres",
-	"res://data/items/build.collapsing_block.tres",
-]
-
-const FIRST_BATCH_PATHS: PackedStringArray = [
-	"res://data/items/build.hollow_blocks.tres",
-	"res://data/items/build.bamboo_bridge.tres",
-	"res://data/items/move.tire_spring.tres",
-	"res://data/items/hazard.rail_trumpo.tres",
-	"res://data/items/hazard.parol_pulse.tres",
-	"res://data/items/hazard.slipper_launcher.tres",
-	"res://data/items/utility.walis_cleanup.tres",
-	"res://data/items/hazard.bubble_planter.tres",
-	"res://data/items/build.solid_block.tres",
-	"res://data/items/build.wood_box.tres",
-	"res://data/items/build.collapsing_block.tres",
-]
-
 var families: Array[ItemFamilyDefinition] = []
 var errors := PackedStringArray()
 var tuning: GameplayTuning
 
 
+## Main-game block families, scanned from scenes/blocks/ (BlockCatalog).
 static func load_all(source_tuning: GameplayTuning) -> ItemDefinitions:
-	return _load_paths(source_tuning, DEFINITION_PATHS)
+	return _from_catalog(source_tuning, BlockCatalog.SET_MAIN)
 
 
-## Profile-aware loader. Profiles outside `ItemEnabledProfiles` keep the exact P04 pair.
+## Profile-aware loader: development item labs see every block marked for the labs.
 static func load_for_profile(source_tuning: GameplayTuning, profile_id: String) -> ItemDefinitions:
 	if ItemEnabledProfiles.uses_first_batch(profile_id):
-		return _load_paths(source_tuning, FIRST_BATCH_PATHS)
-	return _load_paths(source_tuning, DEFINITION_PATHS)
+		return _from_catalog(source_tuning, BlockCatalog.SET_LAB)
+	return _from_catalog(source_tuning, BlockCatalog.SET_MAIN)
 
 
-static func _load_paths(source_tuning: GameplayTuning, paths: PackedStringArray) -> ItemDefinitions:
+static func _from_catalog(source_tuning: GameplayTuning, set_name: String) -> ItemDefinitions:
 	var result := ItemDefinitions.new()
 	result.tuning = source_tuning
-	for path in paths:
-		var loaded := ResourceLoader.load(path) as ItemFamilyDefinition
-		if loaded == null:
-			result.errors.append("could not load item definition '%s'" % path)
-		else:
-			result.families.append(loaded)
+	for family in BlockCatalog.families(set_name):
+		result.families.append(family)
+	result.errors.append_array(BlockCatalog.errors())
 	result.errors.append_array(
 		ItemDefinitionValidator.validate_families(result.families, source_tuning)
 	)
@@ -89,6 +65,8 @@ func short_label(variant_key: String) -> String:
 	var found := find_variant(variant_key)
 	if found.is_empty():
 		return "Unknown item"
+	if found.variant.variant_id == "main":
+		return found.family.working_name
 	return "%s %s" % [found.family.working_name, found.variant.variant_id]
 
 
@@ -114,7 +92,7 @@ func catalog_entries() -> Array[DiagnosticContentEntry]:
 	for family in families:
 		var weight := 0.0
 		if not enabled_variant_keys(family.family_id).is_empty():
-			weight = float(tuning.get(family.weight_tuning_key))
+			weight = family.selection_weight(tuning)
 		entries.append(
 			DiagnosticContentEntry.new(
 				family.family_id,

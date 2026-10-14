@@ -1,0 +1,70 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_x8x1w"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_stcfy"]
+[ext_resource type="Resource" path="res://data/items/visual/hazard.bubble_planter.tres" id="3_gjhwr"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_4p4f1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3c1qg"]
+size = Vector2(64, 64)
+
+[sub_resource type="Curve2D" id="Curve2D_ynlif"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, -32, 0, 0, 0, 0, 0, -352)
+}
+point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_341uw"]
+size = Vector2(28, 28)
+
+[node name="BulaPath1x5" type="AnimatableBody2D" unique_id=464439096]
+sync_to_physics = false
+script = ExtResource("1_x8x1w")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1149884832]
+script = ExtResource("2_stcfy")
+block_name = "Bula-Bulaklak"
+family_id = "hazard.bubble_planter"
+variant_id = "path_1x5"
+category = "hazard"
+catalog_order = 7
+library_tell = "A visible upward bubble path, a steady cadence and a captive icon while someone is held."
+library_counterplay = "Time the gap, or let another direct hazard pass before you are released."
+modes_allowed = PackedStringArray("karera")
+modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
+rotations = PackedInt32Array(0)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+in_main_game = false
+weight_tuning_key = &"item_bubble_weight"
+special = 1
+projectile_node = NodePath("Bubble")
+preview_silhouette = "flower"
+preview_cue = "bubble_path"
+visual_set = ExtResource("3_gjhwr")
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=1347920791]
+shape = SubResource("RectangleShape2D_3c1qg")
+
+[node name="Bubble" type="Node2D" parent="." unique_id=691684019]
+
+[node name="Path2D" type="Path2D" parent="Bubble" unique_id=2037606731]
+curve = SubResource("Curve2D_ynlif")
+
+[node name="Hitbox" type="Area2D" parent="Bubble" unique_id=1084316439]
+script = ExtResource("4_4p4f1")
+role = 5
+
+[node name="Shape" type="CollisionShape2D" parent="Bubble/Hitbox" unique_id=28003761]
+position = Vector2(0, -32)
+shape = SubResource("RectangleShape2D_341uw")
+
+[node name="Visual" type="Node2D" parent="Bubble" unique_id=400782185]
+position = Vector2(0, -32)
+
+[node name="Fill" type="Polygon2D" parent="Bubble/Visual" unique_id=798776769]
+color = Color(0.75, 0.9, 1, 0.7)
+polygon = PackedVector2Array(14, 0, 12.934313, 5.357568, 9.899495, 9.899495, 5.357568, 12.934313, 8.5722445e-16, 14, -5.357568, 12.934313, -9.899495, 9.899495, -12.934313, 5.357568, -14, 1.7144489e-15, -12.934313, -5.357568, -9.899495, -9.899495, -5.357568, -12.934313, -2.5716733e-15, -14, 5.357568, -12.934313, 9.899495, -9.899495, 12.934313, -5.357568)
+
+[node name="Visual" type="Node2D" parent="." unique_id=164375358]

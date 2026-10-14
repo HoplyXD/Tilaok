@@ -286,6 +286,17 @@ Base stage is playable before construction; player changes may make it difficult
 **Source / tasks:** [GDD](GDD.md#stage-blocks--2026-10-14), [ITEMS](ITEMS.md#stage-blocks--october-14-2026), [PHASETASK P02-T23–T26](PHASETASK.md#p02-sneak-glide-64-wu-grid-and-stage-blocks-extension--implemented-should-scope).
 
 
+### REQ-STAGE-005 — Scene-authored block catalog with kill and stun hitboxes
+
+**Scope:** SHOULD · **Design status:** REQUESTED BY JORGE 2026-10-14; IMPLEMENTED, AUTOMATED CHECKS PASSED, HUMAN REVIEW PENDING · **Owner role:** Gameplay / Maps (names TBD).
+
+**Expected behavior:** Every placeable item is one scene in `tilaok!/scenes/blocks/` with a BlockData customization node: placement box size, solid hitbox, kill/stun hitboxes, anchor (Anchored/Heavy/Light), effects and specials (Spawn Projectiles along a Path2D, Follow Rail, Timed Hitbox, Launch, Collapse, Cleanup). A new scene in the folder joins the selection pool automatically. Kill hitboxes eliminate with placer credit; stun hitboxes knock back and freeze controls without credit. Spikes and Cannon are the first new blocks, and the match selector offers every main-game block scene. Place is first come, first served: the first confirmed placement claims its cells. Eliminated chickens show the death sprite.
+
+**Acceptance:** Catalog-built definitions match the previous data exactly; drop-in, Spikes, Cannon, stun, Heavy/Light and death checks pass in real physics; existing suites pass.
+
+**Source / tasks:** [GDD](GDD.md#block-scenes-spikes-cannon-and-stun--2026-10-14-requested-by-jorge), [ITEMS](ITEMS.md#block-scenes--how-every-placeable-item-is-authored-2026-10-14), [PHASETASK P02-T27–T29](PHASETASK.md#p02-t27).
+
+
 ### REQ-STAGE-001 — Build one protected barrio graybox arena
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).

@@ -1,0 +1,70 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_3uwes"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_4w7sv"]
+[ext_resource type="Resource" path="res://data/items/visual/hazard.slipper_launcher.tres" id="3_b4eet"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_34s3d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_myjg3"]
+size = Vector2(64, 64)
+
+[sub_resource type="Curve2D" id="Curve2D_xd0el"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 416, 0)
+}
+point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8wspx"]
+size = Vector2(28, 28)
+
+[node name="TsinelasLane6x1" type="AnimatableBody2D" unique_id=517838402]
+sync_to_physics = false
+script = ExtResource("1_3uwes")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1659733665]
+script = ExtResource("2_4w7sv")
+block_name = "Tsinelas Launcher"
+family_id = "hazard.slipper_launcher"
+variant_id = "lane_6x1"
+category = "hazard"
+catalog_order = 5
+library_tell = "A visible aim lane, a barrel that pulls back and a charge sound before the shot."
+library_counterplay = "Take cover behind a solid, dodge, or cross outside the firing lane."
+modes_allowed = PackedStringArray("karera", "lagsanay", "kangaroo")
+modes_pending_review = PackedStringArray()
+rotations = PackedInt32Array(0, 2)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+in_main_game = false
+weight_tuning_key = &"item_launcher_weight"
+kill = true
+special = 1
+projectile_node = NodePath("Projectile")
+preview_silhouette = "slipper"
+preview_cue = "lane_charge"
+visual_set = ExtResource("3_b4eet")
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=344123310]
+shape = SubResource("RectangleShape2D_myjg3")
+
+[node name="Projectile" type="Node2D" parent="." unique_id=2146460461]
+
+[node name="Path2D" type="Path2D" parent="Projectile" unique_id=1530398423]
+curve = SubResource("Curve2D_xd0el")
+
+[node name="Hitbox" type="Area2D" parent="Projectile" unique_id=122020509]
+script = ExtResource("4_34s3d")
+
+[node name="Shape" type="CollisionShape2D" parent="Projectile/Hitbox" unique_id=503064965]
+position = Vector2(32, 0)
+shape = SubResource("RectangleShape2D_8wspx")
+
+[node name="Visual" type="Node2D" parent="Projectile" unique_id=204051235]
+position = Vector2(32, 0)
+
+[node name="Fill" type="Polygon2D" parent="Projectile/Visual" unique_id=1285098115]
+color = Color(0.25, 0.2, 0.18, 1)
+polygon = PackedVector2Array(14, 0, 12.934313, 5.357568, 9.899495, 9.899495, 5.357568, 12.934313, 8.5722445e-16, 14, -5.357568, 12.934313, -9.899495, 9.899495, -12.934313, 5.357568, -14, 1.7144489e-15, -12.934313, -5.357568, -9.899495, -9.899495, -5.357568, -12.934313, -2.5716733e-15, -14, 5.357568, -12.934313, 9.899495, -9.899495, 12.934313, -5.357568)
+
+[node name="Visual" type="Node2D" parent="." unique_id=1270628794]

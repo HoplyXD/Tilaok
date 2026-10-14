@@ -139,8 +139,10 @@ func _step(delta: float) -> void:
 	var behaviors := _behaviors()
 	for behavior in behaviors:
 		behavior.step(ctx)
+		behavior.apply_touch_effects(ctx)
 	_allocate_slots(ctx, behaviors)
-	_resolve_lethal(ctx, behaviors)
+	var lethal_seats := _resolve_lethal(ctx, behaviors)
+	_resolve_stuns(ctx, behaviors, lethal_seats)
 	for behavior in behaviors:
 		behavior.post_resolve(ctx)
 	_resolve_launches(ctx, behaviors)
@@ -205,7 +207,7 @@ func _allocate_slots(ctx: ItemStepContext, behaviors: Array[ItemBehavior]) -> vo
 				(behavior as BubbleBehavior).grant_slot(int(grant.handle))
 
 
-func _resolve_lethal(ctx: ItemStepContext, behaviors: Array[ItemBehavior]) -> void:
+func _resolve_lethal(ctx: ItemStepContext, behaviors: Array[ItemBehavior]) -> Dictionary:
 	var reports := ctx.lethal_reports.duplicate()
 	reports.sort_custom(
 		func(left: Dictionary, right: Dictionary) -> bool:
@@ -248,6 +250,34 @@ func _resolve_lethal(ctx: ItemStepContext, behaviors: Array[ItemBehavior]) -> vo
 		elif actor.eliminate("hazard:%s" % report.item_id):
 			handled[seat] = true
 			_emit(record)
+	return handled
+
+
+## Stun touches in stable (seat, item ID) order; never on a player eliminated this step. A stun
+## is a setup effect: it is recorded but never credited.
+func _resolve_stuns(
+	ctx: ItemStepContext, behaviors: Array[ItemBehavior], lethal_seats: Dictionary
+) -> void:
+	var requests := ctx.stun_requests.duplicate()
+	requests.sort_custom(
+		func(left: Dictionary, right: Dictionary) -> bool:
+			if int(left.seat) != int(right.seat):
+				return int(left.seat) < int(right.seat)
+			return str(left.item_id) < str(right.item_id)
+	)
+	var handled: Dictionary = {}
+	for request in requests:
+		var seat := int(request.seat)
+		if handled.has(seat) or lethal_seats.has(seat):
+			continue
+		var actor := _actor_for(ctx, seat)
+		if actor == null or not ctx.is_hazard_target(actor):
+			continue
+		if actor.apply_stun(float(request.seconds), request.knockback as Vector2):
+			handled[seat] = true
+			var source := _find(behaviors, str(request.item_id))
+			if source != null:
+				record_setup(source, seat, ctx.time_start, "stun")
 
 
 func _resolve_launches(ctx: ItemStepContext, behaviors: Array[ItemBehavior]) -> void:

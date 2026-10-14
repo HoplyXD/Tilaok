@@ -1,0 +1,76 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_wtt3y"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_aa8ry"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="3_nw3c4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v2iee"]
+size = Vector2(64, 64)
+
+[sub_resource type="Curve2D" id="Curve2D_lhs17"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 352, 0)
+}
+point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ntb1k"]
+size = Vector2(28, 28)
+
+[node name="Cannon" type="AnimatableBody2D" unique_id=1787259802]
+sync_to_physics = false
+script = ExtResource("1_wtt3y")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1404265203]
+script = ExtResource("2_aa8ry")
+block_name = "Cannon"
+category = "trap"
+catalog_order = 12
+library_tell = "A barrel that charges, then fires a ball along its dashed path every 2 s."
+library_counterplay = "Hide behind a solid block, or cross between shots."
+modes_allowed = PackedStringArray("karera", "lagsanay", "kangaroo")
+modes_pending_review = PackedStringArray()
+rotations = PackedInt32Array(0, 1, 2, 3)
+gated_rotations = PackedInt32Array()
+kill = true
+special = 1
+projectile_node = NodePath("Projectile")
+projectile_speed_wu_s = 640.0
+projectile_size_wu = 28.0
+fire_interval_s = 2.0
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=729435625]
+shape = SubResource("RectangleShape2D_v2iee")
+
+[node name="Projectile" type="Node2D" parent="." unique_id=1466892033]
+
+[node name="Path2D" type="Path2D" parent="Projectile" unique_id=1941082979]
+curve = SubResource("Curve2D_lhs17")
+
+[node name="Hitbox" type="Area2D" parent="Projectile" unique_id=1942666549]
+script = ExtResource("3_nw3c4")
+
+[node name="Shape" type="CollisionShape2D" parent="Projectile/Hitbox" unique_id=2138759686]
+position = Vector2(32, 0)
+shape = SubResource("RectangleShape2D_ntb1k")
+
+[node name="Visual" type="Node2D" parent="Projectile" unique_id=1750968155]
+position = Vector2(32, 0)
+
+[node name="Fill" type="Polygon2D" parent="Projectile/Visual" unique_id=1511125802]
+color = Color(0.25, 0.2, 0.18, 1)
+polygon = PackedVector2Array(14, 0, 12.934313, 5.357568, 9.899495, 9.899495, 5.357568, 12.934313, 8.5722445e-16, 14, -5.357568, 12.934313, -9.899495, 9.899495, -12.934313, 5.357568, -14, 1.7144489e-15, -12.934313, -5.357568, -9.899495, -9.899495, -5.357568, -12.934313, -2.5716733e-15, -14, 5.357568, -12.934313, 9.899495, -9.899495, 12.934313, -5.357568)
+
+[node name="Visual" type="Node2D" parent="." unique_id=966763023]
+
+[node name="Body" type="Polygon2D" parent="Visual" unique_id=1841348443]
+color = Color(0.25, 0.27, 0.3, 1)
+polygon = PackedVector2Array(-30, -24, 14, -24, 14, 24, -30, 24)
+
+[node name="Barrel" type="Polygon2D" parent="Visual" unique_id=710579245]
+color = Color(0.15, 0.16, 0.18, 1)
+polygon = PackedVector2Array(10, -14, 32, -14, 32, 14, 10, 14)
+
+[node name="Wheel" type="Polygon2D" parent="Visual" unique_id=1729690863]
+position = Vector2(-12, 20)
+color = Color(0.55, 0.38, 0.2, 1)
+polygon = PackedVector2Array(12, 0, 11.086554, 4.592201, 8.485281, 8.485281, 4.592201, 11.086554, 7.347638e-16, 12, -4.592201, 11.086554, -8.485281, 8.485281, -11.086554, 4.592201, -12, 1.4695276e-15, -11.086554, -4.592201, -8.485281, -8.485281, -4.592201, -11.086554, -2.2042914e-15, -12, 4.592201, -11.086554, 8.485281, -8.485281, 11.086554, -4.592201)

@@ -16,3 +16,11 @@ extends Resource
 @export var occupied_cells: Array[Rect2i] = []
 ## False for non-solid families (rail trumpo, Walis Cleanup): no collision region is required.
 @export var requires_collision := true
+## Scene-authored blocks: the block scene placed for this variant.
+@export var scene_path := ""
+## Scene-authored blocks: in the default enabled pool without a tuning edit.
+@export var enabled_by_default := true
+## Scene-authored blocks: GameplayTuning fields this block overrides for its own behavior.
+@export var tuning_overrides: Dictionary = {}
+## Scene-authored blocks: touch-effect settings ({"stun_seconds", "stun_knockback_wu_s"}).
+@export var effect_params: Dictionary = {}

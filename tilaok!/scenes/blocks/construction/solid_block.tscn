@@ -1,0 +1,58 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_sr4qs"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_dpk27"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vurdk"]
+size = Vector2(192, 64)
+
+[node name="SolidBlock" type="AnimatableBody2D" unique_id=1836265815]
+sync_to_physics = false
+script = ExtResource("1_sr4qs")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1436386919]
+script = ExtResource("2_dpk27")
+block_name = "Solid Block"
+family_id = "build.solid_block"
+variant_id = "slab_3x1"
+catalog_order = 8
+library_tell = "Gray brick slab; the ghost shows its full 3-cell length."
+library_counterplay = "Jump over it, go around it, or use Walis Cleanup."
+modes_allowed = PackedStringArray("karera", "lagsanay")
+modes_pending_review = PackedStringArray()
+placement_size = Vector2i(3, 1)
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array()
+weight_tuning_key = &"item_solid_block_weight"
+preview_silhouette = "solid_block"
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=1309656054]
+shape = SubResource("RectangleShape2D_vurdk")
+
+[node name="Visual" type="Node2D" parent="." unique_id=1000356175]
+
+[node name="Fill" type="Polygon2D" parent="Visual" unique_id=345132763]
+color = Color(0.43, 0.46, 0.5, 1)
+polygon = PackedVector2Array(-96, -32, 96, -32, 96, 32, -96, 32)
+
+[node name="Bricks" type="Line2D" parent="Visual" unique_id=636387880]
+points = PackedVector2Array(-96, 0, 96, 0, 32, 0, 32, -32, -32, -32, -32, 0, 0, 0, 0, 32, 64, 32, 64, 0, -64, 0, -64, 32)
+width = 3.0
+default_color = Color(0.3, 0.32, 0.35, 1)
+
+[node name="Outline" type="Line2D" parent="Visual" unique_id=919214539]
+points = PackedVector2Array(-96, -32, 96, -32, 96, 32, -96, 32, -96, -32)
+width = 4.0
+default_color = Color(0.13, 0.14, 0.16, 1)
+
+[node name="Label" type="Label" parent="Visual" unique_id=138507621]
+offset_left = -90.0
+offset_top = -30.0
+offset_right = 90.0
+offset_bottom = -6.0
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.1, 0.12, 1)
+theme_override_constants/outline_size = 4
+text = "SOLID • DEBUG"
+horizontal_alignment = 1

@@ -1,3 +1,4 @@
+# gdlint: disable=max-returns
 class_name ChickenSpriteAnimator
 extends AnimatedSprite2D
 
@@ -26,9 +27,13 @@ const MOVE_THRESHOLD_WU_S := 20.0
 	&"glide": Vector2(0, 130),
 	&"glide_right": Vector2(0, 108),
 	&"glide_left": Vector2(0, 108),
+	&"stun": Vector2(0, -16),
+	&"dead": Vector2(0, 109),
 }
 ## Multiplier on the seat colour so the mid-grey placeholder reads as that colour.
 @export var tint_strength := 2.1
+## Stunned chickens flash between their colour and white at this rate (Hz).
+@export var stun_flash_hz := 8.0
 
 var chicken: ChickenController
 
@@ -50,10 +55,16 @@ func _process(_delta: float) -> void:
 	offset = animation_offsets.get(next, Vector2.ZERO)
 	var base := Color.WHITE if chicken.lifecycle.is_terminal() else chicken.marker_color
 	modulate = Color(base.r * tint_strength, base.g * tint_strength, base.b * tint_strength, base.a)
+	if next == &"stun" and fmod(Time.get_ticks_msec() / 1000.0 * stun_flash_hz, 1.0) < 0.5:
+		modulate = Color(3.0, 3.0, 3.0, base.a)
 
 
 ## The animation name for the chicken's current movement state.
 func animation_for_state() -> StringName:
+	if chicken.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
+		return &"dead"
+	if chicken.is_stunned():
+		return &"stun"
 	if chicken.sneaking:
 		return &"sneak"
 	if chicken.wall_sliding and chicken.wall_side != 0:

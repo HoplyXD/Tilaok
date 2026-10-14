@@ -1,0 +1,72 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_iiq2h"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_7ds0g"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0y4ng"]
+size = Vector2(192, 8)
+
+[node name="TulaySpan3x1" type="AnimatableBody2D" unique_id=1141518955]
+sync_to_physics = false
+script = ExtResource("1_iiq2h")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=510555953]
+script = ExtResource("2_7ds0g")
+block_name = "Tulay na Kawayan"
+family_id = "build.bamboo_bridge"
+variant_id = "span_3x1"
+catalog_order = 1
+library_tell = "Narrow bamboo silhouette; the ghost shows a one-way arrow."
+library_counterplay = "Approach from below to pass through it, or use another path."
+modes_allowed = PackedStringArray("karera", "kangaroo")
+modes_pending_review = PackedStringArray("lagsanay")
+placement_size = Vector2i(3, 1)
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array(1)
+wall_slide_eligible = false
+one_way_thickness_key = &"item_tulay_strip_thickness_wu"
+enabled_by_default = false
+weight_tuning_key = &"item_tulay_weight"
+preview_silhouette = "bamboo_bridge"
+preview_cue = "one_way_arrow"
+
+[node name="OneWayTop" type="CollisionShape2D" parent="." unique_id=1980294075]
+position = Vector2(0, -28)
+shape = SubResource("RectangleShape2D_0y4ng")
+one_way_collision = true
+
+[node name="Visual" type="Node2D" parent="." unique_id=539966063]
+
+[node name="Strip" type="Polygon2D" parent="Visual" unique_id=893495672]
+color = Color(0.7882353, 0.7058824, 0.23529412, 1)
+polygon = PackedVector2Array(-96, -32, 96, -32, 96, -24, -96, -24)
+
+[node name="Node0" type="Line2D" parent="Visual" unique_id=391177982]
+points = PackedVector2Array(-64, -32, -64, -24)
+width = 3.0
+default_color = Color(0.29411766, 0.27058825, 0.06666667, 1)
+
+[node name="Node1" type="Line2D" parent="Visual" unique_id=1197416320]
+points = PackedVector2Array(-32, -32, -32, -24)
+width = 3.0
+default_color = Color(0.29411766, 0.27058825, 0.06666667, 1)
+
+[node name="Node2" type="Line2D" parent="Visual" unique_id=108332944]
+points = PackedVector2Array(0, -32, 0, -24)
+width = 3.0
+default_color = Color(0.29411766, 0.27058825, 0.06666667, 1)
+
+[node name="Node3" type="Line2D" parent="Visual" unique_id=100778593]
+points = PackedVector2Array(32, -32, 32, -24)
+width = 3.0
+default_color = Color(0.29411766, 0.27058825, 0.06666667, 1)
+
+[node name="Node4" type="Line2D" parent="Visual" unique_id=1398168088]
+points = PackedVector2Array(64, -32, 64, -24)
+width = 3.0
+default_color = Color(0.29411766, 0.27058825, 0.06666667, 1)
+
+[node name="Outline" type="Line2D" parent="Visual" unique_id=1896170637]
+points = PackedVector2Array(-96, -32, 96, -32, 96, -24, -96, -24, -96, -32)
+width = 2.0
+default_color = Color(0.29411766, 0.27058825, 0.06666667, 1)

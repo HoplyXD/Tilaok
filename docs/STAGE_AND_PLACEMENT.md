@@ -64,7 +64,7 @@ All submissions in a Place phase resolve from the same stage snapshot:
 
 1. Gather confirmed placements and cleanup previews.
 2. Resolve each Walis Cleanup target set from that snapshot.
-3. Reject invalid or conflicting solid placements as a set, without using callback order or input-frame order as a tie-break.
+3. Reject invalid placements. *Superseded 2026-10-14 (Jorge):* conflicting placements are no longer rejected as a set — the first player to confirm claims the cells (first come, first served); later players cannot confirm over them and edits resolve in confirmation order (see GDD construction rules).
 4. Commit the remaining valid edits together.
 5. Start Play with the committed stage.
 

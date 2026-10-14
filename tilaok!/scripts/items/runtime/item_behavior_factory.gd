@@ -23,11 +23,32 @@ static func has_behavior(family_id: String) -> bool:
 	return create(family_id) != null
 
 
+## Behavior for a family: its catalog `behavior_kind` (scene blocks), else the family-ID mapping.
+## "hitbox" = the base behavior, which only applies kill/stun touch regions.
+static func create_for(family: ItemFamilyDefinition) -> ItemBehavior:
+	if family == null:
+		return null
+	match family.behavior_kind:
+		&"spring":
+			return SpringBehavior.new()
+		&"trumpo":
+			return TrumpoBehavior.new()
+		&"parol":
+			return ParolBehavior.new()
+		&"launcher":
+			return LauncherBehavior.new()
+		&"bubble":
+			return BubbleBehavior.new()
+		&"hitbox":
+			return ItemBehavior.new()
+	return create(family.family_id)
+
+
 ## Detached behavior at the origin for previews (egg, ghost, Library). Never touches a stage.
 static func create_preview(
 	family: ItemFamilyDefinition, variant: ItemVariantDefinition, turns: int, tuning: GameplayTuning
 ) -> ItemBehavior:
-	var behavior := create(family.family_id)
+	var behavior := create_for(family)
 	if behavior == null:
 		return null
 	var record := PlacedItem.new()

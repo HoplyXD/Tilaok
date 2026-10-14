@@ -252,6 +252,10 @@ Build: working tree on `19b3653`; Godot 4.7.stable.official.5b4e0cb0f; Windows 1
 | Rendered stage/blocks at 1080p | readable placeholders | [captures](evidence/blocks/README.md) | PASSED (visual inspection by Claude only) |
 | Human feel/balance, physical devices | session with named reviewer | not run | COULD-NOT-RUN |
 
+## Block scenes, Spikes, Cannon and stun — October 14, 2026
+
+Build: working tree on `a9eb75f`; Godot 4.7.stable.official.5b4e0cb0f; Item Lab, seed 12345, 60 Hz; synthetic K1 events. Reviewer: Claude (AI, automated). Catalog parity with the removed `.tres` data: 0 differences across 23 variants. All 21 headless suites: PASSED except two P04 checks already failing on origin/main. `run_blocks_tests.gd` 110/110. Human feel review of spikes/cannon/stun and editor authoring by Jorge: COULD-NOT-RUN (P02-T29). [Evidence](evidence/blocks/README.md).
+
 ## Completion status vocabulary
 
 For each check, record exactly one status:

@@ -18,6 +18,8 @@ var projectiles: Array[Dictionary] = []
 var suppressed_shots := 0
 var shots_fired := 0
 var clipped_length := 0.0
+## "kill" (default) or "stun": what a projectile hit does (the lane region's effect tag).
+var projectile_effect: StringName = &"kill"
 
 
 func configure(
@@ -26,6 +28,10 @@ func configure(
 	super.configure(record, resolved_regions, source_tuning)
 	var rects := world_rects(ItemRegionSpec.Kind.LANE)
 	lane = rects[0] if not rects.is_empty() else Rect2()
+	projectile_effect = &"kill"
+	for region in resolved_regions:
+		if region.kind == ItemRegionSpec.Kind.LANE and region.get("effect", &"") == &"stun":
+			projectile_effect = &"stun"
 	var footprint := Rect2(origin, footprint_size)
 	if lane.position.x >= footprint.end.x - 0.01:
 		lane_dir = Vector2.RIGHT
@@ -181,9 +187,12 @@ func _advance_projectiles(ctx: ItemStepContext, occluders: Array[Rect2]) -> void
 				hit_seat = actor.seat_index
 		var done := false
 		if hit_t >= 0.0 and (block_t < 0.0 or hit_t <= block_t):
-			ctx.report_lethal(
-				hit_seat, ctx.time_start + hit_t * ctx.dt, item_id, "slipper projectile"
-			)
+			if projectile_effect == &"stun":
+				ctx.request_stun(hit_seat, item_id, lane_dir * stun_knockback_wu_s, stun_seconds)
+			else:
+				ctx.report_lethal(
+					hit_seat, ctx.time_start + hit_t * ctx.dt, item_id, "slipper projectile"
+				)
 			done = true
 		elif block_t >= 0.0:
 			done = true

@@ -3,7 +3,8 @@ extends RefCounted
 
 
 ## Resolve every player's pending construction edit against one immutable stage snapshot.
-## Cleanup targets are unioned first; remaining edits are considered in ascending seat order.
+## Cleanup targets are unioned first; remaining edits are considered in confirmation order
+## (first come, first served) when they carry `confirm_order`, else in ascending seat order.
 static func resolve(
 	definitions: ItemDefinitions,
 	arena: ArenaDefinition,
@@ -97,8 +98,22 @@ static func resolve(
 		if not edits_by_seat.has(seat_index):
 			edits_by_seat[seat_index] = []
 		edits_by_seat[seat_index].append(edit.duplicate(true))
+	# First come, first served: seats resolve in confirmation order when edits carry one
+	# (`confirm_order`, from MatchPlacementController); otherwise in ascending seat order.
+	var seat_order: Dictionary = {}
+	for seat_key in edits_by_seat:
+		var order := 1_000_000 + int(seat_key)
+		for edit in edits_by_seat[seat_key]:
+			if (edit as Dictionary).has("confirm_order"):
+				order = mini(order, int(edit.confirm_order))
+		seat_order[seat_key] = order
 	var seats: Array = edits_by_seat.keys()
-	seats.sort()
+	seats.sort_custom(
+		func(left: int, right: int) -> bool:
+			if int(seat_order[left]) != int(seat_order[right]):
+				return int(seat_order[left]) < int(seat_order[right])
+			return left < right
+	)
 	var accepted: Array[Dictionary] = []
 	var committed_snapshot: Array[PlacedItem] = remaining_snapshot.duplicate()
 	for seat_variant in seats:

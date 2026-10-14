@@ -127,8 +127,8 @@ func _test_tuning_and_definitions() -> void:
 	var definitions := ItemDefinitions.load_all(tuning)
 	_check(definitions.is_valid(), "shipped definitions validate: %s" % [definitions.errors])
 	_check(
-		definitions.families.size() == 5,
-		"five construction families are defined (Kaing, Tulay and three stage blocks)"
+		definitions.families.size() == 7,
+		"seven block families are defined (Kaing, Tulay, three stage blocks, Spikes, Cannon)"
 	)
 	var kaing := definitions.find_family("build.hollow_blocks")
 	var tulay := definitions.find_family("build.bamboo_bridge")
@@ -711,6 +711,15 @@ func _test_placement_reasons() -> void:
 # ---------------------------------------------------------------- lifecycle
 
 
+## Runtime collision of a placed piece (block scenes also hold BlockData and Visual nodes).
+func _collision_shapes(piece: Node) -> Array[CollisionShape2D]:
+	var result: Array[CollisionShape2D] = []
+	for child in piece.get_children():
+		if child is CollisionShape2D:
+			result.append(child)
+	return result
+
+
 func _world_piece_count() -> int:
 	var found := 0
 	for child in room.world_layer.get_children():
@@ -990,20 +999,21 @@ func _test_kaing_physics() -> void:
 	var sizes := [Vector2(64, 64), Vector2(128, 192), Vector2(192, 128)]
 	for index in range(3):
 		var piece := room.items.piece_for(ids[index])
-		var shape_rect := (piece.get_child(0) as CollisionShape2D).shape.get_rect()
+		var shapes := _collision_shapes(piece)
+		var shape_rect := shapes[0].shape.get_rect() if not shapes.is_empty() else Rect2()
 		var passed: bool = (
 			piece.footprint_world_rect().size == sizes[index]
 			and shape_rect.size == sizes[index]
 			and piece.occlusion_rects().size() == 1
 			and piece.occlusion_rects()[0] == piece.footprint_world_rect()
-			and piece.get_child_count() == 1
+			and shapes.size() == 1
 		)
 		_row(
 			"T06 Kaing collider #%d" % index,
 			"solid == footprint %s, one shape, no trigger, occlusion == solid" % sizes[index],
 			(
 				"footprint %s shape %s children %d"
-				% [piece.footprint_world_rect().size, shape_rect.size, piece.get_child_count()]
+				% [piece.footprint_world_rect().size, shape_rect.size, shapes.size()]
 			),
 			passed
 		)
@@ -1107,9 +1117,9 @@ func _test_tulay_physics() -> void:
 		"footprint %s strip %s" % [piece.footprint_world_rect().size, strip],
 		strip_ok
 	)
-	var one_way_shape := piece.get_child(0) as CollisionShape2D
+	var tulay_shapes := _collision_shapes(piece)
 	_check(
-		one_way_shape.one_way_collision and piece.get_child_count() == 1,
+		tulay_shapes.size() == 1 and tulay_shapes[0].one_way_collision,
 		"T15 Tulay has exactly one one-way collision shape and no solid underside/sides"
 	)
 	_put_actor_feet(Vector2(1024.0, 380.0))
@@ -1337,7 +1347,7 @@ func _test_catalog_and_harness() -> void:
 	await process_frame
 	harness.selected_profile_id = "karera_slice"
 	var catalog := harness._current_catalog()
-	_check(catalog.entries.size() == 5, "karera_slice catalog lists exactly the five families")
+	_check(catalog.entries.size() == 5, "karera_slice catalog lists exactly its five families")
 	var normalized := catalog.normalized_weights("item")
 	var equal_weights := normalized.size() == 5
 	for family_id in [
@@ -1531,7 +1541,7 @@ func _test_wall_eligibility() -> void:
 
 func _test_placeholder_previews_and_library() -> void:
 	var expected_keys := [KAING_1X1, KAING_2X3, TULAY_4X1, SOLID_3X1, WOOD_BOX_2X2, COLLAPSE_1X1]
-	_check(room.egg_previews.size() == 6, "one placeholder egg preview per enabled variant")
+	_check(room.egg_previews.size() == 8, "one placeholder egg preview per enabled variant")
 	var text_free := true
 	for key in expected_keys:
 		var egg := room.egg_previews.get(key) as ItemEggPreview
@@ -1587,7 +1597,7 @@ func _test_placeholder_previews_and_library() -> void:
 		identity_ok
 	)
 	var entries := room.library_entries()
-	var fields_ok := entries.size() == 5
+	var fields_ok := entries.size() == 7
 	for entry in entries:
 		fields_ok = (
 			fields_ok

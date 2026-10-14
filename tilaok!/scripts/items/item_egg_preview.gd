@@ -1,3 +1,4 @@
+# gdlint: disable=max-returns
 class_name ItemEggPreview
 extends Control
 
@@ -24,6 +25,8 @@ var _family: ItemFamilyDefinition
 var _variant: ItemVariantDefinition
 var _tuning: GameplayTuning
 var _preview_behavior: ItemBehavior
+## Scene-authored blocks ("scene" silhouette): a copy of the block scene's own Visual node.
+var _scene_visual: Node2D
 
 
 func configure(
@@ -38,7 +41,12 @@ func configure(
 	_variant = found.variant
 	_tuning = source_tuning
 	_preview_behavior = null
-	if _family.preview_silhouette not in BOX_SILHOUETTES:
+	if _scene_visual != null:
+		_scene_visual.queue_free()
+		_scene_visual = null
+	if _family.preview_silhouette == BlockCatalog.SCENE_PREVIEW:
+		_add_scene_visual()
+	elif _family.preview_silhouette not in BOX_SILHOUETTES:
 		_preview_behavior = ItemBehaviorFactory.create_preview(
 			_family, _variant, turns, source_tuning
 		)
@@ -47,6 +55,18 @@ func configure(
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	return true
+
+
+func _add_scene_visual() -> void:
+	_scene_visual = BlockCatalog.preview_visual(_variant)
+	if _scene_visual == null:
+		return
+	var box := ItemGeometry.rotated_size(Vector2(_variant.footprint_cells), quarter_turns) * 64.0
+	var fit := minf(HAZARD_BOX_WU.x / box.x, HAZARD_BOX_WU.y / box.y)
+	_scene_visual.scale = Vector2.ONE * minf(fit, HAZARD_MAX_SCALE)
+	_scene_visual.rotation = float(ItemGeometry.normalized_turns(quarter_turns)) * PI * 0.5
+	_scene_visual.position = (EGG_SIZE + Vector2(8.0, 8.0)) * 0.5 + Vector2(0.0, 6.0)
+	add_child(_scene_visual)
 
 
 ## 0..1 position inside the looping animation; two samples a half loop apart differ.
@@ -104,6 +124,11 @@ func _draw_hazard_silhouette(center: Vector2) -> void:
 
 
 func _draw_silhouette(center: Vector2, wobble: float) -> void:
+	if _scene_visual != null:
+		_scene_visual.position = center
+		return
+	if _family.preview_silhouette == BlockCatalog.SCENE_PREVIEW:
+		return
 	if _family.preview_silhouette not in BOX_SILHOUETTES:
 		_draw_hazard_silhouette(center)
 		return

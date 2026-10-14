@@ -1,11 +1,10 @@
 extends SceneTree
 
 const P07_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
-const EXPECTED_VARIANTS: PackedStringArray = [
-	"build.hollow_blocks.cell_1x1",
-	"build.hollow_blocks.stack_2x3",
-	"build.bamboo_bridge.span_4x1",
-]
+## Since 2026-10-14 the selector offers every main-game block scene that is enabled by default
+## (BlockCatalog), so new blocks such as Spikes and Cannon reach the match without a code edit.
+## P10 hazards stay out of this pool.
+var expected_variants := BlockCatalog.default_enabled_keys()
 
 var checks := 0
 var failures: Array[String] = []
@@ -23,8 +22,8 @@ func _run() -> void:
 
 	_check(room.profile_id == "karera_slice", "P07 retains the karera_slice profile identity")
 	_check(
-		room.tuning.item_enabled_variants == EXPECTED_VARIANTS,
-		"P07 config enables exactly the verified Kaing/Tulay variants"
+		room.tuning.item_enabled_variants == expected_variants,
+		"P07 config enables exactly the main-game block scenes (catalog default pool)"
 	)
 	_check(room.definitions != null and room.definitions.is_valid(), "P07 item definitions load")
 	var enabled_from_definitions := PackedStringArray()
@@ -33,19 +32,29 @@ func _run() -> void:
 			room.definitions.enabled_variant_keys(family.family_id)
 		)
 	enabled_from_definitions.sort()
-	var expected_sorted := EXPECTED_VARIANTS.duplicate()
+	var expected_sorted := expected_variants.duplicate()
 	expected_sorted.sort()
 	_check(
 		enabled_from_definitions == expected_sorted,
-		"P07 loaded definition set exposes only the three allowed variants"
+		"P07 loaded definition set exposes only the catalog default variants"
 	)
 	_check(
-		room._validate_p07_egg_pool([{"variant_key": EXPECTED_VARIANTS[0]}]).is_empty(),
+		room._validate_p07_egg_pool([{"variant_key": expected_variants[0]}]).is_empty(),
 		"P07 pool validator accepts allowed variants"
 	)
 	_check(
-		not room._validate_p07_egg_pool([{"variant_key": "build.solid_block.slab_3x1"}]).is_empty(),
-		"P07 pool validator rejects an unapproved stage block"
+		not (
+			room._validate_p07_egg_pool([{"variant_key": "hazard.rail_trumpo.rail_4x1"}]).is_empty()
+		),
+		"P07 pool validator rejects a variant outside the main-game pool (a P10 hazard)"
+	)
+	_check(
+		(
+			expected_variants.has("block.spikes.main")
+			and expected_variants.has("block.cannon.main")
+			and not expected_variants.has("build.hollow_blocks.column_1x3")
+		),
+		"P07 pool includes Spikes and Cannon and still omits disabled sizes"
 	)
 
 	for seed_value in range(64):
@@ -57,7 +66,7 @@ func _run() -> void:
 		_check(not pool.is_empty(), "seed %d yields a nonempty P07 pool" % seed_value)
 		for egg in pool:
 			_check(
-				EXPECTED_VARIANTS.has(str(egg.get("variant_key", ""))),
+				expected_variants.has(str(egg.get("variant_key", ""))),
 				"seed %d generated only P07-allowed variants" % seed_value
 			)
 
@@ -82,7 +91,7 @@ func _run() -> void:
 	)
 	for egg in room.egg_pool:
 		_check(
-			EXPECTED_VARIANTS.has(str(egg.variant_key)),
+			expected_variants.has(str(egg.variant_key)),
 			"actual P07 runtime egg pool excludes unapproved variants"
 		)
 

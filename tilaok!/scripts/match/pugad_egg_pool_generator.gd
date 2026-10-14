@@ -17,7 +17,7 @@ static func generate(
 		var variants := definitions.enabled_variant_keys(family.family_id)
 		if variants.is_empty():
 			continue
-		var weight := float(tuning.get(family.weight_tuning_key))
+		var weight := family.selection_weight(tuning)
 		if weight <= 0.0:
 			continue
 		eligible_families.append({"family": family, "variants": variants, "weight": weight})

@@ -127,6 +127,8 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var block_box_friction_wu_s2: float = 2400.0
 @export var block_collapse_delay_s: float = 2.0
 @export var block_collapse_respawn_s: float = 3.0
+## Stun (block STUN hitboxes): re-stun immunity after a stun ends. Duration/knockback are per block.
+@export var stun_immunity_s: float = 0.5
 ## PROTOTYPE item infrastructure values: docs/PROTOTYPE_DEFAULTS.md §4 (items.*, transients.*).
 @export var item_persistent_cap: int = 48
 @export var item_projectile_cap: int = 16
@@ -191,17 +193,13 @@ const DISTANCE_FIELDS: PackedStringArray = [
 ## P06 provisional active-simulation race deadlines; frozen with the match snapshot.
 @export var match_race_hard_cap_seconds: float = 60.0
 @export var match_race_after_first_finish_seconds: float = 15.0
-## Variant keys allowed into the prototype pool; each must be defined and approved.
-@export var item_enabled_variants: PackedStringArray = PackedStringArray(
-	[
-		"build.hollow_blocks.cell_1x1",
-		"build.hollow_blocks.stack_2x3",
-		"build.bamboo_bridge.span_4x1",
-		"build.solid_block.slab_3x1",
-		"build.wood_box.box_2x2",
-		"build.collapsing_block.cell_1x1",
-	]
-)
+## Variant keys allowed into the Pugad pool. Defaults to every main-game block scene marked
+## "enabled by default" (BlockCatalog), so a new scene in scenes/blocks/ joins with no edit here.
+@export var item_enabled_variants: PackedStringArray = PackedStringArray()
+
+
+func _init() -> void:
+	item_enabled_variants = BlockCatalog.default_enabled_keys()
 
 
 ## Copy with every DISTANCE_FIELDS value (and the camera bounds) multiplied by `factor`;
@@ -300,6 +298,7 @@ func validate() -> PackedStringArray:
 		"block_box_friction_wu_s2",
 		"block_collapse_delay_s",
 		"block_collapse_respawn_s",
+		"stun_immunity_s",
 		"item_projectile_ttl_s",
 		"item_bubble_ttl_s",
 		"item_vfx_ttl_s",
@@ -465,6 +464,8 @@ func _validate_sneak_glide_blocks() -> PackedStringArray:
 		errors.append("glide cap must be positive and not exceed the fall speed cap")
 	if block_box_push_speed_wu_s < 0.0 or block_box_friction_wu_s2 < 0.0:
 		errors.append("box push speed and friction cannot be negative")
+	if stun_immunity_s < 0.0:
+		errors.append("stun immunity cannot be negative")
 	if block_collapse_delay_s < 0.0 or block_collapse_respawn_s < 0.0:
 		errors.append("collapse delay and respawn time cannot be negative")
 	return errors

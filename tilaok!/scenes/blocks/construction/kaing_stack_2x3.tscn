@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_3uvtu"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_phq7c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7taed"]
+size = Vector2(128, 192)
+
+[node name="KaingStack2x3" type="AnimatableBody2D" unique_id=361898672]
+sync_to_physics = false
+script = ExtResource("1_3uvtu")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=1166867678]
+script = ExtResource("2_phq7c")
+block_name = "Hollow Blocks / Kaing Stack"
+family_id = "build.hollow_blocks"
+variant_id = "stack_2x3"
+catalog_order = 0
+library_tell = "Strong, distinct crate silhouette and a placement ghost."
+library_counterplay = "Jump around or over it, use another route, or use Walis Cleanup."
+modes_allowed = PackedStringArray("karera", "lagsanay", "kangaroo")
+modes_pending_review = PackedStringArray()
+placement_size = Vector2i(2, 3)
+rotations = PackedInt32Array(0, 1)
+gated_rotations = PackedInt32Array()
+weight_tuning_key = &"item_kaing_weight"
+preview_silhouette = "crate"
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=510083761]
+shape = SubResource("RectangleShape2D_7taed")
+
+[node name="Visual" type="Node2D" parent="." unique_id=317412167]
+
+[node name="Fill" type="Polygon2D" parent="Visual" unique_id=471646704]
+color = Color(0.6039216, 0.41960785, 0.22745098, 1)
+polygon = PackedVector2Array(-64, -96, 64, -96, 64, 96, -64, 96)
+
+[node name="Slats0_0" type="Line2D" parent="Visual" unique_id=1908996613]
+points = PackedVector2Array(-64, -96, 0, -32, 0, -96, -64, -32)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Slats0_1" type="Line2D" parent="Visual" unique_id=600602083]
+points = PackedVector2Array(-64, -32, 0, 32, 0, -32, -64, 32)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Slats0_2" type="Line2D" parent="Visual" unique_id=845511259]
+points = PackedVector2Array(-64, 32, 0, 96, 0, 32, -64, 96)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Slats1_0" type="Line2D" parent="Visual" unique_id=261115560]
+points = PackedVector2Array(0, -96, 64, -32, 64, -96, 0, -32)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Slats1_1" type="Line2D" parent="Visual" unique_id=409081140]
+points = PackedVector2Array(0, -32, 64, 32, 64, -32, 0, 32)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Slats1_2" type="Line2D" parent="Visual" unique_id=520246144]
+points = PackedVector2Array(0, 32, 64, 96, 64, 32, 0, 96)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Outline" type="Line2D" parent="Visual" unique_id=1665387133]
+points = PackedVector2Array(-64, -96, 64, -96, 64, 96, -64, 96, -64, -96)
+width = 6.0
+default_color = Color(0.16470589, 0.101960786, 0.047058824, 1)

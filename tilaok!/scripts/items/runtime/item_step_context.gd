@@ -17,6 +17,7 @@ var piece_occluders: Array[Dictionary] = []
 var lethal_reports: Array[Dictionary] = []
 var launch_requests: Array[Dictionary] = []
 var slot_requests: Array[Dictionary] = []
+var stun_requests: Array[Dictionary] = []
 
 
 func occluders_excluding(item_id: String) -> Array[Rect2]:
@@ -44,6 +45,13 @@ func report_lethal(seat: int, time: float, item_id: String, detail: String) -> v
 
 func request_launch(seat: int, item_id: String, normal: Vector2) -> void:
 	launch_requests.append({"seat": seat, "item_id": item_id, "normal": normal})
+
+
+## Stun touch: freeze controls for `seconds` and knock back by `knockback` (wu/s).
+func request_stun(seat: int, item_id: String, knockback: Vector2, seconds: float) -> void:
+	stun_requests.append(
+		{"seat": seat, "item_id": item_id, "knockback": knockback, "seconds": seconds}
+	)
 
 
 func request_slot(item_id: String, kind: TransientBudget.Kind) -> void:

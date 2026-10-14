@@ -14,6 +14,11 @@ enum Kind { UNSET = -1, SOLID, ONE_WAY_TOP, TRIGGER, SWEEP, LANE, EFFECT }
 @export var declared_bounded := false
 ## Lane, beam or path that solids may cut short: base-geometry overlap is allowed and clips it.
 @export var blockable := false
+## Scene-authored blocks: what touching this region does ("kill", "stun", "launch", "capture",
+## or empty). Behaviors filter TRIGGER regions by it.
+@export var effect: StringName = &""
+## ONE_WAY_TOP without a tuning key: the authored strip thickness in world units.
+@export var thickness_wu := 0.0
 
 
 static func kind_name(region_kind: Kind) -> String:

@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_c06e7"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_ey56e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hop5y"]
+size = Vector2(64, 64)
+
+[node name="KaingCell1x1" type="AnimatableBody2D" unique_id=1421458399]
+sync_to_physics = false
+script = ExtResource("1_c06e7")
+
+[node name="BlockData" type="Node2D" parent="." unique_id=2014593110]
+script = ExtResource("2_ey56e")
+block_name = "Hollow Blocks / Kaing Stack"
+family_id = "build.hollow_blocks"
+variant_id = "cell_1x1"
+catalog_order = 0
+library_tell = "Strong, distinct crate silhouette and a placement ghost."
+library_counterplay = "Jump around or over it, use another route, or use Walis Cleanup."
+modes_allowed = PackedStringArray("karera", "lagsanay", "kangaroo")
+modes_pending_review = PackedStringArray()
+rotations = PackedInt32Array(0)
+gated_rotations = PackedInt32Array()
+weight_tuning_key = &"item_kaing_weight"
+preview_silhouette = "crate"
+
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=1199292455]
+shape = SubResource("RectangleShape2D_hop5y")
+
+[node name="Visual" type="Node2D" parent="." unique_id=250061564]
+
+[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1548419197]
+color = Color(0.6039216, 0.41960785, 0.22745098, 1)
+polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+
+[node name="Slats0_0" type="Line2D" parent="Visual" unique_id=1751661449]
+points = PackedVector2Array(-32, -32, 32, 32, 32, -32, -32, 32)
+width = 4.0
+default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
+
+[node name="Outline" type="Line2D" parent="Visual" unique_id=1570936983]
+points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32, -32, -32)
+width = 6.0
+default_color = Color(0.16470589, 0.101960786, 0.047058824, 1)
