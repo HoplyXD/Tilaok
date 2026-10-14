@@ -1,0 +1,193 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12347
+P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12347
+PASS 2 synthetic seats start the standalone route
+PASS room snapshots the Kangaroo contract profile
+PASS standalone Kangaroo creates no race controller
+PASS standalone route owns an independent Kangaroo controller
+PASS Kangaroo tuning passes the shared validator
+PASS match lifecycle and persistent item manager are present
+PASS all 2 synthetic seat identities join before Pugad
+PASS Kangaroo profile permits player-built Rising support
+PASS placed player construction has a persistent signature
+PASS Pugad → Place → Play starts independent command evaluation at 2 seats
+PASS Karera goal and race deadline stay inactive in the standalone profile
+PASS standalone Kangaroo does not inherit or invoke the Bomb-Taya mode controller
+PASS profile enables reviewed Trumpo and Tsinelas Launcher variants
+PASS seeded command scheduler launched a first command
+PASS debug presenter remains a visual-only non-colliding layer
+PASS distinct command pose, timing and audio-placeholder labels render in the HUD
+PASS muted audio retains the visible command and timing instructions
+PASS screen-shake mode 0 keeps a visual cue
+PASS screen-shake mode 1 keeps a visual cue
+PASS screen-shake Off suppresses camera motion
+PASS rendered screenshot saved: p11_2p_command_hud_1920x1080.png (1920x1080)
+P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=8.735,p95=60.358,max=60.358] physics_ms[p95=77.498,max=77.498] static_memory_mib[min=88.6,max=88.6]
+PASS active round leaves persistent construction unchanged
+PASS standalone room cleanup releases the scene instance
+P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12348
+P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12348
+PASS 3 synthetic seats start the standalone route
+PASS room snapshots the Kangaroo contract profile
+PASS standalone Kangaroo creates no race controller
+PASS standalone route owns an independent Kangaroo controller
+PASS Kangaroo tuning passes the shared validator
+PASS match lifecycle and persistent item manager are present
+PASS all 3 synthetic seat identities join before Pugad
+PASS Kangaroo profile permits player-built Rising support
+PASS placed player construction has a persistent signature
+PASS Pugad → Place → Play starts independent command evaluation at 3 seats
+PASS Karera goal and race deadline stay inactive in the standalone profile
+PASS standalone Kangaroo does not inherit or invoke the Bomb-Taya mode controller
+PASS profile enables reviewed Trumpo and Tsinelas Launcher variants
+PASS seeded command scheduler launched a first command
+PASS debug presenter remains a visual-only non-colliding layer
+PASS distinct command pose, timing and audio-placeholder labels render in the HUD
+P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=100.117,p95=100.117,max=100.117] physics_ms[p95=7.600,max=7.600] static_memory_mib[min=88.7,max=88.7]
+PASS synthetic direct trap is accepted for seat 1
+PASS synthetic direct trap is accepted for seat 2
+PASS batched hazard outcomes leave one survivor
+PASS placement resolver awards the surviving player and eligible Patibong credit
+PASS direct-trap survivor resolution commits placement awards into the shared results screen
+PASS construction persists through the Kangaroo results cleanup
+PASS next Pugad retains the constructed stage and cumulative match lifecycle
+PASS Last Cluck tie fixture submits all comparable same-time traps
+PASS same-time terminal command failures resolve together through Last Cluck
+PASS simultaneous final failures render the Last Cluck winner explanation
+PASS rendered screenshot saved: p11_last_cluck_results_1920x1080.png (1920x1080)
+PASS active round leaves persistent construction unchanged
+PASS standalone room cleanup releases the scene instance
+P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12349
+P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12349
+PASS 4 synthetic seats start the standalone route
+PASS room snapshots the Kangaroo contract profile
+PASS standalone Kangaroo creates no race controller
+PASS standalone route owns an independent Kangaroo controller
+PASS Kangaroo tuning passes the shared validator
+PASS match lifecycle and persistent item manager are present
+PASS all 4 synthetic seat identities join before Pugad
+PASS Kangaroo profile permits player-built Rising support
+PASS placed player construction has a persistent signature
+PASS Pugad → Place → Play starts independent command evaluation at 4 seats
+PASS Karera goal and race deadline stay inactive in the standalone profile
+PASS standalone Kangaroo does not inherit or invoke the Bomb-Taya mode controller
+PASS profile enables reviewed Trumpo and Tsinelas Launcher variants
+PASS seeded command scheduler launched a first command
+PASS debug presenter remains a visual-only non-colliding layer
+PASS distinct command pose, timing and audio-placeholder labels render in the HUD
+P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=10.120,p95=192.555,max=192.555] physics_ms[p95=45.219,max=45.219] static_memory_mib[min=93.7,max=93.7]
+PASS screen-shake Off suppresses the debug shake
+PASS Reduced screen shake preserves its distinct gentle cue
+PASS active round leaves persistent construction unchanged
+PASS standalone room cleanup releases the scene instance
+P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12349
+P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12349
+PASS pause/reclaim room starts
+PASS assigned synthetic gamepad disconnect pauses the full scene
+PASS paused reclaim menu accepts the missing seat
+PASS new synthetic gamepad reclaims that seat
+PASS all four seats can enter the resume countdown
+PASS reclaim resume countdown restores the full simulation
+PASS pause and reclaim hold the Kangaroo active-simulation clock
+PASS pause/reclaim room tears down its command scheduler
+PASS room teardown leaves the project unpaused
+P11_INTERACTIVE_SUMMARY checks=81 failures=0
+P11 standalone integration run; all seats, inputs and hazard timestamps are synthetic.
+Engine: 4.7.2-stable (official)
+Date: 2026-10-14T09:51:15 UTC
+Build: P11-independent-kangaroo-dev; current task working tree.
+OS: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
+Input: synthetic K1/K2 and synthetic gamepad seat identities; no physical devices.
+Profile/seed: kangaroo_contract_lab / 12345 unless a row says otherwise.
+Reviewer: engineering integration run; no independent human review recorded.
+PASSED — 2 synthetic seats start the standalone route
+PASSED — room snapshots the Kangaroo contract profile
+PASSED — standalone Kangaroo creates no race controller
+PASSED — standalone route owns an independent Kangaroo controller
+PASSED — Kangaroo tuning passes the shared validator
+PASSED — match lifecycle and persistent item manager are present
+PASSED — all 2 synthetic seat identities join before Pugad
+PASSED — Kangaroo profile permits player-built Rising support
+PASSED — placed player construction has a persistent signature
+PASSED — Pugad → Place → Play starts independent command evaluation at 2 seats
+PASSED — Karera goal and race deadline stay inactive in the standalone profile
+PASSED — standalone Kangaroo does not inherit or invoke the Bomb-Taya mode controller
+PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
+PASSED — seeded command scheduler launched a first command
+PASSED — debug presenter remains a visual-only non-colliding layer
+PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
+PASSED — muted audio retains the visible command and timing instructions
+PASSED — screen-shake mode 0 keeps a visual cue
+PASSED — screen-shake mode 1 keeps a visual cue
+PASSED — screen-shake Off suppresses camera motion
+PASSED — rendered screenshot saved: p11_2p_command_hud_1920x1080.png (1920x1080)
+P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=8.735,p95=60.358,max=60.358] physics_ms[p95=77.498,max=77.498] static_memory_mib[min=88.6,max=88.6]
+PASSED — active round leaves persistent construction unchanged
+PASSED — standalone room cleanup releases the scene instance
+PASSED — 3 synthetic seats start the standalone route
+PASSED — room snapshots the Kangaroo contract profile
+PASSED — standalone Kangaroo creates no race controller
+PASSED — standalone route owns an independent Kangaroo controller
+PASSED — Kangaroo tuning passes the shared validator
+PASSED — match lifecycle and persistent item manager are present
+PASSED — all 3 synthetic seat identities join before Pugad
+PASSED — Kangaroo profile permits player-built Rising support
+PASSED — placed player construction has a persistent signature
+PASSED — Pugad → Place → Play starts independent command evaluation at 3 seats
+PASSED — Karera goal and race deadline stay inactive in the standalone profile
+PASSED — standalone Kangaroo does not inherit or invoke the Bomb-Taya mode controller
+PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
+PASSED — seeded command scheduler launched a first command
+PASSED — debug presenter remains a visual-only non-colliding layer
+PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
+P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=100.117,p95=100.117,max=100.117] physics_ms[p95=7.600,max=7.600] static_memory_mib[min=88.7,max=88.7]
+PASSED — synthetic direct trap is accepted for seat 1
+PASSED — synthetic direct trap is accepted for seat 2
+PASSED — batched hazard outcomes leave one survivor
+PASSED — placement resolver awards the surviving player and eligible Patibong credit
+PASSED — direct-trap survivor resolution commits placement awards into the shared results screen
+PASSED — construction persists through the Kangaroo results cleanup
+PASSED — next Pugad retains the constructed stage and cumulative match lifecycle
+PASSED — Last Cluck tie fixture submits all comparable same-time traps
+PASSED — same-time terminal command failures resolve together through Last Cluck
+PASSED — simultaneous final failures render the Last Cluck winner explanation
+PASSED — rendered screenshot saved: p11_last_cluck_results_1920x1080.png (1920x1080)
+PASSED — active round leaves persistent construction unchanged
+PASSED — standalone room cleanup releases the scene instance
+PASSED — 4 synthetic seats start the standalone route
+PASSED — room snapshots the Kangaroo contract profile
+PASSED — standalone Kangaroo creates no race controller
+PASSED — standalone route owns an independent Kangaroo controller
+PASSED — Kangaroo tuning passes the shared validator
+PASSED — match lifecycle and persistent item manager are present
+PASSED — all 4 synthetic seat identities join before Pugad
+PASSED — Kangaroo profile permits player-built Rising support
+PASSED — placed player construction has a persistent signature
+PASSED — Pugad → Place → Play starts independent command evaluation at 4 seats
+PASSED — Karera goal and race deadline stay inactive in the standalone profile
+PASSED — standalone Kangaroo does not inherit or invoke the Bomb-Taya mode controller
+PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
+PASSED — seeded command scheduler launched a first command
+PASSED — debug presenter remains a visual-only non-colliding layer
+PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
+P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=10.120,p95=192.555,max=192.555] physics_ms[p95=45.219,max=45.219] static_memory_mib[min=93.7,max=93.7]
+PASSED — screen-shake Off suppresses the debug shake
+PASSED — Reduced screen shake preserves its distinct gentle cue
+PASSED — active round leaves persistent construction unchanged
+PASSED — standalone room cleanup releases the scene instance
+PASSED — pause/reclaim room starts
+PASSED — assigned synthetic gamepad disconnect pauses the full scene
+PASSED — paused reclaim menu accepts the missing seat
+PASSED — new synthetic gamepad reclaims that seat
+PASSED — all four seats can enter the resume countdown
+PASSED — reclaim resume countdown restores the full simulation
+PASSED — pause and reclaim hold the Kangaroo active-simulation clock
+PASSED — pause/reclaim room tears down its command scheduler
+PASSED — room teardown leaves the project unpaused
+P11_INTERACTIVE_SUMMARY checks=81 failures=0

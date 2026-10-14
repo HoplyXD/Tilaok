@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. Updated through P09 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; P07 adds a dedicated first-playable route; P08 adds independent Lagsanay; and P09 adds a development-only Karera match ending and tied-player sudden death. P07 human/device acceptance, P08 entry/release gate, P09 performance target and human/device acceptance, and P02 physical-device acceptance remain open. The engineering routes use synthetic seats and scripted fixtures; none is a complete game or release playtest. Historical P00 results remain below.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; P07 adds a dedicated first-playable route; P08 adds independent Lagsanay; P09 adds a development-only Karera match ending and tied-player sudden death; and P11 adds the standalone `kangaroo_contract_lab` route. P07 human/device acceptance, P08 entry/release gate, P09 performance target and human/device acceptance, P11 human/device/balance/production-asset acceptance and performance target, and P02 physical-device acceptance remain open. The engineering routes use synthetic seats and scripted fixtures; none is a complete game or release playtest. Historical P00 results remain below.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -421,3 +421,20 @@ At that documentation-only review, no team milestone was marked complete. The cu
 | Date | Build | Players | Devices | Rounds | Resets | Observer | Result |
 |---|---|---|---|---|---|---|---|
 | — | — | — | — | — | — | — | No human session run yet. P07-T01 stays unchecked. |
+## P11 independent Kangaroo — standalone engineering route (2026-10-14)
+
+**Build / engine / machine:** `P11-independent-kangaroo-dev`, working tree before delivery; Godot `4.7.2.stable.official.ed1daf0bf`; Windows; Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU, Compatibility renderer. **Profile / seed:** `kangaroo_contract_lab` / `12345`. **Input:** synthetic K1/K2 and synthetic gamepad seat identities only. No physical device, participant, independent human reviewer, or balance reviewer was involved.
+
+| Check | Result | Evidence and limit |
+|---|---|---|
+| Deterministic command contract | **PASSED — 77 checks** | Seeded selection/cadence, Freeze event-edge handling and held-input grace, Rising current-support provenance/line/tolerance/removal/drain, deterministic live Hug pairs, strict recorded-time hazard precedence, batched terminal events, Last Cluck and Storm overlap/cap/reset; [`focused output`](evidence/p11/p11_unit_run.txt). P03's 103-check support suite separately covers real moving support, coyote/airborne rejection and support invalidation. |
+| Standalone route and lifecycle | **PASSED — 81 synthetic assertions** | 2/3/4 seats, persistent construction, Pugad/Place/Play/results/next Pugad, placement scoring, pause/reclaim and cleanup; race goal/deadline and Lagsanay controller absent. Only Trumpo and Tsinelas Launcher are enabled. Includes same-time simultaneous failures and a rendered Last Cluck result. [`interactive report`](evidence/p11/p11_interactive_run.txt). |
+| Visual HUD / muted and shake modes | **PASSED as engineering visual inspection** | Project-runner 1920×1080 [`HUD capture`](evidence/p11/p11_2p_command_hud_1920x1080.png) and [`Last Cluck result`](evidence/p11/p11_last_cluck_results_1920x1080.png); tests cover muted audio plus full/reduced/off shake and keep cues visible. This does not demonstrate player comprehension; human review remains open. |
+| Input regression | **PASSED — 83 checks** | Godot 4.7.2 P02 suite includes edge, captured-intent, pause and synthetic disconnect/reclaim cases; [`output`](evidence/p11/p02_input_regression_run.txt). No physical-controller evidence. |
+| Nearby item regression | **PASSED — 430 checks** | Godot 4.7.2 P10 suite; [`output`](evidence/p11/p10_regression_run_godot_4_7_2.txt). |
+| Import, Windows export and exported startup | **PASSED** | Godot 4.7.2 class registration/import, Windows Desktop Debug export and five-second exported headless route startup; [`import`](evidence/p11/p11_editor_import.txt), [`export`](evidence/p11/p11_windows_export.txt), [`smoke`](evidence/p11/p11_windows_export_smoke.txt). Exported interactive input and visual capture were not verified. |
+| GDScript lint / format | **PASSED** | Changed scripts and runners pass installed `gdlint` and `gdformat --check`; these are scoped checks rather than a full-project lint audit. |
+| Local debug timing | **TARGET MISSED / PROFILE REQUIRED** | Latest 120-sample run per seat count: process p50/p95/max were 8.735/60.358/60.358 ms (2 seats), 100.117/100.117/100.117 ms (3), and 10.120/192.555/192.555 ms (4). All p95 readings exceed the provisional 16.67 ms frame target; physics p95/max were 77.498 ms (2), 7.600 ms (3), and 45.219 ms (4). Sample is short/noisy and not an exported or release-PC benchmark. |
+| Memory | **PARTIAL — static only** | Godot static memory measured 88.6/88.7/93.7 MiB at 2/3/4 synthetic seats. Windows process working set/private bytes were not sampled; the provisional 512 MiB process ceiling is unverified. |
+
+The full command list, metric interpretation and open human/team tasks are in the [P11 evidence index](evidence/p11/README.md). Remain open: player/novice comprehension, actual controller and pause/reclaim sessions, Rising explanations and moving-support review, pair-only Hug and forced two-survivor Storm balance, slot/tie bias, native-speaker/cultural review, production pose/timing/audio replacement, process-memory measurement and target-PC performance profiling. P11 is a standalone development route only; R1–R4, event scheduling and all P12 stacks stay inactive. No final art or audio was generated.

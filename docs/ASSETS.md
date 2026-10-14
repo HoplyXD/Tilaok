@@ -43,6 +43,18 @@ Create one row per imported or shipped asset. Store licence text, purchase recei
 | Audio | Crowd reactions, rooster call, UI feedback, item/event tells, music. | Team-recorded or documented licensed sources. | Planned |
 | Competition media | Logo, screenshots, trailer graphics/captions, poster if finalists. | Team-made or logged. | Planned |
 
+## P11 debug-only placeholders and human replacement handoff
+
+P11 contains no final production art or audio. These code-built stand-ins are labeled DEBUG in the running route and must be replaced/reviewed by the human art/audio team before any release decision.
+
+| Asset ID / implementation | Kind and use | Provenance / status | Human handoff |
+|---|---|---|---|
+| `event.kangaroo.debug_pose` — `tilaok!/scripts/match/kangaroo_slipper_presenter.gd` | Code-drawn sole-down, sole-up and sideways slipper silhouettes; landing easing and target/wave lines. | Generated as programming/presentation code by OpenAI Codex for P11; no imported image or copied character. DEBUG placeholder, not production art. | Create original pose/landing art; review cultural framing and minimum-zoom visibility. |
+| `event.kangaroo.debug_command_hud` — `tilaok!/scripts/match/p11_kangaroo_match_room.gd` | Text/icon/timing ring and KANG/GA/ROO marker presentation. | Code-built DEBUG layout; screenshot: [P11 1080p route capture](evidence/p11/p11_2p_command_hud_1920x1080.png). | Human UI/UX review for novice comprehension with muted audio and all shake settings; replace with final branded layout. |
+| `event.kangaroo.debug_tones` — `p11_kangaroo_match_room.gd::_make_debug_tone` | Three short generated sine-wave cues tied to command type; simultaneous HUD cue is present. | AI-generated code creates transient tones at runtime; no audio file or production recording. DEBUG placeholder. | Record or commission original family-friendly cues, document rights/credits, and verify muted-audio parity. |
+
+**Human acceptance still outstanding:** final pose art, production audio, novice comprehension/readability, Hiligaynon/native-speaker/cultural review, and balance review. No AI-generated final media was requested or added. Record final replacements, license/permission and approval here before release; update [AI_USAGE.md](AI_USAGE.md) and Form 03 preparation truthfully.
+
 ## Cultural verification ledger
 
 Names, regional-language terms, history statements, and “Alam mo ba?” cards need native-speaker and evidence review before release. A visually Filipino motif alone does not establish a factual cultural claim.

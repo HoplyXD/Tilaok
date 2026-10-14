@@ -125,6 +125,11 @@ custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 text = "P08 Lagsanay Lab"
 
+[node name="KangarooButton" type="Button" parent="Layout/HarnessPanel/PlayableRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "P11 Kangaroo Lab"
+
 [node name="P09MatchLifecycleButton" type="Button" parent="Layout/HarnessPanel/PlayableRow"]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2

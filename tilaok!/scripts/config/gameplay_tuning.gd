@@ -82,6 +82,18 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var lagsanay_taya_seconds_3p: float = 10.0
 @export var lagsanay_taya_seconds_4p: float = 15.0
 @export var lagsanay_last_cluck_freeze_seconds: float = 0.75
+## P11 independent Kangaroo. Gameplay values are copied into the match snapshot.
+@export var kangaroo_telegraph_seconds: float = 1.0
+@export var kangaroo_response_seconds: float = 3.0
+@export var kangaroo_reset_seconds: float = 0.75
+@export var kangaroo_freeze_release_seconds: float = 0.10
+@export var kangaroo_wave_middle_low_y_wu: float = 768.0
+@export var kangaroo_wave_middle_y_wu: float = 576.0
+@export var kangaroo_wave_middle_high_y_wu: float = 384.0
+@export var kangaroo_storm_after_commands: int = 8
+@export var kangaroo_storm_landing_seconds: float = 0.5
+@export var kangaroo_storm_active_seconds: float = 1.0
+@export var kangaroo_storm_max_active: int = 2
 @export var camera_virtual_width_px: float = 1280.0
 @export var camera_virtual_height_px: float = 720.0
 @export var camera_hud_reservation_px: float = 64.0
@@ -256,6 +268,15 @@ func validate() -> PackedStringArray:
 		"lagsanay_taya_seconds_3p",
 		"lagsanay_taya_seconds_4p",
 		"lagsanay_last_cluck_freeze_seconds",
+		"kangaroo_telegraph_seconds",
+		"kangaroo_response_seconds",
+		"kangaroo_reset_seconds",
+		"kangaroo_freeze_release_seconds",
+		"kangaroo_wave_middle_low_y_wu",
+		"kangaroo_wave_middle_y_wu",
+		"kangaroo_wave_middle_high_y_wu",
+		"kangaroo_storm_landing_seconds",
+		"kangaroo_storm_active_seconds",
 		"camera_virtual_width_px",
 		"camera_virtual_height_px",
 		"camera_hud_reservation_px",
@@ -337,6 +358,7 @@ func validate() -> PackedStringArray:
 		or jump_buffer_seconds < 0.0
 		or taya_pass_back_seconds < 0.0
 		or lagsanay_last_cluck_freeze_seconds < 0.0
+		or kangaroo_freeze_release_seconds < 0.0
 	):
 		errors.append("timing values cannot be negative")
 	if (
@@ -389,6 +411,21 @@ func validate() -> PackedStringArray:
 		or match_race_after_first_finish_seconds <= 0.0
 	):
 		errors.append("match phase durations must be greater than zero")
+	if (
+		kangaroo_telegraph_seconds <= 0.0
+		or kangaroo_response_seconds < 1.0
+		or kangaroo_reset_seconds < 0.0
+		or kangaroo_storm_after_commands <= 0
+		or kangaroo_storm_landing_seconds <= 0.0
+		or kangaroo_storm_active_seconds <= 0.0
+		or kangaroo_storm_max_active != 2
+	):
+		errors.append("Kangaroo cadence and Storm values are outside their valid range")
+	if not (
+		kangaroo_wave_middle_high_y_wu < kangaroo_wave_middle_y_wu
+		and kangaroo_wave_middle_y_wu < kangaroo_wave_middle_low_y_wu
+	):
+		errors.append("Kangaroo wave bands must be ordered high, middle, then low")
 	for bound_value in [
 		camera_view_bounds.position.x,
 		camera_view_bounds.position.y,

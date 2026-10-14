@@ -54,10 +54,16 @@ const _PROFILES: Dictionary = {
 	},
 	"kangaroo_contract_lab":
 	{
-		"label": "Kangaroo Contract Lab (incomplete development profile)",
-		"description": "Requires verified Kangaroo and a selectable diagnostic item pool.",
+		"label": "Kangaroo Contract Lab (development profile)",
+		"description": "Independent Kangaroo with reviewed construction and two direct hazards.",
 		"development_only": true,
-		"content": [],
+		"content":
+		[
+			"build.hollow_blocks",
+			"build.bamboo_bridge",
+			"hazard.rail_trumpo",
+			"hazard.slipper_launcher",
+		],
 		"modes": ["kangaroo"],
 		"pools": ["item"],
 	},

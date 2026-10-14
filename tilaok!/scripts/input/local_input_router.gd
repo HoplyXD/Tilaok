@@ -6,6 +6,9 @@ signal seat_joined(seat_index: int)
 signal seat_disconnected(seat_index: int)
 signal device_status_changed(device_id: int, connected: bool)
 signal action_pressed(seat_index: int, action_name: String)
+signal intentional_input_edge(
+	seat_index: int, action_name: String, source_id: String, is_pressed: bool, event_ticks_usec: int
+)
 signal pause_requested(seat_index: int)
 signal navigation_step(seat_index: int, direction: String)
 signal disabled_action_cue(seat_index: int, action_name: String)
@@ -128,6 +131,10 @@ func _handle_joy_axis(event: InputEventJoypadMotion) -> void:
 	elif absf(current) < tuning_activation_threshold():
 		current = previous
 	_stick_x[seat_index] = current
+	if is_zero_approx(previous) != is_zero_approx(current):
+		intentional_input_edge.emit(
+			seat_index, "run_axis", "stick", not is_zero_approx(current), Time.get_ticks_usec()
+		)
 
 
 func _handle_key(event: InputEventKey) -> void:
@@ -169,6 +176,10 @@ func _handle_action_edge(
 	seat_index: int, action_name: String, physical_key: String, is_pressed: bool
 ) -> void:
 	if not is_pressed:
+		if action_name in ["left", "right", "jump"]:
+			intentional_input_edge.emit(
+				seat_index, action_name, physical_key, false, Time.get_ticks_usec()
+			)
 		_held.erase(physical_key)
 		_blocked.erase(physical_key)
 		_repeat_elapsed.erase(_edge_key(seat_index, action_name))
@@ -188,6 +199,10 @@ func _handle_action_edge(
 	if _held.has(physical_key):
 		return
 	_held[physical_key] = action_name
+	if action_name in ["left", "right", "jump"]:
+		intentional_input_edge.emit(
+			seat_index, action_name, physical_key, true, Time.get_ticks_usec()
+		)
 	if ONE_SHOT_ACTIONS.has(action_name) and _blocked.has(physical_key):
 		return
 	if action_name == "pause":
@@ -246,6 +261,22 @@ func has_direction_intent(seat_index: int) -> bool:
 	return _is_action_held(seat_index, "left") or _is_action_held(seat_index, "right")
 
 
+## Physical movement/jump sources are exposed so time-windowed event rules can distinguish a
+## control held at cue time from a fresh press later in the same physics step.
+func intentional_input_sources(seat_index: int) -> Array[String]:
+	var result: Array[String] = []
+	for physical_key in _held:
+		if (
+			_physical_key_seat(str(physical_key)) == seat_index
+			and _held[physical_key] in ["left", "right", "jump"]
+		):
+			result.append(str(physical_key))
+	if not is_zero_approx(float(_stick_x.get(seat_index, 0.0))):
+		result.append("stick")
+	result.sort()
+	return result
+
+
 func repeat_navigation(seat_index: int, direction: String, delta: float) -> bool:
 	var edge := _edge_key(seat_index, direction)
 	if (
@@ -298,6 +329,20 @@ func resume_system() -> void:
 
 
 func clear_input_state() -> void:
+	for physical_key in _held:
+		var action_name := str(_held[physical_key])
+		if action_name not in ["left", "right", "jump"]:
+			continue
+		var seat_index := _physical_key_seat(str(physical_key))
+		if seat_index >= 0:
+			intentional_input_edge.emit(
+				seat_index, action_name, str(physical_key), false, Time.get_ticks_usec()
+			)
+	for seat_index in _stick_x:
+		if not is_zero_approx(float(_stick_x[seat_index])):
+			intentional_input_edge.emit(
+				int(seat_index), "run_axis", "stick", false, Time.get_ticks_usec()
+			)
 	_held.clear()
 	_pressed.clear()
 	_blocked.clear()

@@ -8,6 +8,7 @@ extends RefCounted
 const ITEMS_LAB := "items_lab"
 const KARERA_SPRING := "karera_spring"
 const LAGSANAY_LAB := "lagsanay_lab"
+const KANGAROO_CONTRACT_LAB := "kangaroo_contract_lab"
 const DEV_WEIGHT := 50.0
 const SPRING_PROFILE_VARIANTS: PackedStringArray = [
 	"build.hollow_blocks.cell_1x1",
@@ -22,10 +23,17 @@ const LAGSANAY_VARIANTS: PackedStringArray = [
 	"hazard.rail_trumpo.rail_4x1",
 	"hazard.slipper_launcher.lane_4x1",
 ]
+const KANGAROO_VARIANTS: PackedStringArray = [
+	"build.hollow_blocks.cell_1x1",
+	"build.hollow_blocks.stack_2x3",
+	"build.bamboo_bridge.span_4x1",
+	"hazard.rail_trumpo.rail_4x1",
+	"hazard.slipper_launcher.lane_4x1",
+]
 
 
 static func uses_first_batch(profile_id: String) -> bool:
-	return profile_id in [ITEMS_LAB, KARERA_SPRING, LAGSANAY_LAB]
+	return profile_id in [ITEMS_LAB, KARERA_SPRING, LAGSANAY_LAB, KANGAROO_CONTRACT_LAB]
 
 
 static func enabled_variants(profile_id: String) -> PackedStringArray:
@@ -33,6 +41,8 @@ static func enabled_variants(profile_id: String) -> PackedStringArray:
 		return SPRING_PROFILE_VARIANTS
 	if profile_id == LAGSANAY_LAB:
 		return LAGSANAY_VARIANTS
+	if profile_id == KANGAROO_CONTRACT_LAB:
+		return KANGAROO_VARIANTS
 	var keys := PackedStringArray()
 	if profile_id != ITEMS_LAB:
 		return keys
@@ -53,6 +63,16 @@ static func apply(tuning: GameplayTuning, profile_id: String) -> void:
 		tuning.item_spring_weight = 15.0
 		return
 	if profile_id == LAGSANAY_LAB:
+		tuning.item_kaing_weight = 45.0
+		tuning.item_tulay_weight = 25.0
+		tuning.item_spring_weight = 0.0
+		tuning.item_trumpo_weight = 15.0
+		tuning.item_parol_weight = 0.0
+		tuning.item_launcher_weight = 15.0
+		tuning.item_walis_weight = 0.0
+		tuning.item_bubble_weight = 0.0
+		return
+	if profile_id == KANGAROO_CONTRACT_LAB:
 		tuning.item_kaing_weight = 45.0
 		tuning.item_tulay_weight = 25.0
 		tuning.item_spring_weight = 0.0

@@ -222,7 +222,30 @@ State precedence for movement: terminal outcome (secured or eliminated, mutually
 
 **P, later spring gate:** initial launch magnitude 775 wu/s along its rotated normal (about 160 wu rise under normal ascent gravity); timed jump within 0.10 s before contact boosts to 849 wu/s (about 192 wu rise). Use a 0.20 s per-player spring retrigger cooldown. External horizontal speed initially caps at 480 wu/s and upward launch at 900 wu/s; collision stops motion at world bounds. These values are provisional and do not apply to ordinary run speed. No new hazard damage behavior is added.
 
-Freeze reads intentional run/jump input before movement-state suppression, with the same device thresholds as locomotion and a 0.10 s release grace at response start. Opposing run buttons still count as intentional input even when their movement cancels. Passive conveyors, spring launches and knockback do not fail Freeze. Merely being captured is not a Freeze failure; deliberately pressing run/jump while captured is still intentional input.
+Freeze reads intentional run/jump input before movement-state suppression, with the same device thresholds as locomotion. Only input already held at response start receives one 0.10 s release grace; it passes only if released within that window. A fresh run/jump press fails immediately, including a press/release between physics samples. Grace cannot renew. Opposing run buttons still count as intentional input even when movement cancels. Passive conveyors, spring launches and knockback do not fail Freeze. Merely being captured is not a Freeze failure; deliberately pressing run/jump while captured is still intentional input.
+
+### P11 independent Kangaroo development profile
+
+The `kangaroo_contract_lab` route uses the shared Lobby → Pugad → Place → Play/results lifecycle and persistent construction. It has no race deadline, Karera goal scoring or Bomb-Taya controller. Its explicit pool contains the reviewed seed construction plus only Trumpo and the Tsinelas Launcher among hazards; unreviewed hazards remain disabled. These settings are implementation defaults, not balance approval.
+
+| P11 tuning | Prototype value | Contract |
+|---|---:|---|
+| `kangaroo_telegraph_seconds` | 1.0 s | Initial command landing/tell |
+| `kangaroo_response_seconds` | 3.0 s | Initial response; minimum 1.0 s |
+| `kangaroo_reset_seconds` | 0.75 s | Base reset; minimum 0.0 s |
+| `kangaroo_freeze_release_seconds` | 0.10 s | One release grace only for input held when response starts |
+| `kangaroo_wave_middle_low_y_wu` | 768 wu | Fixed world-space line on current 64-wu stage grid |
+| `kangaroo_wave_middle_y_wu` | 576 wu | Fixed world-space line |
+| `kangaroo_wave_middle_high_y_wu` | 384 wu | Fixed world-space line |
+| `support_height_epsilon_wu` | 1 wu | Numerical boundary tolerance; not visible grace |
+| `kangaroo_storm_after_commands` | 8 | Enter Storm after eight completions without elimination |
+| `kangaroo_storm_landing_seconds` | 0.5 s | Delay between Storm landings |
+| `kangaroo_storm_active_seconds` | 1.0 s | Active window per Storm command |
+| `kangaroo_storm_max_active` | 2 | Delay another landing until a slot opens |
+
+Every two no-elimination completions reduce the next response by 0.5 s and reset by 0.15 s. Any elimination resets cadence/Storm pressure. At exactly two survivors, each Storm pair is a seeded-order Freeze plus Rising overlap; Hug is excluded. This forced overlap is a locked risk, not evidence of fair or enjoyable play. Pair-only Hug and stable lowest-slot Last Cluck remain current contracts; R1–R4 are inactive. See [P11 tests, route capture and remaining review](evidence/p11/README.md).
+
+**P11 automated evidence boundary:** the current deterministic and rendered harness checks are synthetic; the 1920×1080 route capture and local debug timing/static-memory samples are not release-hardware, human readability, physical-controller, player-feel or balance evidence. Those remain open with the team.
 
 **P out-of-bounds safeguard:** visible solid side walls, floor and ceiling prevent normal escape. Race-only unexpected escape beyond the arena is a single failed terminal outcome, never a respawn or repeat score. Lagsanay, including its stacks, never converts falling into elimination: an unexpected containment breach pauses the entire simulation and reports a prototype defect; restart the round with its pre-round score snapshot and unchanged construction, with no awards from the aborted attempt. Do not teleport the taya to safety while its timer continues or reset only that player's timer. Kangaroo-only containment failure uses the same paused defect recovery. This is a development safeguard, not a player ability or finished recovery feature.
 

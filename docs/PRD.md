@@ -517,9 +517,9 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 ## 10. Kangaroo
 
-The giant slipper is a background presenter, not a crushing collider. Freeze checks intentional input; Rising checks standing on eligible player-built support above a world-space line; Hug pairs live contacts at evaluation. Three misses shown as KANG/GA/ROO eliminate. Independent Kangaroo ends with one survivor and the Lagsanay placement family. Traps and input continue throughout.
+The giant slipper is a background presenter, not a crushing collider. Freeze checks intentional input; Rising checks current eligible player-built support against world-space lines at 768/576/384 wu; Hug pairs live contacts at evaluation. Three misses shown as KANG/GA/ROO eliminate. Independent Kangaroo ends with one survivor and the Lagsanay placement family. Traps and input continue throughout. The standalone `kangaroo_contract_lab` has no Bomb-Taya controller; the later stack may run both systems together.
 
-Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overlap and continuously running Bomb-Taya remain active contracts despite documented risks. R1–R4 alternatives are not enabled by this PRD. The team must observe and explicitly review problematic cases rather than quietly changing them.
+Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overlap and continuously running Bomb-Taya in the future stack remain active contracts despite documented risks. Direct hazard time wins over a command failure only when strictly earlier and comparable; a tie or unavailable comparison resolves as command failure without Patibong credit. R1–R4 alternatives are not enabled by this PRD. The team must observe and explicitly review problematic cases rather than quietly changing them.
 
 
 ### REQ-KANG-001 — Present and schedule independent Kangaroo commands
@@ -530,29 +530,29 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Seeded selection checks distribution and two-survivor reroll; no commands after a sole survivor; presenter never collides; full/reduced/off shake preserves comprehension.
 
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** independent controller, seeded selection, command instance state, full/reduced/off shake, and labeled debug presenter are in `kangaroo_round_controller.gd`, `kangaroo_command_instance.gd` and `p11_kangaroo_match_room.gd`. Seed/reroll/cadence and muted/Shake Off HUD checks pass; the rendered 1920×1080 debug capture is [here](evidence/p11/p11_2p_command_hud_1920x1080.png). Automated evidence only; novice comprehension and final pose/audio review remain open. See [P11 verification](evidence/p11/README.md).
 
 
 ### REQ-KANG-002 — Evaluate Freeze from intentional input
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** During response, intentional run/jump fails Freeze. Shared deadzone and prototype .10 s release grace filter drift/release. Opposing run buttons still count as intent. Passive motion, launch, wind or tag contact does not fail; deliberate run/jump while captured still counts.
+**Expected behavior:** During response, intentional run/jump fails Freeze. Input already held at response start gets exactly one 0.10 s release grace; a fresh press fails immediately, and grace never renews. Shared deadzone filters drift. Opposing run buttons still count as intent. Passive motion, launch, wind or tag contact does not fail; deliberate run/jump while captured still counts.
 
 **Acceptance:** Test drift, held/released inputs, opposite keys, forced motion, capture and passive tag; input intent and movement outcome cannot be confused.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `local_input_router.gd` emits physical intentional-input edges and current held sources; the controller records between-sample presses/releases. P11 tests cover tap, held release/expiry, fresh jump, opposing keys, captured input, and forced movement. The existing P02 input suite covers device thresholds; P11 results are synthetic, not physical-stick drift or human play evidence. See [P11 verification](evidence/p11/README.md).
 
 
 ### REQ-KANG-003 — Evaluate Rising wave with actual built support
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Select equal-probability middle-low/middle/middle-high world bands, never camera-relative or rerolled for an impossible layout. Telegraph target line then raise/drain wave. At evaluation require actual grounded player-built eligible support above line; base, airborne, jumping through, bubble or coyote state fails. Prototype bands/tolerance remain untested.
+**Expected behavior:** Select equal-probability world bands at 768/576/384 wu, never camera-relative or rerolled for an impossible layout. Telegraph target line then raise/drain wave. At evaluation require current grounded player-built eligible support at or above the line, with the documented 1-wu numerical tolerance; base, airborne, jumping through, bubble or coyote state fails.
 
 **Acceptance:** Test every support-table state just above/on/below each band, destroyed/moving support on evaluation tick and another player’s platform; empty layout remains intentionally unsolvable; drain clears.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** command rows lock the selected world line; `SupportTracker.evaluate` supplies current provenance/contact at evaluation; the code-drawn wave raises and drains. P11 synthetic tests cover band lines, built/base/ineligible/stale/below/removal, same-step refresh and drain; P03's 103-check real-physics support suite covers the full support-state matrix and moving/crumbling-platform evaluation. Human explanation and stage playability remain open; see [P11 verification](evidence/p11/README.md).
 
 
 ### REQ-KANG-004 — Evaluate pair-only Hug deterministically
@@ -563,18 +563,18 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Verify all-contact three, two pairs of four, split groups, equal distances, entry/exit at evaluation, removed players and the two-survivor pre-telegraph reroll.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `pair_hug_contacts` sorts actual evaluation contacts by distance then stable seat IDs and assigns at most one partner. Automated cases cover two pairs, a three-player cluster, exact ties, evaluation-only contacts and two-player Hug rejection. Synthetic contact snapshots; physical playability remains open. See [P11 verification](evidence/p11/README.md).
 
 
 ### REQ-KANG-005 — Integrate failure markers, elimination and cleanup
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Failed commands add KANG, GA, ROO markers; third eliminates. Traps eliminate directly. Remove terminal players from future command/tag eligibility. Last survivor uses Lagsanay placement/Bawi/Patibong rules; command failures do not earn trap credit. Resolve once through shared outcome infrastructure.
+**Expected behavior:** Failed commands add KANG, GA, ROO markers; third eliminates. A comparable direct hazard takes terminal precedence only if its timestamp is strictly earlier than command evaluation. Exact ties and unavailable/incomparable times resolve as command failure without Patibong credit for that failure. Remove terminal players from future command/tag eligibility. Last survivor uses Lagsanay placement/Bawi/Patibong rules and Last Cluck ordering. Resolve once through shared outcome infrastructure.
 
 **Acceptance:** Test first/second/third failures, overlapping failures and trap same-step review cases; no fourth marker or duplicate placement. End/removal/restart clears scheduler, rings, wave and markers.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** bounded markers, batched command/hazard outcomes, shared placement resolver, one-time commit and terminal cleanup are implemented. Deterministic tests cover first/second/third/fourth marker behavior, same-step/tied hazards, no-credit command failures, simultaneous Last Cluck and reset; the synthetic route verifies placement results, hazard attribution, persistent construction and teardown. See [P11 verification](evidence/p11/README.md).
 
 
 ### REQ-KANG-006 — Implement no-elimination acceleration and Slipper Storm
@@ -585,7 +585,7 @@ Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overla
 
 **Acceptance:** Check each acceleration boundary, active cap, delayed landing, two-survivor overlap, elimination reset and all-remaining Last Cluck; reproduce unavoidable-choice risks without claiming balance.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** deterministic tests cover two-command easing, eight-command Storm entry, 0.5 s landings, 1 s windows, max-two overlap, delayed landing, the two-survivor seeded Freeze/Rising pair, no Hug, and elimination reset. These checks establish scheduler behavior only; overlap fairness and balance review remain open. See [P11 verification](evidence/p11/README.md).
 
 ## 11. Scheduling, announcements and compatible stacks
 

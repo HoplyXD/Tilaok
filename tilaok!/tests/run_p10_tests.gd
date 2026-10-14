@@ -235,10 +235,23 @@ func _test_definitions() -> void:
 		var lagsanay_compatible: bool = (
 			family_id in ["hazard.rail_trumpo", "hazard.slipper_launcher"]
 		)
+		var kangaroo_compatible: bool = (
+			family_id
+			in [
+				"build.hollow_blocks",
+				"build.bamboo_bridge",
+				"hazard.rail_trumpo",
+				"hazard.slipper_launcher"
+			]
+		)
 		var expected_modes := (
-			PackedStringArray(["karera", "lagsanay"])
+			PackedStringArray(["karera", "lagsanay", "kangaroo"])
 			if lagsanay_compatible
-			else PackedStringArray(["karera"])
+			else (
+				PackedStringArray(["karera", "kangaroo"])
+				if kangaroo_compatible
+				else PackedStringArray(["karera"])
+			)
 		)
 		_check(
 			family.modes_allowed == expected_modes,
@@ -247,6 +260,10 @@ func _test_definitions() -> void:
 		_check(
 			family.modes_pending_review.has("lagsanay") != lagsanay_compatible,
 			"T01 %s Lagsanay compatibility review flag is accurate" % family_id
+		)
+		_check(
+			family.modes_pending_review.has("kangaroo") != kangaroo_compatible,
+			"T01 %s Kangaroo compatibility review flag is accurate" % family_id
 		)
 		_check(not family.release_target, "T01 %s is not a release target" % family_id)
 		_check(

@@ -209,6 +209,90 @@ static func lag_sanay(
 	return model
 
 
+static func kangaroo(
+	round_value: int,
+	seats: Array[Dictionary],
+	outcomes: Array[Dictionary],
+	score_result: Dictionary
+) -> MatchResultsViewModel:
+	var model := MatchResultsViewModel.new()
+	model.round_number = round_value
+	model.suppression_reason = str(score_result.get("suppression_reason", ""))
+	model.deadline_explanation = (
+		"Independent Kangaroo: no race goal or deadline. "
+		+ "Three failed commands eliminate; direct traps remain active."
+	)
+	var seat_by_index: Dictionary = {}
+	var outcome_by_seat: Dictionary = {}
+	for seat in seats:
+		seat_by_index[int(seat.seat)] = seat
+	for outcome in outcomes:
+		outcome_by_seat[int(outcome.seat_index)] = outcome
+	var winner := int(score_result.get("winner_seat", -1))
+	var is_last_cluck := bool(score_result.get("last_cluck", false))
+	if is_last_cluck:
+		var winning_seat: Dictionary = seat_by_index.get(winner, {})
+		model.diagnostic_label = (
+			(
+				"Last Cluck! P%d %s wins on the latest recorded elimination; "
+				+ "exact ties go to the lowest stable slot."
+			)
+			% [int(winning_seat.get("identity", winner + 1)), str(winning_seat.get("shape", ""))]
+		)
+		model.last_cluck_explanation = model.diagnostic_label
+	else:
+		var winner_seat: Dictionary = seat_by_index.get(winner, {})
+		model.diagnostic_label = (
+			"P%d %s is the last chicken standing."
+			% [int(winner_seat.get("identity", winner + 1)), str(winner_seat.get("shape", ""))]
+		)
+	var deltas: Dictionary = score_result.get("delta_units", {})
+	var totals: Dictionary = score_result.get("totals_units", {})
+	for seat_index in seat_by_index:
+		var seat: Dictionary = seat_by_index[seat_index]
+		var outcome: Dictionary = outcome_by_seat.get(seat_index, {})
+		var cause := str(outcome.get("cause", ""))
+		var result_text := "Eliminated by a direct trap."
+		if seat_index == winner:
+			result_text = "Winner — %s." % ("Last Cluck" if is_last_cluck else "last survivor")
+		elif cause == "command_failure":
+			result_text = "Eliminated after the third failed Kangaroo command."
+		var delta := int(deltas.get(seat_index, 0))
+		var total := int(totals.get(seat_index, 0))
+		(
+			model
+			. per_seat_outcomes
+			. append(
+				{
+					"seat_index": seat_index,
+					"identity": int(seat.identity),
+					"shape": str(seat.shape),
+					"outcome": result_text,
+					"score_delta_units": delta,
+					"score_delta_text": _signed_score(delta),
+					"total_units": total,
+					"total_text": ScoreFormat.format_units(total),
+				}
+			)
+		)
+		model.totals[seat_index] = {
+			"identity": int(seat.identity),
+			"shape": str(seat.shape),
+			"units": total,
+			"text": ScoreFormat.format_units(total),
+			"delta_units": delta,
+			"delta_text": _signed_score(delta),
+		}
+	for award in score_result.get("award_rows", []):
+		var row: Dictionary = award.duplicate(true)
+		var seat: Dictionary = seat_by_index.get(int(row.get("seat_index", -1)), {})
+		row["identity"] = int(seat.get("identity", 0))
+		row["shape"] = str(seat.get("shape", ""))
+		row["score_text"] = "+" + ScoreFormat.format_units(int(row.get("units", 0)))
+		model.award_rows.append(row)
+	return model
+
+
 static func final_match(
 	seats: Array[Dictionary],
 	scores_units: Dictionary,

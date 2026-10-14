@@ -38,7 +38,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **20 phases · 405 tasks · 119 requirements.** Initial checked tasks: **0**. Required release/submission: **207**; Should: **36**; conditional finals: **4**; expansion: **158**. Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
 
-**Current implementation check count (2026-10-14): 122/405 tasks checked** (P00 0/6; P01 9/10; P02 17/26; P03 6/6; P04 18/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 42/54). The October 14 sneak/glide/64 wu grid/stage-blocks extension adds P02-T23–T26 (Should): T23–T25 checked on automated evidence, T26 human review open. This is the count of checked task records on disk, not a release-readiness percentage. P05-T12 was rerun against live P06 results, including held-edge handling, all-ready advance, the tested eight-second timeout and construction retention. P07 now has a scoped route and passing synthetic pool/reset checks, but its player sessions and human review remain open; no P07 checkbox is counted. P08's six engineering tasks passed under the explicitly authorized provisional development-only prerequisite disposition below; P07-T04 remains open and the P08 release/entry gate is unresolved. P09's four technical implementation/verification tasks pass on the development route; P07 player/device/human acceptance, P08 entry/release gate, performance target and P12 schedule remain separate and open. P02 remains open because physical input/reconnect acceptance is unavailable. Six of the eight approved wall-movement extension tasks (P02-T15–T17, T19–T21) are checked on automated/synthetic evidence; P02-T18 (physical devices) and P02-T22 (human review) remain open. They are Should scope; this does not make them required October submission work or delay P05. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
+**Current implementation check count (2026-10-14): 135/405 tasks checked** (P00 0/6; P01 9/10; P02 17/26; P03 6/6; P04 18/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 42/54; P11 13/13 technical). The October 14 sneak/glide/64 wu grid/stage-blocks extension adds P02-T23–T26 (Should): T23–T25 checked on automated evidence, T26 human review open. This is the count of checked task records on disk, not a release-readiness percentage. P05-T12 was rerun against live P06 results, including held-edge handling, all-ready advance, the tested eight-second timeout and construction retention. P07 now has a scoped route and passing synthetic pool/reset checks, but its player sessions and human review remain open; no P07 checkbox is counted. P08's six engineering tasks passed under the explicitly authorized provisional development-only prerequisite disposition below; P07-T04 remains open and the P08 release/entry gate is unresolved. P09's four technical implementation/verification tasks pass on the development route; P07 player/device/human acceptance, P08 entry/release gate, performance target and P12 schedule remain separate and open. P11's 13 implementation and automated/rendered verification tasks pass on the standalone development route; player comprehension, physical controllers, balance/cultural and production-asset reviews, performance acceptance and every P12 stack/schedule gate remain open. The 1080p synthetic debug sample exceeded the provisional 16.67 ms frame target and did not measure OS process memory. P02 remains open because physical input/reconnect acceptance is unavailable. Six of the eight approved wall-movement extension tasks (P02-T15–T17, T19–T21) are checked on automated/synthetic evidence; P02-T18 (physical devices) and P02-T22 (human review) remain open. They are Should scope; this does not make them required October submission work or delay P05. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
 
 | Phase | Purpose | Tasks | Scope |
 |---|---|---:|---|
@@ -53,6 +53,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 | [P08](#p08--lagsanay) — Lagsanay | Independent tag elimination yields one winner. | 6 | Required |
 | [P09](#p09--complete-match-lifecycle) — Complete match lifecycle | A match and tied-player sudden death finish and restart cleanly. | 4 | Required |
 | [P10](#p10--remaining-initial-items) — Remaining initial items | Add the six individually verified families after construction seeds. | 54 | Required |
+| [P11](#p11--kangaroo-independently) — Kangaroo independently | Implement and verify a standalone three-command event. | 13 | Required |
 | [P11](#p11--kangaroo-independently) — Kangaroo independently | Players read and respond to three commands through escalation. | 13 | Required |
 | [P12](#p12--scheduling-and-stacks) — Scheduling and stacks | The announced challenge and optional compatible Twist execute with one scoring family. | 10 | Required |
 | [P13](#p13--complete-ux-and-onboarding) — Complete UX and onboarding | New players can learn, navigate, read results and browse enabled content. | 12 | Required |
@@ -1969,141 +1970,141 @@ P01 code was generated by Codex under the task authorization and internal policy
 
 **Documentation/assets:** Keep linked source contracts, enabled-content manifest, test evidence and relevant asset/disclosure records current; original assets or documented permitted sources only.
 
-**Blocking decisions / conditional scope:** Named owner and prerequisite evidence; engine/devices where relevant. R1–R4 remain inactive; terminal-order gaps require review. No implicit scope cuts.
+**Blocking decisions / conditional scope:** The standalone implementation and engineering evidence are complete. Human comprehension, physical controller, player-feel/balance, native-speaker/cultural and final asset reviews remain open. R1–R4 and all event stacks remain inactive; P12 owns schedule and stack integration. The P11 standalone hazard rule is strict recorded-time precedence: only a strictly earlier comparable direct hazard wins; exact ties or unavailable comparison resolve as command failure without Patibong.
 
-**Exit criteria:** Individual commands, markers, pressure/Storm and cleanup pass; R1–R4 remain inactive.
+**Exit criteria:** Individual commands, markers, pressure/Storm, standalone match lifecycle and cleanup pass on the development route; R1–R4 remain inactive. This engineering exit does not close human/release gates or P12 stacks.
 
-**Evidence required:** Support/command tables, overlap limits and Last Cluck captures.
+**Evidence required:** [P11 test and route evidence index](evidence/p11/README.md), including support/command coverage, overlap limits, Last Cluck, rendered capture, export smoke and measured limitations.
 
 
 #### P11-T01
 
-- [ ] **Build the non-colliding slipper presenter and command cues**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Build the non-colliding slipper presenter and command cues**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-001](PRD.md#req-kang-001--present-and-schedule-independent-kangaroo-commands). **Dependencies:** [P08-T06](#p08-t06), [P03-T06](#p03-t06).
   - **Work:** Create original normal/sole-up/sideways poses, landing animation, text/icon, audio and timing ring. Integrate full/reduced/off shake without any collision or simulation pause.
   - **Acceptance:** Each command has a distinct pose/icon/audio/ring and remains readable muted with shake off; presenter has no gameplay collision.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 interactive report](evidence/p11/p11_interactive_run.txt), [1920×1080 HUD capture](evidence/p11/p11_2p_command_hud_1920x1080.png). **Verification result:** PASSED — synthetic 2/3/4-seat route displays the debug pose, timing and audio placeholder labels; visual-only presenter collision checks and muted/shake-off HUD assertions pass. Human comprehension remains open.
 
 
 #### P11-T13
 
-- [ ] **Implement Kangaroo command selection and base cadence**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement Kangaroo command selection and base cadence**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-001](PRD.md#req-kang-001--present-and-schedule-independent-kangaroo-commands). **Dependencies:** [P11-T01](#p11-t01).
   - **Work:** Select equal-weight commands, telegraph/respond/evaluate/reset on the source timings; pre-telegraph Hug reroll at two survivors has no command/pressure effect. Stop selecting at one survivor.
   - **Acceptance:** Seeded selection checks distribution and two-survivor reroll; no commands after a sole survivor; presenter never collides; full/reduced/off shake preserves comprehension.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), checks 1–15. **Verification result:** PASSED — seeded command distribution, two-player Hug reroll without consuming a command ID, cadence easing and sole-survivor stop pass.
 
 
 #### P11-T02
 
-- [ ] **Verify present and schedule independent kangaroo commands**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify present and schedule independent kangaroo commands**
+  - **Status:** PASSED — synthetic engineering evidence · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-KANG-001](PRD.md#req-kang-001--present-and-schedule-independent-kangaroo-commands). **Dependencies:** [P11-T13](#p11-t13).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Seeded selection checks distribution and two-survivor reroll; no commands after a sole survivor; presenter never collides; full/reduced/off shake preserves comprehension.
   - **Acceptance:** Seeded selection checks distribution and two-survivor reroll; no commands after a sole survivor; presenter never collides; full/reduced/off shake preserves comprehension.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P11 interactive report](evidence/p11/p11_interactive_run.txt), [HUD capture](evidence/p11/p11_2p_command_hud_1920x1080.png). **Verification result:** PASSED — 81/81 synthetic route assertions, including 2/3/4 seats, command cues, muted audio, full/reduced/off shake, pause/reclaim, Last Cluck results and cleanup. Human comprehension and actual-device review remain open.
 
 
 #### P11-T03
 
-- [ ] **Implement the Freeze command evaluator**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement the Freeze command evaluator**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-002](PRD.md#req-kang-002--evaluate-freeze-from-intentional-input). **Dependencies:** [P11-T02](#p11-t02), [P02-T12](#p02-t12).
   - **Work:** During response, intentional run/jump fails Freeze. Shared deadzone and prototype .10 s release grace filter drift/release. Opposing run buttons still count as intent. Passive motion, launch, wind or tag contact does not fail; deliberate run/jump while captured still counts.
   - **Acceptance:** Test drift, held/released inputs, opposite keys, forced motion, capture and passive tag; input intent and movement outcome cannot be confused.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), Freeze cases. **Verification result:** PASSED — event-edge evaluation catches taps between physics samples, fresh presses fail immediately, and start-held input gets one nonrenewable 0.10-second release grace. Forced motion does not count as intent.
 
 
 #### P11-T04
 
-- [ ] **Verify evaluate freeze from intentional input**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify evaluate freeze from intentional input**
+  - **Status:** PASSED — synthetic input and physics evidence · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-KANG-002](PRD.md#req-kang-002--evaluate-freeze-from-intentional-input). **Dependencies:** [P11-T03](#p11-t03).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Test drift, held/released inputs, opposite keys, forced motion, capture and passive tag; input intent and movement outcome cannot be confused.
   - **Acceptance:** Test drift, held/released inputs, opposite keys, forced motion, capture and passive tag; input intent and movement outcome cannot be confused.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), [P02 regression](evidence/p11/p02_input_regression_run.txt). **Verification result:** PASSED — held/released/fresh/opposing/captured/passive-force paths pass; P02's 83-check suite confirms input edges, captured intent and release clearing. Physical drift/controller hardware remains open.
 
 
 #### P11-T05
 
-- [ ] **Implement wave presentation, support evaluation and drain**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement wave presentation, support evaluation and drain**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-003](PRD.md#req-kang-003--evaluate-rising-wave-with-actual-built-support). **Dependencies:** [P11-T02](#p11-t02), [P03-T06](#p03-t06).
   - **Work:** Select equal-probability middle-low/middle/middle-high world bands, never camera-relative or rerolled for an impossible layout. Telegraph target line then raise/drain wave. At evaluation require actual grounded player-built eligible support above line; base, airborne, jumping through, bubble or coyote state fails. Prototype bands/tolerance remain untested.
   - **Acceptance:** Test every support-table state just above/on/below each band, destroyed/moving support on evaluation tick and another player’s platform; empty layout remains intentionally unsolvable; drain clears.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), Rising cases. **Verification result:** PASSED — seeded selection uses each fixed 768/576/384 wu world line; only current, eligible player-built support above the line with 1 wu tolerance qualifies. Impossible layouts are not rerolled.
 
 
 #### P11-T06
 
-- [ ] **Verify evaluate rising wave with actual built support**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify evaluate rising wave with actual built support**
+  - **Status:** PASSED — synthetic support-contract evidence · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-KANG-003](PRD.md#req-kang-003--evaluate-rising-wave-with-actual-built-support). **Dependencies:** [P11-T05](#p11-t05).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Test every support-table state just above/on/below each band, destroyed/moving support on evaluation tick and another player’s platform; empty layout remains intentionally unsolvable; drain clears.
   - **Acceptance:** Test every support-table state just above/on/below each band, destroyed/moving support on evaluation tick and another player’s platform; empty layout remains intentionally unsolvable; drain clears.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), [P03 support regression](evidence/p11/p03_support_regression_run.txt). **Verification result:** PASSED — all three P11 bands, boundary tolerance, base/below/ineligible/stale support rejection, other-player construction, same-step moving contact, support removal and wave drain are covered. P03's 103-check suite adds real physics for coyote/airborne/bubble, moving/crumbling/one-way/spring supports and same-step invalidation. Player explanation and live layout playability still need human review.
 
 
 #### P11-T07
 
-- [ ] **Implement pair selection and Hug evaluation**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement pair selection and Hug evaluation**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-004](PRD.md#req-kang-004--evaluate-pair-only-hug-deterministically). **Dependencies:** [P11-T02](#p11-t02), [P02-T12](#p02-t12).
   - **Work:** At evaluation pair live eligible chickens by shortest contact first, equal-distance player-slot order; one partner maximum. Paired chickens pass and unpaired fail. Contact only at evaluation matters. Three clustered chickens leave one unpaired; four may form two pairs. R2 group-contact alternative remains inactive.
   - **Acceptance:** Verify all-contact three, two pairs of four, split groups, equal distances, entry/exit at evaluation, removed players and the two-survivor pre-telegraph reroll.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), Hug cases. **Verification result:** PASSED — live evaluation contacts are sorted by center distance and stable slot IDs, greedily paired once, and excluded when a seat is no longer live.
 
 
 #### P11-T08
 
-- [ ] **Verify evaluate pair-only hug deterministically**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify evaluate pair-only hug deterministically**
+  - **Status:** PASSED — deterministic synthetic contact evidence · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-KANG-004](PRD.md#req-kang-004--evaluate-pair-only-hug-deterministically). **Dependencies:** [P11-T07](#p11-t07).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Verify all-contact three, two pairs of four, split groups, equal distances, entry/exit at evaluation, removed players and the two-survivor pre-telegraph reroll.
   - **Acceptance:** Verify all-contact three, two pairs of four, split groups, equal distances, entry/exit at evaluation, removed players and the two-survivor pre-telegraph reroll.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt). **Verification result:** PASSED — equal-distance slot order, nearest-pair choice, four-seat double pair, unpaired third, removed seat, evaluation-only contact and two-seat pre-telegraph reroll pass.
 
 
 #### P11-T09
 
-- [ ] **Integrate Kangaroo markers and terminal lifecycle**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Integrate Kangaroo markers and terminal lifecycle**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-005](PRD.md#req-kang-005--integrate-failure-markers-elimination-and-cleanup). **Dependencies:** [P11-T04](#p11-t04), [P11-T06](#p11-t06), [P11-T08](#p11-t08).
   - **Work:** Failed commands add KANG, GA, ROO markers; third eliminates. Traps eliminate directly. Remove terminal players from future command/tag eligibility. Last survivor uses Lagsanay placement/Bawi/Patibong rules; command failures do not earn trap credit. Resolve once through shared outcome infrastructure.
   - **Acceptance:** Test first/second/third failures, overlapping failures and trap same-step review cases; no fourth marker or duplicate placement. End/removal/restart clears scheduler, rings, wave and markers.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), [interactive lifecycle report](evidence/p11/p11_interactive_run.txt). **Verification result:** PASSED — markers saturate at three, direct trap precedence follows the strict timestamp rule, tied/terminal results batch once, shared placement scoring commits once, Last Cluck placement is stable, and teardown clears round state while preserving construction.
 
 
 #### P11-T10
 
-- [ ] **Verify integrate failure markers, elimination and cleanup**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify integrate failure markers, elimination and cleanup**
+  - **Status:** PASSED — synthetic lifecycle evidence · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-KANG-005](PRD.md#req-kang-005--integrate-failure-markers-elimination-and-cleanup). **Dependencies:** [P11-T09](#p11-t09).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Test first/second/third failures, overlapping failures and trap same-step review cases; no fourth marker or duplicate placement. End/removal/restart clears scheduler, rings, wave and markers.
   - **Acceptance:** Test first/second/third failures, overlapping failures and trap same-step review cases; no fourth marker or duplicate placement. End/removal/restart clears scheduler, rings, wave and markers.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), [interactive report](evidence/p11/p11_interactive_run.txt). **Verification result:** PASSED — overlapping third failures, exactly one result per player, cleanup, persistent construction, next Pugad and pause/reclaim clock freeze all pass. Human review and non-synthetic device lifecycle remain open.
 
 
 #### P11-T11
 
-- [ ] **Implement acceleration, Storm overlap and reset**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Implement acceleration, Storm overlap and reset**
+  - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-KANG-006](PRD.md#req-kang-006--implement-no-elimination-acceleration-and-slipper-storm). **Dependencies:** [P11-T10](#p11-t10).
   - **Work:** After every two completed commands without elimination reduce next response .5 s and reset .15 s, minimum 1 s response and zero reset. After eight enter Storm: landing every .5 s, 1 s command, maximum two active; delay a third. At two survivors force overlapping Freeze plus Rising pairs; Hug rerolls. Any elimination resets pressure/cadence. R3 non-overlap proposal remains inactive.
   - **Acceptance:** Check each acceleration boundary, active cap, delayed landing, two-survivor overlap, elimination reset and all-remaining Last Cluck; reproduce unavoidable-choice risks without claiming balance.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), Storm cases. **Verification result:** PASSED — two-completion easing, eight-completion pressure, 0.5-second landing/one-second active timing, delayed landings at the two-command cap, two-seat Freeze/Rising pairs and reset after any elimination are implemented.
 
 
 #### P11-T12
 
-- [ ] **Verify implement no-elimination acceleration and slipper storm**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify implement no-elimination acceleration and slipper storm**
+  - **Status:** PASSED — deterministic synthetic pressure evidence · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-KANG-006](PRD.md#req-kang-006--implement-no-elimination-acceleration-and-slipper-storm). **Dependencies:** [P11-T11](#p11-t11).
   - **Work:** Record the procedure, expected and actual result, and review evidence. Check each acceleration boundary, active cap, delayed landing, two-survivor overlap, elimination reset and all-remaining Last Cluck; reproduce unavoidable-choice risks without claiming balance.
   - **Acceptance:** Check each acceleration boundary, active cap, delayed landing, two-survivor overlap, elimination reset and all-remaining Last Cluck; reproduce unavoidable-choice risks without claiming balance.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Evidence:** [P11 focused suite](evidence/p11/p11_unit_run.txt), [Last Cluck result capture](evidence/p11/p11_last_cluck_results_1920x1080.png), including extended-window cap stress and simultaneous Last Cluck. **Verification result:** PASSED — acceleration boundaries, overlap cap, delayed landing, forced pair, elimination reset and terminal batch pass; unavoidable-choice balance remains unreviewed.
 
 
 ## P12 — Scheduling and stacks
