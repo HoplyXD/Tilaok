@@ -1,6 +1,6 @@
 # AI Assistance Record — Tilaok!
 
-_Current policy and cumulative disclosure record. Updated 2026-10-13. This file prepares evidence for DOST Form 03; it is not the signed form._
+_Current policy and cumulative disclosure record. Updated 2026-10-14. This file prepares evidence for DOST Form 03; it is not the signed form._
 
 ## Current standing programming policy
 
@@ -103,6 +103,12 @@ At the user's approval of the P06 plan, OpenAI Codex generated and integrated th
 Godot `4.7.2.stable.official.ed1daf0bf` passed the 97-check P06 suite, the 17-check two-seat live run, the dependent 64-check four-seat P05 loop, the existing foundation/P02/P02-wall/P03/P04/P05/UI regressions, editor import/class registration, Windows Debug export/startup smoke, GDScript format/lint checks, and 2/3/4-seat ten-round rendered performance sampling. Logs and limits are recorded in `docs/evidence/p06/2026-10-14_p06_verification.md`. Synthetic/gamepad identities and scripted positioning were used; physical-device coverage, human playtest, independent review and balance/readability review were not performed. The code-drawn UI remains DEBUG placeholder work; no final art, audio or other production asset was generated.
 
 The checkout also contained a separate uncommitted P10 work-in-progress set. Its files/assets are not included in the P06 task scope or staged for the P06 delivery. This record does not establish organizer approval, competition eligibility or Form 03 completion.
+
+### P07 First Playable route and engineering checks — October 14, 2026
+
+At the user's direction to implement the approved P07 plan, OpenAI Codex generated and integrated a dedicated P07 harness route, a room-specific Kaing/Tulay variant allowlist with generated-pool validation and a clear unsupported-pool fallback, reset audit instrumentation, route/reset test runners, a 1080p scripted capture/performance runner, and the P07 tracker/evidence and project documentation updates. The implementation reuses the existing match flow, preserves the `karera_slice` profile and global tuning, and does not change the GDD. This is AI-generated programming and is not represented as manually team-written.
+
+Godot 4.7.2 passed the focused 590-check route suite, the 172-check synthetic ten-transition reset audit, foundation/P02/P03/P04/P05/P06/UI regressions, import/parse, lint/format, Windows Debug export and exported headless route startup. Project-runner captures and local 2/3/4-seat performance samples are recorded in `docs/evidence/p07/`. The packaged executable's `--script` capture probe did not run the capture script, and no exported UI screenshots were saved. All scripted runners use synthetic input/gamepad identities and scripted goal placement. No human playtest, novice observation, physical gamepad test or independent human review is claimed; P07-T01–T04 remain open, and P02-T08 remains COULD-NOT-RUN. No final art, audio or other production asset was AI-generated. Full-match ending, Lagsanay and sudden death remain outside P07.
 
 ### P10 remaining first-batch families and Item Visualizer — October 14, 2026
 

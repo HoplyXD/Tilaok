@@ -1,0 +1,7 @@
+COMMAND: C:\Users\roman\.codex\worktrees\prd-phasetask\Tilaok\build\tilaok-p07.exe --headless --quit-after 120 -- --open-room=p07_first_playable
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=5 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+EXIT_CODE=0

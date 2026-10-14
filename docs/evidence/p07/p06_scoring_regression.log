@@ -1,0 +1,7 @@
+COMMAND: & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p06_tests.gd'
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=5 enabled_variants=6 profile=karera_slice
+P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P06_TEST_SUMMARY checks=97 failures=0
+EXIT_CODE=0

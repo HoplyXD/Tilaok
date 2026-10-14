@@ -1,0 +1,5 @@
+COMMAND: C:\Users\roman\.codex\worktrees\prd-phasetask\Tilaok\build\tilaok-p07.exe --script res://tests/capture_p07_evidence.gd (evidence dir: exported/)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+OUTCOME: The packaged runtime opened the normal harness instead of executing the capture script. The probe was interrupted and has no reliable completion exit code. No exported UI screenshots were written.

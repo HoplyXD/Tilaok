@@ -1427,18 +1427,18 @@ Test layers: isolated test harnesses; functional integration; 2/3/4-player physi
 
 **Acceptance:** Record two complete rounds and ten resets with no duplicate placement/score, plus guided first-loop comprehension; missing Lagsanay/sudden death remains explicit.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence (2026-10-14):** P07 First Playable route and exact three-variant Kaing/Tulay allowlist are implemented. Synthetic route/reset/scoring checks pass; 1080p debug captures and local performance measurements are recorded in [P07 evidence](evidence/p07/README.md). Required player-driven two-round session, novice comprehension and human review remain COULD-NOT-RUN; the route is not evidence of player acceptance or release completeness.
 
 
 ### REQ-SLICE-002 — Extend slice coverage to three and four players
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** QA (name TBD).
 
-**Expected behavior:** Run three rounds at each supported count, rotating slots/devices and exercising maximum camera separation, simultaneous keys, pause/disconnect/reclaim. Construction-only all-finish zero-score rounds are expected and are not release balance evidence.
+**Expected behavior:** After P07-T02 and P02-T08 pass, complete three rounds with three players and three with four players, rotating participants through slots/devices. Exercise simultaneous input, one-seat device ownership, maximum camera separation, placement-preview isolation, pause/focus loss, disconnect/reconnect, reclaim, countdown cancellation and fresh input after resume. Construction-only all-finish zero-score rounds are expected and are not release balance evidence.
 
-**Acceptance:** 2/3/4-player matrix identifies devices and all unavailable combinations; no cross-controlled seat or hidden live player; pause/reclaim preserves state.
+**Acceptance:** The 2/3/4-player device matrix identifies tested, failed and unavailable combinations. No cross-controlled seat or hidden live player; simultaneous input remains isolated; camera targets and previews remain visible; pause/reclaim preserves state and resumed input is fresh. Record P02-T08 reconnect evidence separately; leave unavailable combinations COULD-NOT-RUN.
 
-**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [PRODUCTION.md](PRODUCTION.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence (2026-10-14):** the P07 route supports 2–4 seats and synthetic seat-isolation/camera/profile checks pass; a device-matrix framework and session sheet are recorded in [P07 evidence](evidence/p07/README.md). Required three-round human sessions at 3 and 4 players, rotation, simultaneous physical input, focus/pause and disconnect/reclaim remain COULD-NOT-RUN. No gamepads or participants were available for this implementation session; only synthetic devices are represented in automated checks.
 
 
 ### REQ-QA-001 — Run balance sessions and first-batch interaction checks

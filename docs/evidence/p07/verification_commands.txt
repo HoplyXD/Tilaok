@@ -1,0 +1,34 @@
+P07 command and verification record
+Date: 2026-10-14 Asia/Manila
+Engine: D:\Downloads\Godot_v4.7.2-stable_win64_console.exe (Godot 4.7.2.stable.official.ed1daf0bf)
+Project path argument: tilaok!
+
+Focused automated checks (all exit 0):
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p07_tests.gd'` — 590 checks, 0 failures. Output: `p07_route_tests.txt`; rerun with exit marker: `run_p07_tests.gd.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p07_reset_audit.gd'` — ten synthetic next-round transitions, 172 checks, 0 failures. Output: `p07_reset_audit.txt`; rerun with exit marker: `run_p07_reset_audit.gd.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_p07_evidence.gd'` — project-runtime scripted captures and performance sample; exit 0. Runner sets a 1920x1080 window and disables V-sync. Output: `capture_command.log`, `p07_performance.txt`, and the seven PNGs. These are not exported-build screenshots or human-play evidence.
+
+Regression runners (every command exit code is 0):
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_foundation_tests.gd'` — `foundation_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p02_tests.gd'` — 83 checks, `p02_input_movement_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p02_wall_tests.gd'` — 85 checks, `p02_wall_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p03_tests.gd'` — 103 checks, `p03_stage_camera_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p04_tests.gd'` — 268 checks, `p04_items_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p05_tests.gd'` — 137 checks, `p05_match_flow_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p06_tests.gd'` — 97 checks, `p06_scoring_regression.log`.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_ui_tests.gd'` — 437 checks, `ui_regression.log`.
+
+Project/toolchain checks:
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --editor --quit` — editor import/class registration, exit 0, no ERROR/WARNING lines: `import_parse.log`.
+- `gdformat --check 'tilaok!/scripts/harness/foundation_harness.gd' 'tilaok!/scripts/match/p07_first_playable_match_room.gd' 'tilaok!/tests/run_p07_tests.gd' 'tilaok!/tests/run_p07_reset_audit.gd' 'tilaok!/tests/capture_p07_evidence.gd'` — exit 0; all five unchanged: `format_check.log`.
+- `gdlint 'tilaok!/scripts/harness/foundation_harness.gd' 'tilaok!/scripts/match/p07_first_playable_match_room.gd' 'tilaok!/tests/run_p07_tests.gd' 'tilaok!/tests/run_p07_reset_audit.gd' 'tilaok!/tests/capture_p07_evidence.gd'` — exit 0, no lint issues: `lint_check.log`.
+- `git diff --check` — exit 0; the final staged review `git diff --cached --check` also exits 0.
+- `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --export-debug 'Windows Desktop' '../build/tilaok-p07.exe'` — exit 0: `windows_export.log`.
+- `build/tilaok-p07.exe --headless --quit-after 120 -- --open-room=p07_first_playable` — exit 0; exported startup prints the exact allowlist: `windows_export_runtime.log`.
+
+Exported interactive capture attempt:
+- `build/tilaok-p07.exe --script res://tests/capture_p07_evidence.gd` (output was directed to `exported/`) did not run the capture script; the packaged runtime opened the normal harness. The attempt was stopped without a reliable completion exit code and produced no exported UI captures. See `exported_capture_command.log`. The later interactive capture was stopped before screenshots were saved.
+
+Acceptance boundary:
+- Automated runs use scripted controls, synthetic gamepad identities, and teleported goal callbacks. They do not complete P07-T01–T04 human/player/device criteria.
+- No human playtest, novice observations, independent review, physical controller session, or P02-T08 same-model disconnect/reconnect test is claimed. See `README.md` for the session sheet and device matrix.

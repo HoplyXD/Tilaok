@@ -10,6 +10,7 @@ const ROOM_SCENES := {
 	"p03_stage_room": preload("res://scenes/fixtures/p03_stage_room.tscn"),
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"p05_match": preload("res://scenes/match/match_room.tscn"),
+	"p07_first_playable": preload("res://scenes/match/p07_first_playable_room.tscn"),
 	"item_visualizer": preload("res://scenes/fixtures/item_visualizer.tscn"),
 	"p05_match_items": preload("res://scenes/match/match_room_items_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
@@ -21,6 +22,7 @@ const FULL_VIEW_ROOMS: PackedStringArray = [
 	"item_lab",
 	"item_visualizer",
 	"p05_match",
+	"p07_first_playable",
 	"p05_match_items",
 	"ui_gallery",
 	"ui_player_flow",
@@ -78,6 +80,9 @@ func _ready() -> void:
 	$Layout/HarnessPanel/RoomRow/ItemRoomButton.pressed.connect(_open_room.bind("item_lab"))
 	$Layout/HarnessPanel/RoomRow/EventRoomButton.pressed.connect(_open_room.bind("event_lab"))
 	$Layout/HarnessPanel/RoomRow/P05MatchButton.pressed.connect(_open_room.bind("p05_match"))
+	$Layout/HarnessPanel/PlayableRow/P07FirstPlayableButton.pressed.connect(
+		_open_room.bind("p07_first_playable")
+	)
 	$Layout/HarnessPanel/RoomRow/ItemVisualizerButton.pressed.connect(
 		_open_room.bind("item_visualizer")
 	)
@@ -98,8 +103,8 @@ func _ready() -> void:
 			_open_room.call_deferred(argument.trim_prefix("--open-room="))
 	_append_status(
 		(
-			"Harness ready. P01 foundation checks and P02 movement/input diagnostics are available; "
-			+ "no full game loop is implemented."
+			"Harness ready. Select P07 First Playable for the scored local Karera loop; "
+			+ "other buttons open development diagnostics and item labs."
 		)
 	)
 
@@ -218,7 +223,7 @@ func _open_room(room_id: String) -> void:
 		return
 	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
-	if room_id == "p05_match" and active_room.has_method("set_match_seed"):
+	if room_id in ["p05_match", "p07_first_playable"] and active_room.has_method("set_match_seed"):
 		active_room.call("set_match_seed", selected_seed)
 	if FULL_VIEW_ROOMS.has(room_id):
 		active_room.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -251,9 +256,13 @@ func _open_room(room_id: String) -> void:
 		)
 	elif room_id == "p05_match":
 		_append_status(
+			"Opened the P05 match room: P06 scoring and actual goal outcomes are active."
+		)
+	elif room_id == "p07_first_playable":
+		_append_status(
 			(
-				"Opened P05 Lobby → Pugad → Place → diagnostic Play → Results. "
-				+ "Awards and finish rules are not active."
+				"Opened P07 First Playable (karera_slice): only the three verified Kaing/Tulay "
+				+ "variants are eligible. Lagsanay, full-match completion and sudden death remain open."
 			)
 		)
 	elif room_id == "p02_movement_room":

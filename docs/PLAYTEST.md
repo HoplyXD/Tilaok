@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. P02, P03 and P04 implementation/evidence were added on 2026-10-13; P05 diagnostic-loop evidence was added on 2026-10-14. This is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. Updated through P07 engineering verification on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and input diagnostic room; P03 adds the bounded graybox stage, camera and support contracts; P04 adds the item infrastructure and Kaing/Tulay seeds in an Item Lab; P05 adds the lobby/Pugad/atomic Place/diagnostic Play/results-shell/next-round loop. P05 has no race finish rules or scoring, and T12 awaits P06-T08 actual result bindings. These are development slices, not a complete game or release playtest. Hardware coverage, human player feel and release-device performance remain explicit. Historical P00 results remain below.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; and P07 adds a dedicated first-playable route restricted to three Kaing/Tulay variants. P05-T12 is now verified against live P06 results. The P07 route, synthetic pool/reset checks and local rendering/performance samples pass, but the player-driven sessions, novice observations, physical-device checks and human reviews required to close P07 have not been supplied. These are development slices, not a complete game or release playtest. Historical P00 results remain below.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -50,7 +50,24 @@ P01 provides a Godot 4.7.2 foundation harness; P02 adds a playable run/jump and 
 | Gameplay traffic | PASSED — architectural inspection | Local-only flow has no sockets/network calls; 0 B/s gameplay traffic. No traffic monitor was used. |
 | Windows Debug export/startup | PASSED — startup only | Godot 4.7.2 Windows template export and exported headless P05 room smoke; final logs: [export](evidence/p05/windows_export.log), [runtime](evidence/p05/windows_export_runtime.log). This does not verify exported physical input. |
 
-The verification report and dated D3 scope note are [here](evidence/p05/2026-10-14_p05_verification.md) and [here](evidence/p05/2026-10-14_p05_scope_note.md). P05-T01–T11 are recorded as checked, T12 remains COULD-NOT-RUN until P06-T08 passes. No scoring/award calculation, real Karera finish handling, Walis Cleanup gameplay, saves or networking were tested or implemented. Synthetic pad events do not count as physical gamepad validation; final art/audio and human/competition review remain outstanding.
+The verification report and dated D3 scope note are [here](evidence/p05/2026-10-14_p05_verification.md) and [here](evidence/p05/2026-10-14_p05_scope_note.md). P05-T01–T12 are recorded as checked, with T12 rerun against P06 results. P05 evidence alone does not cover scoring; see the P06 record below. Walis Cleanup gameplay, saves and networking remain outside the slice. Synthetic pad events do not count as physical gamepad validation; final art/audio and human/competition review remain outstanding.
+
+## P07 First Playable engineering verification — October 14, 2026
+
+**Build/source:** `P07-first-playable-dev`, `karera_slice`, seed `12345`; Godot `4.7.2.stable.official.ed1daf0bf`; Windows, Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU, Compatibility renderer. The P07 room applies a per-room allowlist and validates its generated egg pool. No participant, novice, observer or physical gamepad took part in these checks. Scripted input, synthetic gamepad identities and teleported goal callbacks are engineering fixtures only.
+
+| Check | Status | Result and evidence |
+|---|---|---|
+| P07 route and allowlist | PASSED — automated | 590 checks, 0 failures. The P07 route uses only `build.hollow_blocks.cell_1x1`, `build.hollow_blocks.stack_2x3`, and `build.bamboo_bridge.span_4x1`; generated pools outside that list are rejected. [log](evidence/p07/p07_route_tests.txt). |
+| Next-round reset audit | PASSED — synthetic | Ten goal/results/next-round transitions, 172 checks, 0 failures. Stable IDs/signatures and scores persist; removed construction stays removed; actor/transient/pending-state cleanup and duplicate-results score idempotency pass. A separate full-match reset clears construction and totals. [log](evidence/p07/p07_reset_audit.txt). |
+| Regressions | PASSED — automated | Foundation, P02 input/movement, P02 wall, P03 stage/camera, P04 items, P05 match flow, P06 scoring and UI suites all exit 0; per-suite logs are in [P07 evidence](evidence/p07/). |
+| Import, export and launch | PASSED — engineering smoke | Godot editor import/parse, Windows Debug export and exported headless launch of `--open-room=p07_first_playable` each exit 0. The exported runtime prints the exact three-variant allowlist. See [import](evidence/p07/import_parse.log), [export](evidence/p07/windows_export.log), and [startup](evidence/p07/windows_export_runtime.log). |
+| Exported interactive 1080p screenshots | COULD NOT RUN | The packaged binary ignored the `--script` capture probe; the subsequent interactive capture was stopped before export screenshots were saved. The seven 1920×1080 screenshots below are project-runner captures, not exported-build captures. See [probe log](evidence/p07/exported_capture_command.log). |
+| Project-runner renders | PASSED — scripted debug capture | Lobby, Pugad, Place, Karera, results, next-round Pugad and four-seat minimum-zoom captures are 1920×1080. Synthetic corner spread at zoom 0.50 kept 4/4 targets visible; this is not human readability evidence. [captures and metrics](evidence/p07/). |
+| Local performance sample | PASSED — provisional local budget | At 1920×1080 and 300 race + 300 results frames, 2/3/4-seat race median/p95/worst were 8.333/8.380/10.807, 8.333/8.371/8.756, and 8.334/8.427/10.891 ms; results were 8.333/8.368/8.712, 8.333/8.415/8.814, and 8.358/10.775/11.384 ms. Godot static memory was 86.73/86.76/90.25 MiB; object/node counts were 2044/133, 2064/141 and 2102/152; 0 orphan nodes; one persistent item; sample durations 5.133/5.130/5.278 s. These samples are below 16.67 ms and 512 MiB, but do not establish target-PC performance. Gameplay traffic is 0 B/s by local-only architecture; no traffic monitor ran. [full metrics](evidence/p07/p07_performance.txt). |
+| Human/device acceptance | COULD-NOT-RUN | One keyboard, no gamepads, and no participants, novice, observer or dates were supplied. P07-T01–T04 remain unchecked; P02-T08 physical same-model disconnect/reconnect remains COULD-NOT-RUN. [session sheet and device matrix](evidence/p07/README.md). |
+
+The P07 route and engineering checks are implemented, but the human gate remains open. No independent human review is claimed. Full-match ending, Lagsanay, sudden death, novice comprehension, human-used ten-reset evidence, 3/4-player rotations, pause/focus behavior on physical devices, reconnect/reclaim, and minimum-zoom readability review remain explicit gaps.
 
 ## P00 production-readiness evidence
 

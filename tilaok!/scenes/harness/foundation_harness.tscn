@@ -112,6 +112,19 @@ step = 0.05
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="PlayableRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
+layout_mode = 2
+
+[node name="P07FirstPlayableButton" type="Button" parent="Layout/HarnessPanel/PlayableRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "P07 First Playable"
+
+[node name="PlayableDescription" type="Label" parent="Layout/HarnessPanel/PlayableRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2–4 players • Lobby → Pugad → Place → Karera → results → next round • development slice"
+
 [node name="RoomRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
 layout_mode = 2
 

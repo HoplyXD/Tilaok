@@ -1,0 +1,6 @@
+warning: in the working copy of 'tilaok!/scripts/harness/foundation_harness.gd', CRLF will be replaced by LF the next time Git touches it
+EXIT_CODE=0
+
+COMMAND: git diff --cached --check
+OUTPUT: no whitespace errors
+EXIT_CODE=0
