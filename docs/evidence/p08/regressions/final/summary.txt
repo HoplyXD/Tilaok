@@ -1,0 +1,17 @@
+P08 required regression batch; headless synthetic fixtures; no physical devices.
+Date: 2026-10-14T04:46:55Z UTC
+Build: source baseline 160a0b4 plus task-local P08; Godot 4.7.2-stable; reviewer: Codex engineering run.
+run_foundation_tests PASSED exit=0; no summary marker
+run_blocks_tests PASSED exit=0; BLOCKS_TESTS checks=76 failures=0
+run_p02_tests PASSED exit=0; P02_TESTS checks=83 failures=0
+run_p02_wall_tests PASSED exit=0; P02_WALL_TESTS checks=85 failures=0
+run_p03_tests PASSED exit=0; P03_TESTS checks=103 failures=0
+run_p04_tests PASSED exit=0; P04_TESTS checks=269 failures=0
+run_p05_tests PASSED exit=0; P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests PASSED exit=0; P06_TEST_SUMMARY checks=97 failures=0
+run_p07_tests PASSED exit=0; P07_TESTS checks=590 failures=0
+run_p07_reset_audit PASSED exit=0; P07_RESET_AUTOMATION resets=10 checks=172 failures=0 participants=synthetic
+run_p08_tests PASSED exit=0; P08_TEST_SUMMARY checks=86 failures=0
+run_p10_tests PASSED exit=0; P10_TESTS checks=424 failures=0
+run_ui_tests PASSED exit=0; UI_TESTS checks=437 failures=0
+Regression batch result: PASSED

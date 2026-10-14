@@ -232,13 +232,21 @@ func _test_definitions() -> void:
 			not family.safe_start.is_empty(),
 			"T01 %s safe start is explicit: %s" % [family_id, family.safe_start]
 		)
-		_check(
-			family.modes_allowed == PackedStringArray(["karera"]),
-			"T01 %s mode flags: allowed karera only" % family_id
+		var lagsanay_compatible: bool = (
+			family_id in ["hazard.rail_trumpo", "hazard.slipper_launcher"]
+		)
+		var expected_modes := (
+			PackedStringArray(["karera", "lagsanay"])
+			if lagsanay_compatible
+			else PackedStringArray(["karera"])
 		)
 		_check(
-			family.modes_pending_review.has("lagsanay"),
-			"T01 %s Lagsanay is pending review" % family_id
+			family.modes_allowed == expected_modes,
+			"T01 %s mode flags: %s" % [family_id, expected_modes]
+		)
+		_check(
+			family.modes_pending_review.has("lagsanay") != lagsanay_compatible,
+			"T01 %s Lagsanay compatibility review flag is accurate" % family_id
 		)
 		_check(not family.release_target, "T01 %s is not a release target" % family_id)
 		_check(

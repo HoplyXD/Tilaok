@@ -1,0 +1,12 @@
+run_foundation_tests exit=0 log=docs\evidence\p08\regressions\run_foundation_tests.log
+run_p02_tests exit=0 log=docs\evidence\p08\regressions\run_p02_tests.log
+run_p02_wall_tests exit=0 log=docs\evidence\p08\regressions\run_p02_wall_tests.log
+run_p03_tests exit=0 log=docs\evidence\p08\regressions\run_p03_tests.log
+run_blocks_tests exit=0 log=docs\evidence\p08\regressions\run_blocks_tests.log
+run_p04_tests exit=1 log=docs\evidence\p08\regressions\run_p04_tests.log
+run_p05_tests exit=0 log=docs\evidence\p08\regressions\run_p05_tests.log
+run_p06_tests exit=0 log=docs\evidence\p08\regressions\run_p06_tests.log
+run_p07_tests exit=0 log=docs\evidence\p08\regressions\run_p07_tests.log
+run_p08_tests exit=0 log=docs\evidence\p08\regressions\run_p08_tests.log
+run_p10_tests exit=1 log=docs\evidence\p08\regressions\run_p10_tests.log
+run_ui_tests exit=0 log=docs\evidence\p08\regressions\run_ui_tests.log

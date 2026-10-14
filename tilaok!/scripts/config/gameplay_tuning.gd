@@ -76,6 +76,12 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var contact_sensor_width_wu: float = 60.0
 @export var contact_sensor_height_wu: float = 120.0
 @export var taya_pass_back_seconds: float = 1.0
+## P08 provisional active-simulation settings, copied into each round snapshot.
+@export var lagsanay_opening_head_start_seconds: float = 3.0
+@export var lagsanay_taya_seconds_2p: float = 7.0
+@export var lagsanay_taya_seconds_3p: float = 10.0
+@export var lagsanay_taya_seconds_4p: float = 15.0
+@export var lagsanay_last_cluck_freeze_seconds: float = 0.75
 @export var camera_virtual_width_px: float = 1280.0
 @export var camera_virtual_height_px: float = 720.0
 @export var camera_hud_reservation_px: float = 64.0
@@ -242,6 +248,11 @@ func validate() -> PackedStringArray:
 		"contact_sensor_width_wu",
 		"contact_sensor_height_wu",
 		"taya_pass_back_seconds",
+		"lagsanay_opening_head_start_seconds",
+		"lagsanay_taya_seconds_2p",
+		"lagsanay_taya_seconds_3p",
+		"lagsanay_taya_seconds_4p",
+		"lagsanay_last_cluck_freeze_seconds",
 		"camera_virtual_width_px",
 		"camera_virtual_height_px",
 		"camera_hud_reservation_px",
@@ -318,8 +329,20 @@ func validate() -> PackedStringArray:
 		errors.append("movement speeds and accelerations must be greater than zero")
 	if reverse_wu_s2 <= 0.0 or air_accel_wu_s2 < 0.0 or air_neutral_drag_wu_s2 < 0.0:
 		errors.append("air/reversal tuning is outside its valid range")
-	if coyote_seconds < 0.0 or jump_buffer_seconds < 0.0 or taya_pass_back_seconds < 0.0:
+	if (
+		coyote_seconds < 0.0
+		or jump_buffer_seconds < 0.0
+		or taya_pass_back_seconds < 0.0
+		or lagsanay_last_cluck_freeze_seconds < 0.0
+	):
 		errors.append("timing values cannot be negative")
+	if (
+		lagsanay_opening_head_start_seconds <= 0.0
+		or lagsanay_taya_seconds_2p <= 0.0
+		or lagsanay_taya_seconds_3p <= 0.0
+		or lagsanay_taya_seconds_4p <= 0.0
+	):
+		errors.append("Lagsanay head start and taya timers must be greater than zero")
 	if launch_max_horizontal_wu_s <= 0.0 or launch_max_upward_wu_s <= 0.0:
 		errors.append("launch caps must be greater than zero")
 	if fall_gravity_multiplier < 1.0 or fall_speed_cap_wu_s <= 0.0:

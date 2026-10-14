@@ -120,10 +120,15 @@ custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 text = "P07 First Playable"
 
+[node name="P08LagsanayButton" type="Button" parent="Layout/HarnessPanel/PlayableRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "P08 Lagsanay Lab"
+
 [node name="PlayableDescription" type="Label" parent="Layout/HarnessPanel/PlayableRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "2–4 players • Lobby → Pugad → Place → Karera → results → next round • development slice"
+text = "2–4 players • Pugad → Place → independent pass-through tag → explained results • development only"
 
 [node name="RoomRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
 layout_mode = 2

@@ -4,6 +4,7 @@ extends RefCounted
 var egg := RandomNumberGenerator.new()
 var event := RandomNumberGenerator.new()
 var tie := RandomNumberGenerator.new()
+var taya := RandomNumberGenerator.new()
 var cosmetic := RandomNumberGenerator.new()
 
 
@@ -11,6 +12,7 @@ func seed_all(seed_value: int) -> void:
 	egg.seed = seed_value + 101
 	event.seed = seed_value + 211
 	tie.seed = seed_value + 307
+	taya.seed = seed_value + 353
 	cosmetic.seed = seed_value + 401
 
 

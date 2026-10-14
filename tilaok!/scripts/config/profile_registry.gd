@@ -38,10 +38,17 @@ const _PROFILES: Dictionary = {
 	},
 	"lagsanay_lab":
 	{
-		"label": "Lagsanay Lab (incomplete development profile)",
-		"description": "Requires verified Lagsanay and a selectable diagnostic item pool.",
+		"label": "Lagsanay Lab (development profile)",
+		"description":
+		"Independent pass-through tag with the reviewed Kaing/Tulay, Trumpo and Tsinelas Launcher pool.",
 		"development_only": true,
-		"content": [],
+		"content":
+		[
+			"build.hollow_blocks",
+			"build.bamboo_bridge",
+			"hazard.rail_trumpo",
+			"hazard.slipper_launcher",
+		],
 		"modes": ["lagsanay"],
 		"pools": ["item"],
 	},

@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. Updated through P07 engineering verification on 2026-10-14. This is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. Updated through P08 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; and P07 adds a dedicated first-playable route restricted to three Kaing/Tulay variants. P05-T12 is now verified against live P06 results. The P07 route, synthetic pool/reset checks and local rendering/performance samples pass, but the player-driven sessions, novice observations, physical-device checks and human reviews required to close P07 have not been supplied. These are development slices, not a complete game or release playtest. Historical P00 results remain below.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; P07 adds a dedicated first-playable route; and P08 adds an independent Lagsanay development route. The P07 route and synthetic checks pass but its human/device gate remains open. P08's six engineering tasks pass with synthetic seats, real Godot physics and rendered debug output; no physical-device or human acceptance was performed. These are development slices, not a complete game or release playtest. Historical P00 results remain below.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -68,6 +68,23 @@ The verification report and dated D3 scope note are [here](evidence/p05/2026-10-
 | Human/device acceptance | COULD-NOT-RUN | One keyboard, no gamepads, and no participants, novice, observer or dates were supplied. P07-T01–T04 remain unchecked; P02-T08 physical same-model disconnect/reconnect remains COULD-NOT-RUN. [session sheet and device matrix](evidence/p07/README.md). |
 
 The P07 route and engineering checks are implemented, but the human gate remains open. No independent human review is claimed. Full-match ending, Lagsanay, sudden death, novice comprehension, human-used ten-reset evidence, 3/4-player rotations, pause/focus behavior on physical devices, reconnect/reclaim, and minimum-zoom readability review remain explicit gaps.
+
+## P08 Independent Lagsanay engineering verification — October 14, 2026
+
+**Source/build:** main baseline `160a0b4` plus the P08 task-local working tree; Godot `4.7.2.stable.official.ed1daf0bf`; Windows, Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU, Compatibility renderer, 1920×1080. **Profile/seed:** `lagsanay_lab` / `12345`; values remain provisional. **Seats/input:** synthetic K1/K2 keyboard identities for 2 seats and additional synthetic gamepad identities at 3/4 seats. The engine ran real physics, current overlap sensors, actual Trumpo rail contact and an actual Tsinelas Launcher projectile. The supplied distinguishable Last Cluck timestamps are unit/presentation fixtures, not contact-order measurements. **Reviewer:** Codex implementation/verification session; no independent human reviewer or player session is recorded.
+
+| Check | Status | Procedure and result |
+|---|---|---|
+| Focused Lagsanay arbitration/scoring | PASSED | 86 assertions cover seeded selection, 3 s opening immunity, sensor candidates/ties, stationary overlap, 1 s pass-back, timeout/hazard and batch precedence, reassignment, exact placement tables, owner/self-kill, Bawi, tick-only compatibility, Last Cluck permutations and exactly-once scoring. Exit 0; [log](evidence/p08/regressions/final/run_p08_tests.log). |
+| Rendered 2/3/4-seat route and results | PASSED — synthetic seats | 87 assertions, 0 failures, exit 0. Entered Lobby → Pugad → Place → Lagsanay, checked pass-through taya, HUD taya/head-start/countdown/pass-back explanation, exact winner/results, reset, pause/resume clocks and cleanup. [Report](evidence/p08/p08_interactive_run.txt), [captures](evidence/p08/README.md#p08-checks). |
+| Real hazard attribution | PASSED — actual Godot physics | Rail Trumpo contact and Tsinelas Launcher projectile reached the independent Lagsanay sink with round/source/owner identity preserved. Direct owner credit, self-kill exclusion and competing-source order are covered by focused checks. Runtime timestamp precision is limited to values recorded by hazard integration. [Report and images](evidence/p08/README.md#p08-checks). |
+| Last Cluck presentation | PASSED — supplied timestamp fixtures | 2/3/4 all-final cases select exactly one winner; exact ties use lowest stable slot; lower placements and one award set are preserved. Reversed callback permutations and duplicate events do not change the result. Rendered result explains “latest recorded elimination time” and the tie rule. [Capture](evidence/p08/06_last_cluck_explained_results_1920x1080.png). |
+| Full regression batch | PASSED — 13 runners | Foundation, blocks, P02 controller/wall, P03, P04, P05, P06, P07, P07 reset, P08, P10 and UI exited 0. Per-run raw stdout/stderr and [exit summary](evidence/p08/regressions/final/suite_summary.txt). |
+| Performance/restart/cleanup | PASSED — local provisional budget | 300 rendered frames per seat count with Trumpo and Launcher active, v-sync off: 2/3/4 worst frame intervals 11.140/13.106/13.361 ms; OS process sample 287.84 MiB peak working set / 421.58 MiB private bytes. Three synthetic containment-defect restarts retained construction and pre-round scores with zero awards; room teardown left 0 orphan nodes. [Metrics and commands](evidence/p08/p08_performance.txt). |
+| Import/format/lint/export | PASSED with one inherited lint limit | Editor import/parse and Windows Debug export plus exported `--open-room=p08_lagsanay` startup passed. Format check passed. `gdlint` reports only the inherited `match_room.gd` file-size rule (baseline 1,013 lines; current 1,022); no other changed-script lint finding. |
+| Human/device/release acceptance | COULD-NOT-RUN | No physical gamepads, human players, novice observer, cultural review or independent code reviewer participated. P07-T04 remains unchecked; development authorization for P08 does not satisfy its gate. `lagsanay_lab` is not release-enabled. |
+
+Full task evidence and actual commands are indexed in [P08 evidence](evidence/p08/README.md) and [PHASETASK](PHASETASK.md#p08--lagsanay). The focused P08 count and regression results are synthetic engineering verification, not human play evidence. The complete match, event scheduling/stacks, final UI/art/audio and release onboarding remain outside this slice.
 
 ## P00 production-readiness evidence
 

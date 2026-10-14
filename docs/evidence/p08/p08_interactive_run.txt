@@ -1,0 +1,113 @@
+P08 interactive engineering run; all player input and positioning are synthetic.
+Engine: 4.7.2-stable (official)
+Date: 2026-10-14T05:03:58 UTC
+Build: P08-independent-lagsanay-dev; source baseline 160a0b4 plus task-local P08 changes.
+OS: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
+Input: synthetic K1/K2 and synthetic gamepad seat identities; no physical devices.
+Profile/seed: lagsanay_lab / 12345 unless a test row says otherwise.
+Reviewer: Codex engineering run; no independent human review recorded.
+PASSED — 2 synthetic seats start the development Lagsanay profile
+PASSED — standalone room snapshots lagsanay_lab
+PASSED — Lagsanay does not instantiate a Karera round controller
+PASSED — Lagsanay compatible content definitions validate
+PASSED — mode-compatible Trumpo places before the opening immunity check
+CONTACT_START_2P phase=3 active=true ended=false taya=1 head=3.000000 timer=7.000000 seats=[0, 1] statuses={ 0: { "status": 0, "position": (192.0, 900.0), "escaped": false }, 1: { "status": 2, "position": (192.0, 900.0), "escaped": false } } sim=0.000000
+CONTACT_FLOOR_2P mask=1 position=(192.0, 900.0) test_down=true on_floor=false floor_node=<Object#null> floor_pos=(inf, inf)
+PASSED — 2-seat Pugad → Place → Lagsanay enters the independent round
+PASSED — Karera goal trigger is disabled while protected clearance remains
+PASSED — opening taya is visibly lifecycle-frozen and hazard-ineligible
+PASSED — runtime hazards exclude the opening-frozen taya
+PASSED — capture cannot change the opening-frozen taya lifecycle
+PASSED — capture written: 01_opening_head_start_1920x1080.png (1920x1080)
+CONTACT_OPEN_END_2P phase=3 active=true ended=false taya=1 head=0.000000 timer=6.966667 outcomes={  } statuses={ 0: { "status": 0, "position": (1092.0, 900.0), "escaped": false }, 1: { "status": 0, "position": (1024.0, 544.7031), "escaped": false } }
+PASSED — opening has no pass to or from frozen taya
+PASSED — configured head start expires on active simulation time
+PASSED — actual Trumpo sweeps cannot eliminate the opening taya
+PASSED — real physics sensor overlap passes the taya at 2 players
+PASSED — real pass does not reset or extend the countdown
+PASSED — HUD explains recent-taya pass-back immunity and other live receivers
+PASSED — capture written: 02_passed_taya_1920x1080.png (1920x1080)
+PASSED — pass-back immunity leaves other eligible receiver contacts usable
+CONTACT_2P seed=12345 opening=1 pass_to=0 timer_before=6.950000 timer_after=6.716667
+PASSED — 3 synthetic seats start the development Lagsanay profile
+PASSED — standalone room snapshots lagsanay_lab
+PASSED — Lagsanay does not instantiate a Karera round controller
+PASSED — Lagsanay compatible content definitions validate
+PASSED — mode-compatible Trumpo places before the opening immunity check
+CONTACT_START_3P phase=3 active=true ended=false taya=1 head=3.000000 timer=10.000000 seats=[0, 1, 2] statuses={ 0: { "status": 0, "position": (192.0, 900.0), "escaped": false }, 1: { "status": 2, "position": (192.0, 900.0), "escaped": false }, 2: { "status": 0, "position": (192.0, 900.0), "escaped": false } } sim=0.000000
+CONTACT_FLOOR_3P mask=1 position=(192.0, 900.0) test_down=true on_floor=false floor_node=<Object#null> floor_pos=(inf, inf)
+PASSED — 3-seat Pugad → Place → Lagsanay enters the independent round
+PASSED — Karera goal trigger is disabled while protected clearance remains
+PASSED — opening taya is visibly lifecycle-frozen and hazard-ineligible
+PASSED — runtime hazards exclude the opening-frozen taya
+PASSED — capture cannot change the opening-frozen taya lifecycle
+CONTACT_OPEN_END_3P phase=3 active=true ended=false taya=1 head=0.000000 timer=9.966667 outcomes={  } statuses={ 0: { "status": 0, "position": (1092.0, 900.0), "escaped": false }, 1: { "status": 0, "position": (1024.0, 544.7031), "escaped": false }, 2: { "status": 0, "position": (1116.0, 900.0), "escaped": false } }
+PASSED — opening has no pass to or from frozen taya
+PASSED — configured head start expires on active simulation time
+PASSED — actual Trumpo sweeps cannot eliminate the opening taya
+PASSED — real physics sensor overlap passes the taya at 3 players
+PASSED — real pass does not reset or extend the countdown
+PASSED — captured participants remain eligible for tag passing
+CONTACT_3P seed=12345 opening=1 pass_to=0 timer_before=9.950000 timer_after=9.900000
+PASSED — 4 synthetic seats start the development Lagsanay profile
+PASSED — standalone room snapshots lagsanay_lab
+PASSED — Lagsanay does not instantiate a Karera round controller
+PASSED — Lagsanay compatible content definitions validate
+PASSED — mode-compatible Trumpo places before the opening immunity check
+CONTACT_START_4P phase=3 active=true ended=false taya=1 head=3.000000 timer=15.000000 seats=[0, 1, 2, 3] statuses={ 0: { "status": 0, "position": (192.0, 900.0), "escaped": false }, 1: { "status": 2, "position": (192.0, 900.0), "escaped": false }, 2: { "status": 0, "position": (192.0, 900.0), "escaped": false }, 3: { "status": 0, "position": (192.0, 900.0), "escaped": false } } sim=0.000000
+CONTACT_FLOOR_4P mask=1 position=(192.0, 900.0) test_down=true on_floor=false floor_node=<Object#null> floor_pos=(inf, inf)
+PASSED — 4-seat Pugad → Place → Lagsanay enters the independent round
+PASSED — Karera goal trigger is disabled while protected clearance remains
+PASSED — opening taya is visibly lifecycle-frozen and hazard-ineligible
+PASSED — runtime hazards exclude the opening-frozen taya
+PASSED — capture cannot change the opening-frozen taya lifecycle
+CONTACT_OPEN_END_4P phase=3 active=true ended=false taya=1 head=0.000000 timer=14.966667 outcomes={  } statuses={ 0: { "status": 0, "position": (1092.0, 900.0), "escaped": false }, 1: { "status": 0, "position": (1024.0, 544.7031), "escaped": false }, 2: { "status": 0, "position": (1116.0, 900.0), "escaped": false }, 3: { "status": 0, "position": (1123.993, 899.998), "escaped": false } }
+PASSED — opening has no pass to or from frozen taya
+PASSED — configured head start expires on active simulation time
+PASSED — actual Trumpo sweeps cannot eliminate the opening taya
+PASSED — real physics sensor overlap passes the taya at 4 players
+PASSED — real pass does not reset or extend the countdown
+PASSED — captured participants remain eligible for tag passing
+PASSED — freed participants are pruned from cached sensor overlaps
+CONTACT_4P seed=12345 opening=1 pass_to=0 timer_before=14.950000 timer_after=14.883333
+PASSED — Trumpo integration room starts
+PASSED — mode-compatible Trumpo rail places in Lagsanay
+PASSED — actual Trumpo contact reaches the Lagsanay elimination sink
+PASSED — actual Trumpo contact credits its placer
+PASSED — Trumpo attribution carries a comparable round-relative contact time
+PASSED — Trumpo record is stamped with the current mode round identity
+PASSED — capture written: 03_trumpo_direct_contact_1920x1080.png (1920x1080)
+TRUMPO mode=lagsanay profile=lagsanay_lab seed=12345 victim=2 owner=0 record=ELIM|player2|hazard.rail_trumpo.rail_4x1#001|owner0|t=1.0083|self=false|setup=false|trumpo contact
+PASSED — projectile integration room starts
+PASSED — mode-compatible Tsinelas Launcher places in Lagsanay
+PASSED — actual Tsinelas projectile contact reaches the Lagsanay elimination sink
+PASSED — projectile owner identity survives the mode-specific adapter
+PASSED — projectile record retains its source item identity
+PASSED — capture written: 04_projectile_direct_contact_1920x1080.png (1920x1080)
+LAUNCHER mode=lagsanay profile=lagsanay_lab seed=12345 victim=2 owner=0 source=hazard.slipper_launcher.lane_4x1#001
+PASSED — expiry-results room starts
+PASSED — taya expiry ends the 2-player round with one survivor
+PASSED — ordinary results explain the last survivor
+PASSED — ordinary result presents both participant outcomes
+PASSED — ordinary winner receives exactly one first-place placement award
+PASSED — capture written: 05_expiry_ordinary_winner_1920x1080.png (1920x1080)
+PASSED — Last Cluck presentation room starts
+LAST_CLUCK_FIXTURE tick=719 current=719 clock=0.150000 delta=0.016667 pending_before=0
+PASSED — supplied timestamped final-step record is accepted
+PASSED — supplied timestamped final-step record is accepted
+PASSED — supplied timestamped final-step record is accepted
+LAST_CLUCK_AFTER tick=720 phase=4 active=false ended=true clock=0.166667 pending=0 outcomes={ 0: { "seat_index": 0, "outcome": "eliminated", "physics_tick": 719, "physics_time": 0.15083333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:0", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" }, 1: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 719, "physics_time": 0.15583333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:1", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" }, 2: { "seat_index": 2, "outcome": "eliminated", "physics_tick": 719, "physics_time": 0.16083333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:2", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" } }
+PASSED — all-final-batch eliminations produce Last Cluck results
+PASSED — Last Cluck explanation names the actual tie rule
+PASSED — latest supplied final-step time wins this presentation fixture
+PASSED — capture written: 06_last_cluck_explained_results_1920x1080.png (1920x1080)
+LAST_CLUCK presentation=PASSED supplied_timestamp_fixture=true winner=2 explanation=Last Cluck! P3 SQUARE wins by the latest recorded elimination time. An exact time tie goes to the lowest stable player slot.; authoritative precision remains limited to engine/integration records.
+PASSED — pause and cleanup room starts
+PASSED — resume countdown starts with participants ready
+PASSED — pause/resume countdown freezes the active-simulation clock
+PASSED — pause/resume countdown freezes the opening head-start clock
+PASSED — simulation remains paused throughout resume countdown
+PASSED — participant resume countdown completes and restores simulation
+PASSED — live sensor contains only valid overlap references
+PASSED — room teardown disconnects and releases P08 state
+P08_INTERACTIVE_SUMMARY checks=87 failures=0

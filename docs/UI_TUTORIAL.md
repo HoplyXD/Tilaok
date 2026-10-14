@@ -1,6 +1,6 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
-**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI shell status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Play HUD, results, Pause/Reconnect, Settings and Library exist (SAMPLE data; see [UI_HANDOFF.md](UI_HANDOFF.md)); the guided tutorial script is not implemented.
+**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Pause/Reconnect, Settings and Library exist (SAMPLE data; see [UI_HANDOFF.md](UI_HANDOFF.md)). P08 adds a code-built, development-only Lagsanay HUD and explained results panel; all visuals remain diagnostic placeholders, and the guided tutorial script is not implemented.
 
 ## Experience goals
 
@@ -96,6 +96,7 @@ The Library displays only enabled release content by default. Backlog entries ca
 
 - The current taya has a clear body marker, countdown, and pass-back-immunity feedback.
 - The opening frozen taya state has a visible countdown so every player understands why the taya cannot move or be hurt yet.
+- **P08 current development implementation:** the top bar shows the taya's player number, shape and name plus remaining taya time or head-start time. The status text reports recently immune player identity/time and tells players that other contacts remain usable. The body marker duplicates the taya identity over the chicken. Results explain outcomes, placement, direct Patibong/Bawi and the exact Last Cluck winner/tie rule. These code-built panels are labeled DEBUG/development presentation, not the final UI design.
 - Tagging uses an obvious contact effect independent of chicken body collision.
 - Eliminations show placement order. If the final group is eliminated in the same physics tick, show **Last Cluck!** and the deterministic winner callout.
 - Spectating players retain the cheer button and do not obscure active-player information.
@@ -154,4 +155,4 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 
 ## Verification links
 
-`PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. No UI flow is implemented yet, so all runtime checks remain **COULD NOT RUN**.
+`PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity, ordinary results, Last Cluck explanation and 1080p captures passed synthetic engineering checks; see [P08 evidence](evidence/p08/README.md). The guided tutorial, final visual treatment, human comprehension/readability and P13 product UI remain open.

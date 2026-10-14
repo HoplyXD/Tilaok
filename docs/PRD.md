@@ -491,7 +491,7 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Acceptance:** 2/3/4-player tests include stationary overlap, multiple candidates, immunity expiry, opening hazard contact and no opening tag; recorded countdown never resets on pass.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `tilaok!/scripts/match/lagsanay_round_controller.gd`, `p08_lagsanay_match_room.gd`, and `chicken_contact_sensor.gd`; 86 focused and 86 rendered engineering checks passed at 2/3/4 synthetic seats. Actual overlap sensors, opening hazard immunity, captured-player tagging, cleanup and pause-frozen clocks are covered in [P08 evidence](evidence/p08/README.md). Physical-device and independent human acceptance remain open and are not inferred from these checks.
 
 
 ### REQ-LAG-002 — Resolve Lagsanay eliminations and placements
@@ -502,7 +502,7 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Acceptance:** Timeout/trap/taya death and simultaneous earlier deaths produce one placement set; verify all player-count tables and Bawi/Patibong with direct hazard tests when available.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `lagsanay_round_controller.gd`, `lagsanay_score_calculator.gd`, `placement_score_resolver.gd`, and the independent hazard sink in `p08_lagsanay_match_room.gd`; 86 focused checks, 86 rendered checks, actual Trumpo direct-contact and Tsinelas Launcher projectile attribution, and placement/Bawi/Patibong checks passed. See [P08 evidence](evidence/p08/README.md). Physical-device, human fairness and independent-review acceptance remain separate.
 
 
 ### REQ-LAG-003 — Select exactly one Last Cluck winner
@@ -513,7 +513,7 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Acceptance:** Exercise 2/3/4 all-remaining eliminations, distinguishable times and exact ties; one winner only, no averaged first and no duplicate award; correct explanation appears.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** `placement_score_resolver.gd` preserves tick-only callers and compares latest recorded time only when records are marked comparable; `match_results_view_model.gd` supplies the explanation and the P08 room adds an independent brief freeze. 2/3/4-player all-final, exact-time, tick-only, callback-order and one-time score checks passed; the supplied distinguishable-time presentation fixture displays the result in [the Last Cluck capture](evidence/p08/06_last_cluck_explained_results_1920x1080.png). Fixture timestamps are not claimed as physical sub-frame measurements. See [P08 evidence](evidence/p08/README.md).
 
 ## 10. Kangaroo
 

@@ -1364,9 +1364,27 @@ func _test_catalog_and_harness() -> void:
 		)
 	)
 	harness.selected_profile_id = "lagsanay_lab"
+	var lagsanay_entries := harness._current_catalog().entries
+	var lagsanay_family_ids: Array[String] = []
+	for entry in lagsanay_entries:
+		lagsanay_family_ids.append(str(entry.content_id))
+	lagsanay_family_ids.sort()
+	_check(
+		(
+			lagsanay_family_ids
+			== [
+				"build.bamboo_bridge",
+				"build.hollow_blocks",
+				"hazard.rail_trumpo",
+				"hazard.slipper_launcher",
+			]
+		),
+		"Lagsanay Lab lists only its mode-compatible first-batch construction and hazards"
+	)
+	harness.selected_profile_id = "kangaroo_contract_lab"
 	_check(
 		harness._current_catalog().entries.is_empty(),
-		"profiles that do not list the seeds keep an empty item pool"
+		"profiles that do not list seed families keep an empty item pool"
 	)
 	harness.selected_profile_id = "movement_room"
 	_check(harness._current_catalog().entries.is_empty(), "movement_room lists no content")

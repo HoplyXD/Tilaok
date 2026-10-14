@@ -1,0 +1,101 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS default tuning with wall keys validates
+PASS wall movement is core and enabled by default
+PASS wall keys start at the documented unmeasured candidates (64 wu grid)
+PASS non-positive slide cap is rejected
+PASS downward wall jump impulse is rejected
+PASS non-finite wall impulse is rejected
+PASS separation below the probe distance is rejected
+PASS run snapshot isolates wall movement keys
+PASS base platform sides are wall-eligible; floor, walls and ceiling are not; wave flag unchanged
+PASS disabled wall movement applies no slide cap and records no contact
+PASS disabled wall movement never kicks
+PASS airborne contact with a wall on the left slides at the configured cap
+PASS wall contact grants no coyote or floor
+PASS airborne contact with a wall on the right slides identically
+P02_WALL_METRIC slide cap=120.00 left_wall_speed=120.00 right_wall_speed=120.00
+PASS ascending beside an eligible wall is not speed-capped
+PASS wall contact needs no support tracker and publishes no support in the P02 room
+PASS explicitly ineligible solid never slides
+PASS explicitly ineligible solid never kicks
+PASS one-way solid side never slides even when flagged eligible
+PASS solid without wall metadata (arena containment style) fails closed
+PASS an Area2D trigger is never a wall
+PASS another chicken is never a wall
+P02_WALL_METRIC kick device=synthetic K1 kicks=1 vx=240.00 vy=-457.50
+PASS synthetic K1: one fresh press produces exactly one kick
+PASS synthetic K1: kick travels away from the wall with the configured impulse
+P02_WALL_METRIC kick device=synthetic K2 kicks=1 vx=240.00 vy=-457.50
+PASS synthetic K2: one fresh press produces exactly one kick
+PASS synthetic K2: kick travels away from the wall with the configured impulse
+P02_WALL_METRIC kick device=synthetic gamepad kicks=1 vx=240.00 vy=-457.50
+PASS synthetic gamepad: one fresh press produces exactly one kick
+PASS synthetic gamepad: kick travels away from the wall with the configured impulse
+PASS wall on the right kicks left with the mirrored impulse
+P02_WALL_METRIC steering vx_after_3_ticks_holding_toward_wall=160.00
+PASS air steering applies immediately after a kick
+PASS OS key echo alone never kicks
+PASS holding jump with OS repeats for one second yields exactly one kick
+PASS a press just before contact is buffered and consumed exactly once
+PASS first contact kicks and locks
+PASS second press at the same contact does not kick
+PASS separation beyond the threshold reopens the contact lock
+PASS fresh recontact after separation allows exactly one more kick
+P02_WALL_METRIC recontact lock_cleared_at_gap_wu=12.10
+PASS lock clears only once the gap reaches the threshold
+PASS a press inside the post-separation grace kicks once
+PASS a press after the grace expires does not kick
+PASS a moving wall qualifies while contact is valid
+PASS a moving wall that left contact clears slide and cannot be kicked
+PASS removable wall qualifies before removal
+PASS same-step wall removal clears contact and refuses the kick
+PASS grounded beside a wall records no wall contact
+PASS ground jump beside an eligible wall stays a normal ground jump
+PASS launch clears wall eligibility immediately
+PASS a launch is not overwritten by a wall kick
+PASS captured state cannot slide or kick
+PASS captured state keeps jump intent observable
+PASS opening_freeze state cannot slide or kick
+PASS opening_freeze state keeps jump intent observable
+PASS secured state cannot slide or kick
+PASS eliminated state cannot slide or kick
+PASS a paused chicken does not advance or slide while paused
+PASS pause/resume does not replay a stale wall press
+PASS phase change clears the buffered wall press
+PASS diagnostic reset clears wall contact, lock and slide
+PASS an eligible solid's underside/ceiling face is never a wall
+PASS landing on top of an eligible slab is grounded and records no wall contact
+PASS sliding clears and descent is uncapped once the body passes the wall's bottom corner
+PASS rising through a one-way underside passes through with no wall contact
+P02_WALL_METRIC kick_rise held_wu=72.07 released_wu=33.84
+PASS kick obeys variable-jump release gravity (released rise shorter than held rise)
+P02_WALL_METRIC enabled_full_jump_wu=96.06
+PASS ground full jump apex stays within 2 wu of 96 wu with wall movement enabled
+PASS coyote jump off a ledge still works with wall movement enabled
+P02_WALL_METRIC shaft kicks=36 max_height_y=124.08 gain_per_cycle=8.0,6.7,5.4,4.1,2.8,1.5,0.2,-0.8,-1.5,-2.0,8.0,6.7,5.4,12.3,24.5,-0.7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+PASS two-wall shaft permits wall kicks (measured, not rejected)
+P02_WALL_METRIC containment launch=(480.0, -900.0) min=(156.0751, 124.0751) max=(243.9251, 555.9918) contained=true
+PASS kick plus launch (480.0, -900.0) stays inside visible bounds
+PASS wall kick never enlarges external launch caps
+P02_WALL_METRIC containment launch=(-480.0, -900.0) min=(188.0749, 124.0751) max=(354.1867, 555.9252) contained=true
+PASS kick plus launch (-480.0, -900.0) stays inside visible bounds
+PASS wall kick never enlarges external launch caps
+P02_WALL_METRIC containment launch=(0.0, -900.0) min=(200.1, 124.0751) max=(300.4336, 439.9253) contained=true
+PASS kick plus launch (0.0, -900.0) stays inside visible bounds
+PASS wall kick never enlarges external launch caps
+P02_WALL_METRIC containment launch=(480.0, 0.0) min=(188.0748, 125.75) max=(243.9251, 555.9449) contained=true
+PASS kick plus launch (480.0, 0.0) stays inside visible bounds
+PASS wall kick never enlarges external launch caps
+PASS P03 stage starts with wall movement enabled
+PASS P03 base platform side slides when wall movement is enabled
+PASS wall slide records no support contact
+PASS wall contact never qualifies as support or Rising-wave eligibility
+PASS wall fixtures leave immutable arena geometry unchanged
+PASS immutable protection still rejects a footprint over base geometry
+PASS stage reset while sliding clears all wall state
+PASS P03 left containment wall never qualifies
+PASS P03 kick plus maximum launch stays inside the arena bounds
+PASS camera keeps the actor visible through kick plus maximum launch
+PASS five wall fixture reload cycles leave no retained nodes
+P02_WALL_TESTS checks=85 failures=0

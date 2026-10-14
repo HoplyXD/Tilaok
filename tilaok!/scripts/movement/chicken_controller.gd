@@ -249,6 +249,12 @@ func set_opening_freeze(frozen: bool) -> void:
 			lifecycle.status = PlayerLifecycleState.Status.ACTIVE
 
 
+func contact_overlaps() -> Array[Node2D]:
+	if _contact_sensor == null or not is_instance_valid(_contact_sensor):
+		return []
+	return _contact_sensor.overlaps()
+
+
 func secure(reason: String = "secured") -> bool:
 	return _set_terminal(PlayerLifecycleState.Status.SECURED, reason)
 

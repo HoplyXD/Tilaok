@@ -11,6 +11,7 @@ const ROOM_SCENES := {
 	"item_lab": preload("res://scenes/fixtures/item_lab.tscn"),
 	"p05_match": preload("res://scenes/match/match_room.tscn"),
 	"p07_first_playable": preload("res://scenes/match/p07_first_playable_room.tscn"),
+	"p08_lagsanay": preload("res://scenes/match/p08_lagsanay_room.tscn"),
 	"item_visualizer": preload("res://scenes/fixtures/item_visualizer.tscn"),
 	"p05_match_items": preload("res://scenes/match/match_room_items_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
@@ -23,6 +24,7 @@ const FULL_VIEW_ROOMS: PackedStringArray = [
 	"item_visualizer",
 	"p05_match",
 	"p07_first_playable",
+	"p08_lagsanay",
 	"p05_match_items",
 	"ui_gallery",
 	"ui_player_flow",
@@ -83,6 +85,9 @@ func _ready() -> void:
 	$Layout/HarnessPanel/PlayableRow/P07FirstPlayableButton.pressed.connect(
 		_open_room.bind("p07_first_playable")
 	)
+	$Layout/HarnessPanel/PlayableRow/P08LagsanayButton.pressed.connect(
+		_open_room.bind("p08_lagsanay")
+	)
 	$Layout/HarnessPanel/RoomRow/ItemVisualizerButton.pressed.connect(
 		_open_room.bind("item_visualizer")
 	)
@@ -103,7 +108,7 @@ func _ready() -> void:
 			_open_room.call_deferred(argument.trim_prefix("--open-room="))
 	_append_status(
 		(
-			"Harness ready. Select P07 First Playable for the scored local Karera loop; "
+			"Harness ready. Select P07 First Playable for Karera or P08 Lagsanay Lab for independent tag; "
 			+ "other buttons open development diagnostics and item labs."
 		)
 	)
@@ -223,7 +228,10 @@ func _open_room(room_id: String) -> void:
 		return
 	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
-	if room_id in ["p05_match", "p07_first_playable"] and active_room.has_method("set_match_seed"):
+	if (
+		room_id in ["p05_match", "p07_first_playable", "p08_lagsanay"]
+		and active_room.has_method("set_match_seed")
+	):
 		active_room.call("set_match_seed", selected_seed)
 	if FULL_VIEW_ROOMS.has(room_id):
 		active_room.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -263,6 +271,13 @@ func _open_room(room_id: String) -> void:
 			(
 				"Opened P07 First Playable (karera_slice): only the three verified Kaing/Tulay "
 				+ "variants are eligible. Lagsanay, full-match completion and sudden death remain open."
+			)
+		)
+	elif room_id == "p08_lagsanay":
+		_append_status(
+			(
+				"Opened P08 Lagsanay Lab: independent pass-through tag, direct Trumpo and "
+				+ "Tsinelas Launcher contact, placement scoring; no Karera goal or race deadline."
 			)
 		)
 	elif room_id == "p02_movement_room":

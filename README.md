@@ -11,7 +11,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Phased Implementation Tracker](docs/PHASETASK.md): 112/405 task records checked; P07 is 0/4 (route and synthetic checks pass; human/device gates remain open); P10 is 42/54 on placeholder art in the development `items_lab` profile (integration and release enablement blocked); P05 is 12/12 and P06 is 8/8; P04 is 18/22, P03 is 6/6 and P02 is 17/26 (physical-device and human-review tasks open; includes the 2026-10-14 sneak/glide/64 px grid/stage-blocks extension)
+- [Phased Implementation Tracker](docs/PHASETASK.md): 118/405 task records checked; P08 is 6/6 technical tasks in the development-only `lagsanay_lab` profile; P07 is 0/4 with player/device gates open; P10 is 42/54 on placeholder art in `items_lab` (integration and release enablement blocked); P05 is 12/12 and P06 is 8/8; P04 is 18/22, P03 is 6/6 and P02 is 17/26 (physical-device and human-review tasks open; includes the 2026-10-14 sneak/glide/64 px grid/stage-blocks extension)
 - [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
 - [Game Design Document](docs/GDD.md): core loop, events, scoring, characters
@@ -39,7 +39,7 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 - **Platform:** PC, local multiplayer (2–4 players)
 
 ## Status
-P01 provides the foundation harness and typed provisional configuration. P02 adds local movement/input; P03 adds the protected graybox arena, bounded camera and support fixtures. P04 adds Kaing/Tulay construction seeds. P05 adds the local lobby → Pugad → atomic Place flow, and P06 adds live Karera goal contact, deadlines, exact race scoring, explained results and next-round reset with persistent construction. P07 adds a dedicated first-playable route limited to three verified Kaing/Tulay variants; its automated gate passes, while human sessions and physical-device acceptance remain open. P05 is 12/12 and P06 is 8/8 in the tracker; no P07 task is checked. P10 hazard integration, Barya gameplay, Lagsanay, event stacking, full-match ending, tutorial, final art and release readiness remain open. P02 is 17/26 because physical controller, keyboard rollover/reconnect checks and wall-movement / sneak-glide human review remain open. Since 2026-10-14 the stage uses 64 px tiles (TileMapLayer), keyboard jump is W/Up (hold to glide), S/Down sneaks, and Solid Block, Wood Box and Collapsing Block scenes live in `tilaok!/scenes/blocks/`. Wall slide/jump is implemented; its human review and Should include/defer decision remain open. P03 is 6/6 and P04 is 18/22. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), [tracker](docs/PHASETASK.md), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
+P01 provides the foundation harness and typed provisional configuration. P02 adds local movement/input; P03 adds the protected graybox arena, bounded camera and support fixtures. P04 adds Kaing/Tulay construction seeds. P05 adds the local lobby → Pugad → atomic Place flow, and P06 adds live Karera goal contact, deadlines, exact race scoring, explained results and next-round reset with persistent construction. P07 adds a dedicated first-playable route limited to three verified Kaing/Tulay variants; its synthetic engineering checks pass, while player sessions, physical-device acceptance and human review remain open (0/4 tasks checked). P08 adds independent pass-through bomb-taya Lagsanay on the persistent stage and is 6/6 technically verified in development; its profile is not release-enabled and P07-T04 remains an open entry/release gate. P05 is 12/12 and P06 is 8/8 in the tracker. P10 hazard integration, Barya gameplay, event stacking, full-match ending, tutorial, final art and release readiness remain open. P02 is 17/26 because physical controller, keyboard rollover/reconnect checks and wall-movement / sneak-glide human review remain open. Since 2026-10-14 the stage uses 64 px tiles (TileMapLayer), keyboard jump is W/Up (hold to glide), S/Down sneaks, and Solid Block, Wood Box and Collapsing Block scenes live in `tilaok!/scenes/blocks/`. Wall slide/jump is implemented; its human review and Should include/defer decision remain open. P03 is 6/6 and P04 is 18/22. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), [tracker](docs/PHASETASK.md), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
 
 ## Run the P03 graybox
 
@@ -86,6 +86,26 @@ Choose **P07 First Playable** in the harness for the scored two-to-four-seat Kar
 K1 joins/readies/claims/confirms with **F**, moves with **A/D**, jumps with **W** (hold to glide), sneaks with **S**, rotates with **R**, and backs out with **G**. K2 uses **Enter**, arrows, **Up** to jump/glide, **Down** to sneak, **Right Shift** to rotate, and **Backspace** to go back. A gamepad uses **A** to join/readies/claims/confirms, the D-pad to move/select, **A** to jump in Karera, **X** to rotate, **B** to go back, and **Start** to pause. Join at least two seats; each seat must ready before Pugad. P07's egg pool is restricted to Kaing 1×1, Kaing Stack 2×3 and Tulay 4×1 variants.
 
 The project has passed synthetic route, reset and scoring checks, but player-driven sessions, novice comprehension, physical controllers, human minimum-zoom readability review and the P02 reconnect gate remain open. The available 1080p images are project-runner captures; exported-build UI screenshots were not saved. Do not treat automated captures or teleported finishers as human evidence. See the [P07 evidence and session matrix](docs/evidence/p07/README.md) and [tracker](docs/PHASETASK.md).
+
+## Run independent Lagsanay
+
+Choose **P08 Lagsanay Lab** in the development harness or launch it directly:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --open-room=p08_lagsanay
+```
+
+Join K1 and K2 using the visible buttons, then ready both seats with **F / Enter** and start. Complete Pugad and Place as in P05; the mode transitions into independent bomb-taya tag on the same constructed stage. The opening taya is identified by seat, shape and text; after the three-second head start, contact passes the bomb without resetting its countdown. K1 uses **A/D**, **W** jump/glide, **S** sneak; K2 uses **Left/Right**, **Up** jump/glide, **Down** sneak. **Escape** pauses; resume requires participants to ready. Results explain placements, direct trap credit and any Last Cluck winner/tie rule. Ready seats advance to the next round while construction and cumulative scores persist. Use **P08 Lagsanay Lab** again through the harness to start over. `lagsanay_lab` is development-only and its tuning remains provisional.
+
+Run the focused and rendered synthetic checks with the explicit Godot 4.7.2 build:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p08_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/run_p08_interactive.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_p08_performance.gd'
+```
+
+P08 is 6/6 technically verified; the P07-T04 player/device acceptance gate and physical-device/human review remain open. See [P08 evidence and limits](docs/evidence/p08/README.md) and [the tracker](docs/PHASETASK.md).
 
 Run the focused P07 checks and render/performance capture with Godot 4.7.2:
 

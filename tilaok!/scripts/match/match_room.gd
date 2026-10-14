@@ -27,7 +27,7 @@ const PHASE_TO_INPUT := {
 var phase_controller := MatchPhaseController.new()
 var placement_controller := MatchPlacementController.new()
 var match_streams := SeededDiagnosticStreams.new()
-var race_round_controller := RaceRoundController.new()
+var race_round_controller: RaceRoundController
 var race_candidate_queue := RACE_CANDIDATE_QUEUE_SCRIPT.new()
 var egg_pool: Array[Dictionary] = []
 var assignments: Dictionary = {}
@@ -129,7 +129,9 @@ func _physics_process(delta: float) -> void:
 		return
 	if phase_controller.phase == MatchPhaseController.Phase.PUGAD:
 		_flush_claims()
-	elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
+	elif (
+		phase_controller.phase == MatchPhaseController.Phase.PLAY and race_round_controller != null
+	):
 		_collect_goal_overlaps()
 		var step_result := race_round_controller.advance_step(
 			delta, Engine.get_physics_frames(), race_candidate_queue.drain()
@@ -232,7 +234,11 @@ func _update_diagnostics() -> void:
 	var phase_text: String = str(MatchPhaseController.Phase.keys()[phase_controller.phase])
 	_phase_label.text = phase_text
 	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
-		_timer_label.text = "%.1f s" % race_round_controller.remaining_seconds()
+		_timer_label.text = (
+			"%.1f s" % race_round_controller.remaining_seconds()
+			if race_round_controller != null
+			else ""
+		)
 	elif phase_controller.remaining_seconds > 0.0:
 		_timer_label.text = "%.1f s" % phase_controller.remaining_seconds
 	else:
@@ -750,9 +756,7 @@ func _confirm_placement(seat_index: int) -> void:
 
 
 func _show_placement_locked(seat_index: int) -> void:
-	var locked_message := (
-		"P%d placement is locked. There is no undo this round." % (seat_index + 1)
-	)
+	var locked_message := "P%d placement is locked. There is no undo this round." % (seat_index + 1)
 	if last_message == locked_message:
 		return
 	last_message = locked_message
@@ -811,6 +815,7 @@ func _enter_play() -> void:
 	for seat in input_router.registry.joined_seats():
 		seats.append(int(seat.seat))
 	var round_id := "%d:%d" % [match_run_id, items.round_number + 1]
+	race_round_controller = RaceRoundController.new()
 	race_round_controller.configure(
 		tuning.match_race_hard_cap_seconds, tuning.match_race_after_first_finish_seconds
 	)
@@ -826,7 +831,11 @@ func _enter_play() -> void:
 
 
 func _finish_race(reason: String) -> void:
-	if phase_controller.phase != MatchPhaseController.Phase.PLAY or not race_round_controller.ended:
+	if (
+		phase_controller.phase != MatchPhaseController.Phase.PLAY
+		or race_round_controller == null
+		or not race_round_controller.ended
+	):
 		return
 	var outcome_rows := race_round_controller.ledger.outcomes()
 	var seat_indices: Array[int] = []
@@ -875,7 +884,7 @@ func _on_actor_created(actor: ChickenController) -> void:
 
 
 func _on_actor_escaped(seat_index: int) -> void:
-	if phase_controller.phase != MatchPhaseController.Phase.PLAY:
+	if phase_controller.phase != MatchPhaseController.Phase.PLAY or race_round_controller == null:
 		return
 	var actor := actors.get(seat_index) as ChickenController
 	if actor == null or actor.lifecycle.status != PlayerLifecycleState.Status.ACTIVE:
@@ -955,7 +964,7 @@ func reset_room() -> void:
 	if items != null:
 		items.reset_match()
 	phase_controller.enter(MatchPhaseController.Phase.LOBBY)
-	race_round_controller = RaceRoundController.new()
+	race_round_controller = null
 	cumulative_score_units.clear()
 	round_start_score_units.clear()
 	race_candidate_queue.reset()

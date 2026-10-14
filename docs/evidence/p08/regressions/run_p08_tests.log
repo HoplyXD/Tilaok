@@ -1,0 +1,82 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS P08 provisional timing defaults validate
+PASS opening head start defaults to 3 seconds
+PASS 2-player timer defaults to 7 seconds
+PASS 3-player timer defaults to 10 seconds
+PASS 4-player timer defaults to 15 seconds
+PASS 4-player Lagsanay round begins
+PASS 4-player Lagsanay round begins
+PASS taya gameplay stream reproduces its seeded opening selection
+PASS taya stream is independent and reproducible
+PASS cosmetic stream remains separate
+PASS 4-player Lagsanay round begins
+PASS opening taya cannot pass during head start
+PASS bomb countdown does not run during head start
+PASS head start ends once at its active-simulation boundary
+PASS no transfer is inferred on the opening transition step
+PASS eligible overlap transfers exactly once
+PASS equal-distance contacts use the lowest stable seat slot
+PASS passing preserves the countdown
+PASS previous taya cannot receive the bomb during pass-back immunity
+PASS ongoing stationary overlap can pass after immunity expires
+PASS expired immunity permits the previous taya to receive it again
+PASS second pass also preserves remaining time
+PASS 3-player Lagsanay round begins
+PASS multiple simultaneous contact candidates are considered as a frozen set
+PASS nearest candidate beats farther contacts
+PASS 3-player Lagsanay round begins
+PASS expiry wins a same-step contact with no recorded contact time
+PASS taya timer expiry is an elimination event
+PASS a timed-out taya is reassigned only after the batch
+PASS new taya receives the configured 2-player timer after one elimination
+PASS 3-player Lagsanay round begins
+PASS first same-time competing hazard record is accepted
+PASS second same-time competing hazard record is accepted
+PASS same-time competing sources use stable item-ID attribution order
+PASS selected competing source preserves its recorded owner
+PASS 2-player Lagsanay round begins
+PASS current-round direct hazard is accepted by the mode ledger
+PASS a directly attributed hazard strictly before timeout wins
+PASS terminal batch emits its accepted event once
+PASS 2-player Lagsanay round begins
+PASS timeout wins exact hazard-time ties
+PASS timeout is never a Patibong kill
+PASS 4-player Lagsanay round begins
+PASS several eliminations in one step commit as one batch
+PASS surviving current taya keeps its identity after non-taya deaths
+PASS non-taya death does not reset or extend the surviving taya timer
+PASS same-step eliminated tag candidates are ignored
+PASS stale-round hazard callback is rejected
+PASS 2-player placement table is 1.0 / 0
+PASS 3-player placement table is 1.0 / 0.5 / 0
+PASS 4-player placement table is 1.0 / 0.5 / 0.25 / 0
+PASS 2-player all-eliminated Last Cluck resolves
+PASS 2-player latest recorded time selects one Last Cluck winner
+PASS Last Cluck winner receives exact first-place value
+PASS Last Cluck never averages first place away
+PASS 3-player all-eliminated Last Cluck resolves
+PASS 3-player latest recorded time selects one Last Cluck winner
+PASS Last Cluck winner receives exact first-place value
+PASS Last Cluck never averages first place away
+PASS 4-player all-eliminated Last Cluck resolves
+PASS 4-player latest recorded time selects one Last Cluck winner
+PASS Last Cluck winner receives exact first-place value
+PASS Last Cluck never averages first place away
+PASS exact Last Cluck time tie uses lowest stable player slot
+PASS exact lower-place tie averages places two and three in eighth units
+PASS legacy tick-only callers stay indistinguishable and use slot order
+PASS a smaller final same-tick group chooses its latest record
+PASS same-tick lower placements retain the recorded-time and tie groups
+PASS earlier elimination group retains last place
+PASS placement and Lagsanay awards produce one valid result
+PASS latest survivor-order record chooses the Last Cluck winner
+PASS direct owner can receive Patibong even when also eliminated
+PASS self-kill rejection and non-winning attribution are exact
+PASS winner receives eight placement units plus six Bawi units at the three-point boundary
+PASS winner keeps first-place units but Bawi does not round up from a 2.875-point deficit
+PASS self-kill earns no Patibong
+PASS 2-player Lagsanay round begins
+PASS complete Lagsanay award set commits exactly once
+PASS duplicate result callback cannot apply the score again
+P08_TEST_SUMMARY checks=79 failures=0

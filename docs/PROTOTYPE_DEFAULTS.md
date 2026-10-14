@@ -187,6 +187,31 @@ These P04 fixture measurements are not feel or balance evidence. At that earlier
 
 The real ArenaDefinition goal trigger, race-clock policy, result binding, exact race awards and current elimination-placement arithmetic now run in the `karera_slice` development profile. The 97-check automated suite, 17-check two-seat live result, 64-check four-seat P05 flow and 2/3/4-seat frame sample passed. The P06 evidence record lists frame, static-memory, repeated-round and export results. These synthetic/scripted checks do not establish player feel, fairness or final balance. Hazard-owner candidates and Barya facts are test-only interfaces; P10 hazard contact, coin gameplay, Lagsanay, event stacks and full-match scoring orchestration remain future gates. No scoring design value changed from the GDD.
 
+### P08 independent Lagsanay — October 14, 2026
+
+**Build/profile/engine:** source baseline `160a0b4` plus task-local P08; `lagsanay_lab`; seed `12345`; Godot `4.7.2.stable.official.ed1daf0bf`; Windows 1920×1080 Compatibility renderer; i5-13420H / RTX 4050. Values remain provisional pending human playtesting. Validated tuning is centralized in `tilaok!/scripts/config/gameplay_tuning.gd` and captured with the development run; gameplay taya randomness uses an independent seeded stream from cosmetic randomness.
+
+| Key | Initial value | Contract |
+|---|---:|---|
+| `lagsanay_opening_head_start_seconds` | 3.0 s | Opening taya stays frozen, immune to hazards/capture, and excluded from tagging; bomb countdown starts after the head start. |
+| `taya_pass_back_seconds` | 1.0 s | Previous taya cannot receive the bomb during this active-simulation interval; other candidates remain eligible. |
+| `lagsanay_taya_seconds_2p` | 7.0 s | Timer assigned when two participants remain. |
+| `lagsanay_taya_seconds_3p` | 10.0 s | Timer assigned when three participants remain. |
+| `lagsanay_taya_seconds_4p` | 15.0 s | Timer assigned when four participants remain. |
+| `lagsanay_last_cluck_freeze_seconds` | 0.75 s | Brief post-commit presentation freeze; presentation callbacks do not score. |
+
+Head-start, countdown and immunity use the room's active physics-simulation time and stop during pause/resume countdown. A pass preserves the timer. Non-taya eliminations do not reset it. Timeout and accepted hazard outcomes batch before survivor counting, reassignment, placement or passing. An un-timed expiry-step contact loses to timeout; a taya hazard only takes precedence when its comparable record is strictly earlier than the expiry instant. Exact/incomparable time resolves to timeout. Candidate sets come from actual current sensor overlaps, with lowest-slot exact-distance ties. No taya speed bonus was added, and R1–R4 remain inactive.
+
+**P08 rendered results (300 frames per count; synthetic seats; active Trumpo and Launcher):**
+
+| Seats | Median / p95 / worst frame interval | Godot static memory | Objects / nodes / orphans | Actors / persistent hazards | Item director average step |
+|---:|---:|---:|---:|---:|---:|
+| 2 | 5.092 / 8.997 / 11.140 ms | 87.94 MiB | 2125 / 125 / 0 | 2 / 2 | 0.199 ms |
+| 3 | 4.873 / 8.526 / 13.106 ms | 88.16 MiB | 2154 / 135 / 0 | 3 / 2 | 0.190 ms |
+| 4 | 6.325 / 10.564 / 13.361 ms | 88.92 MiB | 2189 / 145 / 0 | 4 / 2 | 0.224 ms |
+
+An external 100 ms Windows process-tree sample recorded peak working set 287.84 MiB and peak private bytes 421.58 MiB across `Godot_v4.7.2-stable_win64` and its console process. All sampled frame times and both memory readings were under the provisional 16.67 ms / 512 MiB limits on this PC. Three synthetic `escaped_bounds` signal restarts retained the pre-Play score and construction, then cleaned the room with zero orphan nodes. The P08 local architecture instantiates no networking; 0 B/s is an architectural expectation, not packet-capture measurement. Full procedure, console output, command/exit code, and screenshots are in [P08 evidence](evidence/p08/README.md). These engineering captures do not measure competitive balance, player feel, hardware coverage, final UI, or release performance.
+
 ### Contact and temporary-state policy
 
 **C:** bodies pass through each other in every supported mode; tag/Hug use sensors, never pushing. This follows GDD.md:73 and the race-stack rules; the more general collision wording at :181 should be read consistently with them.

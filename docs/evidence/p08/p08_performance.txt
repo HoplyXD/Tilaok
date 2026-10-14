@@ -1,0 +1,17 @@
+P08 rendered performance and restart run; synthetic seats and scripted scene transitions.
+Date: 2026-10-14T05:08:54 UTC
+Build: source baseline 160a0b4 plus task-local P08; Godot 4.7.2-stable (official)
+Machine: Windows / 13th Gen Intel(R) Core(TM) i5-13420H / 12 logical CPUs
+Renderer: NVIDIA / NVIDIA GeForce RTX 4050 Laptop GPU
+Profile/seed: lagsanay_lab / 12345; display 1920x1080; v-sync disabled.
+Targets: median/p95/worst frame interval <=16.67 ms; Godot static memory <=512 MiB; no gameplay traffic.
+Review: Codex engineering run; no independent human review recorded.
+Capture: 07_performance_2p_active_hazards_1920x1080.png ((1920, 1080)), active Trumpo and Launcher, synthetic seat identities.
+2P lagsanay_lab seed=12345 synthetic input — frame median/p95/worst 5.092/8.997/11.140 ms; static 87.94 MiB; objects=2125 nodes=125 orphans=0 actors=2 items=2 director_steps=59 item_step_avg=0.199 ms result=PASSED
+3P lagsanay_lab seed=12345 synthetic input — frame median/p95/worst 4.873/8.526/13.106 ms; static 88.16 MiB; objects=2154 nodes=135 orphans=0 actors=3 items=2 director_steps=44 item_step_avg=0.190 ms result=PASSED
+4P lagsanay_lab seed=12345 synthetic input — frame median/p95/worst 6.325/10.564/13.361 ms; static 88.92 MiB; objects=2189 nodes=145 orphans=0 actors=4 items=2 director_steps=67 item_step_avg=0.224 ms result=PASSED
+containment restart attempts=3 passed=3 score_preserved=true construction=1 actors=2 — synthetic escaped_bounds signal; no award on aborted attempts
+post-room cleanup orphan_nodes=0 result=PASSED
+P08_PERFORMANCE_SUMMARY failures=0
+External 100 ms Windows Godot process-tree sample (Godot_v4.7.2-stable_win64,Godot_v4.7.2-stable_win64_console): peak working set 287.84 MiB; peak private bytes 421.58 MiB; samples=77; observed=True.
+Runner output: docs\evidence\p08\p08_performance_console.log; stderr: docs\evidence\p08\p08_performance_console.err.log; exit=0.

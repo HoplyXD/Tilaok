@@ -14,6 +14,9 @@ var tuning: GameplayTuning
 var budget: TransientBudget
 var records: Array[AttributionRecord] = []
 var play_time := 0.0
+## Round-relative clock includes the item's activation-grace interval.
+var simulation_time := 0.0
+var active_round_id := ""
 var steps := 0
 var suppressed_shots := 0
 ## Diagnostics only: wall-clock cost of `step` (microseconds).
@@ -23,6 +26,8 @@ var step_samples := 0
 ## Optional host hook `(record: AttributionRecord) -> bool`. When it accepts a lethal record the
 ## host owns the terminal commit (the P06 ledger); otherwise the director eliminates directly.
 var elimination_sink := Callable()
+## Some mode ledgers own every lethal decision, including deliberate rejection of stale events.
+var elimination_sink_exclusive := false
 var _immune_until: Dictionary = {}
 var _spring_cooldown: Dictionary = {}
 var _base_occluders: Array[Rect2] = []
@@ -55,6 +60,7 @@ func _exit_tree() -> void:
 func reset_for_play() -> void:
 	_jump_press_frame.clear()
 	play_time = 0.0
+	simulation_time = 0.0
 	steps = 0
 	records.clear()
 	suppressed_shots = 0
@@ -63,7 +69,10 @@ func reset_for_play() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if items == null or not items.is_active():
+	if items == null or not items.in_play:
+		return
+	simulation_time += delta
+	if not items.is_active():
 		return
 	step(delta)
 
@@ -220,9 +229,22 @@ func _resolve_lethal(ctx: ItemStepContext, behaviors: Array[ItemBehavior]) -> vo
 		var record := source.make_record(
 			AttributionRecord.Kind.ELIMINATION, seat, float(report.time), str(report.detail)
 		)
-		if elimination_sink.is_valid() and bool(elimination_sink.call(record)):
-			handled[seat] = true
-			_emit(record)
+		# Normalize the behavior clock to the room's round-active-simulation clock. The
+		# behavior clock omits item activation grace; simulation_time includes that interval.
+		record.physics_time += simulation_time - play_time
+		record.physics_tick = Engine.get_physics_frames()
+		record.time_comparable = true
+		record.round_id = active_round_id
+		record.event_id = (
+			"%s:item:%s:%d:%d"
+			% [active_round_id, record.source_item_id, record.physics_tick, record.player_seat]
+		)
+		if elimination_sink.is_valid():
+			if bool(elimination_sink.call(record)):
+				handled[seat] = true
+				_emit(record)
+			elif elimination_sink_exclusive:
+				handled[seat] = true
 		elif actor.eliminate("hazard:%s" % report.item_id):
 			handled[seat] = true
 			_emit(record)

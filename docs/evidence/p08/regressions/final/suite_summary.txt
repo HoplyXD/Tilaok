@@ -1,0 +1,13 @@
+run_foundation_tests.gd exit=0
+run_blocks_tests.gd exit=0
+run_p02_tests.gd exit=0
+run_p02_wall_tests.gd exit=0
+run_p03_tests.gd exit=0
+run_p04_tests.gd exit=0
+run_p05_tests.gd exit=0
+run_p06_tests.gd exit=0
+run_p07_tests.gd exit=0
+run_p07_reset_audit.gd exit=0
+run_p08_tests.gd exit=0
+run_p10_tests.gd exit=0
+run_ui_tests.gd exit=0
