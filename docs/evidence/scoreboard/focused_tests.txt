@@ -1,0 +1,10 @@
+Godot 4.7.2.stable.official.ed1daf0bf | Windows | headless regression runners
+
+run_scoreboard_chart_tests.gd: SCOREBOARD_CHART_TESTS checks=52 failures=0 | exit 0
+run_match_ui_binding_tests.gd: MATCH_UI_BINDING_TESTS checks=185 failures=0 | exit 0
+run_match_ui_tests.gd: MATCH_UI_TESTS checks=198 failures=0 | exit 0
+run_match_ui_mode_tests.gd: MATCH_UI_MODE_TESTS checks=62 failures=0 | exit 0
+run_p06_tests.gd: P06_TEST_SUMMARY checks=97 failures=0 | exit 0
+run_p08_tests.gd: P08_TEST_SUMMARY checks=86 failures=0 | exit 0
+run_p09_tests.gd: P09_TEST_SUMMARY checks=77 failures=0 | exit 0
+run_p11_tests.gd: P11_TEST_SUMMARY checks=78 failures=0 | exit 0

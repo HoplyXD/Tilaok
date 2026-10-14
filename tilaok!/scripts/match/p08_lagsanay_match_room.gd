@@ -308,6 +308,7 @@ func _finish_lagsanay(last_cluck: bool) -> void:
 	var score_result := lagsanay_controller.score_result()
 	if not lagsanay_controller.commit_score_once(score_result):
 		return
+	_record_score_presentation(items.round_number + 1, score_result)
 	last_resolution = score_result.duplicate(true)
 	for seat in lagsanay_controller.seat_indices:
 		cumulative_score_units[seat] = int(score_result.totals_units[seat])
@@ -328,6 +329,7 @@ func _finish_lagsanay(last_cluck: bool) -> void:
 		tuning.lagsanay_taya_seconds_4p,
 		tuning.taya_pass_back_seconds
 	)
+	_bind_score_presentation(last_results_model, items.round_number)
 	phase_controller.enter(MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds)
 	_set_input_phase()
 	current_context = BoundedStageCamera.Context.PLAY

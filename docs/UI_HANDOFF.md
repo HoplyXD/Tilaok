@@ -224,3 +224,16 @@ The standalone `kangaroo_contract_lab` room currently draws DEBUG pose and wave 
 | BUILD HERE marker | `scenes/tutorial/build_here_marker.tscn` (`BuildHereMarker`) | World-space dashed outline + arrow + text label ("BUILD HERE", "TRY A PIECE HERE" on the retry hint); no collision. Label font sizes live in the scene. |
 | Pause entry | `%SkipTutorialButton` in `pause_screen.tscn` (after Leave, visible only while the tutorial is active) | Signal `skip_tutorial_requested`. |
 | Replay | Library How to Play page, entry 1 ("Replay tutorial") | Signal `replay_tutorial_requested`; clears the session set. |
+
+## Results score chart handoff — 2026-10-15
+
+The reusable `ScoreboardChart` and `ScoreColumn` components are live in the round and final result screens. The reference supplied for this task informed only the generic chart concept: player columns, a shared baseline, guides and score progression. Tilaok's existing dark-teal surfaces and provisional Theme tokens supply the interface styling; no reference palette, artwork, typography, branding or complete screen arrangement was copied.
+
+- `tilaok!/scenes/ui/components/scoreboard_chart.tscn` owns the shared axis, exact target line and responsive column slots. `score_column.tscn` owns the player's number/shape badge, placeholder chicken, exact score, round delta, status and stacked award segments.
+- Round results place the chart beside the award breakdown and labelled/glyphed legend, with readiness and the existing eight-second countdown in the footer. Final results place the chart and legend together beneath the winner/outcome callout and keep Replay / Return to Lobby / Quit below.
+- Columns stay in stable seat order, including noncontiguous seat indexes. The chicken is a UI-only `AnimatedSprite2D` using the shared [chicken SpriteFrames](../tilaok!/assets/character/chicken_sprite_frames.tres); it has no controller, physics or gameplay signals.
+- Score units are integer eighths. The target line uses the configured value (default 80 units / 10 points); one point of headroom is added above the greater of target or highest score. Scores above target expand the axis. Unproven prior totals use the neutral token.
+- Award token swatches (`tapos`, `una`, `bayani`, `patibong`, `bawi`, `barya`, `placement`) are named in `tilaok!/assets/ui/theme/tilaok_theme.tres` and remain editable for review. Each chart segment has an award key/glyph, and the legend names every score type. Player number and shape remain visible beside color.
+- Result reveal motion is a separate Normal / Reduced / Off setting; Screen shake is unchanged. Resize and repeated readiness binds do not restart the same result, and early advance settles the chart before navigation.
+
+Rendered 1280×720, 1920×800 and 1920×1080 examples and the exact engineering limits are indexed in [scoreboard evidence](evidence/scoreboard/README.md). The placeholder SpriteFrames and Theme values are not final production art; final art and human readability review remain with the team.

@@ -1,155 +1,8 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/movement/chicken_controller.gd" id="1_controller"]
 [ext_resource type="Script" path="res://scripts/movement/chicken_sprite_animator.gd" id="2_animator"]
-[ext_resource type="Texture2D" uid="uid://bhel0o1cvyc61" path="res://assets/character/Chicken Placeholder Sprite Sheet.png" id="3_sheet"]
-
-[sub_resource type="AtlasTexture" id="Atlas_idle"]
-atlas = ExtResource("3_sheet")
-region = Rect2(0, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_move_right"]
-atlas = ExtResource("3_sheet")
-region = Rect2(512, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_move_left"]
-atlas = ExtResource("3_sheet")
-region = Rect2(1024, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_sneak"]
-atlas = ExtResource("3_sheet")
-region = Rect2(1536, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_air"]
-atlas = ExtResource("3_sheet")
-region = Rect2(0, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_air_right"]
-atlas = ExtResource("3_sheet")
-region = Rect2(512, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_air_left"]
-atlas = ExtResource("3_sheet")
-region = Rect2(1024, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="Atlas_dead"]
-atlas = ExtResource("3_sheet")
-region = Rect2(1536, 512, 512, 512)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_chicken"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_idle")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_move_right")
-}],
-"loop": true,
-"name": &"run_right",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_move_left")
-}],
-"loop": true,
-"name": &"run_left",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_move_right")
-}],
-"loop": true,
-"name": &"wall_slide_right",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_move_left")
-}],
-"loop": true,
-"name": &"wall_slide_left",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_sneak")
-}],
-"loop": true,
-"name": &"sneak",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_air")
-}],
-"loop": true,
-"name": &"jump",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_air_right")
-}],
-"loop": true,
-"name": &"jump_right",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_air_left")
-}],
-"loop": true,
-"name": &"jump_left",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_air")
-}],
-"loop": true,
-"name": &"glide",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_air_right")
-}],
-"loop": true,
-"name": &"glide_right",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_air_left")
-}],
-"loop": true,
-"name": &"glide_left",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_idle")
-}],
-"loop": true,
-"name": &"stun",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Atlas_dead")
-}],
-"loop": true,
-"name": &"dead",
-"speed": 5.0
-}]
+[ext_resource type="SpriteFrames" path="res://assets/character/chicken_sprite_frames.tres" id="4_frames"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(56, 120)
@@ -165,7 +18,7 @@ shape = SubResource("RectangleShape2D_body")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 show_behind_parent = true
 scale = Vector2(0.25, 0.25)
-sprite_frames = SubResource("SpriteFrames_chicken")
+sprite_frames = ExtResource("4_frames")
 animation = &"idle"
 offset = Vector2(0, -16)
 script = ExtResource("2_animator")

@@ -156,6 +156,7 @@ func _finish_race(reason: String) -> void:
 		race_round_controller.ledger.round_id, score_result
 	):
 		return
+	_record_score_presentation(active_round, score_result)
 	for seat_index in seat_indices:
 		cumulative_score_units[seat_index] = int(score_result.totals_units.get(seat_index, 0))
 	items.end_round()
@@ -181,6 +182,7 @@ func _finish_race(reason: String) -> void:
 			race_round_controller.hard_cap_seconds,
 			race_round_controller.post_first_finish_seconds
 		)
+		_bind_score_presentation(last_results_model, active_round)
 		phase_controller.enter(
 			MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds
 		)
@@ -399,7 +401,13 @@ func _show_final_results(winner_seat: int, last_cluck: bool, outcome_text: Strin
 		lifecycle.sudden_death_attempt > 0,
 		final_last_cluck_explanation
 	)
-	_result_screen.bind_final_match(last_results_model)
+	var reveal_round := items.round_number if lifecycle.sudden_death_attempt <= 0 else -1
+	_bind_score_presentation(
+		last_results_model,
+		reveal_round,
+		"final:%d:%d:%d" % [match_run_id, winner_seat, lifecycle.sudden_death_attempt]
+	)
+	_result_screen.bind_final_match(last_results_model, presentation_settings.result_reveal_motion)
 	_result_screen.visible = true
 	last_message = outcome_text
 	_update_diagnostics()

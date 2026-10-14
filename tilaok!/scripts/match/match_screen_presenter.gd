@@ -497,7 +497,8 @@ func _apply_results(seats: Array[Dictionary]) -> void:
 		room.phase_controller.remaining_seconds,
 		room.tuning.match_results_advance_seconds,
 		_first_device_kind(seats),
-		prompt_map
+		prompt_map,
+		room.presentation_settings.result_reveal_motion
 	)
 
 

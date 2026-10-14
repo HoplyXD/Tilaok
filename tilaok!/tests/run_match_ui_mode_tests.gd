@@ -129,10 +129,11 @@ func _test_lagsanay_lab_hud_and_results() -> void:
 		(result.get_node("%DeadlineLabel") as Label).text == model.deadline_explanation,
 		"the Lagsanay timing explanation is shown"
 	)
+	result.chart().settle()
 	for index in model.per_seat_outcomes.size():
 		_check(
 			(
-				result.outcome_rows[index].score_text()
+				result.chart().chart_columns()[index].score_text()
 				== str(model.per_seat_outcomes[index].total_text)
 			),
 			"seat %d result total equals the Lagsanay view model" % (index + 1)
@@ -255,13 +256,10 @@ func _test_final_match_result_and_confirmation() -> void:
 	)
 	var winner_label := presenter.match_result_screen.get_node("%WinnerLabel") as Label
 	_check(winner_label.text.begins_with("WINNER"), "the winner is named (%s)" % winner_label.text)
-	var visible_rows := 0
-	for row in presenter.match_result_screen.final_rows:
-		if row.visible:
-			visible_rows += 1
-	_check(visible_rows == 3, "one final row per original participant")
+	var final_columns := presenter.match_result_screen.chart().chart_columns()
+	_check(final_columns.size() == 3, "one final chart column per original participant")
 	_check(
-		presenter.match_result_screen.final_rows[0].score_text() == ScoreFormat.format_units(88),
+		final_columns[0].score_text() == ScoreFormat.format_units(88),
 		"the winner's exact final score is shown"
 	)
 	life._on_match_action_pressed(0, "back")

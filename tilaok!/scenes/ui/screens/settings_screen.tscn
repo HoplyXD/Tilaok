@@ -70,6 +70,12 @@ row_title = "Screen shake"
 choices = PackedStringArray("Full", "Reduced", "Off")
 unique_name_in_owner = true
 
+[node name="ResultRevealRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+layout_mode = 2
+row_title = "Result reveal motion"
+choices = PackedStringArray("Normal", "Reduced", "Off")
+unique_name_in_owner = true
+
 [node name="MasterRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
 layout_mode = 2
 row_title = "Master volume"

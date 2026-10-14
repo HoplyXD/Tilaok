@@ -1,6 +1,6 @@
 P08 interactive engineering run; all player input and positioning are synthetic.
 Engine: 4.7.2-stable (official)
-Date: 2026-10-14T05:03:58 UTC
+Date: 2026-10-14T20:08:47 UTC
 Build: P08-independent-lagsanay-dev; source baseline 160a0b4 plus task-local P08 changes.
 OS: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
 Input: synthetic K1/K2 and synthetic gamepad seat identities; no physical devices.
@@ -25,7 +25,7 @@ PASSED — configured head start expires on active simulation time
 PASSED — actual Trumpo sweeps cannot eliminate the opening taya
 PASSED — real physics sensor overlap passes the taya at 2 players
 PASSED — real pass does not reset or extend the countdown
-PASSED — HUD explains recent-taya pass-back immunity and other live receivers
+PASSED — HUD names pass-back immunity and the DEBUG overlay explains other live receivers
 PASSED — capture written: 02_passed_taya_1920x1080.png (1920x1080)
 PASSED — pass-back immunity leaves other eligible receiver contacts usable
 CONTACT_2P seed=12345 opening=1 pass_to=0 timer_before=6.950000 timer_after=6.716667
@@ -92,11 +92,11 @@ PASSED — ordinary result presents both participant outcomes
 PASSED — ordinary winner receives exactly one first-place placement award
 PASSED — capture written: 05_expiry_ordinary_winner_1920x1080.png (1920x1080)
 PASSED — Last Cluck presentation room starts
-LAST_CLUCK_FIXTURE tick=719 current=719 clock=0.150000 delta=0.016667 pending_before=0
+LAST_CLUCK_FIXTURE tick=724 current=724 clock=0.150000 delta=0.016667 pending_before=0
 PASSED — supplied timestamped final-step record is accepted
 PASSED — supplied timestamped final-step record is accepted
 PASSED — supplied timestamped final-step record is accepted
-LAST_CLUCK_AFTER tick=720 phase=4 active=false ended=true clock=0.166667 pending=0 outcomes={ 0: { "seat_index": 0, "outcome": "eliminated", "physics_tick": 719, "physics_time": 0.15083333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:0", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" }, 1: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 719, "physics_time": 0.15583333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:1", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" }, 2: { "seat_index": 2, "outcome": "eliminated", "physics_tick": 719, "physics_time": 0.16083333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:2", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" } }
+LAST_CLUCK_AFTER tick=725 phase=4 active=false ended=true clock=0.166667 pending=0 outcomes={ 0: { "seat_index": 0, "outcome": "eliminated", "physics_tick": 724, "physics_time": 0.15083333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:0", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" }, 1: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 724, "physics_time": 0.15583333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:1", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" }, 2: { "seat_index": 2, "outcome": "eliminated", "physics_tick": 724, "physics_time": 0.16083333333333, "time_comparable": true, "event_id": "2:1:p08:0:fixture:2", "source_item_id": "supplied_last_cluck_fixture", "direct_owner_seat": -1, "cause": "hazard" } }
 PASSED — all-final-batch eliminations produce Last Cluck results
 PASSED — Last Cluck explanation names the actual tie rule
 PASSED — latest supplied final-step time wins this presentation fixture

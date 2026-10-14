@@ -281,10 +281,11 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		),
 		"round %d: the 2-player waiver reason is shown" % round_number
 	)
+	result.chart().settle()
 	for index in model.per_seat_outcomes.size():
 		var outcome: Dictionary = model.per_seat_outcomes[index]
 		_check(
-			result.outcome_rows[index].score_text() == str(outcome.total_text),
+			result.chart().chart_columns()[index].score_text() == str(outcome.total_text),
 			"round %d: seat %d result total equals the view model" % [round_number, index + 1]
 		)
 	for index in model.award_rows.size():

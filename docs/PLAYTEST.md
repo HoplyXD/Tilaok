@@ -9,6 +9,7 @@ P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagn
 | Check | Status | Evidence / limit |
 |---|---|---|
 | Guided first match (P13-T07 slice) | **PASSED (engineering, synthetic input) — no human session** | Tutorial-only stage gate (no-build search 1,860 attempts, 0 reached, highest feet 511.94 vs ledge 480), per-piece solutions, coach-box flow/skip/replay/session-memory tests (48 + 140 checks), rendered 1080p/720p captures, perf and export smoke on Godot 4.7.2; [evidence](evidence/tutorial/README.md). Novice comprehension, facilitator interventions, cultural review and Kangaroo prompts remain open (P13-T08 sheet below). |
+| Results scoreboard chart (P13-T13/T14 slice) | **PASSED (engineering, synthetic fixtures) — human review open** | 52 focused history/chart checks; binding/UI/mode and P06/P08/P09/P11 suites; rendered 2/3/4-player, no-score, fractional, above-target, round-12, tied sudden-death, motion-mode and resolution captures. Godot 4.7.2 import, lint/format, Windows export/startup passed. See [scoreboard evidence](evidence/scoreboard/README.md). No physical-device test, independent code review or player comprehension session is claimed; wider P13 remains open. |
 | Historical headless project initialization/import | **PASSED** | `godot --headless --path "tilaok!" --editor --quit`, Godot 4.6.3; completed filesystem scan, icon import, and editor initialization with no errors/warnings in the captured historical output. This is not target-engine validation. |
 | Target Godot 4.7.2 P01 project import/parse | **PASSED** | Godot 4.7.2 imported the working project after P01 foundation additions; [full log](evidence/p01-import-godot-4.7.2-2026-10-13.log). |
 | Historical P00 Godot 4.7.2 editor initialization | **FAILED — historical** | Earlier invocation exited 0 but logged `ERROR: Parameter "singleton" is null` and a thread-shutdown warning; [historical log](evidence/p00-import-godot-4.7.2-2026-10-13.log). The current P02 import/parse check below is clean. |
@@ -480,3 +481,18 @@ The full command list, metric interpretation and open human/team tasks are in th
 | Date | Build / revision | Players | Devices | Rounds | Skip / replay worked | Facilitator | Participant pseudonym | Result |
 |---|---|---|---|---|---|---|---|---|
 | | | | | | | | | |
+
+## P13-T13/T14 results scoreboard chart — October 15, 2026
+
+**Scope:** one reusable vertical score chart in live round and final match results. This is an engineering and rendered-layout review of synthetic result data; it is not a player comprehension or release acceptance session. No scoring value, score suppression rule or winner rule changed.
+
+| Verification | Result | Evidence / limit |
+|---|---|---|
+| Focused chart and history suite | **PASSED — 52 checks, 0 failures** | Integer eighth-point segment totals, stable player order, suppression/zero values, deduplication, replay reset, noncontiguous seats, resize/reveal/settle and teardown; see [`focused_tests.txt`](evidence/scoreboard/focused_tests.txt). |
+| Existing integration regressions | **PASSED — 185/198/62/97/86/77/78 checks** | UI binding, match UI, mode UI, P06, P08, P09 and P11; same evidence index. |
+| Interactive rendered routes | **PASSED — P06/P08/P09/P11: 17/87/108/85 assertions** | Rendered GUI execution, including live results; the runs used synthetic seats and input. |
+| Screenshots and target sizes | **PASSED — 10 SubViewport captures** | Includes 1280×720, 1920×800 and 1920×1080, mixed awards, no score, fractional points, above target, round-12 below target, equal-height sudden-death winner, mid-reveal and Reduced motion; all captures and exact run output are linked from the [evidence index](evidence/scoreboard/README.md). Captures are synthetic fixtures, not participant play. |
+| Import/parse, lint/format, Windows release export/startup | **PASSED** | Godot 4.7.2 editor import/class registration; `gdformat`/`gdlint`; exported executable headless startup. No physical-device review. |
+| Human review | **NOT RUN** | Independent code review, final art direction, novice comprehension, accessibility and readability remain open. Synthetic input is not physical-device evidence. |
+
+The chart uses only the generic player-column/shared-axis idea from the supplied reference. Its colors and visual styling were not copied. See the evidence README for the exact captures and commands.

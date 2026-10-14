@@ -1,6 +1,6 @@
 P11 standalone integration run; all seats, inputs and hazard timestamps are synthetic.
 Engine: 4.7.2-stable (official)
-Date: 2026-10-14T10:13:51 UTC
+Date: 2026-10-14T20:09:07 UTC
 Build: P11-independent-kangaroo-dev; current task working tree.
 OS: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
 Input: synthetic K1/K2 and synthetic gamepad seat identities; no physical devices.
@@ -27,7 +27,7 @@ PASSED — screen-shake mode 0 keeps a visual cue
 PASSED — screen-shake mode 1 keeps a visual cue
 PASSED — screen-shake Off suppresses camera motion
 PASSED — rendered screenshot saved: p11_2p_command_hud_1920x1080.png (1920x1080)
-P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=96.397,p95=96.397,max=96.397] physics_ms[p95=173.369,max=173.369] static_memory_mib[min=110.4,max=110.4]
+P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=80.050,p95=80.050,max=80.050] physics_ms[p95=187.489,max=187.489] static_memory_mib[min=114.9,max=114.9]
 PASSED — active round leaves persistent construction unchanged
 PASSED — standalone room cleanup releases the scene instance
 PASSED — 3 synthetic seats start the standalone route
@@ -46,7 +46,7 @@ PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
 PASSED — seeded command scheduler launched a first command
 PASSED — debug presenter remains a visual-only non-colliding layer
 PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
-P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=236.831,p95=236.831,max=236.831] physics_ms[p95=27.418,max=27.418] static_memory_mib[min=110.6,max=110.6]
+P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=62.373,p95=62.373,max=62.373] physics_ms[p95=10.526,max=10.526] static_memory_mib[min=115.0,max=115.0]
 PASSED — synthetic direct trap is accepted for seat 1
 PASSED — synthetic direct trap is accepted for seat 2
 PASSED — batched hazard outcomes leave one survivor
@@ -76,7 +76,7 @@ PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
 PASSED — seeded command scheduler launched a first command
 PASSED — debug presenter remains a visual-only non-colliding layer
 PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
-P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=292.063,p95=292.063,max=292.063] physics_ms[p95=10.023,max=10.023] static_memory_mib[min=111.0,max=111.0]
+P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=11.507,p95=87.726,max=87.726] physics_ms[p95=2.970,max=2.970] static_memory_mib[min=115.5,max=115.5]
 PASSED — screen-shake Off suppresses the debug shake
 PASSED — Reduced screen shake preserves its distinct gentle cue
 PASSED — active round leaves persistent construction unchanged

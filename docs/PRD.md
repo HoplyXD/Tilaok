@@ -145,6 +145,8 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 **Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence (2026-10-14):** P09 binds live match data to the themed match result screen. Its 108 rendered interaction assertions cover Replay/Lobby/Quit, unanimous fresh readiness, focus/device invalidation, missing-seat reclaim, Quit/leave cancellation, whole-group Lobby reset and a fresh Replay seed/configuration. The ten-cycle restart audit is in [P09 evidence](evidence/p09/README.md). Synthetic seats and shortened timers are used; physical devices and human play remain unverified.
 
+**Scoreboard slice (2026-10-15, partial requirement evidence):** the live final-results screen now uses the shared vertical score chart, exact configured target line, fixed seat order, labelled/glyphed award legend and explicit Last Cluck callout. Round-12 winners remain below the target when their score is below it; tied sudden-death scores use the winner callout without changing bar height. See [P13-T13/T14 captures and tests](evidence/scoreboard/README.md). This does not replace the P09 restart/readiness contract or physical/human review.
+
 ## 5. Inputs, identity and recovery
 
 Bindings below are **PROTOTYPE—UNTESTED**, not a claim of physical-controller validation. K1/K2 are key groups, not fixed player numbers. South/East/West identify controller button positions (A/B/X on Xbox). Shared Escape is a system pause key.
@@ -1266,7 +1268,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Spectators identify phase, objective, leader, taya, winner and no-score reason; overlapping command rings stay distinct at minimum zoom and with sound/shake off.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-14, engineering only):** the guided first match, build-gated tutorial stage, retry hint, Pause skip, Library replay, session-only memory and once-per-session Lagsanay prompt are implemented with PLACEHOLDER copy; see [tutorial evidence](evidence/tutorial/README.md). Synthetic input only: no novice session, facilitator interventions, cultural review or Kangaroo prompts yet, so the requirement is not met.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-14, engineering only):** the guided first match, build-gated tutorial stage, retry hint, Pause skip, Library replay, session-only memory and once-per-session Lagsanay prompt are implemented with PLACEHOLDER copy; see [tutorial evidence](evidence/tutorial/README.md). **Scoreboard slice (2026-10-15):** reusable round and match score charts display exact eighth-point totals, status, labelled/glyphed score segments and the configured target, with bounded presentation history and reduced-motion modes. The 52-check chart suite, 185 binding checks, 198 UI-flow checks, 62 mode checks, scoring/lifecycle/mode suites, rendered result captures and Windows export smoke pass; details are in [scoreboard evidence](evidence/scoreboard/README.md). Synthetic input and screenshots are engineering evidence only: event overlays, next-event guidance, tutorial/Kangaroo prompts, spectator comprehension, accessibility/player review, cultural review and physical devices remain open, so REQ-UI-003 is not met.
 
 
 ### REQ-LIB-001 — Provide enabled-content Library and animated entries

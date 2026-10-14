@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_match_result_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/phase_banner.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/scoreboard_chart.tscn" id="7_chart"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="8_legend"]
 [ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="6"]
 
 [node name="MatchResultScreen" type="Control"]
@@ -82,26 +83,23 @@ visible = false
 size_flags_horizontal = 4
 unique_name_in_owner = true
 
-[node name="Finals" type="VBoxContainer" parent="Safe/Content"]
+[node name="ResultsRow" type="HBoxContainer" parent="Safe/Content"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 20
+size_flags_vertical = 3
+
+[node name="FinalChart" parent="Safe/Content/ResultsRow" instance=ExtResource("7_chart")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_minimum_size = Vector2(720, 270)
+unique_name_in_owner = true
+
+[node name="ScoreAwardLegend" parent="Safe/Content/ResultsRow" instance=ExtResource("8_legend")]
+layout_mode = 2
 size_flags_horizontal = 4
-custom_minimum_size = Vector2(520, 0)
-
-[node name="Final1" parent="Safe/Content/Finals" instance=ExtResource("5")]
-layout_mode = 2
+size_flags_vertical = 1
 unique_name_in_owner = true
-
-[node name="Final2" parent="Safe/Content/Finals" instance=ExtResource("5")]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="Final3" parent="Safe/Content/Finals" instance=ExtResource("5")]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="Final4" parent="Safe/Content/Finals" instance=ExtResource("5")]
-layout_mode = 2
 unique_name_in_owner = true
 
 [node name="MenuList" type="HBoxContainer" parent="Safe/Content"]

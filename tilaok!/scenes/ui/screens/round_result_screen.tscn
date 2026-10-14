@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_round_result_screen.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/award_line.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_ring.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/scoreboard_chart.tscn" id="8_chart"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="9_legend"]
 
 [node name="RoundResultScreen" type="Control"]
 layout_mode = 3
@@ -79,30 +80,11 @@ layout_mode = 2
 theme_override_constants/separation = 24
 size_flags_vertical = 3
 
-[node name="Outcomes" type="VBoxContainer" parent="Safe/Content/Columns"]
+[node name="ScoreChart" parent="Safe/Content/Columns" instance=ExtResource("8_chart")]
 layout_mode = 2
-theme_override_constants/separation = 6
 size_flags_horizontal = 3
-
-[node name="OutcomesHeading" type="Label" parent="Safe/Content/Columns/Outcomes"]
-layout_mode = 2
-text = "Finish"
-theme_type_variation = &"CaptionLabel"
-
-[node name="Outcome1" parent="Safe/Content/Columns/Outcomes" instance=ExtResource("3")]
-layout_mode = 2
+size_flags_vertical = 3
 unique_name_in_owner = true
-
-[node name="Outcome2" parent="Safe/Content/Columns/Outcomes" instance=ExtResource("3")]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="Outcome3" parent="Safe/Content/Columns/Outcomes" instance=ExtResource("3")]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="Outcome4" parent="Safe/Content/Columns/Outcomes" instance=ExtResource("3")]
-layout_mode = 2
 unique_name_in_owner = true
 
 [node name="Awards" type="VBoxContainer" parent="Safe/Content/Columns"]
@@ -155,6 +137,15 @@ unique_name_in_owner = true
 layout_mode = 2
 unique_name_in_owner = true
 
+[node name="LegendHeading" type="Label" parent="Safe/Content/Columns/Awards"]
+layout_mode = 2
+text = "Score types · label and glyph"
+theme_type_variation = &"CaptionLabel"
+
+[node name="ScoreAwardLegend" parent="Safe/Content/Columns/Awards" instance=ExtResource("9_legend")]
+layout_mode = 2
+unique_name_in_owner = true
+
 [node name="TutorialStrip" type="Control" parent="Safe/Content/Columns"]
 visible = false
 layout_mode = 2
@@ -192,24 +183,4 @@ layout_mode = 2
 text = "PLACEHOLDER round result"
 theme_type_variation = &"PlaceholderTag"
 horizontal_alignment = 1
-
-[node name="StateLabel" parent="Safe/Content/Columns/Outcomes/Outcome1/Row" index="2"]
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(240, 0)
-autowrap_mode = 3
-
-[node name="StateLabel" parent="Safe/Content/Columns/Outcomes/Outcome2/Row" index="2"]
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(240, 0)
-autowrap_mode = 3
-
-[node name="StateLabel" parent="Safe/Content/Columns/Outcomes/Outcome3/Row" index="2"]
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(240, 0)
-autowrap_mode = 3
-
-[node name="StateLabel" parent="Safe/Content/Columns/Outcomes/Outcome4/Row" index="2"]
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(240, 0)
-autowrap_mode = 3
 

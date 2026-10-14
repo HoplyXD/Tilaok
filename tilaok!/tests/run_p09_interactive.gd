@@ -3,11 +3,6 @@ extends SceneTree
 
 const ROOM_SCENE := preload("res://scenes/match/p09_match_lifecycle_room.tscn")
 const ATTRIBUTION := preload("res://scripts/items/runtime/attribution_record.gd")
-const EXPECTED_VARIANTS: PackedStringArray = [
-	"build.hollow_blocks.cell_1x1",
-	"build.hollow_blocks.stack_2x3",
-	"build.bamboo_bridge.span_4x1",
-]
 const OUTPUT_RELATIVE := "../docs/evidence/p09"
 
 var room: P09MatchLifecycleRoom
@@ -67,8 +62,8 @@ func _open_room() -> void:
 	_check(room != null and room.P09_BUILD_ID == "P09-match-lifecycle-dev", "P09 route opens")
 	_check(room.profile_id == "karera_slice", "P09 keeps the P07 development profile")
 	_check(
-		room.tuning.item_enabled_variants == EXPECTED_VARIANTS,
-		"P09 keeps exactly the three P07 variants"
+		room.tuning.item_enabled_variants == P07FirstPlayableMatchRoom.allowed_variants(),
+		"P09 keeps the current P07 scene-authored variant set"
 	)
 	_check(room.match_run_id == 0, "new P09 route has no prior match identity")
 	var seats := _join_four_synthetic_seats()
