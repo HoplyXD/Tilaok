@@ -33,13 +33,14 @@ func move(seat_index: int, delta_cells: Vector2i) -> bool:
 	if not cursors.has(seat_index):
 		return false
 	var cursor: Dictionary = cursors[seat_index]
+	if bool(cursor.confirmed):
+		return false
 	var next: Vector2i = cursor.cell + delta_cells
 	next.x = clampi(next.x, 0, tuning.arena_width_tiles - 1)
 	next.y = clampi(next.y, 0, tuning.arena_height_tiles - 1)
 	if next == cursor.cell:
 		return false
 	cursor.cell = next
-	cursor.confirmed = false
 	cursors[seat_index] = cursor
 	return true
 
@@ -48,12 +49,13 @@ func rotate(seat_index: int) -> bool:
 	if not cursors.has(seat_index):
 		return false
 	var cursor: Dictionary = cursors[seat_index]
+	if bool(cursor.confirmed):
+		return false
 	var rotations := _usable_rotations(str(cursor.variant_key))
 	if rotations.size() <= 1:
 		return false
 	var index := rotations.find(int(cursor.quarter_turns))
 	cursor.quarter_turns = rotations[(index + 1) % rotations.size()]
-	cursor.confirmed = false
 	cursors[seat_index] = cursor
 	return true
 
@@ -62,8 +64,15 @@ func set_confirmed(seat_index: int, value: bool) -> void:
 	if not cursors.has(seat_index):
 		return
 	var cursor: Dictionary = cursors[seat_index]
+	# Confirmation is a one-way lock for the rest of this Place phase.
+	if bool(cursor.confirmed) and not value:
+		return
 	cursor.confirmed = value
 	cursors[seat_index] = cursor
+
+
+func is_confirmed(seat_index: int) -> bool:
+	return cursors.has(seat_index) and bool(cursors[seat_index].confirmed)
 
 
 func all_confirmed() -> bool:

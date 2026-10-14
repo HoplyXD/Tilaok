@@ -638,7 +638,7 @@ func _refresh_match_ghost(seat_index: int) -> void:
 		normals,
 		bool(verdict.allowed),
 		str(verdict.reason),
-		"P%d %s%s" % [int(seat.identity), mark, " • CONFIRMED" if cursor.confirmed else ""],
+		"P%d %s%s" % [int(seat.identity), mark, " • LOCKED" if cursor.confirmed else ""],
 		_short_variant_label(str(cursor.variant_key))
 	)
 	(_ghosts[seat_index] as ItemGhost).compact_label = true
@@ -669,6 +669,8 @@ func _on_match_navigation_step(seat_index: int, direction: String) -> void:
 				step = Vector2i(0, 1)
 		if placement_controller.move(seat_index, step):
 			_refresh_match_ghost(seat_index)
+		elif step != Vector2i.ZERO and placement_controller.is_confirmed(seat_index):
+			_show_placement_locked(seat_index)
 
 
 func _cycle_egg_selection(seat_index: int, delta: int) -> void:
@@ -699,7 +701,9 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 			if action_name == "confirm":
 				_confirm_placement(seat_index)
 			elif action_name == "rotate":
-				if not placement_controller.rotate(seat_index):
+				if placement_controller.is_confirmed(seat_index):
+					_show_placement_locked(seat_index)
+				elif not placement_controller.rotate(seat_index):
 					last_message = (
 						"P%d rotation is unavailable for this variant." % (seat_index + 1)
 					)
@@ -743,6 +747,16 @@ func _confirm_placement(seat_index: int) -> void:
 	_refresh_match_ui()
 	if placement_controller.all_confirmed():
 		_resolve_place_edits(placement_controller.confirmed_edits())
+
+
+func _show_placement_locked(seat_index: int) -> void:
+	var locked_message := (
+		"P%d placement is locked. There is no undo this round." % (seat_index + 1)
+	)
+	if last_message == locked_message:
+		return
+	last_message = locked_message
+	_refresh_match_ui()
 
 
 func _finish_place_timeout() -> void:

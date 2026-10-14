@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-14 — 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (requested by Jorge, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
+_Last updated: 2026-10-14 — Place confirmation locks each edit with no undo during that round; also, 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (requested by Jorge, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
 
 ## 1. Pitch
 A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
@@ -17,6 +17,7 @@ All characters are chickens. Instead of the traditional sabong where roosters fi
 2. **Place:** players place their item anywhere on the shared stage.
    - Placing is **simultaneous**, with grid snap; you can't place on a player or protected goal geometry.
    - Placement controls: **move**, **rotate** (one button) and **confirm** (one button). A ghost shows green/red for a valid/invalid spot.
+   - Confirming a valid placement locks that edit for the rest of Place. It cannot be moved, rotated, or undone; a player who has locked an edit waits while the others finish.
    - ~15s to place. If time runs out, the item auto-places at the pointer if the spot is valid, otherwise it is discarded.
    - Nothing is active during Place. The sole exception is the one-shot **Walis Cleanup** edit when confirmed; it is a construction action, never a Play-phase hazard. When Play begins, placed items reset to their defined starting position/state.
    - Pointers are visible to everyone, but nothing announces a placed Barya, so it can be tucked into the clutter.
