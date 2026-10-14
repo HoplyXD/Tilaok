@@ -54,7 +54,7 @@ curve = SubResource("Curve2D_0ttin")
 
 [node name="Hitbox" type="Area2D" parent="Bubble" unique_id=1514592473]
 script = ExtResource("4_qjtsm")
-role = 5
+effect = 5
 
 [node name="Shape" type="CollisionShape2D" parent="Bubble/Hitbox" unique_id=1567976882]
 position = Vector2(0, -32)

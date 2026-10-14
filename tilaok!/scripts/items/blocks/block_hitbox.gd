@@ -7,7 +7,7 @@ extends Area2D
 ## are independent of the block's solid collision and of its placement box, so a 2x2 block can
 ## have a small solid and a kill strip anywhere. BlockCatalog turns each shape into a region.
 ##
-## Roles:
+## Effects:
 ## - KILL / STUN / LAUNCH: touch regions (KILL eliminates, STUN freezes + knocks back, LAUNCH is
 ##   the spring face). Must stay inside the placement box.
 ## - SWEEP: the bounded rail a moving part travels (Follow Rail special).
@@ -15,24 +15,25 @@ extends Area2D
 ## - CAPTURE_PATH: the rising bubble path (projectiles with capture).
 ## - CLEANUP_AREA: the one-shot cleanup area (Cleanup special).
 ## - LANE: an explicit projectile lane (normally derived from the projectile's Path2D instead).
-## The editor draws each role in its own colour; the game never shows these nodes.
+## The editor draws each effect in its own colour; the game never shows these nodes.
 
-enum Role { KILL, STUN, LAUNCH, SWEEP, BEAM, CAPTURE_PATH, CLEANUP_AREA, LANE }
+enum Effect { KILL, STUN, LAUNCH, SWEEP, BEAM, CAPTURE_PATH, CLEANUP_AREA, LANE }
 
-const ROLE_COLORS := {
-	Role.KILL: Color(1.0, 0.15, 0.15, 0.45),
-	Role.STUN: Color(1.0, 0.85, 0.1, 0.45),
-	Role.LAUNCH: Color(0.2, 0.9, 0.4, 0.45),
-	Role.SWEEP: Color(1.0, 0.5, 0.1, 0.3),
-	Role.BEAM: Color(1.0, 0.9, 0.4, 0.35),
-	Role.CAPTURE_PATH: Color(0.5, 0.85, 1.0, 0.3),
-	Role.CLEANUP_AREA: Color(0.7, 0.6, 1.0, 0.3),
-	Role.LANE: Color(1.0, 0.7, 0.3, 0.3),
+const EFFECT_COLORS := {
+	Effect.KILL: Color(1.0, 0.15, 0.15, 0.45),
+	Effect.STUN: Color(1.0, 0.85, 0.1, 0.45),
+	Effect.LAUNCH: Color(0.2, 0.9, 0.4, 0.45),
+	Effect.SWEEP: Color(1.0, 0.5, 0.1, 0.3),
+	Effect.BEAM: Color(1.0, 0.9, 0.4, 0.35),
+	Effect.CAPTURE_PATH: Color(0.5, 0.85, 1.0, 0.3),
+	Effect.CLEANUP_AREA: Color(0.7, 0.6, 1.0, 0.3),
+	Effect.LANE: Color(1.0, 0.7, 0.3, 0.3),
 }
 
-@export var role := Role.KILL:
+## What touching or being inside this hitbox does (see the list above).
+@export var effect := Effect.KILL:
 	set(value):
-		role = value
+		effect = value
 		queue_redraw()
 
 
@@ -48,14 +49,14 @@ func _ready() -> void:
 
 ## Effect tag stored on the generated region ("kill", "stun", "launch" or "").
 func effect_name() -> StringName:
-	match role:
-		Role.KILL:
+	match effect:
+		Effect.KILL:
 			return &"kill"
-		Role.STUN:
+		Effect.STUN:
 			return &"stun"
-		Role.LAUNCH:
+		Effect.LAUNCH:
 			return &"launch"
-		Role.CAPTURE_PATH:
+		Effect.CAPTURE_PATH:
 			return &"capture"
 	return &""
 
@@ -96,7 +97,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _draw() -> void:
 	if not Engine.is_editor_hint():
 		return
-	var color: Color = ROLE_COLORS.get(role, Color(1, 1, 1, 0.3))
+	var color: Color = EFFECT_COLORS.get(effect, Color(1, 1, 1, 0.3))
 	for rect in shape_rects(self):
 		draw_rect(rect, color)
 		draw_rect(rect, Color(color, 1.0), false, 2.0)

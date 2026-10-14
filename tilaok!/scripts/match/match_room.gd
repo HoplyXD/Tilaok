@@ -215,6 +215,16 @@ func play_challenge_text() -> String:
 	return "Karera"
 
 
+## "TWIST: BOMB-TAYA" beside the challenge while a Twist runs (P12 schedule); "" hides the tag.
+func play_twist_text() -> String:
+	return ""
+
+
+## The Pugad's round announcement ({title, detail}); {} keeps the banner hidden (P12 schedule).
+func round_announcement() -> Dictionary:
+	return {}
+
+
 ## The one-line goal shown with the controls when Play starts.
 func play_goal_text() -> String:
 	return "Reach the flag!"
@@ -280,6 +290,11 @@ func start_match() -> bool:
 	definitions = _load_definitions()
 	items.configure(tuning, arena, support_tracker, definitions, world_layer)
 	items.director.elimination_sink = _on_item_elimination
+	# The race ledger only accepts a candidate from the tick it resolves, so the hazard director
+	# must report this tick's kills before this room drains them (still after the actors).
+	items.director.process_physics_priority = mini(
+		items.director.process_physics_priority, process_physics_priority - 1
+	)
 	cumulative_score_units.clear()
 	for seat in input_router.registry.joined_seats():
 		cumulative_score_units[int(seat.seat)] = 0

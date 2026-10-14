@@ -274,9 +274,9 @@ static func _collect_regions(root: Node2D, data: BlockData) -> Dictionary:
 	if projectile != null:
 		var effect := &"kill"
 		for hitbox in _hitboxes(projectile):
-			if hitbox.role == BlockHitbox.Role.STUN:
+			if hitbox.effect == BlockHitbox.Effect.STUN:
 				effect = &"stun"
-			elif hitbox.role == BlockHitbox.Role.CAPTURE_PATH:
+			elif hitbox.effect == BlockHitbox.Effect.CAPTURE_PATH:
 				effect = &"capture"
 		if effect != &"capture":
 			effect = _gated_effect(effect, data)
@@ -302,21 +302,21 @@ static func _hitbox_region(hitbox: BlockHitbox, rect: Rect2, data: BlockData) ->
 	var region := ItemRegionSpec.new()
 	region.rect_cells = rect
 	region.effect = _gated_effect(hitbox.effect_name(), data)
-	match hitbox.role:
-		BlockHitbox.Role.KILL, BlockHitbox.Role.STUN, BlockHitbox.Role.LAUNCH:
+	match hitbox.effect:
+		BlockHitbox.Effect.KILL, BlockHitbox.Effect.STUN, BlockHitbox.Effect.LAUNCH:
 			region.kind = ItemRegionSpec.Kind.TRIGGER
-		BlockHitbox.Role.SWEEP:
+		BlockHitbox.Effect.SWEEP:
 			region.kind = ItemRegionSpec.Kind.SWEEP
 			region.declared_bounded = true
-		BlockHitbox.Role.LANE:
+		BlockHitbox.Effect.LANE:
 			region.kind = ItemRegionSpec.Kind.LANE
 			region.declared_bounded = true
 			region.blockable = true
-		BlockHitbox.Role.BEAM, BlockHitbox.Role.CAPTURE_PATH:
+		BlockHitbox.Effect.BEAM, BlockHitbox.Effect.CAPTURE_PATH:
 			region.kind = ItemRegionSpec.Kind.EFFECT
 			region.declared_bounded = true
 			region.blockable = true
-		BlockHitbox.Role.CLEANUP_AREA:
+		BlockHitbox.Effect.CLEANUP_AREA:
 			region.kind = ItemRegionSpec.Kind.EFFECT
 			region.declared_bounded = true
 	return region

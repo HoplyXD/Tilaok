@@ -53,6 +53,13 @@ func bind_live_eggs(
 	return shown
 
 
+## Live: the round announcement (P12 schedule). An empty title hides the banner.
+func bind_announcement(title: String, detail: String) -> void:
+	_announce.visible = not title.is_empty()
+	if _announce.visible:
+		_announce.set_phase(title, detail)
+
+
 ## Live: ownership, per-seat selection, the lost-claim cue and the countdown.
 ## seats are the four registry seat dictionaries; assignments maps seat -> egg_id and
 ## selected_by_seat maps seat -> egg index.

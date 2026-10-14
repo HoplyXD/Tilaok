@@ -3,8 +3,6 @@ extends P05MatchRoom
 
 const P11_BUILD_ID := "P11-independent-kangaroo-dev"
 const P11_VARIANTS: PackedStringArray = ItemEnabledProfiles.KANGAROO_VARIANTS
-const PROMPT_SCENE := preload("res://scenes/ui/components/kangaroo_prompt.tscn")
-const RING_SCENE := preload("res://scenes/ui/components/countdown_ring.tscn")
 const PRESENTER_SCRIPT := preload("res://scripts/match/kangaroo_slipper_presenter.gd")
 
 var kangaroo_controller := KangarooRoundController.new()
@@ -223,7 +221,7 @@ func play_status_text() -> String:
 
 
 func debug_status_text() -> String:
-	return _kangaroo_marker_status()
+	return KangarooCommandStyle.marker_status(kangaroo_controller, input_router.registry)
 
 
 func _toggle_pause() -> void:
@@ -516,30 +514,11 @@ func _update_kangaroo_ui(active_time: float) -> void:
 		var command_id := int(command.command_id)
 		current_ids[command_id] = true
 		if not _command_panels.has(command_id):
-			_command_panels[command_id] = _create_command_panel(command)
+			_command_panels[command_id] = KangarooCommandStyle.create_panel(command, _command_stack)
 			if not _seen_command_ids.has(command_id):
 				_seen_command_ids[command_id] = true
 				_play_command_cue(int(command.command))
-		var panel: Dictionary = _command_panels[command_id]
-		var type := int(command.command)
-		var is_telegraph := str(command.status) == "TELEGRAPH"
-		var countdown_start := (
-			float(command.response_start_at) if is_telegraph else float(command.response_end_at)
-		)
-		var countdown_total := (
-			float(command.response_start_at) - float(command.telegraph_start_at)
-			if is_telegraph
-			else float(command.response_end_at) - float(command.response_start_at)
-		)
-		panel.pose.text = (
-			"DEBUG POSE • %s  %s"
-			% [_command_icon(type), KangarooRoundController.command_name(type)]
-		)
-		panel.steps.text = "DEBUG AUDIO %d Hz • KANG  →  GA  →  ROO" % _command_frequency(type)
-		panel.note.text = "DEBUG • " + _command_instruction(command)
-		if bool(command.is_storm):
-			panel.pose.text += " • STORM %d" % command_id
-		panel.ring.set_time(maxf(0.0, countdown_start - active_time), countdown_total)
+		KangarooCommandStyle.update_panel(_command_panels[command_id], command, active_time)
 	for command_id in _command_panels.keys().duplicate():
 		if current_ids.has(command_id):
 			continue
@@ -548,7 +527,9 @@ func _update_kangaroo_ui(active_time: float) -> void:
 			panel.root.queue_free()
 		_command_panels.erase(command_id)
 	if _marker_label != null:
-		_marker_label.text = _kangaroo_marker_status()
+		_marker_label.text = KangarooCommandStyle.marker_status(
+			kangaroo_controller, input_router.registry
+		)
 	if _presenter != null and arena != null:
 		var floor_line := arena.spawn_feet.y
 		_presenter.set_state(
@@ -561,71 +542,6 @@ func _update_kangaroo_ui(active_time: float) -> void:
 	_update_diagnostics()
 
 
-func _create_command_panel(command: Dictionary) -> Dictionary:
-	var root := PROMPT_SCENE.instantiate() as PanelContainer
-	root.name = "Command_%d" % int(command.command_id)
-	root.custom_minimum_size = Vector2(590.0, 112.0)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var type := int(command.command)
-	var tint := _command_color(type)
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#101f27")
-	style.bg_color.a = 0.9
-	style.border_color = tint
-	style.set_border_width_all(3)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 12
-	style.content_margin_right = 10
-	style.content_margin_top = 7
-	style.content_margin_bottom = 7
-	root.add_theme_stylebox_override("panel", style)
-	var template_row := root.get_node("Row") as HBoxContainer
-	root.remove_child(template_row)
-	template_row.queue_free()
-	var content := VBoxContainer.new()
-	content.name = "DebugCommandContent"
-	content.add_theme_constant_override("separation", 4)
-	var row := HBoxContainer.new()
-	row.name = "DebugCommandHeader"
-	row.add_theme_constant_override("separation", 10)
-	var details := HBoxContainer.new()
-	details.name = "DebugCommandDetails"
-	details.add_theme_constant_override("separation", 10)
-	root.add_child(content)
-	content.add_child(row)
-	content.add_child(details)
-	var icon := Label.new()
-	icon.name = "DebugPoseIcon"
-	icon.text = _command_icon(type)
-	icon.add_theme_font_size_override("font_size", 32)
-	icon.custom_minimum_size = Vector2(44.0, 0.0)
-	icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	row.add_child(icon)
-	var pose := Label.new()
-	pose.name = "DebugPoseText"
-	pose.add_theme_font_size_override("font_size", 18)
-	pose.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(pose)
-	var steps := Label.new()
-	steps.name = "DebugPoseSteps"
-	steps.add_theme_font_size_override("font_size", 12)
-	steps.custom_minimum_size = Vector2(190.0, 0.0)
-	details.add_child(steps)
-	var note := Label.new()
-	note.name = "DebugCommandNote"
-	note.add_theme_font_size_override("font_size", 11)
-	note.custom_minimum_size = Vector2(330.0, 0.0)
-	note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	details.add_child(note)
-	var ring := RING_SCENE.instantiate() as UiCountdownRing
-	ring.name = "CommandCountdown"
-	ring.custom_minimum_size = Vector2(195.0, 0.0)
-	row.add_child(ring)
-	_command_stack.add_child(root)
-	return {"root": root, "pose": pose, "steps": steps, "note": note, "ring": ring, "icon": icon}
-
-
 func _clear_command_panels() -> void:
 	for panel in _command_panels.values():
 		var root: Control = panel.root
@@ -636,72 +552,11 @@ func _clear_command_panels() -> void:
 		_marker_label.text = ""
 
 
-func _command_instruction(command: Dictionary) -> String:
-	match int(command.command):
-		KangarooRoundController.Command.FREEZE:
-			return "Freeze: no intentional run or jump input. Forced motion does not count."
-		KangarooRoundController.Command.RISING:
-			return "Rising: stand on built support above %.0f wu." % float(command.wave_y)
-		KangarooRoundController.Command.HUG:
-			return "Hug: pair with one live chicken at evaluation."
-	return ""
-
-
-func _command_icon(command: int) -> String:
-	match command:
-		KangarooRoundController.Command.FREEZE:
-			return "●"
-		KangarooRoundController.Command.RISING:
-			return "↑"
-		KangarooRoundController.Command.HUG:
-			return "↔"
-	return "?"
-
-
-func _command_color(command: int) -> Color:
-	match command:
-		KangarooRoundController.Command.FREEZE:
-			return Color("#f2c14e")
-		KangarooRoundController.Command.RISING:
-			return Color("#39b9c9")
-		KangarooRoundController.Command.HUG:
-			return Color("#e47ab2")
-	return Color.WHITE
-
-
-func _command_frequency(command: int) -> int:
-	match command:
-		KangarooRoundController.Command.FREEZE:
-			return 330
-		KangarooRoundController.Command.RISING:
-			return 440
-		KangarooRoundController.Command.HUG:
-			return 554
-	return 0
-
-
-func _kangaroo_marker_status() -> String:
-	var parts: Array[String] = []
-	for seat in kangaroo_controller.seat_indices:
-		var count := int(kangaroo_controller.marker_counts.get(seat, 0))
-		var steps := "KANG  GA  ROO"
-		if count == 1:
-			steps = "[KANG]  GA  ROO"
-		elif count == 2:
-			steps = "[KANG]  [GA]  ROO"
-		elif count >= 3:
-			steps = "[KANG]  [GA]  [ROO]"
-		parts.append(
-			"P%d %s" % [int(input_router.registry.get_seat(seat).get("identity", seat + 1)), steps]
-		)
-	return "     ".join(parts)
-
-
 func _play_command_cue(command: int) -> void:
 	if _debug_tones.is_empty():
-		_debug_tones[0] = _make_debug_tone(330.0)
-		_debug_tones[1] = _make_debug_tone(440.0)
-		_debug_tones[2] = _make_debug_tone(554.0)
+		_debug_tones[0] = KangarooCommandStyle.make_tone(330.0)
+		_debug_tones[1] = KangarooCommandStyle.make_tone(440.0)
+		_debug_tones[2] = KangarooCommandStyle.make_tone(554.0)
 	var player := AudioStreamPlayer.new()
 	player.name = "P11DebugCue"
 	player.stream = _debug_tones.get(command)
@@ -710,26 +565,6 @@ func _play_command_cue(command: int) -> void:
 	player.finished.connect(player.queue_free)
 	player.play()
 	_trigger_shake()
-
-
-func _make_debug_tone(frequency: float) -> AudioStreamWAV:
-	var stream := AudioStreamWAV.new()
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
-	stream.mix_rate = 22050
-	stream.stereo = false
-	var sample_count := 2205
-	var data := PackedByteArray()
-	data.resize(sample_count * 2)
-	for index in range(sample_count):
-		var envelope := 1.0 - float(index) / float(sample_count)
-		var sample := int(
-			sin(TAU * frequency * float(index) / float(stream.mix_rate)) * 5200.0 * envelope
-		)
-		var unsigned_sample := sample & 0xffff
-		data[index * 2] = unsigned_sample & 0xff
-		data[index * 2 + 1] = (unsigned_sample >> 8) & 0xff
-	stream.data = data
-	return stream
 
 
 func _trigger_shake() -> void:

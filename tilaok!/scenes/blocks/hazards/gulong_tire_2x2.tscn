@@ -43,7 +43,7 @@ shape = SubResource("RectangleShape2D_0fdtb")
 
 [node name="LaunchHitbox" type="Area2D" parent="." unique_id=1882756883]
 script = ExtResource("4_ykbkr")
-role = 2
+effect = 2
 
 [node name="Shape" type="CollisionShape2D" parent="LaunchHitbox" unique_id=306826641]
 position = Vector2(0, -32)

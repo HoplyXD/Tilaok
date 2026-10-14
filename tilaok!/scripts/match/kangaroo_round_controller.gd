@@ -212,7 +212,9 @@ func reset() -> void:
 	_step_provisional_count = 0
 	_step_storm_trigger_at = -1.0
 	_step_physics_tick = -1
-	_step_actors.clear()
+	# Drop the reference: `_step_actors` is the room's own actor map, so clearing it in place
+	# removed every chicken from the room before the next round (fixed 2026-10-15, P12).
+	_step_actors = {}
 	_step_support_tracker = null
 	_step_hug_contacts.clear()
 
@@ -760,14 +762,17 @@ func _active_storm_count() -> int:
 	return count
 
 
+## Once no command is pending and no launch is scheduled, the base cadence resumes after the
+## standard reset. Fix (2026-10-15, P12): an elimination ends a Storm while a second Storm
+## command can still be pending; that command used to drain in a later step without scheduling
+## anything, so the round never launched another command and never ended.
 func _maybe_resume_base_after_drain(event_time: float) -> void:
-	if storm_active or live_seats.size() <= 1 or not _step_had_elimination:
+	if storm_active or live_seats.size() <= 1 or _next_base_launch >= 0.0:
 		return
 	for command in command_history:
 		if not bool(command.evaluated):
 			return
-	if _next_base_launch < 0.0:
-		_next_base_launch = event_time + _tuning.kangaroo_reset_seconds
+	_next_base_launch = event_time + _tuning.kangaroo_reset_seconds
 
 
 func _response_for_count(completed_count: int) -> float:

@@ -24,6 +24,7 @@ func _run() -> void:
 	_test_resolver_uses_confirm_order()
 	await _test_room_first_come_first_served()
 	await _test_timeout_respects_claims()
+	await _test_match_spikes_kill()
 	print("PLACE_CLAIM_TESTS checks=%d failures=%d" % [checks, failures])
 	await process_frame
 	quit(1 if failures > 0 else 0)
@@ -163,6 +164,43 @@ func _test_timeout_respects_claims() -> void:
 	_check(
 		owners == [1],
 		"at the timer, an unconfirmed placement on a claimed spot is discarded (%s)" % [owners]
+	)
+	room.queue_free()
+	await process_frame
+
+
+## Regression (2026-10-15): in a real match the race ledger accepts only same-tick kills, so the
+## hazard director must report before the room resolves the race. Spikes must eliminate.
+func _test_match_spikes_kill() -> void:
+	var room := await _start_two_seat_place()
+	for seat_index in [0, 1]:
+		var cursor: Dictionary = room.placement_controller.cursors[seat_index]
+		cursor.variant_key = SPIKES
+		cursor.cell = Vector2i(16, 14) if seat_index == 0 else Vector2i(13, 14)
+		room.placement_controller.cursors[seat_index] = cursor
+	room._confirm_placement(0)
+	room._confirm_placement(1)
+	_check(
+		room.phase_controller.phase == MatchPhaseController.Phase.PLAY,
+		"both spike placements commit and Play starts"
+	)
+	var actor := room.actors[0] as ChickenController
+	for _frame in range(70):
+		await physics_frame
+	actor.global_position = Vector2(14.0 * 64.0 + 32.0, 900.0)
+	room.input_router._stick_x[0] = 1.0
+	var died := false
+	for _frame in range(120):
+		await physics_frame
+		if actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
+			died = true
+			break
+	room.input_router._stick_x[0] = 0.0
+	_check(died, "walking into placed spikes eliminates the chicken in a real match")
+	var ledger := room.race_round_controller.ledger
+	_check(
+		ledger.outcomes_by_seat.has(0) and str(ledger.outcomes_by_seat[0].outcome) != "finished",
+		"the race ledger records the spike elimination"
 	)
 	room.queue_free()
 	await process_frame

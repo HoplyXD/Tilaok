@@ -330,7 +330,7 @@ func _test_drop_in_block() -> void:
 	data.stun_seconds = 0.5
 	data.anchor = BlockData.Anchor.HEAVY
 	data.rotations = PackedInt32Array([0])
-	(source.get_node("KillHitbox") as BlockHitbox).role = BlockHitbox.Role.STUN
+	(source.get_node("KillHitbox") as BlockHitbox).effect = BlockHitbox.Effect.STUN
 	var packed := PackedScene.new()
 	packed.pack(source)
 	source.free()

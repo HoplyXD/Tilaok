@@ -37,7 +37,7 @@ visual_set = ExtResource("3_3xl4f")
 
 [node name="RailSweep" type="Area2D" parent="." unique_id=232448897]
 script = ExtResource("4_oud3u")
-role = 3
+effect = 3
 
 [node name="Shape" type="CollisionShape2D" parent="RailSweep" unique_id=313123591]
 shape = SubResource("RectangleShape2D_c2nr2")

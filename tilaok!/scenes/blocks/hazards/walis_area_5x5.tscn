@@ -37,7 +37,7 @@ visual_set = ExtResource("3_2mo5j")
 
 [node name="CleanupArea" type="Area2D" parent="." unique_id=575568225]
 script = ExtResource("4_ly85g")
-role = 6
+effect = 6
 
 [node name="Shape" type="CollisionShape2D" parent="CleanupArea" unique_id=608434939]
 shape = SubResource("RectangleShape2D_j1uxr")

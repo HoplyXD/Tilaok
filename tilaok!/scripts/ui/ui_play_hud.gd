@@ -47,9 +47,10 @@ func bind_live(
 	score_units: Dictionary,
 	states: Dictionary,
 	notice: String,
-	challenge_text: String = CHALLENGE_NAME
+	challenge_text: String = CHALLENGE_NAME,
+	twist_text: String = ""
 ) -> void:
-	bind_round(round_number, challenge_text, "", timer_text, window_text)
+	bind_round(round_number, challenge_text, twist_text, timer_text, window_text)
 	for index in score_rows.size():
 		var seat: Dictionary = seats[index] if index < seats.size() else {}
 		score_rows[index].bind_units(

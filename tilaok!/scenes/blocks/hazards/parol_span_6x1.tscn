@@ -52,7 +52,7 @@ shape = SubResource("RectangleShape2D_5yymg")
 
 [node name="BeamHitbox" type="Area2D" parent="." unique_id=998303090]
 script = ExtResource("4_yryf8")
-role = 4
+effect = 4
 
 [node name="Shape" type="CollisionShape2D" parent="BeamHitbox" unique_id=1825173668]
 shape = SubResource("RectangleShape2D_ko276")

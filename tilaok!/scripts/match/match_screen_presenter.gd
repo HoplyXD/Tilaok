@@ -410,6 +410,10 @@ func _apply_pugad(seats: Array[Dictionary]) -> void:
 	if _eggs_dirty:
 		pugad_overlay.bind_live_eggs(room.definitions, room.egg_pool, room.tuning)
 		_eggs_dirty = false
+		var announcement := room.round_announcement()
+		pugad_overlay.bind_announcement(
+			str(announcement.get("title", "")), str(announcement.get("detail", ""))
+		)
 	var hint := "%s  ·  %s" % [_hint("navigate"), _hint("claim")]
 	pugad_overlay.bind_live_state(
 		seats,
@@ -482,7 +486,8 @@ func _apply_hud(seats: Array[Dictionary], phase: MatchPhaseController.Phase) -> 
 		room.cumulative_score_units,
 		states,
 		notice,
-		room.play_challenge_text()
+		room.play_challenge_text(),
+		room.play_twist_text()
 	)
 
 

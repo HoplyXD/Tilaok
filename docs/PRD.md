@@ -617,7 +617,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** Seeded table covers all 12 rounds, guaranteed-round precedence, prior announcement consistency, zero/one compatible options and required missing-mode rejection.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** `EventSchedule` and `P12ScheduledMatchRoom` (the `--match-route=lifecycle` full match); P12-T01/T02 pass on automated synthetic evidence ([P12 evidence](evidence/p12/README.md)). The three Twist pairs are registered but disabled until REQ-STACK-001–003 pass, so no Twist runs yet. No player session or human review.
 
 
 ### REQ-EVENT-002 — Review unresolved simultaneous terminal ordering

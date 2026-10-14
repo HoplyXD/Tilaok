@@ -1,0 +1,29 @@
+P12 regression run — 2026-10-15, working tree on c024c9d plus the uncommitted Effect rename, match-kill fix and P12 slice 1.
+Godot 4.7.stable.official (console), Windows 11, headless --fixed-fps 60, synthetic input. One line per headless run_*_tests suite (interactive suites excluded; see README).
+
+run_blocks_tests exit=0 | BLOCKS_TESTS checks=110 failures=0
+run_foundation_tests exit=0 | Harness lifecycle checks complete: 0 failure(s).
+run_match_ui_binding_tests exit=0 | MATCH_UI_BINDING_TESTS checks=185 failures=0
+run_match_ui_mode_tests exit=0 | MATCH_UI_MODE_TESTS checks=62 failures=0
+run_match_ui_tests exit=0 | MATCH_UI_TESTS checks=198 failures=0
+run_p02_tests exit=0 | P02_TESTS checks=83 failures=0
+run_p02_wall_tests exit=0 | P02_WALL_TESTS checks=85 failures=0
+run_p03_tests exit=0 | P03_TESTS checks=103 failures=0
+run_p04_tests exit=1 | P04_TESTS checks=269 failures=2
+run_p05_tests exit=0 | P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests exit=0 | P06_TEST_SUMMARY checks=97 failures=0
+run_p07_reset_audit exit=0 | P07_RESET_AUTOMATION resets=10 checks=172 failures=0 participants=synthetic
+run_p07_tests exit=0 | P07_TESTS checks=591 failures=0
+run_p08_tests exit=0 | P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests exit=0 | P09_TEST_SUMMARY checks=77 failures=0
+run_p10_tests exit=0 | P10_TESTS checks=432 failures=0
+run_p11_tests exit=0 | P11_TEST_SUMMARY checks=78 failures=0
+run_p12_tests exit=0 | P12_TESTS checks=61 failures=0
+run_place_claim_tests exit=0 | PLACE_CLAIM_TESTS checks=15 failures=0
+run_tutorial_gate_tests exit=0 | TUTORIAL_GATE_TESTS checks=48 failures=0 attempts=3341
+run_tutorial_tests exit=0 | TUTORIAL_TESTS checks=140 failures=0
+run_ui_tests exit=0 | UI_TESTS checks=448 failures=0
+
+P04: the same two checks fail on HEAD/origin before this work:
+ERROR: FAIL mode flags: Kaing karera+lagsanay; Tulay karera, Lagsanay pending review
+ERROR: FAIL profiles that do not list seed families keep an empty item pool

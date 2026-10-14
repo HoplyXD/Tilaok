@@ -163,3 +163,22 @@ At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated the scene
 ### Selector pool and first-come-first-served Place — October 14, 2026
 
 At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) made the match egg pool catalog-driven (`P07FirstPlayableMatchRoom.allowed_variants()`, used by P07/P09 and the Library) so Spikes, Cannon and future block scenes reach the selector, and changed Place to first come, first served (`MatchPlacementController.confirm_order`/`claimed_by`, `P05MatchRoom._placement_verdict`, confirmation-ordered `AtomicEditResolver`), with the new 12-check `run_place_claim_tests.gd`. This changes the earlier design rule that rejected conflicting placements as a set; GDD and STAGE_AND_PLACEMENT record the change. AI-generated code; no human review claimed.
+
+### Hitbox "Effect" rename and match-kill fix — October 15, 2026
+
+At Jorge's request Claude renamed the BlockHitbox `role` property/enum to `effect`/`Effect` (scenes, catalog, tests). Jorge reported that spikes did not kill: in the P05/P07 match rooms the item hazard director ran after the room had already resolved the race step, and the race ledger accepts only same-tick candidates, so every item elimination (Spikes, Cannon and the P10 hazards) was silently dropped in those matches. The match room now runs the director just before itself (`P05MatchRoom.start_match`), and `run_place_claim_tests.gd` gained a real-match spike-kill regression. AI-generated; no human review claimed.
+
+### P12 event schedule and announced Main rounds — October 15, 2026
+
+At Jorge's request, after the P12 plan was approved, Claude (Claude Opus 5.5 via Claude Code) generated:
+- `EventSchedule`: seeded per-round locking, Main weights, Twist bands, the disabled compatibility registry and the required-mode refusal.
+- `P12ScheduledMatchRoom` and its scene: the full match on the `--match-route=lifecycle` route, running Lagsanay and Kangaroo Main rounds with the existing controllers and scoring.
+- `KangarooMainRound`, a host for Kangaroo inside the full match, and `KangarooCommandStyle`, which moves the P11 lab's DEBUG prompt, icon, tone and marker code into one shared place.
+- The P09 `_conclude_round` extraction, the Pugad announcement binding and the Play HUD Twist tag.
+- `run_p12_tests.gd` (61 checks) and `capture_p12_evidence.gd`.
+
+It also found and fixed two defects in the existing P11 `KangarooRoundController`, both now covered by regressions:
+- Storm drain: the base cadence never resumed after an elimination interrupted a Slipper Storm.
+- `reset()` cleared the room's actor map.
+
+AI-generated code; it is not described as manually team-written, and no human code review, player session or physical-device test is claimed. No art, audio or production asset was generated; all presentation stays DEBUG placeholder. Evidence: `docs/evidence/p12/README.md`. Prompts and outputs are in this conversation; no separate archive was created.

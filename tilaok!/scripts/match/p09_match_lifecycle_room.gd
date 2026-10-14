@@ -159,6 +159,26 @@ func _finish_race(reason: String) -> void:
 	for seat_index in seat_indices:
 		cumulative_score_units[seat_index] = int(score_result.totals_units.get(seat_index, 0))
 	items.end_round()
+	var model := MatchResultsViewModel.race(
+		items.round_number,
+		input_router.registry.joined_seats(),
+		outcome_rows,
+		score_result,
+		reason,
+		race_round_controller.hard_cap_seconds,
+		race_round_controller.post_first_finish_seconds
+	)
+	_conclude_round(
+		active_round, model, "Karera round %d complete. Match continues." % active_round
+	)
+
+
+## Ends a scored round through the match lifecycle: the round's Results then the next Pugad, the
+## final match screen, or sudden death. Scores are already committed and `items.end_round()` has
+## run; `continue_model` is the round's own result model (race, Lagsanay or Kangaroo).
+func _conclude_round(
+	active_round: int, continue_model: MatchResultsViewModel, continue_message: String
+) -> void:
 	var decision := lifecycle.finish_round(
 		active_round,
 		cumulative_score_units,
@@ -172,21 +192,13 @@ func _finish_race(reason: String) -> void:
 	for seat in input_router.registry.joined_seats():
 		input_router.registry.set_ready(int(seat.seat), false)
 	if int(decision.kind) == MatchLifecycleCoordinator.Decision.CONTINUE:
-		last_results_model = MatchResultsViewModel.race(
-			items.round_number,
-			input_router.registry.joined_seats(),
-			outcome_rows,
-			score_result,
-			reason,
-			race_round_controller.hard_cap_seconds,
-			race_round_controller.post_first_finish_seconds
-		)
+		last_results_model = continue_model
 		phase_controller.enter(
 			MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds
 		)
 		_set_input_phase()
 		current_context = BoundedStageCamera.Context.PLAY
-		last_message = "Karera round %d complete. Match continues." % active_round
+		last_message = continue_message
 		_refresh_match_ui()
 		return
 	if int(decision.kind) == MatchLifecycleCoordinator.Decision.WINNER:

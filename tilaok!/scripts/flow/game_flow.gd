@@ -15,9 +15,10 @@ enum State { TITLE, LIBRARY, SETTINGS, IN_MATCH }
 const BUILD_LABEL := "Tilaok! development build"
 ## The first-playable route: karera_slice limited to the verified Kaing / Tulay variants.
 const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
-## Opt-in route with the P09 match lifecycle (score target / round limit, sudden death, final
-## result screen, Replay / Return to Lobby): `-- --match-route=lifecycle`.
-const LIFECYCLE_SCENE := preload("res://scenes/match/p09_match_lifecycle_room.tscn")
+## Opt-in route with the full match: the P09 lifecycle (score target / round limit, sudden death,
+## final result screen, Replay / Return to Lobby) plus the P12 event schedule (Karera, Lagsanay
+## and Kangaroo Main rounds announced a round ahead): `-- --match-route=lifecycle`.
+const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const ROUTE_LIFECYCLE := "lifecycle"
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
