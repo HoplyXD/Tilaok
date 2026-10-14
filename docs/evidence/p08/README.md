@@ -41,6 +41,8 @@ Commands were `Godot_v4.7.2-stable_win64_console.exe --headless --path tilaok! -
 
 Windows Debug export using the installed matching 4.7.2 templates exited `0`. The exported console build ran headless with `--quit-after 120 -- --open-room=p08_lagsanay`, exited `0`, and printed `P08_LAGSANAY_READY build=P08-independent-lagsanay-dev profile=lagsanay_lab seed=12345`. Logs: [export](windows_export.log), [exported startup](windows_export_runtime.log). The exported binary is a generated build artifact, not included in the source commit.
 
+The Desktop testing copy fast-forwarded from `a6bb928` to the P08 revision on its existing `codex/docs-event-catalog` branch. The pre-existing local `tilaok!/project.godot` theme setting remained dirty and unchanged; that file was outside the delivered diff. Godot 4.7.2 editor import and direct Desktop `--open-room=p08_lagsanay` startup both exited `0`, and the expected `P08_LAGSANAY_READY` marker appeared. The exact tested branch/HEAD, commands, output and preserved local difference are in [desktop_sync_smoke.txt](desktop_sync_smoke.txt), [import log](desktop_import_parse.log) and [runtime log](desktop_sync_smoke.log).
+
 ## Limits and open gates
 
 - P08 engineering checks use synthetic seats/fixtures; no independent human review, physical-device session, novice comprehension, balance, cultural-name, or minimum-zoom readability review is claimed.

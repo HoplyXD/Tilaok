@@ -1,0 +1,9 @@
+Desktop source-copy smoke — 2026-10-14
+Path: C:\Users\roman\Desktop\Vscode Projects\Tilaok
+Branch: codex/docs-event-catalog
+Tested HEAD / delivered P08 revision: 29f8d7fbeff763473ef03f9dff904c8bb09b4dab
+Command 1: Godot 4.7.2 --headless --editor --path "C:\Users\roman\Desktop\Vscode Projects\Tilaok\tilaok!" --quit; exit=0
+Command 2: Godot 4.7.2 --headless --path "C:\Users\roman\Desktop\Vscode Projects\Tilaok\tilaok!" --quit-after 120 -- --open-room=p08_lagsanay; exit=0
+Expected/actual: P08_LAGSANAY_READY build=P08-independent-lagsanay-dev profile=lagsanay_lab seed=12345; marker observed.
+Remaining local difference: project.godot theme setting (7 lines changed); preserved through fast-forward.
+Console output: desktop_sync_smoke.log. Import output: desktop_import_parse.log.
