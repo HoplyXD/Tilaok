@@ -1,0 +1,6 @@
+gdformat --check
+11 files would be left unchanged
+gdlint
+Success: no problems found
+gdformat exit code: 0
+gdlint exit code: 0
