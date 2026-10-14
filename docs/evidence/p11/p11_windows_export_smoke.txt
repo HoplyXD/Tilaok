@@ -1,5 +1,5 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
 P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
-P05_MATCH_READY build=P06-karera-scoring-dev seed=12345
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
 P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12345

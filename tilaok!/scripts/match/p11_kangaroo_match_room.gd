@@ -9,8 +9,12 @@ const PRESENTER_SCRIPT := preload("res://scripts/match/kangaroo_slipper_presente
 
 var kangaroo_controller := KangarooRoundController.new()
 var _presenter: KangarooSlipperPresenter
+var _kangaroo_overlay: CanvasLayer
 var _command_stack: VBoxContainer
+var _toolbar: HBoxContainer
 var _marker_label: Label
+var _defect_panel: PanelContainer
+var _defect_notice: Label
 var _shake_button: Button
 var _restart_attempt_button: Button
 var _command_panels: Dictionary = {}
@@ -46,21 +50,13 @@ func _ready() -> void:
 			(child as Label).visible = false
 		elif child is Line2D and (child as Line2D).name == "FlagTriggerOutline":
 			(child as Line2D).visible = false
-	var row := _top_bar.get_child(0) as HBoxContainer
-	if row != null and row.get_child(0) is Label:
-		(row.get_child(0) as Label).text = "TILAOK! • KANGAROO LAB"
-	if row != null:
-		_shake_button = _add_match_button(row, "Shake: Off", _cycle_shake, "kangaroo_shake")
-	_restart_attempt_button = _add_match_button(
-		row, "Restart defect attempt", _restart_kangaroo_attempt, "restart_kangaroo_attempt"
-	)
-	_restart_attempt_button.visible = false
+	_build_kangaroo_ui()
+	_shake_button = _add_kangaroo_button("Shake: Off", _cycle_shake, "kangaroo_shake")
 	_presenter = PRESENTER_SCRIPT.new() as KangarooSlipperPresenter
 	_presenter.name = "KangarooDebugPresenter"
 	_presenter.z_index = 30
 	_presenter.visible = false
 	world_layer.add_child(_presenter)
-	_build_kangaroo_ui()
 	_set_input_phase()
 	_update_diagnostics()
 	print("P11_KANGAROO_READY build=%s profile=%s seed=%d" % [P11_BUILD_ID, profile_id, match_seed])
@@ -185,40 +181,49 @@ func _process(delta: float) -> void:
 
 func _update_diagnostics() -> void:
 	super._update_diagnostics()
-	if _phase_label == null:
-		return
-	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
-		var current := kangaroo_controller.active_commands()
-		if current.is_empty():
-			_timer_label.text = "KANGAROO"
-		else:
-			var command: Dictionary = current[0]
-			var deadline := float(command.response_start_at)
-			var total := tuning.kangaroo_telegraph_seconds
-			if str(command.status) == "RESPONSE":
-				deadline = float(command.response_end_at)
-				total = float(command.response_end_at) - float(command.response_start_at)
-			_timer_label.text = (
-				"DEBUG %s %.1f s"
-				% [str(command.command_name), maxf(0.0, deadline - _active_simulation_time())]
-			)
-		if _feedback_label != null:
-			_feedback_label.text = _kangaroo_marker_status()
-	if _hints_label != null:
-		_hints_label.text = _phase_hint()
 	if _restart_attempt_button != null:
 		_restart_attempt_button.visible = _defect_paused
 
 
-func _phase_hint() -> String:
-	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
-		return (
-			"Freeze: no run/jump input · Rising: stand on built support above the line "
-			+ "· Hug: pair at the cue"
-		)
-	if phase_controller.phase == MatchPhaseController.Phase.RESULTS:
-		return "F / Enter / Pad A ready · construction persists into the next round"
-	return super._phase_hint()
+func build_id() -> String:
+	return P11_BUILD_ID
+
+
+func play_challenge_text() -> String:
+	return "Kangaroo"
+
+
+func play_goal_text() -> String:
+	return "Match the slipper pose."
+
+
+func play_clock_seconds() -> float:
+	var commands := kangaroo_controller.active_commands()
+	if phase_controller.phase != MatchPhaseController.Phase.PLAY or commands.is_empty():
+		return 0.0
+	var command: Dictionary = commands[0]
+	var deadline := float(command.response_start_at)
+	if str(command.status) == "RESPONSE":
+		deadline = float(command.response_end_at)
+	return maxf(0.0, deadline - _active_simulation_time())
+
+
+func play_tag_text() -> String:
+	var commands := kangaroo_controller.active_commands()
+	if commands.is_empty():
+		return ""
+	var command: Dictionary = commands[0]
+	return "DEBUG %s" % KangarooRoundController.command_name(int(command.command))
+
+
+func play_status_text() -> String:
+	if _defect_paused:
+		return _defect_reason
+	return ""
+
+
+func debug_status_text() -> String:
+	return _kangaroo_marker_status()
 
 
 func _toggle_pause() -> void:
@@ -233,6 +238,8 @@ func _toggle_pause() -> void:
 
 func _on_kangaroo_pause_state_changed(paused_state: bool, _reason: String) -> void:
 	if paused_state:
+		if _kangaroo_overlay != null:
+			_kangaroo_overlay.visible = false
 		get_tree().paused = true
 		if camera_rig != null:
 			camera_rig.offset = Vector2.ZERO
@@ -244,6 +251,7 @@ func _on_kangaroo_pause_state_changed(paused_state: bool, _reason: String) -> vo
 			)
 	_last_simulation_time = _active_simulation_time()
 	_last_simulation_wall_usec = Time.get_ticks_usec()
+	_update_defect_presentation()
 
 
 func _on_intentional_input_edge(
@@ -302,6 +310,7 @@ func _on_actor_escaped(seat_index: int) -> void:
 	get_tree().paused = true
 	last_message = _defect_reason
 	_update_diagnostics()
+	_update_defect_presentation()
 
 
 func _seat_identity_text(seat_index: int) -> String:
@@ -330,6 +339,7 @@ func _restart_kangaroo_attempt() -> void:
 		+ "construction is unchanged."
 	)
 	_refresh_match_ui()
+	_update_defect_presentation()
 
 
 func _hug_contacts_snapshot() -> Array[Dictionary]:
@@ -412,28 +422,35 @@ func _finish_kangaroo() -> void:
 		kangaroo_controller.outcomes(),
 		score_result
 	)
-	_results_panel.show_results(last_results_model)
 	phase_controller.enter(MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds)
 	_set_input_phase()
 	current_context = BoundedStageCamera.Context.PLAY
 	last_message = "Kangaroo ended. Construction persists; placement awards are committed."
 	_clear_command_panels()
-	if _presenter != null:
-		_presenter.visible = false
 	_refresh_match_ui()
 
 
 func _build_kangaroo_ui() -> void:
-	if _match_canvas == null:
-		return
+	_kangaroo_overlay = CanvasLayer.new()
+	_kangaroo_overlay.name = "P11KangarooDebugOverlay"
+	_kangaroo_overlay.layer = 21
+	_kangaroo_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_kangaroo_overlay)
+	_toolbar = HBoxContainer.new()
+	_toolbar.name = "P11KangarooToolbar"
+	_toolbar.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	_toolbar.position = Vector2(18.0, 70.0)
+	_toolbar.size = Vector2(440.0, 42.0)
+	_toolbar.add_theme_constant_override("separation", 8)
+	_kangaroo_overlay.add_child(_toolbar)
 	_command_stack = VBoxContainer.new()
 	_command_stack.name = "P11KangarooCommands"
 	_command_stack.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_command_stack.position = Vector2(-625.0, 70.0)
+	_command_stack.position = Vector2(-625.0, 230.0)
 	_command_stack.size = Vector2(610.0, 250.0)
 	_command_stack.add_theme_constant_override("separation", 8)
 	_command_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_match_canvas.add_child(_command_stack)
+	_kangaroo_overlay.add_child(_command_stack)
 	_marker_label = Label.new()
 	_marker_label.name = "P11KangarooMarkers"
 	_marker_label.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
@@ -444,7 +461,50 @@ func _build_kangaroo_ui() -> void:
 	_marker_label.add_theme_color_override("font_outline_color", Color("#15242b"))
 	_marker_label.add_theme_constant_override("outline_size", 4)
 	_marker_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_match_canvas.add_child(_marker_label)
+	_kangaroo_overlay.add_child(_marker_label)
+	_defect_panel = PanelContainer.new()
+	_defect_panel.name = "P11ContainmentDefectPanel"
+	_defect_panel.set_anchors_preset(Control.PRESET_CENTER)
+	_defect_panel.position = Vector2(-360.0, -105.0)
+	_defect_panel.size = Vector2(720.0, 210.0)
+	_defect_panel.visible = false
+	_defect_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var defect_style := StyleBoxFlat.new()
+	defect_style.bg_color = Color("#14232a")
+	defect_style.border_color = Color("#ffc857")
+	defect_style.set_border_width_all(4)
+	defect_style.set_corner_radius_all(10)
+	defect_style.content_margin_left = 22
+	defect_style.content_margin_right = 22
+	defect_style.content_margin_top = 16
+	defect_style.content_margin_bottom = 16
+	_defect_panel.add_theme_stylebox_override("panel", defect_style)
+	_kangaroo_overlay.add_child(_defect_panel)
+	var defect_content := VBoxContainer.new()
+	defect_content.add_theme_constant_override("separation", 12)
+	_defect_panel.add_child(defect_content)
+	_defect_notice = Label.new()
+	_defect_notice.name = "P11ContainmentDefectNotice"
+	_defect_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	defect_content.add_child(_defect_notice)
+	_restart_attempt_button = Button.new()
+	_restart_attempt_button.name = "restart_kangaroo_attempt"
+	_restart_attempt_button.text = "Restart defect attempt"
+	_restart_attempt_button.custom_minimum_size = Vector2(0.0, 48.0)
+	_restart_attempt_button.focus_mode = Control.FOCUS_NONE
+	_restart_attempt_button.pressed.connect(_restart_kangaroo_attempt)
+	defect_content.add_child(_restart_attempt_button)
+
+
+func _add_kangaroo_button(label: String, callback: Callable, node_name: String) -> Button:
+	var button := Button.new()
+	button.name = node_name
+	button.text = label
+	button.custom_minimum_size = Vector2(190.0, 38.0)
+	button.focus_mode = Control.FOCUS_NONE
+	button.pressed.connect(callback)
+	_toolbar.add_child(button)
+	return button
 
 
 func _update_kangaroo_ui(active_time: float) -> void:
@@ -717,7 +777,26 @@ func _update_shake_button() -> void:
 
 
 func _update_defect_presentation() -> void:
-	if _feedback_label != null and _defect_paused:
-		_feedback_label.text = _defect_reason
-	if _restart_attempt_button != null:
-		_restart_attempt_button.visible = _defect_paused
+	if _kangaroo_overlay == null:
+		return
+	if _defect_paused:
+		_kangaroo_overlay.layer = 23
+		_kangaroo_overlay.visible = true
+		_command_stack.visible = false
+		_toolbar.visible = false
+		_marker_label.visible = false
+		_defect_notice.text = (
+			"DEBUG DEFECT • %s\nConstruction and the pre-Play score snapshot are preserved."
+			% _defect_reason
+		)
+		_defect_panel.visible = true
+		return
+	_kangaroo_overlay.layer = 21
+	_kangaroo_overlay.visible = (
+		phase_controller.phase
+		in [MatchPhaseController.Phase.LOBBY, MatchPhaseController.Phase.PLAY]
+	)
+	_toolbar.visible = phase_controller.phase == MatchPhaseController.Phase.LOBBY
+	_command_stack.visible = phase_controller.phase == MatchPhaseController.Phase.PLAY
+	_marker_label.visible = phase_controller.phase == MatchPhaseController.Phase.PLAY
+	_defect_panel.visible = false

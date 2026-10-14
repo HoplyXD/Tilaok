@@ -368,7 +368,7 @@ func outcomes() -> Array[Dictionary]:
 func score_result() -> Dictionary:
 	if not ended:
 		return {"valid": false, "reason": "Kangaroo round has not ended."}
-	return LagsanayScoreCalculator.calculate(
+	return KangarooScoreCalculator.calculate(
 		seat_indices, elimination_records, live_seats, terminal_outcomes, starting_totals
 	)
 
@@ -795,7 +795,7 @@ func _end_round() -> void:
 	_input_events.clear()
 	_hazards.clear()
 	var survivors := live_seats.duplicate()
-	var provisional := LagsanayScoreCalculator.calculate(
+	var provisional := KangarooScoreCalculator.calculate(
 		seat_indices, elimination_records, survivors, terminal_outcomes, starting_totals
 	)
 	last_cluck = bool(provisional.get("last_cluck", false))

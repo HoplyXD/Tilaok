@@ -62,6 +62,7 @@ PASS missing comparable hazard time also resolves the terminal tie as command fa
 PASS Kangaroo controller begins simultaneous-last-cluck with 3 seats
 PASS simultaneous third failures resolve in one batch with one outcome per player
 PASS Last Cluck exact-time placement tie uses stable lowest player slot
+PASS Kangaroo placement scoring reuses placement resolution with event-owned award provenance
 PASS placement awards commit once after terminal resolution
 PASS round teardown clears commands, outcomes, markers, actors and all live-seat state
 PASS Kangaroo controller begins storm-standard with 3 seats
@@ -77,4 +78,4 @@ PASS two-survivor Storm never selects Hug
 PASS Kangaroo controller begins storm-elimination-reset with 3 seats
 PASS any elimination resets Storm pressure and no-elimination cadence
 PASS the first post-elimination base command uses the unaccelerated response duration
-P11_TEST_SUMMARY checks=77 failures=0
+P11_TEST_SUMMARY checks=78 failures=0

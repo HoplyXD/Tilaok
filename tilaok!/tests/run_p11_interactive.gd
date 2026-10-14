@@ -39,6 +39,7 @@ func _run() -> void:
 	for count in [2, 3, 4]:
 		await _test_standalone_count(count)
 	await _test_pause_reclaim_and_cleanup()
+	await _test_containment_defect_recovery()
 	if checks == 0:
 		_check(false, "P11 integration runner executed no checks")
 	report.append("P11_INTERACTIVE_SUMMARY checks=%d failures=%d" % [checks, failures])
@@ -316,6 +317,38 @@ func _test_pause_reclaim_and_cleanup() -> void:
 	await _dispose_room()
 	_check(not is_instance_valid(old_room), "pause/reclaim room tears down its command scheduler")
 	_check(not paused, "room teardown leaves the project unpaused")
+
+
+func _test_containment_defect_recovery() -> void:
+	await _new_room(2)
+	_check(room.start_match(), "containment-defect recovery room starts")
+	room._enter_place()
+	room._enter_play()
+	var scores_before: Dictionary = room.cumulative_score_units.duplicate(true)
+	room._on_actor_escaped(0)
+	_check(
+		(
+			room._defect_paused
+			and paused
+			and room._defect_panel.visible
+			and room._restart_attempt_button.visible
+			and room._kangaroo_overlay.layer > room.presenter.layer
+		),
+		"containment defect exposes restart controls above the shared pause screen"
+	)
+	room._restart_attempt_button.pressed.emit()
+	_check(
+		(
+			not room._defect_paused
+			and not paused
+			and room.kangaroo_controller.active
+			and room.cumulative_score_units == scores_before
+		),
+		"defect restart restores Play from its score snapshot without creating an award"
+	)
+	var old_room := room
+	await _dispose_room()
+	_check(not is_instance_valid(old_room), "recovered defect room tears down cleanly")
 
 
 func _sample_runtime_metrics(seat_count: int) -> void:

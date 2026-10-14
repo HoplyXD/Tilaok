@@ -1,18 +1,18 @@
 # P11 Independent Kangaroo evidence
 
-Recorded October 14, 2026 on Windows with Godot `4.7.2.stable.official.ed1daf0bf`, Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU, Compatibility renderer. The run profile is `kangaroo_contract_lab`, seed `12345` unless the focused suite identifies a test-specific seed. The tree was the uncommitted P11 implementation on local `main`; it was not a release build. Seats, timestamps and controller events in automated checks are synthetic. No human participant, physical controller, independent review, native-speaker review or balance review was used.
+Recorded October 14, 2026 on Windows with Godot `4.7.2.stable.official.ed1daf0bf`, Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU, Compatibility renderer. The run profile is `kangaroo_contract_lab`, seed `12345` unless the focused suite identifies a test-specific seed. Evidence was captured after upstream commit `01f8665` scene-based match UI integration and P11 commit `c1c607c`, with local P11 presenter/scoring compatibility fixes. This was a development build, not a release build. Seats, timestamps and controller events in automated checks are synthetic. No human participant, physical controller, independent review, native-speaker review or balance review was used.
 
 ## Verification results
 
 | Evidence | Result |
 |---|---|
-| [`p11_unit_run.txt`](p11_unit_run.txt) | Godot 4.7.2 focused deterministic suite: **77 checks, 0 failures**. Covers seeded selection/cadence; Freeze event edges, held-input grace and external motion; Rising line/band/provenance/boundary/moving-current-contact/removal/drain; Hug deterministic pairing and live-seat filter; strict hazard timestamp ordering and missing/tied timestamps; batched markers, Last Cluck and teardown; Storm timing/cap/delay/two-survivor pair/reset. |
-| [`p11_interactive_run.txt`](p11_interactive_run.txt) and [`p11_interactive_console.txt`](p11_interactive_console.txt) | **81 checks, 0 failures** on the rendered `kangaroo_contract_lab` route for 2, 3 and 4 synthetic seats. Checks the existing Pugad → Place → Play lifecycle, persistent construction, shared placement scoring/results, no race goal/deadline or Lagsanay controller, Trumpo/Launcher-only event allowlist, muted HUD, shake settings, pause/reclaim, active-clock pause and teardown. Includes a three-player simultaneous terminal fixture rendering Last Cluck in the results screen. |
+| [`p11_unit_run.txt`](p11_unit_run.txt) | Godot 4.7.2 focused deterministic suite: **78 checks, 0 failures**. Covers seeded selection/cadence; Freeze event edges, held-input grace and external motion; Rising line/band/provenance/boundary/moving-current-contact/removal/drain; Hug deterministic pairing and live-seat filter; strict hazard timestamp ordering and missing/tied timestamps; batched markers, Last Cluck and teardown; Storm timing/cap/delay/two-survivor pair/reset. |
+| [`p11_interactive_run.txt`](p11_interactive_run.txt) and [`p11_interactive_console.txt`](p11_interactive_console.txt) | **85 checks, 0 failures** on the rendered `kangaroo_contract_lab` route for 2, 3 and 4 synthetic seats. Checks the existing Pugad → Place → Play lifecycle, persistent construction, shared placement scoring/results, no race goal/deadline or Lagsanay controller, Trumpo/Launcher-only event allowlist, muted HUD, shake settings, pause/reclaim, active-clock pause and teardown. Includes a three-player simultaneous terminal fixture rendering Last Cluck in the results screen. |
 | [`p11_2p_command_hud_1920x1080.png`](p11_2p_command_hud_1920x1080.png) | Project-runner 1920×1080 debug HUD capture with shake off. The visible labels and timing cues were visually inspected; this is not a player-comprehension study, nor an exported-build screenshot. |
 | [`p11_last_cluck_results_1920x1080.png`](p11_last_cluck_results_1920x1080.png) | Rendered three-player simultaneous Last Cluck result with the stable lowest-slot tie explanation; synthetic outcome fixture, not a human-play result. |
-| [`p02_input_regression_run.txt`](p02_input_regression_run.txt) | P02 input/movement regression: **83 checks, 0 failures** on Godot 4.7.2. Synthetic edge, captured-intent, pause, disconnect and reclaim regressions. |
-| [`p03_support_regression_run.txt`](p03_support_regression_run.txt) | P03 stage/support regression: **103 checks, 0 failures** on Godot 4.7.2. Includes real upward contact and support provenance/eligibility, sample-boundary rows, base/one-way/spring/hazard/temporary/crumbling support, same-step removal, bubble/coyote/airborne rejection and moving support updated at evaluation. |
-| [`p10_regression_run_godot_4_7_2.txt`](p10_regression_run_godot_4_7_2.txt) | P10 regression: **430 checks, 0 failures** on Godot 4.7.2. |
+| [`p11_regression_matrix.txt`](p11_regression_matrix.txt) | Current rebased-tree regressions: P02 **83**, P03 **103**, P08 **86**, P09 **77**, and P10 **430 checks**; all 0 failures on Godot 4.7.2. |
+| [`p11_match_ui_regressions.txt`](p11_match_ui_regressions.txt) | Scene-based UI regressions after the upstream room migration: match UI **198**, binding **185**, mode **62**, and general UI **447 checks**; all 0 failures. |
+| [`p11_os_memory_sample.txt`](p11_os_memory_sample.txt) | Windows process sample during the rendered synthetic route: peak working set **306.7 MiB**, private bytes **420.5 MiB**, sampled every 100 ms over 14 seconds. Under the provisional 512 MiB private-memory ceiling for this local Debug sample only; not release-PC acceptance. |
 | [`p11_editor_import.txt`](p11_editor_import.txt) | Godot 4.7.2 headless editor import and global class registration exited 0 without parser/import errors. |
 | [`p11_windows_export.txt`](p11_windows_export.txt) and [`p11_windows_export_smoke.txt`](p11_windows_export_smoke.txt) | Windows Desktop Debug export using installed 4.7.2 templates succeeded. Exported executable started the selected route headlessly and reported `P11_KANGAROO_READY`, exit 0. This checks exported startup only, not exported interactive input or visual readability. |
 
@@ -35,11 +35,11 @@ The interactive runner records 120 local debug samples at each seat count while 
 
 | Synthetic seats | Process p50 / p95 / max (ms) | Physics p95 / max (ms) | Godot static memory (MiB) |
 |---:|---:|---:|---:|
-| 2 | 8.735 / 60.358 / 60.358 | 77.498 / 77.498 | 88.6 |
-| 3 | 100.117 / 100.117 / 100.117 | 7.600 / 7.600 | 88.7 |
-| 4 | 10.120 / 192.555 / 192.555 | 45.219 / 45.219 | 93.7 |
+| 2 | 96.397 / 96.397 / 96.397 | 173.369 / 173.369 | 110.4 |
+| 3 | 236.831 / 236.831 / 236.831 | 27.418 / 27.418 | 110.6 |
+| 4 | 292.063 / 292.063 / 292.063 | 10.023 / 10.023 | 111.0 |
 
-The observed process p95 values exceed the provisional 16.67 ms 1080p target. Mark P11 performance as **not met / requires profiling**; this short debug sample is noisy and physics p95/max are also high. The Godot static-memory readings are under 512 MiB, but Windows process working set/private bytes were not sampled, so the process-memory ceiling remains unverified. No actual-device or exported-render performance claim is made. Use `docs/PLAYTEST.md` and P15 to track the remaining measurement.
+The observed process p95 values exceed the provisional 16.67 ms 1080p target. Mark P11 performance as **not met / requires profiling**; this short debug sample is noisy and physics p95/max are also high. Godot static memory is 110.4–111.0 MiB. The 100 ms Windows process sample measured peak working set/private bytes of 306.7/420.5 MiB over 14 seconds, below the provisional 512 MiB private-memory ceiling for this local Debug run only. No actual-device or exported-render performance claim is made. Use `docs/PLAYTEST.md` and P15 to track the remaining measurement.
 
 ## Human/team handoff still open
 

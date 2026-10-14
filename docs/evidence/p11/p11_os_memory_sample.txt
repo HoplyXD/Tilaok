@@ -1,0 +1,9 @@
+Rendered P11 synthetic interactive run; Windows process monitor sampled matching Godot run_p11_interactive.gd processes every 100 ms.
+Start: 2026-10-14T10:13:46.6245216Z
+End: 2026-10-14T10:14:00.4788324Z
+Runner exit code: 0
+Matched PIDs: 28692, 33232
+Process samples: 71
+Peak single-process working set: 306.7 MiB
+Peak single-process private bytes: 420.5 MiB
+This is a local Godot Debug observation; it is not exported-build or target-PC acceptance.

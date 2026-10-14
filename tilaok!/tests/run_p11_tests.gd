@@ -558,6 +558,16 @@ func _test_hazard_precedence_and_terminal_batch() -> void:
 		bool(score.get("last_cluck", false)) and int(score.get("last_cluck_seat", -1)) == 0,
 		"Last Cluck exact-time placement tie uses stable lowest player slot"
 	)
+	var placement_award: Dictionary = score.get("award_rows", [])[0]
+	_check(
+		(
+			str(placement_award.get("explanation", "")).begins_with(
+				"Kangaroo elimination placement"
+			)
+			and not str(placement_award.get("explanation", "")).contains("Lagsanay")
+		),
+		"Kangaroo placement scoring reuses placement resolution with event-owned award provenance"
+	)
 	_check(
 		simultaneous.commit_score_once(score) and not simultaneous.commit_score_once(score),
 		"placement awards commit once after terminal resolution"

@@ -2,7 +2,7 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
 
 P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
-P05_MATCH_READY build=P06-karera-scoring-dev seed=12347
+P05_MATCH_READY build=P07-match-ui-dev seed=12347
 P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12347
 PASS 2 synthetic seats start the standalone route
 PASS room snapshots the Kangaroo contract profile
@@ -25,11 +25,11 @@ PASS screen-shake mode 0 keeps a visual cue
 PASS screen-shake mode 1 keeps a visual cue
 PASS screen-shake Off suppresses camera motion
 PASS rendered screenshot saved: p11_2p_command_hud_1920x1080.png (1920x1080)
-P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=8.735,p95=60.358,max=60.358] physics_ms[p95=77.498,max=77.498] static_memory_mib[min=88.6,max=88.6]
+P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=96.397,p95=96.397,max=96.397] physics_ms[p95=173.369,max=173.369] static_memory_mib[min=110.4,max=110.4]
 PASS active round leaves persistent construction unchanged
 PASS standalone room cleanup releases the scene instance
 P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
-P05_MATCH_READY build=P06-karera-scoring-dev seed=12348
+P05_MATCH_READY build=P07-match-ui-dev seed=12348
 P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12348
 PASS 3 synthetic seats start the standalone route
 PASS room snapshots the Kangaroo contract profile
@@ -47,7 +47,7 @@ PASS profile enables reviewed Trumpo and Tsinelas Launcher variants
 PASS seeded command scheduler launched a first command
 PASS debug presenter remains a visual-only non-colliding layer
 PASS distinct command pose, timing and audio-placeholder labels render in the HUD
-P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=100.117,p95=100.117,max=100.117] physics_ms[p95=7.600,max=7.600] static_memory_mib[min=88.7,max=88.7]
+P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=236.831,p95=236.831,max=236.831] physics_ms[p95=27.418,max=27.418] static_memory_mib[min=110.6,max=110.6]
 PASS synthetic direct trap is accepted for seat 1
 PASS synthetic direct trap is accepted for seat 2
 PASS batched hazard outcomes leave one survivor
@@ -62,7 +62,7 @@ PASS rendered screenshot saved: p11_last_cluck_results_1920x1080.png (1920x1080)
 PASS active round leaves persistent construction unchanged
 PASS standalone room cleanup releases the scene instance
 P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
-P05_MATCH_READY build=P06-karera-scoring-dev seed=12349
+P05_MATCH_READY build=P07-match-ui-dev seed=12349
 P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12349
 PASS 4 synthetic seats start the standalone route
 PASS room snapshots the Kangaroo contract profile
@@ -80,13 +80,13 @@ PASS profile enables reviewed Trumpo and Tsinelas Launcher variants
 PASS seeded command scheduler launched a first command
 PASS debug presenter remains a visual-only non-colliding layer
 PASS distinct command pose, timing and audio-placeholder labels render in the HUD
-P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=10.120,p95=192.555,max=192.555] physics_ms[p95=45.219,max=45.219] static_memory_mib[min=93.7,max=93.7]
+P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=292.063,p95=292.063,max=292.063] physics_ms[p95=10.023,max=10.023] static_memory_mib[min=111.0,max=111.0]
 PASS screen-shake Off suppresses the debug shake
 PASS Reduced screen shake preserves its distinct gentle cue
 PASS active round leaves persistent construction unchanged
 PASS standalone room cleanup releases the scene instance
 P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
-P05_MATCH_READY build=P06-karera-scoring-dev seed=12349
+P05_MATCH_READY build=P07-match-ui-dev seed=12349
 P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12349
 PASS pause/reclaim room starts
 PASS assigned synthetic gamepad disconnect pauses the full scene
@@ -97,10 +97,17 @@ PASS reclaim resume countdown restores the full simulation
 PASS pause and reclaim hold the Kangaroo active-simulation clock
 PASS pause/reclaim room tears down its command scheduler
 PASS room teardown leaves the project unpaused
-P11_INTERACTIVE_SUMMARY checks=81 failures=0
+P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=kangaroo_contract_lab
+P05_MATCH_READY build=P07-match-ui-dev seed=12347
+P11_KANGAROO_READY build=P11-independent-kangaroo-dev profile=kangaroo_contract_lab seed=12347
+PASS containment-defect recovery room starts
+PASS containment defect exposes restart controls above the shared pause screen
+PASS defect restart restores Play from its score snapshot without creating an award
+PASS recovered defect room tears down cleanly
+P11_INTERACTIVE_SUMMARY checks=85 failures=0
 P11 standalone integration run; all seats, inputs and hazard timestamps are synthetic.
 Engine: 4.7.2-stable (official)
-Date: 2026-10-14T09:51:15 UTC
+Date: 2026-10-14T10:13:51 UTC
 Build: P11-independent-kangaroo-dev; current task working tree.
 OS: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
 Input: synthetic K1/K2 and synthetic gamepad seat identities; no physical devices.
@@ -127,7 +134,7 @@ PASSED — screen-shake mode 0 keeps a visual cue
 PASSED — screen-shake mode 1 keeps a visual cue
 PASSED — screen-shake Off suppresses camera motion
 PASSED — rendered screenshot saved: p11_2p_command_hud_1920x1080.png (1920x1080)
-P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=8.735,p95=60.358,max=60.358] physics_ms[p95=77.498,max=77.498] static_memory_mib[min=88.6,max=88.6]
+P11_SYNTHETIC_DEBUG_METRICS seats=2 samples=120 process_ms[p50=96.397,p95=96.397,max=96.397] physics_ms[p95=173.369,max=173.369] static_memory_mib[min=110.4,max=110.4]
 PASSED — active round leaves persistent construction unchanged
 PASSED — standalone room cleanup releases the scene instance
 PASSED — 3 synthetic seats start the standalone route
@@ -146,7 +153,7 @@ PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
 PASSED — seeded command scheduler launched a first command
 PASSED — debug presenter remains a visual-only non-colliding layer
 PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
-P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=100.117,p95=100.117,max=100.117] physics_ms[p95=7.600,max=7.600] static_memory_mib[min=88.7,max=88.7]
+P11_SYNTHETIC_DEBUG_METRICS seats=3 samples=120 process_ms[p50=236.831,p95=236.831,max=236.831] physics_ms[p95=27.418,max=27.418] static_memory_mib[min=110.6,max=110.6]
 PASSED — synthetic direct trap is accepted for seat 1
 PASSED — synthetic direct trap is accepted for seat 2
 PASSED — batched hazard outcomes leave one survivor
@@ -176,7 +183,7 @@ PASSED — profile enables reviewed Trumpo and Tsinelas Launcher variants
 PASSED — seeded command scheduler launched a first command
 PASSED — debug presenter remains a visual-only non-colliding layer
 PASSED — distinct command pose, timing and audio-placeholder labels render in the HUD
-P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=10.120,p95=192.555,max=192.555] physics_ms[p95=45.219,max=45.219] static_memory_mib[min=93.7,max=93.7]
+P11_SYNTHETIC_DEBUG_METRICS seats=4 samples=120 process_ms[p50=292.063,p95=292.063,max=292.063] physics_ms[p95=10.023,max=10.023] static_memory_mib[min=111.0,max=111.0]
 PASSED — screen-shake Off suppresses the debug shake
 PASSED — Reduced screen shake preserves its distinct gentle cue
 PASSED — active round leaves persistent construction unchanged
@@ -190,4 +197,8 @@ PASSED — reclaim resume countdown restores the full simulation
 PASSED — pause and reclaim hold the Kangaroo active-simulation clock
 PASSED — pause/reclaim room tears down its command scheduler
 PASSED — room teardown leaves the project unpaused
-P11_INTERACTIVE_SUMMARY checks=81 failures=0
+PASSED — containment-defect recovery room starts
+PASSED — containment defect exposes restart controls above the shared pause screen
+PASSED — defect restart restores Play from its score snapshot without creating an award
+PASSED — recovered defect room tears down cleanly
+P11_INTERACTIVE_SUMMARY checks=85 failures=0
