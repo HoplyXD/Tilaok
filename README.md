@@ -113,6 +113,9 @@ Choose **P09 Match Lifecycle** in the development harness or launch it directly:
 
 ```powershell
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --open-room=p09_match_lifecycle
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_p09_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/run_p09_interactive.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/audit_p09_restarts.gd'
 ```
 
 The route retains P07's three-item allowlist. Matches end at 10 points (80 eighth-point units) or after round 12; tied leaders play Lagsanay sudden death on the same persistent stage. Results show one winner, every original seat's score and the outcome, with Replay, Return to Lobby and Quit. `run_p09_tests.gd`, `run_p09_interactive.gd` and `audit_p09_restarts.gd` provide synthetic engineering checks; they do not replace human/device acceptance. See [P09 evidence and limits](docs/evidence/p09/README.md) and [the tracker](docs/PHASETASK.md).
