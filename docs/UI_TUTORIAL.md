@@ -1,6 +1,6 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
-**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Pause/Reconnect, Settings and Library exist (SAMPLE data; see [UI_HANDOFF.md](UI_HANDOFF.md)). P08 adds a code-built, development-only Lagsanay HUD and explained results panel; all visuals remain diagnostic placeholders, and the guided tutorial script is not implemented.
+**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe final visual style. **UI status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Pause/Reconnect, Settings and Library exist (SAMPLE data; see [UI_HANDOFF.md](UI_HANDOFF.md)). P08 adds a development Lagsanay HUD and explained round results; P09 binds live final match results to the themed screen. The Gallery's SAMPLE data stays separate. Visuals remain diagnostic placeholders and the guided tutorial script is not implemented.
 
 ## Experience goals
 
@@ -33,7 +33,7 @@ flowchart LR
 | Place | Shared stage, each player pointer, valid/invalid ghost, rotation prompt, countdown, protected-zone feedback. | Move, rotate where available, confirm. |
 | Play | Phase/objective display, timer where applicable, score, player identity markers, event and item tells. | Run and jump baseline; wall slide/jump controls appear only if the approved Should extension is implemented, verified and selected for release. |
 | Round result | Finishes/eliminations, awarded points, current match total, clear winner or no-score explanation. | Continue when all players are ready or after timeout. |
-| Match result | Winner, final scores, Last Cluck callout where applicable, replay/return-to-lobby option. | Replay, lobby. |
+| Match result | Exactly one winner, each original participant's exact final score, ordinary or sudden-death outcome, and Last Cluck explanation when applicable. | Replay, Return to Lobby, Quit; all original participants freshly ready. Quit/whole-group leave require confirmation and cancel restores the prior state. |
 
 ## Persistent in-match information
 
@@ -155,4 +155,4 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 
 ## Verification links
 
-`PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity, ordinary results, Last Cluck explanation and 1080p captures passed synthetic engineering checks; see [P08 evidence](evidence/p08/README.md). The guided tutorial, final visual treatment, human comprehension/readability and P13 product UI remain open.
+`PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity and P09 live match-end, sudden-death, result and restart behavior passed synthetic engineering checks; see [P08 evidence](evidence/p08/README.md) and [P09 evidence](evidence/p09/README.md). The guided tutorial, final visual treatment, human comprehension/readability and P13 product UI remain open.

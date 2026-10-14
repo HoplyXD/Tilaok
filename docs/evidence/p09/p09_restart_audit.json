@@ -1,0 +1,1553 @@
+{
+	"baseline": {
+		"actors": {
+			"0": 0,
+			"1": 0,
+			"2": 0,
+			"3": 0
+		},
+		"callback_pending": false,
+		"captured_player_count": 0,
+		"construction_signature": "",
+		"final_winner": -1,
+		"item_count": 0,
+		"label": "warmed-room",
+		"lagsanay": {
+			"active": false,
+			"countdown_remaining": 0.0,
+			"ended": false,
+			"head_start_remaining": 0.0,
+			"pass_back_immunity_count": 0,
+			"round_id": "",
+			"taya_seat": -1
+		},
+		"lifecycle_match_id": -1,
+		"match_id": 0,
+		"objects": 2156.0,
+		"pending_claim_count": 0,
+		"phase": "0",
+		"result_ready_count": 0,
+		"result_visible": false,
+		"round": 0,
+		"scores": {},
+		"static_memory_bytes": 87401798.0,
+		"static_memory_peak_bytes": 96471523.0,
+		"sudden_death_attempt": 0,
+		"transient_count": 0
+	},
+	"completed_cycles": 10,
+	"cycles": [
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 2,
+				"match_id": 2,
+				"objects": 2326.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 102417918.0,
+				"static_memory_peak_bytes": 102737262.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 1,
+				"match_id": 1,
+				"objects": 2258.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 94978846.0,
+				"static_memory_peak_bytes": 96471523.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 6,
+			"cycle": 1,
+			"ending": "score_target",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 1,
+				"match_id": 1,
+				"objects": 2333.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 6,
+				"scores": {
+					"0": 84,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 102478962.0,
+				"static_memory_peak_bytes": 102543338.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 1,
+			"menu_action": "replay",
+			"round_count": 0,
+			"sudden_death_attempt": 0
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 3,
+				"match_id": 3,
+				"objects": 2341.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103298290.0,
+				"static_memory_peak_bytes": 103618586.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 2,
+				"match_id": 2,
+				"objects": 2326.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 102423926.0,
+				"static_memory_peak_bytes": 102737262.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 12,
+			"cycle": 2,
+			"ending": "sudden_death",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": true,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": true,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 1,
+					"round_id": "2:12:p09-sudden-death:1",
+					"taya_seat": 2
+				},
+				"lifecycle_match_id": 2,
+				"match_id": 2,
+				"objects": 2346.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 12,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103388906.0,
+				"static_memory_peak_bytes": 103441718.0,
+				"sudden_death_attempt": 1,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 2,
+			"menu_action": "lobby",
+			"round_count": 0,
+			"sudden_death_attempt": 1
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 4,
+				"match_id": 4,
+				"objects": 2345.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103429638.0,
+				"static_memory_peak_bytes": 104301682.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 3,
+				"match_id": 3,
+				"objects": 2341.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103304090.0,
+				"static_memory_peak_bytes": 103618586.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 6,
+			"cycle": 3,
+			"ending": "score_target",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 3,
+				"match_id": 3,
+				"objects": 2352.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 6,
+				"scores": {
+					"0": 84,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103492626.0,
+				"static_memory_peak_bytes": 104301682.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 3,
+			"menu_action": "lobby",
+			"round_count": 0,
+			"sudden_death_attempt": 0
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 5,
+				"match_id": 5,
+				"objects": 2340.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103332066.0,
+				"static_memory_peak_bytes": 104301682.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 4,
+				"match_id": 4,
+				"objects": 2345.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103439582.0,
+				"static_memory_peak_bytes": 104301682.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 12,
+			"cycle": 4,
+			"ending": "sudden_death",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": true,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": true,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 1,
+					"round_id": "4:12:p09-sudden-death:1",
+					"taya_seat": 2
+				},
+				"lifecycle_match_id": 4,
+				"match_id": 4,
+				"objects": 2345.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 12,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103422234.0,
+				"static_memory_peak_bytes": 104301682.0,
+				"sudden_death_attempt": 1,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 4,
+			"menu_action": "replay",
+			"round_count": 0,
+			"sudden_death_attempt": 1
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 6,
+				"match_id": 6,
+				"objects": 2344.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103464682.0,
+				"static_memory_peak_bytes": 104336538.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 5,
+				"match_id": 5,
+				"objects": 2340.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103337914.0,
+				"static_memory_peak_bytes": 104301682.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 6,
+			"cycle": 5,
+			"ending": "score_target",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 5,
+				"match_id": 5,
+				"objects": 2351.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 6,
+				"scores": {
+					"0": 84,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103526890.0,
+				"static_memory_peak_bytes": 104336538.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 5,
+			"menu_action": "replay",
+			"round_count": 0,
+			"sudden_death_attempt": 0
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 7,
+				"match_id": 7,
+				"objects": 2341.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103383994.0,
+				"static_memory_peak_bytes": 104336538.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 6,
+				"match_id": 6,
+				"objects": 2344.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103470482.0,
+				"static_memory_peak_bytes": 104336538.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 12,
+			"cycle": 6,
+			"ending": "sudden_death",
+			"final_winner": 1,
+			"finish": {
+				"actors": {
+					"0": 4,
+					"1": 3,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": true,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 1,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": true,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 1,
+					"round_id": "6:12:p09-sudden-death:1",
+					"taya_seat": 3
+				},
+				"lifecycle_match_id": 6,
+				"match_id": 6,
+				"objects": 2346.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 12,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103476210.0,
+				"static_memory_peak_bytes": 104336538.0,
+				"sudden_death_attempt": 1,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 6,
+			"menu_action": "lobby",
+			"round_count": 0,
+			"sudden_death_attempt": 1
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 8,
+				"match_id": 8,
+				"objects": 2346.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103514238.0,
+				"static_memory_peak_bytes": 104400858.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 7,
+				"match_id": 7,
+				"objects": 2341.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103389866.0,
+				"static_memory_peak_bytes": 104336538.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 6,
+			"cycle": 7,
+			"ending": "score_target",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 7,
+				"match_id": 7,
+				"objects": 2353.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 6,
+				"scores": {
+					"0": 84,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103578030.0,
+				"static_memory_peak_bytes": 104400858.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 7,
+			"menu_action": "lobby",
+			"round_count": 0,
+			"sudden_death_attempt": 0
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 9,
+				"match_id": 9,
+				"objects": 2342.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103547990.0,
+				"static_memory_peak_bytes": 104400858.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 8,
+				"match_id": 8,
+				"objects": 2346.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103520038.0,
+				"static_memory_peak_bytes": 104400858.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 12,
+			"cycle": 8,
+			"ending": "sudden_death",
+			"final_winner": 3,
+			"finish": {
+				"actors": {
+					"0": 4,
+					"1": 4,
+					"2": 4,
+					"3": 3
+				},
+				"callback_pending": true,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 3,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": true,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 1,
+					"round_id": "8:12:p09-sudden-death:1",
+					"taya_seat": 2
+				},
+				"lifecycle_match_id": 8,
+				"match_id": 8,
+				"objects": 2347.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 12,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103638310.0,
+				"static_memory_peak_bytes": 104400858.0,
+				"sudden_death_attempt": 1,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 8,
+			"menu_action": "replay",
+			"round_count": 0,
+			"sudden_death_attempt": 1
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 10,
+				"match_id": 10,
+				"objects": 2346.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103679422.0,
+				"static_memory_peak_bytes": 104564950.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 9,
+				"match_id": 9,
+				"objects": 2342.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103553790.0,
+				"static_memory_peak_bytes": 104400858.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 6,
+			"cycle": 9,
+			"ending": "score_target",
+			"final_winner": 0,
+			"finish": {
+				"actors": {
+					"0": 3,
+					"1": 4,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 0,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 9,
+				"match_id": 9,
+				"objects": 2353.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 6,
+				"scores": {
+					"0": 84,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103742170.0,
+				"static_memory_peak_bytes": 104564950.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 9,
+			"menu_action": "replay",
+			"round_count": 0,
+			"sudden_death_attempt": 0
+		},
+		{
+			"after": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "after-restart",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 11,
+				"match_id": 11,
+				"objects": 2342.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103580498.0,
+				"static_memory_peak_bytes": 104564950.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"before": {
+				"actors": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"callback_pending": false,
+				"captured_player_count": 0,
+				"construction_signature": "",
+				"final_winner": -1,
+				"item_count": 0,
+				"label": "match-start",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": false,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 0,
+					"round_id": "",
+					"taya_seat": -1
+				},
+				"lifecycle_match_id": 10,
+				"match_id": 10,
+				"objects": 2346.0,
+				"pending_claim_count": 0,
+				"phase": "1",
+				"result_ready_count": 0,
+				"result_visible": false,
+				"round": 0,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103685318.0,
+				"static_memory_peak_bytes": 104564950.0,
+				"sudden_death_attempt": 0,
+				"transient_count": 0
+			},
+			"completed_round_count": 12,
+			"cycle": 10,
+			"ending": "sudden_death",
+			"final_winner": 1,
+			"finish": {
+				"actors": {
+					"0": 4,
+					"1": 3,
+					"2": 4,
+					"3": 4
+				},
+				"callback_pending": true,
+				"captured_player_count": 0,
+				"construction_signature": "build.hollow_blocks.cell_1x1#001|build.hollow_blocks.cell_1x1|22,9|0|owner0|r0",
+				"final_winner": 1,
+				"item_count": 1,
+				"label": "match-result",
+				"lagsanay": {
+					"active": false,
+					"countdown_remaining": 0.0,
+					"ended": true,
+					"head_start_remaining": 0.0,
+					"pass_back_immunity_count": 1,
+					"round_id": "10:12:p09-sudden-death:1",
+					"taya_seat": 3
+				},
+				"lifecycle_match_id": 10,
+				"match_id": 10,
+				"objects": 2347.0,
+				"pending_claim_count": 0,
+				"phase": "4",
+				"result_ready_count": 0,
+				"result_visible": true,
+				"round": 12,
+				"scores": {
+					"0": 0,
+					"1": 0,
+					"2": 0,
+					"3": 0
+				},
+				"static_memory_bytes": 103672682.0,
+				"static_memory_peak_bytes": 104564950.0,
+				"sudden_death_attempt": 1,
+				"transient_count": 0
+			},
+			"fresh_callbacks": {
+				"controller_ended": false,
+				"old_callback_current": false,
+				"result_ready": 0,
+				"result_visible": false
+			},
+			"match_identity": 10,
+			"menu_action": "replay",
+			"round_count": 0,
+			"sudden_death_attempt": 1
+		}
+	],
+	"date_utc": "2026-10-14T06:46:54",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [],
+	"fixtures": [
+		"All four seats use synthetic keyboard/device identities.",
+		"Race finish candidates are injected into the real race ledger.",
+		"Sudden-death timeout is shortened and advanced through the real Lagsanay physics controller.",
+		"Persistent construction is placed each match; scores/outcomes are live coordinator state."
+	],
+	"frame_time_ms": {
+		"max": 144.380340576172,
+		"median": 8.33333301544189,
+		"min": 0.376000016927719,
+		"p95": 27.363000869751,
+		"samples": 306
+	},
+	"memory_note": "MEMORY_STATIC and OBJECT_COUNT are Godot runtime monitors, not process working set/private bytes.",
+	"os": "Windows",
+	"post_warm_deltas": [
+		{
+			"cycle": 3,
+			"object_delta": 0,
+			"static_memory_delta_bytes": 0
+		},
+		{
+			"cycle": 4,
+			"object_delta": -5,
+			"static_memory_delta_bytes": -97572
+		},
+		{
+			"cycle": 5,
+			"object_delta": -1,
+			"static_memory_delta_bytes": 35044
+		},
+		{
+			"cycle": 6,
+			"object_delta": -4,
+			"static_memory_delta_bytes": -45644
+		},
+		{
+			"cycle": 7,
+			"object_delta": 1,
+			"static_memory_delta_bytes": 84600
+		},
+		{
+			"cycle": 8,
+			"object_delta": -3,
+			"static_memory_delta_bytes": 118352
+		},
+		{
+			"cycle": 9,
+			"object_delta": 1,
+			"static_memory_delta_bytes": 249784
+		},
+		{
+			"cycle": 10,
+			"object_delta": -3,
+			"static_memory_delta_bytes": 150860
+		}
+	],
+	"processor": "13th Gen Intel(R) Core(TM) i5-13420H",
+	"renderer": "NVIDIA GeForce RTX 4050 Laptop GPU",
+	"resolution": "1920x1080 windowed; vsync disabled",
+	"title": "P09 ten-cycle finish-to-restart audit",
+	"warmed_baseline_after_cycle_3": {
+		"actors": {
+			"0": 0,
+			"1": 0,
+			"2": 0,
+			"3": 0
+		},
+		"callback_pending": false,
+		"captured_player_count": 0,
+		"construction_signature": "",
+		"final_winner": -1,
+		"item_count": 0,
+		"label": "after-restart",
+		"lagsanay": {
+			"active": false,
+			"countdown_remaining": 0.0,
+			"ended": false,
+			"head_start_remaining": 0.0,
+			"pass_back_immunity_count": 0,
+			"round_id": "",
+			"taya_seat": -1
+		},
+		"lifecycle_match_id": 4,
+		"match_id": 4,
+		"objects": 2345.0,
+		"pending_claim_count": 0,
+		"phase": "1",
+		"result_ready_count": 0,
+		"result_visible": false,
+		"round": 0,
+		"scores": {
+			"0": 0,
+			"1": 0,
+			"2": 0,
+			"3": 0
+		},
+		"static_memory_bytes": 103429638.0,
+		"static_memory_peak_bytes": 104301682.0,
+		"sudden_death_attempt": 0,
+		"transient_count": 0
+	},
+	"warmed_frame_time_ms": {
+		"max": 55.6026649475098,
+		"median": 9.5238094329834,
+		"min": 0.415749996900558,
+		"p95": 27.7777786254883,
+		"samples": 226
+	}
+}

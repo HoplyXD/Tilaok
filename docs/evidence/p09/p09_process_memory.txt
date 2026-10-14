@@ -1,0 +1,6 @@
+P09 Windows process-tree memory sample
+Sample interval: approximately 100 ms
+Samples: 48
+Peak working set: 306495488 bytes (292.3 MiB), process=Godot_v4.7.2-stable_win64
+Peak private bytes: 447467520 bytes (426.7 MiB), process=Godot_v4.7.2-stable_win64
+Godot exit code: 0

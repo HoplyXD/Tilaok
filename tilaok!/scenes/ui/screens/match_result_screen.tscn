@@ -68,6 +68,14 @@ text = "WINNER"
 theme_type_variation = &"TitleLabel"
 unique_name_in_owner = true
 
+[node name="OutcomeLabel" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = "SAMPLE gallery data"
+theme_type_variation = &"BodyLabel"
+horizontal_alignment = 1
+autowrap_mode = 3
+unique_name_in_owner = true
+
 [node name="LastCluckCallout" parent="Safe/Content" instance=ExtResource("4")]
 layout_mode = 2
 visible = false
@@ -114,10 +122,18 @@ unique_name_in_owner = true
 
 [node name="LobbyButton" type="Button" parent="Safe/Content/MenuList"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(240, 44)
 focus_mode = 0
 theme_type_variation = &"TilaokMenuButton"
-text = "Back to lobby"
+text = "Return to Lobby"
+unique_name_in_owner = true
+
+[node name="QuitButton" type="Button" parent="Safe/Content/MenuList"]
+layout_mode = 2
+custom_minimum_size = Vector2(160, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Quit"
 unique_name_in_owner = true
 
 [node name="Tag" type="Label" parent="Safe/Content"]

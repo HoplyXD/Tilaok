@@ -354,9 +354,15 @@ func begin_play() -> PackedStringArray:
 
 ## Round end: transients and captives clear; placed construction persists.
 func end_round() -> PackedStringArray:
+	var released := end_play_attempt()
+	round_number += 1
+	return released
+
+
+## Ends an extra mode attempt without advancing ItemManager's completed match-round counter.
+func end_play_attempt() -> PackedStringArray:
 	in_play = false
 	grace_remaining = 0.0
-	round_number += 1
 	director.release_all_captives()
 	for instance_id in _sorted_ids():
 		var piece := (pieces[instance_id] as PlacedItem).node as HazardPiece

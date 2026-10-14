@@ -173,6 +173,9 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var match_pugad_seconds: float = 8.0
 @export var match_place_seconds: float = 15.0
 @export var match_results_advance_seconds: float = 8.0
+## P09 full-match termination; points are eighth-point units.
+@export_range(1, 10000, 1) var match_target_score_units: int = 80
+@export_range(1, 1000, 1) var match_round_limit: int = 12
 ## P06 provisional active-simulation race deadlines; frozen with the match snapshot.
 @export var match_race_hard_cap_seconds: float = 60.0
 @export var match_race_after_first_finish_seconds: float = 15.0
@@ -376,6 +379,8 @@ func validate() -> PackedStringArray:
 		errors.append("camera view bounds must have positive dimensions")
 	if match_pugad_extra_eggs < 0:
 		errors.append("match_pugad_extra_eggs cannot be negative")
+	if match_target_score_units <= 0 or match_round_limit <= 0:
+		errors.append("match target score and round limit must be positive integers")
 	if (
 		match_pugad_seconds <= 0.0
 		or match_place_seconds <= 0.0

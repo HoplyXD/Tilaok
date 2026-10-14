@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/match/match_room.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/match/p09_match_lifecycle_room.gd" id="2"]
+
+[node name="P09MatchLifecycleRoom" instance=ExtResource("1")]
+script = ExtResource("2")

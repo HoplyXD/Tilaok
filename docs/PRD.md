@@ -119,7 +119,7 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 | Place | Pointer/ghost, rotate/confirm, countdown, validity reason, protected zones and effect/trajectory guide. |
 | Play | Objective, relevant timers, round/scores/identity/state, readable hazards and event prompts. |
 | Round result | Actual finish/elimination/points/totals, no-score reason; all-ready or provisional timeout. |
-| Match result | Winner, exact scores, relevant Last Cluck explanation, replay/lobby; optional session tally. |
+| Match result | Exactly one winner, exact scores for every original participant, ordinary or sudden-death outcome, Last Cluck explanation where applicable, Replay/Return to Lobby/Quit; optional session tally. |
 | Pause/reconnect | Frozen simulation, missing-seat reclaim, settings/Library/help and all-ready resume. |
 | Library | Enabled-content categories, animations, rules/controls/tells/counterplay; preserve return context. |
 
@@ -139,11 +139,11 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Match results show final scores/winner with replay and lobby choices. Prototype menu owner selects action and all players freshly ready. Leaving mid-match confirms whole-group return to lobby, never silently changes scoring player count. New match clears construction, scores, captures, transients, event state and ready edges.
+**Expected behavior:** Match results bind live final scores, one winner and the ordinary/sudden-death outcome; Last Cluck results explain the winner rule. Offer Replay, Return to Lobby and Quit. The first fresh navigation/confirm claims menu ownership and every original participant freshly readies the selected action. Focus/device changes or disconnect clear readiness and cancel pending actions; missing seats remain reclaimable. Quit and mid-match whole-group leave use the shared confirmation dialog; cancel restores the prior match state, while confirm returns the whole group without changing scoring player count. Replay retains seats/devices, creates a fresh configuration snapshot and reproducible seed, and clears construction, scores, captures, transients, event state and ready edges.
 
-**Acceptance:** Ten complete restarts show no retained score/timer/immunity/capture or object growth; replay/lobby/quit routes work after ordinary and sudden-death endings.
+**Acceptance:** Ten complete match-ending restarts show no retained score/timer/immunity/capture or sustained object growth; Replay/Lobby/Quit and leave-cancel routes work after ordinary and sudden-death endings. Every original participant's exact final score is visible, and each result screen names exactly one winner.
 
-**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence (2026-10-14):** P09 binds live match data to the themed match result screen. Its 108 rendered interaction assertions cover Replay/Lobby/Quit, unanimous fresh readiness, focus/device invalidation, missing-seat reclaim, Quit/leave cancellation, whole-group Lobby reset and a fresh Replay seed/configuration. The ten-cycle restart audit is in [P09 evidence](evidence/p09/README.md). Synthetic seats and shortened timers are used; physical devices and human play remain unverified.
 
 ## 5. Inputs, identity and recovery
 
@@ -463,11 +463,11 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Check totals at round end: first to 10 or highest after round 12. Multiple above 10 are ordered by total; equal leaders enter Lagsanay only among tied players, no Twist, producing exactly one winner. Full match release retains guaranteed event schedule; development override is not release behavior.
+**Expected behavior:** After authoritative round awards commit once and `ItemManager.end_round()` records the completed round, compare cumulative integer eighth-point scores to the exact 80-unit (10-point) target or completed round 12. A unique leader at threshold/limit wins; tied top scores enter Lagsanay sudden death among only those original seats. Resolve one winner from the authoritative survivor or Last Cluck result without applying Lagsanay placement awards to match totals. Round 12 cannot start round 13. The P09 route uses Karera and the P07 three-variant allowlist; it does not implement the P12 event schedule/stacks or replace release validation.
 
-**Acceptance:** Verify threshold, round-12, unequal simultaneous threshold crossings and 2/3/4 tied-player sudden death; exactly one match winner and no extra score table.
+**Acceptance:** Verify below/exact/above threshold; unique/equal leaders; rounds 11/12 and threshold-plus-limit; lower-place ties; duplicate/reordered/stale callbacks; 2/3/4 tied players; a noncontiguous tied subset of four original seats; live score awards and the full round-12 transition path. Verify real-physics Lagsanay contact and survivor resolution, the authoritative Last Cluck winner path, unchanged match score during sudden death, spectator exclusion, original identity/device retention and rendered ending. Exactly one winner is returned and no placement score table is applied to match totals.
 
-**Source:** [GDD.md](GDD.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PRODUCTION.md](PRODUCTION.md). **Implementation/evidence (2026-10-14):** the pure lifecycle coordinator, P09 route, live score-commit path and Lagsanay tie-break are implemented in the `karera_slice` development route. 77 focused and 108 rendered checks pass, including real contact transfer and a four-player `P2/P4` tied subset; screenshots and boundary notes are in [P09 evidence](evidence/p09/README.md). The authored P09 route is not P12 schedule completion, and device/human and 1080p performance acceptance remain open.
 
 ## 9. Lagsanay
 

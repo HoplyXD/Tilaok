@@ -1,10 +1,10 @@
 # Tilaok! Verification and Playtest Plan
 
-_Originally a plan only on 2026-10-12. Updated through P08 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
+_Originally a plan only on 2026-10-12. Updated through P09 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status
 
-P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; P07 adds a dedicated first-playable route; and P08 adds an independent Lagsanay development route. The P07 route and synthetic checks pass but its human/device gate remains open. P08's six engineering tasks pass with synthetic seats, real Godot physics and rendered debug output; no physical-device or human acceptance was performed. These are development slices, not a complete game or release playtest. Historical P00 results remain below.
+P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagnostics; P03 adds the bounded graybox stage, camera and support contracts; P04 adds item infrastructure and Kaing/Tulay seeds; P05 adds lobby/Pugad/atomic Place; P06 supplies Karera finish rules and scoring; P07 adds a dedicated first-playable route; P08 adds independent Lagsanay; and P09 adds a development-only Karera match ending and tied-player sudden death. P07 human/device acceptance, P08 entry/release gate, P09 performance target and human/device acceptance, and P02 physical-device acceptance remain open. The engineering routes use synthetic seats and scripted fixtures; none is a complete game or release playtest. Historical P00 results remain below.
 
 | Check | Status | Evidence / limit |
 |---|---|---|
@@ -85,6 +85,25 @@ The P07 route and engineering checks are implemented, but the human gate remains
 | Human/device/release acceptance | COULD-NOT-RUN | No physical gamepads, human players, novice observer, cultural review or independent code reviewer participated. P07-T04 remains unchecked; development authorization for P08 does not satisfy its gate. `lagsanay_lab` is not release-enabled. |
 
 Full task evidence and actual commands are indexed in [P08 evidence](evidence/p08/README.md) and [PHASETASK](PHASETASK.md#p08--lagsanay). The focused P08 count and regression results are synthetic engineering verification, not human play evidence. The complete match, event scheduling/stacks, final UI/art/audio and release onboarding remain outside this slice.
+
+## P09 match lifecycle engineering verification — October 14, 2026
+
+**Build/route:** `P09-match-lifecycle-dev`, `karera_slice`, seed `12345`; Godot `4.7.2.stable.official.ed1daf0bf`; Windows, Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU, Compatibility renderer, 1920×1080 windowed. **Seats:** synthetic K1/K2 keyboard identities and synthetic gamepad IDs 7101/7102. **Reviewer:** Codex engineering run; no independent human review, player session, or physical-device input is recorded. P09 keeps the P07 three-variant allowlist and is not the P12 release schedule.
+
+| Check | Status | Result and evidence |
+|---|---|---|
+| Focused coordinator/Lagsanay matrix | PASSED — automated | 77 assertions, 0 failures: threshold and leader matrix, round 11/12, lower-place ties, duplicate/reordered/stale callbacks, 2/3/4 tied contestants and four-seat noncontiguous subset `[1,3]`. [log](evidence/p09/p09_focused_tests.txt). |
+| Rendered P09 loop and result actions | PASSED — synthetic inputs | 108 assertions, 0 failures. Real authoritative round scoring reaches 80 units after six rounds; four-player all-finish transitions through completed round 12 without round 13; a preloaded 40/40 fixture routes P2/P4 only. Covers exact live scores, one winner, Replay seed/config reset, whole-group Lobby, Quit/leave confirmation and cancel, pause/reclaim, focus/device readiness invalidation, spectator exclusion and unchanged match scores through sudden death. [report](evidence/p09/p09_interactive_run.txt), [console output](evidence/p09/p09_interactive_console.txt). |
+| Lagsanay physics/sudden-death behavior | PASSED — engineering fixture | Actual Godot contact sensor transfers taya among contestants; spectator cannot tag or become taya. Survivor and synthetic Last Cluck outcome paths both resolve one winner without adding placement score to match totals. Synthetic Last Cluck source records are clearly labeled because the P07 allowlist has no hazards. |
+| Ten full ending/restart cycles | PASSED — synthetic audit | Five 80-unit score endings and five round-12 all-finish sudden-death endings; Replay or Lobby action after each. State snapshots cover scores, persistent construction, removed/transient/captured items, actors, pending claims, result readiness, Lagsanay timer/immunity, match/round/attempt identity and stale callback rejection. [audit JSON](evidence/p09/p09_restart_audit.json), [console](evidence/p09/p09_restart_audit_console.txt). |
+| Cleanup and process memory | PASSED — local sample | After cycle 3's warmed baseline, object deltas ranged −5 to +1 and Godot static-memory deltas ranged −97,572 to +249,784 bytes; no continuing rise appeared. Windows process-tree peaks: 292.3 MiB working set and 426.7 MiB private bytes (<512 MiB). [sample](evidence/p09/p09_process_memory.txt). |
+| 1080p frame intervals | PERFORMANCE TARGET MISSED | Ten-cycle rendered sample: 226 warmed frames, median 9.52 ms, p95 27.78 ms, worst 55.60 ms; total run worst 144.38 ms. The warmed p95 exceeds the 16.67 ms target; P15 performance acceptance remains open. [audit JSON](evidence/p09/p09_restart_audit.json). |
+| Rendered route captures | PASSED — project runner | 1920×1080 captures cover score-target results, Replay, round-limit sudden-death entry, tied-player contact, survivor result, noncontiguous tied seats, Last Cluck explanation and Lobby. They are project-runner engineering captures, not human readability or exported-UI acceptance. [capture index](evidence/p09/README.md#checks-and-captures). |
+| Import, lint, Windows export and route smoke | PASSED — local engineering smoke | Godot 4.7.2 editor import/parse, changed-script gdformat/gdlint, Windows Debug export and direct plus exported P09 route startup passed. [logs](evidence/p09/). |
+| Existing regressions | PASSED — selected suites | Foundation, P02, P05 (137), P06 (97), P07 (590), P08 (86) and UI (438) passed; individual saved logs are indexed under [P09 regressions](evidence/p09/regressions/). The separate P04 test runner did not finish within the 30-second command window and was stopped after its process was identified; P04 regression is not claimed as passed. |
+| Human/device/release acceptance | COULD NOT RUN | No human players, novice observers, physical gamepads, independent reviewer or release review participated. P07 and P08 gates remain open; P12 event scheduling/stacks remain unimplemented. |
+
+The pinned Godot 4.7.2 binary and exact launch/test commands are listed in [P09 evidence](evidence/p09/README.md). Automated input, shortened timers, injected finish candidates and the preloaded-score route fixture are not player session evidence. Local-only gameplay traffic is an architectural 0 B/s expectation; no packet capture was performed.
 
 ## P00 production-readiness evidence
 

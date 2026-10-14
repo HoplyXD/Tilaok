@@ -9,6 +9,11 @@ var suppression_reason := ""
 var totals: Dictionary = {}
 var deadline_explanation := ""
 var last_cluck_explanation := ""
+var match_complete := false
+var winner_seat := -1
+var final_outcome_text := ""
+var sudden_death := false
+var final_seats: Array[Dictionary] = []
 
 
 static func diagnostic(round_value: int, seats: Array[Dictionary]) -> MatchResultsViewModel:
@@ -204,6 +209,52 @@ static func lag_sanay(
 	return model
 
 
+static func final_match(
+	seats: Array[Dictionary],
+	scores_units: Dictionary,
+	winner: int,
+	outcome_text: String,
+	used_sudden_death: bool,
+	last_cluck_text: String
+) -> MatchResultsViewModel:
+	var model := MatchResultsViewModel.new()
+	model.match_complete = true
+	model.winner_seat = winner
+	model.final_outcome_text = outcome_text
+	model.sudden_death = used_sudden_death
+	model.last_cluck_explanation = last_cluck_text
+	model.final_seats = seats.duplicate(true)
+	model.diagnostic_label = outcome_text
+	var winner_data: Dictionary = {}
+	for seat in seats:
+		var seat_index := int(seat.get("seat", -1))
+		if seat_index < 0 or not bool(seat.get("joined", false)):
+			continue
+		var units := int(scores_units.get(seat_index, 0))
+		var row := {
+			"seat_index": seat_index,
+			"identity": int(seat.get("identity", seat_index + 1)),
+			"shape": str(seat.get("shape", "")),
+			"total_units": units,
+			"total_text": ScoreFormat.format_units(units),
+			"outcome": "WINNER" if seat_index == winner else "FINAL SCORE",
+		}
+		model.per_seat_outcomes.append(row)
+		model.totals[seat_index] = {
+			"identity": row.identity,
+			"shape": row.shape,
+			"units": units,
+			"text": row.total_text,
+		}
+		if seat_index == winner:
+			winner_data = seat
+	model.suppression_reason = "Final match scores are fixed; Lagsanay placement awards are not added."
+	model.last_cluck_explanation = last_cluck_text
+	if winner_data.is_empty():
+		model.final_outcome_text = "Final winner is unavailable."
+	return model
+
+
 func as_dictionary() -> Dictionary:
 	return {
 		"round_number": round_number,
@@ -214,6 +265,11 @@ func as_dictionary() -> Dictionary:
 		"totals": totals.duplicate(true),
 		"deadline_explanation": deadline_explanation,
 		"last_cluck_explanation": last_cluck_explanation,
+		"match_complete": match_complete,
+		"winner_seat": winner_seat,
+		"final_outcome_text": final_outcome_text,
+		"sudden_death": sudden_death,
+		"final_seats": final_seats.duplicate(true),
 	}
 
 

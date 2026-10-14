@@ -270,6 +270,28 @@ func score_result() -> Dictionary:
 	)
 
 
+## Authoritative winner path for sudden death; ordinary placement awards are not applied.
+func sudden_death_winner() -> Dictionary:
+	if not ended:
+		return {"valid": false, "winner_seat": -1, "last_cluck": false}
+	if winner_seat >= 0 and seat_indices.has(winner_seat):
+		return {"valid": true, "winner_seat": winner_seat, "last_cluck": false}
+	if end_reason != "last_cluck":
+		return {"valid": false, "winner_seat": -1, "last_cluck": false}
+	var placement := score_result()
+	var cluck_winner := int(placement.get("last_cluck_seat", -1))
+	return {
+		"valid": bool(placement.get("valid", false)) and seat_indices.has(cluck_winner),
+		"winner_seat": cluck_winner,
+		"last_cluck": true,
+		"explanation":
+		(
+			"Every tied contestant was eliminated. The latest recorded elimination wins; "
+			+ "an exact time tie goes to the lowest original seat."
+		),
+	}
+
+
 func commit_score_once(result: Dictionary) -> bool:
 	if score_committed or not ended or not bool(result.get("valid", false)):
 		return false

@@ -125,10 +125,15 @@ custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 text = "P08 Lagsanay Lab"
 
+[node name="P09MatchLifecycleButton" type="Button" parent="Layout/HarnessPanel/PlayableRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "P09 Match Lifecycle"
+
 [node name="PlayableDescription" type="Label" parent="Layout/HarnessPanel/PlayableRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "2–4 players • Pugad → Place → independent pass-through tag → explained results • development only"
+text = "P07 First Playable • P08 independent tag • P09 match ending and sudden death • development only"
 
 [node name="RoomRow" type="HBoxContainer" parent="Layout/HarnessPanel"]
 layout_mode = 2
