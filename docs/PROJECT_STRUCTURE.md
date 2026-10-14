@@ -170,3 +170,20 @@ Interactive and capture scripts write screenshots into `docs/evidence/` (overrid
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/run_match_ui_interactive.gd'
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_match_ui_performance.gd'
 ```
+
+### Mode rooms on the scene UI (P08, P09 and later modes such as P11 Kangaroo)
+
+A room that extends `P05MatchRoom` no longer builds HUD controls: `_top_bar`, `_match_buttons`, `_phase_label`, `_timer_label`, `_feedback_label`, `_hints_label`, `_info_panel`, `_egg_row`, `_results_panel`, `_match_canvas`, `_add_match_button()`, `_phase_hint()` and `MatchResultsPanel` were removed on 2026-10-14. A new mode overrides the presentation hooks and `MatchScreenPresenter` shows what they return (see `p08_lagsanay_match_room.gd` and `p09_match_lifecycle_room.gd`):
+
+| The mode needs | Do this |
+|---|---|
+| A different Play clock, challenge name or goal sentence | Override `play_clock_seconds()`, `play_challenge_text()`, `play_goal_text()` |
+| A tag next to the clock, a one-line HUD notice | `play_tag_text()`, `play_status_text()` (longer developer text: `debug_status_text()`) |
+| A per-seat state word (TAYA, WATCHING, ...) | `seat_state_text(seat_index)` |
+| Its own results | Set `last_results_model` with a `MatchResultsViewModel` builder; the Round result screen binds it when `round_number` equals the item manager's round |
+| The final match result | `shows_final_results()` (the room binds `UiMatchResultScreen.bind_final_match`) |
+| A developer-only button | `debug_action_label()` and `run_debug_action()` (shown in the DEBUG overlay) |
+| A build id in the DEBUG overlay | `build_id()` |
+| A world-space marker or a new prompt | Author a scene (`scenes/match/taya_world_marker.tscn` is the pattern; new screens live under `scenes/ui/` and are instanced from `scenes/match/match_hud.tscn`) and add `theme_type_variation`s in the scene, never `Label.new()` / `Control.new()` / `add_theme_*` in a room script |
+
+Call `_notify_presentation(&"reason")` when something the screens show changes (not every physics step: whole-second clocks re-render by themselves). Add the new room script to `ROOM_SOURCES` in `tests/run_match_ui_mode_tests.gd` so the no-code-built-UI rule covers it.
