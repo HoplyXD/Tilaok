@@ -351,6 +351,7 @@ func _finish_event_round() -> void:
 		outcome_rows = kangaroo_round.controller.outcomes()
 		if not kangaroo_round.controller.commit_score_once(score_result):
 			return
+	_record_score_presentation(active_round, score_result)
 	last_resolution = score_result.duplicate(true)
 	for seat_index in score_result.totals_units:
 		cumulative_score_units[int(seat_index)] = int(score_result.totals_units[seat_index])

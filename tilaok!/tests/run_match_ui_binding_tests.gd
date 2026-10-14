@@ -17,6 +17,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	await _test_result_bindings()
+	await _test_noncontiguous_award_and_snapshot_isolation()
 	print("MATCH_UI_BINDING_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -121,11 +122,10 @@ func _test_result_bindings() -> void:
 			(screen.get_node("%DeadlineLabel") as Label).text == model.deadline_explanation,
 			"%s: deadline explanation equals the view model" % label
 		)
-		for index in screen.outcome_rows.size():
-			var row := screen.outcome_rows[index]
-			if index >= model.per_seat_outcomes.size():
-				_check(not row.visible, "%s: unused outcome row %d is hidden" % [label, index + 1])
-				continue
+		screen.chart().settle()
+		var columns := screen.chart().chart_columns()
+		for index in model.per_seat_outcomes.size():
+			var row := columns[index]
 			var outcome: Dictionary = model.per_seat_outcomes[index]
 			_check(
 				row.score_text() == str(outcome.total_text),
@@ -188,6 +188,72 @@ func _registry_seats(count: int) -> Array[Dictionary]:
 	for index in PlayerSeatRegistry.MAX_SEATS:
 		seats.append(registry.get_seat(index))
 	return seats
+
+
+func _test_noncontiguous_award_and_snapshot_isolation() -> void:
+	var seats := _registry_seats(4)
+	var model := MatchResultsViewModel.new()
+	model.round_number = 9
+	model.score_presentation_id = "noncontiguous-copy-test"
+	model.score_presentation = {
+		"seats":
+		[
+			{
+				"seat_index": 0,
+				"identity": 1,
+				"shape": "CIRCLE",
+				"units": 8,
+				"delta_units": 8,
+				"status": "",
+				"segments": [{"key": "tapos", "units": 8, "reveal": true}],
+			},
+			{
+				"seat_index": 3,
+				"identity": 4,
+				"shape": "DIAMOND",
+				"units": 2,
+				"delta_units": 2,
+				"status": "",
+				"segments": [{"key": "patibong", "units": 2, "reveal": true}],
+			},
+		]
+	}
+	model.per_seat_outcomes = [
+		{"seat_index": 0, "identity": 1, "shape": "CIRCLE", "outcome": "Reached goal."},
+		{"seat_index": 3, "identity": 4, "shape": "DIAMOND", "outcome": "Trap owner."},
+	]
+	model.award_rows = [
+		{
+			"seat_index": 3,
+			"identity": 4,
+			"key": "patibong",
+			"title": "Patibong",
+			"score_text": "+0.25",
+			"explanation": "Directly attributed trap.",
+		}
+	]
+	var original_snapshot: Dictionary = model.score_presentation.duplicate(true)
+	var screen := RESULT_SCENE.instantiate() as UiRoundResultScreen
+	root.add_child(screen)
+	await process_frame
+	screen.bind_live(model, seats, {}, 6.0, 8.0, "k1", load(UiContext.PROMPT_MAP_PATH))
+	_check(
+		model.score_presentation == original_snapshot,
+		"UI status binding does not mutate the detached score snapshot"
+	)
+	_check(
+		screen.award_lines[0].visible and screen.award_lines[0].badge.number_text() == "4",
+		"award owner at noncontiguous seat 3 keeps player 4 identity"
+	)
+	_check(
+		(
+			screen.chart().chart_columns().size() == 2
+			and screen.chart().chart_columns()[1].badge.number_text() == "4"
+		),
+		"score columns preserve noncontiguous seat order and identity"
+	)
+	screen.queue_free()
+	await process_frame
 
 
 func _check(condition: bool, message: String) -> void:

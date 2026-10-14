@@ -2,6 +2,7 @@ class_name UiSettingsScreen
 extends UiScreen
 
 signal shake_changed(mode: int)
+signal result_reveal_motion_changed(mode: int)
 signal volume_changed(bus: String, level: float)
 
 const SHAKE_FULL := 0
@@ -10,6 +11,7 @@ const SHAKE_OFF := 2
 
 @onready var _menu: UiMenuList = %MenuList
 @onready var _shake_row: UiOptionRow = %ShakeRow
+@onready var _result_reveal_row: UiOptionRow = %ResultRevealRow
 @onready var _master_row: UiOptionRow = %MasterRow
 @onready var _music_row: UiOptionRow = %MusicRow
 @onready var _effects_row: UiOptionRow = %EffectsRow
@@ -23,6 +25,7 @@ func state_names() -> PackedStringArray:
 
 func bind_settings(settings: PresentationSettings) -> void:
 	_shake_row.set_choice(settings.screen_shake)
+	_result_reveal_row.set_choice(settings.result_reveal_motion)
 	_master_row.set_level(settings.master_volume)
 	_music_row.set_level(settings.music_volume)
 	_effects_row.set_level(settings.effects_volume)
@@ -33,6 +36,9 @@ func bind_settings(settings: PresentationSettings) -> void:
 func bind_live(settings: PresentationSettings) -> void:
 	bind_settings(settings)
 	shake_changed.connect(func(mode: int) -> void: settings.screen_shake = mode)
+	result_reveal_motion_changed.connect(
+		func(mode: int) -> void: settings.result_reveal_motion = mode
+	)
 	volume_changed.connect(
 		func(bus: String, level: float) -> void:
 			match bus:
@@ -49,6 +55,9 @@ func bind_live(settings: PresentationSettings) -> void:
 
 func _on_screen_ready() -> void:
 	_shake_row.choice_changed.connect(func(index: int) -> void: shake_changed.emit(index))
+	_result_reveal_row.choice_changed.connect(
+		func(index: int) -> void: result_reveal_motion_changed.emit(index)
+	)
 	_master_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("master", v))
 	_music_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("music", v))
 	_effects_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("effects", v))

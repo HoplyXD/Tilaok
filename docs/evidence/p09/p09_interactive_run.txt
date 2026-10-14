@@ -1,6 +1,6 @@
 P09 interactive engineering run; seat inputs and race outcome candidates are synthetic.
 Engine: 4.7.2-stable (official)
-Date: 2026-10-14T06:47:05 UTC
+Date: 2026-10-14T20:08:35 UTC
 Build: P09-match-lifecycle-dev; route is development-only.
 OS/CPU: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
 Devices: synthetic keyboard seats K1/K2 and synthetic gamepad IDs 7101/7102.
@@ -8,7 +8,7 @@ Fixtures: 0.002 s Karera cap, generated race ledger candidates, 0.001 s head sta
 Reviewer: Codex engineering run; no independent human review recorded.
 PASS: P09 route opens
 PASS: P09 keeps the P07 development profile
-PASS: P09 keeps exactly the three P07 variants
+PASS: P09 keeps the current P07 scene-authored variant set
 PASS: new P09 route has no prior match identity
 PASS: four synthetic seats keep stable original slots
 PASS: four connected synthetic seats start a P09 match

@@ -1,0 +1,26 @@
+P13-T13/T14 scoreboard delivery checks
+Date: 2026-10-15
+Engine: Godot 4.7.2.stable.official.ed1daf0bf (Windows)
+
+Focused and regression suite summaries: see focused_tests.txt.
+Rendered scene-fixture capture run: see scoreboard_capture_run.txt; 10 captures, failures=0.
+
+Code format/lint recheck:
+  gdformat --check on 21 changed GDScript files: 21 unchanged.
+  gdlint on the same 21 files: Success, no problems found.
+
+Godot editor import/class registration:
+  Godot 4.7.2 --headless --editor --path 'tilaok!' --quit
+  Exit code: 0. No parser/import errors in output.
+
+Windows export smoke:
+  Export preset: Windows Desktop (release).
+  Output: C:\Users\roman\AppData\Local\Temp\tilaok-scoreboard-final.exe (109,168,640 bytes).
+  Export command completed with exit code 0.
+  Exported executable: --headless --quit-after 20; completed with exit code 0.
+
+Whitespace check:
+  git diff --check
+  Exit code: 0. Git emitted only CRLF/LF normalization warnings for existing text-file attributes; no whitespace errors.
+
+All interactive routes and captures used synthetic seats/input. This report does not claim physical-device or independent human review.

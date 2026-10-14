@@ -14,6 +14,9 @@ var winner_seat := -1
 var final_outcome_text := ""
 var sudden_death := false
 var final_seats: Array[Dictionary] = []
+var score_presentation: Dictionary = {}
+var score_presentation_id := ""
+var target_score_units := 80
 
 
 static func diagnostic(round_value: int, seats: Array[Dictionary]) -> MatchResultsViewModel:
@@ -92,6 +95,7 @@ static func race(
 		model.totals[seat_index] = {
 			"identity": int(seat.identity),
 			"shape": str(seat.shape),
+			"color": seat.get("color", Color.WHITE),
 			"units": total,
 			"text": ScoreFormat.format_units(total),
 			"delta_units": delta,
@@ -194,6 +198,7 @@ static func lag_sanay(
 		model.totals[seat_index] = {
 			"identity": int(seat.identity),
 			"shape": str(seat.shape),
+			"color": seat.get("color", Color.WHITE),
 			"units": total,
 			"text": ScoreFormat.format_units(total),
 			"delta_units": delta,
@@ -278,6 +283,7 @@ static func kangaroo(
 		model.totals[seat_index] = {
 			"identity": int(seat.identity),
 			"shape": str(seat.shape),
+			"color": seat.get("color", Color.WHITE),
 			"units": total,
 			"text": ScoreFormat.format_units(total),
 			"delta_units": delta,
@@ -327,8 +333,10 @@ static func final_match(
 		model.totals[seat_index] = {
 			"identity": row.identity,
 			"shape": row.shape,
+			"color": seat.get("color", Color.WHITE),
 			"units": units,
 			"text": row.total_text,
+			"status": "WINNER" if seat_index == winner else "FINAL SCORE",
 		}
 		if seat_index == winner:
 			winner_data = seat
@@ -354,7 +362,18 @@ func as_dictionary() -> Dictionary:
 		"final_outcome_text": final_outcome_text,
 		"sudden_death": sudden_death,
 		"final_seats": final_seats.duplicate(true),
+		"score_presentation": score_presentation.duplicate(true),
+		"score_presentation_id": score_presentation_id,
+		"target_score_units": target_score_units,
 	}
+
+
+func bind_score_presentation(
+	history: ScorePresentationHistory, target_units: int, identity: String, reveal_round: int = -1
+) -> void:
+	target_score_units = maxi(target_units, 1)
+	score_presentation_id = identity
+	score_presentation = history.snapshot(totals, reveal_round)
 
 
 static func _signed_score(units: int) -> String:

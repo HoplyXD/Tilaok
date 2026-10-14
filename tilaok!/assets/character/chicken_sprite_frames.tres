@@ -1,0 +1,150 @@
+[gd_resource type="SpriteFrames" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" uid="uid://bhel0o1cvyc61" path="res://assets/character/Chicken Placeholder Sprite Sheet.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Atlas_idle"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_move_right"]
+atlas = ExtResource("1")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_move_left"]
+atlas = ExtResource("1")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_sneak"]
+atlas = ExtResource("1")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_air"]
+atlas = ExtResource("1")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_air_right"]
+atlas = ExtResource("1")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_air_left"]
+atlas = ExtResource("1")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_dead"]
+atlas = ExtResource("1")
+region = Rect2(1536, 512, 512, 512)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_idle")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_move_right")
+}],
+"loop": true,
+"name": &"run_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_move_left")
+}],
+"loop": true,
+"name": &"run_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_move_right")
+}],
+"loop": true,
+"name": &"wall_slide_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_move_left")
+}],
+"loop": true,
+"name": &"wall_slide_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_sneak")
+}],
+"loop": true,
+"name": &"sneak",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_air")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_air_right")
+}],
+"loop": true,
+"name": &"jump_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_air_left")
+}],
+"loop": true,
+"name": &"jump_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_air")
+}],
+"loop": true,
+"name": &"glide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_air_right")
+}],
+"loop": true,
+"name": &"glide_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_air_left")
+}],
+"loop": true,
+"name": &"glide_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_idle")
+}],
+"loop": true,
+"name": &"stun",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_dead")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}]

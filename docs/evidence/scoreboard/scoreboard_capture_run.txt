@@ -1,0 +1,13 @@
+Godot 4.7.2-stable (official) · Windows
+Synthetic result-screen fixture captures; no physical-device or human review.
+SCOREBOARD_CAPTURE 02_player_mixed_awards_1280x720.png (1280, 720)
+SCOREBOARD_CAPTURE 03_player_placement_1920x800.png (1920, 800)
+SCOREBOARD_CAPTURE 04_player_no_score_1280x720.png (1280, 720)
+SCOREBOARD_CAPTURE fractional_eighths_1920x800.png (1920, 800)
+SCOREBOARD_CAPTURE mid_reveal_1920x800.png (1920, 800)
+SCOREBOARD_CAPTURE settled_1920x800.png (1920, 800)
+SCOREBOARD_CAPTURE reduced_motion_1280x720.png (1280, 720)
+SCOREBOARD_CAPTURE four_player_above_target_1920x1080.png (1920, 1080)
+SCOREBOARD_CAPTURE round_12_winner_below_target_1920x1080.png (1920, 1080)
+SCOREBOARD_CAPTURE tied_sudden_death_winner_callout_1280x720.png (1280, 720)
+SCOREBOARD_CAPTURE_SUMMARY failures=0 output=C:/Users/roman/.codex/worktrees/prd-phasetask/Tilaok/docs/evidence/scoreboard

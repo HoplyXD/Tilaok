@@ -43,6 +43,7 @@ var debug_overlay_default := false
 ## GameFlow enables the overlay's developer-harness button (debug builds only).
 var allow_harness_button := false
 var presentation_settings := PresentationSettings.new()
+var score_presentation_history := ScorePresentationHistory.new()
 ## seat -> {allowed, reason} from the last ghost refresh (no per-frame validation).
 var placement_verdicts: Dictionary = {}
 ## seat -> short notice (rotation unavailable, cannot confirm, locked).
@@ -296,6 +297,7 @@ func start_match() -> bool:
 		items.director.process_physics_priority, process_physics_priority - 1
 	)
 	cumulative_score_units.clear()
+	score_presentation_history.reset()
 	for seat in input_router.registry.joined_seats():
 		cumulative_score_units[int(seat.seat)] = 0
 	match_streams.seed_all(match_seed)
@@ -764,6 +766,7 @@ func _finish_race(reason: String) -> void:
 		race_round_controller.ledger.round_id, score_result
 	):
 		return
+	_record_score_presentation(items.round_number + 1, score_result)
 	for seat_index in seat_indices:
 		cumulative_score_units[seat_index] = int(score_result.totals_units[seat_index])
 	items.end_round()
@@ -781,6 +784,7 @@ func _finish_race(reason: String) -> void:
 		race_round_controller.hard_cap_seconds,
 		race_round_controller.post_first_finish_seconds
 	)
+	_bind_score_presentation(last_results_model, items.round_number)
 	phase_controller.enter(MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds)
 	_set_input_phase()
 	current_context = BoundedStageCamera.Context.PLAY
@@ -871,6 +875,8 @@ func _all_results_ready() -> bool:
 func _start_next_round() -> void:
 	if phase_controller.phase != MatchPhaseController.Phase.RESULTS:
 		return
+	if presenter != null and presenter.result_screen != null:
+		presenter.result_screen.chart().settle()
 	_begin_pugad()
 
 
@@ -881,6 +887,7 @@ func reset_room() -> void:
 	phase_controller.enter(MatchPhaseController.Phase.LOBBY)
 	race_round_controller = null
 	cumulative_score_units.clear()
+	score_presentation_history.reset()
 	round_start_score_units.clear()
 	race_candidate_queue.reset()
 	assignments.clear()
@@ -896,6 +903,29 @@ func reset_room() -> void:
 		input_router.set_phase(LocalInputRouter.Phase.LOBBY)
 	last_message = "Match reset: Pugad, Place and Play are ready for a new match."
 	_refresh_match_ui()
+
+
+func _record_score_presentation(round_number: int, score_result: Dictionary) -> void:
+	if not score_presentation_history.record_committed(match_run_id, round_number, score_result):
+		push_warning(
+			(
+				"Score presentation history ignored duplicate or invalid commit %d:%d."
+				% [match_run_id, round_number]
+			)
+		)
+
+
+func _bind_score_presentation(
+	model: MatchResultsViewModel, reveal_round: int = -1, identity: String = ""
+) -> void:
+	if model == null:
+		return
+	var result_id := identity
+	if result_id.is_empty():
+		result_id = "round:%d:%d" % [match_run_id, model.round_number]
+	model.bind_score_presentation(
+		score_presentation_history, tuning.match_target_score_units, result_id, reveal_round
+	)
 
 
 func _set_input_phase() -> void:
