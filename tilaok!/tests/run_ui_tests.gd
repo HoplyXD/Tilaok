@@ -71,6 +71,8 @@ const CONTRACT := {
 		"GhostStatus": "Label",
 		"Pointer1": "UiPlayerBadge",
 		"Pointer4": "UiPlayerBadge",
+		"SeatStatus1": "UiScoreRow",
+		"SeatStatus4": "UiScoreRow",
 	},
 	"play_hud":
 	{
@@ -81,12 +83,16 @@ const CONTRACT := {
 		"ScoreRow4": "UiScoreRow",
 		"TimerLabel": "Label",
 		"NextEventLabel": "Label",
+		"NoticeToast": "UiToastLine",
 	},
 	"round_result_screen":
 	{
 		"RoundLabel": "Label",
 		"Outcome1": "UiScoreRow",
 		"Award1": "UiAwardLine",
+		"Award10": "UiAwardLine",
+		"EndReasonLabel": "Label",
+		"DeadlineLabel": "Label",
 		"NoScoreReason": "UiToastLine",
 		"ReadyHint": "UiPromptGlyph",
 		"AdvanceCountdown": "UiCountdownRing",

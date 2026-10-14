@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_place_overlay.gd" id="2"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/ghost_legend.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="8"]
 
 [node name="PlaceOverlay" type="Control"]
 layout_mode = 3
@@ -93,6 +94,34 @@ theme_override_constants/separation = 8
 [node name="ReasonToast" parent="Bottom/Col" instance=ExtResource("6")]
 layout_mode = 2
 visible = false
+unique_name_in_owner = true
+
+[node name="StatusRow" type="HBoxContainer" parent="Bottom/Col"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SeatStatus1" parent="Bottom/Col/StatusRow" instance=ExtResource("8")]
+layout_mode = 2
+visible = false
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="SeatStatus2" parent="Bottom/Col/StatusRow" instance=ExtResource("8")]
+layout_mode = 2
+visible = false
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="SeatStatus3" parent="Bottom/Col/StatusRow" instance=ExtResource("8")]
+layout_mode = 2
+visible = false
+theme_type_variation = &"RowPanelCompact"
+unique_name_in_owner = true
+
+[node name="SeatStatus4" parent="Bottom/Col/StatusRow" instance=ExtResource("8")]
+layout_mode = 2
+visible = false
+theme_type_variation = &"RowPanelCompact"
 unique_name_in_owner = true
 
 [node name="PointerChips" type="HBoxContainer" parent="Bottom/Col"]

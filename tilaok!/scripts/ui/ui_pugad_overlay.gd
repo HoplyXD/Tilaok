@@ -7,6 +7,7 @@ const SELECTION_SECONDS := 8.0
 
 var egg_slots: Array[UiEggSlot] = []
 var selected := 0
+var _egg_ids := PackedStringArray()
 
 @onready var _phase_banner: UiPhaseBanner = %PhaseBanner
 @onready var _countdown: UiCountdownRing = %Countdown
@@ -35,6 +36,57 @@ func bind_eggs(
 	selected = 0
 	_refresh_selection()
 	return shown
+
+
+## Live: reconfigure the egg row once per round from the real pool (stable egg ids per slot).
+func bind_live_eggs(
+	definitions: ItemDefinitions, egg_pool: Array[Dictionary], tuning: GameplayTuning
+) -> int:
+	_egg_ids.clear()
+	var keys := PackedStringArray()
+	for egg in egg_pool:
+		_egg_ids.append(str(egg.get("egg_id", "")))
+		keys.append(str(egg.get("variant_key", "")))
+	var shown := bind_eggs(definitions, keys, tuning)
+	_announce.visible = false
+	_lost_claim.clear()
+	return shown
+
+
+## Live: ownership, per-seat selection, the lost-claim cue and the countdown.
+## seats are the four registry seat dictionaries; assignments maps seat -> egg_id and
+## selected_by_seat maps seat -> egg index.
+func bind_live_state(
+	seats: Array[Dictionary],
+	assignments: Dictionary,
+	selected_by_seat: Dictionary,
+	lost_text: String,
+	hint_text: String,
+	remaining: float,
+	total: float
+) -> void:
+	_phase_banner.set_phase("PUGAD", hint_text)
+	_countdown.set_time(remaining, total)
+	_lost_claim.show_text(lost_text)
+	for index in egg_slots.size():
+		var slot := egg_slots[index]
+		if not slot.visible:
+			continue
+		var egg_id := _egg_ids[index] if index < _egg_ids.size() else ""
+		var owner_seat := {}
+		var owned := false
+		for seat_index in assignments:
+			if str(assignments[seat_index]) == egg_id and int(seat_index) < seats.size():
+				owner_seat = seats[int(seat_index)]
+				owned = true
+		slot.set_claim_owner(owner_seat)
+		var selectors: Array[Dictionary] = []
+		if not owned:
+			for seat_index in selected_by_seat:
+				if int(selected_by_seat[seat_index]) == index and int(seat_index) < seats.size():
+					selectors.append(seats[int(seat_index)])
+		slot.set_selectors(selectors)
+		slot.set_selected(not selectors.is_empty())
 
 
 func show_claim(slot_index: int, seat: Dictionary) -> void:

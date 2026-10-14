@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_play_hud.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="4"]
 
 [node name="PlayHud" type="Control"]
 layout_mode = 3
@@ -93,5 +94,21 @@ unique_name_in_owner = true
 layout_mode = 2
 text = ""
 theme_type_variation = &"HudLabel"
+unique_name_in_owner = true
+
+[node name="NoticeRow" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 72.0
+offset_bottom = 132.0
+grow_horizontal = 2
+theme_type_variation = &"SafeAreaMargin"
+mouse_filter = 2
+
+[node name="NoticeToast" parent="NoticeRow" instance=ExtResource("4")]
+layout_mode = 2
+visible = false
+size_flags_vertical = 0
 unique_name_in_owner = true
 

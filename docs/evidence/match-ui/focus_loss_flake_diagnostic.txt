@@ -1,0 +1,14 @@
+﻿# Why P08 interactive (and rarely match UI interactive) can fail in a long windowed sequence
+# A temporary print was added to the isolated copy's P08 pause handler (not committed). Two runs of the failing order p06 -> p10 -> match UI -> p08:
+## run 1
+DIAG_PAUSE state=true reason=participant requested pause frames=761
+DIAG_PAUSE state=false reason=resumed frames=761
+P08_INTERACTIVE_SUMMARY checks=87 failures=0
+P08_INTERACTIVE_SUMMARY checks=87 failures=0
+## run 2
+DIAG_PAUSE state=true reason=application focus lost frames=293
+DIAG_PAUSE state=true reason=participant requested pause frames=764
+DIAG_PAUSE state=false reason=resumed frames=764
+P08_INTERACTIVE_SUMMARY checks=87 failures=4
+P08_INTERACTIVE_SUMMARY checks=87 failures=4
+# 'application focus lost' is the P02 rule (PauseRecoveryCoordinator pauses everyone when the window loses focus); the runner's later 'participant requested pause' lines are its own deliberate pause test.

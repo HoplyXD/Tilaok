@@ -1,0 +1,32 @@
+﻿# run_match_ui_interactive on Godot 4.7.2.stable.official.ed1daf0bf, 2026-10-14, tree rebased onto 332f173 (P08/P09 migrated)
+## stdout
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+TILAOK_FLOW_READY state=title profile=karera_slice route=first_playable
+P04_ITEM_LAB_READY families=5 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":4,"item_ids":["build.bamboo_bridge.span_4x1#001","build.hollow_blocks.cell_1x1#004","build.hollow_blocks.stack_2x3#002","build.hollow_blocks.stack_2x3#003"],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0,"2":0,"3":0},"signature":"build.bamboo_bridge.span_4x1#001|build.bamboo_bridge.span_4x1|8,8|0|owner0|r0\nbuild.hollow_blocks.cell_1x1#004|build.hollow_blocks.cell_1x1|22,8|0|owner3|r0\nbuild.hollow_blocks.stack_2x3#002|build.hollow_blocks.stack_2x3|12,8|0|owner1|r0\nbuild.hollow_blocks.stack_2x3#003|build.hollow_blocks.stack_2x3|17,8|0|owner2|r0","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"SECURED","2":"SECURED","3":"SECURED"},"item_count":4,"item_ids":["build.bamboo_bridge.span_4x1#001","build.hollow_blocks.cell_1x1#004","build.hollow_blocks.stack_2x3#002","build.hollow_blocks.stack_2x3#003"],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0,"2":0,"3":0},"signature":"build.bamboo_bridge.span_4x1#001|build.bamboo_bridge.span_4x1|8,8|0|owner0|r0\nbuild.hollow_blocks.cell_1x1#004|build.hollow_blocks.cell_1x1|22,8|0|owner3|r0\nbuild.hollow_blocks.stack_2x3#002|build.hollow_blocks.stack_2x3|12,8|0|owner1|r0\nbuild.hollow_blocks.stack_2x3#003|build.hollow_blocks.stack_2x3|17,8|0|owner2|r0","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":5,"item_ids":["build.bamboo_bridge.span_4x1#001","build.hollow_blocks.cell_1x1#004","build.hollow_blocks.cell_1x1#005","build.hollow_blocks.stack_2x3#002","build.hollow_blocks.stack_2x3#003"],"pending_claims":0,"race_candidates":0,"round":2,"scores":{"0":10,"1":10,"2":10,"3":0},"signature":"build.bamboo_bridge.span_4x1#001|build.bamboo_bridge.span_4x1|8,8|0|owner0|r0\nbuild.hollow_blocks.cell_1x1#004|build.hollow_blocks.cell_1x1|22,8|0|owner3|r0\nbuild.hollow_blocks.cell_1x1#005|build.hollow_blocks.cell_1x1|10,5|0|owner0|r1\nbuild.hollow_blocks.stack_2x3#002|build.hollow_blocks.stack_2x3|12,8|0|owner1|r0\nbuild.hollow_blocks.stack_2x3#003|build.hollow_blocks.stack_2x3|17,8|0|owner2|r0","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"SECURED","2":"SECURED","3":"ELIMINATED"},"item_count":5,"item_ids":["build.bamboo_bridge.span_4x1#001","build.hollow_blocks.cell_1x1#004","build.hollow_blocks.cell_1x1#005","build.hollow_blocks.stack_2x3#002","build.hollow_blocks.stack_2x3#003"],"pending_claims":0,"race_candidates":0,"round":2,"scores":{"0":10,"1":10,"2":10,"3":0},"signature":"build.bamboo_bridge.span_4x1#001|build.bamboo_bridge.span_4x1|8,8|0|owner0|r0\nbuild.hollow_blocks.cell_1x1#004|build.hollow_blocks.cell_1x1|22,8|0|owner3|r0\nbuild.hollow_blocks.cell_1x1#005|build.hollow_blocks.cell_1x1|10,5|0|owner0|r1\nbuild.hollow_blocks.stack_2x3#002|build.hollow_blocks.stack_2x3|12,8|0|owner1|r0\nbuild.hollow_blocks.stack_2x3#003|build.hollow_blocks.stack_2x3|17,8|0|owner2|r0","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":2}
+P04_ITEM_LAB_READY families=5 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+TILAOK_FLOW_READY state=title profile=karera_slice route=first_playable
+P04_ITEM_LAB_READY families=5 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+widest framing: camera zoom 0.512; 1 cell = 49.2 px; chicken body = 43.0 x 92.2 px at 1920x1080
+tightest framing: camera zoom 0.685; 1 cell = 65.8 px; chicken body = 57.6 x 123.4 px at 1920x1080
+tuned zoom minimum: camera zoom 0.500; 1 cell = 48.0 px; chicken body = 42.0 x 90.0 px at 1920x1080
+tuned zoom maximum: camera zoom 0.700; 1 cell = 67.2 px; chicken body = 58.8 x 126.0 px at 1920x1080
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=5 enabled_variants=3 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P04_ITEM_LAB_READY families=11 enabled_variants=5 profile=lagsanay_lab
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P08_LAGSANAY_READY build=P08-independent-lagsanay-dev profile=lagsanay_lab seed=12345
+MATCH_UI_INTERACTIVE checks=59 failures=0 captures=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/7edd9978-b1f1-4ac3-b3d2-ab99c0136d6f/scratchpad/iso/docs/evidence/match-ui
+## stderr

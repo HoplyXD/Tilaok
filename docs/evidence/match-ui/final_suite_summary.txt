@@ -1,0 +1,29 @@
+﻿# Final suite summary: tree rebased onto origin/main 332f173 (P09) + this change; Godot 4.7.2 console; isolated scratch copy; synthetic input only.
+# Headless suites (one run each):
+run_foundation_tests       exit=0 fail_lines=2 secs=7 :: Harness lifecycle checks complete: 0 failure(s).
+run_p02_tests              exit=0 fail_lines=5 secs=16 :: P02_TESTS checks=83 failures=0
+run_p02_wall_tests         exit=0 fail_lines=2 secs=30 :: P02_WALL_TESTS checks=85 failures=0
+run_p03_tests              exit=0 fail_lines=2 secs=10 :: P03_TESTS checks=103 failures=0
+run_p04_tests              exit=0 fail_lines=32 secs=34 :: P04_TESTS checks=269 failures=0
+run_p05_tests              exit=0 fail_lines=2 secs=3 :: P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests              exit=0 fail_lines=1 secs=3 :: P06_TEST_SUMMARY checks=97 failures=0
+run_ui_tests               exit=0 fail_lines=1 secs=5 :: UI_TESTS checks=447 failures=0
+run_p10_tests              exit=0 fail_lines=2 secs=92 :: P10_TESTS checks=424 failures=0
+run_blocks_tests           exit=0 fail_lines=1 secs=27 :: BLOCKS_TESTS checks=76 failures=0
+run_match_ui_tests         exit=0 fail_lines=1 secs=11 :: MATCH_UI_TESTS checks=198 failures=0
+run_match_ui_binding_tests exit=0 fail_lines=1 secs=1 :: MATCH_UI_BINDING_TESTS checks=185 failures=0
+run_match_ui_mode_tests    exit=0 fail_lines=1 secs=6 :: MATCH_UI_MODE_TESTS checks=62 failures=0
+run_p07_tests              exit=0 fail_lines=1 secs=3 :: P07_TESTS checks=590 failures=0
+run_p07_reset_audit        exit=0 fail_lines=1 secs=3 :: P07_RESET_AUTOMATION resets=10 checks=172 failures=0 participants=synthetic
+run_p08_tests              exit=0 fail_lines=1 secs=1 :: P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests              exit=0 fail_lines=1 secs=1 :: P09_TEST_SUMMARY checks=77 failures=0
+# Windowed suites (second sequential run; the first full run had the same results except the P08 interactive flake explained in README.md):
+run_p03_interactive        exit=0 fail_lines=1 secs=4 :: P03_INTERACTIVE checks=14 failures=0 evidence=<scratch copy> size=(1920, 1080)
+run_p04_interactive        exit=1 fail_lines=9 secs=6 ::        [3] _click_button (res://tests/run_p04_interactive.gd:207)
+run_p05_interactive        exit=0 fail_lines=1 secs=6 :: P05_INTERACTIVE checks=61 failures=0 captures=<scratch copy>
+run_p06_interactive        exit=0 fail_lines=1 secs=4 :: P06_INTERACTIVE_SUMMARY checks=17 failures=0 resolution=(1920, 1080)
+run_p10_interactive        exit=1 fail_lines=8 secs=9 ::        [0] _match_session (res://tests/run_p10_interactive.gd:279)
+run_match_ui_interactive   exit=0 fail_lines=1 secs=12 :: MATCH_UI_INTERACTIVE checks=59 failures=0 captures=<scratch copy>
+run_p08_interactive        FLAKY in the full sequence (focus-loss pause, see focus_loss_flake_diagnostic.txt); 87/0 in 7 of 10 runs (the 3 failing runs each show only 4-5 failures, all in the first 2-player time-based block)
+run_p09_interactive        exit=0 fail_lines=2 secs=4 :: P09_INTERACTIVE_SUMMARY checks=108 failures=0
+audit_p09_restarts         exit=0 fail_lines=1 secs=6 :: P09_RESTART_AUDIT cycles=10 failures=0

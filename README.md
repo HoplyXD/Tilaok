@@ -41,12 +41,30 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 ## Status
 P01 provides the foundation harness and typed provisional configuration. P02 adds local movement/input; P03 adds the protected graybox arena, bounded camera and support fixtures. P04 adds Kaing/Tulay construction seeds. P05 adds the local lobby → Pugad → atomic Place flow, and P06 adds live Karera goal contact, deadlines, exact race scoring, explained results and next-round reset with persistent construction. P07 adds a dedicated first-playable route limited to three verified Kaing/Tulay variants; its synthetic engineering checks pass, while player sessions, physical-device acceptance and human review remain open (0/4 tasks checked). P08 adds independent pass-through bomb-taya Lagsanay on the persistent stage and is 6/6 technically verified in development; its profile is not release-enabled and P07-T04 remains an open entry/release gate. P09 adds a development-only full-match route that ends at 80 eighth-point units or round 12, sends tied leaders to Lagsanay sudden death, and binds one winner and exact scores to the live result screen with Replay/Lobby/Quit. P09's four technical tasks pass, but its 1080p warmed p95 frame interval is above target; see [P09 evidence](docs/evidence/p09/README.md). P10 hazard integration, Barya gameplay, event scheduling/stacks, tutorial, final art and release readiness remain open. P02 is 17/26 because physical controller, keyboard rollover/reconnect checks and wall-movement / sneak-glide human review remain open. Since 2026-10-14 the stage uses 64 px tiles (TileMapLayer), keyboard jump is W/Up (hold to glide), S/Down sneaks, and Solid Block, Wood Box and Collapsing Block scenes live in `tilaok!/scenes/blocks/`. Wall slide/jump is implemented; its human review and Should include/defer decision remain open. P03 is 6/6 and P04 is 18/22. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), [tracker](docs/PHASETASK.md), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
 
+## Play the live match flow (P07 playtest build)
+
+The project now starts at the **Title**. From the repository root, with the explicit Godot 4.7.2 executable:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'
+```
+
+Press your ready key to join (K1 **F**, K2 **Enter**, gamepad **South**), choose **Start**, let the other players join in the Lobby and mark every seat ready: the match starts by itself. Then Pugad (**← / →** pick an egg, ready key claims), Place (move, **R** / **Right Shift** rotate, ready key confirms), Karera, Round result, next round. **Esc** or a pad **Start** pauses; the pause owner chooses Resume / Settings / Library / Leave. This default route is the Kaing/Tulay slice of the Karera loop with no match end. To play the same flow with the P09 match end (first to 10 points or round 12, Lagsanay sudden death on ties, final result with Replay / Return to Lobby / Quit), add `-- --match-route=lifecycle` to the command above. The facilitator sheet and launch steps for the exported build are in [docs/PLAYTEST.md](docs/PLAYTEST.md).
+
+## Run the developer harness
+
+The harness (P01–P10 fixtures, Item Lab, UI Gallery, the P05 match room with the DEBUG overlay) is no longer the main scene. Open it with a user argument, or from the Title's DEBUG overlay in debug builds (F3, **Developer harness**):
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --harness
+```
+
 ## Run the P03 graybox
 
 From the repository root, launch the harness with the explicit Godot 4.7.2 executable:
 
 ```powershell
-& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --harness
 ```
 
 Choose **P03 Graybox Arena** in the harness. Join K1/K2 with the visible buttons; K1 uses A/D + Space and K2 uses the arrow keys + Enter. The HUD buttons switch Play/Place fixtures, confirm/rotate a diagnostic preview, pause, reset, and return to the harness. See the [full run and test instructions](docs/PROJECT_STRUCTURE.md).
@@ -57,11 +75,11 @@ Launch the harness as above, then choose **Item Lab**. Join K1/K2 with the visib
 
 ## Review the UI shells
 
-Launch the harness with the command above and choose **UI Gallery** (every screen and state with SAMPLE data; **F9** hides the review panel) or **Player flow (Title)**. To edit them, open `tilaok!` in the Godot 4.7.2 editor and follow the "How to edit the UI in Godot" section of [docs/UI_HANDOFF.md](docs/UI_HANDOFF.md). Everything is placeholder: no final art, font or live scoring data.
+Launch the harness with the command above and choose **UI Gallery** (every screen and state with SAMPLE data; **F9** hides the review panel) or **Player flow (Title)**. To edit them, open `tilaok!` in the Godot 4.7.2 editor and follow the "How to edit the UI in Godot" section of [docs/UI_HANDOFF.md](docs/UI_HANDOFF.md). Everything is placeholder art and a placeholder typeface. **Player flow (Title)** now runs the live match loop; the gallery itself stays SAMPLE-only.
 
 ## Run the match loop
 
-Launch the harness with the command above and choose **P05 Match Loop**. Join at least two seats and mark every joined seat ready before **Start match** enables. Keyboard seats use K1 **WASD + Space**, K2 **arrows + Ctrl**; **F / Enter** readies and confirms, arrows select a Pugad egg, and **R / Right Shift** rotates a supported Place piece. During Karera, reach the outlined goal to finish. Results show outcomes, awards, suppression/no-score reason, deltas and exact cumulative totals. Results advance when all seats are ready or after eight seconds. Construction remains for the next round.
+Launch the harness with the command above and choose **P05 Match Loop** (the DEBUG overlay is on; F3 toggles it). Join at least two seats and mark every joined seat ready before **Start match** enables (the player flow from the Title starts without a click). Keyboard seats use K1 **WASD + Space**, K2 **arrows + Ctrl**; **F / Enter** readies and confirms, arrows select a Pugad egg, and **R / Right Shift** rotates a supported Place piece. During Karera, reach the outlined goal to finish. Results show outcomes, awards, suppression/no-score reason, deltas and exact cumulative totals. Results advance when all seats are ready or after eight seconds. Construction remains for the next round.
 
 Run the focused automated, interactive and capture checks with Godot 4.7.2:
 

@@ -1,0 +1,15 @@
+﻿run_foundation_tests       exit=0 fail_lines=2 secs=6 :: Harness lifecycle checks complete: 0 failure(s).
+run_p02_tests              exit=0 fail_lines=5 secs=17 :: P02_TESTS checks=83 failures=0
+run_p02_wall_tests         exit=0 fail_lines=2 secs=30 :: P02_WALL_TESTS checks=85 failures=0
+run_p03_tests              exit=0 fail_lines=2 secs=10 :: P03_TESTS checks=103 failures=0
+run_p04_tests              exit=0 fail_lines=32 secs=33 :: P04_TESTS checks=268 failures=0
+run_p05_tests              exit=0 fail_lines=2 secs=3 :: P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests              exit=0 fail_lines=1 secs=3 :: P06_TEST_SUMMARY checks=97 failures=0
+run_ui_tests               exit=0 fail_lines=1 secs=6 :: UI_TESTS checks=437 failures=0
+run_p10_tests              exit=0 fail_lines=2 secs=92 :: P10_TESTS checks=424 failures=0
+run_blocks_tests           exit=0 fail_lines=1 secs=27 :: BLOCKS_TESTS checks=76 failures=0
+run_p03_interactive        exit=0 fail_lines=1 secs=8 :: P03_INTERACTIVE checks=14 failures=0 evidence=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/7edd9978-b1f1-4ac3-b3d2-ab99c0136d6f/scratchpad/iso/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
+run_p04_interactive        exit=1 fail_lines=9 secs=10 ::        [3] _click_button (res://tests/run_p04_interactive.gd:207)
+run_p05_interactive        exit=0 fail_lines=1 secs=8 :: P05_INTERACTIVE checks=61 failures=0 captures=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/7edd9978-b1f1-4ac3-b3d2-ab99c0136d6f/scratchpad/iso/docs/evidence/p05
+run_p06_interactive        exit=0 fail_lines=1 secs=6 :: P06_INTERACTIVE_SUMMARY checks=17 failures=0 resolution=(1920, 1080)
+run_p10_interactive        exit=1 fail_lines=8 secs=12 ::        [0] _match_session (res://tests/run_p10_interactive.gd:279)

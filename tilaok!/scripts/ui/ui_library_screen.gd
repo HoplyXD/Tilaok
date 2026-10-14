@@ -52,6 +52,15 @@ func bind_library(
 	_entry_list.refresh_items()
 
 
+## Live binding: the real enabled item definitions; opens on the first category, filter off.
+func bind_live(definitions: ItemDefinitions, tuning: GameplayTuning, text: UiLibraryText) -> void:
+	bind_library(definitions, tuning, text, "")
+	set_release_filter(false)
+	var names := category_names()
+	choose_category(names[0] if not names.is_empty() else "")
+	_set_zone(ZONE_CATEGORIES)
+
+
 func choose_category(name: String) -> void:
 	category = name
 	entries.clear()

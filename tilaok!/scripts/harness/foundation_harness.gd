@@ -4,6 +4,7 @@ extends Control
 const DEFAULT_SEED := 12345
 const BUILD_ID := "P01-foundation-dev"
 const UI_GALLERY_SCENE := preload("res://scenes/ui/ui_gallery.tscn")
+const PLAYER_FLOW_SCENE := preload("res://scenes/flow/game_flow.tscn")
 const ROOM_SCENES := {
 	"movement_room": preload("res://scenes/fixtures/movement_room.tscn"),
 	"p02_movement_room": preload("res://scenes/fixtures/p02_movement_room.tscn"),
@@ -17,7 +18,7 @@ const ROOM_SCENES := {
 	"p05_match_items": preload("res://scenes/match/match_room_items_lab.tscn"),
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 	"ui_gallery": UI_GALLERY_SCENE,
-	"ui_player_flow": UI_GALLERY_SCENE,
+	"ui_player_flow": PLAYER_FLOW_SCENE,
 }
 const FULL_VIEW_ROOMS: PackedStringArray = [
 	"p03_stage_room",
@@ -233,6 +234,10 @@ func _open_room(room_id: String) -> void:
 		return
 	_release_active_room()
 	active_room = ROOM_SCENES[room_id].instantiate() as Control
+	if room_id == "ui_player_flow":
+		active_room.set("harness_mode", true)
+	if "debug_overlay_default" in active_room and room_id != "p07_first_playable":
+		active_room.set("debug_overlay_default", true)
 	if (
 		room_id in ["p05_match", "p07_first_playable", "p08_lagsanay", "p09_match_lifecycle"]
 		and active_room.has_method("set_match_seed")
@@ -245,8 +250,7 @@ func _open_room(room_id: String) -> void:
 	else:
 		room_host.add_child(active_room)
 		harness_panel.hide()
-	if room_id == "ui_player_flow" and active_room.has_method("set_chrome_visible"):
-		active_room.call("set_chrome_visible", false)
+
 	active_room.return_requested.connect(_close_room)
 	if room_id == "p03_stage_room":
 		_append_status(

@@ -14,6 +14,7 @@ var preview: ItemEggPreview
 
 @onready var _host: Control = %PreviewHost
 @onready var _owner_badge: UiPlayerBadge = %OwnerBadge
+@onready var _selectors: Array[UiPlayerBadge] = [%Selector1, %Selector2, %Selector3, %Selector4]
 
 
 func configure(
@@ -29,6 +30,8 @@ func configure(
 	_host.add_child(egg)
 	egg.claimed.connect(_on_preview_claimed)
 	_owner_badge.visible = false
+	for badge in _selectors:
+		badge.visible = false
 	return true
 
 
@@ -43,6 +46,23 @@ func set_claim_owner(seat: Dictionary) -> void:
 	_owner_badge.visible = not seat.is_empty()
 	if not seat.is_empty():
 		_owner_badge.bind_seat(seat)
+
+
+## Live: the seats currently pointing at this egg (number + shape badges, colour supplementary).
+func set_selectors(seats: Array[Dictionary]) -> void:
+	for index in _selectors.size():
+		var badge := _selectors[index]
+		badge.visible = index < seats.size()
+		if badge.visible:
+			badge.bind_seat(seats[index])
+
+
+func selector_numbers() -> PackedInt32Array:
+	var numbers := PackedInt32Array()
+	for badge in _selectors:
+		if badge.visible:
+			numbers.append(badge.seat_number)
+	return numbers
 
 
 func claim_owner_number() -> int:

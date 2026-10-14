@@ -3,9 +3,12 @@ extends UiScreen
 
 ## Display-only HUD in the 64 px top reservation. Never takes input.
 
+const CHALLENGE_NAME := "Karera"
+
 var score_rows: Array[UiScoreRow] = []
 
 @onready var hud_bar: Control = %HudBar
+@onready var _notice_toast: UiToastLine = %NoticeToast
 @onready var _round_label: Label = %RoundLabel
 @onready var _challenge_label: Label = %ChallengeLabel
 @onready var _twist_tag: Label = %TwistTag
@@ -32,6 +35,27 @@ func bind_round(
 	_timer_label.visible = not timer_text.is_empty()
 	_next_event_label.text = next_event
 	_next_event_label.visible = not next_event.is_empty()
+
+
+## Live: exact eighth-point units (ScoreFormat), per-seat state text and an optional notice.
+## score_units / states map seat index -> int / String.
+func bind_live(
+	round_number: int,
+	timer_text: String,
+	window_text: String,
+	seats: Array[Dictionary],
+	score_units: Dictionary,
+	states: Dictionary,
+	notice: String,
+	challenge_text: String = CHALLENGE_NAME
+) -> void:
+	bind_round(round_number, challenge_text, "", timer_text, window_text)
+	for index in score_rows.size():
+		var seat: Dictionary = seats[index] if index < seats.size() else {}
+		score_rows[index].bind_units(
+			seat, int(score_units.get(index, 0)), str(states.get(index, ""))
+		)
+	_notice_toast.show_text(notice)
 
 
 func bind_scores(

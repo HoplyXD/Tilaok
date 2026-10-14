@@ -1,0 +1,74 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/match/match_screen_presenter.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/lobby_screen.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/play_hud.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/pugad_overlay.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/place_overlay.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/round_result_screen.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/pause_screen.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/debug_overlay.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/match_result_screen.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="10"]
+
+[node name="MatchHud" type="CanvasLayer"]
+process_mode = 3
+layer = 22
+script = ExtResource("1")
+
+[node name="LobbyScreen" parent="." instance=ExtResource("2")]
+unique_name_in_owner = true
+
+[node name="PlayHud" parent="." instance=ExtResource("3")]
+unique_name_in_owner = true
+
+[node name="PugadOverlay" parent="." instance=ExtResource("4")]
+unique_name_in_owner = true
+
+[node name="PlaceOverlay" parent="." instance=ExtResource("5")]
+unique_name_in_owner = true
+
+[node name="RoundResultScreen" parent="." instance=ExtResource("6")]
+unique_name_in_owner = true
+
+[node name="MatchResultScreen" parent="." instance=ExtResource("9")]
+unique_name_in_owner = true
+visible = false
+
+[node name="PauseScreen" parent="." instance=ExtResource("7")]
+unique_name_in_owner = true
+
+[node name="ConfirmOverlay" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="ConfirmOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.05, 0.07, 0.78)
+
+[node name="ConfirmCenter" type="CenterContainer" parent="ConfirmOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ConfirmDialog" parent="ConfirmOverlay/ConfirmCenter" instance=ExtResource("10")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DebugOverlay" parent="." instance=ExtResource("8")]
+unique_name_in_owner = true

@@ -6,7 +6,20 @@ signal settings_requested
 signal library_requested
 signal leave_confirmed
 
+## Coordinator reason strings in plain words; unknown reasons are shown unchanged.
+const REASON_TEXT := {
+	"participant requested pause": "A player paused the game",
+	"shared system pause": "The game is paused",
+	"assigned device disconnected": "A controller was disconnected",
+	"application focus lost": "The game window lost focus",
+	"application focus changed": "The window changed - everybody ready up again",
+	"device status changed": "A controller changed - everybody ready up again",
+}
+
 var rosters: Array[UiScoreRow] = []
+var _missing_seats: Array[int] = []
+var _last_countdown_whole := -1
+var _accept_guard_frame := -1
 var _coordinator: PauseRecoveryCoordinator
 var _registry: PlayerSeatRegistry
 var _map: UiPromptMap
@@ -59,19 +72,34 @@ func bind_state(
 			text = "DEVICE LOST"
 			missing.append(int(seat.seat))
 		rosters[index].bind_roster(seat, text)
+	_missing_seats = missing
 	_countdown_label.visible = countdown > 0.0
 	_countdown_label.text = "Resuming in %d" % int(ceilf(countdown))
 	_reclaim_panel.visible = not missing.is_empty()
 	if not missing.is_empty():
+		var target := int(status.get("reclaim_seat", missing[0]))
 		_reclaim_label.text = (
 			"Seat %d lost its controller. Press %s on the new controller to take the seat back."
-			% [missing[0] + 1, _map.glyph("confirm", "gamepad") if _map != null else "South"]
+			% [target + 1, _map.glyph("confirm", "gamepad") if _map != null else "South"]
 		)
+		if missing.size() > 1:
+			_reclaim_label.text += " Left / Right picks another missing seat."
 	_menu.refresh_items()
 	if bool(status.get("leave_confirm", false)):
-		_leave_confirm.open("Leave the match and return to the lobby?")
+		# Keep the dialog's selection when a refresh arrives while it is already open.
+		if not _leave_confirm.is_open():
+			_leave_confirm.open("Leave the match and return to the lobby?")
 	else:
 		_leave_confirm.close()
+
+
+static func reason_text(reason: String) -> String:
+	return str(REASON_TEXT.get(reason.to_lower(), reason))
+
+
+## The presenter calls this when a ready edge or device change happens while paused.
+func refresh_live() -> void:
+	_refresh_live()
 
 
 func bind_prompts(map: UiPromptMap, device_kind: String) -> void:
@@ -139,13 +167,28 @@ func _show_state(index: int, ctx: UiContext) -> void:
 	)
 
 
+## Only the pause owner drives this menu. A shared pause (no owner yet) accepts nobody; the
+## coordinator hands the menu to the first fresh confirm.
+func accepts_seat(seat_index: int) -> bool:
+	return owner_seat >= 0 and seat_index == owner_seat
+
+
 func _navigate(_seat_index: int, direction: String) -> bool:
 	if _leave_confirm.is_open():
 		return _leave_confirm.navigate(direction)
+	if direction in ["left", "right"] and _missing_seats.size() > 1 and _coordinator != null:
+		var index := _missing_seats.find(_coordinator.selected_reclaim_seat)
+		index = posmod(index + (-1 if direction == "left" else 1), _missing_seats.size())
+		_coordinator.choose_reclaim_seat(_missing_seats[index])
+		_refresh_live()
+		return true
 	return _menu.move(direction)
 
 
 func _accept(_seat_index: int) -> bool:
+	# The confirm that handed a shared pause to its owner must not also activate an entry.
+	if Engine.get_process_frames() == _accept_guard_frame:
+		return false
 	if _leave_confirm.is_open():
 		return _leave_confirm.accept()
 	return _menu.activate()
@@ -170,8 +213,21 @@ func _refresh_live() -> void:
 	var seats: Array[Dictionary] = []
 	for index in PlayerSeatRegistry.MAX_SEATS:
 		seats.append(_registry.get_seat(index))
+	var status := {"leave_confirm": _leave_confirm.is_open()}
+	var missing: Array[int] = []
+	for seat in seats:
+		if bool(seat.get("joined", false)) and not bool(seat.get("connected", true)):
+			missing.append(int(seat.seat))
+	if not missing.is_empty():
+		var chosen := _coordinator.selected_reclaim_seat
+		if not missing.has(chosen):
+			chosen = missing[0]
+			_coordinator.choose_reclaim_seat(chosen)
+		status["reclaim_seat"] = chosen
 	var countdown := _coordinator.countdown_remaining
-	bind_state(_coordinator.pause_reason, _coordinator.menu_owner, countdown, seats, {})
+	bind_state(
+		reason_text(_coordinator.pause_reason), _coordinator.menu_owner, countdown, seats, status
+	)
 
 
 func _unbind_coordinator() -> void:
@@ -191,9 +247,15 @@ func _on_coordinator_changed(_paused: bool, _reason: String) -> void:
 	_refresh_live()
 
 
-func _on_coordinator_countdown(_seconds: float) -> void:
+func _on_coordinator_countdown(seconds: float) -> void:
+	var whole := ceili(seconds)
+	if whole == _last_countdown_whole:
+		return
+	_last_countdown_whole = whole
 	_refresh_live()
 
 
-func _on_coordinator_selection(_index: int, _owner: int) -> void:
+func _on_coordinator_selection(_index: int, new_owner: int) -> void:
+	if owner_seat < 0 and new_owner >= 0:
+		_accept_guard_frame = Engine.get_process_frames()
 	_refresh_live()

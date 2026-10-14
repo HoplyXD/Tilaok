@@ -12,8 +12,7 @@ const P08_VARIANTS: PackedStringArray = [
 
 var lagsanay_controller := LagsanayRoundController.new()
 var _taya_marker: Label
-var _defect_banner: Label
-var _restart_attempt_button: Button
+var _last_taya_seat := -1
 var _attempt_serial := 0
 var _defect_paused := false
 var _defect_reason := ""
@@ -39,23 +38,7 @@ func _ready() -> void:
 			(child as Label).visible = false
 		elif child is Line2D and (child as Line2D).name == "FlagTriggerOutline":
 			(child as Line2D).visible = false
-	var row := _top_bar.get_child(0) as HBoxContainer
-	if row != null and row.get_child(0) is Label:
-		(row.get_child(0) as Label).text = "TILAOK! • LAGSANAY LAB"
-	_restart_attempt_button = _add_match_button(
-		row, "Restart attempt", _restart_lagsanay_attempt, "restart_attempt"
-	)
-	_restart_attempt_button.visible = false
-	_taya_marker = Label.new()
-	_taya_marker.name = "P08TayaMarker"
-	_taya_marker.add_theme_font_size_override("font_size", 18)
-	_taya_marker.add_theme_color_override("font_color", Color("#fff176"))
-	_taya_marker.add_theme_color_override("font_outline_color", Color("#17262d"))
-	_taya_marker.add_theme_constant_override("outline_size", 5)
-	_taya_marker.size = Vector2(220.0, 30.0)
-	_taya_marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_taya_marker.visible = false
-	world_layer.add_child(_taya_marker)
+	_taya_marker = _create_taya_marker("P08TayaMarker")
 	_set_input_phase()
 	_update_diagnostics()
 	print("P08_LAGSANAY_READY build=%s profile=%s seed=%d" % [P08_BUILD_ID, profile_id, match_seed])
@@ -77,7 +60,6 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	_update_taya_marker()
-	_update_defect_presentation()
 
 
 func _physics_process(delta: float) -> void:
@@ -92,8 +74,7 @@ func _begin_pugad() -> void:
 	_defect_paused = false
 	_defect_reason = ""
 	_attempt_serial = 0
-	if _restart_attempt_button != null:
-		_restart_attempt_button.visible = false
+	_last_taya_seat = -1
 	super._begin_pugad()
 
 
@@ -112,26 +93,60 @@ func _on_lagsanay_pause_state_changed(paused_state: bool, _reason: String) -> vo
 		get_tree().paused = true
 
 
-func _update_diagnostics() -> void:
-	super._update_diagnostics()
-	if _phase_label == null:
-		return
-	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
-		_timer_label.text = _mode_play_timer_text()
-		if _feedback_label != null:
-			_feedback_label.text = _lagsanay_status_text()
-	if _hints_label != null:
-		_hints_label.text = _phase_hint()
-	if _restart_attempt_button != null:
-		_restart_attempt_button.visible = _defect_paused
+func build_id() -> String:
+	return P08_BUILD_ID
 
 
-func _phase_hint() -> String:
-	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
-		return "Tag: pass the bomb • avoid traps • expiry eliminates the taya • pause freezes all clocks"
-	if phase_controller.phase == MatchPhaseController.Phase.RESULTS:
-		return "F / Enter / Pad A ready · construction and scores carry into the next round"
-	return super._phase_hint()
+func play_clock_seconds() -> float:
+	if not lagsanay_controller.active:
+		return 0.0
+	if lagsanay_controller.head_start_remaining > 0.0:
+		return lagsanay_controller.head_start_remaining
+	return lagsanay_controller.countdown_remaining
+
+
+func play_challenge_text() -> String:
+	return "Lagsanay"
+
+
+func play_goal_text() -> String:
+	return "Touch to pass the taya!"
+
+
+func play_tag_text() -> String:
+	if not lagsanay_controller.active:
+		return ""
+	var prefix := "HEAD START • " if lagsanay_controller.head_start_remaining > 0.0 else ""
+	return "%sTAYA %s" % [prefix, _seat_identity_text(lagsanay_controller.taya_seat)]
+
+
+func play_status_text() -> String:
+	if _defect_paused:
+		return _defect_reason
+	var immune := _immune_text()
+	return "Pass-back immunity: %s" % immune if not immune.is_empty() else ""
+
+
+func seat_state_text(seat_index: int) -> String:
+	if (
+		lagsanay_controller.active
+		and seat_index == lagsanay_controller.taya_seat
+		and phase_controller.phase == MatchPhaseController.Phase.PLAY
+	):
+		return "TAYA"
+	return ""
+
+
+func debug_status_text() -> String:
+	return _lagsanay_status_text()
+
+
+func debug_action_label() -> String:
+	return "Restart attempt" if _defect_paused else ""
+
+
+func run_debug_action() -> void:
+	_restart_lagsanay_attempt()
 
 
 func _enter_play() -> void:
@@ -196,20 +211,10 @@ func _advance_mode_play_physics(delta: float) -> void:
 	_update_camera_targets()
 	if bool(step_result.ended):
 		_finish_lagsanay(bool(step_result.last_cluck))
-	else:
-		_update_diagnostics()
-
-
-func _mode_play_timer_text() -> String:
-	if not lagsanay_controller.active:
-		return ""
-	var identity_text := _seat_identity_text(lagsanay_controller.taya_seat)
-	if lagsanay_controller.head_start_remaining > 0.0:
-		return (
-			"TAYA %s • HEAD START %.1f s"
-			% [identity_text, lagsanay_controller.head_start_remaining]
-		)
-	return "TAYA %s • %.1f s" % [identity_text, lagsanay_controller.countdown_remaining]
+	elif lagsanay_controller.taya_seat != _last_taya_seat:
+		# The clock re-renders on whole seconds; only a pass needs an immediate refresh.
+		_last_taya_seat = lagsanay_controller.taya_seat
+		_notify_presentation(&"taya")
 
 
 func _on_item_elimination(record: AttributionRecord) -> bool:
@@ -323,7 +328,6 @@ func _finish_lagsanay(last_cluck: bool) -> void:
 		tuning.lagsanay_taya_seconds_4p,
 		tuning.taya_pass_back_seconds
 	)
-	_results_panel.show_results(last_results_model)
 	phase_controller.enter(MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds)
 	_set_input_phase()
 	current_context = BoundedStageCamera.Context.PLAY
@@ -380,11 +384,15 @@ func _update_taya_marker() -> void:
 	_taya_marker.visible = true
 
 
-func _update_defect_presentation() -> void:
-	if _feedback_label != null and _defect_paused:
-		_feedback_label.text = _defect_reason
-	if _restart_attempt_button != null:
-		_restart_attempt_button.visible = _defect_paused
+func _immune_text() -> String:
+	var immune_seats := ""
+	for seat in lagsanay_controller.seat_indices:
+		var remaining := lagsanay_controller.pass_back_remaining_seconds(int(seat))
+		if remaining > 0.0:
+			if not immune_seats.is_empty():
+				immune_seats += ", "
+			immune_seats += "%s %.1f s" % [_seat_identity_text(int(seat)), remaining]
+	return immune_seats
 
 
 func _lagsanay_status_text() -> String:
@@ -394,13 +402,7 @@ func _lagsanay_status_text() -> String:
 		"Taya: %s. Passing does not reset the timer. "
 		% _seat_identity_text(lagsanay_controller.taya_seat)
 	)
-	var immune_seats := ""
-	for seat in lagsanay_controller.seat_indices:
-		var remaining := lagsanay_controller.pass_back_remaining_seconds(int(seat))
-		if remaining > 0.0:
-			if not immune_seats.is_empty():
-				immune_seats += ", "
-			immune_seats += "%s %.1f s" % [_seat_identity_text(int(seat)), remaining]
+	var immune_seats := _immune_text()
 	if not immune_seats.is_empty():
 		message += "Pass-back immunity: %s; other contacts stay live. " % immune_seats
 	message += "Contact is frozen per physics step; timeout wins an un-timed expiry-step contact."

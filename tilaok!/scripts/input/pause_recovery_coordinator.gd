@@ -13,6 +13,9 @@ enum State { RUNNING, PAUSED, COUNTDOWN }
 
 @export var input_router: LocalInputRouter
 @export var resume_countdown_seconds := 3.0
+## When true the pause menu is drawn by a scene (UiPauseScreen): the owner's confirm no longer
+## readies the owner implicitly. Default false keeps the P02 behaviour exactly.
+@export var external_menu := false
 
 var state := State.RUNNING
 var pause_reason := ""
@@ -109,6 +112,17 @@ func request_resume() -> bool:
 	return true
 
 
+## Fresh ready for one seat from an external pause menu (the owner's Resume entry).
+func mark_ready(seat_index: int) -> bool:
+	if state != State.PAUSED or input_router == null:
+		return false
+	if not input_router.registry.set_ready(seat_index, true):
+		return false
+	if input_router.registry.all_joined_ready_and_connected():
+		request_resume()
+	return true
+
+
 func choose_reclaim_seat(seat_index: int) -> bool:
 	if state != State.PAUSED or input_router == null:
 		return false
@@ -192,6 +206,9 @@ func _on_action_pressed(seat_index: int, action_name: String) -> void:
 			input_router.registry.set_ready(seat_index, true)
 			if input_router.registry.all_joined_ready_and_connected():
 				request_resume()
+		return
+	if external_menu and seat_index == menu_owner:
+		# An external pause menu owns the owner's confirm; its Resume entry calls mark_ready().
 		return
 	if action_name == "confirm" or action_name == "ready":
 		if seat_index == menu_owner and menu_selection == 1:

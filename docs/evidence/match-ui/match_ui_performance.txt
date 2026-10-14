@@ -1,0 +1,17 @@
+Status: PASSED
+Live match UI 2/3/4-seat Karera/results frame sample
+Engine: 4.7.2-stable (official)
+Machine: Windows / 13th Gen Intel(R) Core(TM) i5-13420H / 12 logical CPUs
+Renderer: NVIDIA; GPU: NVIDIA GeForce RTX 4050 Laptop GPU
+Display: 1920x1080, windowed; v-sync off; 300 frames per phase sample
+Path: GameFlow -> P05MatchRoom with the scene-based presenter (DEBUG overlay off).
+Input: K1/K2 keyboard seats plus synthetic gamepad identities for seats 3/4.
+Procedure: ten real Play/results transitions per seat count; sample active Play and live results once per count (same as capture_p06_performance.gd).
+Targets: p95 and worst frame <16.67 ms; Godot static memory <512 MiB; no orphan nodes; local gameplay has no network path (0 B/s).
+Baseline to compare: docs/evidence/p06/p06_performance.txt (code-built panels): 4 seats race p95 3.005 / worst 3.788 ms, 86.57 MiB, nodes 165.
+2 seats / karera_slice / seed 12345 — race median/p95/worst 1.500/3.001/5.804 ms; results 1.347/2.155/2.982 ms; static 111.99 MiB; objects 4051; nodes 1222; orphans 0; targets PASSED.
+2-seat run: 10 completed rounds; 10 persistent pieces; profile=karera_slice; seed=12345.
+3 seats / karera_slice / seed 12345 — race median/p95/worst 2.319/4.883/14.025 ms; results 1.532/5.008/7.290 ms; static 112.01 MiB; objects 4075; nodes 1229; orphans 0; targets PASSED.
+3-seat run: 10 completed rounds; 10 persistent pieces; profile=karera_slice; seed=12345.
+4 seats / karera_slice / seed 12345 — race median/p95/worst 2.739/5.613/8.314 ms; results 1.464/2.324/3.099 ms; static 114.76 MiB; objects 4104; nodes 1236; orphans 0; targets PASSED.
+4-seat run: 10 completed rounds; 10 persistent pieces; profile=karera_slice; seed=12345.

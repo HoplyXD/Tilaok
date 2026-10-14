@@ -117,7 +117,7 @@ func _prepare_four_seats() -> void:
 func _run_lobby() -> void:
 	await _capture("01_lobby_1920x1080.png")
 	_check(
-		room._match_buttons.start.disabled,
+		room.presenter.debug_overlay.start_button.disabled,
 		"Start match remains disabled until two or more joined seats are ready"
 	)
 	await _key_tap(KEY_F)
@@ -129,7 +129,10 @@ func _run_lobby() -> void:
 		LobbyViewModel.can_start(room.input_router.registry),
 		"K1/K2 and both synthetic gamepads can mark ready"
 	)
-	_check(not room._match_buttons.start.disabled, "all-ready input enables Start match")
+	_check(
+		not room.presenter.debug_overlay.start_button.disabled,
+		"all-ready input enables Start match"
+	)
 	_match_seed = _seed_with_every_enabled_variant(12345)
 	room.set_match_seed(_match_seed)
 	print("P05_INTERACTIVE seed=%d" % _match_seed)

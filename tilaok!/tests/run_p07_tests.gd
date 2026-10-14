@@ -77,12 +77,8 @@ func _run() -> void:
 		"P07 starts from player-ready input without the diagnostic Start button"
 	)
 	_check(
-		(
-			room._match_buttons.start.visible == false
-			and room._match_buttons.join_k1.visible == false
-			and room._match_buttons.join_k2.visible == false
-		),
-		"P07 hides harness-only join/start buttons"
+		not room.presenter.debug_overlay.visible,
+		"P07 shows no harness-only join/start buttons (the DEBUG overlay is off by default)"
 	)
 	for egg in room.egg_pool:
 		_check(

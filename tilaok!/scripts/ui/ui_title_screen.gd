@@ -24,6 +24,19 @@ func router_phase() -> int:
 	return LocalInputRouter.Phase.MENU
 
 
+## Live binding used by GameFlow: build label (never a seed) plus the joined-seat count.
+func bind_live(
+	build_text: String, joined_count: int, map: UiPromptMap, device_kind: String
+) -> void:
+	bind_build_label(build_text)
+	bind_joined(joined_count, map, device_kind)
+	if joined_count <= 0 and map != null:
+		var glyphs := PackedStringArray()
+		for kind in UiContext.DEVICE_KINDS:
+			glyphs.append(map.glyph("ready", kind))
+		_join_prompt.bind_text(" / ".join(glyphs), "to join")
+
+
 func bind_build_label(text: String) -> void:
 	_build_label.text = text
 

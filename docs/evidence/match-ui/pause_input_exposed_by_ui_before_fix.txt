@@ -1,0 +1,9 @@
+﻿# P05 gap exposed by the live pause menu (2026-10-14), before the presenter-level isolation
+# Test: run_match_ui_tests.gd::_test_pause_menu_input_is_not_game_input, run against the presenter WITHOUT _set_game_input_suspended.
+# Pause during Place; the owner presses arrows and confirm on the pause menu.
+
+MATCH_UI_TESTS checks=198 failures=2
+ERROR: MATCH_UI FAIL: menu arrows while paused do not move the Place cursor
+ERROR: MATCH_UI FAIL: menu confirms while paused do not lock a placement
+
+# After the fix the same test passes (see run_match_ui_tests.log.txt).

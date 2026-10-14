@@ -64,13 +64,13 @@ Windows export preset output is `build/tilaok-p02.exe`; generated build output i
 
 | Area | P05 path | Responsibility and current state |
 |---|---|---|
-| Match room | tilaok!/scenes/match/ and tilaok!/scripts/match/match_room.gd | P05MatchRoom inherits the P04 stage room, adds the 2–4 seat lobby, phase shell, controls, diagnostic Play and results/next-round surface. The result panel is a P06 binding shell; P05 awards no points. |
+| Match room | tilaok!/scenes/match/ and tilaok!/scripts/match/match_room.gd | P05MatchRoom inherits the P04 stage room, adds the 2–4 seat lobby, phase shell, controls, diagnostic Play and results/next-round surface. Its HUD, egg row and results panel are no longer code-built: `MatchScreenPresenter` (`scenes/match/match_hud.tscn`) binds the live P05/P06 state to the scene screens and the DEBUG overlay replaces the old diagnostic buttons and labels. P06 awards, suppression reasons and totals are shown exactly as computed. |
 | Phase and lobby | tilaok!/scripts/match/match_phase_controller.gd and lobby_view_model.gd | Minimum-two/all-ready start gate, phase timers, fixed seat identity and pause-frozen Pugad/Place/Results time. |
 | Eggs and claims | tilaok!/scripts/match/pugad_egg_pool_generator.gd, pugad_claim_arbiter.gd and pugad_egg_card.gd | Seeded family-weight/within-family selection from enabled variants, duplicate variant definitions allowed, one distinct egg per seat, stable earlier/same-tick/timeout arbitration. |
 | Place and results | tilaok!/scripts/match/placement_controller.gd, atomic_edit_resolver.gd and match_results_view_model.gd | Pending confirmations resolve against one snapshot and batch-commit in stable seat order; results carry outcome/award/no-score/total fields without calculating awards. |
-| UI gallery fixture | tilaok!/scenes/ui/, tilaok!/scripts/ui/, tilaok!/data/ui/ and tilaok!/assets/ui/theme/ | Standalone DEBUG review gallery and sample data exercise reusable screen/component shells across device glyphs and seat counts. It is not connected to the P05 match room or its results/scoring pipeline. |
-| Harness entry | tilaok!/scripts/harness/foundation_harness.gd and foundation_harness.tscn | P05 Match Loop opens the P05 scene; P07 First Playable, P08 Lagsanay Lab and P09 Match Lifecycle open their labeled development rooms; Item Lab remains the P04 immediate-placement regression fixture. |
-| P05 checks/evidence | tilaok!/tests/run_p05_tests.gd, run_p05_interactive.gd, run_ui_tests.gd, capture_p05_evidence.gd and p05_fixtures.gd | Automated deterministic checks, visible four-seat harness loop, standalone 437-check UI gallery contract runner, test-only mover/cleanup/solid-trigger fixtures, rejection/variant captures and 48-piece performance capture. |
+| UI gallery fixture | tilaok!/scenes/ui/, tilaok!/scripts/ui/, tilaok!/data/ui/ and tilaok!/assets/ui/theme/ | Standalone DEBUG review gallery and sample data exercise reusable screen/component shells across device glyphs and seat counts. The same scenes are bound to live data by the match presenter and `GameFlow`; the gallery keeps its SAMPLE binds. |
+| Harness entry | tilaok!/scripts/harness/foundation_harness.gd and foundation_harness.tscn | P05 Match Loop opens the P05 scene; P07 First Playable, P08 Lagsanay Lab and P09 Match Lifecycle open their labeled development rooms (all on the same scene screens, DEBUG overlay on); Item Lab remains the P04 immediate-placement regression fixture. The project main scene is `scenes/flow/game_flow.tscn` (Title); the harness opens with `-- --harness` or `-- --open-room=<id>`, and **Player flow (Title)** hosts the live flow. |
+| P05 checks/evidence | tilaok!/tests/run_p05_tests.gd, run_p05_interactive.gd, run_ui_tests.gd, capture_p05_evidence.gd and p05_fixtures.gd | Automated deterministic checks, visible four-seat harness loop, standalone 446-check UI gallery contract runner, test-only mover/cleanup/solid-trigger fixtures, rejection/variant captures and 48-piece performance capture. |
 
 From the repository root:
 
@@ -147,3 +147,26 @@ In the harness, **UI Gallery** shows every screen/state with SAMPLE data and **P
 ```
 
 Interactive and capture scripts write screenshots into `docs/evidence/` (override with `P10_EVIDENCE_DIR`); run them from a scratch copy if other phases' evidence must not change. In the harness choose **Item Visualizer** (every family, variant and rotation) or **P05 Match (all items)**.
+
+## Live match UI — GameFlow, presenter and DEBUG overlay (2026-10-14)
+
+| Area | Path | Responsibility and current state |
+|---|---|---|
+| Entry / flow | `tilaok!/scenes/flow/game_flow.tscn`, `scripts/flow/game_flow.gd` | Project main scene. Owns one `LocalInputRouter` (injected into the match room), the Title / Library / Settings screens and the match room's lifetime. The room it plays is `scenes/match/p07_first_playable_room.tscn` (karera_slice limited to the verified Kaing / Tulay variants); `-- --match-route=lifecycle` plays `p09_match_lifecycle_room.tscn` instead (match end, sudden death, final result). `-- --harness` or `-- --open-room=<id>` opens the developer harness instead. |
+| Presenter | `tilaok!/scripts/match/match_screen_presenter.gd`, `scenes/match/match_hud.tscn` | Instanced by `P05MatchRoom`; subscribes to room, phase, pause and actor signals and calls the `bind_live*` methods of the scene screens. Text and visibility only: no scoring, no per-frame allocation. |
+| Screens | `tilaok!/scenes/ui/screens/`, `scripts/ui/` | Lobby, Pugad, Place, Play HUD, Round result, Match result (P09) and Pause are live; Title / Library / Settings are bound by GameFlow. The P08 and P09 rooms drive the same screens through small presentation hooks on `P05MatchRoom`; `scenes/match/taya_world_marker.tscn` is the authored world-space taya label. |
+| DEBUG overlay | `tilaok!/scenes/ui/screens/debug_overlay.tscn`, `scripts/ui/ui_debug_overlay.gd` | Developer text and fixture buttons. Off in the player flow, on when opened from the harness, F3 in debug builds. |
+| Pause menu hook | `tilaok!/scripts/input/pause_recovery_coordinator.gd` | Additive `external_menu` flag (default false) and `mark_ready(seat)` so the scene pause menu's Resume entry readies the owner; P02 behaviour is unchanged by default. |
+| Removed | `scripts/match/match_results_panel.gd`, the code-built HUD / egg row in `match_room.gd` | Replaced by the screens above. |
+| Checks | `tilaok!/tests/run_match_ui_tests.gd`, `run_match_ui_binding_tests.gd`, `run_match_ui_mode_tests.gd`, `run_match_ui_interactive.gd`, `capture_match_ui_performance.gd` | Flow / ownership / pause / reclaim / lifecycle, view-model equality, P08 / P09 presentation, 1080p captures and the frame sample. Evidence: `docs/evidence/match-ui/`. |
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'                       # player flow (Title)
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --harness          # developer harness
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --match-route=lifecycle   # player flow with the P09 match end
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_match_ui_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_match_ui_binding_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_match_ui_mode_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/run_match_ui_interactive.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_match_ui_performance.gd'
+```

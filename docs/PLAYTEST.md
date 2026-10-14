@@ -380,3 +380,44 @@ At that documentation-only review, no team milestone was marked complete. The cu
 | Reviewer | Automated author only. **No human playtest, feel, balance or readability review is claimed.** |
 
 **Still needed from people:** a human read of Parol (charge/active/inactive at minimum zoom with several emitters), launcher lane/cover fairness, bubble capture length and release placement, Trumpo pause timing and Gulong boost feel; native-speaker review of every working name; physical-device runs.
+
+## P07-T01 playtest kit — live match UI build (2026-10-14)
+
+**Status: ready for a human session; no session has been run and none is claimed.** The build starts at the Title and plays Lobby → Pugad → Place → Karera → Round result → next round with the scene-based screens bound to live P05/P06 data, in the P07 first-playable room (the three-variant allowlist verified above). Evidence for the build itself: [docs/evidence/match-ui/](evidence/match-ui/README.md); the device matrix and the session sheet from the engineering pass are in [docs/evidence/p07/README.md](evidence/p07/README.md). Synthetic input is not physical-device evidence.
+
+### Launch
+
+| Item | Value |
+|---|---|
+| Exported build | `build\tilaok-playtest-2026-10-14.exe` with its `.pck` in the same folder (Windows Desktop **release** export, Godot 4.7.2 templates). Double-click it. Nothing else is installed. |
+| From source | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'` |
+| Developer harness | `... --path 'tilaok!' -- --harness` (or the F3 overlay's **Developer harness** button in a debug build) |
+| Lifecycle route (optional) | `... -- --match-route=lifecycle` (the exported exe takes the same argument after `--`). Same flow with the P09 match end: first to 10 points or round 12 ends the match, ties go to Lagsanay sudden death, then the final result with Replay / Return to Lobby / Quit. It is **not** what the sheet below measures; use it to look at the Match result screen. |
+| Profile / seed | `karera_slice`, seed 12345 (fixed; shown only in the DEBUG overlay, never on the player screens) |
+| Devices | K1 (WASD, **F** ready/confirm/claim, **Space** jump, **R** rotate) and K2 (arrows, **Enter**, **Right Ctrl**, **Right Shift**) share one keyboard; gamepads: **South** ready/confirm/claim/jump, **West** rotate, **Start** pause. **Esc** pauses everyone. |
+| Pool | Kaing 1×1, Kaing 2×3 and Tulay 4×1 only (the P07 allowlist; the room rejects any other egg). The Solid / Wood Box / Crumble stage blocks added on 2026-10-14 stay out of this build. The harness button **P07 First Playable** opens the same room without the Title. |
+
+### Facilitator sheet (one page)
+
+**Goal.** Watch two players complete the first loop twice without help beyond the scripted prompts, then reset ten times. Do not coach during Pugad or Place; note what they say.
+
+| # | They do | They should see | Observe / ask afterwards |
+|---|---|---|---|
+| 1 | Press the ready key to join (Title) | Join prompt becomes the menu | "What did you press? What happened?" |
+| 2 | Start, second player joins, both ready | Lobby slots with number + shape; match starts by itself | "Which chicken is yours? How do you know?" |
+| 3 | Pugad: pick and claim an egg | Egg animation, your number on the egg, a text cue if you lose a claim | "What do you think this egg gives you?" |
+| 4 | Place: move, rotate (if allowed), confirm | Ghost with valid / blocked text, your status row, countdown, "locked" after confirm | "Why was a spot refused? Could you undo?" (no undo by design) |
+| 5 | Karera: run, jump, reach the flag | Timer, FINISH WINDOW after the first finish, SECURED / OUT | "What happens when the other player finishes?" |
+| 6 | Round result: read it, press ready | Awards by name, totals, the scoring reason, 8 s countdown | "Why did you get these points? Why none (if suppressed)?" |
+| 7 | Repeat to **10 round resets** (each Round result → next Pugad counts as one) | Construction persists, scores carry over, no duplicate piece or score | Count resets; record any duplicate placement, score, stuck input or stale text |
+| 8 | Pause once (Esc), Resume, then Leave | Owner shown, all-ready resume, 3 s countdown; Leave returns to the Lobby | "Who could drive the menu?" |
+
+**Explicitly missing in the default build (say so to the participants):** the Lagsanay event round, Kangaroo, event stacking and any twist; match end, winner and sudden death (they exist only on the optional lifecycle route above, so first to 10 or round 12 does not end this match); the guided tutorial (P13); final art, audio and typeface; saved settings.
+
+**Record per session:** date, build file, engine, profile / seed / pool, player count, devices (K1 / K2 / pad model), rounds completed, resets completed, defects, comprehension answers verbatim, observer name. Do not fill reviewer identities you do not have.
+
+### Session log
+
+| Date | Build | Players | Devices | Rounds | Resets | Observer | Result |
+|---|---|---|---|---|---|---|---|
+| — | — | — | — | — | — | — | No human session run yet. P07-T01 stays unchecked. |

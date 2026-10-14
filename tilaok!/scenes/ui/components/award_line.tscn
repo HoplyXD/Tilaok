@@ -25,5 +25,8 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Award"
 theme_type_variation = &"BodyLabel"
+size_flags_horizontal = 3
+autowrap_mode = 3
+custom_minimum_size = Vector2(200, 0)
 unique_name_in_owner = true
 

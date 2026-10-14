@@ -307,7 +307,8 @@ func _capture_crowded_stage_and_performance() -> void:
 		"Post-round-12 fixture • 48 persistent pieces • "
 		+ "construction retained across 12 rounds."
 	)
-	room._feedback_label.text = room.last_message
+	# The fixture note is shown by the DEBUG overlay (it prints room.last_message).
+	room.set_debug_overlay_visible(true)
 	for seat_index in range(4):
 		var actor := room.actors[seat_index] as ChickenController
 		actor.global_position = Vector2(96.0 + seat_index * 192.0, 392.0)

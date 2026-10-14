@@ -1,0 +1,6 @@
+﻿# run_match_ui_binding_tests on Godot 4.7.2.stable.official.ed1daf0bf, 2026-10-14, tree rebased onto 332f173 (P08/P09 migrated)
+## stdout
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+MATCH_UI_BINDING_TESTS checks=185 failures=0
+## stderr

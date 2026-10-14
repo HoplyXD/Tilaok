@@ -64,8 +64,8 @@ func bind_final_match(model: MatchResultsViewModel) -> void:
 			continue
 		var seat_index := int(seat.seat)
 		var units := int(model.totals.get(seat_index, {}).get("units", 0))
-		final_rows[index].bind(
-			seat, float(units) / 8.0, "WINNER" if seat_index == winner_seat else "FINAL SCORE"
+		final_rows[index].bind_units(
+			seat, units, "WINNER" if seat_index == winner_seat else "FINAL SCORE"
 		)
 	_last_cluck.visible = not model.last_cluck_explanation.is_empty()
 	if _last_cluck.visible:

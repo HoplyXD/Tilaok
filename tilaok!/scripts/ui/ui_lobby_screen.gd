@@ -38,6 +38,20 @@ func bind_seats(seat_data: Array[Dictionary], map: UiPromptMap, device_kind: Str
 	_back_hint.bind("back", device_kind, map)
 
 
+## Live binding: the four registry seats; prompts use the first joined seat's device.
+func bind_live(registry: PlayerSeatRegistry, map: UiPromptMap) -> void:
+	var seat_data: Array[Dictionary] = []
+	var device_kind := "k1"
+	var device_found := false
+	for index in PlayerSeatRegistry.MAX_SEATS:
+		var seat := registry.get_seat(index)
+		seat_data.append(seat)
+		if not device_found and bool(seat.get("joined", false)):
+			device_kind = UiContext.device_for_seat(seat)
+			device_found = true
+	bind_seats(seat_data, map, device_kind)
+
+
 func joined_count() -> int:
 	var count := 0
 	for slot in slots:

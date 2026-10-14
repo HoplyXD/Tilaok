@@ -11,6 +11,8 @@ const WALL_FIXTURE_ORIGIN := Vector2(352.0, 112.0)
 const STAGE_TILES_SCENE := preload("res://scenes/stage/stage_tiles.tscn")
 ## Editable chicken scene: ChickenController + body shape + animated PLACEHOLDER sprite.
 const CHICKEN_SCENE := preload("res://scenes/characters/chicken.tscn")
+## Pure diagnostics (the support test line); the player flow hides this group.
+const DEBUG_WORLD_GROUP := &"debug_world"
 const PREVIEW_COLORS := [Color("#f5c95b"), Color("#74c8d6"), Color("#ef8b74"), Color("#a8d782")]
 
 var tuning := GameplayTuning.new()
@@ -52,7 +54,9 @@ func _ready() -> void:
 	if not errors.is_empty():
 		push_error("P03 tuning rejected: " + "; ".join(errors))
 		return
-	input_router = LocalInputRouter.new()
+	# GameFlow injects one shared router so seats and held-press state survive Title <-> match.
+	if input_router == null:
+		input_router = LocalInputRouter.new()
 	pause_coordinator = PauseRecoveryCoordinator.new()
 	snapshot = ConfigurationSnapshot.create(
 		tuning, PresentationSettings.new(), profile_id, _seed, _run_id
@@ -65,7 +69,8 @@ func _ready() -> void:
 	input_router.tuning = tuning
 	input_router.set_shared_keyboard_enabled(true)
 	input_router.set_phase(LocalInputRouter.Phase.LOBBY)
-	add_child(input_router)
+	if input_router.get_parent() == null:
+		add_child(input_router)
 	pause_coordinator.input_router = input_router
 	add_child(pause_coordinator)
 	input_router.seat_joined.connect(_on_seat_joined)
@@ -476,11 +481,13 @@ func _add_support_line() -> void:
 	)
 	line.width = 2.0
 	line.default_color = Color("#66d5d0")
+	line.add_to_group(DEBUG_WORLD_GROUP)
 	world_layer.add_child(line)
-	_add_world_label(
+	var label := _add_world_label(
 		"SUPPORT TEST LINE • NOT AN EVENT",
 		Vector2(164.0, support_line_y / world_scale - 14.0) * world_scale
 	)
+	label.add_to_group(DEBUG_WORLD_GROUP)
 
 
 func _add_region_overlay(rect: Rect2, color: Color, label: String) -> void:

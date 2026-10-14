@@ -23,6 +23,15 @@ func bind(action_id: String, device_kind: String, map: UiPromptMap) -> void:
 	_art_glyph.visible = _art_glyph.texture != null
 
 
+## Free-text variant for a prompt that names several devices at once ("F / Enter / South").
+func bind_text(glyph_value: String, action_value: String) -> void:
+	action = ""
+	device = ""
+	_glyph_label.text = glyph_value
+	_action_label.text = action_value
+	_art_glyph.visible = _art_glyph.texture != null
+
+
 func glyph_text() -> String:
 	return _glyph_label.text
 

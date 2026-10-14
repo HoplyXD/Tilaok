@@ -1,0 +1,16 @@
+﻿# Baseline at origin/main 332f173 (P09, before this change); same machine, same procedure; isolated scratch copy.
+run_foundation_tests       exit=0 fail_lines=2 secs=5 :: Harness lifecycle checks complete: 0 failure(s).
+run_p02_tests              exit=0 fail_lines=5 secs=16 :: P02_TESTS checks=83 failures=0
+run_p02_wall_tests         exit=0 fail_lines=2 secs=30 :: P02_WALL_TESTS checks=85 failures=0
+run_p03_tests              exit=0 fail_lines=2 secs=9 :: P03_TESTS checks=103 failures=0
+run_p04_tests              exit=0 fail_lines=32 secs=32 :: P04_TESTS checks=269 failures=0
+run_p05_tests              exit=0 fail_lines=2 secs=2 :: P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests              exit=0 fail_lines=1 secs=2 :: P06_TEST_SUMMARY checks=97 failures=0
+run_ui_tests               exit=0 fail_lines=1 secs=5 :: UI_TESTS checks=438 failures=0
+run_p10_tests              exit=0 fail_lines=2 secs=93 :: P10_TESTS checks=424 failures=0
+run_blocks_tests           exit=0 fail_lines=1 secs=26 :: BLOCKS_TESTS checks=76 failures=0
+run_p07_tests              exit=0 fail_lines=1 secs=2 :: P07_TESTS checks=590 failures=0
+run_p07_reset_audit        exit=0 fail_lines=1 secs=2 :: P07_RESET_AUTOMATION resets=10 checks=172 failures=0 participants=synthetic
+run_p08_tests              exit=0 fail_lines=1 secs=1 :: P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests              exit=0 fail_lines=1 secs=1 :: P09_TEST_SUMMARY checks=77 failures=0
+# Windowed (sequential): P03 14/0, P04 25 checks / 4 failures, P05 61/0, P06 17/0, P10 42 checks / 3 failures, P08 87/0, P09 108/0 (the match UI suites do not exist at this revision).

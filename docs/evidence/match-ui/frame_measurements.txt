@@ -1,0 +1,5 @@
+Measured by run_match_ui_interactive.gd (Godot 4.7.2-stable (official), 1920x1080 window).
+widest framing: camera zoom 0.512; 1 cell = 49.2 px; chicken body = 43.0 x 92.2 px at 1920x1080
+tightest framing: camera zoom 0.685; 1 cell = 65.8 px; chicken body = 57.6 x 123.4 px at 1920x1080
+tuned zoom minimum: camera zoom 0.500; 1 cell = 48.0 px; chicken body = 42.0 x 90.0 px at 1920x1080
+tuned zoom maximum: camera zoom 0.700; 1 cell = 67.2 px; chicken body = 58.8 x 126.0 px at 1920x1080

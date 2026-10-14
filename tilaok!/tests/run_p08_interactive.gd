@@ -229,12 +229,16 @@ func _test_real_contact_matrix() -> void:
 		)
 		if count == 2:
 			await _wait_physics(1)
+			await _wait_frames(2)
+			var hud_notice := str(room.presenter.play_hud.get_node("%NoticeToast").text_value())
+			var debug_text: String = room.presenter.debug_overlay.feedback_text()
 			_check(
 				(
-					room._feedback_label.text.contains("Pass-back immunity")
-					and room._feedback_label.text.contains("other contacts stay live")
+					hud_notice.contains("Pass-back immunity")
+					and debug_text.contains("Pass-back immunity")
+					and debug_text.contains("other contacts stay live")
 				),
-				"HUD explains recent-taya pass-back immunity and other live receivers"
+				"HUD names pass-back immunity and the DEBUG overlay explains other live receivers"
 			)
 		if count >= 3:
 			_check(
@@ -544,6 +548,7 @@ func _test_pause_and_cleanup() -> void:
 func _new_room(seat_count: int, head_start_seconds: float) -> void:
 	await _dispose_room()
 	room = ROOM_SCENE.instantiate() as P08LagsanayMatchRoom
+	room.debug_overlay_default = true
 	root.add_child(room)
 	await _wait_frames(4)
 	room.join_keyboard("K1")

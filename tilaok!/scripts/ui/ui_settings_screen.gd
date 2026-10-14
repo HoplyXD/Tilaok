@@ -29,6 +29,24 @@ func bind_settings(settings: PresentationSettings) -> void:
 	_crowd_row.set_level(settings.crowd_volume)
 
 
+## Live binding: shows the settings and writes changes back (in memory only; nothing is saved).
+func bind_live(settings: PresentationSettings) -> void:
+	bind_settings(settings)
+	shake_changed.connect(func(mode: int) -> void: settings.screen_shake = mode)
+	volume_changed.connect(
+		func(bus: String, level: float) -> void:
+			match bus:
+				"master":
+					settings.master_volume = level
+				"music":
+					settings.music_volume = level
+				"effects":
+					settings.effects_volume = level
+				"crowd":
+					settings.crowd_volume = level
+	)
+
+
 func _on_screen_ready() -> void:
 	_shake_row.choice_changed.connect(func(index: int) -> void: shake_changed.emit(index))
 	_master_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("master", v))

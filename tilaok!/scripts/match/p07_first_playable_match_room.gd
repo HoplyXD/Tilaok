@@ -14,14 +14,12 @@ var reset_audit_rows: Array[Dictionary] = []
 func _init() -> void:
 	profile_id = "karera_slice"
 	tuning.item_enabled_variants = P07_ALLOWED_VARIANTS.duplicate()
+	# The route starts from player-ready input; there is no Start click (see the base room).
+	auto_start_on_ready = true
 
 
 func _ready() -> void:
 	super._ready()
-	if _top_bar != null and _top_bar.get_child_count() > 0:
-		var row := _top_bar.get_child(0) as HBoxContainer
-		if row != null and row.get_child_count() > 0:
-			(row.get_child(0) as Label).text = "TILAOK! • P07 FIRST PLAYABLE"
 	print(
 		(
 			"P07_FIRST_PLAYABLE_READY build=%s profile=%s seed=%d variants=%s"
@@ -40,7 +38,7 @@ func _begin_pugad() -> void:
 	phase_controller.enter(MatchPhaseController.Phase.LOBBY)
 	_set_input_phase()
 	last_message = pool_error
-	_refresh_egg_cards()
+	_notify_presentation(&"eggs")
 	_refresh_match_ui()
 
 
@@ -52,26 +50,6 @@ func _validate_p07_egg_pool(pool: Array[Dictionary]) -> String:
 		if not P07_ALLOWED_VARIANTS.has(variant_key):
 			return "P07 pool validation failed: unsupported variant '%s'." % variant_key
 	return ""
-
-
-func _update_diagnostics() -> void:
-	super._update_diagnostics()
-	for key in ["join_k1", "join_k2", "start"]:
-		if _match_buttons.has(key):
-			(_match_buttons[key] as Button).visible = false
-
-
-func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
-	var was_lobby := phase_controller.phase == MatchPhaseController.Phase.LOBBY
-	super._on_match_action_pressed(seat_index, action_name)
-	if was_lobby and action_name == "ready" and LobbyViewModel.can_start(input_router.registry):
-		start_match()
-
-
-func _phase_hint() -> String:
-	if phase_controller.phase == MatchPhaseController.Phase.LOBBY:
-		return "Keyboard: F / Enter joins, then readies · Controller: A joins, press A again to ready"
-	return super._phase_hint()
 
 
 func _start_next_round() -> void:

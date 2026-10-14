@@ -2,8 +2,6 @@ class_name P09MatchLifecycleRoom
 extends P07FirstPlayableMatchRoom
 
 const P09_BUILD_ID := "P09-match-lifecycle-dev"
-const MATCH_RESULT_SCREEN := preload("res://scenes/ui/screens/match_result_screen.tscn")
-const CONFIRM_DIALOG := preload("res://scenes/ui/components/confirm_dialog.tscn")
 
 var lifecycle := MatchLifecycleCoordinator.new()
 var base_match_seed := 12345
@@ -31,6 +29,7 @@ var _sudden_death_active := false
 var _sudden_death_match_id := -1
 var _sudden_death_round := -1
 var _sudden_death_attempt := -1
+var _last_taya_seat := -1
 var _spectator_state: Dictionary = {}
 
 
@@ -48,35 +47,26 @@ func set_match_seed(value: int) -> void:
 func _ready() -> void:
 	super._ready()
 	process_physics_priority = 300
-	if not is_instance_valid(input_router) or not is_instance_valid(_match_canvas):
+	if not is_instance_valid(input_router) or presenter == null:
 		return
-	var row := _top_bar.get_child(0) as HBoxContainer
-	if row != null and row.get_child_count() > 0:
-		(row.get_child(0) as Label).text = "TILAOK! • P09 MATCH LIFECYCLE • DEVELOPMENT"
 	if goal_area != null:
 		goal_area.monitoring = true
 		goal_area.collision_mask = 2
 		goal_area.visible = true
-	_result_screen = MATCH_RESULT_SCREEN.instantiate() as UiMatchResultScreen
-	_result_screen.name = "P09LiveMatchResultScreen"
-	_result_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# The match-result screen and the confirmation dialog are authored in match_hud.tscn and
+	# shown by the presenter; the room only binds data and decides what the buttons do.
+	_result_screen = presenter.match_result_screen
 	_result_screen.visible = false
-	_match_canvas.add_child(_result_screen)
 	_result_screen.replay_requested.connect(_on_result_replay_requested)
 	_result_screen.lobby_requested.connect(_on_result_lobby_requested)
 	_result_screen.quit_requested.connect(_on_result_quit_requested)
 	_result_screen.menu_selection_changed.connect(_on_result_menu_selection_changed)
-	_create_confirmation_overlay()
-	_taya_marker = Label.new()
-	_taya_marker.name = "P09TayaMarker"
-	_taya_marker.add_theme_font_size_override("font_size", 18)
-	_taya_marker.add_theme_color_override("font_color", Color("#fff176"))
-	_taya_marker.add_theme_color_override("font_outline_color", Color("#17262d"))
-	_taya_marker.add_theme_constant_override("outline_size", 5)
-	_taya_marker.size = Vector2(220.0, 30.0)
-	_taya_marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_taya_marker.visible = false
-	world_layer.add_child(_taya_marker)
+	_modal_overlay = presenter.confirm_overlay
+	_confirm_dialog = presenter.confirm_dialog
+	_modal_overlay.visible = false
+	_confirm_dialog.confirmed.connect(_on_confirmation_confirmed)
+	_confirm_dialog.cancelled.connect(_on_confirmation_cancelled)
+	_taya_marker = _create_taya_marker("P09TayaMarker")
 	input_router.seat_disconnected.connect(_on_result_device_change)
 	input_router.device_status_changed.connect(_on_result_device_status_changed)
 	if not pause_coordinator.recovery_complete.is_connected(_on_recovery_complete):
@@ -101,11 +91,6 @@ func _notification(what: int) -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	_update_taya_marker()
-	if final_results_visible:
-		_result_screen.visible = true
-		_info_panel.visible = false
-		_egg_row.visible = false
-		_results_panel.visible = false
 
 
 func _physics_process(delta: float) -> void:
@@ -196,7 +181,6 @@ func _finish_race(reason: String) -> void:
 			race_round_controller.hard_cap_seconds,
 			race_round_controller.post_first_finish_seconds
 		)
-		_results_panel.show_results(last_results_model)
 		phase_controller.enter(
 			MatchPhaseController.Phase.RESULTS, tuning.match_results_advance_seconds
 		)
@@ -216,6 +200,7 @@ func _start_sudden_death(decision: Dictionary) -> void:
 	_sudden_death_round = int(decision.completed_round)
 	_sudden_death_attempt = int(decision.attempt)
 	_sudden_death_active = true
+	_last_taya_seat = -1
 	race_round_controller = null
 	race_candidate_queue.reset()
 	_reset_actors_for_round()
@@ -308,8 +293,10 @@ func _advance_sudden_death_physics(delta: float) -> void:
 			_sudden_death_attempt,
 			bool(result.last_cluck)
 		)
-	else:
-		_update_diagnostics()
+	elif lagsanay_controller.taya_seat != _last_taya_seat:
+		# The clock re-renders on whole seconds; only a pass needs an immediate refresh.
+		_last_taya_seat = lagsanay_controller.taya_seat
+		_notify_presentation(&"taya")
 
 
 func _sudden_death_tag_contacts() -> Array[Dictionary]:
@@ -414,7 +401,6 @@ func _show_final_results(winner_seat: int, last_cluck: bool, outcome_text: Strin
 	)
 	_result_screen.bind_final_match(last_results_model)
 	_result_screen.visible = true
-	_results_panel.visible = false
 	last_message = outcome_text
 	_update_diagnostics()
 
@@ -606,28 +592,6 @@ func _on_recovery_complete() -> void:
 		input_router.set_phase(LocalInputRouter.Phase.RESULTS)
 
 
-func _create_confirmation_overlay() -> void:
-	_modal_overlay = Control.new()
-	_modal_overlay.name = "P09ConfirmationOverlay"
-	_modal_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_modal_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
-	_modal_overlay.visible = false
-	_match_canvas.add_child(_modal_overlay)
-	var dimmer := ColorRect.new()
-	dimmer.color = Color(0.02, 0.05, 0.07, 0.78)
-	dimmer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
-	_modal_overlay.add_child(dimmer)
-	_confirm_dialog = CONFIRM_DIALOG.instantiate() as UiConfirmDialog
-	_confirm_dialog.name = "P09ConfirmDialog"
-	_confirm_dialog.set_anchors_preset(Control.PRESET_CENTER)
-	_confirm_dialog.position = Vector2(-210.0, -70.0)
-	_confirm_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
-	_modal_overlay.add_child(_confirm_dialog)
-	_confirm_dialog.confirmed.connect(_on_confirmation_confirmed)
-	_confirm_dialog.cancelled.connect(_on_confirmation_cancelled)
-
-
 func _open_confirmation(kind: String, owner: int) -> void:
 	if not _modal_kind.is_empty():
 		return
@@ -707,6 +671,53 @@ func _derive_match_seed(base_seed: int, identity: int) -> int:
 	return mixed if mixed != 0 else 1
 
 
+func build_id() -> String:
+	return P09_BUILD_ID
+
+
+func shows_final_results() -> bool:
+	return final_results_visible
+
+
+func play_clock_seconds() -> float:
+	if _sudden_death_active and lagsanay_controller.active:
+		if lagsanay_controller.head_start_remaining > 0.0:
+			return lagsanay_controller.head_start_remaining
+		return lagsanay_controller.countdown_remaining
+	return super.play_clock_seconds()
+
+
+func play_challenge_text() -> String:
+	return "Sudden death • Lagsanay" if _sudden_death_active else super.play_challenge_text()
+
+
+func play_goal_text() -> String:
+	return "Touch to pass the taya!" if _sudden_death_active else super.play_goal_text()
+
+
+func play_tag_text() -> String:
+	if _sudden_death_active and lagsanay_controller.active:
+		var prefix := "HEAD START • " if lagsanay_controller.head_start_remaining > 0.0 else ""
+		return "%sTAYA %s" % [prefix, _seat_identity_text(lagsanay_controller.taya_seat)]
+	return super.play_tag_text()
+
+
+func play_status_text() -> String:
+	if _sudden_death_active:
+		return "Sudden death: the tied leaders play Lagsanay; the last chicken standing wins."
+	return super.play_status_text()
+
+
+func seat_state_text(seat_index: int) -> String:
+	if not _sudden_death_active:
+		return super.seat_state_text(seat_index)
+	if _spectator_state.has(seat_index):
+		return "WATCHING"
+	if lagsanay_controller.active and seat_index == lagsanay_controller.taya_seat:
+		return "TAYA"
+	return ""
+
+
 func _update_taya_marker() -> void:
 	if _taya_marker == null or not is_instance_valid(_taya_marker):
 		return
@@ -746,10 +757,6 @@ func _update_diagnostics() -> void:
 	super._update_diagnostics()
 	if _result_screen != null and is_instance_valid(_result_screen):
 		_result_screen.visible = final_results_visible
-	if final_results_visible and _info_panel != null:
-		_info_panel.visible = false
-		_egg_row.visible = false
-		_results_panel.visible = false
 	if _taya_marker != null:
 		_taya_marker.visible = _sudden_death_active and lagsanay_controller.active
 
@@ -757,6 +764,7 @@ func _update_diagnostics() -> void:
 func reset_room() -> void:
 	var saved_spectators := _spectator_state.duplicate(true)
 	_sudden_death_active = false
+	_last_taya_seat = -1
 	lagsanay_controller.reset()
 	final_results_visible = false
 	final_winner_seat = -1
