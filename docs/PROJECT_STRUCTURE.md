@@ -188,3 +188,23 @@ A room that extends `P05MatchRoom` no longer builds HUD controls: `_top_bar`, `_
 | A world-space marker or a new prompt | Author a scene (`scenes/match/taya_world_marker.tscn` is the pattern; new screens live under `scenes/ui/` and are instanced from `scenes/match/match_hud.tscn`) and add `theme_type_variation`s in the scene, never `Label.new()` / `Control.new()` / `add_theme_*` in a room script |
 
 Call `_notify_presentation(&"reason")` when something the screens show changes (not every physics step: whole-second clocks re-render by themselves). Add the new room script to `ROOM_SOURCES` in `tests/run_match_ui_mode_tests.gd` so the no-code-built-UI rule covers it.
+
+## Guided first match (P13-T07 slice, 2026-10-14)
+
+| Area | Path | Responsibility |
+|---|---|---|
+| Stage layout | `tilaok!/scripts/stage/arena_layout.gd`, `arena_surface_layout.gd`, `tilaok!/data/stage/tutorial_arena_layout.tres` | Data-driven stage; `ArenaDefinition.new(tuning, layout)`; default parity and the tutorial gate |
+| Session / script | `tilaok!/scripts/tutorial/tutorial_session.gd`, `tutorial_script.gd`, `tutorial_step_def.gd`, `tilaok!/data/ui/tutorial_script.tres` | Session-only set (no disk) and the editable PLACEHOLDER copy |
+| Coordinator / marker | `tilaok!/scripts/tutorial/tutorial_coordinator.gd`, `build_here_marker.gd`, `tilaok!/scenes/tutorial/build_here_marker.tscn` | Read-only step logic over the match room; world-space BUILD HERE zone |
+| Wiring | `game_flow.gd` (session, layout selection, coach attach), `match_screen_presenter.gd` (`bind_tutorial`), `ui_pause_screen.gd` (Skip), `ui_library_screen.gd` (Replay) | Additive, default-preserving |
+| Checks | `tilaok!/tests/run_tutorial_gate_tests.gd`, `run_tutorial_tests.gd`, `capture_tutorial_evidence.gd` | Real-physics gate proof; coordinator / flow tests; rendered captures. Evidence: `docs/evidence/tutorial/` |
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --editor --path 'tilaok!' --quit
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --fixed-fps 60 --path 'tilaok!' --script 'res://tests/run_tutorial_gate_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --fixed-fps 60 --path 'tilaok!' --script 'res://tests/run_tutorial_gate_tests.gd' -- --quick
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_tutorial_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_tutorial_evidence.gd'
+```
+
+The full gate run takes several minutes; `--quick` skips the 1,860-attempt no-build search. The lifecycle route (`-- --match-route=lifecycle`) is the only route where the Lagsanay prompt can appear today (sudden death). In that route, Replay and Return to Lobby from a room that ran on the tutorial stage hand control back to `GameFlow`, which builds a fresh room so the next match is on the default stage (`flow_requested` kinds `replay_match` / `leave_match`).

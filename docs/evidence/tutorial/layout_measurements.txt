@@ -1,0 +1,124 @@
+Measured by capture_tutorial_evidence.gd (Godot 4.7.2-stable (official)). Synthetic input.
+2p lobby: box rect (virtual) pos=(24.0, 372.0) size=(250.0, 288.0) | at window 1.50x pos=(36.0, 558.0) size=(375.0, 432.0)
+    StepLabel font = 21.0 px at this window (text=21 chars)
+    BodyLabel font = 27.0 px at this window (text=133 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+2p pugad: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 288.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 432.0)
+    vs HudBar: clear
+    vs PhaseBanner: clear
+    vs Countdown: clear
+    vs Egg1: clear
+    vs Egg2: clear
+    vs Egg3: clear
+    vs Egg4: clear
+    StepLabel font = 21.0 px at this window (text=19 chars)
+    BodyLabel font = 27.0 px at this window (text=129 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+2p place: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 317.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 475.5)
+    vs HudBar: clear
+    vs SeatStatus1: clear
+    vs SeatStatus2: clear
+    vs GhostStatus: clear
+    vs PhaseBanner: clear
+    vs Countdown: clear
+    StepLabel font = 21.0 px at this window (text=28 chars)
+    BodyLabel font = 27.0 px at this window (text=154 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+2p play: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 346.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 519.0)
+    vs HudBar: clear
+    StepLabel font = 21.0 px at this window (text=20 chars)
+    BodyLabel font = 27.0 px at this window (text=166 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+4p lobby: box rect (virtual) pos=(24.0, 372.0) size=(250.0, 346.0) | at window 1.50x pos=(36.0, 558.0) size=(375.0, 519.0)
+    StepLabel font = 21.0 px at this window (text=21 chars)
+    BodyLabel font = 27.0 px at this window (text=183 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+4p pugad: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 288.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 432.0)
+    vs HudBar: clear
+    vs PhaseBanner: clear
+    vs Countdown: clear
+    vs Egg1: clear
+    vs Egg2: clear
+    vs Egg3: clear
+    vs Egg4: clear
+    vs Egg5: clear
+    vs Egg6: clear
+    StepLabel font = 21.0 px at this window (text=19 chars)
+    BodyLabel font = 27.0 px at this window (text=137 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+4p place: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 317.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 475.5)
+    vs HudBar: clear
+    vs SeatStatus1: clear
+    vs SeatStatus2: clear
+    vs SeatStatus3: clear
+    vs SeatStatus4: clear
+    vs GhostStatus: clear
+    vs PhaseBanner: clear
+    vs Countdown: clear
+    StepLabel font = 21.0 px at this window (text=28 chars)
+    BodyLabel font = 27.0 px at this window (text=162 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+4p play: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 375.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 562.5)
+    vs HudBar: clear
+    StepLabel font = 21.0 px at this window (text=20 chars)
+    BodyLabel font = 27.0 px at this window (text=195 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+2p retry place: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 288.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 432.0)
+    vs HudBar: clear
+    vs SeatStatus1: clear
+    vs SeatStatus2: clear
+    vs GhostStatus: clear
+    vs PhaseBanner: clear
+    vs Countdown: clear
+    StepLabel font = 21.0 px at this window (text=28 chars)
+    BodyLabel font = 27.0 px at this window (text=138 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+4p_12_results_everyone_finished: box rect (virtual) pos=(960.0, 167.0) size=(250.0, 288.0) | at window 1.50x pos=(1440.0, 250.5) size=(375.0, 432.0)
+    StepLabel font = 21.0 px at this window (text=21 chars)
+    BodyLabel font = 27.0 px at this window (text=127 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+    vs Outcome1: clear
+    vs Outcome2: clear
+    vs Outcome3: clear
+    vs Outcome4: clear
+4p_13_results_one_finished: box rect (virtual) pos=(960.0, 167.0) size=(250.0, 317.0) | at window 1.50x pos=(1440.0, 250.5) size=(375.0, 475.5)
+    StepLabel font = 21.0 px at this window (text=21 chars)
+    BodyLabel font = 27.0 px at this window (text=147 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+    vs Outcome1: clear
+    vs Outcome2: clear
+    vs Outcome3: clear
+    vs Outcome4: clear
+    vs Award1: clear
+    vs Award2: clear
+    vs Award3: clear
+2p lagsanay: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 346.0) | at window 1.50x pos=(36.0, 250.5) size=(375.0, 519.0)
+    vs HudBar: clear
+    StepLabel font = 21.0 px at this window (text=14 chars)
+    BodyLabel font = 27.0 px at this window (text=164 chars)
+    SkipText font = 21.0 px at this window (text=21 chars)
+    Tag font = 21.0 px at this window (text=16 chars)
+4p place 1280x720: box rect (virtual) pos=(24.0, 167.0) size=(250.0, 317.0) | at window 1.00x pos=(24.0, 167.0) size=(250.0, 317.0)
+    vs HudBar: clear
+    vs SeatStatus1: clear
+    vs SeatStatus2: clear
+    vs SeatStatus3: clear
+    vs SeatStatus4: clear
+    vs GhostStatus: clear
+    vs PhaseBanner: clear
+    vs Countdown: clear
+    StepLabel font = 14.0 px at this window (text=28 chars)
+    BodyLabel font = 18.0 px at this window (text=162 chars)
+    SkipText font = 14.0 px at this window (text=21 chars)
+    Tag font = 14.0 px at this window (text=16 chars)

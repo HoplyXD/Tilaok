@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-_Last updated: 2026-10-14 — Place confirmation locks each edit with no undo during that round; also, 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (requested by Jorge, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
+_Last updated: 2026-10-14 — guided first match uses a tutorial-only stage where building is required to reach the flag (§10); Place confirmation locks each edit with no undo during that round; also, 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (requested by Jorge, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
 
 ## 1. Pitch
 A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
@@ -248,6 +248,7 @@ The stage is an arena with an **interactive crowd**: the sabong crowd reimagined
 ## 10. Onboarding & Presentation
 Driven by the competition criteria (see `docs/COMPETITION.md`):
 - **Tutorial/onboarding is required** for screening: a short guided first round (move, jump, grab an egg, place, reach the flag) plus on-screen hints for event rounds.
+- **Guided first match (owner decision, 2026-10-14):** the guided first match uses a tutorial-only stage layout in which building is required to reach the flag: the flag ledge is raised 32 wu above the highest no-build jump, so a correctly placed piece (Kaing 1x1, Kaing 2x3 or Tulay 4x1) is needed. Every round and every mode in that match (Karera, Lagsanay, sudden death) plays on that same stage plus everything players build; no mode swaps or alters the map. Normal matches keep the default stage unchanged, and the next match after the tutorial match starts fresh on the default layout. Skip (Pause menu) and replay (Library > How to Play) are session-only; nothing is saved and there is no tutorial bonus. See [UI_TUTORIAL.md](UI_TUTORIAL.md) and [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md#tutorial-stage-layout--2026-10-14).
 - **UI:** simple and easy to navigate: title screen, join/lobby (pick color), the match, and a results screen. A local win tally on the results screen is optional.
 - **Setting:** a Filipino barrio look (bahay kubo, sari-sari store, palay fields) so the theme reads even in race rounds.
 - **Trailer:** loops at events, so it must read without sound (use captions).

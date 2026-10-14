@@ -1,0 +1,95 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DEFAULT_SIGNATURE_BEGIN
+arena.base_a:384.000,832.000,256.000,128.000
+arena.base_b:768.000,704.000,256.000,64.000
+arena.base_c:1152.000,832.000,256.000,128.000
+arena.base_d:1536.000,704.000,256.000,64.000
+arena.ceiling:0.000,-64.000,2048.000,64.000
+arena.floor:0.000,960.000,2048.000,64.000
+arena.goal:1792.000,768.000,256.000,192.000
+arena.left_wall:-64.000,0.000,64.000,1024.000
+arena.right_wall:2048.000,0.000,64.000,1024.000
+DEFAULT_SIGNATURE_END
+PASS default ArenaLayout reproduces the literal geometry signature
+PASS default build region matches
+PASS default protected goal matches
+PASS default protected spawn matches
+PASS default goal trigger matches
+PASS default spawn feet match
+PASS default id
+PASS default surfaces keep id, immutability and wall eligibility
+PASS default surface count is unchanged (9)
+PASS tutorial layout id
+PASS tutorial keeps arena.floor identical to the default stage
+PASS tutorial keeps arena.base_a identical to the default stage
+PASS tutorial keeps arena.base_b identical to the default stage
+PASS tutorial keeps arena.base_c identical to the default stage
+PASS tutorial keeps arena.base_d identical to the default stage
+PASS spawn, protected spawn and build region are unchanged
+PASS arena.goal is wall-INELIGIBLE (no kicks off the flag ledge)
+PASS arena.goal_cap is wall-INELIGIBLE (no kicks off the flag ledge)
+PASS ledge top is y=480 wu (got 480.0)
+PASS flag trigger rests exactly on the ledge top
+PASS BUILD HERE zone is defined
+PASS BUILD HERE zone is inside the build region
+PASS BUILD HERE zone avoids the protected spawn and goal clearance
+PASS BUILD HERE zone overlaps no immutable base geometry
+PASS flag sits 7.5 tiles above the floor (got 7.5)
+PASS the half-tile ledge cap uses a custom (non-tile) visual
+P04_ITEM_LAB_READY families=5 enabled_variants=6 profile=karera_slice
+PASS tutorial layout: floor -> Base A with the real controller
+PASS tutorial layout: Base A -> Base B
+PASS tutorial layout: Base B -> Base C
+PASS tutorial layout: Base C -> Base D (end of the base route)
+PASS base route alone does not reach the flag
+NO_BUILD_PROGRESS arena.floor attempts=660 best_feet=584.13
+NO_BUILD_PROGRESS arena.base_a attempts=960 best_feet=584.13
+NO_BUILD_PROGRESS arena.base_b attempts=1260 best_feet=511.94
+NO_BUILD_PROGRESS arena.base_c attempts=1560 best_feet=511.94
+NO_BUILD_PROGRESS arena.base_d attempts=1860 best_feet=511.94
+NO_BUILD_SEARCH attempts=1860 reached=0 highest_feet_y=511.94 ledge_top_y=480.00 short_by_wu=31.94 best=arena.base_d x=1662 dir=1 delay=14 hold=60 pulse=0
+PASS no-build search: flag never reached in 1860 scripted attempts
+PASS no-build highest feet y=511.94 stays below the ledge top y=480.00
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(24, 8) turns=0 reaches=false
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(25, 8) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(26, 8) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(27, 8) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(24, 9) turns=0 reaches=false
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(25, 9) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(26, 9) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(27, 9) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(24, 10) turns=0 reaches=false
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(25, 10) turns=0 reaches=false
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(26, 10) turns=0 reaches=false
+ZONE_TABLE build.hollow_blocks.cell_1x1 origin=(27, 10) turns=0 reaches=true
+ZONE_SUMMARY build.hollow_blocks.cell_1x1 valid=12 reaching=7
+PASS build.hollow_blocks.cell_1x1: at least one BUILD HERE placement reaches the flag
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(24, 8) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(25, 8) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(26, 8) turns=0 reaches=true
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(24, 8) turns=1 reaches=false
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(25, 8) turns=1 reaches=true
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(24, 9) turns=1 reaches=true
+ZONE_TABLE build.hollow_blocks.stack_2x3 origin=(25, 9) turns=1 reaches=true
+ZONE_SUMMARY build.hollow_blocks.stack_2x3 valid=7 reaching=6
+PASS build.hollow_blocks.stack_2x3: at least one BUILD HERE placement reaches the flag
+ZONE_TABLE build.bamboo_bridge.span_4x1 origin=(24, 8) turns=0 reaches=true
+ZONE_TABLE build.bamboo_bridge.span_4x1 origin=(24, 9) turns=0 reaches=true
+ZONE_TABLE build.bamboo_bridge.span_4x1 origin=(24, 10) turns=0 reaches=true
+ZONE_SUMMARY build.bamboo_bridge.span_4x1 valid=3 reaching=3
+PASS build.bamboo_bridge.span_4x1: at least one BUILD HERE placement reaches the flag
+PASS intended answer reaches the flag: 1x1 floating beside the wall
+PASS intended answer reaches the flag: 2x3 turned flat on Base D
+PASS intended answer reaches the flag: Tulay one tile above Base D
+PASS wrong placement (far left, floating) does not reach the flag
+PASS wrong placement (on Base A) does not reach the flag
+PASS wrong placement (above Base B) does not reach the flag
+PASS wrong placement (beside Base C) does not reach the flag
+PASS wrong placement (on the floor under D) does not reach the flag
+PASS a piece is accepted in the BUILD HERE zone
+PASS tutorial arena geometry is identical across consecutive rounds
+PASS construction persists unchanged across consecutive rounds
+PASS layout id stays tutorial for the whole match
+TUTORIAL_GATE_TESTS checks=48 failures=0 attempts=3341
+

@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="TutorialScript" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/tutorial/tutorial_script.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/tutorial/tutorial_step_def.gd" id="2"]
+
+[sub_resource type="Resource" id="Step_0"]
+script = ExtResource("2")
+step_id = &"welcome"
+title = "Step 1 of 5 - Welcome"
+body = "You are {roster}. Look for your number and shape above your chicken. Run: {move}. Jump: {jump}."
+glyph_action = "move"
+
+[sub_resource type="Resource" id="Step_1"]
+script = ExtResource("2")
+step_id = &"pugad"
+title = "Step 2 of 5 - Pugad"
+body = "Each egg shows the piece inside. Point at one and press {claim}. If someone is faster, pick again. After {pugad_s} seconds you get one."
+glyph_action = "claim"
+variants = {
+"claimed": "Egg claimed! Leftover eggs are handed out when the {pugad_s} second timer ends.", "lost": "Claim lost - pick another egg and press {claim} again."
+}
+
+[sub_resource type="Resource" id="Step_2"]
+script = ExtResource("2")
+step_id = &"place"
+title = "Step 3 of 5 - Build a way up"
+body = "You can't reach the flag yet: it is {ledge_tiles} tiles up and one jump is {jump_tiles}. Build a way up inside BUILD HERE. Move the ghost, rotate with {rotate}, confirm with {confirm} (no undo). {place_s} seconds."
+retry_body = "Nobody reached the flag. Put your piece inside BUILD HERE, above the platform and beside the flag wall, to make a step. Built pieces stay."
+glyph_action = "rotate"
+variants = {
+"timeout": "Time ran out, so an egg was picked for you. The flag is {ledge_tiles} tiles up: build a way up inside BUILD HERE, then confirm with {confirm} (no undo). {place_s} seconds."
+}
+
+[sub_resource type="Resource" id="Step_3"]
+script = ExtResource("2")
+step_id = &"karera"
+title = "Step 4 of 5 - Karera"
+body = "Run {move}, jump {jump}: reach the flag using what was built. The first finisher starts a {finish_s} second countdown. The round ends at {cap_s} seconds."
+glyph_action = "jump"
+
+[sub_resource type="Resource" id="Step_4"]
+script = ExtResource("2")
+step_id = &"results"
+title = "Step 5 of 5 - Results"
+body = "Tapos: reaching the flag earns points; the first to finish also gets Una. Next round in {advance_s} seconds. {result_reason}"
+glyph_action = "confirm"
+variants = {
+"nobody": "Nobody reached the flag: no points. Build closer to the flag wall. Next round in {advance_s} seconds. {result_reason}", "everyone": "Everyone reached the flag: no points, too easy. Next round in {advance_s} seconds. {result_reason}", "waiver": "With 2 players, everyone finishing still scores. Next round in {advance_s} seconds. {result_reason}"
+}
+
+[sub_resource type="Resource" id="Step_5"]
+script = ExtResource("2")
+step_id = &"lagsanay"
+title = "Lagsanay - tag"
+body = "One chicken is the taya, frozen for {head_start_s} seconds. Touch another chicken to pass it on. The countdown never resets: at zero the taya is out. Last chicken standing wins."
+glyph_action = "move"
+
+[resource]
+script = ExtResource("1")
+steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5")])
+placeholder_tag = "PLACEHOLDER copy"
+skip_caption = "Pause > Skip tutorial"

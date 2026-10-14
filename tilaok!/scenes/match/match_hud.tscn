@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/match/match_screen_presenter.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/lobby_screen.tscn" id="2"]
@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/debug_overlay.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/match_result_screen.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="10"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/tutorial_prompt.tscn" id="11"]
 
 [node name="MatchHud" type="CanvasLayer"]
 process_mode = 3
@@ -34,6 +36,22 @@ unique_name_in_owner = true
 [node name="MatchResultScreen" parent="." instance=ExtResource("9")]
 unique_name_in_owner = true
 visible = false
+
+[node name="TutorialPrompt" parent="." instance=ExtResource("11")]
+unique_name_in_owner = true
+visible = false
+
+[node name="Anchor" parent="TutorialPrompt" index="0"]
+anchors_preset = 0
+anchor_top = 0.0
+anchor_bottom = 0.0
+anchor_right = 0.0
+offset_left = 24.0
+offset_top = 167.0
+offset_right = 274.0
+offset_bottom = 167.0
+grow_vertical = 1
+theme_type_variation = &""
 
 [node name="PauseScreen" parent="." instance=ExtResource("7")]
 unique_name_in_owner = true

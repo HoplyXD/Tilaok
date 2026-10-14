@@ -3,14 +3,22 @@ extends UiScreen
 
 signal category_chosen(category: String)
 signal entry_chosen(index: int)
+## The How to Play page offers "Replay tutorial"; the owner (GameFlow / match presenter) clears the
+## session set. Off by default so the gallery states are unchanged.
+signal replay_tutorial_requested
 
 const ZONE_CATEGORIES := 0
 const ZONE_ENTRIES := 1
 const ITEMS_CATEGORY := "Items"
+const HOW_TO_PLAY_CATEGORY := "How to Play"
+const REPLAY_LABEL := "Replay tutorial"
+const REPLAY_DONE_LABEL := "Tutorial reset"
+const REPLAY_DONE_TEXT := "The guided first round will play again at the start of your next match."
 
 var zone := ZONE_CATEGORIES
 var category := ""
 var release_filter := false
+var replay_tutorial_enabled := false
 var entries: Array[ItemLibraryEntry] = []
 var _definitions: ItemDefinitions
 var _tuning: GameplayTuning
@@ -72,6 +80,9 @@ func choose_category(name: String) -> void:
 		for index in mini(entries.size(), buttons.size()):
 			(buttons[index] as Button).text = entries[index].display_name
 			buttons[index].visible = true
+	if name == HOW_TO_PLAY_CATEGORY and replay_tutorial_enabled and not buttons.is_empty():
+		(buttons[0] as Button).text = REPLAY_LABEL
+		buttons[0].visible = true
 	_entry_list.refresh_items()
 	_entry_list.select(0)
 	_show_entry(0)
@@ -98,7 +109,7 @@ func _on_screen_ready() -> void:
 	_filter_button.toggle_mode = true
 	_category_list.item_activated.connect(_on_category_activated)
 	_entry_list.selection_changed.connect(_show_entry)
-	_entry_list.item_activated.connect(func(index: int) -> void: entry_chosen.emit(index))
+	_entry_list.item_activated.connect(_on_entry_activated)
 	_category_list.refresh_items()
 	_entry_list.refresh_items()
 
@@ -160,6 +171,15 @@ func _on_category_activated(index: int) -> void:
 		set_release_filter(_filter_button.button_pressed)
 		return
 	choose_category((item as Button).text)
+
+
+func _on_entry_activated(index: int) -> void:
+	if category == HOW_TO_PLAY_CATEGORY and replay_tutorial_enabled:
+		replay_tutorial_requested.emit()
+		(_entry_list.items[0] as Button).text = REPLAY_DONE_LABEL
+		_entry_body.text = REPLAY_DONE_TEXT
+		return
+	entry_chosen.emit(index)
 
 
 func _show_entry(index: int) -> void:

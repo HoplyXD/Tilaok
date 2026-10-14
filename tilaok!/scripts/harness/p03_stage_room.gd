@@ -18,6 +18,9 @@ const PREVIEW_COLORS := [Color("#f5c95b"), Color("#74c8d6"), Color("#ef8b74"), C
 var tuning := GameplayTuning.new()
 var snapshot: ConfigurationSnapshot
 var arena: ArenaDefinition
+## Optional stage layout, set before the room enters the tree. Null keeps the default stage; the
+## tutorial match sets it once, so every round and mode of that match shares one map.
+var arena_layout: ArenaLayout
 var support_tracker := SupportTracker.new()
 var input_router: LocalInputRouter
 var pause_coordinator: PauseRecoveryCoordinator
@@ -64,7 +67,7 @@ func _ready() -> void:
 	tuning = snapshot.gameplay
 	world_scale = tuning.grid_cell_wu / 32.0
 	support_line_y = 384.0 * world_scale
-	arena = ArenaDefinition.new(tuning)
+	arena = ArenaDefinition.new(tuning, arena_layout)
 	support_tracker.configure(tuning)
 	input_router.tuning = tuning
 	input_router.set_shared_keyboard_enabled(true)
@@ -275,7 +278,7 @@ func _build_world() -> void:
 	world_layer.add_child(stage_tiles)
 	stage_tiles.paint_arena(arena)
 	for spec in arena.surface_specs:
-		_add_static_surface(spec, false)
+		_add_static_surface(spec, bool(spec.get("custom_visual", false)))
 	_add_flag_trigger()
 	_add_support_line()
 	camera_rig = BoundedStageCamera.new()

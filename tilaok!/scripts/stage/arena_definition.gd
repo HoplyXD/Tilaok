@@ -1,6 +1,7 @@
 class_name ArenaDefinition
 extends RefCounted
 
+const DEFAULT_LAYOUT_ID := "default"
 const REGION_FOOTPRINT := "footprint"
 const REGION_SWEEP := "sweep"
 const REGION_EFFECT := "effect"
@@ -14,17 +15,26 @@ var protected_spawn: Rect2
 var protected_goal: Rect2
 var spawn_feet := Vector2.ZERO
 var goal_trigger: Rect2
+## Coach-marker guidance area (empty for the default stage); never affects validation.
+var build_here_zone := Rect2()
+var layout_id := DEFAULT_LAYOUT_ID
 var surface_specs: Array[Dictionary] = []
 var _immutable_ids: Dictionary = {}
 var _construction_ids: Dictionary = {}
 
 
-func _init(source_tuning: GameplayTuning = null) -> void:
+## `source_layout` null keeps the literal default stage below; a layout rebuilds the same fields
+## from data (one layout per match, see ArenaLayout).
+func _init(source_tuning: GameplayTuning = null, source_layout: ArenaLayout = null) -> void:
 	tuning = source_tuning if source_tuning != null else GameplayTuning.new()
 	var cell := tuning.grid_cell_wu
 	arena_bounds = Rect2(
 		Vector2.ZERO, Vector2(tuning.arena_width_tiles, tuning.arena_height_tiles) * cell
 	)
+	if source_layout != null:
+		_apply_layout(source_layout)
+		_add_containment()
+		return
 	build_region = tile_rect(5, 3, 28, 15)
 	protected_spawn = tile_rect(0, 11, 5, 15)
 	protected_goal = tile_rect(28, 9, 32, 15)
@@ -36,6 +46,30 @@ func _init(source_tuning: GameplayTuning = null) -> void:
 	_add_surface("arena.base_c", tile_rect(18, 13, 22, 15), true, true)
 	_add_surface("arena.base_d", tile_rect(24, 11, 28, 12), true, true)
 	_add_surface("arena.goal", tile_rect(28, 12, 32, 15), true, true)
+	_add_containment()
+
+
+func _apply_layout(source_layout: ArenaLayout) -> void:
+	var cell := tuning.grid_cell_wu
+	layout_id = source_layout.layout_id
+	build_region = _scaled_rect(source_layout.build_region_tiles, cell)
+	protected_spawn = _scaled_rect(source_layout.protected_spawn_tiles, cell)
+	protected_goal = _scaled_rect(source_layout.protected_goal_tiles, cell)
+	goal_trigger = _scaled_rect(source_layout.goal_trigger_tiles, cell)
+	build_here_zone = _scaled_rect(source_layout.build_here_zone_tiles, cell)
+	spawn_feet = source_layout.spawn_feet_tiles * cell
+	for surface in source_layout.surfaces:
+		_add_surface(
+			surface.surface_id,
+			_scaled_rect(surface.rect_tiles, cell),
+			true,
+			surface.wall_eligible,
+			surface.custom_visual
+		)
+
+
+func _add_containment() -> void:
+	var cell := tuning.grid_cell_wu
 	_add_surface(
 		"arena.left_wall", Rect2(Vector2(-cell, 0.0), Vector2(cell, arena_bounds.size.y)), true
 	)
@@ -52,6 +86,15 @@ func _init(source_tuning: GameplayTuning = null) -> void:
 func tile_rect(left: float, top: float, right: float, bottom: float) -> Rect2:
 	var cell := tuning.grid_cell_wu
 	return Rect2(Vector2(left, top) * cell, Vector2(right - left, bottom - top) * cell)
+
+
+## Tiles from the floor top up to the flag trigger's bottom edge (how high the flag sits).
+func flag_height_tiles() -> float:
+	var floor_top := arena_bounds.size.y
+	for spec in surface_specs:
+		if str(spec.id) == "arena.floor":
+			floor_top = (spec.rect as Rect2).position.y
+	return (floor_top - goal_trigger.end.y) / tuning.grid_cell_wu
 
 
 func controller_origin_from_feet(feet_position: Vector2) -> Vector2:
@@ -125,7 +168,11 @@ func can_remove_surface(surface_id: String) -> Dictionary:
 
 
 func _add_surface(
-	surface_id: String, rect: Rect2, immutable: bool, wall_eligible: bool = false
+	surface_id: String,
+	rect: Rect2,
+	immutable: bool,
+	wall_eligible: bool = false,
+	custom_visual: bool = false
 ) -> void:
 	var metadata := SupportSurfaceMetadata.new()
 	metadata.surface_id = surface_id
@@ -138,11 +185,24 @@ func _add_surface(
 		if wall_eligible
 		else SupportSurfaceMetadata.Eligibility.INELIGIBLE
 	)
-	surface_specs.append(
-		{"id": surface_id, "rect": rect, "immutable": immutable, "metadata": metadata}
+	(
+		surface_specs
+		. append(
+			{
+				"id": surface_id,
+				"rect": rect,
+				"immutable": immutable,
+				"metadata": metadata,
+				"custom_visual": custom_visual,
+			}
+		)
 	)
 	if immutable:
 		_immutable_ids[surface_id] = true
+
+
+static func _scaled_rect(tiles: Rect2, cell: float) -> Rect2:
+	return Rect2(tiles.position * cell, tiles.size * cell)
 
 
 func _overlaps(left: Rect2, right: Rect2) -> bool:

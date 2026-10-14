@@ -8,6 +8,7 @@ P01 provides a Godot 4.7.2 foundation harness; P02 adds movement and input diagn
 
 | Check | Status | Evidence / limit |
 |---|---|---|
+| Guided first match (P13-T07 slice) | **PASSED (engineering, synthetic input) — no human session** | Tutorial-only stage gate (no-build search 1,860 attempts, 0 reached, highest feet 511.94 vs ledge 480), per-piece solutions, coach-box flow/skip/replay/session-memory tests (48 + 140 checks), rendered 1080p/720p captures, perf and export smoke on Godot 4.7.2; [evidence](evidence/tutorial/README.md). Novice comprehension, facilitator interventions, cultural review and Kangaroo prompts remain open (P13-T08 sheet below). |
 | Historical headless project initialization/import | **PASSED** | `godot --headless --path "tilaok!" --editor --quit`, Godot 4.6.3; completed filesystem scan, icon import, and editor initialization with no errors/warnings in the captured historical output. This is not target-engine validation. |
 | Target Godot 4.7.2 P01 project import/parse | **PASSED** | Godot 4.7.2 imported the working project after P01 foundation additions; [full log](evidence/p01-import-godot-4.7.2-2026-10-13.log). |
 | Historical P00 Godot 4.7.2 editor initialization | **FAILED — historical** | Earlier invocation exited 0 but logged `ERROR: Parameter "singleton" is null` and a thread-shutdown warning; [historical log](evidence/p00-import-godot-4.7.2-2026-10-13.log). The current P02 import/parse check below is clean. |
@@ -438,3 +439,40 @@ At that documentation-only review, no team milestone was marked complete. The cu
 | Memory | **PARTIAL — local synthetic Debug sample** | Godot static memory was 110.4/110.6/111.0 MiB; a 100 ms Windows process sample over 14 seconds measured peak working set/private bytes of 306.7/420.5 MiB, under the provisional 512 MiB private-memory ceiling in this run. This is not exported-build or target-PC acceptance. [OS sample](evidence/p11/p11_os_memory_sample.txt). |
 
 The full command list, metric interpretation and open human/team tasks are in the [P11 evidence index](evidence/p11/README.md). Remain open: player/novice comprehension, actual controller and pause/reclaim sessions, Rising explanations and moving-support review, pair-only Hug and forced two-survivor Storm balance, slot/tie bias, native-speaker/cultural review, production pose/timing/audio replacement, target-PC process-memory verification and performance profiling. P11 is a standalone development route only; R1–R4, event scheduling and all P12 stacks stay inactive. No final art or audio was generated.
+
+## P13-T08 novice-session sheet — guided first match (2026-10-14)
+
+**Status: ready for a human session; no session has been run and none is claimed.** The build is the default route (`karera_slice`, Kaing 1x1 / Kaing 2x3 / Tulay 4x1) started from the Title. The first match uses the tutorial stage where a built piece is needed to reach the flag. Use a participant who has not seen the game; the facilitator must not explain Pugad, Place or the flag.
+
+| Item | Value |
+|---|---|
+| Launch | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'` → Title → join with **F** (K1) and **Enter** (K2) → Start |
+| Devices | K1 + K2 on one keyboard (add gamepads if available); record what was actually used |
+| Copy | PLACEHOLDER English (not culturally reviewed): `tilaok!/data/ui/tutorial_script.tres` |
+| Optional | Lagsanay prompt: `-- --match-route=lifecycle` and reach sudden death (a fixture is needed; rounds 4/8/12 are not scheduled yet) |
+
+### Observations to record (ask after the round, do not lead)
+
+| # | Ask or watch | Record |
+|---|---|---|
+| 1 | "Why couldn't you reach the flag at first?" | participant's own words; did they notice the BUILD HERE zone? |
+| 2 | "Explain the objective in your own words." | verbatim |
+| 3 | "Explain how you moved / jumped / claimed / rotated / confirmed." | verbatim; which input was hard |
+| 4 | "Explain what placing a piece does and why you put it there." | verbatim; placed in the zone? piece type? |
+| 5 | Did the box ever cover something you needed? | what, when |
+| 6 | Did anyone not realise they had to build? Did a retry round teach it? | yes / no, rounds taken |
+| 7 | Skip: pause (Esc) and choose **Skip tutorial** mid-round. | works? did the box vanish and the stage stay? |
+| 8 | Replay: Title → Library → How to Play → **Replay tutorial**, then Start. | guided again? |
+| 9 | Close the game, check `%APPDATA%\Godot\app_userdata\Tilaok!` for new files. | none created by the tutorial |
+
+### Intervention log (fill during the session)
+
+| Time | Step | What the facilitator said or did | Why it was needed |
+|---|---|---|---|
+| | | | |
+
+### Session record
+
+| Date | Build / revision | Players | Devices | Rounds | Skip / replay worked | Facilitator | Participant pseudonym | Result |
+|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | |

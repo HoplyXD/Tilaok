@@ -34,6 +34,7 @@ var _overlay: UiScreen
 var _bridge_target: UiScreen
 var _debug_accum := 0.0
 var _game_input_suspended := false
+var _tutorial: TutorialCoordinator
 
 @onready var lobby_screen: UiLobbyScreen = %LobbyScreen
 @onready var play_hud: UiPlayHud = %PlayHud
@@ -45,6 +46,7 @@ var _game_input_suspended := false
 @onready var confirm_overlay: Control = %ConfirmOverlay
 @onready var confirm_dialog: UiConfirmDialog = %ConfirmDialog
 @onready var debug_overlay: UiDebugOverlay = %DebugOverlay
+@onready var tutorial_prompt: UiTutorialPrompt = %TutorialPrompt
 
 
 func _ready() -> void:
@@ -57,9 +59,11 @@ func _ready() -> void:
 	match_result_screen.visible = false
 	confirm_overlay.visible = false
 	debug_overlay.visible = false
+	tutorial_prompt.visible = false
 
 
 func _exit_tree() -> void:
+	unbind_tutorial()
 	_disconnect_room()
 
 
@@ -101,6 +105,33 @@ func attach(p_room: P05MatchRoom) -> void:
 	set_debug_visible(room.debug_overlay_default)
 	_eggs_dirty = true
 	_dirty = true
+
+
+## Optional guided-round coach. The presenter only shows what the coordinator publishes, hides it
+## while pause / overlays / confirmations / final results own the screen, and forwards Skip.
+func bind_tutorial(coordinator: TutorialCoordinator) -> void:
+	unbind_tutorial()
+	_tutorial = coordinator
+	if _tutorial == null:
+		return
+	_tutorial.step_changed.connect(_on_tutorial_step)
+	pause_screen.skip_tutorial_requested.connect(_on_skip_tutorial_requested)
+	tutorial_prompt.bind_live(_tutorial.view)
+	_dirty = true
+
+
+func unbind_tutorial() -> void:
+	if _tutorial != null and is_instance_valid(_tutorial):
+		if _tutorial.step_changed.is_connected(_on_tutorial_step):
+			_tutorial.step_changed.disconnect(_on_tutorial_step)
+	if (
+		pause_screen != null
+		and pause_screen.skip_tutorial_requested.is_connected(_on_skip_tutorial_requested)
+	):
+		pause_screen.skip_tutorial_requested.disconnect(_on_skip_tutorial_requested)
+	_tutorial = null
+	if tutorial_prompt != null:
+		tutorial_prompt.visible = false
 
 
 func set_debug_visible(value: bool) -> void:
@@ -160,6 +191,21 @@ func _on_phase_changed(
 	):
 		_notice_text = room.place_notice if not room.place_notice.is_empty() else _play_hint()
 		_notice_left = NOTICE_SECONDS
+
+
+func _on_tutorial_step(view: Dictionary) -> void:
+	tutorial_prompt.bind_live(view)
+
+
+func _on_skip_tutorial_requested() -> void:
+	if _tutorial != null:
+		_tutorial.skip()
+	_dirty = true
+
+
+func _on_replay_tutorial_requested() -> void:
+	if _tutorial != null and _tutorial.session != null:
+		_tutorial.session.replay()
 
 
 func _on_actor_created(actor: ChickenController) -> void:
@@ -276,7 +322,12 @@ func _open_overlay(scene: PackedScene) -> void:
 	screen.owner_seat = room.pause_coordinator.menu_owner
 	if screen is UiLibraryScreen:
 		var library_text := load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
-		(screen as UiLibraryScreen).bind_live(room.definitions, room.tuning, library_text)
+		var library := screen as UiLibraryScreen
+		library.bind_live(room.definitions, room.tuning, library_text)
+		if _tutorial != null:
+			library.replay_tutorial_enabled = true
+			library.replay_tutorial_requested.connect(_on_replay_tutorial_requested)
+			library.choose_category(library.category)
 	elif screen is UiSettingsScreen:
 		(screen as UiSettingsScreen).bind_live(room.presentation_settings)
 	screen.back_requested.connect(_close_overlay)
@@ -339,6 +390,20 @@ func _apply() -> void:
 		pause_screen.refresh_live()
 	_apply_bridge(phase, paused)
 	_apply_debug(phase, paused)
+	_apply_tutorial(paused, final_results)
+
+
+func _apply_tutorial(paused: bool, final_results: bool) -> void:
+	if _tutorial == null or not is_instance_valid(_tutorial):
+		return
+	var hidden := paused or final_results or _overlay != null or confirm_overlay.visible
+	_tutorial.set_suppressed(hidden)
+	var session := _tutorial.session
+	pause_screen.set_skip_tutorial_available(session != null and session.is_active())
+	var results_box := (
+		tutorial_prompt.visible and str(_tutorial.view.get("step_id", "")) == "results"
+	)
+	result_screen.reserve_side_strip(tutorial_prompt.results_strip_width if results_box else 0.0)
 
 
 func _apply_pugad(seats: Array[Dictionary]) -> void:

@@ -5,6 +5,7 @@ signal resume_requested
 signal settings_requested
 signal library_requested
 signal leave_confirmed
+signal skip_tutorial_requested
 
 ## Coordinator reason strings in plain words; unknown reasons are shown unchanged.
 const REASON_TEXT := {
@@ -37,6 +38,7 @@ var _device := "k1"
 @onready var _settings_button: Button = %SettingsButton
 @onready var _library_button: Button = %LibraryButton
 @onready var _leave_button: Button = %LeaveButton
+@onready var _skip_tutorial_button: Button = %SkipTutorialButton
 
 
 func state_names() -> PackedStringArray:
@@ -127,6 +129,7 @@ func _on_screen_ready() -> void:
 	_settings_button.pressed.connect(func() -> void: settings_requested.emit())
 	_library_button.pressed.connect(func() -> void: library_requested.emit())
 	_leave_button.pressed.connect(_on_leave_pressed)
+	_skip_tutorial_button.pressed.connect(func() -> void: skip_tutorial_requested.emit())
 	_leave_confirm.confirmed.connect(func() -> void: leave_confirmed.emit())
 	_leave_confirm.cancelled.connect(func() -> void: _menu.set_active(true))
 	_menu.refresh_items()
@@ -200,6 +203,14 @@ func _back(_seat_index: int) -> bool:
 		return true
 	_menu.select(0)
 	return true
+
+
+## The entry is appended after Leave and hidden unless a guided tutorial is active.
+func set_skip_tutorial_available(available: bool) -> void:
+	if _skip_tutorial_button.visible == available:
+		return
+	_skip_tutorial_button.visible = available
+	_menu.refresh_items()
 
 
 func _on_leave_pressed() -> void:

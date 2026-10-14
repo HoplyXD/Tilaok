@@ -536,10 +536,23 @@ func _try_commit_result_action() -> void:
 			_open_confirmation("quit", result_menu_owner)
 
 
+## A match that ran on a non-default stage (the guided tutorial match) never carries that stage
+## into the next match: the owner builds a fresh room instead of resetting this one.
+func _hands_back_for_fresh_stage(kind: StringName) -> bool:
+	if arena == null or arena.layout_id == ArenaDefinition.DEFAULT_LAYOUT_ID:
+		return false
+	if flow_requested.get_connections().is_empty():
+		return false
+	flow_requested.emit(kind)
+	return true
+
+
 func _replay_match() -> void:
 	var joined := input_router.registry.joined_seats()
 	if joined.size() != original_seat_indices.size():
 		_clear_result_readiness("seat roster changed")
+		return
+	if _hands_back_for_fresh_stage(&"replay_match"):
 		return
 	reset_room()
 	for seat_index in original_seat_indices:
@@ -549,6 +562,8 @@ func _replay_match() -> void:
 
 
 func _return_group_to_lobby() -> void:
+	if _hands_back_for_fresh_stage(&"leave_match"):
+		return
 	reset_room()
 	for seat in input_router.registry.joined_seats():
 		input_router.registry.set_ready(int(seat.seat), false)

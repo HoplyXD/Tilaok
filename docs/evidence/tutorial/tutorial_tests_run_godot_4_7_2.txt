@@ -1,0 +1,144 @@
+﻿Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS TutorialScript has every step
+PASS welcome has a title and body
+PASS pugad has a title and body
+PASS place has a title and body
+PASS karera has a title and body
+PASS results has a title and body
+PASS lagsanay has a title and body
+PASS Place has a stronger retry hint
+PASS live copy is tagged PLACEHOLDER
+PASS a new session is active
+PASS the Lagsanay prompt is due in a new session
+PASS the Lagsanay prompt is not due twice
+PASS skip ends the tutorial
+PASS replay clears the whole session set
+PASS completion ends the tutorial
+PASS replay after completion restarts
+PASS the first match uses the tutorial layout
+PASS Lobby shows the welcome step
+PASS welcome names each seat's number and shape (You are 1 CIRCLE, 2 TRIANGLE. Look for your number and shape above your chicken. Run: A / D / Left / Right. Jump: Space / Right Ctrl.)
+PASS Pugad shows the Pugad step
+PASS Pugad copy carries the tuned 8 s
+PASS a claim switches the Pugad copy to 'claimed'
+PASS both seats claimed
+PASS Place shows the build step
+PASS Place copy carries ledge height, jump height and Place seconds (You can't reach the flag yet: it is 7.5 tiles up and one jump is 3. Build a way up inside BUILD HERE. Move the ghost, rotate with R / Right Shift, confirm with F / Enter (no undo). 15 seconds.)
+PASS Place requests the BUILD HERE marker
+PASS the BUILD HERE marker sits on the layout's zone
+PASS the first Place round uses the normal hint
+PASS confirms start Play
+PASS Play shows the Karera step
+PASS Karera copy carries the 60 s cap and 15 s finish window (Run A / D / Left / Right, jump Space / Right Ctrl: reach the flag using what was built. The first finisher starts a 15 second countdown. The round ends at 60 seconds.)
+PASS the BUILD HERE marker hides after Place
+PASS round ends
+PASS Results shows the results step
+PASS the 2-player waiver text equals the real result (With 2 players, everyone finishing still scores. Next round in 8 seconds. The two-player waiver allows normal race awards.)
+PASS Results copy carries the 8 s advance time
+PASS a round with finishers completes the tutorial
+PASS the coach box hides once the tutorial is complete
+PASS completing does not change the stage mid-match (one map per match)
+PASS round ends
+PASS everyone finished: text matches the real no-score reason (Everyone reached the flag: no points, too easy. Next round in 8 seconds. Everyone reached the goal; race awards are suppressed.)
+PASS round ends
+PASS everyone finished: text matches the real no-score reason (Everyone reached the flag: no points, too easy. Next round in 8 seconds. Everyone reached the goal; race awards are suppressed.)
+PASS one seat claimed, one idle
+PASS the timer assigned the idle seat an egg
+PASS the Place step says an egg was assigned (Time ran out, so an egg was picked for you. The flag is 7.5 tiles up: build a way up inside BUILD HERE, then confirm with F / Enter (no undo). 15 seconds.)
+PASS one confirmation does not end Place
+PASS Place timeout starts Play on the Karera step
+PASS the box is visible before any overlay
+PASS the box hides under the Settings overlay
+PASS the box hides under the Library overlay
+PASS the box returns after the overlays close
+PASS the box hides on the final match result
+PASS cap ends the round
+PASS nobody finished
+PASS nobody finished: text matches the real result (Nobody reached the flag: no points. Build closer to the flag wall. Next round in 8 seconds. No one reached the goal; no round points are awarded.)
+PASS an unsolved round does not complete it
+PASS step 3 repeats with the stronger hint
+PASS the retry copy is shown (Nobody reached the flag. Put your piece inside BUILD HERE, above the platform and beside the flag wall, to make a step. Built pieces stay.)
+PASS the marker adds the TRY A PIECE HERE hint
+PASS changing match_pugad_seconds changes the copy (Each egg shows the piece inside. Point at one and press F / Enter. If someone is faster, pick again. After 11 seconds you get one.)
+PASS one K1 seat shows K1 glyphs only (A / D)
+PASS K1 + K2 shows both devices' glyphs (A / D / Left / Right)
+PASS a gamepad seat adds its glyph (A / D / Left / Right / D-pad / Left stick)
+PASS the box is visible in Pugad
+PASS the box is bound live
+PASS the box is never attached to the input bridge (display only)
+PASS the box ignores the mouse
+PASS Back does nothing on a live box (no skip, no double activation)
+PASS Back did not skip the tutorial
+PASS the box hides while paused
+PASS the marker hides while paused
+PASS the box hides under a confirmation
+PASS the box returns after the confirmation
+PASS Skip hides the box
+PASS skipping mid-match keeps the stage
+PASS after a skip the next match uses the default stage signature
+PASS no coach box in the skipped session
+PASS replay makes the next match a tutorial match
+PASS replay -> skip -> replay ends guided again
+PASS match 1 is the tutorial match
+PASS match 2 starts fresh on the default layout
+PASS lifecycle route uses the layout
+PASS a piece is built in the BUILD HERE zone before Lagsanay
+PASS no prompt in a completed Karera round
+PASS the first Lagsanay round shows the Lagsanay prompt
+PASS Lagsanay / sudden death play on the same stage
+PASS the prompt carries the tuned head start
+PASS the built pieces are unchanged in the Lagsanay round (same map, same construction)
+PASS the prompt is not marked seen while it is showing
+PASS the prompt is marked seen when Lagsanay ends
+PASS it will not show again this session
+PASS the lifecycle match starts on the tutorial stage
+PASS Replay from the tutorial stage builds a fresh room
+PASS the replay room follows the session (tutorial still active here)
+PASS after completion, Replay starts a fresh match at once on the default stage
+PASS 10 match + skip/replay cycles do not leak nodes (1 -> 1)
+PASS tutorial_session.gd has no Control.new(
+PASS tutorial_session.gd has no add_theme_
+PASS tutorial_session.gd has no FileAccess
+PASS tutorial_session.gd has no ConfigFile
+PASS tutorial_session.gd has no DirAccess
+PASS tutorial_session.gd has no user://
+PASS tutorial_session.gd has no ResourceSaver
+PASS tutorial_script.gd has no Control.new(
+PASS tutorial_script.gd has no add_theme_
+PASS tutorial_script.gd has no FileAccess
+PASS tutorial_script.gd has no ConfigFile
+PASS tutorial_script.gd has no DirAccess
+PASS tutorial_script.gd has no user://
+PASS tutorial_script.gd has no ResourceSaver
+PASS tutorial_step_def.gd has no Control.new(
+PASS tutorial_step_def.gd has no add_theme_
+PASS tutorial_step_def.gd has no FileAccess
+PASS tutorial_step_def.gd has no ConfigFile
+PASS tutorial_step_def.gd has no DirAccess
+PASS tutorial_step_def.gd has no user://
+PASS tutorial_step_def.gd has no ResourceSaver
+PASS tutorial_coordinator.gd has no Control.new(
+PASS tutorial_coordinator.gd has no add_theme_
+PASS tutorial_coordinator.gd has no FileAccess
+PASS tutorial_coordinator.gd has no ConfigFile
+PASS tutorial_coordinator.gd has no DirAccess
+PASS tutorial_coordinator.gd has no user://
+PASS tutorial_coordinator.gd has no ResourceSaver
+PASS build_here_marker.gd has no Control.new(
+PASS build_here_marker.gd has no add_theme_
+PASS build_here_marker.gd has no FileAccess
+PASS build_here_marker.gd has no ConfigFile
+PASS build_here_marker.gd has no DirAccess
+PASS build_here_marker.gd has no user://
+PASS build_here_marker.gd has no ResourceSaver
+PASS ui_tutorial_prompt.gd has no Control.new(
+PASS ui_tutorial_prompt.gd has no add_theme_
+PASS ui_tutorial_prompt.gd has no FileAccess
+PASS ui_tutorial_prompt.gd has no ConfigFile
+PASS ui_tutorial_prompt.gd has no DirAccess
+PASS ui_tutorial_prompt.gd has no user://
+PASS ui_tutorial_prompt.gd has no ResourceSaver
+PASS nothing was created or changed under user://
+TUTORIAL_TESTS checks=140 failures=0
+

@@ -27,6 +27,9 @@ const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
 const PLAYTEST_PROFILE := "karera_slice"
+## Guided first match: a stage whose flag ledge needs a built piece, used for one match only.
+const TUTORIAL_LAYOUT := preload("res://data/stage/tutorial_arena_layout.tres")
+const TUTORIAL_SCRIPT_PATH := "res://data/ui/tutorial_script.tres"
 
 var state := State.TITLE
 ## Set by the harness when it hosts this flow: Quit returns to the harness instead of exiting.
@@ -39,6 +42,10 @@ var settings := PresentationSettings.new()
 var match_scene: PackedScene = MATCH_SCENE
 var prompt_map: UiPromptMap
 var library_text: UiLibraryText
+## Session-only tutorial memory (never written to disk) and the coach for the current match.
+var tutorial_session := TutorialSession.new()
+var tutorial_script: TutorialScript
+var tutorial: TutorialCoordinator
 
 var _screen: UiScreen
 
@@ -49,6 +56,7 @@ func _ready() -> void:
 		return
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	library_text = load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
+	tutorial_script = load(TUTORIAL_SCRIPT_PATH) as TutorialScript
 	if OS.get_cmdline_user_args().has(ROUTE_PREFIX + ROUTE_LIFECYCLE):
 		match_scene = LIFECYCLE_SCENE
 	router = LocalInputRouter.new()
@@ -106,6 +114,8 @@ func show_library() -> void:
 	tuning.item_enabled_variants = P07FirstPlayableMatchRoom.P07_ALLOWED_VARIANTS.duplicate()
 	ItemEnabledProfiles.apply(tuning, PLAYTEST_PROFILE)
 	var definitions := ItemDefinitions.load_for_profile(tuning, PLAYTEST_PROFILE)
+	library.replay_tutorial_enabled = true
+	library.replay_tutorial_requested.connect(tutorial_session.replay)
 	library.bind_live(definitions, tuning, library_text)
 	library.back_requested.connect(show_title)
 	_screen = library
@@ -136,9 +146,32 @@ func _enter_match() -> void:
 	room.auto_start_on_ready = true
 	room.presentation_settings = settings
 	room.allow_harness_button = not harness_mode
+	# One map per match: the layout is chosen here, once, before the room builds its arena.
+	if tutorial_session.wants_tutorial_layout():
+		room.arena_layout = TUTORIAL_LAYOUT
 	room.flow_requested.connect(_on_flow_requested)
 	room.return_requested.connect(_on_room_return)
 	add_child(room)
+	_attach_tutorial()
+
+
+func _start_replay() -> void:
+	if room == null:
+		return
+	for seat in router.registry.joined_seats():
+		router.registry.set_ready(int(seat.seat), true)
+	room.start_match()
+
+
+## The coach is a child of the room, so it is freed with it. It only reads room state.
+func _attach_tutorial() -> void:
+	if room == null or tutorial_script == null or room.presenter == null:
+		return
+	tutorial = TutorialCoordinator.new()
+	tutorial.name = "TutorialCoordinator"
+	room.add_child(tutorial)
+	tutorial.attach(room, tutorial_session, tutorial_script, prompt_map)
+	room.presenter.bind_tutorial(tutorial)
 
 
 func _on_flow_requested(kind: StringName) -> void:
@@ -148,6 +181,10 @@ func _on_flow_requested(kind: StringName) -> void:
 		&"leave_match":
 			# PROTOTYPE_DEFAULTS §3: leaving a match returns the whole group to the Lobby.
 			_enter_match()
+		&"replay_match":
+			# Replay from a room that held the tutorial stage: a fresh room, started at once.
+			_enter_match()
+			_start_replay()
 		&"harness":
 			_open_harness()
 
@@ -215,6 +252,7 @@ func _free_room() -> void:
 		remove_child(room)
 		room.queue_free()
 	room = null
+	tutorial = null
 	get_tree().paused = false
 	router.resume_system()
 

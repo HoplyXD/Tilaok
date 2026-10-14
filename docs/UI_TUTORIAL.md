@@ -132,6 +132,23 @@ Tutorial prompts must be skippable after a player has completed them in the curr
 
 **Future approved Should extension:** if wall movement is included before release, add a brief optional practice cue showing that wall contact slows descent and a fresh jump press kicks away. The cue must explain that holding jump does not repeat and that players must separate before kicking from the same wall again. Add the control to the Library and tutorial only after implementation and verification; no wall-movement tutorial, HUD, animation or sound currently exists. Human production owns any final animation/audio assets.
 
+## Guided first match — implemented slice (2026-10-14, PLACEHOLDER copy)
+
+**Owner decision (2026-10-14):** the guided first match uses a tutorial-only layout where building is required to reach the flag. The flag ledge is raised above the highest no-build jump, so the first round teaches Pugad → Place → Play for real. Every mode in that match plays on the same built map (no per-mode map change); normal matches are unchanged. Skip and replay are session-only.
+
+| Step | Shown during | Advances when |
+|---|---|---|
+| 1 Welcome | Lobby | the match leaves the Lobby (number + shape of every seat; run/jump glyphs per device) |
+| 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout) |
+| 3 Place | Place | all confirmed or Place ends; BUILD HERE zone marker; stronger hint when the previous round had no finishers |
+| 4 Karera | Play | the round ends |
+| 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody / 2-player waiver) |
+| Lagsanay | first Lagsanay or sudden death of a session | Lagsanay ends; shown once per session (only reachable on the lifecycle route today) |
+
+**D1 note:** move/jump is taught inside the real first Karera (a warm-up note in step 1 and the Play prompt), not in a pre-Pugad practice phase. This supersedes the wording of sequence step 2 above ("reach short, safe markers on the base stage") for the guided match; the P13-T07 acceptance is unchanged.
+
+Skip is a Pause menu entry ("Skip tutorial", shown only while the tutorial is active); Back is not used (P09 binds it to leave-confirm). Replay is the "Replay tutorial" entry on the Library How to Play page; it clears the session set. The coach box is display-only and sits where it does not cover the 64 px HUD or the Place strip. Copy lives in `tilaok!/data/ui/tutorial_script.tres` and is not culturally reviewed. Kangaroo prompts wait for P11 stacks; the wall-slide practice cue is still a later Should extension. No human novice session has run: P13-T07 and P13-T08 stay unchecked.
+
 ## Accessibility baseline
 
 - Colour is never the sole identifier for chickens, teams, valid/invalid state, taya, Barya, or hazards.
@@ -155,4 +172,4 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 ## Verification links
 
 `PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity and P09 live match-end, sudden-death, result and restart behavior passed synthetic engineering checks. P11's standalone command cues and event checks also have synthetic engineering evidence; see [P08 evidence](evidence/p08/README.md), [P09 evidence](evidence/p09/README.md) and [P11 evidence](evidence/p11/README.md). The guided tutorial, final visual treatment, player comprehension/readability, physical-device validation and P13 product UI remain open.
-**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI shell status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Play HUD, results, Pause/Reconnect, Settings and Library exist; the Title, Lobby, Pugad, Place, Play HUD, Round result and Pause/Reconnect screens are **bound to the live P05/P06 match loop**, and the Match result screen is bound to live P09 data on the lifecycle route (`-- --match-route=lifecycle`); the Library shows live Items with SAMPLE text for other categories; see [UI_HANDOFF.md](UI_HANDOFF.md)). P08 adds a development Lagsanay HUD and explained round results; P09 binds live final match results to the themed screen; P11 renders standalone DEBUG command poses, timing cues and generated tones. The shared event-overlay component remains a placeholder. The guided tutorial script is not implemented (P13-T07); Pugad, Place and Play carry only a control hint in the phase banner / a Play-start hint.
+**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI shell status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Play HUD, results, Pause/Reconnect, Settings and Library exist; the Title, Lobby, Pugad, Place, Play HUD, Round result and Pause/Reconnect screens are **bound to the live P05/P06 match loop**, and the Match result screen is bound to live P09 data on the lifecycle route (`-- --match-route=lifecycle`); the Library shows live Items with SAMPLE text for other categories; see [UI_HANDOFF.md](UI_HANDOFF.md)). P08 adds a development Lagsanay HUD and explained round results; P09 binds live final match results to the themed screen; P11 renders standalone DEBUG command poses, timing cues and generated tones. The shared event-overlay component remains a placeholder. The guided first-match script is implemented as a PLACEHOLDER-copy slice (2026-10-14, see [Guided first match](#guided-first-match--implemented-slice-2026-10-14-placeholder-copy)); it has had no human novice session, so P13-T07/T08 stay open.

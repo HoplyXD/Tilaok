@@ -15,10 +15,18 @@ var award_lines: Array[UiAwardLine] = []
 @onready var _no_score_reason: UiToastLine = %NoScoreReason
 @onready var _ready_hint: UiPromptGlyph = %ReadyHint
 @onready var _advance: UiCountdownRing = %AdvanceCountdown
+@onready var _tutorial_strip: Control = %TutorialStrip
 
 
 func state_names() -> PackedStringArray:
 	return PackedStringArray(["Normal", "Nobody finished", "Everybody finished", "2-player waived"])
+
+
+## Keeps a free strip at the right edge while the tutorial Results box is shown, so the box
+## never covers an outcome row or an award line. Zero width removes the strip.
+func reserve_side_strip(width: float) -> void:
+	_tutorial_strip.visible = width > 0.0
+	_tutorial_strip.custom_minimum_size = Vector2(maxf(width, 0.0), 0.0)
 
 
 func router_phase() -> int:

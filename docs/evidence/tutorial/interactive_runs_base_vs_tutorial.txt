@@ -1,0 +1,16 @@
+﻿run_p03_interactive          base  exit=0 2s P03_INTERACTIVE checks=14 failures=0 evidence=C:/Users/roman/.codex/clones/tutorial-base/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
+run_p03_interactive          iso   exit=0 2s P03_INTERACTIVE checks=14 failures=0 evidence=C:/Users/roman/.codex/clones/tutorial-iso/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
+run_p04_interactive          base  exit=1 4s ERROR: FAIL Variant selects Tulay 4x1 | P04_INTERACTIVE checks=25 failures=4 place=(1920, 1080) play=(1920, 1080)
+run_p04_interactive          iso   exit=1 4s ERROR: FAIL Variant selects Tulay 4x1 | P04_INTERACTIVE checks=25 failures=4 place=(1920, 1080) play=(1920, 1080)
+run_p05_interactive          base  exit=0 3s P05_INTERACTIVE checks=61 failures=0 captures=C:/Users/roman/.codex/clones/tutorial-base/docs/evidence/p05
+run_p05_interactive          iso   exit=0 3s P05_INTERACTIVE checks=61 failures=0 captures=C:/Users/roman/.codex/clones/tutorial-iso/docs/evidence/p05
+run_p06_interactive          base  exit=0 2s P06_INTERACTIVE_SUMMARY checks=17 failures=0 resolution=(1920, 1080)
+run_p06_interactive          iso   exit=0 2s P06_INTERACTIVE_SUMMARY checks=17 failures=0 resolution=(1920, 1080)
+run_p08_interactive          base  exit=0 14s P08_INTERACTIVE_SUMMARY checks=87 failures=0 | P08_INTERACTIVE_SUMMARY checks=87 failures=0
+run_p08_interactive          iso   exit=0 14s P08_INTERACTIVE_SUMMARY checks=87 failures=0 | P08_INTERACTIVE_SUMMARY checks=87 failures=0
+run_p09_interactive          base  exit=0 3s P09_INTERACTIVE_SUMMARY checks=108 failures=0 | P09_INTERACTIVE_SUMMARY checks=108 failures=0
+run_p09_interactive          iso   exit=0 3s P09_INTERACTIVE_SUMMARY checks=108 failures=0 | P09_INTERACTIVE_SUMMARY checks=108 failures=0
+run_p10_interactive          base  exit=1 7s ERROR: P10_INTERACTIVE FAILED: confirmed edits resolve together before Play | P10_INTERACTIVE checks=42 failures=3 evidence=C:/Users/roman/.codex/clones/tutorial-base/docs/evidence/p10
+run_p10_interactive          iso   exit=1 7s ERROR: P10_INTERACTIVE FAILED: confirmed edits resolve together before Play | P10_INTERACTIVE checks=42 failures=3 evidence=C:/Users/roman/.codex/clones/tutorial-iso/docs/evidence/p10
+run_match_ui_interactive     base  exit=0 9s MATCH_UI_INTERACTIVE checks=59 failures=0 captures=C:/Users/roman/.codex/clones/tutorial-base/docs/evidence/match-ui
+run_match_ui_interactive     iso   exit=0 10s MATCH_UI_INTERACTIVE checks=59 failures=0 captures=C:/Users/roman/.codex/clones/tutorial-iso/docs/evidence/match-ui

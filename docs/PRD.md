@@ -1255,7 +1255,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Spectators identify phase, objective, leader, taya, winner and no-score reason; overlapping command rings stay distinct at minimum zoom and with sound/shake off.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-14, engineering only):** the guided first match, build-gated tutorial stage, retry hint, Pause skip, Library replay, session-only memory and once-per-session Lagsanay prompt are implemented with PLACEHOLDER copy; see [tutorial evidence](evidence/tutorial/README.md). Synthetic input only: no novice session, facilitator interventions, cultural review or Kangaroo prompts yet, so the requirement is not met.
 
 
 ### REQ-LIB-001 — Provide enabled-content Library and animated entries

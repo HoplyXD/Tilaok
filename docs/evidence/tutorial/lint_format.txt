@@ -1,0 +1,5 @@
+gdformat --check:
+20 files would be left unchanged
+
+gdlint:
+Success: no problems found

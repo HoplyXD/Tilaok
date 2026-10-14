@@ -19,6 +19,8 @@ func paint_arena(arena: ArenaDefinition) -> int:
 		scale = Vector2.ONE * cell / float(tile_set.tile_size.x)
 	var painted := 0
 	for spec in arena.surface_specs:
+		if bool(spec.get("custom_visual", false)):
+			continue
 		var rect: Rect2 = spec.rect
 		var tile := tile_for_surface(str(spec.id), bool(spec.immutable))
 		var first := Vector2i((rect.position / cell).floor())

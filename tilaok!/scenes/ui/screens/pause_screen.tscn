@@ -168,6 +168,15 @@ theme_type_variation = &"TilaokMenuButton"
 text = "Leave match"
 unique_name_in_owner = true
 
+[node name="SkipTutorialButton" type="Button" parent="Center/Panel/Content/MenuList"]
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Skip tutorial"
+unique_name_in_owner = true
+
 [node name="Tag" type="Label" parent="Center/Panel/Content"]
 layout_mode = 2
 text = "PLACEHOLDER pause / reconnect"

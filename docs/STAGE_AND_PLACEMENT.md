@@ -230,3 +230,26 @@ Placement is validated against bounds, protected spawn/goal, build region, base 
 | Walis | One-shot edit with no footprint; targets come from the Place snapshot (`CleanupTargetResolver`), only earlier-round, removable, non-protected pieces; one union per resolution; removal invalidates support before the node is freed. |
 
 Placement notes: a variant may reserve only part of its footprint (`occupied_cells`: Parol reserves its two posts, so solids may sit between them and occlude the beam). Lanes, beams and bubble paths declare `blockable`: immutable base geometry may clip them (they are shown to their first blocker) but protected spawn/goal and the build region still reject them. Order inside one physics step: movers/timers advance in stable item-ID order; lethal contacts resolve by recorded time, item ID, then seat with one terminal outcome per player (handed to the race ledger during Karera); captures and carries run for survivors; spring launches apply last.
+
+## Tutorial stage layout — 2026-10-14
+
+**C/P — implemented and verified with synthetic input; guided copy is PLACEHOLDER.** Evidence: [tutorial evidence index](evidence/tutorial/README.md).
+
+**Data.** `ArenaLayout` (`scripts/stage/arena_layout.gd`, surfaces in `arena_surface_layout.gd`) is a Resource in tiles (fractions allowed). `ArenaDefinition.new(tuning, layout)` builds from it; `layout == null` keeps the literal default stage below untouched, and `ArenaLayout.make_default()` reproduces that stage exactly (a signature test enforces parity). `P03StageRoom.arena_layout` is set by `GameFlow` once, before the room enters the tree. Containment walls and the ceiling are always generated from the tuned arena size.
+
+**One map per match.** The layout is chosen when a match room is created and never changes. Karera, Lagsanay and sudden-death rounds of that match all play on that stage plus everything built; no mode swaps or alters it. Skipping or replaying the tutorial mid-match does not change the stage. The next match starts on the default layout unless the tutorial is replayed. On the lifecycle route a Replay or Return to Lobby from a tutorial-stage room builds a fresh room (the room hands back to `GameFlow`), so the stage is never carried into the next match.
+
+**Tutorial stage** (`tilaok!/data/stage/tutorial_arena_layout.tres`, id `tutorial`). Floor, Base A–D, spawn, protected spawn and the build region are identical to the default stage; the base route still reaches Base D with no building and no wall movement. Only the goal changes:
+
+| Element | Default | Tutorial |
+|---|---|---|
+| Goal column | x 28–32, y 12–15 tiles (top 768 wu), wall-eligible | x 28–32, y 8–15 tiles plus a half-tile cap (`arena.goal_cap`, top **480 wu**), **wall-INELIGIBLE** on every side |
+| Flag trigger | 30–31 x 10–12 tiles | 30–31 x 5.5–7.5 tiles (resting on the cap; flag is 7.5 tiles above the floor) |
+| Protected goal | 28–32 x 9–15 | 28–32 x 4.5–15 |
+| BUILD HERE zone | none | tiles 24–28 x 8–11 (airspace above Base D, flush with the ledge face), inside the build region and clear of protected zones and base geometry |
+
+**Gate proof.** Jump apex is 192 wu (held jump), so the highest standable no-build height is Base B/D top 704 − 192 = **512 wu** (feet). The ledge top is 480 wu: **31.94 wu short** in the measured search. Wall kicks off Base A–D rise 144 wu from a contact window below the platform top and cannot chain; glide, wall slide and sneak cap descent or shrink the body and add no height; the ledge sides are ineligible. Why 480 and not a tile line: a 1x1 adds 64 wu, so no integer-tile ledge is both unreachable without a piece and reachable with a 1x1 with margin on both sides.
+
+Real-physics results with the real `ChickenController` (`tests/run_tutorial_gate_tests.gd`, Godot 4.7.2, `--fixed-fps 60`): the unchanged P03 route reaches Base D on the tutorial stage and does not reach the flag; a 1,860-attempt scripted search (every base platform, 3 run directions x 5 jump delays x 2 hold lengths x 2 pulse patterns, glide held, repeated-press kicks) never reached the flag and peaked at feet y=511.94. Per allowed piece, the placements fully inside the zone that let the policy family reach the flag: Kaing 1x1 7 of 12, Kaing 2x3 6 of 7 (upright and turned), Tulay 4x1 3 of 3; five wrong placements (floor, Base A, above Base B, beside Base C, under Base D) did not reach. Intended single-piece answers: Kaing 1x1 at cell (27, 9); Kaing 2x3 turned to 3x2 at (25, 9); Tulay 4x1 at (24, 9). **A scripted search is strong evidence, not a mathematical proof**; Tulay at row 8 (top 512) works only by about 0.06 wu and should not be taught. Re-run the gate tests on any movement or geometry change.
+
+The default base route rule is unchanged: normal matches use the default stage, `arena_geometry_signature()` is unchanged, and the P03 route test still passes.
