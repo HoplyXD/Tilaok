@@ -58,7 +58,7 @@ The runner saves eight 1280×720 views from the live scene tree. The pickup over
 
 ## Performance and cleanup
 
-[The repeatable performance script](../../tilaok!/tests/capture_barya_performance.gd) runs the default P12 room at 1280×720 windowed, v-sync off, four synthetic seats, forced Karera + Kangaroo, a carried coin and 41 persistent construction pieces after Place. It warms 120 frames and measures 300 rendered frames. On this local PC: median **1.976 ms**, p95 **2.836 ms**, worst **3.881 ms**, static memory **120.55 MiB**, and **0 orphan nodes** after cleanup. The synchronous objective cleanup call took **5 µs**; its queued `free` drained after one process and physics frame. The 16.67 ms and 512 MiB local budgets passed. This single machine sample does not establish target-PC acceptance.
+[The repeatable performance script](../../../tilaok!/tests/capture_barya_performance.gd) runs the default P12 room at 1280×720 windowed, v-sync off, four synthetic seats, forced Karera + Kangaroo, a carried coin and 41 persistent construction pieces after Place. It warms 120 frames and measures 300 rendered frames. On this local PC: median **1.976 ms**, p95 **2.836 ms**, worst **3.881 ms**, static memory **120.55 MiB**, and **0 orphan nodes** after cleanup. The synchronous objective cleanup call took **5 µs**; its queued `free` drained after one process and physics frame. The 16.67 ms and 512 MiB local budgets passed. This single machine sample does not establish target-PC acceptance.
 
 Artifacts: [performance report](barya_performance.txt), [runner log](test_logs/capture_barya_performance_run.txt).
 
@@ -71,7 +71,9 @@ Godot 4.7.2 headless editor import/parse passed. The changed GDScript passed `gd
 - same P12 harness room with `--barya-disabled`: `... barya_enabled=false`;
 - P07 route: `TILAOK_FLOW_READY ... route=first_playable`.
 
-These are startup smokes, not a clean-PC export acceptance. See [import](test_logs/editor_import.txt), [lint/format](test_logs/lint_format.txt), [export](test_logs/windows_export.txt) and the [default](test_logs/export_smoke_default.txt), [P12](test_logs/export_smoke_p12.txt), [rollback](test_logs/export_smoke_p12_rollback.txt) and [P07](test_logs/export_smoke_p07.txt) logs.
+These are startup smokes, not a clean-PC export acceptance. See [import](test_logs/editor_import.txt), [format](test_logs/gdformat_check.txt), [lint](test_logs/gdlint.txt), [export](test_logs/windows_export.txt) and the [default](test_logs/export_smoke_default.txt), [P12](test_logs/export_smoke_p12.txt), [rollback](test_logs/export_smoke_p12_rollback.txt) and [P07](test_logs/export_smoke_p07.txt) logs.
+
+After pushing, the clean Desktop `codex/docs-event-catalog` checkout was verified as an ancestor and fast-forwarded to `536dc12`; the branch name and its 59 commits ahead of its tracking remote were preserved. Godot 4.7.2 headless editor import/parse and a 120-frame default-route launch both exited 0; the latter reported `route=lifecycle`. See the [Desktop smoke log](test_logs/desktop_smoke_2026-10-15.txt).
 
 ## Reproduce
 
