@@ -98,24 +98,26 @@ func _test_guaranteed_rounds_and_table() -> void:
 			var twist := int(row.twist)
 			if twist != NONE:
 				twists_seen += 1
-			if (
-				twist != NONE
-				and (
-					main != KARERA or twist != LAGSANAY or round_number < 5 or bool(row.guaranteed)
-				)
-			):
+			var valid_pair := (
+				(main == KARERA and twist in [LAGSANAY, KANGAROO])
+				or (main == KANGAROO and twist == LAGSANAY)
+			)
+			if twist != NONE and (not valid_pair or round_number < 5 or bool(row.guaranteed)):
 				violations.append("seed %d round %d Twist %d" % [seed_value, round_number, twist])
 			if main not in [KARERA, LAGSANAY, KANGAROO]:
 				violations.append("seed %d round %d main %d" % [seed_value, round_number, main])
 	_check(
 		violations.is_empty(),
 		(
-			"500 seeded 12-round tables: round 1 Karera, 4/8/12 Lagsanay; the only Twist is "
-			+ "Bomb-Taya on a Karera Main from round 5: %s" % [violations.slice(0, 5)]
+			"500 seeded 12-round tables: round 1 Karera, 4/8/12 Lagsanay; Twists come only from "
+			+ (
+				"the three GDD pairs, from round 5, never on guaranteed rounds: %s"
+				% [violations.slice(0, 5)]
+			)
 		)
 	)
 	_check(mains_seen.size() == 3, "every Main Challenge appears across the seeded tables")
-	_check(twists_seen > 0, "the enabled Bomb-Taya Twist does roll (%d times)" % twists_seen)
+	_check(twists_seen > 0, "the enabled Twists do roll (%d times)" % twists_seen)
 	var sample := _table(_schedule(12345, _all_modes(), EventSchedule.enabled_pairs()))
 	var described := PackedStringArray()
 	for row in sample:
@@ -124,13 +126,8 @@ func _test_guaranteed_rounds_and_table() -> void:
 	_check(sample.size() == 12, "the seeded table covers all 12 rounds")
 	var enabled_rows := EventSchedule.enabled_pairs()
 	_check(
-		(
-			EventSchedule.COMPATIBILITY.size() == 3
-			and enabled_rows.size() == 1
-			and int(enabled_rows[0].main) == KARERA
-			and int(enabled_rows[0].twist) == LAGSANAY
-		),
-		"the registry lists the three GDD pairs; only Karera + Lagsanay (P12-T05/T06) is enabled"
+		EventSchedule.COMPATIBILITY.size() == 3 and enabled_rows.size() == 3,
+		"the registry lists the three GDD pairs and all three are enabled (P12-T06/T08/T10)"
 	)
 	var sudden := EventSchedule.sudden_death_entry()
 	_check(

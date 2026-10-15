@@ -50,7 +50,8 @@ func queue_elimination(
 	physics_tick: int,
 	source_item_id: String = "",
 	direct_owner_seat: int = -1,
-	event_id: String = ""
+	event_id: String = "",
+	cause: String = ""
 ) -> bool:
 	if round_id.is_empty():
 		return false
@@ -68,6 +69,7 @@ func queue_elimination(
 			"physics_tick": physics_tick,
 			"source_item_id": source_item_id,
 			"direct_owner_seat": direct_owner_seat,
+			"cause": cause,
 		}
 	)
 

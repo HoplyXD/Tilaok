@@ -15,6 +15,12 @@ extends RefCounted
 ##   random live runner becomes taya with the timer for the new live count.
 ## - With no live runner left the Twist idles; the race decides when the round ends.
 ## Only the room decides who is live (not finished, not eliminated) at the start of each step.
+## Same-step rules approved by the owner on 2026-10-15 (docs/evidence/p12 decision table):
+## - U1: a taya whose countdown expires on the step it touches the flag is eliminated by the
+##   timeout (a goal has no sub-step time, so the elimination wins, as in the race ledger).
+## - U2/U3: seats touching the flag this step (`finishing`) commit before the tag pass: they are
+##   never pass targets, and a finishing taya hands the bomb over in the same step.
+## - U4: the fresh timer after a timeout counts the unfinished live runners that remain.
 
 const EVENT_TIME_EPSILON := 0.000001
 
@@ -97,14 +103,16 @@ func pass_back_remaining_seconds(seat: int) -> float:
 
 ## One physics step. `live` = runners still in the race at the start of this step; `finished` =
 ## runners who reached the flag. `tag_contacts` = the taya's frozen contacts this step
-## [{seat_index, distance_squared}]. Returns {head_start_ended, timeout_seat, timeout_time,
-## taya_changed, tagged, idle}.
+## [{seat_index, distance_squared}]. `finishing` = live runners touching the flag on this
+## step (optional). Returns {head_start_ended, timeout_seat, timeout_time, taya_changed, tagged,
+## idle}.
 func advance_step(
 	delta: float,
 	physics_tick: int,
 	live: Array[int],
 	finished: Array[int],
-	tag_contacts: Array[Dictionary]
+	tag_contacts: Array[Dictionary],
+	finishing: Array[int] = []
 ) -> Dictionary:
 	var result := {
 		"head_start_ended": false,
@@ -117,15 +125,30 @@ func advance_step(
 	if not active or delta <= 0.0:
 		return result
 	var runners := _sorted(live)
+	# Runners still racing after this step's finishers are committed.
+	var pool := runners.duplicate()
+	for seat in finishing:
+		pool.erase(seat)
+	# The contacts belong to the taya at the start of the step: a new taya cannot pass on them.
+	var reassigned := false
 	if not runners.has(taya_seat):
-		if runners.is_empty():
+		if pool.is_empty():
 			_go_idle()
 			result.idle = true
 			return result
 		var reason := "taya_finished" if finished.has(taya_seat) else "taya_out"
 		var keep_countdown := reason == "taya_finished"
-		_assign_new_taya(runners, reason, keep_countdown)
+		_assign_new_taya(pool, reason, keep_countdown)
 		result.taya_changed = true
+		reassigned = true
+	elif finishing.has(taya_seat) and expiry_time_this_step(delta) < 0.0:
+		if pool.is_empty():
+			_go_idle()
+			result.idle = true
+			return result
+		_assign_new_taya(pool, "taya_finished", true)
+		result.taya_changed = true
+		reassigned = true
 	var tick_start := simulation_clock
 	var tick_end := tick_start + delta
 	simulation_clock = tick_end
@@ -144,7 +167,7 @@ func advance_step(
 		result.timeout_seat = expired
 		result.timeout_time = expiry_time
 		# The timed-out runner leaves this step; the next taya gets the new live count's timer.
-		var remaining := runners.duplicate()
+		var remaining := pool.duplicate()
 		remaining.erase(expired)
 		if remaining.is_empty():
 			_go_idle()
@@ -155,9 +178,9 @@ func advance_step(
 		return result
 	countdown_remaining = maxf(0.0, countdown_remaining - timer_step)
 	# An expiry step has priority over contact (contact has no sub-step time), as in P08.
-	if was_opening or tag_contacts.is_empty():
+	if was_opening or tag_contacts.is_empty() or reassigned:
 		return result
-	var receiver := _nearest_eligible(tag_contacts, runners, tick_end)
+	var receiver := _nearest_eligible(tag_contacts, pool, tick_end)
 	if receiver >= 0:
 		pass_back_immunity_until[taya_seat] = tick_end + pass_back_seconds
 		(
@@ -175,6 +198,18 @@ func advance_step(
 		result.tagged = true
 		result.taya_changed = true
 	return result
+
+
+## Time at which the countdown would expire inside the next `delta` step, or -1.0. Pure: the
+## room uses it to hand the expiry to a Main Challenge that arbitrates eliminations itself.
+func expiry_time_this_step(delta: float) -> float:
+	if not active or delta <= 0.0:
+		return -1.0
+	var opening_step := minf(delta, head_start_remaining)
+	var timer_step := maxf(0.0, delta - opening_step)
+	if timer_step > 0.0 and countdown_remaining <= timer_step + EVENT_TIME_EPSILON:
+		return simulation_clock + opening_step + countdown_remaining
+	return -1.0
 
 
 func _assign_new_taya(runners: Array[int], reason: String, keep_countdown: bool) -> void:

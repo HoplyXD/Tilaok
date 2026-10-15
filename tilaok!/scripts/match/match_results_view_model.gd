@@ -262,6 +262,8 @@ static func kangaroo(
 			result_text = "Winner — %s." % ("Last Cluck" if is_last_cluck else "last survivor")
 		elif cause == "command_failure":
 			result_text = "Eliminated after the third failed Kangaroo command."
+		elif cause == "timeout":
+			result_text = "The Bomb-Taya timer expired."
 		var delta := int(deltas.get(seat_index, 0))
 		var total := int(totals.get(seat_index, 0))
 		(
@@ -406,4 +408,8 @@ static func _elimination_text(
 			)
 		"reached_goal":
 			return "Reached the flag; secured."
+		"timeout":
+			return "The Bomb-Taya timer expired before the flag."
+		"command_failure":
+			return "Eliminated after the third failed Kangaroo command."
 	return "Eliminated before reaching the flag."

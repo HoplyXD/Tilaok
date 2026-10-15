@@ -11,7 +11,7 @@ Deadline: **Oct 25, 2026** (as of Oct 12, 2026).
 
 **Rule:** polish beats quantity. Completeness is 20% of screening.
 
-**Implementation status — October 14, 2026:** P08 has a playable independent Lagsanay development route, P09 has a development-only full Karera match ending at 10 points or round 12 with tied leaders resolved on the persistent stage, and P11 has an independent `kangaroo_contract_lab` route. P08 is 6/6, P09 is 4/4 and P11 is 13/13 on technical evidence. These routes do not close their release gates: P07-T04 player/device/human acceptance, P08 entry/release approval, P09/P11 performance and human acceptance, P11 physical-device/balance/cultural/asset review, and P02 physical-device work remain open. The P11 short debug sample exceeded the provisional frame target. P09 and P11 do not implement P12 event scheduling or stacks.
+**Implementation status — October 14, 2026:** P08 has a playable independent Lagsanay development route, P09 has a development-only full Karera match ending at 10 points or round 12 with tied leaders resolved on the persistent stage, and P11 has an independent `kangaroo_contract_lab` route. P08 is 6/6, P09 is 4/4 and P11 is 13/13 on technical evidence. These routes do not close their release gates: P07-T04 player/device/human acceptance, P08 entry/release approval, P09/P11 performance and human acceptance, P11 physical-device/balance/cultural/asset review, and P02 physical-device work remain open. The P11 short debug sample exceeded the provisional frame target. P09 and P11 do not implement P12 event scheduling or stacks. P12 (2026-10-15, 10/10 technical on synthetic seats) adds the seeded schedule, the three verified Twist pairs and the owner-approved terminal-order table on the opt-in `--match-route=lifecycle` development route; human sessions, physical devices and balance remain open.
 
 ## Item scope and gates
 
@@ -31,7 +31,7 @@ The repository now contains P01 foundations, P02 input/movement, P03 graybox sta
 | Oct 11–12 | Engine locked (Godot 4); lock team roles, art style |
 | Oct 13–16 | Required movement, item placement, race round and scoring; wall movement is optional only if it fits without delaying P04 or required loop gates |
 | Oct 17–19 | Lagsanay, Karera + Lagsanay stack, Filipino traps |
-| Oct 20–21 | P12 scheduling/stacks after independent-mode gates; core UI/tutorial and selected content (**feature freeze Oct 21**); explicit scope review if gates slip. Standalone P11 engineering route is implemented; human, performance and device gates remain. |
+| Oct 20–21 | P12 scheduling/stacks after independent-mode gates; core UI/tutorial and selected content (**feature freeze Oct 21**); explicit scope review if gates slip. Standalone P11 engineering route is implemented; human, performance and device gates remain. P12 engineering route implemented 2026-10-15 (10/10 technical); human sessions open. |
 | Oct 22 | Stabilize the frozen build; no new event or item implementation |
 | Oct 23 | Bug fixing, playtesting |
 | Oct 24 | Record trailer + demo video, fill forms, write synopsis |

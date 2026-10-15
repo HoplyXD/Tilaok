@@ -19,11 +19,12 @@ const GUARANTEED := {
 }
 ## The GDD's compatible stacks. A row enters the Twist pool only after its pair is integrated and
 ## verified (the listed P12 task); until then `enabled` stays false and no Twist is rolled for it.
-## Karera + Lagsanay (Bomb-Taya) passed P12-T05/T06 on 2026-10-15.
+## Karera + Lagsanay (Bomb-Taya) passed P12-T05/T06, Karera + Kangaroo P12-T07/T08 and
+## Kangaroo + Lagsanay (Bomb-Taya) P12-T09/T10 on 2026-10-15 (tests/run_p12_pairs_tests.gd).
 const COMPATIBILITY: Array[Dictionary] = [
 	{"main": Challenge.KARERA, "twist": Challenge.LAGSANAY, "task": "P12-T05", "enabled": true},
-	{"main": Challenge.KARERA, "twist": Challenge.KANGAROO, "task": "P12-T07", "enabled": false},
-	{"main": Challenge.KANGAROO, "twist": Challenge.LAGSANAY, "task": "P12-T09", "enabled": false},
+	{"main": Challenge.KARERA, "twist": Challenge.KANGAROO, "task": "P12-T07", "enabled": true},
+	{"main": Challenge.KANGAROO, "twist": Challenge.LAGSANAY, "task": "P12-T09", "enabled": true},
 ]
 
 var available: Array[int] = []

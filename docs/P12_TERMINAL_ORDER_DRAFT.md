@@ -1,6 +1,6 @@
 # P12 terminal-order decision table — DRAFT for team review
 
-_Drafted 2026-10-15 by Claude (AI) for P12-T03. **Not approved.** P12-T03 and its review (P12-T04) stay unchecked until Francis, Carlos and the team accept or change each row. P12-T07–T10 (the Kangaroo pairs) stay blocked on that review._
+_Drafted 2026-10-15 by Claude (AI) for P12-T03. **Superseded the same day:** the project owner approved the replacement table row by row (U1–U12 as proposed), which is implemented and verified; see [the approved decision table](evidence/p12/p12_terminal_order_decision_table.md), whose last section maps every row below. This draft is kept for history._
 
 The table covers **same-physics-step** collisions between terminal events that the current sources do not fully settle when two challenges run together. The events are command evaluation, taya timeout, tag pass, goal, trap kill and support destruction. Each row gives:
 - the existing source rule, if there is one;

@@ -1,0 +1,77 @@
+P12 pairs rendered engineering run; every seat input and event below is synthetic.
+Engine: 4.7.2-stable (official)
+Date: 2026-10-15T02:12:30 UTC
+Build: P12-scheduled-match-dev; scene: p12_scheduled_match_room.tscn.
+OS/CPU: Windows / 13th Gen Intel(R) Core(TM) i5-13420H
+Devices: synthetic keyboard seats K1/K2; synthetic gamepad IDs 7101/7102.
+Window: (1920, 1080)
+Forced locked entries (test-only): round 1 K+L, round 2 K+Kg, round 3 Kg+L.
+Reviewer: engineering run; no independent human review recorded.
+PASS 4-seat scheduled match starts
+PASS 4p: the round-1 Pugad announces round 2 (Karera / Twist Kangaroo)
+capture p12_pugad_announce_4p.png 1920x1080
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+capture p12_kl_play_4p.png 1920x1080
+capture p12_kl_pause_4p.png 1920x1080
+PASS 4p: pause freezes the stack
+PASS 4p: resume continues the stacked round
+PASS 4p: round 1 (K+L) ends with one race table
+capture p12_kl_result_4p.png 1920x1080
+capture p12_pugad_announce_r2_4p.png 1920x1080
+PASS round 2 enters Play as KARERA / TWIST: KANGAROO
+capture p12_kk_play_4p.png 1920x1080
+PASS 4p: round 2 (K+Kg) ends under the race rules
+capture p12_kk_result_4p.png 1920x1080
+PASS round 3 enters Play as KANGAROO / TWIST: BOMB-TAYA
+capture p12_gl_play_4p.png 1920x1080
+PASS 4p: round 3 (Kg+L) ends with a last survivor
+capture p12_gl_result_4p.png 1920x1080
+PASS 4p: round 4 runs as the standalone Lagsanay
+PASS round 4 enters Play as LAGSANAY
+capture p12_lagsanay_r4_play_4p.png 1920x1080
+PASS 4p: the standalone Lagsanay shows no Twist
+PASS 2-seat scheduled match starts
+PASS 2p: the round-1 Pugad announces round 2 (Karera / Twist Kangaroo)
+capture p12_pugad_announce_2p.png 1920x1080
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+capture p12_kl_play_2p.png 1920x1080
+capture p12_kl_pause_2p.png 1920x1080
+PASS 2p: pause freezes the stack
+PASS 2p: resume continues the stacked round
+PASS 2p: round 1 (K+L) ends with one race table
+capture p12_kl_result_2p.png 1920x1080
+capture p12_pugad_announce_r2_2p.png 1920x1080
+PASS round 2 enters Play as KARERA / TWIST: KANGAROO
+capture p12_kk_play_2p.png 1920x1080
+PASS 2p: round 2 (K+Kg) ends under the race rules
+capture p12_kk_result_2p.png 1920x1080
+PASS round 3 enters Play as KANGAROO / TWIST: BOMB-TAYA
+capture p12_gl_play_2p.png 1920x1080
+PASS 2p: round 3 (Kg+L) ends with a last survivor
+capture p12_gl_result_2p.png 1920x1080
+PASS 2p: round 4 runs as the standalone Lagsanay
+PASS round 4 enters Play as LAGSANAY
+capture p12_lagsanay_r4_play_2p.png 1920x1080
+PASS 2p: the standalone Lagsanay shows no Twist
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS round 2 enters Play as KARERA / TWIST: KANGAROO
+PASS 4p: a level score after a stack starts sudden death
+capture p12_sudden_death_4p.png 1920x1080
+PASS 4p: sudden death has no Twist
+PASS 4p: sudden death ends in the final result screen
+capture p12_final_results_4p.png 1920x1080
+PASS 4p: Return to Lobby after a stacked match
+capture p12_lobby_4p.png 1920x1080
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS round 2 enters Play as KARERA / TWIST: KANGAROO
+PASS 2p: a level score after a stack starts sudden death
+capture p12_sudden_death_2p.png 1920x1080
+PASS 2p: sudden death has no Twist
+PASS 2p: sudden death ends in the final result screen
+capture p12_final_results_2p.png 1920x1080
+PASS 2p: Return to Lobby after a stacked match
+capture p12_lobby_2p.png 1920x1080
+P12_PAIRS_INTERACTIVE_SUMMARY checks=40 failures=0
+CAPTURES 26

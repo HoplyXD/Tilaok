@@ -90,6 +90,7 @@ func resolve_step(physics_tick: int, candidates: Array[Dictionary]) -> Array[Dic
 				owner = int(selected.get("direct_owner_seat", -1))
 			if owner == int(seat_index):
 				owner = -1
+			var stated_cause := str(selected.get("cause", ""))
 			outcome = {
 				"seat_index": int(seat_index),
 				"outcome": "eliminated",
@@ -97,7 +98,12 @@ func resolve_step(physics_tick: int, candidates: Array[Dictionary]) -> Array[Dic
 				"event_id": str(selected.event_id),
 				"source_item_id": str(selected.get("source_item_id", "")),
 				"direct_owner_seat": owner,
-				"cause": "direct_hazard" if owner >= 0 else "elimination",
+				"cause":
+				(
+					"direct_hazard"
+					if owner >= 0
+					else (stated_cause if not stated_cause.is_empty() else "elimination")
+				),
 			}
 		elif not goals.is_empty():
 			goals.sort_custom(

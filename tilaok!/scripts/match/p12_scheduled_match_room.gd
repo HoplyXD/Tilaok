@@ -5,7 +5,9 @@ extends P09MatchLifecycleRoom
 ## comes from EventSchedule, is locked during the preceding Pugad and is announced there. Karera
 ## rounds run the P09 race; Lagsanay and Kangaroo Main rounds reuse the verified P08/P11 round
 ## controllers and their placement scoring, then end through the same match lifecycle (score
-## target, round limit, sudden death). No Twist pair is enabled yet (P12-T05/T07/T09).
+## target, round limit, sudden death). Twist pairs: Karera + Bomb-Taya (T05), Karera + Kangaroo
+## (T07) and Kangaroo + Bomb-Taya (T09). Same-step ordering follows the owner-approved table in
+## docs/evidence/p12/p12_terminal_order_decision_table.md.
 
 const P12_BUILD_ID := "P12-scheduled-match-dev"
 
@@ -23,6 +25,9 @@ var bomb_taya := BombTayaTwist.new()
 var event_main: int = EventSchedule.Challenge.NONE
 
 var _schedule_match_id := -1
+var _step_delta := 1.0 / 60.0
+## Karera + Bomb-Taya: hazard records of this step, decided against the taya timeout (table C4).
+var _twist_hazards: Array[AttributionRecord] = []
 
 
 func _ready() -> void:
@@ -76,6 +81,7 @@ func current_entry() -> Dictionary:
 func _begin_pugad() -> void:
 	_end_event_view()
 	bomb_taya.reset()
+	_twist_hazards.clear()
 	event_main = EventSchedule.Challenge.NONE
 	_set_goal_visible(true)
 	if items != null and items.director != null:
@@ -156,11 +162,11 @@ func _enter_play() -> void:
 		_set_goal_visible(true)
 		bomb_taya.reset()
 		super._enter_play()
-		if (
-			int(entry.get("twist", EventSchedule.Challenge.NONE))
-			== EventSchedule.Challenge.LAGSANAY
-		):
+		var twist := int(entry.get("twist", EventSchedule.Challenge.NONE))
+		if twist == EventSchedule.Challenge.LAGSANAY:
 			_begin_bomb_taya()
+		elif twist == EventSchedule.Challenge.KANGAROO:
+			_begin_kangaroo_twist()
 		return
 	_free_match_ghosts()
 	input_router.set_rotation_supported(false)
@@ -188,6 +194,14 @@ func _enter_play() -> void:
 		return
 	items.director.active_round_id = round_id
 	items.director.elimination_sink_exclusive = true
+	if (
+		event_main == EventSchedule.Challenge.KANGAROO
+		and (
+			int(entry.get("twist", EventSchedule.Challenge.NONE))
+			== EventSchedule.Challenge.LAGSANAY
+		)
+	):
+		_begin_bomb_taya_for(round_id, seats)
 	last_message = (
 		"Lagsanay: pass the taya before the countdown expires."
 		if event_main == EventSchedule.Challenge.LAGSANAY
@@ -224,8 +238,33 @@ func _begin_bomb_taya() -> void:
 	var seats: Array[int] = []
 	for seat in input_router.registry.joined_seats():
 		seats.append(int(seat.seat))
+	_begin_bomb_taya_for(race_round_controller.ledger.round_id, seats)
+	last_message = "Karera with a Bomb-Taya Twist: reach the flag and pass the taya before it blows."
+	_refresh_match_ui()
+
+
+## Karera + Kangaroo (P12-T07): Kangaroo runs beside the race as a Twist. Karera keeps the end
+## and the one race score; a third failure is an elimination with no Patibong.
+func _begin_kangaroo_twist() -> void:
+	if race_round_controller == null:
+		return
+	var seats: Array[int] = []
+	for seat in input_router.registry.joined_seats():
+		seats.append(int(seat.seat))
+	var round_id := "%s:kangaroo" % race_round_controller.ledger.round_id
+	if not kangaroo_round.begin(round_id, seats, round_start_score_units):
+		push_error("P12 could not begin the Kangaroo Twist.")
+		return
+	kangaroo_round.controller.twist_role = true
+	items.director.active_round_id = round_id
+	items.director.elimination_sink_exclusive = true
+	last_message = "Karera with a Kangaroo Twist: reach the flag; three failed commands eliminate."
+	_refresh_match_ui()
+
+
+func _begin_bomb_taya_for(round_id: String, seats: Array[int]) -> void:
 	if not bomb_taya.begin(
-		"%s:bomb-taya" % race_round_controller.ledger.round_id,
+		"%s:bomb-taya" % round_id,
 		seats,
 		match_streams.taya,
 		tuning.lagsanay_opening_head_start_seconds,
@@ -240,14 +279,41 @@ func _begin_bomb_taya() -> void:
 	var opening := actors.get(bomb_taya.opening_taya_seat) as ChickenController
 	if opening != null:
 		opening.set_opening_freeze(true)
-	last_message = "Karera with a Bomb-Taya Twist: reach the flag and pass the taya before it blows."
 	_update_taya_marker()
-	_refresh_match_ui()
+
+
+## Bomb-Taya beside a Karera Main (its timeouts become race ledger eliminations).
+func _bomb_taya_on_karera() -> bool:
+	return (
+		bomb_taya.active
+		and not _sudden_death_active
+		and event_main == EventSchedule.Challenge.KARERA
+		and race_round_controller != null
+		and not race_round_controller.ended
+		and phase_controller.phase == MatchPhaseController.Phase.PLAY
+	)
+
+
+## Bomb-Taya beside a Kangaroo Main (its timeouts are fed to Kangaroo's batch).
+func _bomb_taya_on_kangaroo() -> bool:
+	return (
+		bomb_taya.active
+		and not _sudden_death_active
+		and event_main == EventSchedule.Challenge.KANGAROO
+		and kangaroo_round.controller.active
+		and phase_controller.phase == MatchPhaseController.Phase.PLAY
+	)
 
 
 func _bomb_taya_running() -> bool:
+	return _bomb_taya_on_karera() or _bomb_taya_on_kangaroo()
+
+
+func _kangaroo_twist_running() -> bool:
 	return (
-		bomb_taya.active
+		kangaroo_round != null
+		and kangaroo_round.controller.active
+		and kangaroo_round.controller.twist_role
 		and not _sudden_death_active
 		and event_main == EventSchedule.Challenge.KARERA
 		and race_round_controller != null
@@ -268,12 +334,16 @@ func _advance_bomb_taya(delta: float) -> void:
 		elif not actor.lifecycle.is_terminal():
 			live.append(seat_index)
 	var tick := Engine.get_physics_frames()
-	var result := bomb_taya.advance_step(delta, tick, live, finished, _bomb_taya_contacts(live))
+	var finishing := _goal_touching_seats(live)
+	var contacts := _bomb_taya_contacts(live)
+	var result := bomb_taya.advance_step(delta, tick, live, finished, contacts, finishing)
 	if bool(result.head_start_ended):
 		var opening := actors.get(bomb_taya.opening_taya_seat) as ChickenController
 		if opening != null:
 			opening.set_opening_freeze(false)
 	var expired := int(result.timeout_seat)
+	if _forward_twist_hazards(expired, float(result.timeout_time)):
+		expired = -1
 	if expired >= 0:
 		# An event elimination like leaving the stage: no source item, so never a Patibong.
 		race_candidate_queue.queue_elimination(
@@ -287,6 +357,49 @@ func _advance_bomb_taya(delta: float) -> void:
 		_last_taya_seat = bomb_taya.taya_seat
 		_notify_presentation(&"taya")
 	_update_taya_marker()
+
+
+## Live runners overlapping the flag now. They commit as finishers before the tag pass (table
+## U2/U3); a runner with a trap or bounds elimination this step is eliminated instead.
+func _goal_touching_seats(live: Array[int]) -> Array[int]:
+	var touching: Array[int] = []
+	if goal_area == null or not goal_area.monitoring:
+		return touching
+	var tick := Engine.get_physics_frames()
+	var excluded: Dictionary = {}
+	for record in _twist_hazards:
+		excluded[record.player_seat] = true
+	for candidate in race_candidate_queue.candidates:
+		if int(candidate.physics_tick) == tick and str(candidate.kind) != "goal":
+			excluded[int(candidate.seat_index)] = true
+	for body in goal_area.get_overlapping_bodies():
+		var actor := body as ChickenController
+		if (
+			actor != null
+			and actor.lifecycle.status == PlayerLifecycleState.Status.ACTIVE
+			and live.has(actor.seat_index)
+			and not excluded.has(actor.seat_index)
+			and not touching.has(actor.seat_index)
+		):
+			touching.append(actor.seat_index)
+	touching.sort()
+	return touching
+
+
+## Decides this step's trap kills against the taya timeout (table C4: a strictly earlier
+## comparable trap beats the timeout and keeps its Patibong; a tie or an incomparable time is
+## the timeout, no credit) and hands the survivors to the race ledger. Returns true when a trap
+## replaced the timeout candidate.
+func _forward_twist_hazards(timeout_seat: int, timeout_time: float) -> bool:
+	var trap_won := false
+	for record in _twist_hazards:
+		if record.player_seat == timeout_seat:
+			if not (record.time_comparable and record.physics_time < timeout_time - 0.000001):
+				continue
+			trap_won = true
+		ItemEliminationBridge.submit(race_candidate_queue, race_round_controller, true, record)
+	_twist_hazards.clear()
+	return trap_won
 
 
 ## The taya's contacts with live, unfrozen runners (finishers are secured and never targets).
@@ -332,7 +445,8 @@ func _event_round_active() -> bool:
 
 func _physics_process(delta: float) -> void:
 	# The Twist reports a timeout before the race drains this step's candidates (P05 room).
-	if not get_tree().paused and _bomb_taya_running():
+	_step_delta = delta
+	if not get_tree().paused and _bomb_taya_on_karera():
 		_advance_bomb_taya(delta)
 	super._physics_process(delta)
 	if get_tree().paused or not _event_round_active():
@@ -347,8 +461,55 @@ func _process(delta: float) -> void:
 	super._process(delta)
 	if get_tree().paused:
 		return
-	if _event_round_active() and event_main == EventSchedule.Challenge.KANGAROO:
+	if (
+		(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
+		or _kangaroo_twist_running()
+	):
 		kangaroo_round.update_view(delta)
+
+
+## Runs inside the race step after support finalisation and before the ledger drains: the
+## Kangaroo Twist proposes its eliminations against the same frozen live set (P12-T07).
+func _collect_goal_overlaps() -> void:
+	super._collect_goal_overlaps()
+	if _kangaroo_twist_running():
+		_advance_kangaroo_twist()
+
+
+func _advance_kangaroo_twist() -> void:
+	var controller := kangaroo_round.controller
+	var tick := Engine.get_physics_frames()
+	for candidate in race_candidate_queue.candidates:
+		if int(candidate.physics_tick) == tick and str(candidate.kind) != "goal":
+			controller.mark_externally_eliminated(int(candidate.seat_index))
+	var result := kangaroo_round.advance(tick)
+	for outcome in result.new_outcomes:
+		race_candidate_queue.queue_elimination(
+			int(outcome.get("seat_index", -1)),
+			tick,
+			str(outcome.get("source_item_id", "")),
+			int(outcome.get("direct_owner_seat", -1)),
+			str(outcome.get("event_id", "")),
+			str(outcome.get("cause", "elimination"))
+		)
+
+
+func _apply_race_outcomes(outcomes: Array) -> void:
+	super._apply_race_outcomes(outcomes)
+	if kangaroo_round == null or not kangaroo_round.controller.twist_role:
+		return
+	for outcome in outcomes:
+		var seat := int(outcome.get("seat_index", -1))
+		if str(outcome.get("outcome", "")) == "finished":
+			kangaroo_round.controller.secure_seat(seat)
+		else:
+			kangaroo_round.controller.mark_externally_eliminated(seat)
+
+
+func _finish_race(reason: String) -> void:
+	if kangaroo_round != null and kangaroo_round.controller.twist_role:
+		kangaroo_round.clear_view()
+	super._finish_race(reason)
 
 
 func _advance_lagsanay_main(delta: float) -> void:
@@ -380,7 +541,22 @@ func _advance_kangaroo_main() -> void:
 	var controller := kangaroo_round.controller
 	if not controller.active:
 		return
-	var result := kangaroo_round.advance(Engine.get_physics_frames())
+	var tick := Engine.get_physics_frames()
+	var bomb := _bomb_taya_on_kangaroo()
+	if bomb:
+		# The taya timeout joins Kangaroo's batch with its comparable time, so command failure,
+		# timeout and trap order by recorded time (table U9: failure, then timeout, then trap).
+		var expiry := bomb_taya.expiry_time_this_step(_step_delta)
+		if expiry >= 0.0 and bomb_taya.taya_seat >= 0:
+			controller.submit_external_elimination(
+				bomb_taya.taya_seat,
+				expiry,
+				"%s:taya_timeout:%d:%d" % [controller.round_id, tick, bomb_taya.taya_seat],
+				"timeout"
+			)
+	var result := kangaroo_round.advance(tick)
+	if bomb:
+		_advance_bomb_taya_for_kangaroo(tick)
 	var score_result := controller.score_result() if controller.ended else {}
 	_apply_event_outcomes(
 		result.new_outcomes,
@@ -391,6 +567,28 @@ func _advance_kangaroo_main() -> void:
 	_update_camera_targets()
 	if bool(result.get("ended", false)):
 		_finish_event_round()
+
+
+## Bomb-Taya under a Kangaroo Main: runs after Kangaroo's batch so a failure that eliminates the
+## taya or the pass target is committed before the tag pass (table U10).
+func _advance_bomb_taya_for_kangaroo(tick: int) -> void:
+	var live: Array[int] = []
+	for seat_index in kangaroo_round.controller.live_seats:
+		var actor := actors.get(seat_index) as ChickenController
+		if actor != null and is_instance_valid(actor) and not actor.lifecycle.is_terminal():
+			live.append(seat_index)
+	var no_finished: Array[int] = []
+	var result := bomb_taya.advance_step(
+		_step_delta, tick, live, no_finished, _bomb_taya_contacts(live)
+	)
+	if bool(result.head_start_ended):
+		var opening := actors.get(bomb_taya.opening_taya_seat) as ChickenController
+		if opening != null:
+			opening.set_opening_freeze(false)
+	if bomb_taya.taya_seat != _last_taya_seat:
+		_last_taya_seat = bomb_taya.taya_seat
+		_notify_presentation(&"taya")
+	_update_taya_marker()
 
 
 ## Same contact rule as P08: the live taya's overlaps with live, unfrozen round participants.
@@ -507,7 +705,13 @@ func _event_label(is_lagsanay: bool) -> String:
 func _start_sudden_death(decision: Dictionary) -> void:
 	event_main = EventSchedule.Challenge.NONE
 	_end_event_view()
+	bomb_taya.reset()
 	super._start_sudden_death(decision)
+	# P09 begins the sudden-death controller mid-step, after the director clock was reset and
+	# before this step's director advance: its clock would run one step ahead of the hazard
+	# record times and drop every trap elimination. Start it one step behind so both agree.
+	if lagsanay_controller.active:
+		lagsanay_controller.simulation_clock = -_step_delta
 
 
 func _end_event_view() -> void:
@@ -522,20 +726,31 @@ func _on_item_elimination(record: AttributionRecord) -> bool:
 		if event_main == EventSchedule.Challenge.LAGSANAY:
 			return lagsanay_controller.submit_hazard(record)
 		return kangaroo_round.controller.submit_hazard(record)
+	if _kangaroo_twist_running():
+		# Kangaroo arbitrates trap vs command failure; its outcomes reach the ledger as candidates.
+		return kangaroo_round.controller.submit_hazard(record)
+	if _bomb_taya_on_karera() and race_round_controller != null:
+		_twist_hazards.append(record)
+		return true
 	return super._on_item_elimination(record)
 
 
 func _on_intentional_input_edge(
 	seat_index: int, action_name: String, source_id: String, is_pressed: bool, event_usec: int
 ) -> void:
-	if _event_round_active() and event_main == EventSchedule.Challenge.KANGAROO:
+	if (
+		(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
+		or _kangaroo_twist_running()
+	):
 		kangaroo_round.record_input_edge(seat_index, action_name, source_id, is_pressed, event_usec)
 
 
 func _on_schedule_pause_state_changed(paused_state: bool, _reason: String) -> void:
 	if kangaroo_round == null:
 		return
-	kangaroo_round.set_overlay_visible(not paused_state and _event_round_active())
+	kangaroo_round.set_overlay_visible(
+		not paused_state and (_event_round_active() or _kangaroo_twist_running())
+	)
 	if not paused_state:
 		kangaroo_round.resync_after_pause()
 
@@ -643,6 +858,18 @@ func play_goal_text() -> String:
 	return "Match the slipper pose."
 
 
+## Taya tag beside the Main's clock: Karera adds the countdown (and the finish window); under
+## Kangaroo the countdown rides on the world marker so the HUD row fits four seats.
+func _bomb_tag_text() -> String:
+	var prefix := "HEAD START • " if bomb_taya.head_start_remaining > 0.0 else ""
+	var text := "%sTAYA %s" % [prefix, _short_seat_text(bomb_taya.taya_seat)]
+	if not _bomb_taya_on_karera():
+		return text
+	text += " %.0fs" % ceilf(bomb_taya.countdown_remaining)
+	var window := super.play_tag_text()
+	return text + (" • " + window if not window.is_empty() else "")
+
+
 ## "P3 ■": number and shape only, so the HUD clock row fits four seats at 1080p.
 func _short_seat_text(seat_index: int) -> String:
 	var seat := input_router.registry.get_seat(seat_index)
@@ -654,13 +881,7 @@ func _short_seat_text(seat_index: int) -> String:
 
 func play_tag_text() -> String:
 	if _bomb_taya_running():
-		var window := super.play_tag_text()
-		var prefix := "HEAD START • " if bomb_taya.head_start_remaining > 0.0 else ""
-		var text := (
-			"%sTAYA %s %.0fs"
-			% [prefix, _short_seat_text(bomb_taya.taya_seat), ceilf(bomb_taya.countdown_remaining)]
-		)
-		return text + (" • " + window if not window.is_empty() else "")
+		return _bomb_tag_text()
 	if not _event_round_active():
 		return super.play_tag_text()
 	if event_main == EventSchedule.Challenge.LAGSANAY:
@@ -713,6 +934,9 @@ func seat_state_text(seat_index: int) -> String:
 
 
 func debug_status_text() -> String:
-	if _event_round_active() and event_main == EventSchedule.Challenge.KANGAROO:
+	if (
+		(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
+		or _kangaroo_twist_running()
+	):
 		return KangarooCommandStyle.marker_status(kangaroo_round.controller, input_router.registry)
 	return super.debug_status_text()

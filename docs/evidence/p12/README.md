@@ -82,3 +82,45 @@ Build: `e409a03` plus uncommitted work; same tools and limits as above. Reviewer
 | [2026-10-15_p12_bomb_taya_twist_1080p.png](2026-10-15_p12_bomb_taya_twist_1080p.png) | 4-seat Karera round with "TWIST: BOMB-TAYA", the TAYA seat state, the taya clock and the marker; the Twist is injected into round 1 for the capture | Rendered |
 
 Same-step rules that no source decides are listed, with the current behaviour, in the [terminal-order draft](../../P12_TERMINAL_ORDER_DRAFT.md) for team review (P12-T03, unchecked). The HUD taya tag is shortened to "TAYA P3 ■ 14s" so four seats fit at 1080p; this also fixes the overflow noted for Lagsanay Main rounds above.
+
+## Slice 3 — Karera + Kangaroo and Kangaroo + Bomb-Taya pairs, owner-approved terminal order (P12-T03/T04, T07–T10), 2026-10-15
+
+Build: `origin/main` `ef78950` plus the pairs change set (see `git log`). Godot 4.7.2.stable.official.ed1daf0bf; Windows 11, Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU. Seats and input are synthetic (K1/K2 keyboard seats, synthetic gamepad IDs 7101/7102). Reviewer: engineering run (AI-assisted). The decision table was approved row by row by the project owner on 2026-10-15 (see the record). No human session, physical device or independent code review is claimed.
+
+Covers P12-T03 (implement the table), P12-T04 (verify it), P12-T07/T08 (Karera + Kangaroo) and P12-T09/T10 (Kangaroo + Bomb-Taya). All three compatibility rows are now enabled. P12 is **10/10 (technical)**.
+
+| File | What it shows | Result |
+|---|---|---|
+| [p12_terminal_order_decision_table.md](p12_terminal_order_decision_table.md) | Approval record: rows C1–C15 (sourced) and U1–U12 (approved), each mapped to its test scenario | Approved 2026-10-15 |
+| [p12_pairs_test_run.txt](p12_pairs_test_run.txt) | `run_p12_pairs_tests.gd`: 90 controller-level table checks (including every callback-order permutation) and 195 real-room checks at 2/3/4 seats for K+L, K+Kg, Kg+L, pause/resume, sudden death after a stack and ten restarts | PASSED — 285 checks, 0 failures |
+| [p12_pairs_interactive_run.txt](p12_pairs_interactive_run.txt) | Rendered 1920×1080 tour at 4 and 2 seats through the real scheduled room: Pugad announcement, K+L, K+Kg, Kg+L play and results, round-4 Lagsanay, pause/resume, sudden death, final results, Return to Lobby | PASSED — 40 assertions, 26 captures |
+| `p12_*_2p.png` / `p12_*_4p.png` | The captures above (`kl` = Karera+Bomb-Taya, `kk` = Karera+Kangaroo, `gl` = Kangaroo+Bomb-Taya) | Rendered, inspected |
+| [p12_pairs_performance.txt](p12_pairs_performance.txt) | Three warmed windowed 1080p runs, 40 persistent pieces, round-12 stage; heaviest case Kangaroo + Bomb-Taya with Storm at 4 seats | median 2.9 ms, p95 3.7 ms, worst 5.2–5.4 ms, 122.8 MiB, 0 orphans |
+| [regressions/p12_pairs_suite_summary.txt](regressions/p12_pairs_suite_summary.txt) | Every headless suite on the baseline (`ef78950`) and on this tree | Identical except the new suite; pre-existing P04 (2) and UI (4) failures unchanged |
+| [p12_pairs_lint_format.txt](p12_pairs_lint_format.txt) | `gdformat --check` (216 files) and `gdlint` on the whole project | Clean |
+| [p12_pairs_export_smoke.txt](p12_pairs_export_smoke.txt) | Windows export plus exported headless startup (default route, `lifecycle` route, `--open-room=p12_scheduled_match`) | Exit 0 each |
+
+What changed in behaviour:
+
+- **Karera + Kangaroo:** Kangaroo commands run as a Twist over the race. A third failure eliminates the runner as a race elimination (no Patibong); Hug needs two unfinished runners; Storm never starts; the Twist never ends the round. Secured finishers receive no commands.
+- **Kangaroo + Bomb-Taya:** the taya timer runs over a Kangaroo Main. A timeout is a Main elimination and the Main alone owns round end and the placement score. A trap kill keeps its Patibong credit.
+- **Bomb-Taya on Karera** (already on `main`) gained the approved handoff when the taya finishes: the countdown is kept, no freeze, and the new taya cannot pass on the old taya's contacts in the same step.
+- **Same-step ordering:** all of it resolves in one deterministic batch per physics step, never by callback order. The scenario names are listed in the decision table record.
+- **Sudden death after a stacked round:** a Twist is never rolled, the Bomb-Taya clock is reset with the hazard clock, and trap eliminations during sudden death are no longer dropped.
+
+Reproduce:
+
+```powershell
+& '<Godot 4.7.2 console exe>' --headless --fixed-fps 60 --path 'tilaok!' --script 'res://tests/run_p12_pairs_tests.gd'
+& '<Godot 4.7.2 console exe>' --path 'tilaok!' --script 'res://tests/run_p12_pairs_interactive.gd'   # overwrites docs/evidence/p12: run from an isolated copy
+& '<Godot 4.7.2 console exe>' --path 'tilaok!' --script 'res://tests/capture_p12_pairs_performance.gd'
+```
+
+Open items:
+
+- Human sessions for all three pairs (sheet in [PLAYTEST.md](../../PLAYTEST.md)), physical controllers, balance of stack frequency and Twist pressure.
+- Draft row K6 (a bubble-captured runner under Kangaroo) is a state question and is not decided by this table.
+- Barya is not enabled in any pair.
+- The default route is still the First Playable; the scheduled match stays opt-in (`--match-route=lifecycle`).
+- The round-1 draft example for the fresh timer after a timeout said 10 s; the approved rule (unfinished live runners remaining; one runner → 7 s) is what is implemented. Noted in the record.
+- Visuals are DEBUG placeholders; no art or audio was generated.

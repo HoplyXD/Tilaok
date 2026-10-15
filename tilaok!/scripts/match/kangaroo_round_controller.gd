@@ -26,7 +26,12 @@ var storm_landing_pending := false
 var last_cluck := false
 var last_cluck_seat := -1
 var commit_done := false
+## P12 stacks: as a Twist (Karera Main) this controller never ends the round, never names a
+## winner and runs no Storm; finishers leave the live roster via `secure_seat`.
+var twist_role := false
+var secured_seats: Array[int] = []
 
+var _external_causes: Dictionary = {}
 var _tuning: GameplayTuning
 var _rng: RandomNumberGenerator
 var _now := 0.0
@@ -195,6 +200,9 @@ func reset() -> void:
 	last_cluck = false
 	last_cluck_seat = -1
 	commit_done = false
+	twist_role = false
+	secured_seats.clear()
+	_external_causes.clear()
 	_rng = null
 	_tuning = null
 	_now = 0.0
@@ -271,6 +279,50 @@ func submit_hazard(record: AttributionRecord) -> bool:
 	return true
 
 
+## Kangaroo+Lagsanay: the Bomb-Taya timeout is fed to this Main Challenge as an elimination
+## with a comparable time, so command failure, timeout and trap order by recorded time (ties:
+## command failure, then timeout, then trap). It earns no Patibong.
+func submit_external_elimination(
+	seat: int, event_time: float, event_id: String, cause: String
+) -> bool:
+	if not active or ended or not live_seats.has(seat) or event_id.is_empty():
+		return false
+	var record := AttributionRecord.new()
+	record.kind = AttributionRecord.Kind.ELIMINATION
+	record.player_seat = seat
+	record.physics_time = event_time
+	record.physics_tick = Engine.get_physics_frames()
+	record.time_comparable = true
+	record.round_id = round_id
+	record.event_id = event_id
+	_external_causes[event_id] = cause
+	if not submit_hazard(record):
+		_external_causes.erase(event_id)
+		return false
+	return true
+
+
+## A finisher (Karera Main) leaves command, Hug and hazard eligibility without an elimination.
+func secure_seat(seat: int) -> void:
+	if not live_seats.has(seat):
+		return
+	live_seats.erase(seat)
+	if not secured_seats.has(seat):
+		secured_seats.append(seat)
+
+
+## A seat the Main Challenge eliminated outside this controller (bounds escape, deadline).
+func mark_externally_eliminated(seat: int) -> void:
+	if not live_seats.has(seat):
+		return
+	live_seats.erase(seat)
+	no_elimination_commands = 0
+	storm_active = false
+	storm_landing_pending = false
+	_next_storm_landing = -1.0
+	_storm_pair_next = -1
+
+
 func advance_to(
 	simulation_time: float,
 	physics_tick: int,
@@ -305,6 +357,7 @@ func advance_to(
 			if (
 				_step_provisional_count >= _tuning.kangaroo_storm_after_commands
 				and not storm_active
+				and not twist_role
 			):
 				storm_active = true
 				_next_base_launch = -1.0
@@ -325,7 +378,7 @@ func advance_to(
 		no_elimination_commands = _step_provisional_count
 		if _step_storm_trigger_at >= 0.0:
 			storm_active = true
-	if live_seats.size() <= 1:
+	if not twist_role and live_seats.size() <= 1:
 		_end_round()
 	_now = simulation_time
 	return {
@@ -386,7 +439,7 @@ func commit_score_once(result: Dictionary) -> bool:
 
 func _next_event_time(limit: float) -> float:
 	var next := INF
-	if _next_base_launch >= 0.0 and live_seats.size() > 1:
+	if _next_base_launch >= 0.0 and live_seats.size() >= _command_min_live():
 		next = minf(next, maxf(_now, _next_base_launch))
 	if storm_active and _next_storm_landing >= 0.0 and live_seats.size() > 1:
 		next = minf(next, maxf(_now, _next_storm_landing))
@@ -592,7 +645,7 @@ func _apply_hazards_at(event_time: float, limit: float) -> void:
 		_record_elimination(
 			{
 				"seat_index": record.player_seat,
-				"cause": "direct_hazard",
+				"cause": str(_external_causes.get(record.event_id, "direct_hazard")),
 				"physics_tick":
 				record.physics_tick if record.physics_tick >= 0 else _step_physics_tick,
 				"physics_time": record.physics_time,
@@ -650,7 +703,7 @@ func _schedule_after_command(command: Dictionary, evaluated_at: float) -> void:
 
 
 func _process_launches_at(event_time: float) -> void:
-	if live_seats.size() <= 1:
+	if live_seats.size() < _command_min_live():
 		_next_base_launch = -1.0
 		_next_storm_landing = -1.0
 		return
@@ -672,8 +725,21 @@ func _process_launches_at(event_time: float) -> void:
 		_launch_storm(event_time)
 
 
+## Standalone and Main rounds need two live seats for a command; as a Twist the last unfinished
+## runner keeps receiving Freeze and Rising commands (P12 table U7).
+func _command_min_live() -> int:
+	return 1 if twist_role else 2
+
+
+func _select_for_live() -> int:
+	var count := live_seats.size()
+	if twist_role and count == 1:
+		return _rng.randi_range(Command.FREEZE, Command.RISING)
+	return select_command(_rng, count)
+
+
 func _launch_base(at_time: float) -> void:
-	var selected := select_command(_rng, live_seats.size())
+	var selected := _select_for_live()
 	if selected < 0:
 		return
 	var band := _rng.randi_range(0, 2) if selected == Command.RISING else -1
@@ -767,7 +833,7 @@ func _active_storm_count() -> int:
 ## command can still be pending; that command used to drain in a later step without scheduling
 ## anything, so the round never launched another command and never ended.
 func _maybe_resume_base_after_drain(event_time: float) -> void:
-	if storm_active or live_seats.size() <= 1 or _next_base_launch >= 0.0:
+	if storm_active or live_seats.size() < _command_min_live() or _next_base_launch >= 0.0:
 		return
 	for command in command_history:
 		if not bool(command.evaluated):

@@ -103,7 +103,7 @@ Full task evidence and actual commands are indexed in [P08 evidence](evidence/p0
 | Rendered route captures | PASSED — project runner | 1920×1080 captures cover score-target results, Replay, round-limit sudden-death entry, tied-player contact, survivor result, noncontiguous tied seats, Last Cluck explanation and Lobby. They are project-runner engineering captures, not human readability or exported-UI acceptance. [capture index](evidence/p09/README.md#checks-and-captures). |
 | Import, lint, Windows export and route smoke | PASSED — local engineering smoke | Godot 4.7.2 editor import/parse, changed-script gdformat/gdlint, Windows Debug export and direct plus exported P09 route startup passed. [logs](evidence/p09/). |
 | Existing regressions | PASSED — selected suites | Foundation, P02, P05 (137), P06 (97), P07 (590), P08 (86) and UI (438) passed; individual saved logs are indexed under [P09 regressions](evidence/p09/regressions/). The separate P04 test runner did not finish within the 30-second command window and was stopped after its process was identified; P04 regression is not claimed as passed. |
-| Human/device/release acceptance | COULD NOT RUN | No human players, novice observers, physical gamepads, independent reviewer or release review participated. P07 and P08 gates remain open; P12 event scheduling/stacks remain unimplemented. |
+| Human/device/release acceptance | COULD NOT RUN | No human players, novice observers, physical gamepads, independent reviewer or release review participated. P07 and P08 gates remain open; P12 event scheduling/stacks are covered by the engineering run and human-session sheet in the P12 section below. |
 
 The pinned Godot 4.7.2 binary and exact launch/test commands are listed in [P09 evidence](evidence/p09/README.md). Automated input, shortened timers, injected finish candidates and the preloaded-score route fixture are not player session evidence. Local-only gameplay traffic is an architectural 0 B/s expectation; no packet capture was performed.
 
@@ -496,3 +496,47 @@ The full command list, metric interpretation and open human/team tasks are in th
 | Human review | **NOT RUN** | Independent code review, final art direction, novice comprehension, accessibility and readability remain open. Synthetic input is not physical-device evidence. |
 
 The chart uses only the generic player-column/shared-axis idea from the supplied reference. Its colors and visual styling were not copied. See the evidence README for the exact captures and commands.
+
+## P12 scheduling and stacks — October 15, 2026
+
+**Scope:** the seeded 12-round schedule and the three Twist pairs (Karera + Bomb-Taya, Karera + Kangaroo, Kangaroo + Bomb-Taya) on the opt-in `--match-route=lifecycle` development route. **Reviewer:** engineering run (AI-assisted); no independent human review, player session or physical-device input is recorded.
+
+### Engineering session (synthetic)
+
+| Verification | Result | Evidence / limit |
+|---|---|---|
+| Schedule tables, Twist rules, refusal, 2/3/4-seat full matches | **PASSED — 61 checks** | `run_p12_tests.gd`; [evidence](evidence/p12/README.md). |
+| Bomb-Taya on Karera rules | **PASSED — 47 checks** | `run_p12_stack_tests.gd`. |
+| Approved terminal-order table and the three pairs | **PASSED — 285 checks, 0 failures** | `run_p12_pairs_tests.gd` (90 controller scenarios incl. callback-order permutations, 195 real-room checks at 2/3/4 seats); [record](evidence/p12/p12_terminal_order_decision_table.md). |
+| Rendered tour at 4 and 2 seats | **PASSED — 40 assertions, 26 captures** | `run_p12_pairs_interactive.gd`; synthetic seats and input. |
+| Performance, heaviest stack (Kangaroo + Bomb-Taya, Storm, 4 seats, 40 pieces, 1080p) | p95 3.7 ms, worst 5.4 ms, 122.8 MiB, 0 orphans (3 runs) | One developer laptop; not a target-PC or release claim (P15). |
+| Ten restarts | Node count 1301 → 1301, objects 4435 → 4435 | Real-room restart check. |
+| Windows export + exported headless smoke | Exit 0 (default, `lifecycle`, `--open-room=p12_scheduled_match`) | Startup only. |
+| Human, physical-device and balance acceptance | **NOT RUN** | No human players, observers or physical gamepads participated. |
+
+### Human session sheet — P12 stacks (to be run by the team)
+
+**Setup:** build from the delivered commit; `-- --match-route=lifecycle`; 2–4 players with physical gamepads and/or keyboard; one facilitator who does not coach; screen recording optional. Use a fixed seed first, then a fresh seed. Record the build, seed and devices below.
+
+| # | Step | Ask the player | Pass if |
+|---|---|---|---|
+| 1 | Play a full 12-round match at 3–4 players. | "What is the next round? Say it before it starts." | Announced next round matches the round that starts, every time. |
+| 2 | In a Karera + Bomb-Taya round, run to the flag with the taya countdown ticking. | "Who is the taya? What happens when time runs out? Does the flag still matter?" | Player explains taya and timer without help; understands the flag still ends the race. |
+| 3 | In a Karera + Kangaroo round, miss a command on purpose, then fail three. | "Why were you out? Did anyone get points for it?" | Player names the failed commands; understands no one scores for the failure. |
+| 4 | In a Kangaroo + Bomb-Taya round, let the taya time out and keep playing. | "Is this still Kangaroo? Who wins this round and why?" | Player describes one round with one result table. |
+| 5 | Finish before the taya or command timer ends. | "Did you still get commands or tags?" | Finishers say they were safe and left alone. |
+| 6 | Pause mid-stack, disconnect a device, resume. | "Did anything move while paused?" | No timer or command advanced during the pause; seat reclaim works. |
+| 7 | Reach a level score after round 12. | "What decides this?" | Sudden death shows no Twist and the Bomb-Taya result decides it. |
+| 8 | Ask each player to rate the stacked rounds. | "Too frequent? Too hard? Anything unfair?" | Notes recorded; no unexplained eliminations. |
+
+### Intervention log (fill during the session)
+
+| Time | Step | What the facilitator said or did | Why it was needed |
+|---|---|---|---|
+| | | | |
+
+### Session record
+
+| Date | Build / revision | Seed | Players | Devices | Pairs seen | Facilitator | Participant pseudonym | Result |
+|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | |

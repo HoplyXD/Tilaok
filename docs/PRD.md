@@ -630,7 +630,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** A team-reviewed decision table resolves each uncovered same-step case with source or explicit approval and corresponding scenario; no callback-order dependence or silently invented PRD rule.
 
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** owner-approved decision table ([P12 decision table](evidence/p12/p12_terminal_order_decision_table.md)): C1–C15 sourced, U1–U12 approved; implemented in `BombTayaTwist`, the Kangaroo Twist role and `P12ScheduledMatchRoom`; scenarios and callback-order permutations in `run_p12_pairs_tests.gd` ([P12 evidence](evidence/p12/README.md)). Synthetic seats only; no human review.
 
 
 ### REQ-STACK-001 — Integrate Karera with Lagsanay pressure
@@ -652,7 +652,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** 2/3/4 players complete all commands under race deadlines; secured finishers never gain markers, failed runners cannot finish later, race suppression and terminal ordering hold.
 
-**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence (2026-10-15):** `KangarooRoundController` Twist role driven by `P12ScheduledMatchRoom`; P12-T07/T08 pass on automated synthetic evidence at 2/3/4 seats ([P12 evidence](evidence/p12/README.md)). Barya is not enabled. No player session or human review.
 
 
 ### REQ-STACK-003 — Integrate Kangaroo with Lagsanay pressure
@@ -663,7 +663,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** 2/3/4 players exercise low-countdown Freeze, tag during forced movement, multiple terminal causes, Storm and Last Cluck; one award table and continuous taya time.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** Kangaroo Main with `BombTayaTwist` in `P12ScheduledMatchRoom`; P12-T09/T10 pass on automated synthetic evidence at 2/3/4 seats ([P12 evidence](evidence/p12/README.md)). No player session or human review.
 
 ## 12. Content inventory and scope destinations
 

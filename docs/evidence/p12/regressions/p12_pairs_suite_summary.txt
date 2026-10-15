@@ -1,0 +1,63 @@
+Engine: Godot 4.7.2.stable.official.ed1daf0bf (D:\Downloads\Godot_v4.7.2-stable_win64_console.exe)
+Date: 2026-10-15
+Revision: origin/main ef78950 + the P12 pairs change set (the delivered commit is in git log)
+Machine: Windows 11 / 13th Gen Intel Core i5-13420H / NVIDIA GeForce RTX 4050 Laptop GPU
+Input: synthetic only (K1/K2 keyboard seats; synthetic gamepad IDs 7101/7102). No physical device.
+Reviewer: engineering run (AI-assisted); decision table approved by the project owner 2026-10-15.
+
+Procedure: every tests/run_*_tests.gd headless with --fixed-fps 60, sequentially, from a snapshot copy of each tree.
+Baseline = origin/main ef78950 (before the pairs change); Final = the P12 pairs tree.
+run_tutorial_gate_tests.gd is excluded from both: it does not exit headless on either tree (pre-existing).
+run_p04_tests.gd (2 failures) and run_ui_tests.gd (4 failures) fail identically on the baseline; they are pre-existing.
+The only count change is the new run_p12_pairs_tests.gd.
+
+=== BASELINE (ef78950) ===
+run_blocks_tests.gd                exit=0 done 2s :: BLOCKS_TESTS checks=111 failures=0
+run_explosives_tests.gd            exit=0 done 1s :: EXPLOSIVES_TESTS checks=23 failures=0
+run_foundation_tests.gd            exit=0 done 2s :: Foundation checks complete: 0 failure(s). | Harness lifecycle checks complete: 0 failure(s).
+run_match_ui_binding_tests.gd      exit=0 done 1s :: MATCH_UI_BINDING_TESTS checks=185 failures=0
+run_match_ui_mode_tests.gd         exit=0 done 2s :: MATCH_UI_MODE_TESTS checks=62 failures=0
+run_match_ui_tests.gd              exit=0 done 3s :: MATCH_UI_TESTS checks=198 failures=0
+run_p02_tests.gd                   exit=0 done 1s :: P02_TESTS checks=83 failures=0
+run_p02_wall_tests.gd              exit=0 done 1s :: P02_WALL_TESTS checks=85 failures=0
+run_p03_tests.gd                   exit=0 done 1s :: P03_TESTS checks=103 failures=0
+run_p04_tests.gd                   exit=1 done 3s :: P04_TESTS checks=269 failures=2
+run_p05_tests.gd                   exit=0 done 1s :: P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests.gd                   exit=0 done 1s :: P06_TEST_SUMMARY checks=97 failures=0
+run_p07_tests.gd                   exit=0 done 1s :: P07_TESTS checks=591 failures=0
+run_p08_tests.gd                   exit=0 done 1s :: P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests.gd                   exit=0 done 1s :: P09_TEST_SUMMARY checks=77 failures=0
+run_p10_tests.gd                   exit=0 done 10s :: P10_TESTS checks=435 failures=0
+run_p11_tests.gd                   exit=0 done 1s :: P11_TEST_SUMMARY checks=78 failures=0
+run_p12_stack_tests.gd             exit=0 done 3s :: P12_STACK_TESTS checks=47 failures=0
+run_p12_tests.gd                   exit=0 done 6s :: P12_TESTS checks=61 failures=0
+run_place_claim_tests.gd           exit=0 done 1s :: PLACE_CLAIM_TESTS checks=15 failures=0
+run_scoreboard_chart_tests.gd      exit=0 done 0s :: SCOREBOARD_CHART_TESTS checks=52 failures=0
+run_tutorial_tests.gd              exit=0 done 4s :: TUTORIAL_TESTS checks=140 failures=0
+run_ui_tests.gd                    exit=1 done 2s :: UI_TESTS checks=457 failures=4
+
+=== FINAL (P12 pairs tree) ===
+run_blocks_tests.gd                exit=0 done 2s :: BLOCKS_TESTS checks=111 failures=0
+run_explosives_tests.gd            exit=0 done 1s :: EXPLOSIVES_TESTS checks=23 failures=0
+run_foundation_tests.gd            exit=0 done 2s :: Foundation checks complete: 0 failure(s). | Harness lifecycle checks complete: 0 failure(s).
+run_match_ui_binding_tests.gd      exit=0 done 1s :: MATCH_UI_BINDING_TESTS checks=185 failures=0
+run_match_ui_mode_tests.gd         exit=0 done 2s :: MATCH_UI_MODE_TESTS checks=62 failures=0
+run_match_ui_tests.gd              exit=0 done 3s :: MATCH_UI_TESTS checks=198 failures=0
+run_p02_tests.gd                   exit=0 done 1s :: P02_TESTS checks=83 failures=0
+run_p02_wall_tests.gd              exit=0 done 1s :: P02_WALL_TESTS checks=85 failures=0
+run_p03_tests.gd                   exit=0 done 1s :: P03_TESTS checks=103 failures=0
+run_p04_tests.gd                   exit=1 done 3s :: P04_TESTS checks=269 failures=2
+run_p05_tests.gd                   exit=0 done 1s :: P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests.gd                   exit=0 done 1s :: P06_TEST_SUMMARY checks=97 failures=0
+run_p07_tests.gd                   exit=0 done 1s :: P07_TESTS checks=591 failures=0
+run_p08_tests.gd                   exit=0 done 1s :: P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests.gd                   exit=0 done 1s :: P09_TEST_SUMMARY checks=77 failures=0
+run_p10_tests.gd                   exit=0 done 10s :: P10_TESTS checks=435 failures=0
+run_p11_tests.gd                   exit=0 done 1s :: P11_TEST_SUMMARY checks=78 failures=0
+run_p12_pairs_tests.gd             exit=0 done 21s :: P12_PAIRS_TESTS checks=285 failures=0
+run_p12_stack_tests.gd             exit=0 done 3s :: P12_STACK_TESTS checks=47 failures=0
+run_p12_tests.gd                   exit=0 done 5s :: P12_TESTS checks=61 failures=0
+run_place_claim_tests.gd           exit=0 done 1s :: PLACE_CLAIM_TESTS checks=15 failures=0
+run_scoreboard_chart_tests.gd      exit=0 done 1s :: SCOREBOARD_CHART_TESTS checks=52 failures=0
+run_tutorial_tests.gd              exit=0 done 4s :: TUTORIAL_TESTS checks=140 failures=0
+run_ui_tests.gd                    exit=1 done 2s :: UI_TESTS checks=457 failures=4

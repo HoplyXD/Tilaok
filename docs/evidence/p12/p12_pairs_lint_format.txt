@@ -1,0 +1,11 @@
+Engine: Godot 4.7.2.stable.official.ed1daf0bf (D:\Downloads\Godot_v4.7.2-stable_win64_console.exe)
+Date: 2026-10-15
+Revision: origin/main ef78950 + the P12 pairs change set (the delivered commit is in git log)
+Machine: Windows 11 / 13th Gen Intel Core i5-13420H / NVIDIA GeForce RTX 4050 Laptop GPU
+Input: synthetic only (K1/K2 keyboard seats; synthetic gamepad IDs 7101/7102). No physical device.
+Reviewer: engineering run (AI-assisted); decision table approved by the project owner 2026-10-15.
+gdformat 4.5.0 --check tilaok!   exit 0
+216 files would be left unchanged
+
+gdlint 4.5.0 tilaok!   exit 0
+Success: no problems found

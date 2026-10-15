@@ -209,3 +209,12 @@ At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
   - The draft terminal-order decision table `docs/P12_TERMINAL_ORDER_DRAFT.md` (P12-T03, awaiting team review).
 
 AI-generated code and draft; no human code review, player session or team approval is claimed. No art or audio was generated.
+
+### P12 Kangaroo stacks and approved terminal order — October 15, 2026
+
+At the project owner's direction, after the owner approved the plan and the decision table row by row (U1–U12, D1–D7), Claude (Claude Sonnet 5.5 via Claude Code) generated and integrated, on top of `origin/main` `ef78950`:
+- The approved same-step ordering in `BombTayaTwist` (finishing-taya handoff keeps the countdown, timeout beats a same-step goal, no stale-contact pass) and the Twist role in `KangarooRoundController` (external elimination and secure-seat APIs, no Storm, no round end as a Twist).
+- Karera + Kangaroo and Kangaroo + Bomb-Taya integration in `P12ScheduledMatchRoom`, an optional `cause` on the race ledger queue, results-text causes, the harness room key and the enabled compatibility rows.
+- `p12_table_scenarios.gd`, `p12_pair_room_scenarios.gd`, `run_p12_pairs_tests.gd` (285 checks), `run_p12_pairs_interactive.gd`, `capture_p12_pairs_performance.gd`, the decision-table record, evidence and the documentation updates.
+
+AI-generated code. The owner approved the decision table; no human code review, player session or physical-device test is claimed. No art, audio or production asset was generated. Evidence: `docs/evidence/p12/README.md`. Prompts and outputs are in the session transcript; no separate archive was created.
