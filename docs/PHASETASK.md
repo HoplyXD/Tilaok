@@ -40,7 +40,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 **Path note (2026-10-14):** evidence recorded before P02-T27 cites `tilaok!/data/items/*.tres`, `scenes/items/*_piece.tscn`, `ItemApprovedVariants.TABLE` and the stage-block scripts. Those were migrated region-for-region into one scene per variant under `tilaok!/scenes/blocks/` (parity check: 0 differences) and removed; the historical references are kept as recorded.
 
-**Current implementation check count (2026-10-15): 144/413 tasks checked** (P00 0/6; P01 9/10; P02 22/32; P03 6/6; P04 18/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 42/54; P11 13/13 technical; P12 2/10; P13 2/14 scoreboard slice). P12-T01/T02 (event schedule, disabled compatibility registry, Pugad announcement, and Lagsanay/Kangaroo Main rounds in the full match) pass on automated evidence; every stack pair and the terminal-order review remain open. The October 14 sneak/glide/64 wu grid/stage-blocks extension adds P02-T23–T26 (Should): T23–T25 checked on automated evidence, T26 human review open. The block-scene/Spikes/Cannon/stun extension adds P02-T27–T31: T27, T28, T30 (selector + first come, first served Place; also fixed item kills being dropped in P05/P07 matches) and T31 (animated chicken scene) checked on automated evidence, T29 human review open. P02-T32 (Bomb/Dynamite/Nuke explosives and the Pugad pick lock, 2026-10-15) is checked on automated evidence. This is the count of checked task records on disk, not a release-readiness percentage. P05-T12 was rerun against live P06 results, including held-edge handling, all-ready advance, the tested eight-second timeout and construction retention. P07 now has a scoped route and passing synthetic pool/reset checks, but its player sessions and human review remain open; no P07 checkbox is counted. P08's six engineering tasks passed under the explicitly authorized provisional development-only prerequisite disposition below; P07-T04 remains open and the P08 release/entry gate is unresolved. P09's four technical implementation/verification tasks pass on the development route; P07 player/device/human acceptance, P08 entry/release gate, performance target and P12 schedule remain separate and open. P11's 13 implementation and automated/rendered verification tasks pass on the standalone development route; player comprehension, physical controllers, balance/cultural and production-asset reviews, performance acceptance and every P12 stack/schedule gate remain open. P13-T13/T14 verify the reusable scoreboard slice only; the wider HUD, event overlays, tutorial, Library, spectator comprehension and accessibility reviews keep P13-T03/T04 and P13 open. The 1080p synthetic debug sample exceeded the provisional 16.67 ms frame target; a 14-second Windows process sample measured 306.7 MiB working set and 420.5 MiB private bytes, which does not establish target-PC acceptance. P02 remains open because physical input/reconnect acceptance is unavailable. Six of the eight approved wall-movement extension tasks (P02-T15–T17, T19–T21) are checked on automated/synthetic evidence; P02-T18 (physical devices) and P02-T22 (human review) remain open. They are Should scope; this does not make them required October submission work or delay P05. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
+**Current implementation check count (2026-10-15): 146/413 tasks checked** (P00 0/6; P01 9/10; P02 22/32; P03 6/6; P04 18/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 42/54; P11 13/13 technical; P12 4/10; P13 2/14 scoreboard slice). P12-T05/T06 (Karera + Bomb-Taya Twist) and P12-T01/T02 (event schedule, disabled compatibility registry, Pugad announcement, and Lagsanay/Kangaroo Main rounds in the full match) pass on automated evidence; every stack pair and the terminal-order review remain open. The October 14 sneak/glide/64 wu grid/stage-blocks extension adds P02-T23–T26 (Should): T23–T25 checked on automated evidence, T26 human review open. The block-scene/Spikes/Cannon/stun extension adds P02-T27–T31: T27, T28, T30 (selector + first come, first served Place; also fixed item kills being dropped in P05/P07 matches) and T31 (animated chicken scene) checked on automated evidence, T29 human review open. P02-T32 (Bomb/Dynamite/Nuke explosives and the Pugad pick lock, 2026-10-15) is checked on automated evidence. This is the count of checked task records on disk, not a release-readiness percentage. P05-T12 was rerun against live P06 results, including held-edge handling, all-ready advance, the tested eight-second timeout and construction retention. P07 now has a scoped route and passing synthetic pool/reset checks, but its player sessions and human review remain open; no P07 checkbox is counted. P08's six engineering tasks passed under the explicitly authorized provisional development-only prerequisite disposition below; P07-T04 remains open and the P08 release/entry gate is unresolved. P09's four technical implementation/verification tasks pass on the development route; P07 player/device/human acceptance, P08 entry/release gate, performance target and P12 schedule remain separate and open. P11's 13 implementation and automated/rendered verification tasks pass on the standalone development route; player comprehension, physical controllers, balance/cultural and production-asset reviews, performance acceptance and every P12 stack/schedule gate remain open. P13-T13/T14 verify the reusable scoreboard slice only; the wider HUD, event overlays, tutorial, Library, spectator comprehension and accessibility reviews keep P13-T03/T04 and P13 open. The 1080p synthetic debug sample exceeded the provisional 16.67 ms frame target; a 14-second Windows process sample measured 306.7 MiB working set and 420.5 MiB private bytes, which does not establish target-PC acceptance. P02 remains open because physical input/reconnect acceptance is unavailable. Six of the eight approved wall-movement extension tasks (P02-T15–T17, T19–T21) are checked on automated/synthetic evidence; P02-T18 (physical devices) and P02-T22 (human review) remain open. They are Should scope; this does not make them required October submission work or delay P05. P01-T02 human review also remains open, but no longer blocks implementation under the standing workflow.
 
 | Phase | Purpose | Tasks | Scope |
 |---|---|---:|---|
@@ -620,13 +620,14 @@ P01 code was generated by Codex under the task authorization and internal policy
 
 #### P02-T32
 
-- [x] **Add Bomb, Dynamite and Nuke explosives and lock a claimed Pugad pick**
+- [x] **Add Bomb, Dynamite and Nuke explosives, lock a claimed Pugad pick, and let eliminated chickens fall**
   - **Status:** PASSED · **Kind:** IMPLEMENT · **Scope:** SHOULD · **Owner:** Gameplay (name TBD); requested by Jorge (2026-10-15).
   - **Requirements:** [REQ-STAGE-005](PRD.md#req-stage-005--scene-authored-block-catalog-with-kill-and-stun-hitboxes). **Dependencies:** [P02-T27](#p02-t27), [P02-T30](#p02-t30).
   - **Work:**
     - `scenes/blocks/explosives/` holds `bomb_2x2`, `dynamite_3x3` and `nuke_4x4`: BlockData Special = Cleanup, so each is a one-shot area edit that clears earlier-round player-built pieces through the existing atomic Place resolver. Visuals are DEBUG placeholders with an orange blast-area outline; pool weights are 30 / 20 / 8.
     - `ExplosionFlash` shows a short placeholder blast over each committed cleanup (`P05MatchRoom._show_blasts`).
     - Pugad: a seat that owns an egg, or has a claim pending, can no longer move its selection.
+    - An eliminated chicken keeps falling under gravity (no control, no sideways drift) until it lands, instead of hanging where it died. It never touches blocks or hazards again, and stops once it leaves the stage without reporting an escape (`ChickenController._fall_while_eliminated`; blocks test: a chicken eliminated 4 tiles up lands straight below).
     - The two spike kill checks now land on the points from above, because the Spikes kill hitbox was narrowed to 60×24 in the editor (in `d2b72e0`) and is no longer reached from the side.
   - **Acceptance:** All three are in the catalog and match pool from their scenes alone. In a real match a Bomb clears the earlier piece in its area, leaves pieces outside it and pieces placed in the same phase, and shows one blast; a Nuke clears its 4×4. A claimed seat cannot browse while an unclaimed seat can.
   - **Evidence:** [explosives tests](evidence/blocks/2026-10-15_explosives_tests.txt) (23 checks), [regression summary](evidence/blocks/2026-10-15_explosives_regression.txt). **Result:** PASSED (synthetic). **Build:** Godot 4.7.stable.official.5b4e0cb0f, 2026-10-15, reviewer: Claude (AI, automated; no human reviewer).
@@ -2188,7 +2189,7 @@ P01 code was generated by Codex under the task authorization and internal policy
 
 **Evidence required:** Seeded schedule checks, reviewed precedence table and 2/3/4-player pair results.
 
-**Phase roll-up (2026-10-15): 2/10 task records passed; P12 is NOT complete.** Passed: P12-T01 and P12-T02 (schedule, compatibility registry and Pugad announcement) on automated synthetic evidence, indexed in the [P12 evidence index](evidence/p12/README.md). The scheduled full match is `P12ScheduledMatchRoom` (`scenes/match/p12_scheduled_match_room.tscn`), which the opt-in `--match-route=lifecycle` route now opens; the default first-playable route is still the P07 all-Karera slice. All three compatibility rows are registered and **disabled**, so no Twist runs yet: each row is enabled only after its pair task (T05/T07/T09) and verification pass. T03–T10 remain unchecked; T07–T10 also stay blocked on the human-reviewed terminal-order table (T04). This work also fixed two Kangaroo controller defects that P11's single-round lab never hit (see the P11-T12 note).
+**Phase roll-up (2026-10-15): 4/10 task records passed; P12 is NOT complete.** Passed: P12-T05/T06 (the Karera + Lagsanay pair; its compatibility row is now enabled, so Bomb-Taya Twists can roll from round 5), and P12-T01/T02 (schedule, compatibility registry and Pugad announcement) on automated synthetic evidence, indexed in the [P12 evidence index](evidence/p12/README.md). The scheduled full match is `P12ScheduledMatchRoom` (`scenes/match/p12_scheduled_match_room.tscn`), which the opt-in `--match-route=lifecycle` route now opens; the default first-playable route is still the P07 all-Karera slice. The Karera + Kangaroo and Kangaroo + Lagsanay rows stay **disabled** until T07/T09 and their verification pass. T03 has a [draft decision table](P12_TERMINAL_ORDER_DRAFT.md) awaiting team review; T03, T04 and T07–T10 remain unchecked, and T07–T10 stay blocked on the human-reviewed table (T04). This work also fixed two Kangaroo controller defects that P11's single-round lab never hit (see the P11-T12 note).
 
 
 #### P12-T01
@@ -2222,10 +2223,11 @@ P01 code was generated by Codex under the task authorization and internal policy
 #### P12-T03
 
 - [ ] **Resolve the event terminal-order decision table**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+  - **Status:** DRAFT READY FOR TEAM REVIEW (2026-10-15) · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-EVENT-002](PRD.md#req-event-002--review-unresolved-simultaneous-terminal-ordering). **Dependencies:** [P08-T06](#p08-t06), [P11-T10](#p11-t10).
   - **Work:** Preserve recorded-time hazard/goal and exact-tie rules, one terminal outcome and Main-only scoring. Before integration document unresolved ordering among command evaluation, timeout, pass, goal and support destruction where existing sources do not fully determine a case. Keep proposed rule replacements inactive.
   - **Acceptance:** A team-reviewed decision table resolves each uncovered same-step case with source or explicit approval and corresponding scenario; no callback-order dependence or silently invented PRD rule.
+  - **Draft:** [P12 terminal-order decision table — DRAFT](P12_TERMINAL_ORDER_DRAFT.md). It has 16 rows: 8 for Karera + Bomb-Taya (behaviour as implemented, with the unsourced rows marked "needs approval"), 4 for Karera + Kangaroo and 4 for Kangaroo + Lagsanay (proposals only). It stays unchecked until the team reviews every row; no proposal is active in the Kangaroo pairs.
   - **Evidence:** not yet available. **Verification result:** not yet available.
 
 
@@ -2241,22 +2243,41 @@ P01 code was generated by Codex under the task authorization and internal policy
 
 #### P12-T05
 
-- [ ] **Integrate and expose the Karera + Lagsanay pair**
-  - **Status:** TODO · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
+- [x] **Integrate and expose the Karera + Lagsanay pair**
+  - **Status:** PASSED — automated synthetic evidence (2026-10-15) · **Kind:** IMPLEMENT · **Scope:** REQUIRED · **Owner:** Gameplay (name TBD).
   - **Requirements:** [REQ-STACK-001](PRD.md#req-stack-001--integrate-karera-with-lagsanay-pressure). **Dependencies:** [P08-T06](#p08-t06), [P06-T02](#p06-t02), [P06-T08](#p06-t08).
   - **Work:** Flag remains active, bodies pass through, tag sensor works. Finishers become secured and leave taya/target/hazard eligibility. Finishing taya transfers to random unfinished live runner or resolves if none. Prototype reassignment preserves remaining countdown and gives no new opening freeze. Use race-only scoring/suppression and optional Barya.
   - **Acceptance:** 2/3/4 players: current taya finishes, last live runner finishes/dies, secured exclusion, timeout/goal conflict and direct trap awards; no placement score added.
-  - **Evidence:** not yet available. **Verification result:** not yet available.
+  - **Implementation:** `BombTayaTwist` (`scripts/match/bomb_taya_twist.gd`) runs the taya pressure beside the race in `P12ScheduledMatchRoom`. It uses the P08 timers, head start and pass-back immunity; the opening taya is seeded from the `taya` stream.
+    - It steps before the race drains each physics step, and reports a timeout to the race ledger as a source-less elimination (no Patibong).
+    - Finishers are secured and leave the taya pool. A finishing taya hands the taya to a random live runner with the countdown kept and no freeze; an eliminated taya is replaced with the timer for the new live count.
+    - The race keeps the flag, the deadlines, the round end and race-only scoring.
+    - The HUD shows "TWIST: BOMB-TAYA", the taya and its countdown; the taya marker floats over the taya.
+    - The Karera + Lagsanay compatibility row is now enabled, so Karera rounds from round 5 can roll this Twist.
+    - Two rules are provisional and listed in the T03 draft: one live runner keeps the 2-player timer, and same-step trap + timeout follows the race ledger's ambiguous-cause rule.
+  - **Evidence:** [P12 evidence index](evidence/p12/README.md); [stack tests](evidence/p12/2026-10-15_p12_stack_tests.txt) (47 checks). **Verification result:** PASSED — see P12-T06.
 
 
 #### P12-T06
 
-- [ ] **Verify integrate karera with lagsanay pressure**
-  - **Status:** TODO · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
+- [x] **Verify integrate karera with lagsanay pressure**
+  - **Status:** PASSED — automated synthetic evidence (2026-10-15) · **Kind:** VERIFY · **Scope:** REQUIRED · **Owner:** QA (name TBD).
   - **Requirements:** [REQ-STACK-001](PRD.md#req-stack-001--integrate-karera-with-lagsanay-pressure). **Dependencies:** [P12-T05](#p12-t05).
   - **Work:** Record the procedure, expected and actual result, and review evidence. 2/3/4 players: current taya finishes, last live runner finishes/dies, secured exclusion, timeout/goal conflict and direct trap awards; no placement score added.
   - **Acceptance:** 2/3/4 players: current taya finishes, last live runner finishes/dies, secured exclusion, timeout/goal conflict and direct trap awards; no placement score added.
-  - **Evidence:** not yet available. **Verification result:** COULD-NOT-RUN — prerequisite build/device or review artifact not yet available.
+  - **Procedure:** `godot --headless --fixed-fps 60 --path tilaok! --script res://tests/run_p12_stack_tests.gd` (Godot 4.7, synthetic seats), plus the Twist rounds inside the full 12-round matches of `run_p12_tests.gd`. Expected and actual results:
+    - **Controller:** no pass during the head start; nearest-runner pass; pass-back immunity; the countdown is never reset by a pass; secured runners are never targets; the countdown is kept when the taya finishes; a fresh timer after an elimination; one recorded timeout; idle when no runner is left.
+    - **2, 3 and 4 seats in the real room:**
+      - The taya reaches the flag, is secured, and the taya moves to a live runner with the remaining countdown and no freeze.
+      - The finisher standing on the new taya for 30 steps is never tagged back.
+      - Timeouts are race eliminations with no Patibong.
+      - The last live runner carries the taya and can still finish (3/4 players) or time out (2 players); the race then ends.
+      - Totals equal the race calculator alone, with no Lagsanay placement points.
+    - **Timeout and goal in the same step:** eliminated.
+    - **Spike kill during the Twist (3 and 4 seats):** a direct kill credited to the placer, who keeps the race Patibong; a trapped taya is replaced.
+    - **Full matches:** each player count's 12-round match includes a Bomb-Taya round.
+    - **Capture:** a rendered capture of a 4-seat Twist round.
+  - **Evidence:** [P12 evidence index](evidence/p12/README.md). **Verification result:** PASSED (47 + 61 checks, 0 failures). Reviewer: Claude (AI, automated). No player session, physical device or human review; the provisional rows in the T03 draft still need team approval.
 
 
 #### P12-T07

@@ -82,6 +82,7 @@ func _table(schedule: EventSchedule) -> Array[Dictionary]:
 func _test_guaranteed_rounds_and_table() -> void:
 	var violations := PackedStringArray()
 	var mains_seen := {}
+	var twists_seen := 0
 	for seed_value in range(1, 501):
 		var rows := _table(_schedule(seed_value, _all_modes(), EventSchedule.enabled_pairs()))
 		for row in rows:
@@ -94,32 +95,43 @@ func _test_guaranteed_rounds_and_table() -> void:
 				violations.append("seed %d round %d is %d" % [seed_value, round_number, main])
 			if bool(row.guaranteed) != (round_number in [1, 4, 8, 12]):
 				violations.append("seed %d round %d guaranteed flag" % [seed_value, round_number])
-			if int(row.twist) != NONE:
-				violations.append("seed %d round %d has a Twist" % [seed_value, round_number])
+			var twist := int(row.twist)
+			if twist != NONE:
+				twists_seen += 1
+			if (
+				twist != NONE
+				and (
+					main != KARERA or twist != LAGSANAY or round_number < 5 or bool(row.guaranteed)
+				)
+			):
+				violations.append("seed %d round %d Twist %d" % [seed_value, round_number, twist])
 			if main not in [KARERA, LAGSANAY, KANGAROO]:
 				violations.append("seed %d round %d main %d" % [seed_value, round_number, main])
 	_check(
 		violations.is_empty(),
 		(
-			"500 seeded 12-round tables: round 1 Karera, 4/8/12 Lagsanay, no Twist while no pair is "
-			+ "enabled: %s" % [violations.slice(0, 5)]
+			"500 seeded 12-round tables: round 1 Karera, 4/8/12 Lagsanay; the only Twist is "
+			+ "Bomb-Taya on a Karera Main from round 5: %s" % [violations.slice(0, 5)]
 		)
 	)
 	_check(mains_seen.size() == 3, "every Main Challenge appears across the seeded tables")
+	_check(twists_seen > 0, "the enabled Bomb-Taya Twist does roll (%d times)" % twists_seen)
 	var sample := _table(_schedule(12345, _all_modes(), EventSchedule.enabled_pairs()))
 	var described := PackedStringArray()
 	for row in sample:
 		described.append("R%d %s" % [int(row.round), EventSchedule.describe(row)])
 	print("P12_SCHEDULE_SAMPLE seed=12345 ", ", ".join(described))
 	_check(sample.size() == 12, "the seeded table covers all 12 rounds")
-	var registry_disabled := true
-	for row in EventSchedule.COMPATIBILITY:
-		registry_disabled = registry_disabled and not bool(row.enabled)
+	var enabled_rows := EventSchedule.enabled_pairs()
 	_check(
-		EventSchedule.COMPATIBILITY.size() == 3 and registry_disabled,
-		"the registry lists the three GDD pairs, each disabled until its pair task passes"
+		(
+			EventSchedule.COMPATIBILITY.size() == 3
+			and enabled_rows.size() == 1
+			and int(enabled_rows[0].main) == KARERA
+			and int(enabled_rows[0].twist) == LAGSANAY
+		),
+		"the registry lists the three GDD pairs; only Karera + Lagsanay (P12-T05/T06) is enabled"
 	)
-	_check(EventSchedule.enabled_pairs().is_empty(), "the default Twist pool is empty")
 	var sudden := EventSchedule.sudden_death_entry()
 	_check(
 		int(sudden.main) == LAGSANAY and int(sudden.twist) == NONE,
@@ -395,7 +407,7 @@ func _pending_storms(controller: KangarooRoundController) -> int:
 	return count
 
 
-## A base seed whose match includes Kangaroo and a non-guaranteed Lagsanay round.
+## A base seed whose match includes Kangaroo, a non-guaranteed Lagsanay and a Bomb-Taya round.
 func _seed_with_events(probe: P12ScheduledMatchRoom) -> int:
 	for base_seed in range(1, 500):
 		var streams := SeededDiagnosticStreams.new()
@@ -404,12 +416,14 @@ func _seed_with_events(probe: P12ScheduledMatchRoom) -> int:
 		schedule.begin(streams.event, _all_modes(), 12)
 		var kangaroo := false
 		var extra_lagsanay := false
+		var twist := false
 		for row in _table(schedule):
 			kangaroo = kangaroo or int(row.main) == KANGAROO
 			extra_lagsanay = (
 				extra_lagsanay or (int(row.main) == LAGSANAY and not bool(row.guaranteed))
 			)
-		if kangaroo and extra_lagsanay:
+			twist = twist or int(row.twist) == LAGSANAY
+		if kangaroo and extra_lagsanay and twist:
 			return base_seed
 	return 12345
 
@@ -452,6 +466,7 @@ func _test_full_scheduled_match(players: int) -> void:
 	var played := PackedStringArray()
 	var mismatches := PackedStringArray()
 	var mode_counts := {KARERA: 0, LAGSANAY: 0, KANGAROO: 0}
+	var twist_rounds := 0
 	var scoring_ok := true
 	var lifecycle_ok := true
 	for active_round in range(1, 13):
@@ -494,6 +509,10 @@ func _test_full_scheduled_match(players: int) -> void:
 		room._resolve_place_edits(empty_edits)
 		var main := int(now.main)
 		mode_counts[main] += 1
+		if int(now.get("twist", NONE)) != NONE:
+			twist_rounds += 1
+			if room.play_twist_text() != "TWIST: BOMB-TAYA" or not room.bomb_taya.active:
+				mismatches.append("round %d Twist not running" % active_round)
 		if (
 			room.event_main != main
 			or room.phase_controller.phase != MatchPhaseController.Phase.PLAY
@@ -565,7 +584,8 @@ func _test_full_scheduled_match(players: int) -> void:
 		"%dp: round 12 ends the match (final results or sudden death)" % players
 	)
 	_check(
-		room.play_twist_text().is_empty(), "%dp: no Twist runs while no pair is enabled" % players
+		twist_rounds >= 1,
+		"%dp: %d Karera round(s) ran the Bomb-Taya Twist end to end" % [players, twist_rounds]
 	)
 	room.queue_free()
 	await process_frame

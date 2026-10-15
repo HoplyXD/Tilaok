@@ -641,7 +641,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 **Acceptance:** 2/3/4 players: current taya finishes, last live runner finishes/dies, secured exclusion, timeout/goal conflict and direct trap awards; no placement score added.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** `BombTayaTwist` in `P12ScheduledMatchRoom`; P12-T05/T06 pass on automated synthetic evidence ([P12 evidence](evidence/p12/README.md)). Provisional same-step rows are in the [terminal-order draft](P12_TERMINAL_ORDER_DRAFT.md) pending team review. No player session or human review.
 
 
 ### REQ-STACK-002 — Integrate Karera with Kangaroo pressure

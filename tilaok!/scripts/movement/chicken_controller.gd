@@ -114,7 +114,10 @@ func _physics_process(delta: float) -> void:
 	if lifecycle.is_terminal():
 		_clear_support()
 		reset_wall_state()
-		locomotion_velocity = Vector2.ZERO
+		if lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
+			_fall_while_eliminated(delta)
+		else:
+			locomotion_velocity = Vector2.ZERO
 		return
 	if lifecycle.status == PlayerLifecycleState.Status.OPENING_FREEZE:
 		_clear_support()
@@ -169,6 +172,25 @@ func _physics_process(delta: float) -> void:
 	_notify_block_contacts(axis)
 	_refresh_wall_debug()
 	_check_bounds()
+
+
+## An eliminated chicken has no control but keeps falling (requested by Jorge, 2026-10-15) until
+## it lands on a solid, instead of hanging in the air. It drifts no further sideways, never
+## supports anyone, never touches blocks or hazards again and never reports leaving the stage:
+## once it falls out of bounds it simply stops.
+func _fall_while_eliminated(delta: float) -> void:
+	external_velocity = Vector2.ZERO
+	_vertical_half_step = 0.0
+	if not bounds.has_point(global_position):
+		velocity = Vector2.ZERO
+		locomotion_velocity = Vector2.ZERO
+		return
+	var fall_speed := minf(velocity.y + _fall_gravity * delta, tuning.fall_speed_cap_wu_s)
+	velocity = Vector2(0.0, maxf(fall_speed, 0.0) if is_on_floor() else fall_speed)
+	move_and_slide()
+	if is_on_floor() and velocity.y > 0.0:
+		velocity.y = 0.0
+	locomotion_velocity = velocity
 
 
 func set_snapshot(snapshot: ConfigurationSnapshot) -> void:

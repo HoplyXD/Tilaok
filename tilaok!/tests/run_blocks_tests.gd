@@ -314,6 +314,25 @@ func _test_stun_controls_and_death() -> void:
 	_check(not actor.is_stunned(), "the stun wears off after its duration")
 	actor.eliminate("test")
 	_check(await _anim_after(2) == &"dead", "an eliminated chicken shows the death sprite")
+	# 2026-10-15 (Jorge): a chicken eliminated in mid-air keeps falling and lands; it does not
+	# hang where it died, and it no longer moves sideways or reacts to input.
+	_revive()
+	_put_actor_feet(Vector2(736.0, FLOOR_Y - 256.0))
+	actor.eliminate("test: mid-air")
+	_key(KEY_D, true)
+	await _frames(90)
+	_key(KEY_D, false)
+	_check(
+		(
+			absf(actor.global_position.y + _half_height() - FLOOR_Y) <= TOLERANCE
+			and absf(actor.global_position.x - 736.0) <= TOLERANCE
+			and actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED
+		),
+		(
+			"a chicken eliminated in mid-air falls straight down and lands (feet y %.1f)"
+			% (actor.global_position.y + _half_height())
+		)
+	)
 	_revive()
 	actor.reset_for_round(actor.global_position)
 

@@ -223,7 +223,7 @@ The Collapsing Block overlaps the proposed *Marupok na Papag* expansion idea (2�
 - **Cannon (1×1, trap):** solid barrel that charges and fires a ball along its path (5 tiles by default) every 2 s; the ball eliminates on touch and is stopped by solids. Rotatable in four directions.
 - **Kill** hitboxes eliminate (soft, comedic defeat) and credit the placer with Patibong under the existing scoring rules; self-kills earn nothing.
 - **Stun** hitboxes: the chicken is knocked away from the hitbox and its controls freeze for the block's stun time (default 1 s). A short immunity (0.5 s) follows so stuns cannot chain-lock a player. A stun is a setup effect: never credited, never an elimination.
-- **Death sprite:** an eliminated chicken shows the dedicated death pose (sheet row 2, column 4).
+- **Death sprite:** an eliminated chicken shows the dedicated death pose (sheet row 2, column 4). It keeps falling until it lands (2026-10-15, requested by Jorge) instead of hanging where it died; it has no control and no further effect on blocks or hazards.
 
 ### Explosives and the Pugad pick lock — 2026-10-15 (requested by Jorge)
 

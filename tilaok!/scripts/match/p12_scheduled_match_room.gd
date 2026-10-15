@@ -17,6 +17,8 @@ var available_modes: Array[int] = [
 ]
 var schedule := EventSchedule.new()
 var kangaroo_round: KangarooMainRound
+## Lagsanay as a Twist on a Karera Main (P12-T05).
+var bomb_taya := BombTayaTwist.new()
 ## The Main Challenge of the round in Play (NONE outside Play and during sudden death).
 var event_main: int = EventSchedule.Challenge.NONE
 
@@ -73,6 +75,7 @@ func current_entry() -> Dictionary:
 
 func _begin_pugad() -> void:
 	_end_event_view()
+	bomb_taya.reset()
 	event_main = EventSchedule.Challenge.NONE
 	_set_goal_visible(true)
 	if items != null and items.director != null:
@@ -151,7 +154,13 @@ func _enter_play() -> void:
 	event_main = int(entry.get("main", EventSchedule.Challenge.KARERA))
 	if event_main == EventSchedule.Challenge.KARERA:
 		_set_goal_visible(true)
+		bomb_taya.reset()
 		super._enter_play()
+		if (
+			int(entry.get("twist", EventSchedule.Challenge.NONE))
+			== EventSchedule.Challenge.LAGSANAY
+		):
+			_begin_bomb_taya()
 		return
 	_free_match_ghosts()
 	input_router.set_rotation_supported(false)
@@ -209,6 +218,110 @@ func _begin_lagsanay_main(round_id: String, seats: Array[int]) -> bool:
 	return true
 
 
+func _begin_bomb_taya() -> void:
+	if race_round_controller == null:
+		return
+	var seats: Array[int] = []
+	for seat in input_router.registry.joined_seats():
+		seats.append(int(seat.seat))
+	if not bomb_taya.begin(
+		"%s:bomb-taya" % race_round_controller.ledger.round_id,
+		seats,
+		match_streams.taya,
+		tuning.lagsanay_opening_head_start_seconds,
+		tuning.taya_pass_back_seconds,
+		tuning.lagsanay_taya_seconds_2p,
+		tuning.lagsanay_taya_seconds_3p,
+		tuning.lagsanay_taya_seconds_4p
+	):
+		push_error("P12 could not begin the Bomb-Taya Twist.")
+		return
+	_last_taya_seat = bomb_taya.taya_seat
+	var opening := actors.get(bomb_taya.opening_taya_seat) as ChickenController
+	if opening != null:
+		opening.set_opening_freeze(true)
+	last_message = "Karera with a Bomb-Taya Twist: reach the flag and pass the taya before it blows."
+	_update_taya_marker()
+	_refresh_match_ui()
+
+
+func _bomb_taya_running() -> bool:
+	return (
+		bomb_taya.active
+		and not _sudden_death_active
+		and event_main == EventSchedule.Challenge.KARERA
+		and race_round_controller != null
+		and not race_round_controller.ended
+		and phase_controller.phase == MatchPhaseController.Phase.PLAY
+	)
+
+
+func _advance_bomb_taya(delta: float) -> void:
+	var live: Array[int] = []
+	var finished: Array[int] = []
+	for seat_index in bomb_taya.seat_indices:
+		var actor := actors.get(seat_index) as ChickenController
+		if actor == null or not is_instance_valid(actor):
+			continue
+		if actor.lifecycle.status == PlayerLifecycleState.Status.SECURED:
+			finished.append(seat_index)
+		elif not actor.lifecycle.is_terminal():
+			live.append(seat_index)
+	var tick := Engine.get_physics_frames()
+	var result := bomb_taya.advance_step(delta, tick, live, finished, _bomb_taya_contacts(live))
+	if bool(result.head_start_ended):
+		var opening := actors.get(bomb_taya.opening_taya_seat) as ChickenController
+		if opening != null:
+			opening.set_opening_freeze(false)
+	var expired := int(result.timeout_seat)
+	if expired >= 0:
+		# An event elimination like leaving the stage: no source item, so never a Patibong.
+		race_candidate_queue.queue_elimination(
+			expired,
+			tick,
+			"",
+			-1,
+			"%s:taya_timeout:%d:%d" % [race_round_controller.ledger.round_id, tick, expired]
+		)
+	if bomb_taya.taya_seat != _last_taya_seat:
+		_last_taya_seat = bomb_taya.taya_seat
+		_notify_presentation(&"taya")
+	_update_taya_marker()
+
+
+## The taya's contacts with live, unfrozen runners (finishers are secured and never targets).
+func _bomb_taya_contacts(live: Array[int]) -> Array[Dictionary]:
+	var contacts: Array[Dictionary] = []
+	if bomb_taya.head_start_remaining > 0.0 or not live.has(bomb_taya.taya_seat):
+		return contacts
+	var taya := actors.get(bomb_taya.taya_seat) as ChickenController
+	if (
+		taya == null
+		or not is_instance_valid(taya)
+		or taya.lifecycle.status != PlayerLifecycleState.Status.ACTIVE
+	):
+		return contacts
+	for node in taya.contact_overlaps():
+		var other := node as ChickenController
+		if (
+			other == null
+			or other.lifecycle.status != PlayerLifecycleState.Status.ACTIVE
+			or not live.has(other.seat_index)
+		):
+			continue
+		(
+			contacts
+			. append(
+				{
+					"seat_index": other.seat_index,
+					"distance_squared":
+					taya.global_position.distance_squared_to(other.global_position),
+				}
+			)
+		)
+	return contacts
+
+
 func _event_round_active() -> bool:
 	return (
 		not _sudden_death_active
@@ -218,6 +331,9 @@ func _event_round_active() -> bool:
 
 
 func _physics_process(delta: float) -> void:
+	# The Twist reports a timeout before the race drains this step's candidates (P05 room).
+	if not get_tree().paused and _bomb_taya_running():
+		_advance_bomb_taya(delta)
 	super._physics_process(delta)
 	if get_tree().paused or not _event_round_active():
 		return
@@ -437,20 +553,29 @@ func _set_goal_visible(value: bool) -> void:
 
 
 func _update_taya_marker() -> void:
+	var twist := _bomb_taya_running()
 	if (
-		_sudden_death_active
-		or not _event_round_active()
-		or event_main != EventSchedule.Challenge.LAGSANAY
+		not twist
+		and (
+			_sudden_death_active
+			or not _event_round_active()
+			or event_main != EventSchedule.Challenge.LAGSANAY
+		)
 	):
 		super._update_taya_marker()
 		return
 	if _taya_marker == null or not is_instance_valid(_taya_marker):
 		return
-	var actor := actors.get(lagsanay_controller.taya_seat) as ChickenController
-	if not lagsanay_controller.active or actor == null or not is_instance_valid(actor):
+	var seat := bomb_taya.taya_seat if twist else lagsanay_controller.taya_seat
+	var actor := actors.get(seat) as ChickenController
+	if (
+		(not twist and not lagsanay_controller.active)
+		or actor == null
+		or not is_instance_valid(actor)
+	):
 		_taya_marker.visible = false
 		return
-	_taya_marker.text = "★ TAYA • %s" % _seat_identity_text(lagsanay_controller.taya_seat)
+	_taya_marker.text = "★ TAYA • %s" % _seat_identity_text(seat)
 	_taya_marker.position = (
 		actor.global_position + Vector2(-110.0, -actor.tuning.body_height_wu * 0.65)
 	)
@@ -518,14 +643,31 @@ func play_goal_text() -> String:
 	return "Match the slipper pose."
 
 
+## "P3 ■": number and shape only, so the HUD clock row fits four seats at 1080p.
+func _short_seat_text(seat_index: int) -> String:
+	var seat := input_router.registry.get_seat(seat_index)
+	return (
+		"P%d %s"
+		% [int(seat.get("identity", seat_index + 1)), MARKS.get(str(seat.get("shape", "")), "◆")]
+	)
+
+
 func play_tag_text() -> String:
+	if _bomb_taya_running():
+		var window := super.play_tag_text()
+		var prefix := "HEAD START • " if bomb_taya.head_start_remaining > 0.0 else ""
+		var text := (
+			"%sTAYA %s %.0fs"
+			% [prefix, _short_seat_text(bomb_taya.taya_seat), ceilf(bomb_taya.countdown_remaining)]
+		)
+		return text + (" • " + window if not window.is_empty() else "")
 	if not _event_round_active():
 		return super.play_tag_text()
 	if event_main == EventSchedule.Challenge.LAGSANAY:
 		if not lagsanay_controller.active:
 			return ""
 		var prefix := "HEAD START • " if lagsanay_controller.head_start_remaining > 0.0 else ""
-		return "%sTAYA %s" % [prefix, _seat_identity_text(lagsanay_controller.taya_seat)]
+		return "%sTAYA %s" % [prefix, _short_seat_text(lagsanay_controller.taya_seat)]
 	var commands := kangaroo_round.controller.active_commands()
 	if commands.is_empty():
 		return ""
@@ -535,19 +677,30 @@ func play_tag_text() -> String:
 ## Like the P08 lab: only live pass-back immunity is persistent; otherwise the timed Play-start
 ## notice shows.
 func play_status_text() -> String:
-	if not _event_round_active():
+	var twist := _bomb_taya_running()
+	if not twist and not _event_round_active():
 		return super.play_status_text()
-	if event_main != EventSchedule.Challenge.LAGSANAY or not lagsanay_controller.active:
+	if (
+		not twist
+		and (event_main != EventSchedule.Challenge.LAGSANAY or not lagsanay_controller.active)
+	):
 		return ""
 	var immune := PackedStringArray()
-	for seat_index in lagsanay_controller.seat_indices:
-		var remaining := lagsanay_controller.pass_back_remaining_seconds(int(seat_index))
+	var seats := bomb_taya.seat_indices if twist else lagsanay_controller.seat_indices
+	for seat_index in seats:
+		var remaining := (
+			bomb_taya.pass_back_remaining_seconds(int(seat_index))
+			if twist
+			else lagsanay_controller.pass_back_remaining_seconds(int(seat_index))
+		)
 		if remaining > 0.0:
 			immune.append("%s %.1f s" % [_seat_identity_text(int(seat_index)), remaining])
 	return "Pass-back immunity: " + ", ".join(immune) if not immune.is_empty() else ""
 
 
 func seat_state_text(seat_index: int) -> String:
+	if _bomb_taya_running() and seat_index == bomb_taya.taya_seat:
+		return "TAYA"
 	if not _event_round_active():
 		return super.seat_state_text(seat_index)
 	if (

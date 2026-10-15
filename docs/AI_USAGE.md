@@ -197,3 +197,15 @@ At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
 - Added `run_explosives_tests.gd` (23 checks) and `capture_explosives_evidence.gd`. Updated hardcoded family counts in the P04/P10 suites, the match-UI node-count check (egg previews counted as one node) and the two spike checks for Jorge's narrower Spikes hitbox.
 
 AI-generated code; no human code review or player session is claimed. No final art or audio was generated. Evidence: `docs/evidence/blocks/README.md`.
+
+### Death fall and P12 Karera + Bomb-Taya pair — October 15, 2026
+
+At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
+- Made eliminated chickens keep falling until they land (`ChickenController._fall_while_eliminated`, plus a blocks-test regression).
+- Continued the approved P12 plan:
+  - `BombTayaTwist` and its `P12ScheduledMatchRoom` integration (HUD tag, taya marker, race-ledger timeout reporting).
+  - Enabled the Karera + Lagsanay compatibility row.
+  - `run_p12_stack_tests.gd` (47 checks) and `capture_p12_twist_evidence.gd`, with the P12 schedule tests updated for the enabled row.
+  - The draft terminal-order decision table `docs/P12_TERMINAL_ORDER_DRAFT.md` (P12-T03, awaiting team review).
+
+AI-generated code and draft; no human code review, player session or team approval is claimed. No art or audio was generated.

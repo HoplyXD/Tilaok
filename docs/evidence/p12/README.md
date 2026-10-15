@@ -69,3 +69,16 @@ Play it with the full-match route: `-- --match-route=lifecycle`.
 - Long 4-player taya tags can overflow the HUD clock row (the same text as the P08 lab).
 
 Visuals are DEBUG placeholders.
+
+## Slice 2 — Karera + Lagsanay (Bomb-Taya) pair, P12-T05/T06 (2026-10-15, later)
+
+Build: `e409a03` plus uncommitted work; same tools and limits as above. Reviewer: Claude (AI, automated).
+
+| File | What it shows | Result |
+|---|---|---|
+| [2026-10-15_p12_stack_tests.txt](2026-10-15_p12_stack_tests.txt) | `run_p12_stack_tests.gd`: `BombTayaTwist` rules, then real 2/3/4-seat rounds. Covers the taya finishing (countdown kept, no freeze), secured exclusion, timeouts as race eliminations without Patibong, the last live runner finishing or dying, timeout + goal in one step, spike kills keeping the race Patibong, and race-only totals | PASSED — 47 checks |
+| [2026-10-15_p12_schedule_tests.txt](2026-10-15_p12_schedule_tests.txt) | Re-run with the Karera + Lagsanay row enabled. Only Bomb-Taya-on-Karera Twists roll (347 in 500 tables), and each 2/3/4-seat 12-round match (seed 7) plays one end to end | PASSED — 61 checks |
+| [2026-10-15_p12_stack_regression.txt](2026-10-15_p12_stack_regression.txt) | Every headless suite, including the death-fall change | PASSED except P04 (2) and UI (4), which fail without this work |
+| [2026-10-15_p12_bomb_taya_twist_1080p.png](2026-10-15_p12_bomb_taya_twist_1080p.png) | 4-seat Karera round with "TWIST: BOMB-TAYA", the TAYA seat state, the taya clock and the marker; the Twist is injected into round 1 for the capture | Rendered |
+
+Same-step rules that no source decides are listed, with the current behaviour, in the [terminal-order draft](../../P12_TERMINAL_ORDER_DRAFT.md) for team review (P12-T03, unchecked). The HUD taya tag is shortened to "TAYA P3 ■ 14s" so four seats fit at 1080p; this also fixes the overflow noted for Lagsanay Main rounds above.
