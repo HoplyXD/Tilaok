@@ -21,6 +21,7 @@ const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const ROUTE_LIFECYCLE := "lifecycle"
+const ROUTE_FIRST_PLAYABLE := "first_playable"
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
 const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
 const SETTINGS_SCENE := preload("res://scenes/ui/screens/settings_screen.tscn")
@@ -58,8 +59,11 @@ func _ready() -> void:
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	library_text = load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 	tutorial_script = load(TUTORIAL_SCRIPT_PATH) as TutorialScript
-	if OS.get_cmdline_user_args().has(ROUTE_PREFIX + ROUTE_LIFECYCLE):
+	var requested_route := route_from_args(OS.get_cmdline_user_args())
+	if requested_route == ROUTE_LIFECYCLE:
 		match_scene = LIFECYCLE_SCENE
+	elif requested_route == ROUTE_FIRST_PLAYABLE:
+		match_scene = MATCH_SCENE
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
 	add_child(router)
@@ -111,9 +115,7 @@ func show_library() -> void:
 	state = State.LIBRARY
 	var library := LIBRARY_SCENE.instantiate() as UiLibraryScreen
 	add_child(library)
-	var tuning := GameplayTuning.new()
-	tuning.item_enabled_variants = P07FirstPlayableMatchRoom.allowed_variants()
-	ItemEnabledProfiles.apply(tuning, PLAYTEST_PROFILE)
+	var tuning := content_tuning()
 	var definitions := ItemDefinitions.load_for_profile(tuning, PLAYTEST_PROFILE)
 	library.replay_tutorial_enabled = true
 	library.replay_tutorial_requested.connect(tutorial_session.replay)
@@ -121,6 +123,15 @@ func show_library() -> void:
 	library.back_requested.connect(show_title)
 	_screen = library
 	_use_menu_screen(library)
+
+
+## The tuning every match room in this build starts from: the Title Library reads the same
+## enabled set the Pugad can deal (BlockCatalog's enabled-by-default scenes plus the profile).
+func content_tuning() -> GameplayTuning:
+	var tuning := GameplayTuning.new()
+	tuning.item_enabled_variants = BlockCatalog.default_enabled_keys()
+	ItemEnabledProfiles.apply(tuning, PLAYTEST_PROFILE)
+	return tuning
 
 
 func show_settings() -> void:
@@ -188,6 +199,8 @@ func _on_flow_requested(kind: StringName) -> void:
 			_start_replay()
 		&"harness":
 			_open_harness()
+		&"quit":
+			_quit()
 
 
 func _on_room_return() -> void:
@@ -231,6 +244,9 @@ func _use_menu_screen(screen: UiScreen) -> void:
 	bridge.screen = screen
 	var seated := not router.registry.joined_seats().is_empty()
 	router.set_phase(LocalInputRouter.Phase.MENU if seated else LocalInputRouter.Phase.LOBBY)
+	# Title <-> Library <-> Settings stay in one router phase: consume the press that opened this
+	# screen so it cannot also act on it.
+	router.consume_held_presses()
 
 
 func _free_screen() -> void:
@@ -266,7 +282,19 @@ func _quit() -> void:
 
 
 func _route_name() -> String:
-	return ROUTE_LIFECYCLE if match_scene == LIFECYCLE_SCENE else "first_playable"
+	return ROUTE_LIFECYCLE if match_scene == LIFECYCLE_SCENE else ROUTE_FIRST_PLAYABLE
+
+
+## The last recognised --match-route value among `arguments`, or "" (keep the build default).
+static func route_from_args(arguments: PackedStringArray) -> String:
+	var result := ""
+	for argument in arguments:
+		if not argument.begins_with(ROUTE_PREFIX):
+			continue
+		var value := argument.trim_prefix(ROUTE_PREFIX)
+		if value in [ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE]:
+			result = value
+	return result
 
 
 func _harness_requested() -> bool:

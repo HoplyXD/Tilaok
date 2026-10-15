@@ -35,6 +35,7 @@ var _bridge_target: UiScreen
 var _debug_accum := 0.0
 var _game_input_suspended := false
 var _tutorial: TutorialCoordinator
+var _lobby_leave_seat := -1
 
 @onready var lobby_screen: UiLobbyScreen = %LobbyScreen
 @onready var play_hud: UiPlayHud = %PlayHud
@@ -95,6 +96,7 @@ func attach(p_room: P05MatchRoom) -> void:
 	pause_screen.settings_requested.connect(_open_overlay.bind(SETTINGS_SCENE))
 	pause_screen.library_requested.connect(_open_overlay.bind(LIBRARY_SCENE))
 	pause_screen.leave_confirmed.connect(_on_leave_confirmed)
+	lobby_screen.leave_requested.connect(_on_lobby_leave)
 	lobby_screen.back_requested.connect(_on_lobby_back)
 	debug_overlay.join_requested.connect(func(layout: String) -> void: room.join_keyboard(layout))
 	debug_overlay.start_requested.connect(func() -> void: room.start_match())
@@ -228,8 +230,10 @@ func _on_device_status(_device_id: int, _connected: bool) -> void:
 
 
 ## Ready edges change the registry without a coordinator signal; re-read the roster.
-func _on_router_action(_seat_index: int, _action_name: String) -> void:
+func _on_router_action(seat_index: int, action_name: String) -> void:
 	_dirty = true
+	if action_name == LocalInputRouter.ROTATE_ALIAS_LOBBY and seat_index >= 0:
+		_open_overlay(LIBRARY_SCENE, seat_index)
 
 
 func _on_pause_state_changed(paused: bool, _reason: String) -> void:
@@ -269,7 +273,20 @@ func _on_leave_confirmed() -> void:
 	_request_flow(&"leave_match")
 
 
+func _on_lobby_leave(seat_index: int) -> void:
+	_lobby_leave_seat = seat_index
+
+
+## Back in the Lobby clears the session: once a seat is ready the room asks first. While the
+## confirmation is up the bridge is detached so the same Back press cannot reopen it.
 func _on_lobby_back() -> void:
+	if room.is_confirmation_open():
+		return
+	if room.confirm_lobby_exit(_lobby_leave_seat):
+		bridge.screen = null
+		_bridge_target = null
+		_dirty = true
+		return
 	_request_flow(&"lobby_back")
 
 
@@ -309,17 +326,28 @@ func _set_game_input_suspended(value: bool) -> void:
 # --- pause overlays (Settings / Library from Pause) -------------------------------------------
 
 
-func _open_overlay(scene: PackedScene) -> void:
+## Settings / Library from Pause (the simulation stays frozen under it) or Library from the Lobby
+## (no simulation yet; the seat that asked for help drives it). `seat_override` < 0 means "the
+## pause menu owner".
+func _open_overlay(scene: PackedScene, seat_override: int = -1) -> void:
 	if _overlay != null:
 		return
-	if room.pause_coordinator.state != PauseRecoveryCoordinator.State.PAUSED:
+	var from_pause := room.pause_coordinator.state == PauseRecoveryCoordinator.State.PAUSED
+	var from_lobby := _lobby_overlay_allowed() and seat_override >= 0
+	if not from_pause and not from_lobby:
 		return
 	var screen := scene.instantiate() as UiScreen
 	if screen == null:
 		return
 	add_child(screen)
 	move_child(screen, debug_overlay.get_index())
-	screen.owner_seat = room.pause_coordinator.menu_owner
+	if from_lobby and not from_pause:
+		# The Lobby listens for join / ready presses; a menu needs the MENU navigation phase.
+		room.input_router.set_phase(LocalInputRouter.Phase.MENU)
+		screen.owner_seat = seat_override
+	else:
+		room.input_router.consume_held_presses()
+		screen.owner_seat = room.pause_coordinator.menu_owner
 	if screen is UiLibraryScreen:
 		var library_text := load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 		var library := screen as UiLibraryScreen
@@ -342,7 +370,19 @@ func _close_overlay() -> void:
 		remove_child(_overlay)
 		_overlay.queue_free()
 	_overlay = null
+	if _lobby_overlay_allowed() and room.input_router.phase == LocalInputRouter.Phase.MENU:
+		room.input_router.set_phase(LocalInputRouter.Phase.LOBBY)
+	else:
+		room.input_router.consume_held_presses()
 	_dirty = true
+
+
+func _lobby_overlay_allowed() -> bool:
+	return (
+		room.phase_controller.phase == MatchPhaseController.Phase.LOBBY
+		and not room.shows_final_results()
+		and room.pause_coordinator.state == PauseRecoveryCoordinator.State.RUNNING
+	)
 
 
 # --- applying the state -----------------------------------------------------------------------
@@ -487,7 +527,8 @@ func _apply_hud(seats: Array[Dictionary], phase: MatchPhaseController.Phase) -> 
 		states,
 		notice,
 		room.play_challenge_text(),
-		room.play_twist_text()
+		room.play_twist_text(),
+		room.hud_up_next_text() if phase == MatchPhaseController.Phase.PLAY else ""
 	)
 
 
@@ -503,13 +544,17 @@ func _apply_results(seats: Array[Dictionary]) -> void:
 		room.tuning.match_results_advance_seconds,
 		_first_device_kind(seats),
 		prompt_map,
-		room.presentation_settings.result_reveal_motion
+		room.presentation_settings.result_reveal_motion,
+		room.results_twist_text(),
+		room.hud_up_next_text()
 	)
 
 
 func _apply_bridge(phase: MatchPhaseController.Phase, paused: bool) -> void:
 	var target: UiScreen = null
-	if _overlay != null:
+	if room.is_confirmation_open():
+		target = null
+	elif _overlay != null:
 		target = _overlay
 	elif paused:
 		target = pause_screen

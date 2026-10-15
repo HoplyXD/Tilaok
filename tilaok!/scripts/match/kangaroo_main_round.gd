@@ -3,20 +3,23 @@ extends Node
 
 ## Runs a Kangaroo Main Challenge inside a full match room (P12 scheduled match). It drives the
 ## same KangarooRoundController the P11 lab verified, from the room's simulation clock and its
-## intentional-input edges, and shows the shared DEBUG command prompts, failure markers, slipper
+## intentional-input edges, and shows the scene-authored command cards, failure markers, slipper
 ## presenter, cue tone and screen shake. Scoring and the round end stay with the room.
 
 const SHAKE_SECONDS := 0.22
+## PresentationSettings.screen_shake: 0 full, 1 reduced, 2 off.
+const SHAKE_FULL := 0
+const SHAKE_OFF := 2
+const FULL_SHAKE_PIXELS := 6.0
+const REDUCED_SHAKE_PIXELS := 2.0
+const HUD_SCENE := preload("res://scenes/ui/components/kangaroo_hud.tscn")
 
 var controller := KangarooRoundController.new()
-var screen_shake_mode := 0
 
 var _room: P05MatchRoom
 var _overlay: CanvasLayer
-var _command_stack: VBoxContainer
-var _marker_label: Label
+var _hud: UiKangarooHud
 var _presenter: KangarooSlipperPresenter
-var _command_panels: Dictionary = {}
 var _seen_command_ids: Dictionary = {}
 var _tones: Dictionary = {}
 var _shake_remaining := 0.0
@@ -32,25 +35,9 @@ func setup(room: P05MatchRoom) -> void:
 	_overlay.layer = 21
 	_overlay.visible = false
 	add_child(_overlay)
-	_command_stack = VBoxContainer.new()
-	_command_stack.name = "KangarooCommands"
-	_command_stack.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_command_stack.position = Vector2(-625.0, 230.0)
-	_command_stack.size = Vector2(610.0, 250.0)
-	_command_stack.add_theme_constant_override("separation", 8)
-	_command_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_overlay.add_child(_command_stack)
-	_marker_label = Label.new()
-	_marker_label.name = "KangarooMarkers"
-	_marker_label.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	_marker_label.position = Vector2(18.0, -64.0)
-	_marker_label.size = Vector2(520.0, 42.0)
-	_marker_label.add_theme_font_size_override("font_size", 18)
-	_marker_label.add_theme_color_override("font_color", Color.WHITE)
-	_marker_label.add_theme_color_override("font_outline_color", Color("#15242b"))
-	_marker_label.add_theme_constant_override("outline_size", 4)
-	_marker_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_overlay.add_child(_marker_label)
+	_hud = HUD_SCENE.instantiate() as UiKangarooHud
+	_hud.name = "KangarooHud"
+	_overlay.add_child(_hud)
 	_presenter = KangarooSlipperPresenter.new()
 	_presenter.name = "KangarooMainPresenter"
 	_presenter.z_index = 30
@@ -74,8 +61,6 @@ func begin(round_id: String, seats: Array[int], score_units: Dictionary) -> bool
 		initial_sources
 	):
 		return false
-	if _room.match_snapshot != null:
-		screen_shake_mode = _room.match_snapshot.presentation.screen_shake
 	_last_simulation_time = active_time
 	_last_simulation_wall_usec = Time.get_ticks_usec()
 	_overlay.visible = true
@@ -123,20 +108,16 @@ func resync_after_pause() -> void:
 ## Prompts, markers, slipper presenter and shake; call once per frame during Play.
 func update_view(delta: float) -> void:
 	var active_time := _room.items.director.simulation_time
+	var commands := controller.active_commands()
 	var current_ids: Dictionary = {}
-	for command in controller.active_commands():
+	for command in commands:
 		var command_id := int(command.command_id)
 		current_ids[command_id] = true
-		if not _command_panels.has(command_id):
-			_command_panels[command_id] = KangarooCommandStyle.create_panel(command, _command_stack)
-			if not _seen_command_ids.has(command_id):
-				_seen_command_ids[command_id] = true
-				_play_cue(int(command.command))
-		KangarooCommandStyle.update_panel(_command_panels[command_id], command, active_time)
-	for command_id in _command_panels.keys().duplicate():
-		if not current_ids.has(command_id):
-			_free_panel(command_id)
-	_marker_label.text = KangarooCommandStyle.marker_status(controller, _room.input_router.registry)
+		if not _seen_command_ids.has(command_id):
+			_seen_command_ids[command_id] = true
+			_play_cue(int(command.command))
+	_hud.bind_commands(commands, active_time)
+	_hud.bind_markers(KangarooCommandStyle.marker_rows(controller, _room.input_router.registry))
 	if _room.arena != null:
 		_presenter.set_state(
 			controller.presentation_commands(active_time),
@@ -150,10 +131,8 @@ func update_view(delta: float) -> void:
 
 ## Hides every prompt; the controller keeps its outcomes for the room's results.
 func clear_view() -> void:
-	for command_id in _command_panels.keys().duplicate():
-		_free_panel(command_id)
 	_seen_command_ids.clear()
-	_marker_label.text = ""
+	_hud.clear()
 	_overlay.visible = false
 	var none: Array[Dictionary] = []
 	_presenter.set_state(none, Rect2(), 0.0, 0.0, Vector2.ZERO)
@@ -171,11 +150,9 @@ func reset() -> void:
 	clear_view()
 
 
-func _free_panel(command_id: int) -> void:
-	var panel: Dictionary = _command_panels[command_id]
-	if is_instance_valid(panel.root):
-		panel.root.queue_free()
-	_command_panels.erase(command_id)
+## The prompt cards currently shown (for tests and captures).
+func hud() -> UiKangarooHud:
+	return _hud
 
 
 func _hug_contacts_snapshot() -> Array[Dictionary]:
@@ -226,8 +203,7 @@ func _play_cue(command: int) -> void:
 	add_child(player)
 	player.finished.connect(player.queue_free)
 	player.play()
-	# PresentationSettings.screen_shake: 0 full, 1 reduced, 2 off.
-	_shake_remaining = SHAKE_SECONDS if screen_shake_mode != 2 else 0.0
+	_shake_remaining = SHAKE_SECONDS if _shake_mode() != SHAKE_OFF else 0.0
 
 
 func _update_shake(delta: float) -> void:
@@ -235,10 +211,18 @@ func _update_shake(delta: float) -> void:
 	if camera == null:
 		return
 	_shake_remaining = maxf(0.0, _shake_remaining - delta)
-	if _shake_remaining <= 0.0 or screen_shake_mode == 2:
+	var mode := _shake_mode()
+	if _shake_remaining <= 0.0 or mode == SHAKE_OFF:
 		camera.offset = Vector2.ZERO
 		return
-	var intensity := 6.0 if screen_shake_mode == 0 else 2.0
+	var intensity := FULL_SHAKE_PIXELS if mode == SHAKE_FULL else REDUCED_SHAKE_PIXELS
 	var fade := clampf(_shake_remaining / SHAKE_SECONDS, 0.0, 1.0)
 	var phase := float(Time.get_ticks_msec()) * 0.09
 	camera.offset = Vector2(sin(phase), cos(phase * 1.37)) * intensity * fade
+
+
+## The player's current Screen shake choice, read at each cue so Settings changes apply at once.
+func _shake_mode() -> int:
+	if _room != null and _room.presentation_settings != null:
+		return _room.presentation_settings.screen_shake
+	return SHAKE_OFF

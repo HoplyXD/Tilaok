@@ -1,3 +1,4 @@
+# gdlint: disable=max-public-methods
 class_name P05MatchRoom
 extends ItemLabRoom
 
@@ -226,6 +227,16 @@ func round_announcement() -> Dictionary:
 	return {}
 
 
+## The Twist label of the round whose result is on screen; "" hides it (P12 schedule).
+func results_twist_text() -> String:
+	return ""
+
+
+## "NEXT R6 KANGAROO" shown in the Play HUD; "" hides it (P12 schedule).
+func hud_up_next_text() -> String:
+	return ""
+
+
 ## The one-line goal shown with the controls when Play starts.
 func play_goal_text() -> String:
 	return "Reach the flag!"
@@ -255,6 +266,17 @@ func debug_status_text() -> String:
 
 ## True while the match-result screen replaces every other match screen (P09).
 func shows_final_results() -> bool:
+	return false
+
+
+## Back from the Lobby: true when a confirmation was opened first (P09 rooms ask once a seat is
+## ready); false lets the caller leave at once.
+func confirm_lobby_exit(_seat_index: int) -> bool:
+	return false
+
+
+## True while a leave / quit confirmation owns the keys (P09).
+func is_confirmation_open() -> bool:
 	return false
 
 

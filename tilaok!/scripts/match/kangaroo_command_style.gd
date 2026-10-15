@@ -20,6 +20,48 @@ static func instruction(command: Dictionary) -> String:
 	return ""
 
 
+## Plain-language requirement shown to players (no world units or internal ids).
+static func player_instruction(command: int) -> String:
+	match command:
+		KangarooRoundController.Command.FREEZE:
+			return "Freeze: stop running and jumping until the ring ends."
+		KangarooRoundController.Command.RISING:
+			return "Rising wave: stand on a piece the players built, above the line."
+		KangarooRoundController.Command.HUG:
+			return "Hug: be paired with exactly one other live chicken when the ring ends."
+	return ""
+
+
+## The three miss steps with the missed ones bracketed ("[KANG]  [GA]  ROO"): text, not colour.
+static func marker_steps(count: int) -> String:
+	var names: Array[String] = ["KANG", "GA", "ROO"]
+	var parts: Array[String] = []
+	for index in names.size():
+		parts.append("[%s]" % names[index] if index < count else names[index])
+	return "  ".join(parts)
+
+
+## One row per seat for the HUD: "P2 ▲  [KANG]  GA  ROO".
+static func marker_rows(
+	controller: KangarooRoundController, registry: PlayerSeatRegistry
+) -> PackedStringArray:
+	var rows := PackedStringArray()
+	for seat in controller.seat_indices:
+		var seat_data := registry.get_seat(int(seat))
+		var mark: String = LobbyViewModel.SHAPE_MARKS.get(str(seat_data.get("shape", "")), "◆")
+		rows.append(
+			(
+				"P%d %s  %s"
+				% [
+					int(seat_data.get("identity", int(seat) + 1)),
+					mark,
+					marker_steps(int(controller.marker_counts.get(seat, 0)))
+				]
+			)
+		)
+	return rows
+
+
 static func icon(command: int) -> String:
 	match command:
 		KangarooRoundController.Command.FREEZE:

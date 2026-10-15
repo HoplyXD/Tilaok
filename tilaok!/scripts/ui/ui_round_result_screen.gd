@@ -11,6 +11,9 @@ var award_lines: Array[UiAwardLine] = []
 @onready var _round_label: Label = %RoundLabel
 @onready var _end_reason_label: Label = %EndReasonLabel
 @onready var _deadline_label: Label = %DeadlineLabel
+@onready var _last_cluck_callout: Label = %LastCluckCallout
+@onready var _twist_line: Label = %TwistLine
+@onready var _next_round_label: Label = %NextRoundLabel
 @onready var _no_score_reason: UiToastLine = %NoScoreReason
 @onready var _ready_hint: UiPromptGlyph = %ReadyHint
 @onready var _advance: UiCountdownRing = %AdvanceCountdown
@@ -74,9 +77,16 @@ func bind_live(
 	total: float,
 	device_kind: String,
 	map: UiPromptMap,
-	motion_mode: int = PresentationSettings.RESULT_REVEAL_NORMAL
+	motion_mode: int = PresentationSettings.RESULT_REVEAL_NORMAL,
+	twist_text: String = "",
+	next_round_text: String = ""
 ) -> void:
 	_tag.visible = false
+	_last_cluck_callout.visible = not model.last_cluck_explanation.is_empty()
+	_twist_line.text = twist_text
+	_twist_line.visible = not twist_text.is_empty()
+	_next_round_label.text = next_round_text
+	_next_round_label.visible = not next_round_text.is_empty()
 	_round_label.text = "Round %d result" % model.round_number
 	_end_reason_label.text = model.diagnostic_label
 	_end_reason_label.visible = not model.diagnostic_label.is_empty()
@@ -144,6 +154,18 @@ func _accept(seat_index: int) -> bool:
 	_chart.settle()
 	continue_requested.emit(seat_index)
 	return true
+
+
+func last_cluck_visible() -> bool:
+	return _last_cluck_callout.visible
+
+
+func twist_line_text() -> String:
+	return _twist_line.text if _twist_line.visible else ""
+
+
+func next_round_text() -> String:
+	return _next_round_label.text if _next_round_label.visible else ""
 
 
 func chart() -> ScoreboardChart:

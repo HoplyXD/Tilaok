@@ -38,19 +38,28 @@ layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="RoundLabel" type="Label" parent="HudBar/Row"]
+[node name="Left" type="VBoxContainer" parent="HudBar/Row"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Top" type="HBoxContainer" parent="HudBar/Row/Left"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RoundLabel" type="Label" parent="HudBar/Row/Left/Top"]
 layout_mode = 2
 text = "Round 1"
 theme_type_variation = &"HudLabel"
 unique_name_in_owner = true
 
-[node name="ChallengeLabel" type="Label" parent="HudBar/Row"]
+[node name="ChallengeLabel" type="Label" parent="HudBar/Row/Left/Top"]
 layout_mode = 2
 text = "Karera"
 theme_type_variation = &"HudLabel"
 unique_name_in_owner = true
 
-[node name="TwistTag" type="Label" parent="HudBar/Row"]
+[node name="TwistTag" type="Label" parent="HudBar/Row/Left"]
 layout_mode = 2
 text = "TWIST"
 theme_type_variation = &"HudLabel"
@@ -84,13 +93,28 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TimerLabel" type="Label" parent="HudBar/Row"]
+[node name="Right" type="VBoxContainer" parent="HudBar/Row"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Top" type="HBoxContainer" parent="HudBar/Row/Right"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TimerLabel" type="Label" parent="HudBar/Row/Right/Top"]
 layout_mode = 2
 text = "0:00"
 theme_type_variation = &"HudLabel"
 unique_name_in_owner = true
 
-[node name="NextEventLabel" type="Label" parent="HudBar/Row"]
+[node name="NextEventLabel" type="Label" parent="HudBar/Row/Right/Top"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"HudLabel"
+unique_name_in_owner = true
+
+[node name="UpNextLabel" type="Label" parent="HudBar/Row/Right"]
 layout_mode = 2
 text = ""
 theme_type_variation = &"HudLabel"

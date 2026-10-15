@@ -14,6 +14,13 @@ var score_rows: Array[UiScoreRow] = []
 @onready var _twist_tag: Label = %TwistTag
 @onready var _timer_label: Label = %TimerLabel
 @onready var _next_event_label: Label = %NextEventLabel
+## "NEXT R6 KANGAROO": the locked next-round selection. (NextEventLabel keeps its historical
+## name but carries the live tag: taya countdown, finish window or the current command.)
+@onready var _up_next_label: Label = %UpNextLabel
+
+
+func up_next_text() -> String:
+	return _up_next_label.text if _up_next_label.visible else ""
 
 
 func state_names() -> PackedStringArray:
@@ -48,9 +55,12 @@ func bind_live(
 	states: Dictionary,
 	notice: String,
 	challenge_text: String = CHALLENGE_NAME,
-	twist_text: String = ""
+	twist_text: String = "",
+	up_next_text: String = ""
 ) -> void:
 	bind_round(round_number, challenge_text, twist_text, timer_text, window_text)
+	_up_next_label.text = up_next_text
+	_up_next_label.visible = not up_next_text.is_empty()
 	for index in score_rows.size():
 		var seat: Dictionary = seats[index] if index < seats.size() else {}
 		score_rows[index].bind_units(

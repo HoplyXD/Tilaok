@@ -492,6 +492,21 @@ func request_return() -> void:
 	_open_confirmation("leave", -1)
 
 
+## Back from the Lobby clears the whole session, so ask first once any seat has readied up.
+func confirm_lobby_exit(seat_index: int) -> bool:
+	if phase_controller.phase != MatchPhaseController.Phase.LOBBY or not _modal_kind.is_empty():
+		return false
+	for seat in input_router.registry.joined_seats():
+		if bool(seat.get("ready", false)):
+			_open_confirmation("title", seat_index)
+			return true
+	return false
+
+
+func is_confirmation_open() -> bool:
+	return not _modal_kind.is_empty()
+
+
 func _on_result_menu_selection_changed(index: int) -> void:
 	if result_action == index:
 		return
@@ -639,13 +654,7 @@ func _open_confirmation(kind: String, owner: int) -> void:
 		for seat_index in original_seat_indices:
 			input_router.registry.set_ready(seat_index, false)
 	_modal_overlay.visible = true
-	_confirm_dialog.open(
-		(
-			"Quit Tilaok!?"
-			if kind == "quit"
-			else "Leave this match and return the whole group to the lobby?"
-		)
-	)
+	_confirm_dialog.open(_confirmation_text(kind))
 	input_router.set_phase(LocalInputRouter.Phase.RESULTS)
 	get_tree().paused = true
 
@@ -687,9 +696,32 @@ func _finish_confirmation(confirmed: bool) -> void:
 			_clear_result_readiness("confirmation cancelled")
 		return
 	if kind == "quit":
-		get_tree().quit()
+		_request_quit()
 	elif kind == "leave":
 		_return_group_to_lobby()
+	elif kind == "title":
+		if flow_requested.get_connections().is_empty():
+			request_return()
+		else:
+			flow_requested.emit(&"lobby_back")
+
+
+func _confirmation_text(kind: String) -> String:
+	match kind:
+		"quit":
+			return "Quit Tilaok!?"
+		"title":
+			return "Return to the title? Everyone will need to join again."
+	return "Leave this match and return the whole group to the lobby?"
+
+
+## The owner (GameFlow) decides what Quit means: leave the app, or return to the harness that
+## hosts the flow. A room with no owner listening exits the app itself.
+func _request_quit() -> void:
+	if flow_requested.get_connections().is_empty():
+		get_tree().quit()
+	else:
+		flow_requested.emit(&"quit")
 
 
 func _terminal_text(reason: String) -> String:

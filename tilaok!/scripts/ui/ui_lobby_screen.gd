@@ -11,6 +11,7 @@ var seats: Array[Dictionary] = []
 
 @onready var _need_players_label: Label = %NeedPlayersLabel
 @onready var _start_hint: UiPromptGlyph = %StartHint
+@onready var _help_hint: UiPromptGlyph = %HelpHint
 @onready var _back_hint: UiPromptGlyph = %BackHint
 
 
@@ -35,6 +36,7 @@ func bind_seats(seat_data: Array[Dictionary], map: UiPromptMap, device_kind: Str
 			joined += 1
 	_need_players_label.visible = joined < MIN_PLAYERS
 	_start_hint.bind("ready", device_kind, map)
+	_help_hint.bind("help", device_kind, map)
 	_back_hint.bind("back", device_kind, map)
 
 

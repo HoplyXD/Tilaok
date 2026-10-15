@@ -16,7 +16,19 @@ signal phase_changed(previous_phase: Phase, next_phase: Phase)
 
 enum Phase { LOBBY, MENU, PUGAD, PLACE, PLAY, PAUSE, RESULTS }
 
-const ONE_SHOT_ACTIONS := ["join", "ready", "claim", "confirm", "rotate", "jump", "back"]
+const ONE_SHOT_ACTIONS := [
+	"join", "ready", "claim", "confirm", "rotate", "jump", "back", "help", "cheer"
+]
+## The physical Rotate control (West / R / Right Shift) is context-sensitive: it opens the Library
+## from the Lobby ("help") and cheers from the stands during Play ("cheer"). Rotation itself is
+## only meaningful in Place, so neither alias takes anything from the placement rules.
+const ROTATE_ALIAS_LOBBY := "help"
+const ROTATE_ALIAS_PLAY := "cheer"
+const STICK_KEY_PREFIX := "stick_"
+const STICK_DIRECTIONS := {
+	JOY_AXIS_LEFT_X: ["left", "right"],
+	JOY_AXIS_LEFT_Y: ["up", "down"],
+}
 
 var registry := PlayerSeatRegistry.new()
 var tuning: GameplayTuning
@@ -30,6 +42,8 @@ var _axis: Dictionary = {}
 var _repeat_elapsed: Dictionary = {}
 var _active_navigation: Dictionary = {}
 var _stick_x: Dictionary = {}
+## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
+var _stick_sign: Dictionary = {}
 var _system_paused := false
 
 
@@ -61,6 +75,7 @@ func set_phase(next_phase: Phase) -> void:
 		return
 	var previous_phase := phase
 	phase = next_phase
+	_release_stick_navigation()
 	for key in _held:
 		if ONE_SHOT_ACTIONS.has(str(_held[key])):
 			_blocked[key] = true
@@ -72,6 +87,22 @@ func set_phase(next_phase: Phase) -> void:
 		if not active.is_empty() and _is_action_held(seat_index, active):
 			_repeat_elapsed[_edge_key(seat_index, active)] = {"elapsed": 0.0, "first": true}
 	phase_changed.emit(previous_phase, next_phase)
+
+
+## Treats everything currently held as already used, like a phase change does, without changing
+## the phase. Screen swaps inside one phase (Title <-> Library <-> Settings, Pause <-> overlays)
+## call this so a press that opened a screen can never also act on the next one.
+func consume_held_presses() -> void:
+	for key in _held:
+		if ONE_SHOT_ACTIONS.has(str(_held[key])):
+			_blocked[key] = true
+	_pressed.clear()
+	_repeat_elapsed.clear()
+	for seat in registry.joined_seats():
+		var seat_index := int(seat.seat)
+		var active: String = _active_navigation.get(seat_index, "")
+		if not active.is_empty() and _is_action_held(seat_index, active):
+			_repeat_elapsed[_edge_key(seat_index, active)] = {"elapsed": 0.0, "first": true}
 
 
 func set_shared_keyboard_enabled(enabled: bool) -> void:
@@ -119,22 +150,68 @@ func _handle_joy_button(event: InputEventJoypadButton) -> void:
 
 
 func _handle_joy_axis(event: InputEventJoypadMotion) -> void:
-	if event.axis != JOY_AXIS_LEFT_X:
+	if event.axis != JOY_AXIS_LEFT_X and event.axis != JOY_AXIS_LEFT_Y:
 		return
 	var seat_index := registry.seat_for_gamepad(event.device)
 	if seat_index < 0:
 		return
-	var previous: float = _stick_x.get(seat_index, 0.0)
-	var current := event.axis_value
-	if absf(current) < tuning_neutral_threshold():
-		current = 0.0
-	elif absf(current) < tuning_activation_threshold():
-		current = previous
-	_stick_x[seat_index] = current
-	if is_zero_approx(previous) != is_zero_approx(current):
-		intentional_input_edge.emit(
-			seat_index, "run_axis", "stick", not is_zero_approx(current), Time.get_ticks_usec()
-		)
+	if event.axis == JOY_AXIS_LEFT_X:
+		var previous: float = _stick_x.get(seat_index, 0.0)
+		var current := event.axis_value
+		if absf(current) < tuning_neutral_threshold():
+			current = 0.0
+		elif absf(current) < tuning_activation_threshold():
+			current = previous
+		_stick_x[seat_index] = current
+		if is_zero_approx(previous) != is_zero_approx(current):
+			intentional_input_edge.emit(
+				seat_index, "run_axis", "stick", not is_zero_approx(current), Time.get_ticks_usec()
+			)
+	_handle_stick_navigation(seat_index, event)
+
+
+## Outside Play (and the Lobby) the left stick steps menus, Pugad and Place exactly like the D-pad:
+## it is turned into the same digital left/right/up/down edges with the same hysteresis as the
+## run axis, so repeat timing, pause and device rules are shared.
+func _handle_stick_navigation(seat_index: int, event: InputEventJoypadMotion) -> void:
+	var names: Array = STICK_DIRECTIONS[event.axis]
+	var sign_key := "%d:%d" % [seat_index, event.axis]
+	var previous: int = _stick_sign.get(sign_key, 0)
+	var next := previous
+	if phase in [Phase.LOBBY, Phase.PLAY]:
+		next = 0
+	elif absf(event.axis_value) < tuning_neutral_threshold():
+		next = 0
+	elif absf(event.axis_value) >= tuning_activation_threshold():
+		next = 1 if event.axis_value > 0.0 else -1
+	if next == previous:
+		return
+	_stick_sign[sign_key] = next
+	if previous != 0:
+		var released: String = names[0] if previous < 0 else names[1]
+		_handle_action_edge(seat_index, released, _stick_key(event.device, released), false)
+	if next != 0:
+		var pressed: String = names[0] if next < 0 else names[1]
+		_handle_action_edge(seat_index, pressed, _stick_key(event.device, pressed), true)
+
+
+func _stick_key(device: int, direction: String) -> String:
+	return "joy:%d:%s%s" % [device, STICK_KEY_PREFIX, direction]
+
+
+func _release_stick_navigation() -> void:
+	for key in _held.keys():
+		var name := str(key)
+		if not name.begins_with("joy:") or not name.contains(":" + STICK_KEY_PREFIX):
+			continue
+		var action_name := str(_held[key])
+		var seat_index := _physical_key_seat(name)
+		_held.erase(key)
+		_blocked.erase(key)
+		_repeat_elapsed.erase(_edge_key(seat_index, action_name))
+		if _active_navigation.get(seat_index, "") == action_name:
+			_active_navigation.erase(seat_index)
+	_stick_sign.clear()
 
 
 func _handle_key(event: InputEventKey) -> void:
@@ -198,6 +275,8 @@ func _handle_action_edge(
 		return
 	if _held.has(physical_key):
 		return
+	var requested_action := action_name
+	action_name = _phase_alias(action_name)
 	_held[physical_key] = action_name
 	if action_name in ["left", "right", "jump"]:
 		intentional_input_edge.emit(
@@ -208,9 +287,16 @@ func _handle_action_edge(
 	if action_name == "pause":
 		pause_requested.emit(seat_index)
 		return
-	if action_name == "rotate" and not rotation_supported:
-		disabled_action_cue.emit(seat_index, action_name)
-		return
+	# Rotate keeps its disabled cue wherever it is pressed (P02-T05); the Lobby help alias is a
+	# different action and shows no rotation cue.
+	if (
+		requested_action == "rotate"
+		and not rotation_supported
+		and action_name != ROTATE_ALIAS_LOBBY
+	):
+		disabled_action_cue.emit(seat_index, requested_action)
+		if action_name == requested_action:
+			return
 	if action_name == "ready" and phase == Phase.LOBBY:
 		var seat: Dictionary = registry.get_seat(seat_index)
 		registry.set_ready(seat_index, not bool(seat.ready))
@@ -224,8 +310,19 @@ func _handle_action_edge(
 			_active_navigation[seat_index] = action_name
 			_repeat_elapsed[_edge_key(seat_index, action_name)] = {"elapsed": 0.0, "first": true}
 			navigation_step.emit(seat_index, action_name)
-	if action_name in ["claim", "confirm", "rotate", "jump", "back", "ready"]:
+	if action_name in ["claim", "confirm", "rotate", "jump", "back", "ready", "help", "cheer"]:
 		action_pressed.emit(seat_index, action_name)
+
+
+func _phase_alias(action_name: String) -> String:
+	if action_name != "rotate":
+		return action_name
+	match phase:
+		Phase.LOBBY:
+			return ROTATE_ALIAS_LOBBY
+		Phase.PLAY:
+			return ROTATE_ALIAS_PLAY
+	return action_name
 
 
 func consume_pressed(seat_index: int, action_name: String) -> bool:
@@ -350,6 +447,7 @@ func clear_input_state() -> void:
 	_repeat_elapsed.clear()
 	_active_navigation.clear()
 	_stick_x.clear()
+	_stick_sign.clear()
 
 
 func _pause_system() -> void:
@@ -391,15 +489,19 @@ func _key_is_down(key: String) -> bool:
 
 
 func _digital_axis(seat_index: int, negative: String, positive: String) -> float:
-	var has_negative := _is_action_held(seat_index, negative)
-	var has_positive := _is_action_held(seat_index, positive)
+	var has_negative := _is_action_held(seat_index, negative, true)
+	var has_positive := _is_action_held(seat_index, positive, true)
 	if has_negative == has_positive:
 		return 0.0
 	return -1.0 if has_negative else 1.0
 
 
-func _is_action_held(seat_index: int, action_name: String) -> bool:
+## `skip_stick` ignores the digital directions synthesised from the left stick, so movement and
+## the "D-pad wins over the stick" rule see physical buttons and keys only.
+func _is_action_held(seat_index: int, action_name: String, skip_stick: bool = false) -> bool:
 	for physical_key in _held:
+		if skip_stick and str(physical_key).contains(":" + STICK_KEY_PREFIX):
+			continue
 		if (
 			_held[physical_key] == action_name
 			and _physical_key_seat(str(physical_key)) == seat_index
@@ -410,6 +512,8 @@ func _is_action_held(seat_index: int, action_name: String) -> bool:
 
 func _has_active_gamepad_dpad(seat_index: int) -> bool:
 	for physical_key in _held:
+		if str(physical_key).contains(":" + STICK_KEY_PREFIX):
+			continue
 		if (
 			_physical_key_seat(str(physical_key)) == seat_index
 			and str(physical_key).begins_with("joy:")

@@ -94,6 +94,10 @@ alignment = 1
 layout_mode = 2
 unique_name_in_owner = true
 
+[node name="HelpHint" parent="Safe/Content/Hints" instance=ExtResource("4")]
+layout_mode = 2
+unique_name_in_owner = true
+
 [node name="BackHint" parent="Safe/Content/Hints" instance=ExtResource("4")]
 layout_mode = 2
 unique_name_in_owner = true

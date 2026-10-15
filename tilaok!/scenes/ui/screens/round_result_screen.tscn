@@ -75,6 +75,33 @@ theme_type_variation = &"CaptionLabel"
 horizontal_alignment = 1
 unique_name_in_owner = true
 
+[node name="LastCluckCallout" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = "LAST CLUCK!"
+theme_type_variation = &"HeadingLabel"
+horizontal_alignment = 1
+visible = false
+unique_name_in_owner = true
+
+[node name="ContextRow" type="HBoxContainer" parent="Safe/Content"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="TwistLine" type="Label" parent="Safe/Content/ContextRow"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+visible = false
+unique_name_in_owner = true
+
+[node name="NextRoundLabel" type="Label" parent="Safe/Content/ContextRow"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+visible = false
+unique_name_in_owner = true
+
 [node name="Columns" type="HBoxContainer" parent="Safe/Content"]
 layout_mode = 2
 theme_override_constants/separation = 24

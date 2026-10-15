@@ -1,3 +1,4 @@
+# gdlint: disable=max-file-lines
 class_name P12ScheduledMatchRoom
 extends P09MatchLifecycleRoom
 
@@ -26,6 +27,7 @@ var event_main: int = EventSchedule.Challenge.NONE
 
 var _schedule_match_id := -1
 var _step_delta := 1.0 / 60.0
+var _marker_signature := ""
 ## Karera + Bomb-Taya: hazard records of this step, decided against the taya timeout (table C4).
 var _twist_hazards: Array[AttributionRecord] = []
 
@@ -466,6 +468,11 @@ func _process(delta: float) -> void:
 		or _kangaroo_twist_running()
 	):
 		kangaroo_round.update_view(delta)
+		# A miss changes the score row and the KANG GA ROO readout between whole seconds.
+		var signature := str(kangaroo_round.controller.marker_counts)
+		if signature != _marker_signature:
+			_marker_signature = signature
+			_notify_presentation(&"kangaroo")
 
 
 ## Runs inside the race step after support finalisation and before the ledger drains: the
@@ -831,6 +838,39 @@ func play_twist_text() -> String:
 	)
 
 
+## "NEXT R6 KANGAROO + BOMB-TAYA" (or "FINAL ROUND") beside the clock; the locked next round.
+func hud_up_next_text() -> String:
+	if items == null or _sudden_death_active:
+		return ""
+	var active_round := _displayed_round()
+	var upcoming := schedule.entry_for(active_round + 1)
+	if upcoming.is_empty():
+		return "FINAL ROUND" if active_round >= tuning.match_round_limit else ""
+	var text := "NEXT R%d %s" % [active_round + 1, EventSchedule.main_name(int(upcoming.main))]
+	var twist := int(upcoming.get("twist", EventSchedule.Challenge.NONE))
+	if twist != EventSchedule.Challenge.NONE:
+		text += " + " + EventSchedule.twist_name(twist)
+	return text
+
+
+## The round on screen: the one in Play, or the one a Results screen is explaining.
+func _displayed_round() -> int:
+	if phase_controller.phase == MatchPhaseController.Phase.RESULTS:
+		return items.round_number
+	return items.round_number + 1
+
+
+func results_twist_text() -> String:
+	if items == null or _sudden_death_active:
+		return ""
+	var twist := int(
+		schedule.entry_for(items.round_number).get("twist", EventSchedule.Challenge.NONE)
+	)
+	return (
+		"TWIST: " + EventSchedule.twist_name(twist) if twist != EventSchedule.Challenge.NONE else ""
+	)
+
+
 func play_clock_seconds() -> float:
 	if not _event_round_active():
 		return super.play_clock_seconds()
@@ -923,14 +963,35 @@ func seat_state_text(seat_index: int) -> String:
 	if _bomb_taya_running() and seat_index == bomb_taya.taya_seat:
 		return "TAYA"
 	if not _event_round_active():
-		return super.seat_state_text(seat_index)
+		var base := super.seat_state_text(seat_index)
+		return base if not base.is_empty() else _kangaroo_miss_text(seat_index)
 	if (
 		event_main == EventSchedule.Challenge.LAGSANAY
 		and lagsanay_controller.active
 		and seat_index == lagsanay_controller.taya_seat
 	):
 		return "TAYA"
-	return ""
+	return _kangaroo_miss_text(seat_index)
+
+
+## "MISS 2/3" for a live chicken that has failed a Kangaroo command (a Main or a Twist); the
+## third miss is the elimination, shown as OUT by the lifecycle. Text, never colour.
+func _kangaroo_miss_text(seat_index: int) -> String:
+	var kangaroo_active := (
+		kangaroo_round != null
+		and kangaroo_round.controller.active
+		and (
+			(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
+			or _kangaroo_twist_running()
+		)
+	)
+	if not kangaroo_active:
+		return ""
+	var actor := actors.get(seat_index) as ChickenController
+	if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+		return ""
+	var misses := int(kangaroo_round.controller.marker_counts.get(seat_index, 0))
+	return "MISS %d/3" % misses if misses > 0 and misses < 3 else ""
 
 
 func debug_status_text() -> String:

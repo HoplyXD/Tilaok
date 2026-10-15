@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_kangaroo_command_card.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_ring.tscn" id="2"]
+
+[node name="KangarooCommandCard" type="PanelContainer"]
+layout_mode = 3
+custom_minimum_size = Vector2(590, 0)
+mouse_filter = 2
+theme_type_variation = &"Card"
+script = ExtResource("1")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Art_PoseIcon" type="TextureRect" parent="Content/Header"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+custom_minimum_size = Vector2(48, 48)
+visible = false
+metadata/asset_id = "ui.events.kang_pose"
+
+[node name="Icon" type="Label" parent="Content/Header"]
+layout_mode = 2
+text = "●"
+theme_type_variation = &"TitleLabel"
+horizontal_alignment = 1
+custom_minimum_size = Vector2(48, 0)
+unique_name_in_owner = true
+
+[node name="PoseLabel" type="Label" parent="Content/Header"]
+layout_mode = 2
+text = "FREEZE"
+theme_type_variation = &"HeadingLabel"
+size_flags_horizontal = 3
+unique_name_in_owner = true
+
+[node name="StormLabel" type="Label" parent="Content/Header"]
+layout_mode = 2
+text = "STORM"
+theme_type_variation = &"HudLabel"
+unique_name_in_owner = true
+
+[node name="PhaseLabel" type="Label" parent="Content/Header"]
+layout_mode = 2
+text = "GET READY"
+theme_type_variation = &"HudLabel"
+unique_name_in_owner = true
+
+[node name="Ring" parent="Content/Header" instance=ExtResource("2")]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="StepsLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Three misses: KANG → GA → ROO"
+theme_type_variation = &"BodyLabel"
+unique_name_in_owner = true
+
+[node name="InstructionLabel" type="Label" parent="Content"]
+layout_mode = 2
+text = "Freeze: stop running and jumping."
+theme_type_variation = &"BodyLabel"
+autowrap_mode = 3
+unique_name_in_owner = true
+
+[node name="Tag" type="Label" parent="Content"]
+layout_mode = 2
+text = "PLACEHOLDER pose, wording and tone"
+theme_type_variation = &"PlaceholderTag"
