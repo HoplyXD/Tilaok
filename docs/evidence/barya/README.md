@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Source revision | Started from `.codex` `main` at `c43fa0c`; the implementation commit and exact source revision used by the recorded runs are added in the follow-up evidence commit. |
+| Source revision | `dc4c393` (`Implement Barya round objective`), the exact source revision used for the recorded runs; this source-reference update is documentation-only. |
 | Engine | `D:\Downloads\Godot_v4.7.2-stable_win64_console.exe` — Godot 4.7.2.stable.official.ed1daf0bf |
 | Date / machine | 2026-10-15 · Windows · Intel Core i5-13420H · NVIDIA GeForce RTX 4050 Laptop GPU |
 | Default route | `GameFlow` selects `P12ScheduledMatchRoom` (`route=lifecycle`). P07 is `-- --match-route=first_playable`. |
