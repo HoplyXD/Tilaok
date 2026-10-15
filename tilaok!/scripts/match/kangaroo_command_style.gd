@@ -24,11 +24,11 @@ static func instruction(command: Dictionary) -> String:
 static func player_instruction(command: int) -> String:
 	match command:
 		KangarooRoundController.Command.FREEZE:
-			return "Freeze: stop running and jumping until the ring ends."
+			return "Freeze: stop running and jumping."
 		KangarooRoundController.Command.RISING:
-			return "Rising wave: stand on a piece the players built, above the line."
+			return "Rising wave: stand on a built piece above the line."
 		KangarooRoundController.Command.HUG:
-			return "Hug: be paired with exactly one other live chicken when the ring ends."
+			return "Hug: touch exactly one other chicken."
 	return ""
 
 

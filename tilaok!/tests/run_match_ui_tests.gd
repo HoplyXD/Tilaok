@@ -783,6 +783,9 @@ func _test_source_rules() -> void:
 
 func _new_flow() -> void:
 	flow = FLOW_SCENE.instantiate() as GameFlow
+	# This suite covers the first-playable (P07 gate) route; the scheduled match is the default
+	# since 2026-10-15 and is covered by the mode, P12 and P13 suites.
+	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(3)
 

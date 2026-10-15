@@ -366,6 +366,7 @@ func _show_entry(slot: int) -> void:
 	_free_preview()
 	var row_index := window_offset + slot
 	if row_index < 0 or row_index >= rows.size():
+		_animation_host.get_parent().visible = false
 		_entry_title.text = "No items enabled" if category == ITEMS_CATEGORY else category
 		_entry_body.text = ""
 		return
@@ -375,6 +376,8 @@ func _show_entry(slot: int) -> void:
 	var entry := row.get("entry") as ItemLibraryEntry
 	_cycle_index = 0
 	_cycle_time = 0.0
+	# Only item entries have an animation; the frame stays out of the way on text pages.
+	_animation_host.get_parent().visible = entry != null
 	if entry == null:
 		return
 	var egg := ItemEggPreview.new()

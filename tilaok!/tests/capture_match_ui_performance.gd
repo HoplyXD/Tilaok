@@ -79,6 +79,7 @@ func _run() -> void:
 
 func _sample_seat_count(seat_count: int) -> void:
 	var flow := FLOW_SCENE.instantiate() as GameFlow
+	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(30)
 	var registry := flow.router.registry

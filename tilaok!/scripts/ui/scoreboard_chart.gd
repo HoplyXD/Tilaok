@@ -5,7 +5,7 @@ const COLUMN_SCENE := preload("res://scenes/ui/components/score_column.tscn")
 const AXIS_LEFT := 52.0
 const AXIS_RIGHT_MARGIN := 8.0
 const PLOT_TOP := 58.0
-const BASELINE_BOTTOM_MARGIN := 112.0
+const BASELINE_BOTTOM_MARGIN := 152.0
 const TICK_UNITS := 16
 
 var _columns: Array[ScoreColumn] = []

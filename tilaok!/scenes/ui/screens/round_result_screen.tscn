@@ -54,11 +54,24 @@ theme_type_variation = &"SafeAreaMargin"
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="RoundLabel" type="Label" parent="Safe/Content"]
+[node name="TitleRow" type="HBoxContainer" parent="Safe/Content"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="RoundLabel" type="Label" parent="Safe/Content/TitleRow"]
 layout_mode = 2
 text = "Round result"
 theme_type_variation = &"HeadingLabel"
 horizontal_alignment = 1
+size_flags_horizontal = 3
+unique_name_in_owner = true
+
+[node name="LastCluckCallout" type="Label" parent="Safe/Content/TitleRow"]
+layout_mode = 2
+text = "LAST CLUCK!"
+theme_type_variation = &"HeadingLabel"
+visible = false
 unique_name_in_owner = true
 
 [node name="EndReasonLabel" type="Label" parent="Safe/Content"]
@@ -73,33 +86,6 @@ layout_mode = 2
 text = ""
 theme_type_variation = &"CaptionLabel"
 horizontal_alignment = 1
-unique_name_in_owner = true
-
-[node name="LastCluckCallout" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "LAST CLUCK!"
-theme_type_variation = &"HeadingLabel"
-horizontal_alignment = 1
-visible = false
-unique_name_in_owner = true
-
-[node name="ContextRow" type="HBoxContainer" parent="Safe/Content"]
-layout_mode = 2
-theme_override_constants/separation = 24
-alignment = 1
-
-[node name="TwistLine" type="Label" parent="Safe/Content/ContextRow"]
-layout_mode = 2
-text = ""
-theme_type_variation = &"BodyLabel"
-visible = false
-unique_name_in_owner = true
-
-[node name="NextRoundLabel" type="Label" parent="Safe/Content/ContextRow"]
-layout_mode = 2
-text = ""
-theme_type_variation = &"BodyLabel"
-visible = false
 unique_name_in_owner = true
 
 [node name="Columns" type="HBoxContainer" parent="Safe/Content"]
@@ -192,9 +178,25 @@ theme_override_constants/separation = 12
 layout_mode = 2
 unique_name_in_owner = true
 
-[node name="Fill" type="Control" parent="Safe/Content/Footer"]
+[node name="ContextRow" type="HBoxContainer" parent="Safe/Content/Footer"]
 layout_mode = 2
+theme_override_constants/separation = 24
 size_flags_horizontal = 3
+alignment = 1
+
+[node name="TwistLine" type="Label" parent="Safe/Content/Footer/ContextRow"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+visible = false
+unique_name_in_owner = true
+
+[node name="NextRoundLabel" type="Label" parent="Safe/Content/Footer/ContextRow"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+visible = false
+unique_name_in_owner = true
 
 [node name="NextIn" type="Label" parent="Safe/Content/Footer"]
 layout_mode = 2

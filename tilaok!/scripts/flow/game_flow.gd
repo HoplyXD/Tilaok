@@ -13,11 +13,13 @@ signal return_requested
 enum State { TITLE, LIBRARY, SETTINGS, IN_MATCH }
 
 const BUILD_LABEL := "Tilaok! development build"
-## The first-playable route: karera_slice limited to the verified Kaing / Tulay variants.
+## The first-playable route (the P07 human-gate build): karera_slice, no match end. Kept behind
+## `-- --match-route=first_playable` since the 2026-10-15 default-route decision (D4).
 const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
-## Opt-in route with the full match: the P09 lifecycle (score target / round limit, sudden death,
+## The default route: the full match. The P09 lifecycle (score target / round limit, sudden death,
 ## final result screen, Replay / Return to Lobby) plus the P12 event schedule (Karera, Lagsanay
-## and Kangaroo Main rounds announced a round ahead): `-- --match-route=lifecycle`.
+## and Kangaroo Main rounds announced a round ahead, Twist stacks). `-- --match-route=lifecycle`
+## still selects it explicitly.
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const ROUTE_LIFECYCLE := "lifecycle"
@@ -40,8 +42,8 @@ var router: LocalInputRouter
 var bridge: UiInputBridge
 var room: P05MatchRoom
 var settings := PresentationSettings.new()
-## The room each match instantiates (the first-playable route unless the lifecycle route is asked).
-var match_scene: PackedScene = MATCH_SCENE
+## The room each match instantiates: the scheduled full match unless first_playable is asked.
+var match_scene: PackedScene = LIFECYCLE_SCENE
 var prompt_map: UiPromptMap
 var library_text: UiLibraryText
 ## Session-only tutorial memory (never written to disk) and the coach for the current match.
@@ -239,8 +241,8 @@ func _refresh_title() -> void:
 	var seats := router.registry.joined_seats()
 	var device := UiContext.device_for_seat(seats[0]) if not seats.is_empty() else "k1"
 	var label := "%s • %s" % [BUILD_LABEL, PLAYTEST_PROFILE]
-	if match_scene == LIFECYCLE_SCENE:
-		label += " • match lifecycle"
+	if match_scene == MATCH_SCENE:
+		label += " • first playable"
 	title.bind_live(label, seats.size(), prompt_map, device)
 
 

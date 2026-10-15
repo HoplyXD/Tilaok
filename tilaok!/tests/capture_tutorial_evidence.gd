@@ -212,6 +212,7 @@ func _small_window_check() -> void:
 
 func _new_room(seats: int) -> P05MatchRoom:
 	flow = FLOW_SCENE.instantiate() as GameFlow
+	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(10)
 	_press(KEY_F)

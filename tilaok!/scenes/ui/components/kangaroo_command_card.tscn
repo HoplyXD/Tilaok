@@ -5,7 +5,8 @@
 
 [node name="KangarooCommandCard" type="PanelContainer"]
 layout_mode = 3
-custom_minimum_size = Vector2(590, 0)
+custom_minimum_size = Vector2(520, 0)
+self_modulate = Color(1, 1, 1, 0.88)
 mouse_filter = 2
 theme_type_variation = &"Card"
 script = ExtResource("1")
@@ -60,20 +61,10 @@ unique_name_in_owner = true
 layout_mode = 2
 unique_name_in_owner = true
 
-[node name="StepsLabel" type="Label" parent="Content"]
-layout_mode = 2
-text = "Three misses: KANG → GA → ROO"
-theme_type_variation = &"BodyLabel"
-unique_name_in_owner = true
-
 [node name="InstructionLabel" type="Label" parent="Content"]
 layout_mode = 2
 text = "Freeze: stop running and jumping."
 theme_type_variation = &"BodyLabel"
-autowrap_mode = 3
+autowrap_mode = 0
+text_overrun_behavior = 3
 unique_name_in_owner = true
-
-[node name="Tag" type="Label" parent="Content"]
-layout_mode = 2
-text = "PLACEHOLDER pose, wording and tone"
-theme_type_variation = &"PlaceholderTag"

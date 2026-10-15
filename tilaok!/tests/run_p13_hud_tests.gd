@@ -279,6 +279,7 @@ func _kangaroo_bomb_taya(seat_count: int) -> void:
 		tag + ": results name the next round (%s)" % result.next_round_text()
 	)
 	_check_text_rules(tag + " results", room.presenter)
+	_check_result_fits(tag + " results", result)
 	await _close()
 
 
@@ -377,7 +378,55 @@ func _check_text_rules(tag: String, presenter: MatchScreenPresenter) -> void:
 	_check(leaked.is_empty(), "%s: no internal ids, seeds or DEBUG text %s" % [tag, leaked])
 
 
+## The command cards and the miss grid sit below the HUD bar and its notice row and never
+## overlap each other, so the Play-start hint and the commands are all readable together.
+## The Round result keeps its title row and footer (ready hint, next-round countdown) on screen
+## with the Last Cluck callout, Twist line and next-round line added.
+func _check_result_fits(tag: String, result: UiRoundResultScreen) -> void:
+	var height := float(ProjectSettings.get_setting("display/window/size/viewport_height"))
+	var width := float(ProjectSettings.get_setting("display/window/size/viewport_width"))
+	for node_name in ["RoundLabel", "ReadyHint", "AdvanceCountdown"]:
+		var control := result.get_node("%" + node_name) as Control
+		var rect := control.get_global_rect()
+		_check(
+			rect.position.y >= -LAYOUT_TOLERANCE and rect.end.y <= height + LAYOUT_TOLERANCE,
+			"%s: %s is inside the screen height (%s)" % [tag, node_name, rect]
+		)
+		_check(
+			rect.position.x >= -LAYOUT_TOLERANCE and rect.end.x <= width + LAYOUT_TOLERANCE,
+			"%s: %s is inside the screen width" % [tag, node_name]
+		)
+
+
+func _check_kangaroo_layout(tag: String, kangaroo_hud: UiKangarooHud) -> void:
+	var play_hud := room.presenter.play_hud
+	var toast := play_hud.get_node("%NoticeToast") as Control
+	var bar := play_hud.hud_bar.get_global_rect().end.y
+	var below := toast.get_global_rect().end.y if toast.is_visible_in_tree() else bar
+	var markers := (kangaroo_hud.get_node("%Markers") as Control).get_global_rect()
+	_check(
+		markers.position.y >= below - LAYOUT_TOLERANCE,
+		tag + ": the miss grid is below the HUD bar and any notice (%s vs %.1f)" % [markers, below]
+	)
+	var cards: Array[Rect2] = []
+	for card in kangaroo_hud.cards:
+		if card.visible:
+			cards.append(card.get_global_rect())
+	for rect in cards:
+		_check(
+			rect.position.y >= below - LAYOUT_TOLERANCE,
+			tag + ": a command card is below the notice (%s vs %.1f)" % [rect, below]
+		)
+		_check(not rect.intersects(markers), tag + ": a command card never overlaps the miss grid")
+	for first in cards.size():
+		for second in range(first + 1, cards.size()):
+			_check(
+				not cards[first].intersects(cards[second]), tag + ": cards never overlap each other"
+			)
+
+
 func _check_kangaroo_hud_text(tag: String, kangaroo_hud: UiKangarooHud) -> void:
+	_check_kangaroo_layout(tag, kangaroo_hud)
 	var small := PackedStringArray()
 	for node in _all_nodes(kangaroo_hud):
 		var label := node as Label

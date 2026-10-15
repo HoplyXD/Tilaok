@@ -8,6 +8,7 @@ extends SceneTree
 
 const FLOW_SCENE := preload("res://scenes/flow/game_flow.tscn")
 const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
+const SETTINGS_SCENE := preload("res://scenes/ui/screens/settings_screen.tscn")
 const PAD := 720
 const PAD_B := 721
 const RESUME_SECONDS := 0.2
@@ -42,6 +43,7 @@ func _run() -> void:
 	_test_router_aliases_and_consume()
 	await _test_stick_navigation()
 	await _test_screen_cycles_are_stable()
+	await _test_overlay_cycles_are_stable()
 	_test_source_rules()
 	print("P13_NAVIGATION_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -394,6 +396,57 @@ func _test_screen_cycles_are_stable() -> void:
 		"screen cycles keep the flow's node count stable (%s)" % [nodes]
 	)
 	_check(not paused, "the tree is never left paused")
+	await _free_flow()
+
+
+## Ten pause -> Library -> Settings -> resume cycles in a scheduled match leave no node, object,
+## signal connection or bus change behind.
+func _test_overlay_cycles_are_stable() -> void:
+	await _new_flow(GameFlow.LIFECYCLE_SCENE)
+	flow.router.registry.join_keyboard("K1")
+	flow.router.registry.join_keyboard("K2")
+	flow._enter_match()
+	await _wait_frames(2)
+	var room := flow.room
+	for seat in flow.router.registry.joined_seats():
+		flow.router.registry.set_ready(int(seat.seat), true)
+	room.start_match()
+	await _wait_frames(3)
+	room.pause_coordinator.resume_countdown_seconds = 0.05
+	var before_nodes := _count_nodes(flow)
+	var before_actions := flow.router.action_pressed.get_connections().size()
+	var before_orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+	var master_db := PresentationApplier.bus_volume_db(&"Master")
+	for cycle in CYCLES:
+		room.input_router.pause_requested.emit(0)
+		await _wait_frames(2)
+		room.presenter._open_overlay(LIBRARY_SCENE)
+		await _wait_frames(2)
+		room.presenter._close_overlay()
+		room.presenter._open_overlay(SETTINGS_SCENE)
+		await _wait_frames(2)
+		room.presenter._close_overlay()
+		room.pause_coordinator.set_paused("", -1)
+		room.get_tree().paused = false
+		room.pause_coordinator.state = PauseRecoveryCoordinator.State.RUNNING
+		await _wait_frames(2)
+		_check(room.presenter._overlay == null, "cycle %d leaves no overlay open" % cycle)
+	_check(
+		_count_nodes(flow) == before_nodes,
+		"ten overlay cycles keep the node count (%d -> %d)" % [before_nodes, _count_nodes(flow)]
+	)
+	_check(
+		flow.router.action_pressed.get_connections().size() == before_actions,
+		"ten overlay cycles keep the router's signal connections"
+	)
+	_check(
+		int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)) <= before_orphans,
+		"ten overlay cycles leave no new orphan nodes"
+	)
+	_check(
+		is_equal_approx(PresentationApplier.bus_volume_db(&"Master"), master_db),
+		"the audio buses are untouched by opening Library and Settings"
+	)
 	await _free_flow()
 
 

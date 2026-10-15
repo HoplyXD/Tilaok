@@ -242,7 +242,7 @@ unique_name_in_owner = true
 
 [node name="Tag" type="Label" parent="Safe/Content"]
 layout_mode = 2
-text = "PLACEHOLDER Library shell (P13 owns final content)"
+text = "PLACEHOLDER art; copy pending Filipino / Hiligaynon review"
 theme_type_variation = &"PlaceholderTag"
 horizontal_alignment = 1
 

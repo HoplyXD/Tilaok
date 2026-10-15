@@ -47,6 +47,7 @@ func _run() -> void:
 
 func _four_player_session() -> void:
 	flow = FLOW_SCENE.instantiate() as GameFlow
+	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(30)
 	_check(flow.state == GameFlow.State.TITLE, "boot lands on the Title")
@@ -338,6 +339,7 @@ func _pause_resume_and_leave(room: P05MatchRoom) -> void:
 
 func _two_player_session() -> void:
 	flow = FLOW_SCENE.instantiate() as GameFlow
+	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(10)
 	_key(KEY_F, true)
