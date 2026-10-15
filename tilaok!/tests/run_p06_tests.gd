@@ -237,10 +237,13 @@ func _test_race_scoring_matrix() -> void:
 		[1]
 	)
 	_check(
-		result.valid and result.delta_units[0] == 0 and result.delta_units[1] == 0,
-		"2-player all-finish round awards zero to both players, including the coin carrier"
+		result.valid and result.delta_units[0] == 0 and result.delta_units[1] == 4,
+		"2-player all-finish round suppresses ordinary awards but pays its Barya carrier"
 	)
-	_check(result.award_rows.is_empty(), "2-player all-finish round has no award rows")
+	_check(
+		result.award_rows.size() == 1 and result.award_rows[0].key == "barya",
+		"2-player all-finish round has only the Barya award row"
+	)
 	_check(
 		result.first_finish_seats == [0, 1], "exact earliest-finish ties are retained as a group"
 	)
@@ -256,10 +259,13 @@ func _test_race_scoring_matrix() -> void:
 		[2]
 	)
 	_check(
-		result.delta_units[0] == 0 and result.delta_units[2] == 0,
-		"3-player all-finish round suppresses Barya too"
+		result.delta_units[0] == 0 and result.delta_units[2] == 4,
+		"3-player all-finish round pays Barya but no ordinary awards"
 	)
-	_check(result.award_rows.is_empty(), "all-finish result has no coin award row")
+	_check(
+		result.award_rows.size() == 1 and result.award_rows[0].key == "barya",
+		"all-finish result explains the surviving coin award"
+	)
 	result = (
 		RaceScoreCalculator
 		. calculate(
@@ -279,11 +285,12 @@ func _test_race_scoring_matrix() -> void:
 			result.delta_units[0] == 0
 			and result.delta_units[1] == 0
 			and result.delta_units[2] == 0
-			and result.delta_units[3] == 0
-			and result.totals_units == {0: 8, 1: 16, 2: 24, 3: 32}
-			and result.award_rows.is_empty()
+			and result.delta_units[3] == 4
+			and result.totals_units == {0: 8, 1: 16, 2: 24, 3: 36}
+			and result.award_rows.size() == 1
+			and result.award_rows[0].key == "barya"
 		),
-		"4-player all-finish round leaves every previous total unchanged"
+		"4-player all-finish round changes only the Barya carrier's total"
 	)
 	result = (
 		RaceScoreCalculator

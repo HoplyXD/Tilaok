@@ -74,10 +74,10 @@ func _test_pages(text: UiLibraryText, tuning: GameplayTuning, context: Dictionar
 	var suppression := _body(text, context, "Karera", "Too easy, too hard")
 	_check(
 		(
-			suppression.contains("every chicken earns 0 points")
-			and suppression.contains("Barya, even with 2 players")
+			suppression.contains("even with 2 players")
+			and suppression.contains("carrying Barya still earns its +0.5")
 		),
-		"Karera Library explains all-finish zero across awards and player counts"
+		"Karera Library explains ordinary suppression and the all-finish Barya exception"
 	)
 	var lagsanay_scoring := _body(text, context, "Lagsanay", "Placement points")
 	_check(

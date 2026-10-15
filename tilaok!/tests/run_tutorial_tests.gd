@@ -184,7 +184,7 @@ func _test_steps_through_a_round(seat_count: int) -> void:
 		"Karera copy carries the 60 s cap and 15 s finish window (%s)" % play_body
 	)
 	_check(not marker.visible, "the BUILD HERE marker hides after Place")
-	# Both seats reach the flag: every player earns zero round points.
+	# Both seats reach the flag without Barya: every player earns zero round points.
 	await _teleport_all_to_goal(room)
 	_check(room.phase_controller.phase == MatchPhaseController.Phase.RESULTS, "round ends")
 	_check(coach.view.step_id == TutorialScript.STEP_RESULTS, "Results shows the results step")

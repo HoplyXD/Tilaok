@@ -1,5 +1,7 @@
 # Karera all-finish zero-point update — 2026-10-15
 
+**Superseded for Barya:** the owner clarified that Barya still counts in an all-finish round. See the [later correction](2026-10-15_all_finish_barya_correction.md). The text and test results below document the intermediate rule, not the current one.
+
 The owner changed Karera's all-finish rule: when all joined players reach the flag, every player earns zero **round** points in 2-, 3- and 4-player matches. No award row is committed, including Tapos, Una and test-only Barya. Previously earned cumulative totals remain unchanged. No-finisher rounds remain zero. If some but not all players finish, the existing ordinary awards still apply. Lagsanay and Kangaroo placement scoring is unchanged.
 
 ## Verification

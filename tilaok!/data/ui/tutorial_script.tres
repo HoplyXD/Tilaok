@@ -45,7 +45,7 @@ title = "Step 5 of 5 - Results"
 body = "Tapos: reaching the flag earns points; the first to finish also gets Una. Next round in {advance_s} seconds. {result_reason}"
 glyph_action = "confirm"
 variants = {
-"nobody": "Nobody reached the flag: no points. Build closer to the flag wall. Next round in {advance_s} seconds. {result_reason}", "everyone": "Everyone reached the flag: every chicken earns 0 points, even with 2 players. Next round in {advance_s} seconds. {result_reason}"
+"nobody": "Nobody reached the flag: no points. Build closer to the flag wall. Next round in {advance_s} seconds. {result_reason}", "everyone": "Everyone reached the flag: normal race awards are 0, even with 2 players; Barya still counts if carried. Next round in {advance_s} seconds. {result_reason}"
 }
 
 [sub_resource type="Resource" id="Step_5"]
