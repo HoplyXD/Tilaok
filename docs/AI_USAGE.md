@@ -218,3 +218,14 @@ At the project owner's direction, after the owner approved the plan and the deci
 - `p12_table_scenarios.gd`, `p12_pair_room_scenarios.gd`, `run_p12_pairs_tests.gd` (285 checks), `run_p12_pairs_interactive.gd`, `capture_p12_pairs_performance.gd`, the decision-table record, evidence and the documentation updates.
 
 AI-generated code. The owner approved the decision table; no human code review, player session or physical-device test is claimed. No art, audio or production asset was generated. Evidence: `docs/evidence/p12/README.md`. Prompts and outputs are in the session transcript; no separate archive was created.
+
+### P13 UX, onboarding and accessibility — October 15, 2026
+
+At the project owner's direction, after the owner approved the Stage A plan and answered decisions D1–D3 (dependency override, keyboard session, technical checks), Claude (Claude Sonnet 5.5 via Claude Code) generated and integrated, on top of `origin/main` `1d058e2`:
+- Routing and navigation: the scheduled match as the default route, `--match-route=first_playable` / `--match-seed`, Lobby help and a confirmed Lobby Back, Quit through the flow, held-press consumption on screen swaps, left-stick menu navigation.
+- Presentation: HUD next-round and Kangaroo readout scenes, Round result Last Cluck / Twist / next-round lines, the real Library (pages, scrolling, enabled-content filtering, dev reference mode), audio buses with Mute, shake wiring, a ≤ 2 Hz stun pulse, and result-layout fixes found while inspecting captures.
+- Tutorial and onboarding: Kangaroo and Bomb-Taya just-in-time prompts.
+- The spectator cheer (`SpectatorCheer`, code-generated placeholder cue) and the keyboard chord recorder.
+- `run_p13_navigation_tests.gd` (205), `run_p13_hud_tests.gd` (264), `run_p13_library_tests.gd` (352), `run_p13_tutorial_tests.gd` (55), `run_p13_accessibility_tests.gd` (65), `run_p13_cheer_tests.gd` (39), `run_p13_recorder_tests.gd` (60), `capture_p13_evidence.gd`, the evidence set in `docs/evidence/p13/`, the PLAYTEST sheets and the documentation updates.
+
+AI-generated code and PLACEHOLDER copy. No human code review, spectator, novice or QA session, physical gamepad or physical keyboard test is claimed. No final art, audio or font was generated; the cheer cue and Kangaroo tones are code-generated placeholders owned by Shanti for replacement. Prompts and outputs are in the session transcript; no separate archive was created.

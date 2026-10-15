@@ -1257,7 +1257,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Gamepad and keyboard traverse every screen/back/quit route without traps or accidental game input; opening Library from pause keeps simulation paused and preserves return context.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** implemented and synthetically verified on the scheduled full match (default route): [navigation suite](evidence/p13/test_logs/run_p13_navigation_tests.txt) (205 checks), captures in [P13 evidence](evidence/p13/README.md). Physical gamepad traversal is COULD-NOT-RUN (P13-T02 / P02-T08; owner's dated override D1).
 
 
 ### REQ-UI-003 — Explain current play and results in the HUD
@@ -1268,7 +1268,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Spectators identify phase, objective, leader, taya, winner and no-score reason; overlapping command rings stay distinct at minimum zoom and with sound/shake off.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-14, engineering only):** the guided first match, build-gated tutorial stage, retry hint, Pause skip, Library replay, session-only memory and once-per-session Lagsanay prompt are implemented with PLACEHOLDER copy; see [tutorial evidence](evidence/tutorial/README.md). **Scoreboard slice (2026-10-15):** reusable round and match score charts display exact eighth-point totals, status, labelled/glyphed score segments and the configured target, with bounded presentation history and reduced-motion modes. The 52-check chart suite, 185 binding checks, 198 UI-flow checks, 62 mode checks, scoring/lifecycle/mode suites, rendered result captures and Windows export smoke pass; details are in [scoreboard evidence](evidence/scoreboard/README.md). Synthetic input and screenshots are engineering evidence only: event overlays, next-event guidance, tutorial/Kangaroo prompts, spectator comprehension, accessibility/player review, cultural review and physical devices remain open, so REQ-UI-003 is not met.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-14, engineering only):** the guided first match, build-gated tutorial stage, retry hint, Pause skip, Library replay, session-only memory and once-per-session Lagsanay prompt are implemented with PLACEHOLDER copy; see [tutorial evidence](evidence/tutorial/README.md). **Scoreboard slice (2026-10-15):** reusable round and match score charts display exact eighth-point totals, status, labelled/glyphed score segments and the configured target, with bounded presentation history and reduced-motion modes. The 52-check chart suite, 185 binding checks, 198 UI-flow checks, 62 mode checks, scoring/lifecycle/mode suites, rendered result captures and Windows export smoke pass; details are in [scoreboard evidence](evidence/scoreboard/README.md). Synthetic input and screenshots are engineering evidence only: event overlays, next-event guidance, tutorial/Kangaroo prompts, spectator comprehension, accessibility/player review, cultural review and physical devices remain open, so REQ-UI-003 is not met. **Implementation/evidence (2026-10-15):** every HUD cue is live on the scheduled route for three Mains and three stacks ([HUD suite](evidence/p13/test_logs/run_p13_hud_tests.txt), 264 checks; [captures](evidence/p13/README.md#rendered-captures-96)); Barya is not enabled. Spectator identification (P13-T04) is COULD-NOT-RUN.
 
 
 ### REQ-LIB-001 — Provide enabled-content Library and animated entries
@@ -1279,7 +1279,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Every enabled family/variant/event has a readable entry and controller-operable category/back navigation; disabled content is absent from release browsing; Pugad remains visual-only.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ITEMS.md](ITEMS.md). **Implementation/evidence (2026-10-15):** PLACEHOLDER pages for every category, one animated entry per enabled family, scrolling, enabled-content filtering and dev-only reference mode ([Library suite](evidence/p13/test_logs/run_p13_library_tests.txt), 352 checks). Copy is unreviewed; physical-controller operation is COULD-NOT-RUN.
 
 
 ### REQ-TUTORIAL-001 — Teach the first round and later event rules
@@ -1290,7 +1290,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** A novice follows the guided loop and explains objective/input/placement; record each facilitator intervention. Session skip and help replay work; no tutorial bonus or disk completion save is invented.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [GDD.md](GDD.md). **Implementation/evidence (2026-10-15):** guided Karera, Lagsanay / Bomb-Taya and first-Kangaroo prompts, session skip and replay, no disk save ([tutorial suite](evidence/p13/test_logs/run_p13_tutorial_tests.txt), 55 checks + the unchanged 140 / 48). No novice session has run (P13-T08 COULD-NOT-RUN).
 
 
 ### REQ-ACCESS-001 — Maintain color-independent readable play
@@ -1301,7 +1301,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** QA captures minimum-zoom crowded stage with muted audio and shake off; identifies every critical cue and all four players. Check Parol overlap/readability and no strobe; document supported display/device limits.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ASSETS.md](ASSETS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [ASSETS.md](ASSETS.md); [PLAYTEST.md](PLAYTEST.md). **Implementation/evidence (2026-10-15):** shake Full / Reduced / Off applied, audio buses and Mute, no-strobe measurement, glyph and display report ([accessibility suite](evidence/p13/test_logs/run_p13_accessibility_tests.txt), 65 checks; [captures](evidence/p13/README.md)). QA identification (P13-T10) is COULD-NOT-RUN.
 
 
 ### REQ-UI-004 — Retain spectator cheer without gameplay effects
@@ -1312,7 +1312,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** An eliminated player can cheer using their assigned binding; repeated input respects cooldown, never moves a player, changes score/timers, triggers commands or obscures live HUD.
 
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
+**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** spectator cheer implemented with a 1 s cooldown and no simulation effect ([cheer suite](evidence/p13/test_logs/run_p13_cheer_tests.txt), 39 checks). Physical-keyboard validation (P02-T04) and P13-T12 are open.
 
 ## 14. Presentation, audio and provenance
 

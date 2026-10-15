@@ -1,0 +1,13 @@
+Status: PASSED
+P12 stacked-round frame/memory sample
+Engine: 4.7.2-stable (official)
+Machine: Windows / 13th Gen Intel(R) Core(TM) i5-13420H / 12 logical CPUs
+Renderer: NVIDIA; GPU: NVIDIA GeForce RTX 4050 Laptop GPU
+Display: 1920x1080, windowed; v-sync off; 120 warm-up then 300 sampled frames per case.
+Input: synthetic K1/K2 keyboard seats plus synthetic gamepad IDs 7101/7102.
+Stage: crowded round-12 stage (items.round_number = 11, up to 40 persistent pieces); Storm forced early (storm_after_commands = 2).
+Targets: p95 and worst frame < 16.67 ms; static memory < 512 MiB; no orphan nodes.
+Kg+L (heaviest, Storm) — 4 seats, 40 pieces, plan KANGAROO / TWIST: BOMB-TAYA, storm active at start=true (storm commands 2): median/p95/worst 2.005/3.031/6.300 ms; static 122.82 MiB; objects 4983; nodes 1714; orphans 0; PASSED.
+Kg+L (Storm) — 2 seats, 40 pieces, plan KANGAROO / TWIST: BOMB-TAYA, storm active at start=true (storm commands 1): median/p95/worst 1.933/2.760/5.227 ms; static 122.43 MiB; objects 4919; nodes 1687; orphans 0; PASSED.
+K+L — 4 seats, 40 pieces, plan KARERA / TWIST: BOMB-TAYA, storm active at start=false (storm commands 0): median/p95/worst 1.417/2.104/3.289 ms; static 122.34 MiB; objects 4925; nodes 1689; orphans 0; PASSED.
+K+Kg — 4 seats, 40 pieces, plan KARERA / TWIST: KANGAROO, storm active at start=false (storm commands 0): median/p95/worst 1.635/2.387/4.667 ms; static 122.58 MiB; objects 4955; nodes 1701; orphans 0; PASSED.

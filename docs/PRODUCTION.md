@@ -209,6 +209,10 @@ P09-T01–T04 pass technical acceptance (4/4). Godot 4.7.2 passed 77 focused ass
 
 No human review, human playtest, physical-device session, or final-art/audio work is claimed. Last Cluck attribution in the P09 room is a synthetic record because P07's allowlist contains no hazards; P08's separate regression covers actual Trumpo/Launcher attribution. P07 player/device gates, P08 entry/release gate, P12 schedule/stacks, release acceptance and Form 03 remain open.
 
+### P13 UX, onboarding and accessibility — October 15, 2026
+
+P13 is 8/14 (T01, T03, T05, T06, T07, T09, T13, T14) on synthetic engineering evidence; the scheduled full match is now the default player route. Remaining before the Oct 21 freeze review, all needing people or devices: the keyboard chord session ([PLAYTEST Sheet A](PLAYTEST.md#sheet-a--p02-t03--p02-t04-physical-keyboard-chords-recorder), owner), two identical gamepads for P13-T02 / P02-T08, spectator, novice and QA sessions (Sheets C–E), the cheer check (Sheet F), Filipino / Hiligaynon review of the Library and tutorial copy, and Shanti's font and cue replacements ([ASSETS P13 register](ASSETS.md#placeholders-recorded--p13-2026-10-15)). Evidence: [P13](evidence/p13/README.md).
+
 ## Team and integration defaults
 
 **U — UNKNOWN FACT:** Francis and Carlos are the supplied development leads; Shanti handles UI design and game audio; Jorge and Ivie handle game maps and assets. Individual task assignments, available hours, registration status and review/backup assignments remain unknown. Retain the workstreams above; combine responsibilities only where capacity permits. QA/review should involve someone other than the feature author where team size allows. Do not invent team members. Each active feature needs an assigned owner and an explicit review responsibility; record actual review only when performed.

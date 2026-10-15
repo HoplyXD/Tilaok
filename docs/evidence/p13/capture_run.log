@@ -1,0 +1,233 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_SCHEDULE round=2 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+P12_SCHEDULE round=3 now=KARERA next=LAGSANAY
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":2,"scores":{"0":8,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":2,"scores":{"0":8,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":2}
+P12_SCHEDULE round=4 now=LAGSANAY next=LAGSANAY
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":3,"scores":{"0":16,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":3,"scores":{"0":16,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":3}
+P12_SCHEDULE round=5 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":4,"scores":{"0":16,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":4,"scores":{"0":16,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":4}
+P12_SCHEDULE round=6 now=KARERA next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":5,"scores":{"0":16,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":5,"scores":{"0":16,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":5}
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_SCHEDULE round=2 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":14,"2":0,"3":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"SECURED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":14,"2":0,"3":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+P12_SCHEDULE round=3 now=KARERA next=LAGSANAY
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":2,"scores":{"0":8,"1":16,"2":2,"3":2},"signature":"","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"ELIMINATED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":2,"scores":{"0":8,"1":16,"2":2,"3":2},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":2}
+P12_SCHEDULE round=4 now=LAGSANAY next=LAGSANAY
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":3,"scores":{"0":16,"1":18,"2":4,"3":4},"signature":"","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"ELIMINATED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":3,"scores":{"0":16,"1":18,"2":4,"3":4},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":3}
+P12_SCHEDULE round=5 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":4,"scores":{"0":16,"1":18,"2":4,"3":4},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":4,"scores":{"0":16,"1":18,"2":4,"3":4},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":4}
+P12_SCHEDULE round=6 now=KARERA next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":5,"scores":{"0":16,"1":18,"2":4,"3":4},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":5,"scores":{"0":16,"1":18,"2":4,"3":4},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":5}
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_SCHEDULE round=2 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_SCHEDULE round=2 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0,"2":0,"3":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0,"2":0,"3":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_SCHEDULE round=2 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_SCHEDULE round=2 now=LAGSANAY next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE","2":"ACTIVE","3":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0,"2":0,"3":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED","2":"ELIMINATED","3":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0,"2":0,"3":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+P04_ITEM_LAB_READY families=16 enabled_variants=28 profile=items_lab
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+1920x1080_2p_title_join.png  1920x1080  ok
+1920x1080_2p_title.png  1920x1080  ok
+1920x1080_2p_settings.png  1920x1080  ok
+1920x1080_2p_settings_muted_shake_off.png  1920x1080  ok
+1920x1080_2p_library_how_to_play.png  1920x1080  ok
+1920x1080_2p_library_karera.png  1920x1080  ok
+1920x1080_2p_library_lagsanay.png  1920x1080  ok
+1920x1080_2p_library_kangaroo.png  1920x1080  ok
+1920x1080_2p_library_items.png  1920x1080  ok
+1920x1080_2p_library_accessibility.png  1920x1080  ok
+1920x1080_2p_lobby.png  1920x1080  ok
+1920x1080_2p_lobby_help_library.png  1920x1080  ok
+1920x1080_2p_pugad_announcement.png  1920x1080  ok
+1920x1080_2p_hud_karera.png  1920x1080  ok
+1920x1080_2p_round_result.png  1920x1080  ok
+1920x1080_2p_pugad_next_is_lagsanay.png  1920x1080  ok
+1920x1080_2p_hud_lagsanay.png  1920x1080  ok
+1920x1080_2p_pause.png  1920x1080  ok
+1920x1080_2p_pause_library.png  1920x1080  ok
+1920x1080_2p_pause_settings.png  1920x1080  ok
+1920x1080_2p_round_result_last_cluck_lagsanay.png  1920x1080  ok
+1920x1080_2p_hud_kangaroo.png  1920x1080  ok
+1920x1080_2p_hud_karera_bomb_taya.png  1920x1080  ok
+1920x1080_2p_hud_karera_kangaroo.png  1920x1080  ok
+1920x1080_2p_hud_kangaroo_bomb_taya.png  1920x1080  ok
+1920x1080_2p_round_result_last_cluck_twist.png  1920x1080  ok
+1920x1080_2p_final_results.png  1920x1080  ok
+1920x1080_4p_title.png  1920x1080  ok
+1920x1080_4p_settings.png  1920x1080  ok
+1920x1080_4p_settings_muted_shake_off.png  1920x1080  ok
+1920x1080_4p_library_how_to_play.png  1920x1080  ok
+1920x1080_4p_library_karera.png  1920x1080  ok
+1920x1080_4p_library_lagsanay.png  1920x1080  ok
+1920x1080_4p_library_kangaroo.png  1920x1080  ok
+1920x1080_4p_library_items.png  1920x1080  ok
+1920x1080_4p_library_accessibility.png  1920x1080  ok
+1920x1080_4p_lobby.png  1920x1080  ok
+1920x1080_4p_lobby_help_library.png  1920x1080  ok
+1920x1080_4p_pugad_announcement.png  1920x1080  ok
+1920x1080_4p_hud_karera.png  1920x1080  ok
+1920x1080_4p_cheer_cue.png  1920x1080  ok
+1920x1080_4p_round_result.png  1920x1080  ok
+1920x1080_4p_pugad_next_is_lagsanay.png  1920x1080  ok
+1920x1080_4p_hud_lagsanay.png  1920x1080  ok
+1920x1080_4p_pause.png  1920x1080  ok
+1920x1080_4p_pause_library.png  1920x1080  ok
+1920x1080_4p_pause_settings.png  1920x1080  ok
+1920x1080_4p_round_result_last_cluck_lagsanay.png  1920x1080  ok
+1920x1080_4p_hud_kangaroo.png  1920x1080  ok
+1920x1080_4p_hud_karera_bomb_taya.png  1920x1080  ok
+1920x1080_4p_hud_karera_kangaroo.png  1920x1080  ok
+1920x1080_4p_hud_kangaroo_bomb_taya.png  1920x1080  ok
+1920x1080_4p_round_result_last_cluck_twist.png  1920x1080  ok
+1920x1080_4p_final_results.png  1920x1080  ok
+1280x720_2p_title.png  1280x720  ok
+1280x720_2p_settings.png  1280x720  ok
+1280x720_2p_settings_muted_shake_off.png  1280x720  ok
+1280x720_2p_library_items.png  1280x720  ok
+1280x720_2p_lobby.png  1280x720  ok
+1280x720_2p_pugad_announcement.png  1280x720  ok
+1280x720_2p_hud_karera.png  1280x720  ok
+1280x720_2p_round_result.png  1280x720  ok
+1280x720_2p_hud_kangaroo_bomb_taya.png  1280x720  ok
+1280x720_2p_round_result_last_cluck_twist.png  1280x720  ok
+1280x720_4p_title.png  1280x720  ok
+1280x720_4p_settings.png  1280x720  ok
+1280x720_4p_settings_muted_shake_off.png  1280x720  ok
+1280x720_4p_library_items.png  1280x720  ok
+1280x720_4p_lobby.png  1280x720  ok
+1280x720_4p_pugad_announcement.png  1280x720  ok
+1280x720_4p_hud_karera.png  1280x720  ok
+1280x720_4p_round_result.png  1280x720  ok
+1280x720_4p_hud_kangaroo_bomb_taya.png  1280x720  ok
+1280x720_4p_round_result_last_cluck_twist.png  1280x720  ok
+1920x800_2p_title.png  1422x800  ok
+1920x800_2p_settings.png  1422x800  ok
+1920x800_2p_settings_muted_shake_off.png  1422x800  ok
+1920x800_2p_library_items.png  1422x800  ok
+1920x800_2p_lobby.png  1422x800  ok
+1920x800_2p_pugad_announcement.png  1422x800  ok
+1920x800_2p_hud_karera.png  1422x800  ok
+1920x800_2p_round_result.png  1422x800  ok
+1920x800_2p_hud_kangaroo_bomb_taya.png  1422x800  ok
+1920x800_2p_round_result_last_cluck_twist.png  1422x800  ok
+1920x800_4p_title.png  1422x800  ok
+1920x800_4p_settings.png  1422x800  ok
+1920x800_4p_settings_muted_shake_off.png  1422x800  ok
+1920x800_4p_library_items.png  1422x800  ok
+1920x800_4p_lobby.png  1422x800  ok
+1920x800_4p_pugad_announcement.png  1422x800  ok
+1920x800_4p_hud_karera.png  1422x800  ok
+1920x800_4p_round_result.png  1422x800  ok
+1920x800_4p_hud_kangaroo_bomb_taya.png  1422x800  ok
+1920x800_4p_round_result_last_cluck_twist.png  1422x800  ok
+1920x1080_4p_crowded_min_zoom_muted_shake_off.png  1920x1080  ok
+Crowded stage: 29 persistent pieces, Kangaroo + Bomb-Taya, Storm cards at once: true, zoom 0.526 (minimum 0.500), master muted=true, shake mode=2.
+Parol overlap fixture: horizontal allowed=true, vertical allowed=true.
+Parol phases seen while sampling (739 frames over 4.5 s): ["0", "1", "2"]
+1920x1080_2p_parol_overlap_min_zoom.png  1920x1080  ok
+Parol strobe (rendered, 739 frames, beam rect [P: (708.7706, 540.0), S: (150.7377, 50.24589)]): max frame step 0.018, largest luminance swing 0.029, flashes in the worst 1 s window (>=10%): 0 (limit 3).
+P13_CAPTURE shots=96 failures=0 dir=C:/Users/roman/.codex/clones/tilaok-p13/docs/evidence/p13

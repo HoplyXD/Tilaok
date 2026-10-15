@@ -1,0 +1,5 @@
+﻿gdformat 4.5.0 --check . (project root tilaok!)
+230 files would be left unchanged
+
+gdlint 4.5.0 .
+Success: no problems found

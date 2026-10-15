@@ -11,6 +11,8 @@ Deadline: **Oct 25, 2026** (as of Oct 12, 2026).
 
 **Rule:** polish beats quantity. Completeness is 20% of screening.
 
+**P13 status — October 15, 2026:** the player-facing UX pass is implemented on the scheduled full match, which is now the default route: every menu route, a live HUD cue table, a real Library, Kangaroo / Bomb-Taya just-in-time prompts, audio buses and Mute, Screen shake that reaches the match, the spectator cheer and the keyboard chord recorder. P13 is 8/14; the physical-gamepad, spectator, novice, QA and physical-keyboard sessions are prepared in PLAYTEST and are the remaining work before the Oct 21 freeze review. Evidence: [P13](evidence/p13/README.md).
+
 **Implementation status — October 14, 2026:** P08 has a playable independent Lagsanay development route, P09 has a development-only full Karera match ending at 10 points or round 12 with tied leaders resolved on the persistent stage, and P11 has an independent `kangaroo_contract_lab` route. P08 is 6/6, P09 is 4/4 and P11 is 13/13 on technical evidence. These routes do not close their release gates: P07-T04 player/device/human acceptance, P08 entry/release approval, P09/P11 performance and human acceptance, P11 physical-device/balance/cultural/asset review, and P02 physical-device work remain open. The P11 short debug sample exceeded the provisional frame target. P09 and P11 do not implement P12 event scheduling or stacks. P12 (2026-10-15, 10/10 technical on synthetic seats) adds the seeded schedule, the three verified Twist pairs and the owner-approved terminal-order table on the opt-in `--match-route=lifecycle` development route; human sessions, physical devices and balance remain open.
 
 ## Item scope and gates

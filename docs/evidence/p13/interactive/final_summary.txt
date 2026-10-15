@@ -1,0 +1,11 @@
+run_p03_interactive`t`t4s`tP03_INTERACTIVE checks=14 failures=0 evidence=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/d92d1030-c194-4e74-9ee7-66cd03370728/scratchpad/final/docs/evidence/p03/2026-10-13_interactive_harness_1080p.png size=(1920, 1080)
+run_p04_interactive`t`t4s`tP04_INTERACTIVE checks=25 failures=4 place=(1920, 1080) play=(1920, 1080)
+run_p05_interactive`t`t3s`tP05_INTERACTIVE checks=58 failures=2 captures=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/d92d1030-c194-4e74-9ee7-66cd03370728/scratchpad/final/docs/evidence/p05
+run_p06_interactive`t`t2s`tP06_INTERACTIVE_SUMMARY checks=17 failures=0 resolution=(1920, 1080)
+run_p08_interactive`t`t14s`tP08_INTERACTIVE_SUMMARY checks=87 failures=0
+run_p09_interactive`t`t3s`tP09_INTERACTIVE_SUMMARY checks=108 failures=0
+run_p10_interactive`t`t7s`tP10_INTERACTIVE checks=42 failures=3 evidence=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/d92d1030-c194-4e74-9ee7-66cd03370728/scratchpad/final/docs/evidence/p10
+run_p11_interactive`t`t9s`tP11_INTERACTIVE_SUMMARY checks=85 failures=0
+run_match_ui_interactive`t`t9s`tMATCH_UI_INTERACTIVE checks=59 failures=0 captures=C:/Users/roman/AppData/Local/Temp/claude/C--Users-roman-Desktop-Vscode-Projects-Tilaok/d92d1030-c194-4e74-9ee7-66cd03370728/scratchpad/final/docs/evidence/match-ui
+run_p12_pairs_interactive`t`t21s`tP12_PAIRS_INTERACTIVE_SUMMARY checks=40 failures=0
+DONE

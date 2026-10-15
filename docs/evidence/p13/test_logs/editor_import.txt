@@ -1,0 +1,2 @@
+﻿Godot 4.7.2.stable.official.ed1daf0bf --headless --editor --path tilaok! --quit
+problem lines (ERROR/WARNING/Parse Error): 0

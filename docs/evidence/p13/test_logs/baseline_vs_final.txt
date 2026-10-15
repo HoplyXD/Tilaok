@@ -1,0 +1,40 @@
+Headless suites, Godot 4.7.2.stable.official.ed1daf0bf, --headless --fixed-fps 60, Windows 11 (i5-13420H).
+Baseline = clean clone of origin/main 1d058e2; final = the P13 tree. exit code / checks / failures.
+
+suite                                          baseline                final
+run_blocks_tests                                0/111/0              0/111/0
+run_explosives_tests                             0/23/0               0/23/0
+run_foundation_tests                              0/-/0                0/-/0
+run_match_ui_binding_tests                      0/185/0              0/185/0
+run_match_ui_mode_tests                          0/62/0               0/62/0
+run_match_ui_tests                              0/198/0              0/198/0
+run_p02_tests                                    0/83/0               0/83/0
+run_p02_wall_tests                               0/85/0               0/85/0
+run_p03_tests                                   0/103/0              0/103/0
+run_p04_tests                                   1/269/2              1/269/2
+run_p05_tests                                   0/137/0              0/137/0
+run_p06_tests                                    0/97/0               0/97/0
+run_p07_reset_audit                             0/172/0              0/172/0
+run_p07_tests                                   0/591/0              0/591/0
+run_p08_tests                                    0/86/0               0/86/0
+run_p09_tests                                    0/77/0               0/77/0
+run_p10_tests                                   0/435/0              0/435/0
+run_p11_tests                                    0/78/0               0/78/0
+run_p12_pairs_tests                             0/285/0              0/285/0
+run_p12_stack_tests                              0/47/0               0/47/0
+run_p12_tests                                    0/61/0               0/61/0
+run_p13_accessibility_tests                           -               0/65/0
+run_p13_cheer_tests                                   -               0/39/0
+run_p13_hud_tests                                     -              0/264/0
+run_p13_library_tests                                 -              0/352/0
+run_p13_navigation_tests                              -              0/205/0
+run_p13_recorder_tests                                -               0/60/0
+run_p13_tutorial_tests                                -               0/55/0
+run_place_claim_tests                            0/15/0               0/15/0
+run_scoreboard_chart_tests                       0/52/0               0/52/0
+run_tutorial_gate_tests                          0/48/0               0/48/0
+run_tutorial_tests                              0/140/0              0/140/0
+run_ui_tests                                    1/457/4              1/466/4
+
+Known failures present in BOTH trees (not introduced here): run_p04_tests 2 (mode flags: Kaing karera+lagsanay; profiles that do not list seed families), run_ui_tests 4 (score_award_legend.gd / ui_award_line.gd override scan; %Outcome1 / %Final1 UiScoreRow type checks).
+run_foundation_tests prints 'Harness lifecycle checks complete: 0 failure(s)' instead of a checks= counter.

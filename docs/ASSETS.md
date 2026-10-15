@@ -210,3 +210,19 @@ Open follow-ups (not gates): original art/audio for the six families; native-spe
 ## Results chart placeholders — October 15, 2026
 
 The result screens reuse the team's existing chicken placeholder SpriteFrames through `tilaok!/assets/character/chicken_sprite_frames.tres`; the source sheet and sprite design were not generated or modified for this task. The new chart, column, legend, glyphs, layout and score award swatches are programming/UI presentation code, not production art. Theme swatches are provisional and editable for Shanti's review. The user-provided screenshot was used only for the broad shared-axis/player-column chart concept; its palette, typography, artwork, branding and complete screen arrangement were not copied. No external asset or font was added, so there is no new third-party licence entry. Human visual design and readability review remain open.
+
+## Placeholders recorded — P13 (2026-10-15)
+
+No final art, audio or font was generated or imported. Everything below is a development placeholder with a human owner for replacement.
+
+| Item | Where | Kind | Status | Final owner |
+|---|---|---|---|---|
+| Spectator cheer cue | `SpectatorCheer.make_stream()` (code-generated 0.45 s noise + hum, plays on the **Crowd** bus) | audio placeholder, no file | PLACEHOLDER — replace with the recorded crowd "yay" (GDD §9) | Shanti |
+| Kangaroo cue tones | `KangarooCommandStyle.make_tone()` (330 / 440 / 554 Hz sine, now on the **Effects** bus) | audio placeholder, no file | PLACEHOLDER — replace (P11 handoff unchanged) | Shanti |
+| Audio bus layout | `tilaok!/default_bus_layout.tres` (Master, Music, Effects, Crowd) | engine resource | engine-authored; the mix is the audio owner's | Shanti |
+| Kangaroo command cards and miss grid | `scenes/ui/components/kangaroo_hud.tscn`, `kangaroo_command_card.tscn` | UI scene, text icons `● ↑ ↔` | PLACEHOLDER wording and look; `Art_PoseIcon` slot is empty | Shanti (UI) / Jorge, Ivie (pose art) |
+| Library copy | `tilaok!/data/ui/library_text.tres` | English text | PLACEHOLDER — needs Filipino / Hiligaynon and cultural review | team (native-speaker review) |
+| Tutorial copy (Kangaroo, Bomb-Taya) | `tilaok!/data/ui/tutorial_script.tres` | English text | PLACEHOLDER — same review | team |
+| UI font | engine default (Open Sans SemiBold) | font | engine-included; lacks `● ▲ ■ ◆ → ↑ ↔` (system fallback) — a final font that covers them is needed | Shanti |
+
+Provenance: all of the above was generated or edited by AI-assisted programming under Francis and Carlos's direction and is disclosed in [AI_USAGE.md](AI_USAGE.md). Nothing is licensed from a third party.

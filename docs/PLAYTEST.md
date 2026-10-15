@@ -447,7 +447,7 @@ The full command list, metric interpretation and open human/team tasks are in th
 
 ## P13-T08 novice-session sheet — guided first match (2026-10-14)
 
-**Status: ready for a human session; no session has been run and none is claimed.** The build is the default route (`karera_slice`, Kaing 1x1 / Kaing 2x3 / Tulay 4x1) started from the Title. The first match uses the tutorial stage where a built piece is needed to reach the flag. Use a participant who has not seen the game; the facilitator must not explain Pugad, Place or the flag.
+**Status: ready for a human session; no session has been run and none is claimed.** The build is the default route since 2026-10-15 (the scheduled full match; the original 2026-10-14 sheet was written for the first-playable build, still reachable with `-- --match-route=first_playable`) started from the Title. The first match uses the tutorial stage where a built piece is needed to reach the flag. Kangaroo and Bomb-Taya additions are in [Sheet D](#sheet-d--p13-t08-novice-session-guided-first-match-lagsanay-and-kangaroo). Use a participant who has not seen the game; the facilitator must not explain Pugad, Place or the flag.
 
 | Item | Value |
 |---|---|
@@ -540,3 +540,138 @@ The chart uses only the generic player-column/shared-axis idea from the supplied
 | Date | Build / revision | Seed | Players | Devices | Pairs seen | Facilitator | Participant pseudonym | Result |
 |---|---|---|---|---|---|---|---|---|
 | | | | | | | | | |
+
+## P13 UX, onboarding and accessibility — October 15, 2026
+
+**Scope:** the player-facing UX pass on the scheduled full match (now the default route): menu routes, Lobby help, live HUD cues, a real Library, Kangaroo and Bomb-Taya just-in-time prompts, audio buses and Mute, Screen shake, the spectator cheer, and the keyboard chord recorder. **Reviewer for everything recorded below:** engineering run (AI-assisted). No spectator, novice, QA reviewer, physical gamepad or physical keyboard session has happened; the sheets below are the instruments for those sessions and **no human result is filled in**.
+
+### Engineering session (synthetic) — Godot 4.7.2.stable.official.ed1daf0bf, Windows 11
+
+| Verification | Result | Evidence / limit |
+|---|---|---|
+| Navigation matrix, K1 / K2 / synthetic gamepad, both routes | **PASSED — 205 checks, 0 failures** | `run_p13_navigation_tests.gd`: Title / Library / Settings / Quit confirm / Lobby help and Back / Pause owner and non-owner / Library and Settings from Pause (tree paused, clocks frozen, same Pause row on return) / confirmations / left-stick steps / held-press consumption / 10 overlay cycles stable. Synthetic input only. |
+| HUD cue table on the scheduled route (3 Mains, 3 stacks, 2 and 4 seats) | **PASSED — 264 checks, 0 failures** | `run_p13_hud_tests.gd`; every cue live, text ≥ theme minimum, no internal ids, HUD inside the 64 px reservation. Barya is not enabled (N/A). |
+| Library content, filtering, scrolling, controller navigation | **PASSED — 352 checks, 0 failures** | `run_p13_library_tests.gd`. |
+| Kangaroo / Bomb-Taya just-in-time prompts | **PASSED — 55 checks, 0 failures** | `run_p13_tutorial_tests.gd`; existing tutorial suites unchanged (140 + 48). |
+| Accessibility controls and audits | **PASSED — 65 checks, 0 failures** | `run_p13_accessibility_tests.gd`: buses, Mute, shake modes through the Settings path, stun brightness and Parol limits, glyph and display report. |
+| Spectator cheer | **PASSED — 39 checks, 0 failures** | `run_p13_cheer_tests.gd`, including a 400-press spam run identical to a no-cheer run (scores, clocks, positions, commands, six random streams). |
+| Keyboard chord recorder (tool) | **PASSED — 60 checks, 0 failures** | `run_p13_recorder_tests.gd`. Proves the tool, never a keyboard. |
+| Rendered captures (1920×1080, 1280×720, 1920×800; 2 and 4 seats) | **96 captures** | [P13 evidence](evidence/p13/README.md). Agent inspection of screenshots is not a spectator, novice or QA result. |
+
+### Findings the human reviewers should check first
+
+- **Symbol glyphs:** the engine default font (Open Sans SemiBold) has no ● ▲ ■ ◆ → ↑ ↔. On Windows the engine falls back to a system font and the captures show them; a machine without a symbol fallback may show boxes (the number and the drawn shape badge remain). Final font is human-owned (Shanti).
+- **Stun flash** was 8 Hz; it is now a smooth ≤ 2 Hz pulse (steady when Screen shake is Off).
+- **Shake never reached the match** before this slice; it now follows the Settings value live. Default is Off.
+- **Result chart statuses** were clipped by the no-score notice at 1080p/720p; the chart now reserves more room for them.
+- **Release filter:** every family has `release_target = false`, so a literal release filter would list nothing. "Release browsing" here means *enabled by the active play profile*; reference content appears only with `--library-dev`.
+
+### Common setup
+
+| Item | Value |
+|---|---|
+| Build | delivered commit of this phase (record the SHA from `git log -1`) |
+| Engine | `D:\Downloads\Godot_v4.7.2-stable_win64_console.exe` (4.7.2.stable) |
+| Launch (default full match) | `& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'` → Title |
+| Reproducible seed | add `-- --match-seed=3` (seed 3 reaches Kangaroo in round 6) |
+| First-playable gate build | add `-- --match-route=first_playable` |
+| Library development mode | add `-- --library-dev` (marks reference content "not playable") |
+| Keyboard recorder | `& '...console.exe' --path 'tilaok!' res://scenes/tools/key_chord_recorder.tscn` |
+
+### Sheet A — P02-T03 / P02-T04 physical keyboard chords (recorder)
+
+**Who:** the owner, on the keyboard that will be used. **Fill in:** keyboard model, layout name (the recorder prints it), connection, date.
+
+1. Launch the recorder. For each chord (C01–C24) hold all the shown keys together for about half a second. A chord is **PASS** the moment every key is down at once and the recorder moves on by itself.
+2. If the keyboard cannot report all of them, press **Insert** (LOST); try the chord once more first. **Page Down** skips, **Page Up** goes back, **Home** restarts.
+3. Press **F2**: the report is printed and saved under `%APPDATA%\Godot\app_userdata\Tilaok!\p13_key_chords_<time>.txt`. Paste it into the chat or below.
+
+**Pass:** every chord the game supports is PASS. Any LOST chord must be remapped, documented as unsupported or excluded from the supported claims (record which, here). The recorder tests the keyboard and operating system only.
+
+| Chord | PASS / LOST | Decision if LOST (remap / unsupported / excluded) | Notes |
+|---|---|---|---|
+| | | | |
+
+### Sheet B — P13-T02 physical navigation matrix
+
+**Setup:** two identical gamepads (P02-T07/T08 procedure) plus K1 and K2; one participant per device. **Observer fields:** device, route, result, trap seen, stray game input seen.
+
+| # | Route (start from Title unless stated) | Device kinds to run | Pass if |
+|---|---|---|---|
+| 1 | Join, Start, ready, **Help** (Lobby), Back to the Lobby, Back (confirm appears, No keeps, Yes returns to Title) | each pad, K1, K2 | the press that opened a screen never also acts on it; confirm defaults to No |
+| 2 | Title → Library → every category and entry → Back | each | entries scroll, Back is zone-aware, returns to Title |
+| 3 | Title → Settings → every row (shake, reveal, Mute, four volumes) | each | every row adjustable, Back returns |
+| 4 | Title → Quit (No, then Yes) | each | Yes quits once; No restores the menu |
+| 5 | In a match: pause with one seat, then with a different seat | pad Start, Esc | only that seat's owner drives the menu; others can only ready |
+| 6 | Pause → Library → Back → Settings → Back → Resume | owner device | simulation stays frozen; returns to the same Pause row |
+| 7 | Pause during the resume countdown, try to open Library | owner device | Library cannot open during the countdown |
+| 8 | Pause → Leave (No, Yes) | owner device | returns the whole group to the Lobby with its seats |
+| 9 | Round result: ready, wait for the 8 s advance | each | no stray jump / placement on the next phase |
+| 10 | Match result: Replay, Return to Lobby, Quit (confirm) | owner device | one action needs every original seat ready |
+| 11 | Unplug and replug a pad mid-round | pad | seat reclaimed, timers unchanged |
+
+### Sheet C — P13-T04 spectator identification
+
+**Setup:** a 4-player match played by others; observers only watch the screen with **sound muted**, **Screen shake Off** and the stage crowded (late rounds). At least three observers who are not playing. **Fields:** observer pseudonym, round, mode / stack on screen.
+
+| Ask (each, glance up to 5 s) | Answer | Correct? |
+|---|---|---|
+| What phase is it (Pugad / Place / Play / results)? | | |
+| What is the goal this round? | | |
+| Who is leading? | | |
+| Who is the taya (if any)? | | |
+| Who won the round or the match? | | |
+| If nobody scored, why not? | | |
+| What happens at the next round? | | |
+| With two command rings overlapping, which commands are active? | | |
+
+**Pass:** every observer answers every question correctly from the screen alone, without asking the players.
+
+### Sheet D — P13-T08 novice session (guided first match, Lagsanay and Kangaroo)
+
+Use the existing [novice sheet](#p13-t08-novice-session-sheet--guided-first-match-2026-10-14) for the guided Karera. **Additions for this build** (default route is now the scheduled full match):
+
+| # | Ask or watch | Record |
+|---|---|---|
+| 10 | Play on with `-- --match-seed=3`. Before round 6 (Kangaroo) does the coach show the three slipper poses (Pugad) and the build-up prompt (Place)? | seen / not seen; what the participant said |
+| 11 | During the Kangaroo round: "What are KANG, GA and ROO?" | verbatim; understood three misses? |
+| 12 | In a Bomb-Taya round: "Who is the taya? Does the flag still matter?" | verbatim |
+| 13 | Did a prompt ever cover something needed (the box, the command cards, the miss grid)? | what, when |
+| 14 | Replay: Library → How to Play → Replay tutorial; are the Kangaroo prompts shown again before the next Kangaroo? | yes / no |
+| 15 | Close the game; check `%APPDATA%\Godot\app_userdata\Tilaok!` for files created by the tutorial or settings. | none |
+
+Record every facilitator intervention in the intervention log of the existing sheet.
+
+### Sheet E — P13-T10 QA readability at minimum zoom
+
+**Setup:** 4 players, sound **muted**, Screen shake **Off**, camera at its minimum zoom (chickens at opposite ends), crowded stage (late round), Kangaroo + Bomb-Taya with Storm and a Parol overlap on a lab build. **QA reviewer:** name and date.
+
+| Check | Result | Notes |
+|---|---|---|
+| All four players identifiable (number and shape) at all times | | |
+| Taya identifiable | | |
+| Each command (Freeze, Rising wave, Hug) identifiable muted | | |
+| Overlapping command cards stay distinct; two active commands readable | | |
+| KANG → GA → ROO misses readable per seat | | |
+| Placement valid / invalid / reason readable | | |
+| Secured / eliminated / cheer states readable | | |
+| No effect that flashes more than 3 times a second (Parol, stun, explosions) | | |
+| HUD text readable at 1280×720 and 1920×1080; safe area respected at 1920×800 | | |
+| Symbol glyphs render on this PC (● ▲ ■ ◆ → ↑ ↔) | | |
+
+### Sheet F — P13-T12 cheer check (needs Sheet A first)
+
+**Setup:** one keyboard owner (K1: **R**, K2: **Right Shift**, gamepad: **West**). Play until one seat is eliminated and one has finished.
+
+| # | Step | Pass if |
+|---|---|---|
+| 1 | Eliminated player presses their cheer control | "CHEER!" appears in their own HUD row and a soft crowd sound plays |
+| 2 | Finished player presses it | same |
+| 3 | A live player presses it | nothing happens, no movement, no message |
+| 4 | Hold or mash the control | at most one cheer per second per player; no key-repeat bursts |
+| 5 | Watch scores, timers, other chickens and command cards during the spam | none change; the HUD row text is the only change |
+| 6 | Press it in Pugad and Place | it does the normal Rotate / claim behaviour only; no cheer |
+| 7 | Pause, press it | nothing |
+| 8 | Check the cue never hides the live HUD | HUD fully readable |
+
+Record the date, device, build, who observed and the result under each sheet; **never fill a result in by inference.**

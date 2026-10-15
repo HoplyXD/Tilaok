@@ -227,3 +227,23 @@ The full gate run takes several minutes; `--quick` skips the 1,860-attempt no-bu
 ```
 
 The chart is shared by live round and final match results. Scores and winner rules are unchanged. Presentation is still provisional; no physical-device or independent human readability review is claimed.
+
+## P13 UX, onboarding and accessibility (2026-10-15)
+
+| Responsibility | Path | Notes |
+|---|---|---|
+| Routes and flags | `tilaok!/scripts/flow/game_flow.gd` | default = scheduled full match; `--match-route=first_playable|lifecycle`, `--match-seed=<n>`, `--library-dev`; Library/Lobby/Pause overlays through the presenter |
+| Router additions | `tilaok!/scripts/input/local_input_router.gd` | `consume_held_presses()`, Rotate aliases (`help` in Lobby, `cheer` in Play), left-stick menu navigation |
+| Cheer | `tilaok!/scripts/match/spectator_cheer.gd`, presenter `_try_cheer` | cooldown and code-generated placeholder cue only; no simulation access |
+| HUD / Kangaroo readout | `tilaok!/scenes/ui/screens/play_hud.tscn`, `scenes/ui/components/kangaroo_hud.tscn`, `kangaroo_command_card.tscn`, `scripts/ui/ui_kangaroo_*.gd` | driven by `KangarooMainRound` on the scheduled route |
+| Library | `tilaok!/data/ui/library_text.tres`, `scripts/ui/ui_library_screen.gd`, `ui_library_text.gd`, `ui_library_page.gd` | pages with `{tokens}` and `requires`; scrolling entry window; dev reference mode |
+| Presentation settings | `tilaok!/scripts/config/presentation_applier.gd`, `presentation_settings.gd`, `default_bus_layout.tres` | Master / Music / Effects / Crowd buses, Mute, shake level for presentation-only effects; session only |
+| Tutorial additions | `tilaok!/scripts/tutorial/tutorial_coordinator.gd`, `tutorial_session.gd`, `data/ui/tutorial_script.tres` | Kangaroo and Bomb-Taya just-in-time prompts |
+| Keyboard recorder | `tilaok!/scenes/tools/key_chord_recorder.tscn`, `scripts/diagnostics/key_chord_recorder.gd` | P02-T04 instrument; harness room `key_chord_recorder` |
+| Tests | `tilaok!/tests/run_p13_navigation_tests.gd`, `run_p13_hud_tests.gd`, `run_p13_library_tests.gd`, `run_p13_tutorial_tests.gd`, `run_p13_accessibility_tests.gd`, `run_p13_cheer_tests.gd`, `run_p13_recorder_tests.gd`, `capture_p13_evidence.gd` | evidence in `docs/evidence/p13/` |
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --fixed-fps 60 --path 'tilaok!' --script 'res://tests/run_p13_navigation_tests.gd'
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_p13_evidence.gd'   # windowed; run from an isolated copy
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' 'res://scenes/tools/key_chord_recorder.tscn'
+```
