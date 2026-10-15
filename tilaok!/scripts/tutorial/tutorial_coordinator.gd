@@ -17,6 +17,10 @@ const VARIANT_TIMEOUT := &"timeout"
 const VARIANT_NOBODY := &"nobody"
 const VARIANT_EVERYONE := &"everyone"
 const VARIANT_WAIVER := &"waiver"
+const VARIANT_TWIST := &"twist"
+## The Bomb-Taya Twist prompt shares the box with the other just-in-time prompts, so it hands
+## over after this long and the next due prompt (Kangaroo) takes its turn.
+const TWIST_PROMPT_SECONDS := 8.0
 
 var room: P05MatchRoom
 var session: TutorialSession
@@ -32,6 +36,10 @@ var _assigned_snapshot := 0
 var _nobody_finished_last_round := false
 var _completion_pending := false
 var _lagsanay_showing := false
+var _lagsanay_as_twist := false
+var _twist_prompt_expired := false
+## The Kangaroo prompt shown during the current phase; marked seen when that phase ends.
+var _kangaroo_step: StringName = &""
 
 
 func attach(
@@ -114,6 +122,9 @@ func rebuild() -> void:
 func _on_phase_changed(
 	previous_phase: MatchPhaseController.Phase, next_phase: MatchPhaseController.Phase
 ) -> void:
+	if _kangaroo_step != &"":
+		session.mark_kangaroo_step(_kangaroo_step)
+		_kangaroo_step = &""
 	if next_phase == MatchPhaseController.Phase.PUGAD:
 		_timeout_assigned = false
 		_assigned_snapshot = 0
@@ -142,6 +153,11 @@ func _on_actor_created(actor: ChickenController) -> void:
 
 
 func _on_actor_terminal(_status: PlayerLifecycleState.Status, _reason: String) -> void:
+	rebuild()
+
+
+func _on_twist_prompt_timeout() -> void:
+	_twist_prompt_expired = true
 	rebuild()
 
 
@@ -178,12 +194,27 @@ func _lagsanay_running() -> bool:
 	if room.phase_controller.phase != MatchPhaseController.Phase.PLAY:
 		return false
 	var controller: Variant = room.get("lagsanay_controller")
-	return controller != null and bool(controller.get("active"))
+	if controller != null and bool(controller.get("active")):
+		_lagsanay_as_twist = false
+		return true
+	# Bomb-Taya (Lagsanay as a Twist) teaches the same taya rules with Twist wording.
+	var bomb: Variant = room.get("bomb_taya")
+	if bomb != null and bool(bomb.get("active")):
+		_lagsanay_as_twist = true
+		return true
+	return false
 
 
 func _update_lagsanay_flag() -> void:
 	var running := _lagsanay_running()
+	if not running:
+		_twist_prompt_expired = false
+	elif _lagsanay_as_twist and _twist_prompt_expired:
+		running = false
 	if running and session.lagsanay_prompt_due():
+		if not _lagsanay_showing and _lagsanay_as_twist and is_inside_tree():
+			_twist_prompt_expired = false
+			get_tree().create_timer(TWIST_PROMPT_SECONDS).timeout.connect(_on_twist_prompt_timeout)
 		_lagsanay_showing = true
 	elif not running and _lagsanay_showing:
 		_lagsanay_showing = false
@@ -195,10 +226,66 @@ func _compute_view() -> Dictionary:
 	if session.skipped or suppressed or room.shows_final_results():
 		return hidden
 	if _lagsanay_showing:
-		return _view_for(TutorialScript.STEP_LAGSANAY, &"", 0)
-	if not is_tutorial_stage() or session.completed:
+		var variant: StringName = VARIANT_TWIST if _lagsanay_as_twist else &""
+		return _view_for(TutorialScript.STEP_LAGSANAY, variant, 0)
+	var guided := is_tutorial_stage() and not session.completed
+	var phase := room.phase_controller.phase
+	var kangaroo_step := _kangaroo_jit_step()
+	# The guided Pugad / Place / Results steps keep the box; the Kangaroo prompt takes Play.
+	if kangaroo_step != &"" and (not guided or phase == MatchPhaseController.Phase.PLAY):
+		_kangaroo_step = kangaroo_step
+		return _view_for(kangaroo_step, &"", 0)
+	if not guided:
 		return hidden
 	return _phase_view(hidden)
+
+
+## The Kangaroo just-in-time step due in this phase, or &"". Poses in the Pugad and supports in
+## the Place of a round that is, or precedes, a Kangaroo Main or Twist round (so players can build
+## for it); the three misses once its commands are running.
+func _kangaroo_jit_step() -> StringName:
+	if session.skipped or room.shows_final_results():
+		return &""
+	var step := &""
+	match room.phase_controller.phase:
+		MatchPhaseController.Phase.PUGAD:
+			if _kangaroo_near():
+				step = TutorialScript.STEP_KANGAROO_POSES
+		MatchPhaseController.Phase.PLACE:
+			if _kangaroo_near():
+				step = TutorialScript.STEP_KANGAROO_SUPPORTS
+		MatchPhaseController.Phase.PLAY:
+			if _kangaroo_running():
+				step = TutorialScript.STEP_KANGAROO_MISSES
+	if step != &"" and session.kangaroo_step_due(step):
+		return step
+	return &""
+
+
+func _kangaroo_running() -> bool:
+	var round_node: Variant = room.get("kangaroo_round")
+	if round_node == null:
+		return false
+	var controller: Variant = round_node.get("controller")
+	return controller != null and bool(controller.get("active"))
+
+
+## The round being set up, or the next one (already announced), includes Kangaroo.
+func _kangaroo_near() -> bool:
+	if not room.has_method("current_entry") or room.get("schedule") == null:
+		return false
+	var entries: Array[Dictionary] = [room.call("current_entry")]
+	var schedule: Variant = room.get("schedule")
+	var upcoming: Variant = schedule.call("entry_for", room.items.round_number + 2)
+	if upcoming is Dictionary:
+		entries.append(upcoming)
+	for entry in entries:
+		if (
+			int(entry.get("main", -1)) == EventSchedule.Challenge.KANGAROO
+			or int(entry.get("twist", -1)) == EventSchedule.Challenge.KANGAROO
+		):
+			return true
+	return false
 
 
 func _phase_view(hidden: Dictionary) -> Dictionary:

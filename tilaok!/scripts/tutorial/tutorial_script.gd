@@ -10,6 +10,14 @@ const STEP_PLACE := &"place"
 const STEP_KARERA := &"karera"
 const STEP_RESULTS := &"results"
 const STEP_LAGSANAY := &"lagsanay"
+## Just-in-time Kangaroo prompts (P13-T07): poses in the Pugad before the first Kangaroo round,
+## built supports in its Place, the three misses once its commands run.
+const STEP_KANGAROO_POSES := &"kangaroo_poses"
+const STEP_KANGAROO_SUPPORTS := &"kangaroo_supports"
+const STEP_KANGAROO_MISSES := &"kangaroo_misses"
+const KANGAROO_STEPS: Array[StringName] = [
+	STEP_KANGAROO_POSES, STEP_KANGAROO_SUPPORTS, STEP_KANGAROO_MISSES
+]
 
 @export var steps: Array[TutorialStepDef] = []
 ## Visible label on every live prompt until the copy is reviewed (honest provenance).
@@ -28,6 +36,9 @@ func step(step_id: StringName) -> TutorialStepDef:
 
 func has_all_steps() -> bool:
 	for step_id in [STEP_WELCOME, STEP_PUGAD, STEP_PLACE, STEP_KARERA, STEP_RESULTS, STEP_LAGSANAY]:
+		if step(step_id) == null:
+			return false
+	for step_id in KANGAROO_STEPS:
 		if step(step_id) == null:
 			return false
 	return true

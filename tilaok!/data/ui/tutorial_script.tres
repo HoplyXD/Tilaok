@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialScript" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="TutorialScript" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/tutorial/tutorial_script.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/tutorial/tutorial_step_def.gd" id="2"]
@@ -54,9 +54,33 @@ step_id = &"lagsanay"
 title = "Lagsanay - tag"
 body = "One chicken is the taya, frozen for {head_start_s} seconds. Touch another chicken to pass it on. The countdown never resets: at zero the taya is out. Last chicken standing wins."
 glyph_action = "move"
+variants = {
+"twist": "Bomb-Taya! One runner is the taya, frozen for {head_start_s} seconds. Touch another runner to pass it before the countdown ends: at zero the taya is out. The flag still wins the race."
+}
+
+[sub_resource type="Resource" id="Step_6"]
+script = ExtResource("2")
+step_id = &"kangaroo_poses"
+title = "Kangaroo - the slipper"
+body = "A giant slipper lands before every command. Sole down: FREEZE, stop running and jumping. Sole up: RISING WAVE, stand on a built piece above the line. Sideways: HUG, touch one other chicken. Watch the icon and the ring."
+glyph_action = "move"
+
+[sub_resource type="Resource" id="Step_7"]
+script = ExtResource("2")
+step_id = &"kangaroo_supports"
+title = "Kangaroo - build up"
+body = "Kangaroo is coming. A Rising wave only counts pieces players built, not the base stage. Build UP this round where chickens can climb: place with {confirm}, rotate with {rotate}."
+glyph_action = "rotate"
+
+[sub_resource type="Resource" id="Step_8"]
+script = ExtResource("2")
+step_id = &"kangaroo_misses"
+title = "Kangaroo - three misses"
+body = "Each missed command adds a mark: KANG, then GA, then ROO. The third mark puts you out. Traps still eliminate you. Last chicken standing wins."
+glyph_action = "jump"
 
 [resource]
 script = ExtResource("1")
-steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5")])
+steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8")])
 placeholder_tag = "PLACEHOLDER copy"
 skip_caption = "Pause > Skip tutorial"
