@@ -192,7 +192,7 @@ All 36 families are approved as the Tilaok design catalog. This approval does no
 
 Requested by Jorge: every placeable item is now its own editable scene in `tilaok!/scenes/blocks/` (one scene per size variant), with a **BlockData** customization node in the style of aLima's `ArtifactScannerData`. `BlockCatalog` scans that folder (recursively) whenever item definitions load, so **dropping a new block scene into the folder makes it appear in the Pugad eggs, the Item Lab and the Library with no code, `.tres` or table edit**. The old `data/items/*.tres` families and the `ItemApprovedVariants` table were converted into these scenes (region-for-region identical; checked by a parity script during migration) and removed: the scene folder is now the documented variant table.
 
-Folders: `construction/` (Kaing 1x1 / 1x3 / 2x3, Tulay 3x1 / 4x1 / 5x1, Solid Block, Wood Box, Collapsing Block), `traps/` (Spikes, Cannon), `hazards/` (Gulong, Trumpo rails, Parol spans, Tsinelas lanes, Walis areas, Bula paths).
+Folders: `construction/` (Kaing 1x1 / 1x3 / 2x3, Tulay 3x1 / 4x1 / 5x1, Solid Block, Wood Box, Collapsing Block), `traps/` (Spikes, Cannon), `explosives/` (Bomb 2x2, Dynamite 3x3, Nuke 4x4: Special = Cleanup, one-use area clears; 2026-10-15), `hazards/` (Gulong, Trumpo rails, Parol spans, Tsinelas lanes, Walis areas, Bula paths).
 
 **Scene layout** (authored at rotation 0, centred on the block root, which uses `scripts/items/blocks/stage_block.gd`):
 

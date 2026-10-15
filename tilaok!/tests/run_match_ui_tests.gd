@@ -874,8 +874,12 @@ func _join_title_k1() -> void:
 	_key("K1", KEY_F, false)
 
 
+## Each egg preview counts as one node: its contents are the rolled block's own Visual, which
+## differs per item (Bomb vs Kaing), so the total would change with the eggs, not with leaks.
 func _count_nodes(node: Node) -> int:
 	var total := 1
+	if node is ItemEggPreview:
+		return total
 	for child in node.get_children():
 		total += _count_nodes(child)
 	return total

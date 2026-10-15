@@ -196,22 +196,23 @@ func _test_spikes() -> void:
 		),
 		"Spikes: solid bottom half and a kill hitbox, independent of its 1x1 placement box"
 	)
-	# Upright spikes on the floor: walking onto them eliminates, credited to the placer.
+	# Upright spikes on the floor: landing on the points eliminates, credited to the placer.
+	# (2026-10-15: Jorge narrowed the kill hitbox to 60x24 inside the points, so it is reached
+	# from above, not by brushing the stone base from the side.)
 	_revive()
 	var ids := _arm([[SPIKES, Vector2i(16, 14)]], 1)
 	_put_actor_feet(Vector2(14.0 * 64.0 + 32.0, FLOOR_Y))
 	await _frames(70)
 	_check(actor.lifecycle.is_terminal() == false, "a chicken beside the spikes is safe")
-	_key(KEY_D, true)
+	_put_actor_feet(Vector2(16.0 * 64.0 + 32.0, FLOOR_Y - 192.0))
 	var died := false
-	for _frame in range(60):
+	for _frame in range(90):
 		await physics_frame
 		if actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
 			died = true
 			break
-	_key(KEY_D, false)
 	var kills := _records(AttributionRecord.Kind.ELIMINATION)
-	_check(died, "walking into the spike points eliminates the chicken")
+	_check(died, "landing on the spike points eliminates the chicken")
 	_check(
 		(
 			kills.size() == 1

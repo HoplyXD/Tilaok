@@ -187,16 +187,16 @@ func _test_match_spikes_kill() -> void:
 	var actor := room.actors[0] as ChickenController
 	for _frame in range(70):
 		await physics_frame
-	actor.global_position = Vector2(14.0 * 64.0 + 32.0, 900.0)
-	room.input_router._stick_x[0] = 1.0
+	# Drop onto the points (the kill hitbox sits inside the points; see run_blocks_tests).
+	actor.global_position = Vector2(16.0 * 64.0 + 32.0, 700.0)
+	actor.velocity = Vector2.ZERO
 	var died := false
 	for _frame in range(120):
 		await physics_frame
 		if actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
 			died = true
 			break
-	room.input_router._stick_x[0] = 0.0
-	_check(died, "walking into placed spikes eliminates the chicken in a real match")
+	_check(died, "landing on placed spikes eliminates the chicken in a real match")
 	var ledger := room.race_round_controller.ledger
 	_check(
 		ledger.outcomes_by_seat.has(0) and str(ledger.outcomes_by_seat[0].outcome) != "finished",

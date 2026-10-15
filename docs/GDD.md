@@ -225,6 +225,11 @@ The Collapsing Block overlaps the proposed *Marupok na Papag* expansion idea (2�
 - **Stun** hitboxes: the chicken is knocked away from the hitbox and its controls freeze for the block's stun time (default 1 s). A short immunity (0.5 s) follows so stuns cannot chain-lock a player. A stun is a setup effect: never credited, never an elimination.
 - **Death sprite:** an eliminated chicken shows the dedicated death pose (sheet row 2, column 4).
 
+### Explosives and the Pugad pick lock — 2026-10-15 (requested by Jorge)
+
+- **Bomb (2×2), Dynamite (3×3) and Nuke (4×4)** are one-use explosive eggs. Placed in the Place phase, each clears every player-built piece from **earlier rounds** inside its area when Place resolves, then a short blast shows. They work like Walis Cleanup: all edits resolve against one shared snapshot, so pieces placed in the same Place phase survive. The base stage, spawn and flag are never affected, and removed pieces never return. The Nuke is rarer in the egg pool (prototype weights 30 / 20 / 8).
+- **Pugad pick lock:** once a player has claimed an egg, their selection is locked for the rest of that Pugad; only players without an egg can keep browsing.
+
 - **Camera:** dynamic, always keeps everyone who matters in frame by zooming and panning smoothly.
   - **Play phase:** frames live players only. Dead players are excluded (finished players too, so the camera follows whoever is still running).
   - **Place phase:** frames the pointers of players who have **not placed yet**. Far-apart pointers zoom out to fit both; once a player places, their pointer drops out and the camera eases in on the remaining ones. When everyone has placed, the camera eases to the Play framing.

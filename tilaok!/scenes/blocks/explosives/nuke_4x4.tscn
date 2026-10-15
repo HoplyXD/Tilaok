@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_block"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_data"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="3_hitbox"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_blast"]
+size = Vector2(256, 256)
+
+[node name="Nuke4x4" type="AnimatableBody2D"]
+sync_to_physics = false
+script = ExtResource("1_block")
+
+[node name="BlockData" type="Node2D" parent="."]
+script = ExtResource("2_data")
+block_name = "Nuke"
+family_id = "explosive.nuke"
+variant_id = "main"
+category = "explosive"
+catalog_order = 22
+library_tell = "A big cartoon nuke; the orange outline is the large area it clears."
+library_counterplay = "Rare. It only clears pieces from earlier rounds; the base stage, spawn and flag are safe."
+placement_size = Vector2i(4, 4)
+rotations = PackedInt32Array(0)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+pool_weight = 8
+special = 6
+
+[node name="BlastArea" type="Area2D" parent="."]
+script = ExtResource("3_hitbox")
+effect = 6
+
+[node name="Shape" type="CollisionShape2D" parent="BlastArea"]
+shape = SubResource("RectangleShape2D_blast")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="BlastOutline" type="Line2D" parent="Visual"]
+points = PackedVector2Array(-125, -125, 125, -125, 125, 125, -125, 125, -125, -125)
+width = 4
+default_color = Color(1, 0.55, 0.15, 0.9)
+
+[node name="FinLeft" type="Polygon2D" parent="Visual"]
+color = Color(0.55, 0.57, 0.62, 1)
+polygon = PackedVector2Array(-29.6, 35.7, -56.4, 75.4, -8.1, 63.5)
+
+[node name="FinRight" type="Polygon2D" parent="Visual"]
+color = Color(0.55, 0.57, 0.62, 1)
+polygon = PackedVector2Array(29.6, 35.7, 56.4, 75.4, 8.1, 63.5)
+
+[node name="Body" type="Polygon2D" parent="Visual"]
+color = Color(0.96, 0.8, 0.18, 1)
+polygon = PackedVector2Array(53.8, 0, 52.9, 13.8, 50.5, 27.1, 46.6, 39.7, 41.2, 51, 34.6, 60.8, 26.9, 68.7, 18.4, 74.6, 9.3, 78.2, 0, 79.4, -9.3, 78.2, -18.4, 74.6, -26.9, 68.7, -34.6, 60.8, -41.2, 51, -46.6, 39.7, -50.5, 27.1, -52.9, 13.8, -53.8, 0, -52.9, -13.8, -50.5, -27.1, -46.6, -39.7, -41.2, -51, -34.6, -60.8, -26.9, -68.7, -18.4, -74.6, -9.3, -78.2, 0, -79.4, 9.3, -78.2, 18.4, -74.6, 26.9, -68.7, 34.6, -60.8, 41.2, -51, 46.6, -39.7, 50.5, -27.1, 52.9, -13.8)
+
+[node name="Stripe" type="Polygon2D" parent="Visual"]
+color = Color(0.12, 0.12, 0.14, 1)
+polygon = PackedVector2Array(-52.1, -9.5, 52.1, -9.5, 52.1, 9.5, -52.1, 9.5)
+
+[node name="Nose" type="Polygon2D" parent="Visual"]
+color = Color(0.85, 0.3, 0.2, 1)
+polygon = PackedVector2Array(18.8, -57.1, 18.3, -53.6, 17, -50.3, 14.7, -47.2, 11.7, -44.7, 8.2, -42.8, 4.2, -41.7, 0, -41.3, -4.2, -41.7, -8.2, -42.8, -11.7, -44.7, -14.7, -47.2, -17, -50.3, -18.3, -53.6, -18.8, -57.1, -18.3, -60.7, -17, -64, -14.7, -67, -11.7, -69.5, -8.2, -71.4, -4.2, -72.6, 0, -73, 4.2, -72.6, 8.2, -71.4, 11.7, -69.5, 14.7, -67, 17, -64, 18.3, -60.7)
+
+[node name="Shine" type="Polygon2D" parent="Visual"]
+color = Color(1, 0.95, 0.65, 1)
+polygon = PackedVector2Array(-17.7, -31.7, -17.9, -28.6, -18.4, -25.5, -19.1, -22.8, -20.2, -20.6, -21.4, -18.9, -22.8, -17.8, -24.2, -17.5, -25.6, -17.8, -27, -18.9, -28.2, -20.6, -29.2, -22.8, -30, -25.5, -30.5, -28.6, -30.6, -31.7, -30.5, -34.9, -30, -37.9, -29.2, -40.7, -28.2, -42.9, -27, -44.6, -25.6, -45.7, -24.2, -46, -22.8, -45.7, -21.4, -44.6, -20.2, -42.9, -19.1, -40.7, -18.4, -37.9, -17.9, -34.9)

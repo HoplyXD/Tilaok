@@ -127,8 +127,8 @@ func _test_tuning_and_definitions() -> void:
 	var definitions := ItemDefinitions.load_all(tuning)
 	_check(definitions.is_valid(), "shipped definitions validate: %s" % [definitions.errors])
 	_check(
-		definitions.families.size() == 7,
-		"seven block families are defined (Kaing, Tulay, three stage blocks, Spikes, Cannon)"
+		definitions.families.size() == 10,
+		"ten block families are defined (Kaing, Tulay, stage blocks, Spikes, Cannon, explosives)"
 	)
 	var kaing := definitions.find_family("build.hollow_blocks")
 	var tulay := definitions.find_family("build.bamboo_bridge")
@@ -1541,7 +1541,7 @@ func _test_wall_eligibility() -> void:
 
 func _test_placeholder_previews_and_library() -> void:
 	var expected_keys := [KAING_1X1, KAING_2X3, TULAY_4X1, SOLID_3X1, WOOD_BOX_2X2, COLLAPSE_1X1]
-	_check(room.egg_previews.size() == 8, "one placeholder egg preview per enabled variant")
+	_check(room.egg_previews.size() == 11, "one placeholder egg preview per enabled variant")
 	var text_free := true
 	for key in expected_keys:
 		var egg := room.egg_previews.get(key) as ItemEggPreview
@@ -1597,7 +1597,7 @@ func _test_placeholder_previews_and_library() -> void:
 		identity_ok
 	)
 	var entries := room.library_entries()
-	var fields_ok := entries.size() == 7
+	var fields_ok := entries.size() == 10
 	for entry in entries:
 		fields_ok = (
 			fields_ok

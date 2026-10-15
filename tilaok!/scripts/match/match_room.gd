@@ -345,6 +345,13 @@ func _has_pending_claim(egg_id: String) -> bool:
 	return false
 
 
+func _seat_has_pending_claim(seat_index: int) -> bool:
+	for claim in pending_claims:
+		if int(claim.seat_index) == seat_index:
+			return true
+	return false
+
+
 func _queue_claim(seat_index: int, egg_id: String) -> void:
 	if phase_controller.phase != MatchPhaseController.Phase.PUGAD or assignments.has(seat_index):
 		return
@@ -568,6 +575,9 @@ func _on_match_navigation_step(seat_index: int, direction: String) -> void:
 func _cycle_egg_selection(seat_index: int, delta: int) -> void:
 	if not selected_egg_by_seat.has(seat_index) or egg_pool.is_empty():
 		return
+	# A seat that owns an egg (or has a claim waiting this tick) keeps its pick: no browsing.
+	if assignments.has(seat_index) or _seat_has_pending_claim(seat_index):
+		return
 	var current := int(selected_egg_by_seat[seat_index])
 	for offset in range(1, egg_pool.size() + 1):
 		var next := posmod(current + delta * offset, egg_pool.size())
@@ -715,9 +725,21 @@ func _resolve_place_edits(edits: Array[Dictionary]) -> void:
 				% [committed.commits.size(), committed.removals.size()]
 			)
 		)
+		_show_blasts(committed.get("one_shot_edits", []))
 	last_message = "\n".join(messages)
 	place_notice = "   •   ".join(rejection_lines)
 	_enter_play()
+
+
+## A short placeholder blast over each committed one-shot cleanup (Bomb, Dynamite, Nuke, Walis).
+func _show_blasts(one_shot_edits: Array) -> void:
+	for edit in one_shot_edits:
+		var blast_area: Variant = (edit as Dictionary).get("area")
+		if not blast_area is Rect2:
+			continue
+		var flash := ExplosionFlash.new()
+		world_layer.add_child(flash)
+		flash.setup(blast_area)
 
 
 func _enter_play() -> void:

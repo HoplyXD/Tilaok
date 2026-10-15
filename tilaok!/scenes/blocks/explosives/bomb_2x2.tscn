@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_block"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_data"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="3_hitbox"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_blast"]
+size = Vector2(128, 128)
+
+[node name="Bomb2x2" type="AnimatableBody2D"]
+sync_to_physics = false
+script = ExtResource("1_block")
+
+[node name="BlockData" type="Node2D" parent="."]
+script = ExtResource("2_data")
+block_name = "Bomb"
+family_id = "explosive.bomb"
+variant_id = "main"
+category = "explosive"
+catalog_order = 20
+library_tell = "A round bomb with a lit fuse; the orange outline is the area it clears."
+library_counterplay = "It only clears pieces from earlier rounds; the base stage, spawn and flag are safe."
+placement_size = Vector2i(2, 2)
+rotations = PackedInt32Array(0)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+counts_as_support = false
+pool_weight = 30
+special = 6
+
+[node name="BlastArea" type="Area2D" parent="."]
+script = ExtResource("3_hitbox")
+effect = 6
+
+[node name="Shape" type="CollisionShape2D" parent="BlastArea"]
+shape = SubResource("RectangleShape2D_blast")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="BlastOutline" type="Line2D" parent="Visual"]
+points = PackedVector2Array(-61, -61, 61, -61, 61, 61, -61, 61, -61, -61)
+width = 4
+default_color = Color(1, 0.55, 0.15, 0.9)
+
+[node name="Body" type="Polygon2D" parent="Visual"]
+color = Color(0.16, 0.16, 0.2, 1)
+polygon = PackedVector2Array(35.2, 7.7, 34.3, 15.5, 31.7, 23, 27.5, 29.6, 21.9, 35.2, 15.3, 39.4, 7.8, 42, 0, 42.9, -7.8, 42, -15.3, 39.4, -21.9, 35.2, -27.5, 29.6, -31.7, 23, -34.3, 15.5, -35.2, 7.7, -34.3, -0.2, -31.7, -7.6, -27.5, -14.3, -21.9, -19.8, -15.3, -24, -7.8, -26.6, 0, -27.5, 7.8, -26.6, 15.3, -24, 21.9, -19.8, 27.5, -14.3, 31.7, -7.6, 34.3, -0.2)
+
+[node name="Shine" type="Polygon2D" parent="Visual"]
+color = Color(0.45, 0.47, 0.55, 1)
+polygon = PackedVector2Array(-6, -4.6, -6.1, -3.7, -6.6, -2.8, -7.4, -2, -8.4, -1.3, -9.6, -0.8, -10.9, -0.5, -12.3, -0.4, -13.7, -0.5, -15.1, -0.8, -16.3, -1.3, -17.3, -2, -18, -2.8, -18.5, -3.7, -18.7, -4.6, -18.5, -5.6, -18, -6.5, -17.3, -7.3, -16.3, -7.9, -15.1, -8.4, -13.7, -8.8, -12.3, -8.9, -10.9, -8.8, -9.6, -8.4, -8.4, -7.9, -7.4, -7.3, -6.6, -6.5, -6.1, -5.6)
+
+[node name="Cap" type="Polygon2D" parent="Visual"]
+color = Color(0.3, 0.3, 0.36, 1)
+polygon = PackedVector2Array(-8.8, -35.5, 8.8, -35.5, 8.8, -21.5, -8.8, -21.5)
+
+[node name="Fuse" type="Line2D" parent="Visual"]
+points = PackedVector2Array(0, -35.5, 5.3, -49.5, 14.1, -53.5)
+width = 4
+default_color = Color(0.75, 0.6, 0.35, 1)
+
+[node name="Spark" type="Polygon2D" parent="Visual"]
+color = Color(1, 0.85, 0.2, 1)
+polygon = PackedVector2Array(14.1, -66.5, 17, -59.6, 24.5, -58.9, 18.8, -54, 20.5, -46.6, 14.1, -50.5, 7.6, -46.6, 9.3, -54, 3.6, -58.9, 11.1, -59.6)
