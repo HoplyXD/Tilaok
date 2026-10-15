@@ -16,7 +16,6 @@ const VARIANT_LOST := &"lost"
 const VARIANT_TIMEOUT := &"timeout"
 const VARIANT_NOBODY := &"nobody"
 const VARIANT_EVERYONE := &"everyone"
-const VARIANT_WAIVER := &"waiver"
 const VARIANT_TWIST := &"twist"
 ## The taya prompt (Lagsanay Main or Bomb-Taya Twist) sits over the stage's left edge and shares
 ## the box with the other just-in-time prompts, so it hands over after this long: the chickens
@@ -320,10 +319,8 @@ func _results_variant() -> StringName:
 	var finishers := finisher_count()
 	if finishers == 0:
 		return VARIANT_NOBODY
-	if finishers >= seats and seats >= 3:
+	if finishers >= seats:
 		return VARIANT_EVERYONE
-	if finishers >= seats and seats == 2:
-		return VARIANT_WAIVER
 	return &""
 
 

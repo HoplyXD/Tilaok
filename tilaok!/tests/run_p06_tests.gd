@@ -233,12 +233,14 @@ func _test_race_scoring_matrix() -> void:
 	var result := RaceScoreCalculator.calculate(
 		[0, 1],
 		[FIXTURE.terminal(0, "finished", 10), FIXTURE.terminal(1, "finished", 10)],
-		{0: 0, 1: 0}
+		{0: 0, 1: 0},
+		[1]
 	)
 	_check(
-		result.valid and result.delta_units[0] == 10 and result.delta_units[1] == 10,
-		"2-player all-finish waiver awards Tapos and tied Una to both"
+		result.valid and result.delta_units[0] == 0 and result.delta_units[1] == 0,
+		"2-player all-finish round awards zero to both players, including the coin carrier"
 	)
+	_check(result.award_rows.is_empty(), "2-player all-finish round has no award rows")
 	_check(
 		result.first_finish_seats == [0, 1], "exact earliest-finish ties are retained as a group"
 	)
@@ -254,12 +256,51 @@ func _test_race_scoring_matrix() -> void:
 		[2]
 	)
 	_check(
-		result.delta_units[0] == 0 and result.delta_units[2] == 4,
-		"3-player all-finish suppression preserves only finisher Barya"
+		result.delta_units[0] == 0 and result.delta_units[2] == 0,
+		"3-player all-finish round suppresses Barya too"
+	)
+	_check(result.award_rows.is_empty(), "all-finish result has no coin award row")
+	result = (
+		RaceScoreCalculator
+		. calculate(
+			[0, 1, 2, 3],
+			[
+				FIXTURE.terminal(0, "finished", 1),
+				FIXTURE.terminal(1, "finished", 2),
+				FIXTURE.terminal(2, "finished", 3),
+				FIXTURE.terminal(3, "finished", 4),
+			],
+			{0: 8, 1: 16, 2: 24, 3: 32},
+			[3]
+		)
 	)
 	_check(
-		result.award_rows.size() == 1 and result.award_rows[0].key == "barya",
-		"all-finish result explains the surviving coin award"
+		(
+			result.delta_units[0] == 0
+			and result.delta_units[1] == 0
+			and result.delta_units[2] == 0
+			and result.delta_units[3] == 0
+			and result.totals_units == {0: 8, 1: 16, 2: 24, 3: 32}
+			and result.award_rows.is_empty()
+		),
+		"4-player all-finish round leaves every previous total unchanged"
+	)
+	result = (
+		RaceScoreCalculator
+		. calculate(
+			[0, 1, 2],
+			[
+				FIXTURE.terminal(0, "finished", 1),
+				FIXTURE.terminal(1, "finished", 2),
+				FIXTURE.terminal(2, "eliminated", 3),
+			],
+			{0: 0, 1: 0, 2: 0},
+			[1]
+		)
+	)
+	_check(
+		result.delta_units[0] == 10 and result.delta_units[1] == 12,
+		"Barya still pays its finisher when some but not all players finish"
 	)
 
 	result = RaceScoreCalculator.calculate(
@@ -326,7 +367,7 @@ func _test_race_scoring_matrix() -> void:
 	)
 	_check(
 		result.delta_units[0] == 16,
-		"two-player waiver permits sole-finisher awards and a direct kill"
+		"two-player sole finisher earns ordinary awards and a direct kill"
 	)
 	_check(result.delta_units[1] == 0, "a direct-killed victim receives no trap credit")
 	var bawi := RaceScoreCalculator.calculate(
@@ -538,16 +579,15 @@ func _test_real_goal_and_next_round() -> void:
 	)
 	_check(room.items.round_number == 1, "live race cleanup increments the round exactly once")
 	_check(
-		room.last_results_model.award_rows.size() >= 3,
-		"live result model shows real Tapos and Una award rows"
+		room.last_results_model.award_rows.is_empty(), "live all-finish result has no award rows"
 	)
 	_check(
-		room.last_results_model.suppression_reason.contains("two-player waiver"),
-		"live result explains the two-player scoring waiver"
+		room.last_results_model.suppression_reason.contains("Everyone reached the goal"),
+		"live result explains the two-player all-finish zero"
 	)
 	_check(
-		room.cumulative_score_units[0] + room.cumulative_score_units[1] >= 18,
-		"live finish outcomes commit exact cumulative scores"
+		room.cumulative_score_units[0] + room.cumulative_score_units[1] == 0,
+		"live all-finish outcome commits zero cumulative delta"
 	)
 	_check(
 		(
@@ -575,7 +615,7 @@ func _test_real_goal_and_next_round() -> void:
 		"next-round start resets finisher lifecycle"
 	)
 	_check(
-		room.cumulative_score_units[0] + room.cumulative_score_units[1] >= 18,
+		room.cumulative_score_units[0] + room.cumulative_score_units[1] == 0,
 		"next-round actor reset preserves cumulative scores"
 	)
 	room.queue_free()

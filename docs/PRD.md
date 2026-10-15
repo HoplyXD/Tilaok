@@ -421,9 +421,9 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 | Bayani | +0.5 | Only finisher, including a two-player round. |
 | Patibong | +0.25/kill | Directly eliminating owned hazard; no self-kill/assist; race suppression applies. |
 | Bawi | +0.75 | At least 3 points behind leader at round start and finishes/wins elimination Main. |
-| Barya | +0.5 | Optional coin carried across race flag; allowed despite all-finish suppression. |
+| Barya | +0.5 | Optional coin carried across race flag, only in a scoring round; all-finish and no-finish rounds award zero. |
 
-In 3/4-player objective rounds, all or none earning Tapos suppresses ordinary points; no finish also suppresses Patibong. Two-player Karera waives suppression. Karera awards Una to the first finisher, but no second/third-place points or placement table. Lagsanay and Kangaroo use survival placement with no all/none suppression: in four-player play the first eliminated is fourth for zero placement points and the last survivor is first. A fourth-place chicken retains any independently earned direct Patibong. Main Challenge determines score family even with a Twist. No duplicated awards, rounded placement averages or assist points.
+In 2–4-player Karera rounds, everyone or nobody reaching the goal awards zero to every player, including optional Barya and Patibong. Otherwise the ordinary awards apply. Karera awards Una to the first finisher, but no second/third-place points or placement table. Lagsanay and Kangaroo use survival placement with no all/none suppression: in four-player play the first eliminated is fourth for zero placement points and the last survivor is first. A fourth-place chicken retains any independently earned direct Patibong. Main Challenge determines score family even with a Twist. No duplicated awards, rounded placement averages or assist points.
 
 End-of-round total ≥10 ends a match unless leaders tie; otherwise highest after round 12 wins. Equal leaders play standalone Lagsanay sudden death among themselves. Optional session tally is not an online leaderboard or disk save.
 
@@ -454,11 +454,11 @@ End-of-round total ≥10 ends a match unless leaders tie; otherwise highest afte
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Tapos 1.0 per finish; Una +0.25 for earliest finish, all exact indistinguishable first finishers receive it; Bayani +0.5 sole finisher; Patibong +0.25 per directly killed opponent subject to race scoring; Bawi +0.75 if at least 3 points behind leader at round start and finishing. All/none finish suppresses points in 3/4-player races; 2-player waiver permits normal awards. Optional Barya +0.5 for its finisher survives all-finish suppression.
+**Expected behavior:** Tapos 1.0 per finish; Una +0.25 for earliest finish, all exact indistinguishable first finishers receive it; Bayani +0.5 sole finisher; Patibong +0.25 per directly killed opponent subject to race scoring; Bawi +0.75 if at least 3 points behind leader at round start and finishing. All/none finish awards zero to every player in 2/3/4-player races, including optional Barya. Ordinary awards apply when some but not all finish.
 
-**Acceptance:** Table-driven 2/3/4-player cases cover all/none/sole/multiple finishes, exact-first ties, dead trap owner, self kill, underdog snapshot and coin exception; totals are exact and awarded once.
+**Acceptance:** Table-driven 2/3/4-player cases cover all/none/sole/multiple finishes, exact-first ties, dead trap owner, self kill, underdog snapshot and coin suppression; totals are exact and awarded once.
 
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** integer eighth-point `RaceScoreCalculator` feeds explained live results; 97 focused assertions cover 2/3/4-seat suppression, waiver, ties, awards, totals and snapshot-based Bawi ([P06 verification](evidence/p06/2026-10-14_p06_verification.md)). Barya is a test-only fact; no coin gameplay is included. Rendered result readability has a synthetic 1920×1080 check; human review remains open.
+**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** integer eighth-point `RaceScoreCalculator` feeds explained live results. The [2026-10-15 all-finish update](evidence/p06/2026-10-15_all_finish_zero.md) verifies the current 2/3/4-player zero-point rule with 102 focused P06 checks; the earlier [P06 verification](evidence/p06/2026-10-14_p06_verification.md) records the superseded two-player waiver/Barya exception. Barya is a test-only fact; no coin gameplay is included. Rendered result readability has a synthetic 1920×1080 check under the earlier rule; human review remains open.
 
 
 ### REQ-SCORE-003 — Store elimination placement ties without rounding
@@ -732,7 +732,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 **Scope:** SHOULD · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 
-**Expected behavior:** Race-only optional pickup: about 1-in-3 Pugad appearance replacing one egg; one per round, picker places it, carrier visible, drop on death for others, finish while carrying earns +0.5 even in all-finish suppressed round; remove at round end, never persist as a 37th obstacle.
+**Expected behavior:** Race-only optional pickup: about 1-in-3 Pugad appearance replacing one egg; one per round, picker places it, carrier visible, drop on death for others, finish while carrying earns +0.5 only when some but not all players finish; remove at round end, never persist as a 37th obstacle.
 
 **Acceptance:** Test contested pickup/drop/death/finish, one-coin cap, suppression exception, stacked races, cleanup and disabled pool.
 

@@ -367,10 +367,10 @@ func _two_player_session() -> void:
 	await _wait_physics_frames(GOAL_PHYSICS_FRAMES)
 	await _wait_frames(4)
 	_check(
-		room.last_results_model.suppression_reason.contains("two-player waiver"),
-		"two finishers: the 2-player waiver is explained"
+		room.last_results_model.suppression_reason.contains("Everyone reached the goal"),
+		"two finishers: all-finish zero is explained"
 	)
-	await _capture("23_results_two_players_waiver")
+	await _capture("23_results_two_players_all_finish_zero")
 	DisplayServer.window_set_size(WIDE_SIZE)
 	await _wait_frames(6)
 	await _capture("24_results_wide_window_letterbox", LETTERBOXED_VIEWPORT)

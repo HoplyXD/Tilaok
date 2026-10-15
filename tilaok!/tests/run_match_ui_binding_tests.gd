@@ -2,7 +2,7 @@ extends SceneTree
 
 ## Live Round result binding: every number, award, reason and row on UiRoundResultScreen equals the
 ## MatchResultsViewModel built from the P06 calculator, for 2, 3 and 4 players (including eighth-
-## point totals, suppressed rounds, the 2-player waiver and the worst-case ten award rows).
+## point totals, suppressed rounds including two-player all-finish, and dense award rows).
 
 const RESULT_SCENE := preload("res://scenes/ui/screens/round_result_screen.tscn")
 const PAD_IDS := [710, 711]
@@ -25,7 +25,7 @@ func _run() -> void:
 func _test_result_bindings() -> void:
 	var cases := [
 		{
-			"name": "2 players, tied Una, waiver",
+			"name": "2 players, tied finish, zero awards",
 			"seats": 2,
 			"start": {0: 0, 1: 0},
 			"outcomes":

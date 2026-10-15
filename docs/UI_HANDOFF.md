@@ -96,7 +96,7 @@ Flow (LOCKED, from UI_TUTORIAL): Title → Lobby → Tutorial (first Karera) →
 ### 7.1 Round and match information
 - **Scoring cards:** Karera uses Tapos 1.0 for each finisher and Una +0.25 for the first, with no second/third-place points. Bayani +0.5, Patibong +0.25 per direct kill, Bawi +0.75 and Barya +0.5 retain their conditions. Lagsanay and Kangaroo use survival placement 1.0 / 0.5 / 0.25 / 0 for four players; fourth place may still earn direct Patibong. Totals can need eighth-point precision on tie displays ([GDD.md §5](GDD.md)).
 - Win condition: first to 10 points, or highest after round 12. Every 4th round is an event, announced a round ahead.
-- **No-score explanations:** "everyone finished" and "nobody finished" must say why no points were awarded (waived in 2-player).
+- **No-score explanations:** "everyone finished" and "nobody finished" must say why every player earned zero round points, including in two-player Karera.
 - **Secured** marker: finisher in stacked modes. **Taya** marker: body marker, player number/shape/name, countdown, head-start state and recent-player pass-back immunity feedback. P08 development implementation is verified in [P08 evidence](evidence/p08/README.md); final art/readability review remains open.
 
 ### 7.2 Items (current seeds)

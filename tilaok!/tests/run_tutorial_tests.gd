@@ -50,6 +50,7 @@ func _run() -> void:
 	_test_script_resource()
 	_test_session_memory()
 	await _test_steps_through_a_round(2)
+	await _test_everyone_finished_text(2)
 	await _test_everyone_finished_text(4)
 	await _test_everyone_finished_text(3)
 	await _test_pugad_and_place_timeouts()
@@ -183,7 +184,7 @@ func _test_steps_through_a_round(seat_count: int) -> void:
 		"Karera copy carries the 60 s cap and 15 s finish window (%s)" % play_body
 	)
 	_check(not marker.visible, "the BUILD HERE marker hides after Place")
-	# Two seats reach the flag: with two players the waiver applies.
+	# Both seats reach the flag: every player earns zero round points.
 	await _teleport_all_to_goal(room)
 	_check(room.phase_controller.phase == MatchPhaseController.Phase.RESULTS, "round ends")
 	_check(coach.view.step_id == TutorialScript.STEP_RESULTS, "Results shows the results step")
@@ -191,9 +192,9 @@ func _test_steps_through_a_round(seat_count: int) -> void:
 	_check(
 		(
 			str(coach.view.body).contains(model.suppression_reason)
-			and model.suppression_reason.contains("two-player waiver")
+			and model.suppression_reason.contains("Everyone reached the goal")
 		),
-		"the 2-player waiver text equals the real result (%s)" % coach.view.body
+		"the 2-player all-finish zero text equals the real result (%s)" % coach.view.body
 	)
 	_check(str(coach.view.body).contains("8"), "Results copy carries the 8 s advance time")
 	room._start_next_round()

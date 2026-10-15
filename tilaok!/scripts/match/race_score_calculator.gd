@@ -59,11 +59,9 @@ static func calculate(
 	if no_finisher:
 		suppress = true
 		suppression_reason = "No one reached the goal; no round points are awarded."
-	elif seat_indices.size() >= 3 and all_finishers:
+	elif all_finishers:
 		suppress = true
-		suppression_reason = "Everyone reached the goal; race awards are suppressed."
-	elif seat_indices.size() == 2:
-		suppression_reason = "The two-player waiver allows normal race awards."
+		suppression_reason = "Everyone reached the goal; no round points are awarded."
 	else:
 		suppression_reason = "Some players finished; normal race awards apply."
 	var award_rows: Array[Dictionary] = []
@@ -122,7 +120,7 @@ static func calculate(
 						BAWI_UNITS,
 						"Started at least 3 points behind the round-start leader and finished."
 					)
-			if coin_seats.has(seat_index):
+			if coin_seats.has(seat_index) and not suppress:
 				_add_award(
 					award_rows,
 					delta_units,

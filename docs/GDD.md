@@ -128,11 +128,11 @@ Event rounds reuse the **same point types**, re-mapped to each event's objective
 
 **Lagsanay runtime clarification (approved for the independent development mode):** timer expiry and accepted hazard eliminations are committed as one batch before survivor count, reassignment, placement and any surviving-taya tag transfer. The hazard director uses its round-relative simulation clock; only contacts whose producers supply comparable event times may be ordered within a physics tick. Otherwise they remain indistinguishable and use the existing stable tie rule. Last Cluck test fixtures may supply distinguishable timestamps to verify the arithmetic, but they do not claim that real callbacks reveal sub-frame order. A brief 0.75 s prototype freeze presents the Last Cluck explanation after score/terminal commit; the presentation callback cannot award again. These runtime bindings do not activate R1–R4 or the tentative taya-speed idea.
 
-### Too easy / too hard (all rounds except Lagsanay)
-- Everyone gets Tapos → **no points** that round (except Barya, which is earned by reaching the flag, so it only matters here).
+### Too easy / too hard (objective scoring, including Karera)
+- Everyone reaches the goal → **no points for anyone** that round, including Tapos, Una, Barya and all other race awards, in 2–4-player matches.
 - Nobody gets Tapos → **no points** that round, including Patibong.
 - This forces players to build stages that are hard but beatable.
-- **2-player matches:** this rule is waived. Reaching the goal scores Tapos for each player, plus Una for the first, and Bayani if only one finishes.
+- **2-player matches:** the same all-finish/no-finish zero-point rule applies. If only one player finishes, their ordinary Tapos, Una, Bayani and eligible bonuses apply.
 
 ### Event mapping
 | Main Challenge | Goal = | First = |
@@ -161,7 +161,7 @@ Both elimination Main Challenges use survival placement instead of Karera's fini
 - Barya is an **item that sometimes appears among the Pugad eggs** (about a 1-in-3 chance per round, replacing one egg). Whoever picks it places it, so they choose how hard it is to reach.
 - Touch it to pick it up; it follows you visibly. If you die, you drop it where you died and anyone can grab it.
 - At most one per round, and it is removed at round end (unlike other items, it does not persist).
-- It still pays out in a "too easy / too hard" round.
+- It pays out only when at least one chicken reaches the flag and at least one does not; an all-finish or no-finish round awards zero to everyone.
 - Priority: **Should**. Build after the base loop and scoring work; cut first if the schedule slips.
 
 ### Match settings

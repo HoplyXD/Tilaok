@@ -142,7 +142,7 @@ Tutorial prompts must be skippable after a player has completed them in the curr
 | 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout) |
 | 3 Place | Place | all confirmed or Place ends; BUILD HERE zone marker; stronger hint when the previous round had no finishers |
 | 4 Karera | Play | the round ends |
-| 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody / 2-player waiver) |
+| 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody); all-finish means zero points even with two players |
 | Lagsanay | first Lagsanay or sudden death of a session | Lagsanay ends; shown once per session (only reachable on the lifecycle route today) |
 
 **D1 note:** move/jump is taught inside the real first Karera (a warm-up note in step 1 and the Play prompt), not in a pre-Pugad practice phase. This supersedes the wording of sequence step 2 above ("reach short, safe markers on the base stage") for the guided match; the P13-T07 acceptance is unchanged.

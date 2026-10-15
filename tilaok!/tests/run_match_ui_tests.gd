@@ -277,9 +277,9 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 	_check(
 		(
 			result.get_node("%NoScoreReason").text_value() == model.suppression_reason
-			and model.suppression_reason.contains("two-player waiver")
+			and model.suppression_reason.contains("Everyone reached the goal")
 		),
-		"round %d: the 2-player waiver reason is shown" % round_number
+		"round %d: the 2-player all-finish zero reason is shown" % round_number
 	)
 	result.chart().settle()
 	for index in model.per_seat_outcomes.size():

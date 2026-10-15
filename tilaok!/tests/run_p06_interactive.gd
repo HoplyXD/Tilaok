@@ -51,24 +51,22 @@ func _run() -> void:
 		room.phase_controller.phase == MatchPhaseController.Phase.RESULTS,
 		"live arena goal collision resolves a two-player finish"
 	)
-	_check(
-		room.last_results_model.award_rows.size() >= 3, "results explain live Tapos and Una awards"
-	)
+	_check(room.last_results_model.award_rows.is_empty(), "all-finish results show no awards")
 	var tied_una_rows := 0
 	for award in room.last_results_model.award_rows:
 		if str(award.get("key", "")) == "una":
 			tied_una_rows += 1
-	_check(tied_una_rows == 2, "same-step goal contacts award exact tied Una to both seats")
+	_check(tied_una_rows == 0, "same-step all-finish contacts suppress Una")
 	_check(
 		(
-			room.last_results_model.totals[0].delta_units == 10
-			and room.last_results_model.totals[1].delta_units == 10
+			room.last_results_model.totals[0].delta_units == 0
+			and room.last_results_model.totals[1].delta_units == 0
 		),
-		"each tied two-player finisher receives exactly 10 eighth-point units"
+		"each two-player finisher receives zero round points"
 	)
 	_check(
-		room.last_results_model.suppression_reason.contains("two-player waiver"),
-		"results explain why two-player scoring is active"
+		room.last_results_model.suppression_reason.contains("Everyone reached the goal"),
+		"results explain two-player all-finish suppression"
 	)
 	_check(
 		room.last_results_model.per_seat_outcomes.size() == 2,
@@ -159,13 +157,13 @@ func _write_evidence_notes() -> void:
 				+ "totals, ready both seats, and inspect the next Pugad."
 			),
 			(
-				"Expected: goal finishes secure both actors; Tapos and exact earliest Una are shown; "
-				+ "two-player waiver is explained; cumulative totals commit once; next round resets "
+				"Expected: goal finishes secure both actors; all awards are suppressed; "
+				+ "two-player all-finish zero is explained; cumulative totals commit once; next round resets "
 				+ "actor lifecycle while retaining construction and scores."
 			),
 			(
-				"Actual: PASSED — the runner reported 17 checks, including two tied Una rows and "
-				+ "exact 10-unit deltas for both seats. Full command output is in `run_p06_interactive.txt`."
+				"Actual: PASSED — the runner reported 17 checks, including no award rows and "
+				+ "exact zero deltas for both seats. Full command output is in `run_p06_interactive.txt`."
 			),
 			(
 				"Reviewer: not recorded; no independent human review is claimed. "

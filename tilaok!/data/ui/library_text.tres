@@ -56,7 +56,7 @@ requires = ""
 script = ExtResource("2")
 category = "Karera"
 title = "Too easy, too hard"
-body = "If everyone finishes, or nobody does, no points are awarded that round. That includes Patibong. Build stages that are hard but beatable. In 2-player matches this rule is waived."
+body = "If everyone finishes, or nobody does, every chicken earns 0 points that round. This includes Tapos, Una, Patibong and Barya, even with 2 players. If some but not all finish, normal awards apply. Build stages that are hard but beatable."
 requires = ""
 
 [sub_resource type="Resource" id="Page_9"]
