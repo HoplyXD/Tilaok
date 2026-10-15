@@ -24,6 +24,8 @@ const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.ts
 const ROUTE_PREFIX := "--match-route="
 const ROUTE_LIFECYCLE := "lifecycle"
 const ROUTE_FIRST_PLAYABLE := "first_playable"
+## `-- --match-seed=3` reproduces a match for a facilitator or a bug report (never shown in play).
+const SEED_PREFIX := "--match-seed="
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
 const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
 const SETTINGS_SCENE := preload("res://scenes/ui/screens/settings_screen.tscn")
@@ -162,6 +164,9 @@ func _enter_match() -> void:
 	for seat in router.registry.joined_seats():
 		router.registry.set_ready(int(seat.seat), false)
 	room = match_scene.instantiate() as P05MatchRoom
+	var requested_seed := seed_from_args(OS.get_cmdline_user_args())
+	if requested_seed >= 0:
+		room.set_match_seed(requested_seed)
 	room.input_router = router
 	room.auto_start_on_ready = true
 	room.presentation_settings = settings
@@ -291,6 +296,18 @@ func _quit() -> void:
 
 func _route_name() -> String:
 	return ROUTE_LIFECYCLE if match_scene == LIFECYCLE_SCENE else ROUTE_FIRST_PLAYABLE
+
+
+## The seed asked for with --match-seed=<non-negative integer>, or -1 (use the build default).
+static func seed_from_args(arguments: PackedStringArray) -> int:
+	var result := -1
+	for argument in arguments:
+		if not argument.begins_with(SEED_PREFIX):
+			continue
+		var text := argument.trim_prefix(SEED_PREFIX)
+		if text.is_valid_int() and int(text) >= 0:
+			result = int(text)
+	return result
 
 
 ## The last recognised --match-route value among `arguments`, or "" (keep the build default).

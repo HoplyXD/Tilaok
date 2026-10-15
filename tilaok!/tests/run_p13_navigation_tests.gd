@@ -63,6 +63,15 @@ func _test_route_flag_parsing() -> void:
 		parse.call(PackedStringArray(["--match-route=first_playable"])) == "first_playable",
 		"--match-route=first_playable selects the first playable room"
 	)
+	var seed_of := GameFlow.seed_from_args
+	_check(seed_of.call(PackedStringArray()) == -1, "no seed flag keeps the default seed")
+	_check(
+		seed_of.call(PackedStringArray(["--match-seed=3"])) == 3, "--match-seed=3 asks for seed 3"
+	)
+	_check(
+		seed_of.call(PackedStringArray(["--match-seed=abc", "--match-seed=-4"])) == -1,
+		"a malformed or negative seed is ignored"
+	)
 	_check(
 		parse.call(PackedStringArray(["--match-route=nonsense"])) == "",
 		"an unknown route value is ignored, never silently remapped"

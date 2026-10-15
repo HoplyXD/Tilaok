@@ -117,10 +117,22 @@ func _test_twist_and_stack() -> void:
 		_step(coach) == "lagsanay" and str(coach.view.body).contains("Bomb-Taya"),
 		"the taya prompt (Twist wording) shows first on a stacked round"
 	)
-	coach._on_twist_prompt_timeout()
+	coach._on_taya_prompt_timeout()
 	_check(
 		_step(coach) == "kangaroo_misses",
 		"after the hand-over the Kangaroo prompt takes its turn (%s)" % _step(coach)
+	)
+	await _free()
+	# A Lagsanay Main round: the taya prompt hands the stage back after its time.
+	await _open(true)
+	_force(1, LAGSANAY, NONE)
+	_goto_place()
+	_goto_play()
+	_check(_step(flow.tutorial) == "lagsanay", "a Lagsanay Main round shows the taya prompt")
+	flow.tutorial._on_taya_prompt_timeout()
+	_check(
+		_step(flow.tutorial) == "" and flow.tutorial_session.seen_lagsanay,
+		"the taya prompt hands over after its time and counts as seen"
 	)
 	await _free()
 	# Karera + Kangaroo Twist: the Twist triggers the same prompts.

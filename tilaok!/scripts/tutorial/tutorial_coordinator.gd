@@ -18,9 +18,10 @@ const VARIANT_NOBODY := &"nobody"
 const VARIANT_EVERYONE := &"everyone"
 const VARIANT_WAIVER := &"waiver"
 const VARIANT_TWIST := &"twist"
-## The Bomb-Taya Twist prompt shares the box with the other just-in-time prompts, so it hands
-## over after this long and the next due prompt (Kangaroo) takes its turn.
-const TWIST_PROMPT_SECONDS := 8.0
+## The taya prompt (Lagsanay Main or Bomb-Taya Twist) sits over the stage's left edge and shares
+## the box with the other just-in-time prompts, so it hands over after this long: the chickens
+## are uncovered and the next due prompt (Kangaroo) takes its turn.
+const TAYA_PROMPT_SECONDS := 12.0
 
 var room: P05MatchRoom
 var session: TutorialSession
@@ -37,7 +38,7 @@ var _nobody_finished_last_round := false
 var _completion_pending := false
 var _lagsanay_showing := false
 var _lagsanay_as_twist := false
-var _twist_prompt_expired := false
+var _taya_prompt_expired := false
 ## The Kangaroo prompt shown during the current phase; marked seen when that phase ends.
 var _kangaroo_step: StringName = &""
 
@@ -156,8 +157,8 @@ func _on_actor_terminal(_status: PlayerLifecycleState.Status, _reason: String) -
 	rebuild()
 
 
-func _on_twist_prompt_timeout() -> void:
-	_twist_prompt_expired = true
+func _on_taya_prompt_timeout() -> void:
+	_taya_prompt_expired = true
 	rebuild()
 
 
@@ -208,13 +209,13 @@ func _lagsanay_running() -> bool:
 func _update_lagsanay_flag() -> void:
 	var running := _lagsanay_running()
 	if not running:
-		_twist_prompt_expired = false
-	elif _lagsanay_as_twist and _twist_prompt_expired:
+		_taya_prompt_expired = false
+	elif _taya_prompt_expired:
 		running = false
 	if running and session.lagsanay_prompt_due():
-		if not _lagsanay_showing and _lagsanay_as_twist and is_inside_tree():
-			_twist_prompt_expired = false
-			get_tree().create_timer(TWIST_PROMPT_SECONDS).timeout.connect(_on_twist_prompt_timeout)
+		if not _lagsanay_showing and is_inside_tree():
+			_taya_prompt_expired = false
+			get_tree().create_timer(TAYA_PROMPT_SECONDS).timeout.connect(_on_taya_prompt_timeout)
 		_lagsanay_showing = true
 	elif not running and _lagsanay_showing:
 		_lagsanay_showing = false

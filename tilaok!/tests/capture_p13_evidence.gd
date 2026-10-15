@@ -248,7 +248,7 @@ func _final_results() -> void:
 	await _to_play()
 	await _frames(10)
 	await _finish_race(0)
-	await _frames(12)
+	await _frames(240)
 	await _shot("final_results")
 	await _free_flow()
 
@@ -467,6 +467,7 @@ func _crowded_muted_shake_off() -> void:
 
 
 func _parol_strobe() -> void:
+	tag = "1920x1080_2p"
 	var lab := ITEMS_LAB_SCENE.instantiate() as P05MatchRoom
 	root.add_child(lab)
 	await _frames(3)
