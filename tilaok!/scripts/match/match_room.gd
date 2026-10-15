@@ -648,7 +648,8 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 
 
 func _on_match_disabled_action(seat_index: int, action_name: String) -> void:
-	if action_name == "rotate":
+	# Rotation only exists in Place; the same key cheers during Play and opens help in the Lobby.
+	if action_name == "rotate" and phase_controller.phase == MatchPhaseController.Phase.PLACE:
 		last_message = "P%d rotation is unavailable for this variant." % (seat_index + 1)
 		place_notices[seat_index] = ROTATION_UNAVAILABLE_TEXT
 		_refresh_match_ui()

@@ -1,0 +1,77 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" path="res://scripts/diagnostics/key_chord_recorder.gd" id="2"]
+
+[node name="KeyChordRecorder" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Backdrop" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"Backdrop"
+
+[node name="Safe" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"SafeAreaMargin"
+
+[node name="Content" type="VBoxContainer" parent="Safe"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Heading" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = "KEYBOARD CHORD RECORDER (P02-T04)"
+theme_type_variation = &"HeadingLabel"
+
+[node name="Help" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = "Hold the shown keys together. PASS is recorded when every key is down at once. Insert = could not (LOST). Page Down = skip. Page Up = back. F2 = print the report. Home = restart. End = leave."
+theme_type_variation = &"CaptionLabel"
+autowrap_mode = 3
+
+[node name="ChordLabel" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = "C01"
+theme_type_variation = &"HeadingLabel"
+unique_name_in_owner = true
+
+[node name="KeysLabel" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+unique_name_in_owner = true
+
+[node name="StatusLabel" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+unique_name_in_owner = true
+
+[node name="SummaryLabel" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"BodyLabel"
+unique_name_in_owner = true
+
+[node name="LogLabel" type="Label" parent="Safe/Content"]
+layout_mode = 2
+text = ""
+theme_type_variation = &"CaptionLabel"
+unique_name_in_owner = true

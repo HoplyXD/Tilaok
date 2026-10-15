@@ -18,6 +18,7 @@ const DEBUG_REFRESH_SECONDS := 0.25
 const DEBUG_OVERLAY_FLAG := "--debug-overlay"
 const LIST_SEPARATOR := "   •   "
 const PHASE_NAMES := ["LOBBY", "PUGAD", "PLACE", "PLAY", "RESULTS"]
+const CHEER_STATE_TEXT := "CHEER!"
 
 var room: P05MatchRoom
 var bridge: UiInputBridge
@@ -36,6 +37,10 @@ var _debug_accum := 0.0
 var _game_input_suspended := false
 var _tutorial: TutorialCoordinator
 var _lobby_leave_seat := -1
+## Spectator cheer: cooldowns, the HUD marks being shown and the soft crowd cue (presentation only).
+var _cheer := SpectatorCheer.new()
+var _cheer_marks: Dictionary = {}
+var _cheer_player: AudioStreamPlayer
 
 @onready var lobby_screen: UiLobbyScreen = %LobbyScreen
 @onready var play_hud: UiPlayHud = %PlayHud
@@ -66,6 +71,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	unbind_tutorial()
 	_disconnect_room()
+	_cheer.reset()
 
 
 ## Called once by the room at the end of its _ready (items and definitions exist by then).
@@ -161,6 +167,9 @@ func _process(delta: float) -> void:
 		if _notice_left <= 0.0:
 			_notice_text = ""
 			_dirty = true
+	if not get_tree().paused:
+		_cheer.advance(delta)
+		_expire_cheer_marks(delta)
 	var whole := _current_whole_seconds()
 	if whole != _whole_seconds:
 		_whole_seconds = whole
@@ -232,8 +241,76 @@ func _on_device_status(_device_id: int, _connected: bool) -> void:
 ## Ready edges change the registry without a coordinator signal; re-read the roster.
 func _on_router_action(seat_index: int, action_name: String) -> void:
 	_dirty = true
+	if action_name == LocalInputRouter.ROTATE_ALIAS_PLAY:
+		_try_cheer(seat_index)
 	if action_name == LocalInputRouter.ROTATE_ALIAS_LOBBY and seat_index >= 0:
 		_open_overlay(LIBRARY_SCENE, seat_index)
+
+
+## A seat that is out or has finished may cheer during Play: a short HUD mark in its own score
+## row plus a soft crowd cue on the Crowd bus. A live chicken, another phase, a pause or the final
+## result ignore it. Nothing here reaches the simulation.
+func _try_cheer(seat_index: int) -> void:
+	if not _cheer.request(seat_index, _can_cheer(seat_index)):
+		return
+	_cheer_marks[seat_index] = SpectatorCheer.SHOW_SECONDS
+	_play_cheer_cue()
+	_dirty = true
+
+
+func _can_cheer(seat_index: int) -> bool:
+	if room == null or seat_index < 0 or get_tree().paused:
+		return false
+	if room.phase_controller.phase != MatchPhaseController.Phase.PLAY:
+		return false
+	if (
+		room.shows_final_results()
+		or room.pause_coordinator.state != PauseRecoveryCoordinator.State.RUNNING
+	):
+		return false
+	var seat := room.input_router.registry.get_seat(seat_index)
+	if seat.is_empty() or not bool(seat.get("joined", false)):
+		return false
+	var actor := room.actors.get(seat_index) as ChickenController
+	if actor == null or not is_instance_valid(actor):
+		return false
+	return (
+		actor.lifecycle.status
+		in [PlayerLifecycleState.Status.SECURED, PlayerLifecycleState.Status.ELIMINATED]
+	)
+
+
+func _expire_cheer_marks(delta: float) -> void:
+	for seat in _cheer_marks.keys():
+		var left := float(_cheer_marks[seat]) - delta
+		if left <= 0.0:
+			_cheer_marks.erase(seat)
+			_dirty = true
+		else:
+			_cheer_marks[seat] = left
+
+
+func _play_cheer_cue() -> void:
+	if _cheer_player == null:
+		_cheer_player = AudioStreamPlayer.new()
+		_cheer_player.name = "CheerCue"
+		_cheer_player.bus = PresentationApplier.BUS_CROWD
+		_cheer_player.volume_db = -10.0
+		_cheer_player.stream = SpectatorCheer.make_stream()
+		add_child(_cheer_player)
+	_cheer_player.play()
+
+
+## Seats currently showing the cheer mark (for tests and captures).
+func cheering_seats() -> Array[int]:
+	var seats: Array[int] = []
+	for seat in _cheer_marks:
+		seats.append(int(seat))
+	return seats
+
+
+func cheer_cooldown_remaining(seat_index: int) -> float:
+	return _cheer.remaining(seat_index)
 
 
 func _on_pause_state_changed(paused: bool, _reason: String) -> void:
@@ -647,9 +724,15 @@ func _lost_claim_text(seats: Array[Dictionary]) -> String:
 func _state_text(seat_index: int, phase: MatchPhaseController.Phase) -> String:
 	if phase != MatchPhaseController.Phase.PLAY:
 		return ""
+	if _cheer_marks.has(seat_index):
+		return CHEER_STATE_TEXT
 	var mode_state := room.seat_state_text(seat_index)
 	if not mode_state.is_empty():
 		return mode_state
+	return _lifecycle_state_text(seat_index)
+
+
+func _lifecycle_state_text(seat_index: int) -> String:
 	var actor := room.actors.get(seat_index) as ChickenController
 	if actor == null or not is_instance_valid(actor):
 		return ""

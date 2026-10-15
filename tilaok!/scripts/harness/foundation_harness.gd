@@ -21,6 +21,7 @@ const ROOM_SCENES := {
 	"event_lab": preload("res://scenes/fixtures/event_lab.tscn"),
 	"ui_gallery": UI_GALLERY_SCENE,
 	"ui_player_flow": PLAYER_FLOW_SCENE,
+	"key_chord_recorder": preload("res://scenes/tools/key_chord_recorder.tscn"),
 }
 const FULL_VIEW_ROOMS: PackedStringArray = [
 	"p03_stage_room",
@@ -35,6 +36,7 @@ const FULL_VIEW_ROOMS: PackedStringArray = [
 	"p05_match_items",
 	"ui_gallery",
 	"ui_player_flow",
+	"key_chord_recorder",
 ]
 
 var gameplay_tuning := GameplayTuning.new()
