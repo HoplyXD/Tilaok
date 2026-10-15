@@ -64,6 +64,7 @@ func _ready() -> void:
 		match_scene = LIFECYCLE_SCENE
 	elif requested_route == ROUTE_FIRST_PLAYABLE:
 		match_scene = MATCH_SCENE
+	PresentationApplier.apply(settings)
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
 	add_child(router)
@@ -90,6 +91,7 @@ func _exit_tree() -> void:
 		router.clear_input_state()
 	if get_tree() != null:
 		get_tree().paused = false
+	PresentationApplier.reset()
 
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).

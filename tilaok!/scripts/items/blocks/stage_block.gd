@@ -200,7 +200,14 @@ func _step_collapse(delta: float) -> void:
 			if _visual != null:
 				_visual.position = (
 					footprint_size * 0.5
-					+ Vector2(sin(_shake_clock * TAU * SHAKE_HZ) * SHAKE_WU, 0.0)
+					+ Vector2(
+						(
+							sin(_shake_clock * TAU * SHAKE_HZ)
+							* SHAKE_WU
+							* PresentationApplier.shake_scale()
+						),
+						0.0
+					)
 				)
 			if _collapse_timer <= 0.0:
 				_collapse()

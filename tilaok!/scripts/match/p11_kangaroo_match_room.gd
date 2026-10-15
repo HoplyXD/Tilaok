@@ -562,6 +562,7 @@ func _play_command_cue(command: int) -> void:
 	var player := AudioStreamPlayer.new()
 	player.name = "P11DebugCue"
 	player.stream = _debug_tones.get(command)
+	player.bus = PresentationApplier.BUS_EFFECTS
 	player.volume_db = -8.0
 	add_child(player)
 	player.finished.connect(player.queue_free)

@@ -199,6 +199,7 @@ func _play_cue(command: int) -> void:
 	var player := AudioStreamPlayer.new()
 	player.name = "KangarooCue"
 	player.stream = _tones[command]
+	player.bus = PresentationApplier.BUS_EFFECTS
 	player.volume_db = -8.0
 	add_child(player)
 	player.finished.connect(player.queue_free)

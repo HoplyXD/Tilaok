@@ -10,6 +10,8 @@ const RESULT_REVEAL_OFF := 2
 @export_range(0.0, 1.0) var effects_volume: float = 1.0
 @export_range(0.0, 1.0) var crowd_volume: float = 1.0
 @export_enum("Full", "Reduced", "Off") var screen_shake: int = 2
+## Mutes every bus (Master). Muted play stays understandable: each cue has a visual partner.
+@export var muted: bool = false
 @export_enum("Normal", "Reduced", "Off") var result_reveal_motion: int = RESULT_REVEAL_NORMAL
 
 

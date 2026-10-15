@@ -32,8 +32,13 @@ const MOVE_THRESHOLD_WU_S := 20.0
 }
 ## Multiplier on the seat colour so the mid-grey placeholder reads as that colour.
 @export var tint_strength := 2.1
-## Stunned chickens flash between their colour and white at this rate (Hz).
-@export var stun_flash_hz := 8.0
+## Stunned chickens brighten and dim smoothly at this rate (Hz). Never a hard on/off flash, and
+## never above the 3 flashes per second photosensitivity limit; Screen shake Off holds it steady.
+@export var stun_pulse_hz := 2.0
+## Peak brightness multiplier of the stun pulse (1.0 = the chicken's own colour).
+@export var stun_peak_brightness := 2.4
+## A steady brightening while stunned so the state never depends on motion.
+@export var stun_base_brightness := 1.5
 
 var chicken: ChickenController
 
@@ -55,8 +60,27 @@ func _process(_delta: float) -> void:
 	offset = animation_offsets.get(next, Vector2.ZERO)
 	var base := Color.WHITE if chicken.lifecycle.is_terminal() else chicken.marker_color
 	modulate = Color(base.r * tint_strength, base.g * tint_strength, base.b * tint_strength, base.a)
-	if next == &"stun" and fmod(Time.get_ticks_msec() / 1000.0 * stun_flash_hz, 1.0) < 0.5:
-		modulate = Color(3.0, 3.0, 3.0, base.a)
+	if next == &"stun":
+		var level := stun_brightness(
+			Time.get_ticks_msec() / 1000.0,
+			PresentationApplier.shake_mode,
+			stun_pulse_hz,
+			stun_base_brightness,
+			stun_peak_brightness
+		)
+		modulate = Color(level, level, level, base.a)
+
+
+## Brightness multiplier of a stunned chicken at `time_seconds`: a steady brightening plus, unless
+## Screen shake is Off, a smooth sine pulse (halved at Reduced). Pure, so it can be sampled.
+static func stun_brightness(
+	time_seconds: float, shake_level: int, pulse_hz: float, base: float, peak: float
+) -> float:
+	if shake_level == PresentationApplier.SHAKE_OFF or pulse_hz <= 0.0:
+		return base
+	var depth := (peak - base) * (1.0 if shake_level == PresentationApplier.SHAKE_FULL else 0.5)
+	var wave := 0.5 + 0.5 * sin(TAU * pulse_hz * time_seconds)
+	return base + depth * wave
 
 
 ## The animation name for the chicken's current movement state.

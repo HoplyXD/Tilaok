@@ -60,6 +60,7 @@ func play_slot(slot_id: String) -> bool:
 	if player == null:
 		player = AudioStreamPlayer.new()
 		player.name = "Sfx_%s" % slot_id
+		player.bus = PresentationApplier.BUS_EFFECTS
 		add_child(player)
 		_players[slot_id] = player
 	player.stream = stream

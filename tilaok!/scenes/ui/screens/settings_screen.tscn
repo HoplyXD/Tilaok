@@ -76,6 +76,12 @@ row_title = "Result reveal motion"
 choices = PackedStringArray("Normal", "Reduced", "Off")
 unique_name_in_owner = true
 
+[node name="MuteRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+layout_mode = 2
+row_title = "Sound"
+choices = PackedStringArray("On", "Muted")
+unique_name_in_owner = true
+
 [node name="MasterRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
 layout_mode = 2
 row_title = "Master volume"
