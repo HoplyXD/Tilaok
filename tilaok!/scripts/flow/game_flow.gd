@@ -119,7 +119,11 @@ func show_library() -> void:
 	var definitions := ItemDefinitions.load_for_profile(tuning, PLAYTEST_PROFILE)
 	library.replay_tutorial_enabled = true
 	library.replay_tutorial_requested.connect(tutorial_session.replay)
-	library.bind_live(definitions, tuning, library_text)
+	var reference: ItemDefinitions = null
+	if UiLibraryScreen.dev_mode_requested():
+		reference = UiLibraryScreen.reference_definitions_for(tuning)
+	var context := UiLibraryText.build_context(tuning, prompt_map, settings.screen_shake)
+	library.bind_live(definitions, tuning, library_text, context, reference)
 	library.back_requested.connect(show_title)
 	_screen = library
 	_use_menu_screen(library)

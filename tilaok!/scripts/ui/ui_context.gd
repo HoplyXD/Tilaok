@@ -7,7 +7,7 @@ extends RefCounted
 const SAMPLE_4P_PATH := "res://data/ui/sample_match_4p.tres"
 const SAMPLE_2P_PATH := "res://data/ui/sample_match_2p.tres"
 const PROMPT_MAP_PATH := "res://data/ui/prompt_map.tres"
-const LIBRARY_TEXT_PATH := "res://data/ui/sample_library_text.tres"
+const LIBRARY_TEXT_PATH := "res://data/ui/library_text.tres"
 const DEVICE_KINDS := ["k1", "k2", "gamepad"]
 
 var seats: Array[Dictionary] = []

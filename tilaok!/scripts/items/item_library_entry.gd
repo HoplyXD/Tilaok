@@ -4,12 +4,17 @@ extends RefCounted
 ## PLACEHOLDER Library entry model built only from item definitions. The shared Library schema
 ## and shell belong to P13; this keeps the fields the entry must expose testable now.
 
-const CONTROLS_TEXT := "K1 WASD/R/F  •  K2 arrows/Right Shift/Enter (move, rotate, confirm)"
+const CONTROLS_TEXT := (
+	"K1 WASD/R/F  •  K2 arrows/Right Shift/Enter  •  Gamepad D-pad/West/South"
+	+ " (move, rotate, confirm)"
+)
 
 var family_id := ""
 var display_name := ""
 var sizes: PackedStringArray = PackedStringArray()
 var enabled_variant_keys: PackedStringArray = PackedStringArray()
+## Footprint text of each enabled variant, parallel to enabled_variant_keys.
+var enabled_variant_sizes: PackedStringArray = PackedStringArray()
 var placement := ""
 var tell := ""
 var counterplay := ""
@@ -35,6 +40,7 @@ static func from_family(
 		var size_text := "%d×%d" % [variant.footprint_cells.x, variant.footprint_cells.y]
 		if definitions.is_variant_enabled(key):
 			entry.enabled_variant_keys.append(key)
+			entry.enabled_variant_sizes.append(size_text)
 			entry.sizes.append(size_text)
 		else:
 			entry.sizes.append("%s (not enabled yet)" % size_text)

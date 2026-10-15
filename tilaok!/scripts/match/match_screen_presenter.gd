@@ -351,7 +351,13 @@ func _open_overlay(scene: PackedScene, seat_override: int = -1) -> void:
 	if screen is UiLibraryScreen:
 		var library_text := load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 		var library := screen as UiLibraryScreen
-		library.bind_live(room.definitions, room.tuning, library_text)
+		var reference: ItemDefinitions = null
+		if UiLibraryScreen.dev_mode_requested():
+			reference = UiLibraryScreen.reference_definitions_for(room.tuning)
+		var context := UiLibraryText.build_context(
+			room.tuning, prompt_map, room.presentation_settings.screen_shake
+		)
+		library.bind_live(room.definitions, room.tuning, library_text, context, reference)
 		if _tutorial != null:
 			library.replay_tutorial_enabled = true
 			library.replay_tutorial_requested.connect(_on_replay_tutorial_requested)

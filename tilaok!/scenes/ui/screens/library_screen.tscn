@@ -173,6 +173,22 @@ theme_type_variation = &"TilaokMenuButton"
 text = "Entry 6"
 visible = false
 
+[node name="Entry7" type="Button" parent="Safe/Content/Columns/EntryList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Entry 7"
+visible = false
+
+[node name="Entry8" type="Button" parent="Safe/Content/Columns/EntryList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Entry 8"
+visible = false
+
 [node name="Detail" type="PanelContainer" parent="Safe/Content/Columns"]
 layout_mode = 2
 theme_type_variation = &"Card"

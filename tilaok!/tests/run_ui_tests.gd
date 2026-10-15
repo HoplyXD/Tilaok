@@ -195,7 +195,7 @@ func _test_resources_load() -> void:
 		"res://data/ui/prompt_map.tres",
 		"res://data/ui/sample_match_4p.tres",
 		"res://data/ui/sample_match_2p.tres",
-		"res://data/ui/sample_library_text.tres",
+		"res://data/ui/library_text.tres",
 	]:
 		_check(load(path) != null, "resource loads: %s" % path)
 	for dir_path in [SCREEN_DIR, COMPONENT_DIR]:

@@ -1,0 +1,207 @@
+[gd_resource type="Resource" script_class="UiLibraryText" load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_library_text.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/ui_library_page.gd" id="2"]
+
+[sub_resource type="Resource" id="Page_1"]
+script = ExtResource("2")
+category = "How to Play"
+title = "The round loop"
+body = "Every round has three steps.\nPUGAD: each player grabs an egg (about {pugad_s} s). The egg hatches into a piece.\nPLACE: put your piece on the shared stage (about {place_s} s) and confirm to lock it.\nPLAY: run and jump through the stage everyone built. The stage stays and grows every round."
+requires = ""
+
+[sub_resource type="Resource" id="Page_2"]
+script = ExtResource("2")
+category = "How to Play"
+title = "Controls"
+body = "{controls}\n\nIn the Lobby the Rotate key opens this Library. During Play, a chicken that is out or has finished can use it to cheer."
+requires = ""
+
+[sub_resource type="Resource" id="Page_3"]
+script = ExtResource("2")
+category = "How to Play"
+title = "Placing a piece"
+body = "Move the ghost with the move keys and rotate it where the shape allows. A solid outline with OK is a valid spot; a dashed outline with an X is blocked and the reason is shown.\nYou cannot place on a chicken, the spawn, the flag platform or the base stage. The first player to confirm a spot claims it for the rest of Place."
+requires = ""
+
+[sub_resource type="Resource" id="Page_4"]
+script = ExtResource("2")
+category = "How to Play"
+title = "The stage grows"
+body = "Pieces stay between rounds and become terrain for every mode, including your own later runs. The base stage, spawn and flag cannot be changed. The next round's Main Challenge is announced during the Pugad before it so you can build for it."
+requires = ""
+
+[sub_resource type="Resource" id="Page_5"]
+script = ExtResource("2")
+category = "How to Play"
+title = "Winning"
+body = "First to {target} points wins, or the highest score after round {round_limit}. A tie plays a Sudden Death Lagsanay. Round 1 is always Karera and every 4th round is a Lagsanay."
+requires = ""
+
+[sub_resource type="Resource" id="Page_6"]
+script = ExtResource("2")
+category = "Karera"
+title = "The race"
+body = "Reach the flag alive. The round ends when every chicken has finished or is out, {finish_window} s after the first finisher, or at the {hard_cap} s cap. A chicken that is out can still cheer for the others."
+requires = ""
+
+[sub_resource type="Resource" id="Page_7"]
+script = ExtResource("2")
+category = "Karera"
+title = "Scoring"
+body = "Tapos +{tapos} for every chicken that reaches the flag.\nUna +{una} for the first to cross.\nBayani +{bayani} if you are the only finisher (2 to 4 players).\nPatibong +{patibong} for each chicken eliminated by a trap you placed, if anyone finished.\nBawi +{bawi} if you were {bawi_gap} points behind the leader and finish."
+requires = ""
+
+[sub_resource type="Resource" id="Page_8"]
+script = ExtResource("2")
+category = "Karera"
+title = "Too easy, too hard"
+body = "If everyone finishes, or nobody does, no points are awarded that round. That includes Patibong. Build stages that are hard but beatable. In 2-player matches this rule is waived."
+requires = ""
+
+[sub_resource type="Resource" id="Page_9"]
+script = ExtResource("2")
+category = "Karera"
+title = "Karera + Bomb-Taya"
+body = "TWIST: BOMB-TAYA. The flag stays live while a taya countdown runs. A finisher is secured and can no longer be tagged. If the taya reaches the flag, the bomb moves to a random chicken still running and keeps the countdown. Only race scoring applies."
+requires = "stack:KARERA+LAGSANAY"
+
+[sub_resource type="Resource" id="Page_10"]
+script = ExtResource("2")
+category = "Karera"
+title = "Karera + Kangaroo"
+body = "TWIST: KANGAROO. The flag stays live while slipper commands run. A missed command adds KANG, then GA, then ROO; the third is out. A finisher is secured and gets no more commands. Only race scoring applies."
+requires = "stack:KARERA+KANGAROO"
+
+[sub_resource type="Resource" id="Page_11"]
+script = ExtResource("2")
+category = "Lagsanay"
+title = "Taya, pass and timer"
+body = "One random chicken is the taya and is frozen for {head_start} s so the others can spread out. Then a countdown runs ({taya_4p} s with 4 alive, {taya_3p} s with 3, {taya_2p} s with 2). Touch another chicken to pass the taya; the chicken you just passed to cannot tag you back for {pass_back} s. When the timer ends the taya is out and a new taya is picked. Last chicken standing wins."
+requires = ""
+
+[sub_resource type="Resource" id="Page_12"]
+script = ExtResource("2")
+category = "Lagsanay"
+title = "Placement points"
+body = "Lagsanay scores by how long you lasted (4 players): 1st {place_1st}, 2nd {place_2nd}, 3rd {place_3rd}, 4th {place_4th}. Traps stay deadly: Patibong +{patibong} still applies, and Bawi +{bawi} applies if an underdog places first. There is no too-easy rule."
+requires = ""
+
+[sub_resource type="Resource" id="Page_13"]
+script = ExtResource("2")
+category = "Lagsanay"
+title = "Last Cluck"
+body = "If every remaining chicken is eliminated in the same instant, there is no shared first place. The chicken eliminated last wins; an exact tie goes to the lowest player number. The result screen shows LAST CLUCK!"
+requires = ""
+
+[sub_resource type="Resource" id="Page_14"]
+script = ExtResource("2")
+category = "Lagsanay"
+title = "As a Twist: Bomb-Taya"
+body = "As a Twist, Lagsanay is called Bomb-Taya. The taya countdown runs on top of the Main Challenge, and a timeout is an elimination (never a Patibong). The Main Challenge alone decides how the round ends and how points are scored."
+requires = "stack:KARERA+LAGSANAY|KANGAROO+LAGSANAY"
+
+[sub_resource type="Resource" id="Page_15"]
+script = ExtResource("2")
+category = "Lagsanay"
+title = "Sudden Death"
+body = "If scores are tied at the end of the match, the tied players play a Lagsanay that always produces one winner. Sudden Death never has a Twist."
+requires = ""
+
+[sub_resource type="Resource" id="Page_16"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "The giant slipper"
+body = "A giant slipper lands in the background before every command and shows what to do. Normal, sole down = FREEZE. Sole up = RISING WAVE. Sideways = HUG. Each command has an icon, a text name, a sound and a timing ring: get ready for {telegraph} s, then you have {response} s to answer."
+requires = "main:KANGAROO"
+
+[sub_resource type="Resource" id="Page_17"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "Freeze"
+body = "Do not give any run or jump input while the ring runs. Being pushed or carried does not count. Input you were already holding gets a brief grace to release."
+requires = "main:KANGAROO"
+
+[sub_resource type="Resource" id="Page_18"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "Rising wave"
+body = "A line shows where the wave will reach. At the end of the ring you must stand on a piece that players built, at or above the line. The base stage does not count, so build upwards in earlier rounds."
+requires = "main:KANGAROO"
+
+[sub_resource type="Resource" id="Page_19"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "Hug"
+body = "At the end of the ring you must be touching exactly one other live chicken. Chickens pair up nearest first; a group of three leaves one unpaired. With two chickens left, Hug is not used."
+requires = "main:KANGAROO"
+
+[sub_resource type="Resource" id="Page_20"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "Three misses"
+body = "Each failed command adds a mark in order: KANG, then GA, then ROO. The third is out. Traps still eliminate you at any time. The last chicken standing wins and Lagsanay placement scoring is used."
+requires = "main:KANGAROO"
+
+[sub_resource type="Resource" id="Page_21"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "Slipper Storm"
+body = "After {storm_after} commands with no one eliminated, commands come faster and up to two can be active at once, each shown on its own card. Any elimination ends the Storm. With two chickens left, a Storm pair is always one Freeze and one Rising wave."
+requires = "main:KANGAROO"
+
+[sub_resource type="Resource" id="Page_22"]
+script = ExtResource("2")
+category = "Kangaroo"
+title = "As a Twist"
+body = "Kangaroo can run beside Karera (finishers are secured and get no more commands) or as the Main Challenge with Bomb-Taya on top. As a Twist it never starts a Slipper Storm and never ends the round by itself."
+requires = "stack:KARERA+KANGAROO|KANGAROO+LAGSANAY"
+
+[sub_resource type="Resource" id="Page_23"]
+script = ExtResource("2")
+category = "Accessibility"
+title = "Who is who"
+body = "Every chicken has a number and a shape (1 circle, 2 triangle, 3 square, 4 diamond) shown above it and in the HUD. Colour is only an extra."
+requires = ""
+
+[sub_resource type="Resource" id="Page_24"]
+script = ExtResource("2")
+category = "Accessibility"
+title = "Cues you can see and hear"
+body = "Every sound has a picture or a word with it: the taya is marked TAYA with its number, Kangaroo commands show an icon, a name and a timing ring, hazards show their path or lane, and a blocked placement says why. The game can be played with the sound off."
+requires = ""
+
+[sub_resource type="Resource" id="Page_25"]
+script = ExtResource("2")
+category = "Accessibility"
+title = "Screen shake"
+body = "Screen shake can be Full, Reduced or Off in Settings. Current setting: {shake_mode}. Every command stays readable with shake off."
+requires = ""
+
+[sub_resource type="Resource" id="Page_26"]
+script = ExtResource("2")
+category = "Accessibility"
+title = "Sound"
+body = "Settings has Master, Music, Effects and Crowd volumes and a Mute switch. Muting never hides information: every cue has a visual partner."
+requires = ""
+
+[sub_resource type="Resource" id="Page_27"]
+script = ExtResource("2")
+category = "Accessibility"
+title = "Cheering"
+body = "A chicken that is out or has finished can cheer during Play with the Rotate key (R, Right Shift or West). A cheer never changes scores, timers or movement and has a 1 s cooldown."
+requires = ""
+
+[sub_resource type="Resource" id="Page_28"]
+script = ExtResource("2")
+category = "Accessibility"
+title = "Display"
+body = "The game is laid out for 1280 x 720 and scales to 1920 x 1080. Wider windows keep the same view with bars at the sides. No effect flashes rapidly; the Parol uses a slow brightness ramp."
+requires = ""
+
+[resource]
+script = ExtResource("1")
+categories = PackedStringArray("How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility")
+titles = PackedStringArray("How to Play", "Karera (race)", "Lagsanay (tag)", "Kangaroo", "Items", "Accessibility")
+bodies = PackedStringArray("The round loop, controls and winning.", "Reach the flag. Scoring and Twists.", "Tag with a countdown. Placement points.", "Match the slipper. Three misses.", "Every piece you can be dealt.", "Markers, cues, shake, sound and display.")
+pages = Array[ExtResource("2")]([SubResource("Page_1"), SubResource("Page_2"), SubResource("Page_3"), SubResource("Page_4"), SubResource("Page_5"), SubResource("Page_6"), SubResource("Page_7"), SubResource("Page_8"), SubResource("Page_9"), SubResource("Page_10"), SubResource("Page_11"), SubResource("Page_12"), SubResource("Page_13"), SubResource("Page_14"), SubResource("Page_15"), SubResource("Page_16"), SubResource("Page_17"), SubResource("Page_18"), SubResource("Page_19"), SubResource("Page_20"), SubResource("Page_21"), SubResource("Page_22"), SubResource("Page_23"), SubResource("Page_24"), SubResource("Page_25"), SubResource("Page_26"), SubResource("Page_27"), SubResource("Page_28")])
