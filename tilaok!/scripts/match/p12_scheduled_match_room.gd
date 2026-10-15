@@ -11,6 +11,7 @@ extends P09MatchLifecycleRoom
 ## docs/evidence/p12/p12_terminal_order_decision_table.md.
 
 const P12_BUILD_ID := "P12-scheduled-match-dev"
+const BARYA_COIN_SCENE := preload("res://scenes/match/barya_coin.tscn")
 
 ## Modes this room can run; a test may remove one to check the required-mode refusal.
 var available_modes: Array[int] = [
@@ -22,6 +23,9 @@ var schedule := EventSchedule.new()
 var kangaroo_round: KangarooMainRound
 ## Lagsanay as a Twist on a Karera Main (P12-T05).
 var bomb_taya := BombTayaTwist.new()
+var barya_objective := BaryaRoundObjective.new()
+var barya_offer_egg_id := ""
+var barya_feedback := ""
 ## The Main Challenge of the round in Play (NONE outside Play and during sudden death).
 var event_main: int = EventSchedule.Challenge.NONE
 
@@ -36,12 +40,21 @@ func _ready() -> void:
 	super._ready()
 	if not is_instance_valid(input_router) or presenter == null:
 		return
+	# Barya is enabled on the scheduled default route. `--barya-disabled` is the rollback switch;
+	# first_playable uses P07 and never enters this room.
+	if tuning != null:
+		tuning.barya_enabled = not OS.get_cmdline_user_args().has("--barya-disabled")
 	kangaroo_round = KangarooMainRound.new()
 	add_child(kangaroo_round)
 	kangaroo_round.setup(self)
 	input_router.intentional_input_edge.connect(_on_intentional_input_edge)
 	pause_coordinator.pause_state_changed.connect(_on_schedule_pause_state_changed)
-	print("P12_SCHEDULED_MATCH_READY build=%s seed=%d" % [P12_BUILD_ID, base_match_seed])
+	print(
+		(
+			"P12_SCHEDULED_MATCH_READY build=%s seed=%d barya_enabled=%s"
+			% [P12_BUILD_ID, base_match_seed, str(tuning.barya_enabled)]
+		)
+	)
 
 
 func _exit_tree() -> void:
@@ -81,6 +94,9 @@ func current_entry() -> Dictionary:
 
 
 func _begin_pugad() -> void:
+	barya_objective.cleanup()
+	barya_offer_egg_id = ""
+	barya_feedback = ""
 	_end_event_view()
 	bomb_taya.reset()
 	_twist_hazards.clear()
@@ -96,13 +112,15 @@ func _begin_pugad() -> void:
 		if not refusal.is_empty():
 			_refuse_schedule(refusal)
 			return
-	super._begin_pugad()
-	if phase_controller.phase != MatchPhaseController.Phase.PUGAD:
-		return
+	# Commit this round's challenge before the base room generates its Pugad pool: objective
+	# eligibility is decided from the actual locked Main, including any scheduled Twist.
 	var active_round := items.round_number + 1
 	schedule.lock_round(active_round)
 	if active_round < tuning.match_round_limit:
 		schedule.lock_round(active_round + 1)
+	super._begin_pugad()
+	if phase_controller.phase != MatchPhaseController.Phase.PUGAD:
+		return
 	print(
 		(
 			"P12_SCHEDULE round=%d now=%s next=%s"
@@ -114,6 +132,221 @@ func _begin_pugad() -> void:
 		)
 	)
 	_notify_presentation(&"eggs")
+
+
+func _augment_pugad_egg_pool(_seat_count: int) -> void:
+	var entry := current_entry()
+	var slot := BaryaOfferPolicy.roll_offer(
+		bool(tuning.barya_enabled),
+		int(entry.get("main", EventSchedule.Challenge.NONE)),
+		EventSchedule.Challenge.KARERA,
+		_sudden_death_active,
+		egg_pool,
+		tuning.barya_offer_probability,
+		match_streams.barya
+	)
+	if slot < 0:
+		return
+	barya_offer_egg_id = str(egg_pool[slot].get("egg_id", ""))
+	barya_objective.begin_offer(match_run_id, items.round_number + 1, barya_offer_egg_id)
+	if barya_objective.state == BaryaRoundObjective.State.OFFERED:
+		print(
+			(
+				"P12_BARYA_OFFER match=%d round=%d egg=%s"
+				% [match_run_id, items.round_number + 1, barya_offer_egg_id]
+			)
+		)
+
+
+func _on_place_assignments_ready(variants_by_seat: Dictionary) -> void:
+	if barya_objective.state != BaryaRoundObjective.State.OFFERED:
+		return
+	var assigned := false
+	for seat_variant in variants_by_seat:
+		if str(variants_by_seat[seat_variant]) == BaryaObjectiveDefinition.VARIANT_ID:
+			assigned = barya_objective.assign(int(seat_variant))
+			break
+	if not assigned:
+		barya_objective.discard()
+		barya_feedback = "BARYA OFFER EXPIRED"
+
+
+func _is_round_objective_variant(variant_key: String) -> bool:
+	return BaryaObjectiveDefinition.is_variant(variant_key)
+
+
+func _commit_round_objective_placement(edit: Dictionary) -> Dictionary:
+	var seat_index := int(edit.get("seat_index", -1))
+	if (
+		barya_objective.state != BaryaRoundObjective.State.ASSIGNED
+		or seat_index != barya_objective.assigned_seat
+		or int(edit.get("quarter_turns", 0)) != 0
+	):
+		barya_objective.discard()
+		barya_feedback = "BARYA PLACEMENT DISCARDED"
+		return {"allowed": false, "reason": "Barya placement was no longer assigned."}
+	var cell: Vector2i = edit.get("origin_cell", Vector2i.ZERO)
+	var verdict := BaryaPlacementRules.validate_cell(
+		arena, tuning, cell, items.pieces.values(), _actor_rects()
+	)
+	if not bool(verdict.allowed):
+		barya_objective.discard()
+		barya_feedback = "BARYA PLACEMENT DISCARDED"
+		return verdict
+	if not barya_objective.place(cell):
+		return {"allowed": false, "reason": "Barya placement attempt is stale."}
+	var coin := BARYA_COIN_SCENE.instantiate() as BaryaCoin
+	if coin == null:
+		barya_objective.discard()
+		barya_feedback = "BARYA PLACEMENT DISCARDED"
+		return {"allowed": false, "reason": "Barya coin scene could not be created."}
+	world_layer.add_child(coin)
+	coin.place_at(
+		world_layer, (verdict.footprint as Rect2).get_center(), barya_objective.identity()
+	)
+	if not barya_objective.activate(coin):
+		coin.queue_free()
+		barya_objective.discard()
+		barya_feedback = "BARYA PLACEMENT DISCARDED"
+		return {"allowed": false, "reason": "Barya placement attempt expired."}
+	barya_feedback = "BARYA PLACED"
+	return {"allowed": true, "cell": cell, "footprint": verdict.footprint}
+
+
+func _on_round_objective_placements_resolved(_results: Array[Dictionary]) -> void:
+	# An invalid timeout cursor is omitted from the accepted edit batch. Close the offered objective
+	# explicitly so it cannot remain assigned after Play starts or leak into a later attempt.
+	if barya_objective.state == BaryaRoundObjective.State.ASSIGNED:
+		barya_objective.discard()
+		barya_feedback = "BARYA PLACEMENT DISCARDED"
+
+
+func _resolve_round_objective_pickups(physics_tick: int) -> void:
+	if (
+		phase_controller.phase != MatchPhaseController.Phase.PLAY
+		or event_main != EventSchedule.Challenge.KARERA
+		or _sudden_death_active
+		or barya_objective.state != BaryaRoundObjective.State.AVAILABLE
+		or barya_objective.coin == null
+		or not is_instance_valid(barya_objective.coin)
+		or race_round_controller == null
+	):
+		return
+	var candidates: Array[Dictionary] = []
+	for body in barya_objective.coin.bodies_in_pickup_snapshot():
+		var actor := body as ChickenController
+		if (
+			actor == null
+			or actor.lifecycle.status != PlayerLifecycleState.Status.ACTIVE
+			or not race_round_controller.ledger.seat_indices.has(actor.seat_index)
+		):
+			continue
+		(
+			candidates
+			. append(
+				{
+					"seat_index": actor.seat_index,
+					"distance_squared":
+					barya_objective.coin.global_position.distance_squared_to(actor.global_position),
+					"eligible": true,
+				}
+			)
+		)
+	var winner := barya_objective.resolve_pickup(candidates, physics_tick)
+	if winner < 0:
+		return
+	var carrier := actors.get(winner) as ChickenController
+	if carrier == null or not is_instance_valid(carrier):
+		barya_objective.carrier_seat = -1
+		barya_objective.state = BaryaRoundObjective.State.AVAILABLE
+		return
+	barya_objective.coin.attach_to(carrier)
+	barya_feedback = "BARYA CARRIED BY P%d" % (winner + 1)
+	last_message = barya_feedback
+	_notify_presentation(&"barya_pickup")
+
+
+func _on_race_terminal_committed(outcome: Dictionary, actor: ChickenController) -> void:
+	if actor == null or not is_instance_valid(actor):
+		return
+	var seat_index := actor.seat_index
+	var action := barya_objective.commit_terminal(
+		seat_index, str(outcome.get("outcome", "")), int(outcome.get("physics_tick", -1))
+	)
+	if action == "secured":
+		barya_objective.remove_world_coin()
+		barya_feedback = "BARYA SECURED +0.5"
+		last_message = "P%d secured Barya at the flag (+0.5)." % (seat_index + 1)
+		_notify_presentation(&"barya_finish")
+		return
+	if action != "drop":
+		return
+	if barya_objective.coin == null or not is_instance_valid(barya_objective.coin):
+		barya_objective.discard()
+		barya_feedback = "BARYA DISCARDED"
+		return
+	var death_position := actor.global_position
+	var other_actor_rects := _actor_rects_except(seat_index)
+	var cell := Vector2i(
+		floori(death_position.x / tuning.grid_cell_wu),
+		floori(death_position.y / tuning.grid_cell_wu)
+	)
+	var verdict := BaryaPlacementRules.validate_cell(
+		arena, tuning, cell, items.pieces.values(), other_actor_rects
+	)
+	var recovered := false
+	if not bool(verdict.allowed):
+		var recovery := BaryaPlacementRules.nearest_valid_cell(
+			death_position, arena, tuning, items.pieces.values(), other_actor_rects
+		)
+		if not bool(recovery.allowed):
+			barya_objective.discard()
+			barya_feedback = "BARYA DISCARDED • NO VALID DROP CELL"
+			last_message = "Barya was discarded because no valid drop cell remained."
+			_notify_presentation(&"barya_discard")
+			return
+		cell = recovery.cell
+		recovered = true
+	var center := BaryaPlacementRules.cell_rect(cell, tuning).get_center()
+	barya_objective.coin.place_at(world_layer, center, barya_objective.identity())
+	barya_objective.finish_drop(cell)
+	barya_feedback = "BARYA RECOVERED" if recovered else "BARYA DROPPED"
+	last_message = (
+		"Barya recovered at the nearest valid cell."
+		if recovered
+		else "Barya dropped where P%d was eliminated." % (seat_index + 1)
+	)
+	_notify_presentation(&"barya_drop")
+
+
+func _actor_rects_except(excluded_seat: int) -> Array[Rect2]:
+	var rects: Array[Rect2] = []
+	for seat_variant in actors:
+		var seat_index := int(seat_variant)
+		if seat_index == excluded_seat:
+			continue
+		var actor := actors[seat_variant] as ChickenController
+		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+			continue
+		rects.append(
+			Rect2(
+				(
+					actor.global_position
+					- Vector2(tuning.body_width_wu * 0.5, tuning.body_height_wu * 0.5)
+				),
+				Vector2(tuning.body_width_wu, tuning.body_height_wu)
+			)
+		)
+	return rects
+
+
+func _race_score_coin_seats() -> Array[int]:
+	return barya_objective.scoring_seats()
+
+
+func _after_race_score_committed(_score_result: Dictionary) -> void:
+	barya_objective.cleanup()
+	barya_offer_egg_id = ""
 
 
 func _refuse_schedule(refusal: String) -> void:
@@ -810,6 +1043,9 @@ func _update_diagnostics() -> void:
 
 
 func reset_room() -> void:
+	barya_objective.cleanup()
+	barya_offer_egg_id = ""
+	barya_feedback = ""
 	event_main = EventSchedule.Challenge.NONE
 	_schedule_match_id = -1
 	schedule = EventSchedule.new()
@@ -938,6 +1174,24 @@ func play_tag_text() -> String:
 ## Like the P08 lab: only live pass-back immunity is persistent; otherwise the timed Play-start
 ## notice shows.
 func play_status_text() -> String:
+	var event_text := _event_play_status_text()
+	var barya_text := ""
+	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
+		match barya_objective.state:
+			BaryaRoundObjective.State.CARRIED:
+				barya_text = "BARYA • P%d CARRIES THE COIN" % (barya_objective.carrier_seat + 1)
+			BaryaRoundObjective.State.AVAILABLE:
+				barya_text = barya_feedback
+			BaryaRoundObjective.State.SECURED:
+				barya_text = "BARYA SECURED • +0.5"
+	if event_text.is_empty():
+		return barya_text
+	if barya_text.is_empty():
+		return event_text
+	return "%s  ·  %s" % [event_text, barya_text]
+
+
+func _event_play_status_text() -> String:
 	var twist := _bomb_taya_running()
 	if not twist and not _event_round_active():
 		return super.play_status_text()
@@ -960,6 +1214,11 @@ func play_status_text() -> String:
 
 
 func seat_state_text(seat_index: int) -> String:
+	if (
+		barya_objective.state == BaryaRoundObjective.State.CARRIED
+		and barya_objective.carrier_seat == seat_index
+	):
+		return "BARYA"
 	if _bomb_taya_running() and seat_index == bomb_taya.taya_seat:
 		return "TAYA"
 	if not _event_round_active():

@@ -172,7 +172,9 @@ All rows are **original Tilaok proposals**. Reference names indicate mechanic-fa
 
 ### Separate optional item: Barya
 
-Barya remains the race-only scoring pickup already defined in GDD §5; it is not a 37th obstacle. It is visible in the Pugad, can be placed by its picker, drops on death, is limited to one per round, and is removed at round end. Its existing +0.5 value and too-easy/too-hard exception remain unchanged. Keep optional and cut before core-loop/Lagsanay/tutorial work if schedule slips.
+Barya is a round-scoped Karera scoring objective, not a 37th obstacle or construction piece. In the scheduled P12 match, a separate seeded 1-in-3 roll replaces one Pugad egg only when the locked Main is Karera (including its two Karera stacks); the Pugad pool size is unchanged. The picker claims and places the single 1×1 coin through the Place flow. It has no solid body, support behavior, Rising interaction, Walis target, ItemManager entry or construction-cap cost. Invalid/expired placement discards it. Physics-step pickup arbitration selects nearest controller root, then lower seat index. Capture preserves carry; committed elimination drops it at the controller root and deterministically recovers to the nearest valid cell (row-major `(y, x)` ties) or discards it if no valid cell exists. A same-step dropped coin waits until the next physics step to be picked up. A committed finisher receives +0.5 exactly once, including all-finish rounds; no finisher receives none. Score/history snapshots are recorded before round cleanup removes the objective. Aborted retries preserve the pre-Play placement and increment the attempt identity. P07 remains disabled, and `--barya-disabled` rolls back the P12 offer without consuming its random stream. See [Barya engineering evidence](evidence/barya/README.md).
+
+The coin and Pugad silhouette currently use code-drawn DEBUG geometry. This is a development placeholder only; human-made final art and any accessibility, cultural and player review remain open. Barya remains optional Should content and does not change the base release manifest.
 
 ## Event stack and backlog notes
 

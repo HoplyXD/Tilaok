@@ -11,7 +11,8 @@ const BAWI_GAP_UNITS := 24
 
 
 ## Pure race scoring. Each outcome has seat_index, outcome ("finished" / "eliminated"),
-## physics_tick and optional direct_owner_seat. Coin seats are test facts until Barya integration.
+## physics_tick and optional direct_owner_seat. P12 supplies Barya seats only from a committed
+## round-objective receipt; focused calculator tests may still pass coin seats as input facts.
 static func calculate(
 	seat_indices: Array[int],
 	outcomes: Array[Dictionary],

@@ -49,7 +49,7 @@ func _validate_p07_egg_pool(pool: Array[Dictionary]) -> String:
 	var allowed := allowed_variants()
 	for egg in pool:
 		var variant_key := str(egg.get("variant_key", ""))
-		if not allowed.has(variant_key):
+		if not allowed.has(variant_key) and not _is_round_objective_variant(variant_key):
 			return "P07 pool validation failed: unsupported variant '%s'." % variant_key
 	return ""
 

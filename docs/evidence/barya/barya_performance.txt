@@ -1,0 +1,13 @@
+Status: PASSED
+Barya live-route frame and cleanup sample
+Engine: 4.7.2-stable (official)
+Machine: Windows / 13th Gen Intel(R) Core(TM) i5-13420H / 12 logical CPUs
+Renderer: NVIDIA; GPU: NVIDIA GeForce RTX 4050 Laptop GPU
+Display: 1280x720 windowed; v-sync off; 120 warm-up then 300 sampled frames.
+Route/profile: default P12 scheduled room; test-forced round-1 Karera + Kangaroo; four synthetic seats; profile karera_slice; match seed 12345.
+State: one live carried Barya, no more than one coin, 41 persistent items after Place. Input is synthetic; overlap uses the live Godot PhysicsServer.
+Targets: p95/worst frame <= 16.67 ms; static memory <= 512 MiB; zero orphan nodes after cleanup.
+Frame median/p95/worst: 1.976 / 2.836 / 3.881 ms — PASSED.
+Static memory: 120.55 MiB — PASSED.
+Objects/nodes before cleanup: 5050 / 1748; after: 5046 / 1746; orphans after: 0.
+Objective cleanup call: 5 µs; asynchronous queue_free drained after one process + physics frame; PASSED.

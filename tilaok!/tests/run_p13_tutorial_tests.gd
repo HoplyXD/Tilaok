@@ -29,6 +29,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_script_data()
+	await _test_barya_pugad_prompt()
 	await _test_main_kangaroo_sequence()
 	await _test_twist_and_stack()
 	await _test_skip_and_replay()
@@ -52,6 +53,11 @@ func _test_script_data() -> void:
 		lagsanay.variants.has("twist") and str(lagsanay.variants["twist"]).contains("Bomb-Taya"),
 		"the taya step has a Bomb-Taya Twist wording"
 	)
+	var pugad := script.step(TutorialScript.STEP_PUGAD)
+	_check(
+		pugad.variants.has("barya") and str(pugad.variants["barya"]).contains("Reach the flag"),
+		"the Pugad coach has a Barya pickup and scoring explanation"
+	)
 	var joined := ""
 	for step_id in TutorialScript.KANGAROO_STEPS:
 		joined += script.step(step_id).body
@@ -67,6 +73,31 @@ func _test_script_data() -> void:
 
 
 # --- a Kangaroo Main round ----------------------------------------------------------------------
+
+
+func _test_barya_pugad_prompt() -> void:
+	await _open(false)
+	room.tuning.barya_enabled = true
+	room.tuning.barya_offer_probability = 1.0
+	room.schedule.locked[1] = {
+		"round": 1,
+		"main": KARERA,
+		"twist": NONE,
+		"guaranteed": true,
+		"sudden_death": false,
+		"twist_options": 0,
+	}
+	room._augment_pugad_egg_pool(2)
+	flow.tutorial.rebuild()
+	_check(
+		(
+			_step(flow.tutorial) == "pugad"
+			and str(flow.tutorial.view.body).contains("Barya is a round coin")
+			and str(flow.tutorial.view.body).contains("+0.5")
+		),
+		"an enabled Pugad Barya offer changes the live coach copy"
+	)
+	await _free()
 
 
 func _test_main_kangaroo_sequence() -> void:

@@ -185,6 +185,9 @@ const DISTANCE_FIELDS: PackedStringArray = [
 ## P05 match-loop prototype values; copied into the match configuration snapshot.
 @export var match_pugad_extra_eggs: int = 2
 @export var match_pugad_seconds: float = 8.0
+## Barya is an optional P12 round objective. Other match routes leave it off.
+@export var barya_enabled := false
+@export_range(0.0, 1.0, 0.01) var barya_offer_probability := 1.0 / 3.0
 @export var match_place_seconds: float = 15.0
 @export var match_results_advance_seconds: float = 8.0
 ## P09 full-match termination; points are eighth-point units.

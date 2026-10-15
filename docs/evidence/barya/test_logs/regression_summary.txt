@@ -1,0 +1,14 @@
+run_barya_tests.gd exit=0 BARYA_TESTS checks=72 failures=0 input=synthetic physics=Godot Area2D
+run_p05_tests.gd exit=0 P05_TEST_SUMMARY checks=137 failures=0
+run_place_claim_tests.gd exit=0 PLACE_CLAIM_TESTS checks=15 failures=0
+run_blocks_tests.gd exit=0 BLOCKS_TESTS checks=111 failures=0
+run_p06_tests.gd exit=0 P06_TEST_SUMMARY checks=102 failures=0
+run_p09_tests.gd exit=0 P09_TEST_SUMMARY checks=77 failures=0
+run_p12_tests.gd exit=0 P12_TESTS checks=61 failures=0
+run_p12_stack_tests.gd exit=0 P12_STACK_TESTS checks=47 failures=0
+run_p12_pairs_tests.gd exit=0 P12_PAIRS_TESTS checks=285 failures=0
+run_p07_tests.gd exit=0 P07_TESTS checks=591 failures=0
+run_p13_hud_tests.gd exit=0 P13_HUD_TESTS checks=265 failures=0
+run_p13_library_tests.gd exit=0 P13_LIBRARY_TESTS checks=368 failures=0
+run_p13_tutorial_tests.gd exit=0 P13_TUTORIAL_TESTS checks=58 failures=0
+run_scoreboard_chart_tests.gd exit=0 SCOREBOARD_CHART_TESTS checks=52 failures=0

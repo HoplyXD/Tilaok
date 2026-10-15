@@ -25,6 +25,7 @@ var _family: ItemFamilyDefinition
 var _variant: ItemVariantDefinition
 var _tuning: GameplayTuning
 var _preview_behavior: ItemBehavior
+var _barya_preview := false
 ## Scene-authored blocks ("scene" silhouette): a copy of the block scene's own Visual node.
 var _scene_visual: Node2D
 
@@ -32,9 +33,24 @@ var _scene_visual: Node2D
 func configure(
 	definitions: ItemDefinitions, key: String, turns: int, source_tuning: GameplayTuning
 ) -> bool:
+	if BaryaObjectiveDefinition.is_variant(key):
+		variant_key = key
+		quarter_turns = turns
+		_tuning = source_tuning
+		_family = null
+		_variant = null
+		_preview_behavior = null
+		_barya_preview = true
+		custom_minimum_size = EGG_SIZE + Vector2(8.0, 8.0)
+		size = custom_minimum_size
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		focus_mode = Control.FOCUS_NONE
+		queue_redraw()
+		return true
 	var found := definitions.find_variant(key)
 	if found.is_empty():
 		return false
+	_barya_preview = false
 	variant_key = key
 	quarter_turns = turns
 	_family = found.family
@@ -87,6 +103,32 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
+	if _barya_preview:
+		var center := custom_minimum_size * 0.5
+		_draw_egg(center, selected)
+		draw_circle(center + Vector2(0.0, 8.0), 17.0, Color("#f4c95d"))
+		draw_circle(center + Vector2(0.0, 8.0), 12.0, Color("#8b5421"))
+		var font := ThemeDB.fallback_font
+		if font != null:
+			draw_string(
+				font,
+				center + Vector2(-4.0, 12.0),
+				"B",
+				HORIZONTAL_ALIGNMENT_CENTER,
+				10.0,
+				13,
+				Color("#fff6cf")
+			)
+			draw_string(
+				font,
+				center + Vector2(-13.0, 34.0),
+				"DEBUG",
+				HORIZONTAL_ALIGNMENT_CENTER,
+				26.0,
+				7,
+				Color("#fff6cf")
+			)
+		return
 	if _variant == null:
 		return
 	var wobble := sin(loop_phase() * TAU)

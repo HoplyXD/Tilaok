@@ -11,7 +11,9 @@ const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
 const ROOM_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 const TEXT_PATH := "res://data/ui/library_text.tres"
 const PAD := 730
-const CATEGORIES := ["How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility"]
+const CATEGORIES := [
+	"How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility", "Barya"
+]
 const FORBIDDEN := ["SAMPLE", "res://", "uid://", "seed", " wu", "DEBUG", "shape_id"]
 
 var checks := 0
@@ -28,10 +30,12 @@ func _run() -> void:
 	_check(text != null and not text.pages.is_empty(), "library_text.tres loads with pages")
 	var tuning := GameplayTuning.new()
 	ItemEnabledProfiles.apply(tuning, "karera_slice")
+	tuning.barya_enabled = true
 	var map := load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	var context := UiLibraryText.build_context(tuning, map, 2)
 	_test_pages(text, tuning, context)
 	_test_gating(text, tuning, map)
+	await _test_barya_category_gate(text, tuning)
 	await _test_items_and_scrolling(text, tuning, context)
 	await _test_dev_reference_rows(text, tuning, context)
 	await _test_controller_navigation()
@@ -88,7 +92,15 @@ func _test_pages(text: UiLibraryText, tuning: GameplayTuning, context: Dictionar
 		"Lagsanay Library explains fourth-place placement and independent trap points"
 	)
 	_check(scoring.contains("Bayani +0.5") and scoring.contains("Bawi +0.75"), "Bayani and Bawi")
-	_check(not scoring.to_lower().contains("barya"), "Barya is not described (not enabled)")
+	var barya_page := _body(text, context, "Barya", "The round coin")
+	_check(
+		(
+			barya_page.contains("temporary objective")
+			and barya_page.contains("+0.5")
+			and barya_page.contains("elimination drops it")
+		),
+		"Barya Library page explains its round-only pickup, drop and award"
+	)
 	var winning := _body(text, context, "How to Play", "Winning")
 	_check(
 		winning.contains("First to 10 points") and winning.contains("round 12"), "target and limit"
@@ -144,6 +156,38 @@ func _test_gating(text: UiLibraryText, tuning: GameplayTuning, map: UiPromptMap)
 		text.pages_for("Kangaroo", no_kangaroo).is_empty(),
 		"Kangaroo pages are absent when the mode is not available"
 	)
+	var barya_disabled := tuning.duplicate(true) as GameplayTuning
+	barya_disabled.barya_enabled = false
+	var disabled_context := UiLibraryText.build_context(barya_disabled, map, 2)
+	_check(
+		text.pages_for("Barya", disabled_context).is_empty(),
+		"Barya Library page is absent while the objective is disabled"
+	)
+
+
+func _test_barya_category_gate(text: UiLibraryText, tuning: GameplayTuning) -> void:
+	var screen := LIBRARY_SCENE.instantiate() as UiLibraryScreen
+	root.add_child(screen)
+	await process_frame
+	var definitions := ItemDefinitions.load_for_profile(tuning, "karera_slice")
+	var disabled_tuning := tuning.duplicate(true) as GameplayTuning
+	disabled_tuning.barya_enabled = false
+	var disabled_context := UiLibraryText.build_context(disabled_tuning)
+	(screen as UiLibraryScreen).bind_live(definitions, tuning, text, disabled_context)
+	_check(
+		"Barya" not in screen.category_names(),
+		"disabled Barya category is hidden from live Library navigation"
+	)
+	var enabled_tuning := tuning.duplicate(true) as GameplayTuning
+	enabled_tuning.barya_enabled = true
+	var enabled_context := UiLibraryText.build_context(enabled_tuning)
+	screen.bind_live(definitions, enabled_tuning, text, enabled_context)
+	_check(
+		"Barya" in screen.category_names(),
+		"enabled Barya category appears in live Library navigation"
+	)
+	screen.queue_free()
+	await process_frame
 
 
 # --- items, scrolling, filtering ---------------------------------------------------------------

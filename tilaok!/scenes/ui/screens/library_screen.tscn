@@ -109,6 +109,13 @@ focus_mode = 0
 theme_type_variation = &"TilaokMenuButton"
 text = "Accessibility"
 
+[node name="Cat7" type="Button" parent="Safe/Content/Columns/CategoryList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "Barya"
+
 [node name="ReleaseFilterButton" type="Button" parent="Safe/Content/Columns/CategoryList"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 44)

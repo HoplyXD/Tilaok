@@ -357,7 +357,7 @@ The 97-check P06 runner passed with 0 failures. It covered validated 60/15-secon
 
 Each performance sample used 300 rendered frames in active Play and 300 in live results at 1920×1080, V-sync off. The repeated-round fixture retained one construction piece per round. Godot static memory was below 512 MiB in all counts. OS process working-set memory was not sampled. Gameplay networking is absent by design (0 B/s). Godot 4.7.2 editor import/class registration, Windows Debug export with matching templates, and a five-second exported headless startup smoke all exited 0. Formatting and lint checks passed for the P06/P05 touched scripts; this is not a human review.
 
-Evidence, full commands, logs, captures, environmental details and boundaries are recorded in [P06 verification](evidence/p06/2026-10-14_p06_verification.md). The results are local engineering measurements, not player-feel, balance, physical-device, release-PC or independent-review evidence. Hazard attribution and Barya are fixture interfaces only; their gameplay integrations remain future gates.
+Evidence, full commands, logs, captures, environmental details and boundaries are recorded in [P06 verification](evidence/p06/2026-10-14_p06_verification.md). The results are local engineering measurements, not player-feel, balance, physical-device, release-PC or independent-review evidence. At that 2026-10-14 P06 verification point, hazard attribution and Barya were fixture interfaces; Barya runtime integration was added on 2026-10-15 and is recorded below.
 
 ## Documentation-only verification — completed 2026-10-13 (historical)
 
@@ -552,7 +552,7 @@ The chart uses only the generic player-column/shared-axis idea from the supplied
 | Verification | Result | Evidence / limit |
 |---|---|---|
 | Navigation matrix, K1 / K2 / synthetic gamepad, both routes | **PASSED — 205 checks, 0 failures** | `run_p13_navigation_tests.gd`: Title / Library / Settings / Quit confirm / Lobby help and Back / Pause owner and non-owner / Library and Settings from Pause (tree paused, clocks frozen, same Pause row on return) / confirmations / left-stick steps / held-press consumption / 10 overlay cycles stable. Synthetic input only. |
-| HUD cue table on the scheduled route (3 Mains, 3 stacks, 2 and 4 seats) | **PASSED — 264 checks, 0 failures** | `run_p13_hud_tests.gd`; every cue live, text ≥ theme minimum, no internal ids, HUD inside the 64 px reservation. Barya is not enabled (N/A). |
+| HUD cue table on the scheduled route (3 Mains, 3 stacks, 2 and 4 seats) | **PASSED — 264 checks, 0 failures** | Historical pre-Barya `run_p13_hud_tests.gd` record; Barya N/A was asserted at that time. Current Barya-integrated HUD check (265) is in [Barya evidence](evidence/barya/README.md). |
 | Library content, filtering, scrolling, controller navigation | **PASSED — 352 checks, 0 failures** | `run_p13_library_tests.gd`. |
 | Kangaroo / Bomb-Taya just-in-time prompts | **PASSED — 55 checks, 0 failures** | `run_p13_tutorial_tests.gd`; existing tutorial suites unchanged (140 + 48). |
 | Accessibility controls and audits | **PASSED — 65 checks, 0 failures** | `run_p13_accessibility_tests.gd`: buses, Mute, shake modes through the Settings path, stun brightness and Parol limits, glyph and display report. |
@@ -677,3 +677,23 @@ Record every facilitator intervention in the intervention log of the existing sh
 | 8 | Check the cue never hides the live HUD | HUD fully readable |
 
 Record the date, device, build, who observed and the result under each sheet; **never fill a result in by inference.**
+
+## Barya technical verification — October 15, 2026
+
+This is engineering evidence for the user-approved optional Barya implementation, not a human playtest or release acceptance. The default player route is the scheduled P12 full match (`route=lifecycle`); P07 remains available by `--match-route=first_playable` with Barya disabled. The P12-only `--barya-disabled` flag is the rollback check.
+
+| Field | Record |
+|---|---|
+| Engine | Godot 4.7.2.stable.official.ed1daf0bf, explicit console executable at `D:\Downloads\Godot_v4.7.2-stable_win64_console.exe` |
+| Date / machine | 2026-10-15 · Windows · Intel i5-13420H · NVIDIA RTX 4050 Laptop GPU |
+| Route / profile / seed | Default P12 scheduled match and P12 harness room; `karera_slice`; seed 12345; tests force only the Main/Twist under scenario |
+| Seats / input | Two seats for the full loop; 2/3/4 seats for P12 stack and score matrices; four seats for the live performance sample. Synthetic keyboard/gamepad identities only. |
+| Physics / reviewer | Real Godot Area2D/PhysicsServer overlap snapshots and controller roots; terminal candidates scripted by the engineering runner. Reviewer: Codex AI-assisted engineering run; no human reviewer. |
+
+**Procedure / expected / actual:** ran the deterministic offer/eligibility and egg-pool tests; claim, placement protection, timeout, cap and disabled-seed-parity checks; contested and duplicate pickup through actual Area2D physics; attachment/capture, committed death drop and deterministic recovery, next-step pickup gate, reclaim, same-step terminal ordering, committed score receipt, all-finish 2/3/4-player exception, results/history and cleanup; and both Karera stacks across 2/3/4 seats. Expected one eligible coin at most, no Pugad-size or construction-cap change, only committed finisher payouts, and round cleanup without persistent residue. Actual: 72 focused assertions passed; the rendered capture invocation passed 80 assertions including eight saved-view assertions. Fourteen regression suites passed with zero failures: Barya 72, P05 137, Place/claim 15, blocks 111, P06 102, P09 77, P12 61, P12 stack 47, P12 pairs 285, P07 591, HUD 265, Library 368, tutorial 58 and scoreboard 52. Full raw results are indexed in [Barya evidence](evidence/barya/README.md).
+
+Eight 1280×720 captures cover Pugad offer, Place lock, coin available, carrier, recovered death drop, re-claim, secured finish and results award. These use synthetic input; the overlaps came from Godot physics. A four-seat windowed 1280×720 sample, 120 warm-up plus 300 measured frames, with a carried coin and 41 persistent construction items measured 1.976 ms median / 2.836 ms p95 / 3.881 ms worst, 120.55 MiB static memory, and 5 µs synchronous cleanup (queue-free drained after one process and physics frame); 0 orphan nodes remained. It passed the documented 16.67 ms / 512 MiB local engineering budgets. This is one local machine and does not establish target-PC performance.
+
+The Windows Desktop debug export and exported console-wrapper startup smoke passed for the default lifecycle route, direct P12 harness room with Barya on and with `--barya-disabled`, and the P07 first-playable route. This establishes export/startup only, not a clean-PC package review. Full logs, procedure, captures and exact command lines are in [Barya evidence](evidence/barya/README.md).
+
+**Still open:** human gameplay/comprehension, physical keyboard/controller, QA/accessibility and minimum-zoom review, balance and cultural review, production art/audio, individual owner/capacity assignment, target-PC performance, independent reviewer, P00-T04 release-manifest ratification, and other release gates. No outcome is inferred for these sheets.

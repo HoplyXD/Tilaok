@@ -6,7 +6,7 @@ Deadline: **Oct 25, 2026** (as of Oct 12, 2026).
 | Priority | Scope |
 |---|---|
 | **Must** | Team-directed platformer controls developed under the standing AI-assisted programming workflow; Pugad → Place → Play loop; 1 stage; Karera as the weighted default Main Challenge; unified scoring; Lagsanay; core event stacking with Karera + Lagsanay, Karera + Kangaroo, and Kangaroo + Lagsanay; tutorial/onboarding (required for screening); all eight first-batch families and applicable approved variants (conditional Tulay orientation gated); title/results, Library, settings/help, essential audio/visual cues and release presentation |
-| **Should** | Approved optional wall slide/jump extension; Langit-Lupa remains the named second event; richer chicken cosmetics; enhanced crowd audio; Barya; reviewed "Alam mo ba?" cards; session-only local win tally |
+| **Should** | Approved optional wall slide/jump extension; Langit-Lupa remains the named second event; richer chicken cosmetics; enhanced crowd audio; Barya (implemented on default P12 route 2026-10-15; human/art review open); reviewed "Alam mo ba?" cards; session-only local win tally |
 | **Nice / backlog** | Expanded 36-family item catalog, more events/stages, extra polish, accessories |
 
 **Rule:** polish beats quantity. Completeness is 20% of screening.

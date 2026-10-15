@@ -104,6 +104,8 @@ func bind_live(
 	_reference_definitions = reference_definitions if dev_mode else null
 	bind_library(definitions, tuning, text, "")
 	set_release_filter(false)
+	_refresh_conditional_categories()
+	_category_list.refresh_items()
 	var names := category_names()
 	choose_category(names[0] if not names.is_empty() else "")
 	_set_zone(ZONE_CATEGORIES)
@@ -131,9 +133,22 @@ func set_release_filter(value: bool) -> void:
 func category_names() -> PackedStringArray:
 	var result := PackedStringArray()
 	for item in _category_list.items:
-		if item is Button and item != _filter_button:
+		if item is Button and item != _filter_button and item.visible:
 			result.append((item as Button).text)
 	return result
+
+
+func _refresh_conditional_categories() -> void:
+	for item in _category_list.items:
+		var button := item as Button
+		if button == null or button == _filter_button:
+			continue
+		var name := button.text
+		if name == ITEMS_CATEGORY:
+			continue
+		var pages := _text.pages_for(name, _context) if _text != null else []
+		var has_legacy_body := _text != null and not _text.body_for(name).is_empty()
+		button.visible = not pages.is_empty() or has_legacy_body
 
 
 ## Titles of the rows in the current category (for tests and captures).

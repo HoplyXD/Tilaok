@@ -150,13 +150,14 @@ func _finish_race(reason: String) -> void:
 		for seat in input_router.registry.joined_seats():
 			seat_indices.append(int(seat.seat))
 	var score_result := RaceScoreCalculator.calculate(
-		seat_indices, outcome_rows, round_start_score_units
+		seat_indices, outcome_rows, round_start_score_units, _race_score_coin_seats()
 	)
 	if not race_round_controller.ledger.commit_score_once(
 		race_round_controller.ledger.round_id, score_result
 	):
 		return
 	_record_score_presentation(active_round, score_result)
+	_after_race_score_committed(score_result)
 	for seat_index in seat_indices:
 		cumulative_score_units[seat_index] = int(score_result.totals_units.get(seat_index, 0))
 	items.end_round()

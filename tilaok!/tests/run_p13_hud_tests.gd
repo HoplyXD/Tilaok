@@ -51,7 +51,7 @@ func _run() -> void:
 		await _karera_kangaroo(seat_count)
 		await _kangaroo_bomb_taya(seat_count)
 	await _final_round_and_sudden_death()
-	await _barya_is_not_enabled()
+	await _barya_has_a_text_cue()
 	print("P13_HUD_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -295,18 +295,24 @@ func _final_round_and_sudden_death() -> void:
 	await _close()
 
 
-func _barya_is_not_enabled() -> void:
+func _barya_has_a_text_cue() -> void:
 	var seats := await _open(2, {1: [KARERA, NONE]})
 	await _to_play(seats)
-	var found := false
+	room.barya_objective.state = BaryaRoundObjective.State.CARRIED
+	room.barya_objective.carrier_seat = seats[0]
+	room._notify_presentation(&"barya_test")
+	await process_frame
+	var hud := room.presenter.play_hud
+	var visible_cue := false
 	for node in _all_nodes(room.presenter):
 		if (
 			node is Label
 			and (node as Label).is_visible_in_tree()
 			and (node as Label).text.to_lower().contains("barya")
 		):
-			found = true
-	_check(not found, "Barya is not enabled: no Barya carrier cue is shown (N/A)")
+			visible_cue = true
+	_check(visible_cue, "the Barya carrier has a visible text cue")
+	_check(hud.score_rows[seats[0]].state_text() == "BARYA", "carrier row names BARYA")
 	await _close()
 
 
@@ -488,6 +494,9 @@ func _to_play(seats: Array[int]) -> void:
 		actor.velocity = Vector2.ZERO
 		index += 1
 	await _frames(4)
+	# The Barya pickup can notify the presenter on the last physics step. Let its coalesced
+	# process-frame binding run before reading visible HUD state.
+	await process_frame
 	_check(
 		room.phase_controller.phase == MatchPhaseController.Phase.PLAY,
 		"round enters Play as %s" % EventSchedule.describe(room.current_entry())

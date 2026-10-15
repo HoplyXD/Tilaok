@@ -1,4 +1,4 @@
-# gdlint: disable=max-public-methods
+# gdlint: disable=max-public-methods,max-file-lines
 class_name P05MatchRoom
 extends ItemLabRoom
 
@@ -156,6 +156,7 @@ func _physics_process(delta: float) -> void:
 		phase_controller.phase == MatchPhaseController.Phase.PLAY and race_round_controller != null
 	):
 		_collect_goal_overlaps()
+		_resolve_round_objective_pickups(Engine.get_physics_frames())
 		var step_result := race_round_controller.advance_step(
 			delta, Engine.get_physics_frames(), race_candidate_queue.drain()
 		)
@@ -289,6 +290,44 @@ func run_debug_action() -> void:
 	pass
 
 
+## P12 can replace one Pugad egg with a round-scoped objective without changing the ordinary
+## generator or its random stream. Other routes keep the generated pool unchanged.
+func _augment_pugad_egg_pool(_seat_count: int) -> void:
+	pass
+
+
+func _on_place_assignments_ready(_variants_by_seat: Dictionary) -> void:
+	pass
+
+
+func _is_round_objective_variant(_variant_key: String) -> bool:
+	return false
+
+
+func _commit_round_objective_placement(_edit: Dictionary) -> Dictionary:
+	return {"allowed": false, "reason": "Round objective is unavailable."}
+
+
+func _on_round_objective_placements_resolved(_results: Array[Dictionary]) -> void:
+	pass
+
+
+func _resolve_round_objective_pickups(_physics_tick: int) -> void:
+	pass
+
+
+func _on_race_terminal_committed(_outcome: Dictionary, _actor: ChickenController) -> void:
+	pass
+
+
+func _race_score_coin_seats() -> Array[int]:
+	return []
+
+
+func _after_race_score_committed(_score_result: Dictionary) -> void:
+	pass
+
+
 func _create_taya_marker(marker_name: String) -> Label:
 	var marker := TAYA_WORLD_MARKER.instantiate() as Label
 	marker.name = marker_name
@@ -344,6 +383,7 @@ func _begin_pugad() -> void:
 	egg_pool = PugadEggPoolGenerator.generate(
 		definitions, tuning, match_streams, seat_indices.size() + tuning.match_pugad_extra_eggs
 	)
+	_augment_pugad_egg_pool(seat_indices.size())
 	for seat_index in seat_indices:
 		selected_egg_by_seat[seat_index] = 0 if not egg_pool.is_empty() else -1
 	phase_controller.enter(MatchPhaseController.Phase.PUGAD, tuning.match_pugad_seconds)
@@ -453,7 +493,9 @@ func _enter_place() -> void:
 	if phase_controller.phase != MatchPhaseController.Phase.PUGAD:
 		return
 	items.enter_place()
-	placement_controller.setup(_claimed_variants_by_seat(), definitions, tuning)
+	var claimed_variants := _claimed_variants_by_seat()
+	_on_place_assignments_ready(claimed_variants)
+	placement_controller.setup(claimed_variants, definitions, tuning)
 	input_router.set_rotation_supported(true)
 	phase_controller.enter(MatchPhaseController.Phase.PLACE, tuning.match_place_seconds)
 	_set_input_phase()
@@ -529,25 +571,32 @@ func _refresh_match_ghost(seat_index: int) -> void:
 	if not placement_controller.cursors.has(seat_index) or not _ghosts.has(seat_index):
 		return
 	var cursor: Dictionary = placement_controller.cursors[seat_index]
-	var found := definitions.find_variant(str(cursor.variant_key))
-	if found.is_empty():
-		return
-	var variant := found.variant as ItemVariantDefinition
 	var verdict := _placement_verdict(seat_index)
 	placement_verdicts[seat_index] = {
 		"allowed": bool(verdict.allowed), "reason": str(verdict.reason)
 	}
-	var footprint := ItemPlacementValidator.footprint_rect_for(
-		variant, cursor.cell, int(cursor.quarter_turns), tuning
-	)
+	var footprint := Rect2()
 	var strips: Array[Rect2] = []
 	var normals: Array[Vector2] = []
-	for region in ItemGeometry.resolve_regions(variant, int(cursor.quarter_turns), tuning):
-		if region.kind == ItemRegionSpec.Kind.ONE_WAY_TOP:
-			var rect: Rect2 = region.rect
-			rect.position += footprint.position
-			strips.append(rect)
-			normals.append(region.normal)
+	var objective := _is_round_objective_variant(str(cursor.variant_key))
+	if objective:
+		footprint = Rect2(
+			Vector2(cursor.cell) * tuning.grid_cell_wu, Vector2.ONE * tuning.grid_cell_wu
+		)
+	else:
+		var found := definitions.find_variant(str(cursor.variant_key))
+		if found.is_empty():
+			return
+		var variant := found.variant as ItemVariantDefinition
+		footprint = ItemPlacementValidator.footprint_rect_for(
+			variant, cursor.cell, int(cursor.quarter_turns), tuning
+		)
+		for region in ItemGeometry.resolve_regions(variant, int(cursor.quarter_turns), tuning):
+			if region.kind == ItemRegionSpec.Kind.ONE_WAY_TOP:
+				var rect: Rect2 = region.rect
+				rect.position += footprint.position
+				strips.append(rect)
+				normals.append(region.normal)
 	var seat := input_router.registry.get_seat(seat_index)
 	var mark: String = str(MARKS.get(str(seat.shape), "◆"))
 	(_ghosts[seat_index] as ItemGhost).show_state(
@@ -560,9 +609,10 @@ func _refresh_match_ghost(seat_index: int) -> void:
 		_short_variant_label(str(cursor.variant_key))
 	)
 	(_ghosts[seat_index] as ItemGhost).compact_label = true
-	(_ghosts[seat_index] as ItemGhost).set_overlay(
-		overlay_for_cursor(str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns))
-	)
+	if not objective:
+		(_ghosts[seat_index] as ItemGhost).set_overlay(
+			overlay_for_cursor(str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns))
+		)
 	for pointer in pointers:
 		if str(pointer.id) == "p05_cursor_%d" % seat_index:
 			pointer.rect = footprint
@@ -683,8 +733,15 @@ func _confirm_placement(seat_index: int) -> void:
 ## already claimed by an earlier confirmed placement are taken for this Place phase.
 func _placement_verdict(seat_index: int) -> Dictionary:
 	var cursor: Dictionary = placement_controller.cursors[seat_index]
-	var verdict := items.validate_placement(
-		str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns), _actor_rects()
+	var variant_key := str(cursor.variant_key)
+	var verdict := (
+		BaryaPlacementRules.validate_cell(
+			arena, tuning, cursor.cell, items.pieces.values(), _actor_rects()
+		)
+		if _is_round_objective_variant(variant_key)
+		else items.validate_placement(
+			variant_key, cursor.cell, int(cursor.quarter_turns), _actor_rects()
+		)
 	)
 	if not bool(verdict.allowed) or bool(cursor.confirmed):
 		return verdict
@@ -724,10 +781,22 @@ func _finish_place_timeout() -> void:
 func _resolve_place_edits(edits: Array[Dictionary]) -> void:
 	if phase_controller.phase != MatchPhaseController.Phase.PLACE:
 		return
+	var construction_edits: Array[Dictionary] = []
+	var objective_edits: Array[Dictionary] = []
+	for edit in edits:
+		if _is_round_objective_variant(str(edit.get("variant_key", ""))):
+			objective_edits.append(edit)
+		else:
+			construction_edits.append(edit)
 	var resolver_result := AtomicEditResolver.resolve(
-		definitions, arena, tuning, items.pieces.values(), edits, items.round_number, _actor_rects()
+		definitions,
+		arena,
+		tuning,
+		items.pieces.values(),
+		construction_edits,
+		items.round_number,
+		_actor_rects()
 	)
-	last_resolution = resolver_result
 	var committed := items.commit_batch(resolver_result, _actor_rects())
 	var messages := PackedStringArray()
 	var rejection_lines := PackedStringArray()
@@ -749,6 +818,22 @@ func _resolve_place_edits(edits: Array[Dictionary]) -> void:
 			)
 		)
 		_show_blasts(committed.get("one_shot_edits", []))
+	var objective_results: Array[Dictionary] = []
+	for edit in objective_edits:
+		var objective_result := _commit_round_objective_placement(edit)
+		objective_results.append(objective_result)
+		var seat_index := int(edit.get("seat_index", -1))
+		if bool(objective_result.get("allowed", false)):
+			messages.append(
+				"P%d placed Barya; it does not count as construction." % (seat_index + 1)
+			)
+		else:
+			var reason := str(objective_result.get("reason", "Barya placement was discarded."))
+			messages.append("Barya placement discarded: %s" % reason)
+			rejection_lines.append("Barya: %s" % reason)
+	_on_round_objective_placements_resolved(objective_results)
+	resolver_result["round_objective_results"] = objective_results
+	last_resolution = resolver_result
 	last_message = "\n".join(messages)
 	place_notice = "   •   ".join(rejection_lines)
 	_enter_play()
@@ -805,13 +890,14 @@ func _finish_race(reason: String) -> void:
 	for seat in input_router.registry.joined_seats():
 		seat_indices.append(int(seat.seat))
 	var score_result := RaceScoreCalculator.calculate(
-		seat_indices, outcome_rows, round_start_score_units
+		seat_indices, outcome_rows, round_start_score_units, _race_score_coin_seats()
 	)
 	if not race_round_controller.ledger.commit_score_once(
 		race_round_controller.ledger.round_id, score_result
 	):
 		return
 	_record_score_presentation(items.round_number + 1, score_result)
+	_after_race_score_committed(score_result)
 	for seat_index in seat_indices:
 		cumulative_score_units[seat_index] = int(score_result.totals_units[seat_index])
 	items.end_round()
@@ -888,6 +974,7 @@ func _apply_race_outcomes(outcomes: Array) -> void:
 		var actor := actors.get(int(outcome.seat_index)) as ChickenController
 		if actor == null or not is_instance_valid(actor):
 			continue
+		_on_race_terminal_committed(outcome, actor)
 		if str(outcome.outcome) == "finished":
 			actor.secure("reached_goal")
 		else:
@@ -979,6 +1066,8 @@ func _set_input_phase() -> void:
 
 
 func _short_variant_label(variant_key: String) -> String:
+	if BaryaObjectiveDefinition.is_variant(variant_key):
+		return BaryaObjectiveDefinition.DISPLAY_NAME
 	if VARIANT_LABELS.has(variant_key):
 		return str(VARIANT_LABELS[variant_key])
 	return definitions.short_label(variant_key)

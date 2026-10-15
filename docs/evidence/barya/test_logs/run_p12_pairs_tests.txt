@@ -1,0 +1,565 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS C1 same-step goal and direct hazard: elimination wins (one outcome)
+PASS C2 competing hazards on one seat: stable item id decides the single credited kill
+PASS C3 a finish on the 60 s boundary step counts before the hard-cap failure
+PASS Bomb-Taya scaffold begins (3 seats)
+PASS C5 a contact on the expiry step loses to the timeout (no tag transfer)
+PASS C6 the timed-out taya is replaced by a live runner in the same batch
+PASS C7 a strictly earlier comparable hazard precedes a command evaluation
+PASS C7 an exact tie resolves as command failure
+PASS C7 an incomparable time resolves as command failure
+PASS Bomb-Taya scaffold begins (2 seats)
+PASS U1 (2 seats) goal and timeout on one step: the taya is eliminated by the timeout
+PASS Bomb-Taya scaffold begins (3 seats)
+PASS U1 (3 seats) goal and timeout on one step: the taya is eliminated by the timeout
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U1 (4 seats) goal and timeout on one step: the taya is eliminated by the timeout
+PASS Bomb-Taya scaffold begins (3 seats)
+PASS U2 (3 seats) a runner finishing this step is never the pass target
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U2 (4 seats) a runner finishing this step is never the pass target
+PASS Bomb-Taya scaffold begins (2 seats)
+PASS U2 (2 seats) with the only target finishing, the taya keeps the bomb
+PASS Bomb-Taya scaffold begins (2 seats)
+PASS U3 (2 seats) a finishing taya hands the bomb over in the same step
+PASS U3 (2 seats) the remaining countdown is preserved (no new timer)
+PASS Bomb-Taya scaffold begins (3 seats)
+PASS U3 (3 seats) a finishing taya hands the bomb over in the same step
+PASS U3 (3 seats) the remaining countdown is preserved (no new timer)
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U3 (4 seats) a finishing taya hands the bomb over in the same step
+PASS U3 (4 seats) the remaining countdown is preserved (no new timer)
+PASS Bomb-Taya scaffold begins (3 seats)
+PASS U3 the finishing taya's own contact is not replayed as a pass by the new taya
+PASS Bomb-Taya scaffold begins (2 seats)
+PASS U3 exactly one unfinished runner left: that runner is the taya and the Twist goes on
+PASS U3 nobody left to carry it: the Twist idles; Karera ends the round
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U3 the transfer draw is deterministic per seed
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U4 one finisher + a timeout leaves two runners: the fresh timer is the two-alive 7 s
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U4 with no finisher four alive, one times out -> three left -> 10 s
+PASS U5 a Twist terminal due on the deadline step commits first and keeps its cause
+PASS U5 a deadline-step Twist elimination earns no Patibong
+PASS Kangaroo scaffold begins (3 seats, twist=true)
+PASS U6 the third failure eliminates (command_failure); a second marker does not
+PASS U6 same-step goal and third failure: eliminated with the failure cause and no credit
+PASS Kangaroo scaffold begins (3 seats, twist=true)
+PASS U7 finishers leave the live roster without an elimination record
+PASS U7 the Twist never ends the round when one unfinished runner remains
+PASS U7 commands continue for the last unfinished runner
+PASS U7 Hug is never selected with fewer than two unfinished runners
+PASS Kangaroo scaffold begins (2 seats, twist=false)
+PASS U7 control: a standalone Kangaroo still ends at one survivor
+PASS Kangaroo scaffold begins (3 seats, twist=true)
+PASS U8 Storm is never active when Kangaroo is a Twist
+PASS Kangaroo scaffold begins (3 seats, twist=false)
+PASS U9 the Bomb-Taya timeout is accepted as an external elimination
+PASS U9 command failure, timeout and trap on one recorded time: command failure ranks first (command_failure)
+PASS Kangaroo scaffold begins (3 seats, twist=false)
+PASS U9 timeout and trap on one recorded time: the timeout ranks before the trap (no Patibong)
+PASS Kangaroo scaffold begins (3 seats, twist=false)
+PASS U9 a strictly earlier trap beats the timeout and keeps its Patibong credit
+PASS Kangaroo scaffold begins (3 seats, twist=false)
+PASS U9 an incomparable-time trap ranks last: the timeout wins
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U10 a pass target already eliminated this step is removed before pass selection
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS U10 a taya eliminated by a command failure is replaced, never passed to
+PASS U10 the replacement gets the fresh timer for the new live count (3 -> 10 s)
+PASS Bomb-Taya scaffold begins (3 seats)
+PASS U11 a tag pass is independent of any Kangaroo Hug response
+PASS U12 mixed same-step producers all feed the unchanged resolver: Last Cluck, lowest slot
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS permutation 0 of live/contact/finishing order yields the identical Twist outcome
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS permutation 1 of live/contact/finishing order yields the identical Twist outcome
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS permutation 2 of live/contact/finishing order yields the identical Twist outcome
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS permutation 3 of live/contact/finishing order yields the identical Twist outcome
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS permutation 4 of live/contact/finishing order yields the identical Twist outcome
+PASS Bomb-Taya scaffold begins (4 seats)
+PASS permutation 5 of live/contact/finishing order yields the identical Twist outcome
+PASS ledger candidate order permutation 0 yields identical outcomes
+PASS ledger candidate order permutation 1 yields identical outcomes
+PASS ledger candidate order permutation 2 yields identical outcomes
+PASS ledger candidate order permutation 3 yields identical outcomes
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 2 seats: Karera Main with the flag live and a Bomb-Taya Twist
+PASS K+L 2 seats: U3 the finishing taya is secured and the bomb moved on
+PASS K+L 2 seats: U3 the remaining countdown is kept (5.95 s)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 2 seats: the Twist takes the trap record
+PASS K+L 2 seats: C4 a strictly earlier trap beats the timeout and keeps its credit
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 2 seats: C4 a trap at or after the expiry is the timeout (no Patibong)
+PASS K+L 2 seats: a new taya is chosen after the timeout (U4 timer for the live count)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 2 seats: U1 goal and timeout on one step: the taya is eliminated, not secured
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 3 seats: Karera Main with the flag live and a Bomb-Taya Twist
+PASS K+L 3 seats: U3 the finishing taya is secured and the bomb moved on
+PASS K+L 3 seats: U3 the remaining countdown is kept (5.95 s)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 3 seats: the Twist takes the trap record
+PASS K+L 3 seats: C4 a strictly earlier trap beats the timeout and keeps its credit
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 3 seats: C4 a trap at or after the expiry is the timeout (no Patibong)
+PASS K+L 3 seats: a new taya is chosen after the timeout (U4 timer for the live count)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 3 seats: U1 goal and timeout on one step: the taya is eliminated, not secured
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 4 seats: Karera Main with the flag live and a Bomb-Taya Twist
+PASS K+L 4 seats: U3 the finishing taya is secured and the bomb moved on
+PASS K+L 4 seats: U3 the remaining countdown is kept (5.95 s)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 4 seats: the Twist takes the trap record
+PASS K+L 4 seats: C4 a strictly earlier trap beats the timeout and keeps its credit
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 4 seats: C4 a trap at or after the expiry is the timeout (no Patibong)
+PASS K+L 4 seats: a new taya is chosen after the timeout (U4 timer for the live count)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L 4 seats: U1 goal and timeout on one step: the taya is eliminated, not secured
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 2 seats: Karera owns the end; Kangaroo runs as a Twist with the flag live
+PASS K+Kg 2 seats: the HUD names the Twist
+PASS K+Kg 2 seats: a finisher is secured
+PASS K+Kg 2 seats: a secured finisher leaves command eligibility
+PASS K+Kg 2 seats: commands complete under the race deadlines (6 completed)
+PASS K+Kg 2 seats: a secured finisher never gains a failure marker
+PASS K+Kg 2 seats: a failed runner cannot finish later
+PASS K+Kg 2 seats: the third failure is a command_failure elimination
+PASS K+Kg 2 seats: scores equal the race calculator alone
+PASS K+Kg 2 seats: command failure never awards Patibong
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 2 seats: U6 goal and third failure on one step: eliminated, not secured
+PASS K+Kg 2 seats: U6 the ledger cause is command_failure with no credit
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 2 seats: the race deadline ends a stacked round
+PASS K+Kg 2 seats: nobody finished: no points and a visible reason
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 3 seats: Karera owns the end; Kangaroo runs as a Twist with the flag live
+PASS K+Kg 3 seats: the HUD names the Twist
+PASS K+Kg 3 seats: a finisher is secured
+PASS K+Kg 3 seats: a secured finisher leaves command eligibility
+PASS K+Kg 3 seats: commands complete under the race deadlines (6 completed)
+PASS K+Kg 3 seats: a secured finisher never gains a failure marker
+PASS K+Kg 3 seats: a failed runner cannot finish later
+PASS K+Kg 3 seats: the third failure is a command_failure elimination
+PASS K+Kg 3 seats: scores equal the race calculator alone
+PASS K+Kg 3 seats: command failure never awards Patibong
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 3 seats: U6 goal and third failure on one step: eliminated, not secured
+PASS K+Kg 3 seats: U6 the ledger cause is command_failure with no credit
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 3 seats: the race deadline ends a stacked round
+PASS K+Kg 3 seats: nobody finished: no points and a visible reason
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 4 seats: Karera owns the end; Kangaroo runs as a Twist with the flag live
+PASS K+Kg 4 seats: the HUD names the Twist
+PASS K+Kg 4 seats: a finisher is secured
+PASS K+Kg 4 seats: a secured finisher leaves command eligibility
+PASS K+Kg 4 seats: commands complete under the race deadlines (7 completed)
+PASS K+Kg 4 seats: a secured finisher never gains a failure marker
+PASS K+Kg 4 seats: a failed runner cannot finish later
+PASS K+Kg 4 seats: the third failure is a command_failure elimination
+PASS K+Kg 4 seats: scores equal the race calculator alone
+PASS K+Kg 4 seats: command failure never awards Patibong
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 4 seats: U6 goal and third failure on one step: eliminated, not secured
+PASS K+Kg 4 seats: U6 the ledger cause is command_failure with no credit
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: KANGAROO
+PASS K+Kg 4 seats: the race deadline ends a stacked round
+PASS K+Kg 4 seats: nobody finished: no points and a visible reason
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 2 seats: Kangaroo is the Main; Bomb-Taya is the Twist
+PASS Kg+L 2 seats: the flag is hidden in elimination Mains
+PASS Kg+L 2 seats: the taya countdown keeps running through a Freeze (4.900 -> 4.400)
+PASS Kg+L 2 seats: a low countdown during Freeze still eliminates the taya (R4 stays inactive)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 2 seats: one outcome per player
+PASS Kg+L 2 seats: the taya timeout is a Kangaroo-arbitrated elimination ({ 1: "direct_hazard", 0: "timeout" })
+PASS Kg+L 2 seats: a trap in the same step eliminates on its own seat
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 2 seats: down to two survivors (2 live)
+PASS Kg+L 2 seats: two survivors run Storm cadence until a winner
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 2 seats: everyone eliminated together resolves the round
+PASS Kg+L 2 seats: Last Cluck is announced and explained
+PASS Kg+L 2 seats: Kangaroo Main uses the placement family only (["placement", "placement"])
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 3 seats: Kangaroo is the Main; Bomb-Taya is the Twist
+PASS Kg+L 3 seats: the flag is hidden in elimination Mains
+PASS Kg+L 3 seats: the taya countdown keeps running through a Freeze (4.900 -> 4.400)
+PASS Kg+L 3 seats: a low countdown during Freeze still eliminates the taya (R4 stays inactive)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 3 seats: one outcome per player
+PASS Kg+L 3 seats: the taya timeout is a Kangaroo-arbitrated elimination ({ 1: "direct_hazard", 0: "timeout" })
+PASS Kg+L 3 seats: a trap in the same step eliminates on its own seat
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 3 seats: down to two survivors (2 live)
+PASS Kg+L 3 seats: two survivors run Storm cadence until a winner
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 3 seats: everyone eliminated together resolves the round
+PASS Kg+L 3 seats: Last Cluck is announced and explained
+PASS Kg+L 3 seats: Kangaroo Main uses the placement family only (["placement", "placement", "placement"])
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 4 seats: Kangaroo is the Main; Bomb-Taya is the Twist
+PASS Kg+L 4 seats: the flag is hidden in elimination Mains
+PASS Kg+L 4 seats: the taya countdown keeps running through a Freeze (4.900 -> 4.400)
+PASS Kg+L 4 seats: a low countdown during Freeze still eliminates the taya (R4 stays inactive)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 4 seats: one outcome per player
+PASS Kg+L 4 seats: the taya timeout is a Kangaroo-arbitrated elimination ({ 3: "direct_hazard", 2: "timeout" })
+PASS Kg+L 4 seats: a trap in the same step eliminates on its own seat
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 4 seats: down to two survivors (2 live)
+PASS Kg+L 4 seats: two survivors run Storm cadence until a winner
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L 4 seats: everyone eliminated together resolves the round
+PASS Kg+L 4 seats: Last Cluck is announced and explained
+PASS Kg+L 4 seats: Kangaroo Main uses the placement family only (["placement", "placement", "placement", "placement"])
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 4-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+PASS K+L: pausing freezes the tree
+PASS K+L: the taya countdown and the race clock stay frozen together
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 3-seat scheduled match starts
+PASS round 1 enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kg+L: pause freezes the command clock and the taya countdown together
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_SCHEDULE round=2 now=KARERA / TWIST: KANGAROO next=
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"ELIMINATED","1":"ELIMINATED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+PASS round 2 enters Play as KARERA / TWIST: KANGAROO
+PASS a level score after a stacked last round starts sudden death
+PASS sudden death is a standalone Lagsanay: no Twist tag, no Main left over
+PASS no stack controller keeps taking hazards in sudden death
+PASS a trap eliminates in sudden death (its clock matches the hazard clock) and decides it
+PASS two seats played
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 2-seat scheduled match starts
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_BARYA_OFFER match=4 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_BARYA_OFFER match=5 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_BARYA_OFFER match=6 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_BARYA_OFFER match=7 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_BARYA_OFFER match=8 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_SCHEDULE round=1 now=KARERA next=KANGAROO
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_BARYA_OFFER match=10 round=1 egg=egg_02
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS round 1 enters Play as KARERA / TWIST: BOMB-TAYA
+P12_PAIR_RESTARTS nodes=[1350, 1350, 1350, 1350, 1350, 1350, 1350, 1350, 1350, 1350] objects=[4558, 4558, 4558, 4558, 4558, 4558, 4558, 4558, 4558, 4558]
+PASS ten full-match restarts keep node (1350 -> 1350) and object (4558 -> 4558) counts stable
+P12_PAIRS_TESTS checks=285 failures=0

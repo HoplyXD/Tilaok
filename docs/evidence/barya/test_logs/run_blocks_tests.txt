@@ -1,0 +1,116 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+PASS stage grid is 64 wu per tile
+PASS chicken body (56.0x120.0) fits a 1x2-tile clearance
+PASS legacy 32 wu fixture profile is derived from the current defaults and validates
+PASS stage uses a TileMapLayer with 64x64 tiles
+PASS every arena surface cell is painted (132 tiles)
+PASS floor, base platform and containment use distinct tiles
+PASS tile cells line up with ArenaDefinition world coordinates
+PASS build.solid_block.slab_3x1 scene authors a (192.0, 64.0) collision matching its (3, 1) footprint
+PASS build.wood_box.box_2x2 scene authors a (128.0, 128.0) collision matching its (2, 2) footprint
+PASS build.collapsing_block.cell_1x1 scene authors a (64.0, 64.0) collision matching its (1, 1) footprint
+PASS W is 'up' during Place
+PASS W is jump during Play
+PASS S is sneak (down) during Play
+PASS a W press jumps (rise 192.1 wu of 192)
+PASS holding S on the floor shrinks the body to (56.0, 56.0)
+PASS sneaking keeps the feet on the floor
+PASS a sneaking chicken cannot walk
+PASS a sneaking chicken cannot jump
+PASS releasing S in open space stands back up
+PASS sneak only starts while grounded
+PASS arrange build.solid_block.slab_3x1 at (15, 13): Valid placement.
+PASS a sneaking chicken under a one-tile ceiling stays small instead of clipping
+PASS it stands up as soon as the headroom is clear
+PASS without W a chicken falls fast (1800)
+PASS holding W while falling glides at <= 180 wu/s (max 180.0)
+PASS air steering still works while gliding
+PASS releasing W ends the glide
+PASS arrange build.solid_block.slab_3x1 at (23, 9): Valid placement.
+PASS wall slide (not glide) applies on a wall while W is held
+PASS arrange build.solid_block.slab_3x1 at (14, 8): Valid placement.
+PASS arrange build.solid_block.slab_3x1 at (20, 6): Valid placement.
+PASS solid block is 3x1 (192x64)
+PASS R rotates the solid block to 1x3 (64x192)
+PASS rotated block sits on its footprint and its Visual is turned 90 degrees
+PASS solid block sides are wall-slide eligible
+PASS a chicken stands on the solid block
+PASS solid block has no gravity
+PASS arrange build.wood_box.box_2x2 at (14, 12): Valid placement.
+PASS wood box is 2x2
+PASS wood box falls under gravity and lands on the floor (bottom y=959.4)
+PASS a grounded chicken walking into the box pushes it (120.0 wu)
+PASS the chicken never passes through the box
+PASS friction stops the box when the push ends
+PASS entering Place returns the box to its placed spot and freezes it
+PASS the box stays put during Place
+PASS the next Play start drops the box again from its placed spot
+PASS arrange build.wood_box.box_2x2 at (22, 12): Valid placement.
+PASS a chicken can stand on the box
+PASS arrange build.collapsing_block.cell_1x1 at (22, 11): Valid placement.
+PASS collapsing block is 1x1
+PASS standing on the collapsing block starts its timer
+PASS it loses collision 120 frames (2.00 s) after contact
+PASS the chicken falls through once it collapses
+PASS it respawns 181 frames (3.02 s) after collapsing
+PASS arrange build.collapsing_block.cell_1x1 at (22, 9): Valid placement.
+PASS wall-sliding on the collapsing block starts its timer
+PASS wall-slide contact collapses it after 2 s
+PASS it does not respawn inside a chicken
+PASS it respawns once the footprint is clear
+PASS entering Place restores a crumbling block and freezes it
+PASS chickens use the animated chicken scene
+PASS 512 px cells scale to 128 wu (0.25)
+PASS all 12 animations exist with 512x512 sheet cells
+PASS standing still plays idle
+PASS moving right plays run_right
+PASS moving left plays run_left
+PASS sneaking plays sneak
+PASS airborne with no input plays jump
+PASS airborne moving right plays jump_right
+PASS gliding left plays glide_left
+PASS gliding still plays glide
+PASS arrange build.solid_block.slab_3x1 at (23, 9): Valid placement.
+PASS wall on the right plays wall_slide_right
+PASS wall on the left plays wall_slide_left
+PASS each animation applies its feet offset
+PASS wall fixture placed
+PASS Spikes is in the catalog with no code or data edit
+PASS Spikes: solid bottom half and a kill hitbox, independent of its 1x1 placement box
+PASS place block.spikes.main at (16, 14): Valid placement.
+PASS a chicken beside the spikes is safe
+PASS landing on the spike points eliminates the chicken
+PASS the spikes kill is credited to the placer (Patibong)
+PASS place block.spikes.main at (22, 10): Valid placement.
+PASS turned spikes: a chicken stands safely on the solid half
+PASS place block.cannon.main at (12, 14): Valid placement.
+PASS Cannon fires right along its 5-cell Path2D
+PASS Cannon's own fire interval (2 s) overrides the global launcher cooldown
+PASS a cannon ball eliminates a chicken in its path
+PASS the projectile template's Visual is shown for each live ball
+PASS the cannon kill names the cannon family
+PASS place block.cannon.main at (12, 14): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (14, 14): Valid placement.
+PASS a solid block in the path stops the ball; the chicken behind it survives
+PASS apply_stun accepts an active chicken
+PASS a stunned chicken is knocked back and ignores walking left
+PASS a stunned chicken plays the stun animation
+PASS no re-stun while the stun and its immunity last
+PASS the stun wears off after its duration
+PASS an eliminated chicken shows the death sprite
+PASS a chicken eliminated in mid-air falls straight down and lands (feet y 960.0)
+PASS drop-in scene saved into scenes/blocks/
+PASS the dropped-in scene is a defined block
+PASS the dropped-in block is in the default selection pool
+P04_ITEM_LAB_READY families=11 enabled_variants=12 profile=karera_slice
+PASS the Item Lab shows an egg for the dropped-in block
+PASS place block.zz_test_drop_in.main at (11, 8): Valid placement.
+PASS a Heavy block falls under gravity
+PASS a Heavy block cannot be pushed by a walking chicken
+PASS touching a STUN hitbox stuns the chicken
+PASS a stun never eliminates
+PASS a stun is recorded as an uncredited setup effect
+PASS removing the scene removes the block again
+BLOCKS_TESTS checks=111 failures=0

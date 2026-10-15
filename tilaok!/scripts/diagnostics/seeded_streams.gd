@@ -7,6 +7,7 @@ var kangaroo := RandomNumberGenerator.new()
 var tie := RandomNumberGenerator.new()
 var taya := RandomNumberGenerator.new()
 var cosmetic := RandomNumberGenerator.new()
+var barya := RandomNumberGenerator.new()
 
 
 func seed_all(seed_value: int) -> void:
@@ -16,6 +17,7 @@ func seed_all(seed_value: int) -> void:
 	tie.seed = seed_value + 307
 	taya.seed = seed_value + 353
 	cosmetic.seed = seed_value + 401
+	barya.seed = seed_value + 443
 
 
 func choose_weighted(

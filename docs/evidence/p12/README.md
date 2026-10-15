@@ -120,7 +120,11 @@ Open items:
 
 - Human sessions for all three pairs (sheet in [PLAYTEST.md](../../PLAYTEST.md)), physical controllers, balance of stack frequency and Twist pressure.
 - Draft row K6 (a bubble-captured runner under Kangaroo) is a state question and is not decided by this table.
-- Barya is not enabled in any pair.
-- The default route is still the First Playable; the scheduled match stays opt-in (`--match-route=lifecycle`).
+- In this recorded P12 slice, Barya was not enabled in any pair; the later P19 implementation covers the two Karera stacks ([Barya evidence](../barya/README.md)).
+- At the time of this recorded P12 slice, the default route was still First Playable and the scheduled match stayed opt-in (`--match-route=lifecycle`). The 2026-10-15 P13 decision later made the scheduled P12 match the default route.
 - The round-1 draft example for the fresh timer after a timeout said 10 s; the approved rule (unfinished live runners remaining; one runner → 7 s) is what is implemented. Noted in the record.
 - Visuals are DEBUG placeholders; no art or audio was generated.
+
+## Later current-state update — Barya and default route (2026-10-15)
+
+The preceding P12 snapshots above are historical for their recorded builds: Barya was then disabled, and P12 was then opt-in. Since the 2026-10-15 P13 default-route decision, the scheduled P12 match is the default player route. Under a separate scoped P19 approval, Barya is now implemented on P12 and verified with its own [engineering evidence](../barya/README.md); `--barya-disabled` rolls back the offer, and P07 stays disabled. The historical P12 stack tests and logs remain unchanged. P00-T04 remains BLOCKED, Barya human/device/art review stays open, and this update does not ratify the full release manifest.

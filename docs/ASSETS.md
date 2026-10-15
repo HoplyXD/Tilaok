@@ -226,3 +226,14 @@ No final art, audio or font was generated or imported. Everything below is a dev
 | UI font | engine default (Open Sans SemiBold) | font | engine-included; lacks `● ▲ ■ ◆ → ↑ ↔` (system fallback) — a final font that covers them is needed | Shanti |
 
 Provenance: all of the above was generated or edited by AI-assisted programming under Francis and Carlos's direction and is disclosed in [AI_USAGE.md](AI_USAGE.md). Nothing is licensed from a third party.
+
+## Barya DEBUG placeholder — 2026-10-15
+
+The round coin and Pugad preview use code-drawn DEBUG geometry (gold coin disc, rim, letter B, and a small DEBUG label) implemented in `tilaok!/scripts/match/barya_coin.gd` and `tilaok!/scripts/items/item_egg_preview.gd`. No raster/vector art, audio file, font, third-party asset, or UCH material was added. The output is a temporary programming placeholder, not team-made production art.
+
+| Placeholder | Used in | Status | Human handoff |
+|---|---|---|---|
+| `round_objective.barya.coin_1x1` DEBUG coin geometry | Pugad offer, placed/dropped coin, carrier attachment | DEBUG placeholder — replace | Jorge/Ivie (art); Shanti (UI cue) |
+| DEBUG Barya egg silhouette | Pugad egg preview | DEBUG placeholder — replace | Jorge/Ivie (art); Shanti (UI cue) |
+
+The live HUD uses text and a seat-number cue; no color-only identification is intended. Human art, contrast/minimum-zoom/accessibility review, native-speaker/cultural review and player comprehension are not yet performed. Keep this task in AI programming disclosure only; no AI-generated final art or audio is authorized or claimed. See the [scoped Barya activation record](evidence/barya/activation_contract_2026-10-15.md) and [engineering captures](evidence/barya/README.md#rendered-captures).

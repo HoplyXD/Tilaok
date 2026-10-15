@@ -96,3 +96,7 @@ No regression; memory is +4.5 MiB (new scenes, bus layout, library text). These 
 ```
 
 Run interactive and capture runners from an isolated copy of the tree: several older runners overwrite tracked `docs/evidence/**`.
+
+## Later Barya HUD/library/tutorial integration — 2026-10-15
+
+The 264-check HUD log, 352-check Library log and 55-check tutorial log above capture the pre-Barya P13 state; their Barya N/A assertions remain historical evidence and were not rewritten. The P12 default route now includes Barya, its carrier/status cue, +0.5 round-result/history rows, conditional Library page and Barya-specific Pugad tutorial prompt. Updated suite counts and captures are indexed in [Barya evidence](../barya/README.md): current HUD 265, Library 368 and tutorial 58 checks, all passing. Human spectator, novice, accessibility, physical-device and art/cultural review remain open.

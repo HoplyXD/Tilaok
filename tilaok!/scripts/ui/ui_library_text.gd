@@ -79,6 +79,7 @@ static func build_context(
 		"bayani": ScoreFormat.format_units(RaceScoreCalculator.BAYANI_UNITS),
 		"patibong": ScoreFormat.format_units(RaceScoreCalculator.PATIBONG_UNITS),
 		"bawi": ScoreFormat.format_units(RaceScoreCalculator.BAWI_UNITS),
+		"barya": ScoreFormat.format_units(RaceScoreCalculator.BARYA_UNITS),
 		"bawi_gap": ScoreFormat.format_units(RaceScoreCalculator.BAWI_GAP_UNITS),
 		"target": ScoreFormat.format_units(tuning.match_target_score_units),
 		"round_limit": str(tuning.match_round_limit),
@@ -101,7 +102,12 @@ static func build_context(
 		"shake_mode": ["Full", "Reduced", "Off"][clampi(shake_mode, 0, 2)],
 		"controls": _controls_text(prompt_map),
 	}
-	return {"tokens": tokens, "stacks": stacks, "modes": available_modes.duplicate()}
+	return {
+		"tokens": tokens,
+		"stacks": stacks,
+		"modes": available_modes.duplicate(),
+		"barya_enabled": tuning.barya_enabled,
+	}
 
 
 static func _controls_text(map: UiPromptMap) -> String:
@@ -123,15 +129,19 @@ func _is_available(requires: String, context: Dictionary) -> bool:
 	if parts.size() < 2:
 		return true
 	var needed := parts[1].split("|", false)
+	var available := true
 	match parts[0]:
 		"main":
-			return str(needed[0]) in (context.get("modes", []) as Array)
+			available = str(needed[0]) in (context.get("modes", []) as Array)
 		"stack":
+			available = false
 			for option in needed:
 				if str(option) in (context.get("stacks", []) as Array):
-					return true
-			return false
-	return true
+					available = true
+					break
+		"feature":
+			available = needed[0] == "barya" and bool(context.get("barya_enabled", false))
+	return available
 
 
 func _fill(text: String, context: Dictionary) -> String:

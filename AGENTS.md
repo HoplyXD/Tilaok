@@ -19,7 +19,7 @@ Context for Codex sessions in this repo.
 - Every round: **Pugad → Place → Play.** The Pugad is a nest of eggs; picking one hatches an item. The stage persists and grows.
 - Most rounds race to the flag. Every **4th round**, a **laro ng lahi event** takes over the same stage (announced a round ahead).
 - **Lagsanay** (Ilonggo for tag): bomb-taya tag. Touch to pass; when the timer hits zero the taya is eliminated; repeat until one survivor. Trap deaths are eliminations.
-- **Scoring** (our own values; see GDD §5): Tapos 1.0, Una +0.25, Bayani +0.5, Patibong +0.25/kill, Bawi +0.75, Barya (coin) +0.5; no points if all or none reach the goal (waived in 2-player). Events map onto Tapos/Una. **Exception: Lagsanay uses placement** (1.0 / 0.5 / 0.25 / 0) plus Patibong and Bawi. First to 10 points, or highest after round 12.
+- **Scoring** (our own values; see GDD §5): Tapos 1.0, Una +0.25, Bayani +0.5, Patibong +0.25/kill, Bawi +0.75, Barya (coin) +0.5; ordinary Karera awards are suppressed if all or none reach the goal (no two-player waiver); eligible Barya still pays in all-finish rounds, and no finisher means no Barya points. Events map onto Tapos/Una. **Exception: Lagsanay uses placement** (1.0 / 0.5 / 0.25 / 0) plus Patibong and Bawi. First to 10 points, or highest after round 12.
 
 ## Competition rules that affect code
 - The local competition notes record §7 as requiring code/mechanics created by registered team members and §8 as allowing disclosed AI programming. See `docs/COMPETITION.md` for the source note and unresolved interpretation; do not present this summary as organizer approval.

@@ -1,0 +1,99 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+PASS Karera Main is eligible
+PASS Lagsanay Main is excluded
+PASS Kangaroo Main is excluded
+PASS sudden death is excluded
+PASS Karera + LAGSANAY offers Barya at 2 seats
+PASS Karera + KANGAROO offers Barya at 2 seats
+PASS Karera + LAGSANAY offers Barya at 3 seats
+PASS Karera + KANGAROO offers Barya at 3 seats
+PASS Karera + LAGSANAY offers Barya at 4 seats
+PASS Karera + KANGAROO offers Barya at 4 seats
+PASS disabled Barya is excluded
+PASS disabled offer consumes no Barya randomness
+PASS ineligible offer consumes no Barya randomness
+PASS zero chance preserves eggs and consumes no Barya randomness
+PASS probability one replaces exactly one egg and preserves the pool count
+PASS repeated offer attempts keep one coin maximum
+PASS 1/3 seeded offer rate is within deterministic bounds
+PASS successful offer replaces a uniformly sampled egg slot
+PASS disabled seeded parity preserves baseline eggs and both random streams
+PASS the ordinary Pugad arbiter assigns a contested Barya egg once
+PASS Barya accepts a legal 1×1 build-region cell
+PASS Barya rejects the protected spawn zone
+PASS Barya rejects out-of-bounds cells
+PASS Barya rejects overlaps with construction pieces
+PASS Barya placement respects player clearance
+PASS Barya is discarded when no valid recovery cell exists
+PASS confirmed Barya reserves a 1×1 first-confirm cell
+PASS Place timeout keeps a valid confirmed Barya and drops an invalid other edit
+PASS objective begins in offered state with stable identity
+PASS Pugad claim advances the objective to assigned
+PASS valid placement advances the objective to placed
+PASS all-finish 2p awards only Barya's four eighth-point units
+PASS all-finish 3p awards only Barya's four eighth-point units
+PASS all-finish 4p awards only Barya's four eighth-point units
+PASS no-finisher round suppresses Barya even when a stale carrier fact is passed
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS placed objective creates its one live world coin
+PASS nearest pickup ties resolve by stable seat index
+PASS duplicate pickup in one step is harmless
+PASS committed elimination drops the coin
+PASS a death-step drop cannot be picked up again on that step
+PASS aborted retry resets temporary ownership without rerolling
+PASS retry keeps the original Place cell and increments attempt identity
+P12_BARYA_OFFER match=1 round=1 egg=egg_02
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS invalid-timeout fixture starts a P12 match
+PASS a stale attempt identity cannot attach its delayed coin
+PASS retry respawns the same objective at its Place cell
+PASS a later physics step allows the next pickup
+PASS committed finish secures the receipt
+PASS only the committed finisher enters Barya scoring
+PASS round cleanup removes the objective
+PASS probability-one Pugad includes Barya for invalid-timeout fixture
+PASS invalid timeout placement discards Barya without construction or a coin scene
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS same-step hazard winner drops the coin and suppresses a losing goal payout
+P12_BARYA_OFFER match=1 round=1 egg=egg_02
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS two-seat P12 match starts with Barya enabled
+PASS Barya replaces an egg without changing Pugad pool size
+PASS P12 offer contains at most one Barya egg
+PASS the live Pugad shows a coin silhouette for the Barya offer
+PASS rendered capture saved: 01-pugad-offer
+PASS Pugad offer is not construction
+PASS a claimed Pugad Barya is assigned through the ordinary claim path
+PASS Place receives the assigned objective
+PASS first Barya confirmation reserves its footprint
+PASS rendered capture saved: 02-place-locked
+PASS temporary coin placement enters Play and consumes zero construction capacity
+PASS rendered capture saved: 03-play-coin-available
+BARYA_PHYSICS_PICKUP state=CARRIED carrier=0 overlap_seats=[0, 1]
+PASS real contested Area2D pickup uses nearest origin and lower-seat tie-break
+PASS rendered capture saved: 04-carried
+PASS coin attachment follows controller-root movement
+PASS capture preserves carrier ownership and attachment
+PASS committed death drops at controller root and recovers from a protected cell
+PASS rendered capture saved: 05-death-drop-recovered
+PASS death-step recovery cannot be picked up until the next physics step
+PASS a second eligible player reclaims the death-dropped coin with real physics overlap
+PASS rendered capture saved: 06-reclaimed
+PASS only the reclaimer's committed finish secures the Barya receipt
+PASS rendered capture saved: 07-finish-secured
+PASS round results and history show the live Barya award row
+PASS scoreboard history snapshot retains the Barya award segment
+PASS committed Barya carrier receives exactly four eighth-point units
+PASS rendered capture saved: 08-results-award
+PASS round scoring removes the coin and leaves construction unchanged
+BARYA_TESTS checks=80 failures=0 input=synthetic physics=Godot Area2D

@@ -20,7 +20,7 @@ All characters are chickens. Instead of the traditional sabong where roosters fi
    - Confirming a valid placement locks that edit for the rest of Place. It cannot be moved, rotated, or undone; a player who has locked an edit waits while the others finish.
    - ~15s to place. If time runs out, the item auto-places at the pointer if the spot is valid, otherwise it is discarded.
    - Nothing is active during Place. The sole exception is the one-shot **Walis Cleanup** edit when confirmed; it is a construction action, never a Play-phase hazard. When Play begins, placed items reset to their defined starting position/state.
-   - Pointers are visible to everyone, but nothing announces a placed Barya, so it can be tucked into the clutter.
+   - Pointers are visible to everyone. Barya placement and carrying receive a live text cue so the round objective stays identifiable among the construction pieces.
 3. **Play:** either
    - a **Main Challenge**: Karera (run from start to the flag) or an active laro ng lahi event; and
    - at most one compatible **Twist** event layered onto that main challenge.
@@ -119,6 +119,8 @@ Event rounds reuse the **same point types**, re-mapped to each event's objective
 | Trap | **Patibong** | +0.25 each | Each player killed by a trap you placed, as long as at least one player reached the flag that round (you score even if you lost). Dying to your own trap scores nothing | Same, according to the Main Challenge's scoring family |
 | Comeback | **Bawi** | +0.75 | Underdog reaches the flag | Underdog completes the Main Challenge's objective / places 1st in an elimination Main Challenge |
 | Coin | **Barya** | +0.5 | Reach the flag alive carrying the Barya | Karera only for now |
+
+**Barya runtime contract (approved 2026-10-15):** the scheduled P12 match rolls a separate seeded Barya offer only for Karera, including Karera + Bomb-Taya and Karera + Kangaroo. At the default 1-in-3 chance it replaces one uniformly selected Pugad egg without changing pool size. The picker claims and places one non-persistent 1×1 objective; invalid/expired placement discards it. Overlapping pickups resolve by nearest chicken controller origin, then lower seat index. Carrying survives capture. A committed elimination drops the coin at the controller root; an invalid drop cell recovers to the nearest valid cell, with row-major `(y, x)` ties, or discards only when no cell is valid. A coin dropped during a physics step cannot be reclaimed until the next step. Only a committed Karera finisher carrying it earns +0.5 (four eighth-point units), including an all-finish round; no finisher means no Barya points. Round cleanup removes it after score/history capture. It is not an obstacle, does not enter the persistent item manager or 48-piece cap, is not solid, and does not support Rising or Walis. The P07 first-playable route remains Barya-disabled. See [Barya engineering evidence](evidence/barya/README.md). Human art, accessibility, cultural, physical-device and player review remain open.
 
 **Underdog:** a player who is 3+ points behind the leader at the start of the round.
 

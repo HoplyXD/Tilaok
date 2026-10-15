@@ -106,6 +106,8 @@ func claimed_by(seat_index: int, variant_key: String, cell: Vector2i, quarter_tu
 
 
 func _occupancy(variant_key: String, cell: Vector2i, quarter_turns: int) -> Array[Rect2]:
+	if BaryaObjectiveDefinition.is_variant(variant_key):
+		return [Rect2(Vector2(cell) * tuning.grid_cell_wu, Vector2.ONE * tuning.grid_cell_wu)]
 	var found := definitions.find_variant(variant_key)
 	if found.is_empty():
 		var none: Array[Rect2] = []

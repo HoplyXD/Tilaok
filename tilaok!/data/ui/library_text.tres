@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="UiLibraryText" load_steps=31 format=3]
+[gd_resource type="Resource" script_class="UiLibraryText" load_steps=32 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_library_text.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_library_page.gd" id="2"]
@@ -199,9 +199,16 @@ title = "Display"
 body = "The game is laid out for 1280 x 720 and scales to 1920 x 1080. Wider windows keep the same view with bars at the sides. No effect flashes rapidly; the Parol uses a slow brightness ramp."
 requires = ""
 
+[sub_resource type="Resource" id="Page_29"]
+script = ExtResource("2")
+category = "Barya"
+title = "The round coin"
+body = "On some Karera rounds, one Pugad egg may offer Barya. Place its 1×1 coin during Place; it is a temporary objective, not construction. Touch it to carry it. Capture keeps it with you; elimination drops it. Carry it to the flag while alive for +{barya}. It disappears after the round is scored."
+requires = "feature:barya"
+
 [resource]
 script = ExtResource("1")
 categories = PackedStringArray("How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility")
 titles = PackedStringArray("How to Play", "Karera (race)", "Lagsanay (tag)", "Kangaroo", "Items", "Accessibility")
 bodies = PackedStringArray("The round loop, controls and winning.", "Reach the flag. Scoring and Twists.", "Tag with a countdown. Placement points.", "Match the slipper. Three misses.", "Every piece you can be dealt.", "Markers, cues, shake, sound and display.")
-pages = Array[ExtResource("2")]([SubResource("Page_1"), SubResource("Page_2"), SubResource("Page_3"), SubResource("Page_4"), SubResource("Page_5"), SubResource("Page_6"), SubResource("Page_7"), SubResource("Page_8"), SubResource("Page_9"), SubResource("Page_10"), SubResource("Page_11"), SubResource("Page_12"), SubResource("Page_13"), SubResource("Page_14"), SubResource("Page_15"), SubResource("Page_16"), SubResource("Page_17"), SubResource("Page_18"), SubResource("Page_19"), SubResource("Page_20"), SubResource("Page_21"), SubResource("Page_22"), SubResource("Page_23"), SubResource("Page_24"), SubResource("Page_25"), SubResource("Page_26"), SubResource("Page_27"), SubResource("Page_28")])
+pages = Array[ExtResource("2")]([SubResource("Page_1"), SubResource("Page_2"), SubResource("Page_3"), SubResource("Page_4"), SubResource("Page_5"), SubResource("Page_6"), SubResource("Page_7"), SubResource("Page_8"), SubResource("Page_9"), SubResource("Page_10"), SubResource("Page_11"), SubResource("Page_12"), SubResource("Page_13"), SubResource("Page_14"), SubResource("Page_15"), SubResource("Page_16"), SubResource("Page_17"), SubResource("Page_18"), SubResource("Page_19"), SubResource("Page_20"), SubResource("Page_21"), SubResource("Page_22"), SubResource("Page_23"), SubResource("Page_24"), SubResource("Page_25"), SubResource("Page_26"), SubResource("Page_27"), SubResource("Page_28"), SubResource("Page_29")])

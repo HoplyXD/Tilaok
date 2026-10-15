@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS the match selector offers Spikes, Cannon and the construction blocks: ["build.hollow_blocks.cell_1x1", "build.hollow_blocks.stack_2x3", "build.bamboo_bridge.span_4x1", "build.solid_block.slab_3x1", "build.wood_box.box_2x2", "build.collapsing_block.cell_1x1", "block.spikes.main", "block.cannon.main", "explosive.bomb.main", "explosive.dynamite.main", "explosive.nuke.main"]
+PASS seeded Pugad eggs include Spikes and Cannon (11 variants seen)
+PASS single-size blocks are labelled by name only
+PASS the seat that confirmed first keeps a contested spot (not the lower seat number)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+PASS before anyone confirms, both players may aim at the same free spot
+PASS P2 confirms first and claims the spot
+PASS P1's ghost now shows the spot as taken by P2: Taken by P2 (first come, first served)
+PASS P1's ghost turned invalid as soon as P2 confirmed
+PASS P1 cannot confirm on the claimed spot (first come, first served)
+PASS a free spot elsewhere is still allowed
+PASS both placements commit: P2 owns the contested spot, P1 its free one
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+PASS at the timer, an unconfirmed placement on a claimed spot is discarded ([1])
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+PASS both spike placements commit and Play starts
+PASS landing on placed spikes eliminates the chicken in a real match
+PASS the race ledger records the spike elimination
+PLACE_CLAIM_TESTS checks=15 failures=0
