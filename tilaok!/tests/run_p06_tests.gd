@@ -384,6 +384,42 @@ func _test_placement_tables_and_last_cluck() -> void:
 		PlacementScoreResolver.table_for_players(4) == PackedInt32Array([8, 4, 2, 0]),
 		"4-seat placement table is exact"
 	)
+	var survival_order: Array[Dictionary] = [
+		{"seat_index": 0, "physics_tick": 1},
+		{"seat_index": 1, "physics_tick": 2},
+		{"seat_index": 2, "physics_tick": 3},
+	]
+	var four_player_result := PlacementScoreResolver.resolve([0, 1, 2, 3], survival_order, [3])
+	_check(
+		(
+			four_player_result.valid
+			and four_player_result.score_units[0] == 0
+			and four_player_result.score_units[1] == 2
+			and four_player_result.score_units[2] == 4
+			and four_player_result.score_units[3] == 8
+		),
+		"four-player elimination order awards fourth to first death and first to survivor"
+	)
+	var owned_trap: Array[Dictionary] = [
+		{"cause": "direct_hazard", "seat_index": 1, "direct_owner_seat": 0}
+	]
+	var lagsanay_result := LagsanayScoreCalculator.calculate(
+		[0, 1, 2, 3], survival_order, [3], owned_trap, {}
+	)
+	var kangaroo_result := KangarooScoreCalculator.calculate(
+		[0, 1, 2, 3], survival_order, [3], owned_trap, {}
+	)
+	_check(
+		(
+			lagsanay_result.valid
+			and kangaroo_result.valid
+			and lagsanay_result.placement_units[0] == 0
+			and kangaroo_result.placement_units[0] == 0
+			and lagsanay_result.delta_units[0] == 2
+			and kangaroo_result.delta_units[0] == 2
+		),
+		"fourth place earns zero placement in both modes while direct Patibong still counts"
+	)
 	_check(
 		PlacementScoreResolver.tied_group_units(4, 3, 2) == 1,
 		"4-player places 3–4 average to 1/8 point"

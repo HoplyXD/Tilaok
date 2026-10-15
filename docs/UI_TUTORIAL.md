@@ -57,8 +57,8 @@ The Library is available from the title screen, lobby, and pause/settings menu. 
 | Section | Contents |
 |---|---|
 | How to Play | Pugad → Place → Play, controls, placement validation, stage persistence, and match end. |
-| Karera | Flag objective, Tapos, Una, Bayani, Bawi, Barya, and too-easy/too-hard outcomes. |
-| Lagsanay | Taya, passing, timer, eliminations, Last Cluck, and placement scoring. |
+| Karera | Flag objective, Tapos, first-finisher Una, no second/third-place points, Bayani, Bawi, Barya, and too-easy/too-hard outcomes. |
+| Lagsanay | Taya, passing, timer, eliminations, Last Cluck, and survival placement scoring (first eliminated in four-player play is fourth for zero placement points). |
 | Kangaroo | Slipper poses, Freeze, Rising wave, Hug pairs, misses, Slipper Storm, and player-built wave supports. |
 | Items | Name, looping animation, grid/size variants, what it does, placement preview, tell, counterplay, and applicable event behavior. |
 | Accessibility | Player markers, colour-independent tells, screen-shake settings, and audio/visual cue policy. |
@@ -125,7 +125,7 @@ The first match begins with a guided Karera. It introduces only the normal loop;
 3. **Pugad:** point out that each egg shows the item inside; claim one egg.
 4. **Place:** move the ghost, rotate if the selected item allows it, explain valid/invalid feedback, and confirm.
 5. **Karera:** show the flag, run/jump prompt, and finish.
-6. **Results:** explain Tapos and Una with the actual round result.
+6. **Results:** explain Tapos and first-finisher Una with the actual Karera result; explain that second and third finishers get no rank bonus.
 7. **Later just-in-time prompts:** before the first Lagsanay, explain taya, pass, timer, and last-survivor objective. Before the first Kangaroo, explain the three slipper poses, three misses, and player-built Rising wave supports.
 
 Tutorial prompts must be skippable after a player has completed them in the current session. A replayable rules/help page remains available from the lobby and pause/settings menu.

@@ -122,7 +122,7 @@ Event rounds reuse the **same point types**, re-mapped to each event's objective
 
 **Underdog:** a player who is 3+ points behind the leader at the start of the round.
 
-**Karera finish awards:** every chicken that reaches the flag alive earns Tapos (+1.0), subject to the existing too-easy/too-hard rule. The earliest recorded flag crossing earns Una (+0.25). If multiple chickens cross on the exact same physics tick and the game cannot distinguish an earlier crossing, every tied first finisher earns Una.
+**Karera finish awards (clarified 2026-10-15):** every chicken that reaches the flag alive earns Tapos (+1.0), subject to the existing too-easy/too-hard rule. The earliest recorded flag crossing earns Una (+0.25). If multiple chickens cross on the exact same physics tick and the game cannot distinguish an earlier crossing, every tied first finisher earns Una. Karera has no second- or third-place award or separate 1st/2nd/3rd placement table; Bayani, direct Patibong, eligible Bawi and Barya keep their own conditions.
 
 **Outcome and attribution contract (approved design):** record one terminal outcome per player per round and award it once. A self-elimination never grants Patibong. The directly eliminating hazard owns the elimination credit; bubbles, slowing, wind, or other setup effects receive no assist credit. If multiple hazards contact a player in one physics step, resolve from the earliest recorded contact time, with a stable item-ID tie-break for indistinguishable contacts; do not rely on signal/callback order. For race goal-versus-death in the same step, use recorded event time; if truly indistinguishable, elimination wins. Barya scores only for a race-round finisher carrying it. Too-easy/too-hard suppression applies to event Goal/First awards as written for non-Lagsanay events, while Lagsanay placement scoring is always used. Preserve values. Average tied placements exactly and store score in eighth-point units (or equivalent rational form), not rounded quarter-points.
 
@@ -142,8 +142,8 @@ Event rounds reuse the **same point types**, re-mapped to each event's objective
 | Luksong Tinik | Survive all spike waves | None |
 | Agawan Buko | Holding at least 1 coconut at the end | Most coconuts |
 
-### Lagsanay: placement scoring (exception)
-Lagsanay is elimination-based, so it uses survival placement instead of Goal/First. This keeps it fair: everyone earns something for how long they lasted.
+### Lagsanay and Kangaroo: placement scoring (exception)
+Both elimination Main Challenges use survival placement instead of Karera's finish awards. The last chicken standing is first; the first eliminated is last. In a four-player round, that first elimination is fourth and earns zero placement points. Directly earned Patibong can still add points to an eliminated chicken, including fourth place.
 
 | Placement | 4 players | 3 players | 2 players |
 |---|---|---|---|

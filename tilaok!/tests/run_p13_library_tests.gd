@@ -67,6 +67,18 @@ func _test_pages(text: UiLibraryText, tuning: GameplayTuning, context: Dictionar
 		scoring.contains("Tapos +1") and scoring.contains("Una +0.25"),
 		"Karera scoring quotes the calculator values"
 	)
+	_check(
+		scoring.contains("no second- or third-place bonus"),
+		"Karera Library explains that Una is its only finish-order bonus"
+	)
+	var lagsanay_scoring := _body(text, context, "Lagsanay", "Placement points")
+	_check(
+		(
+			lagsanay_scoring.contains("first eliminated is 4th 0")
+			and lagsanay_scoring.contains("fourth-place chicken still keeps direct Patibong")
+		),
+		"Lagsanay Library explains fourth-place placement and independent trap points"
+	)
 	_check(scoring.contains("Bayani +0.5") and scoring.contains("Bawi +0.75"), "Bayani and Bawi")
 	_check(not scoring.to_lower().contains("barya"), "Barya is not described (not enabled)")
 	var winning := _body(text, context, "How to Play", "Winning")

@@ -423,7 +423,7 @@ Players select simultaneously, see a hatch into their pointer, submit placement,
 | Bawi | +0.75 | At least 3 points behind leader at round start and finishes/wins elimination Main. |
 | Barya | +0.5 | Optional coin carried across race flag; allowed despite all-finish suppression. |
 
-In 3/4-player objective rounds, all or none earning Tapos suppresses ordinary points; no finish also suppresses Patibong. Two-player Karera waives suppression. Elimination Main Challenges use placement scoring with no all/none suppression. Main Challenge determines score family even with a Twist. No duplicated awards, rounded placement averages or assist points.
+In 3/4-player objective rounds, all or none earning Tapos suppresses ordinary points; no finish also suppresses Patibong. Two-player Karera waives suppression. Karera awards Una to the first finisher, but no second/third-place points or placement table. Lagsanay and Kangaroo use survival placement with no all/none suppression: in four-player play the first eliminated is fourth for zero placement points and the last survivor is first. A fourth-place chicken retains any independently earned direct Patibong. Main Challenge determines score family even with a Twist. No duplicated awards, rounded placement averages or assist points.
 
 End-of-round total ≥10 ends a match unless leaders tie; otherwise highest after round 12 wins. Equal leaders play standalone Lagsanay sudden death among themselves. Optional session tally is not an online leaderboard or disk save.
 

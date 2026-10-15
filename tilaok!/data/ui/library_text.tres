@@ -49,7 +49,7 @@ requires = ""
 script = ExtResource("2")
 category = "Karera"
 title = "Scoring"
-body = "Tapos +{tapos} for every chicken that reaches the flag.\nUna +{una} for the first to cross.\nBayani +{bayani} if you are the only finisher (2 to 4 players).\nPatibong +{patibong} for each chicken eliminated by a trap you placed, if anyone finished.\nBawi +{bawi} if you were {bawi_gap} points behind the leader and finish."
+body = "Tapos +{tapos} for every chicken that reaches the flag.\nUna +{una} for the first to cross. There is no second- or third-place bonus in Karera.\nBayani +{bayani} if you are the only finisher (2 to 4 players).\nPatibong +{patibong} for each chicken eliminated by a trap you placed, if anyone finished.\nBawi +{bawi} if you were {bawi_gap} points behind the leader and finish."
 requires = ""
 
 [sub_resource type="Resource" id="Page_8"]
@@ -84,7 +84,7 @@ requires = ""
 script = ExtResource("2")
 category = "Lagsanay"
 title = "Placement points"
-body = "Lagsanay scores by how long you lasted (4 players): 1st {place_1st}, 2nd {place_2nd}, 3rd {place_3rd}, 4th {place_4th}. Traps stay deadly: Patibong +{patibong} still applies, and Bawi +{bawi} applies if an underdog places first. There is no too-easy rule."
+body = "Lagsanay scores by survival order (4 players): last survivor is 1st {place_1st}; 2nd {place_2nd}; 3rd {place_3rd}; first eliminated is 4th {place_4th} placement points. A fourth-place chicken still keeps direct Patibong +{patibong} per trap kill. Bawi +{bawi} applies if an underdog places first. There is no too-easy rule."
 requires = ""
 
 [sub_resource type="Resource" id="Page_13"]
@@ -140,7 +140,7 @@ requires = "main:KANGAROO"
 script = ExtResource("2")
 category = "Kangaroo"
 title = "Three misses"
-body = "Each failed command adds a mark in order: KANG, then GA, then ROO. The third is out. Traps still eliminate you at any time. The last chicken standing wins and Lagsanay placement scoring is used."
+body = "Each failed command adds a mark in order: KANG, then GA, then ROO. The third is out. Traps still eliminate you at any time. Kangaroo uses Lagsanay survival placement: the last chicken standing is first, and the first eliminated in a four-player round is fourth for zero placement points. Direct Patibong can still score."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_21"]
