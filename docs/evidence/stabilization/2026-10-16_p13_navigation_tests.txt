@@ -1,0 +1,206 @@
+PASS no route flag keeps the build default
+PASS --match-route=lifecycle selects the scheduled match
+PASS --match-route=first_playable selects the first playable room
+PASS no seed flag keeps the default seed
+PASS --match-seed=3 asks for seed 3
+PASS a malformed or negative seed is ignored
+PASS an unknown route value is ignored, never silently remapped
+PASS the last recognised route flag wins
+PASS K1/first: boots to the Title
+PASS K1/first: the join press seats one seat and does not ready it
+PASS K1/first: the Title menu shows on Start
+PASS K1/first: Title -> Library
+PASS K1/first: Library keeps MENU
+PASS K1/first: Library Back -> Title
+PASS K1/first: Title -> Settings
+PASS K1/first: Settings Back -> Title
+PASS K1/first: Back on the Title asks before quitting
+PASS K1/first: the press that opened the confirm did not quit
+PASS K1/first: accepting the default answer (No) cancels
+PASS K1/first: choosing Yes quits exactly once
+PASS K1/first: Start opens the Lobby
+PASS K1/first: the Start press does not ready the seat
+PASS K1/first: a fresh press readies
+PASS K1/first: help opens the Library from the Lobby
+PASS K1/first: the Lobby Library is driven in the MENU phase
+PASS K1/first: opening help keeps the seat's ready flag
+PASS K1/first: Library Back closes the overlay
+PASS K1/first: Back returns to the Lobby with the Lobby phase
+PASS K1/first: Lobby Back returns to the Title with the session cleared
+PASS K1/first: the tree is not left paused
+PASS K1/first: a fresh session opens a Lobby again
+PASS K1/first: unready Lobby Back leaves at once
+PASS K2/first: boots to the Title
+PASS K2/first: the join press seats one seat and does not ready it
+PASS K2/first: the Title menu shows on Start
+PASS K2/first: Title -> Library
+PASS K2/first: Library keeps MENU
+PASS K2/first: Library Back -> Title
+PASS K2/first: Title -> Settings
+PASS K2/first: Settings Back -> Title
+PASS K2/first: Back on the Title asks before quitting
+PASS K2/first: the press that opened the confirm did not quit
+PASS K2/first: accepting the default answer (No) cancels
+PASS K2/first: choosing Yes quits exactly once
+PASS K2/first: Start opens the Lobby
+PASS K2/first: the Start press does not ready the seat
+PASS K2/first: a fresh press readies
+PASS K2/first: help opens the Library from the Lobby
+PASS K2/first: the Lobby Library is driven in the MENU phase
+PASS K2/first: opening help keeps the seat's ready flag
+PASS K2/first: Library Back closes the overlay
+PASS K2/first: Back returns to the Lobby with the Lobby phase
+PASS K2/first: Lobby Back returns to the Title with the session cleared
+PASS K2/first: the tree is not left paused
+PASS K2/first: a fresh session opens a Lobby again
+PASS K2/first: unready Lobby Back leaves at once
+PASS PAD/first: boots to the Title
+PASS PAD/first: the join press seats one seat and does not ready it
+PASS PAD/first: the Title menu shows on Start
+PASS PAD/first: Title -> Library
+PASS PAD/first: Library keeps MENU
+PASS PAD/first: Library Back -> Title
+PASS PAD/first: Title -> Settings
+PASS PAD/first: Settings Back -> Title
+PASS PAD/first: Back on the Title asks before quitting
+PASS PAD/first: the press that opened the confirm did not quit
+PASS PAD/first: accepting the default answer (No) cancels
+PASS PAD/first: choosing Yes quits exactly once
+PASS PAD/first: Start opens the Lobby
+PASS PAD/first: the Start press does not ready the seat
+PASS PAD/first: a fresh press readies
+PASS PAD/first: help opens the Library from the Lobby
+PASS PAD/first: the Lobby Library is driven in the MENU phase
+PASS PAD/first: opening help keeps the seat's ready flag
+PASS PAD/first: Library Back closes the overlay
+PASS PAD/first: Back returns to the Lobby with the Lobby phase
+PASS PAD/first: Lobby Back returns to the Title with the session cleared
+PASS PAD/first: the tree is not left paused
+PASS PAD/first: a fresh session opens a Lobby again
+PASS PAD/first: unready Lobby Back leaves at once
+PASS K1/scheduled: boots to the Title
+PASS K1/scheduled: the join press seats one seat and does not ready it
+PASS K1/scheduled: the Title menu shows on Start
+PASS K1/scheduled: Title -> Library
+PASS K1/scheduled: Library keeps MENU
+PASS K1/scheduled: Library Back -> Title
+PASS K1/scheduled: Title -> Settings
+PASS K1/scheduled: Settings Back -> Title
+PASS K1/scheduled: Back on the Title asks before quitting
+PASS K1/scheduled: the press that opened the confirm did not quit
+PASS K1/scheduled: accepting the default answer (No) cancels
+PASS K1/scheduled: choosing Yes quits exactly once
+PASS K1/scheduled: Start opens the Lobby
+PASS K1/scheduled: the Start press does not ready the seat
+PASS K1/scheduled: a fresh press readies
+PASS K1/scheduled: help opens the Library from the Lobby
+PASS K1/scheduled: the Lobby Library is driven in the MENU phase
+PASS K1/scheduled: opening help keeps the seat's ready flag
+PASS K1/scheduled: Library Back closes the overlay
+PASS K1/scheduled: Back returns to the Lobby with the Lobby phase
+PASS K1/scheduled: Lobby Back with a ready seat asks
+PASS K1/scheduled: the press that asked did not leave
+PASS K1/scheduled: Back cancels the confirmation (no re-open)
+PASS K1/scheduled: Back asks again
+PASS K1/scheduled: Lobby Back returns to the Title with the session cleared
+PASS K1/scheduled: the tree is not left paused
+PASS K1/scheduled: a fresh session opens a Lobby again
+PASS K1/scheduled: unready Lobby Back leaves at once
+PASS PAD/scheduled: boots to the Title
+PASS PAD/scheduled: the join press seats one seat and does not ready it
+PASS PAD/scheduled: the Title menu shows on Start
+PASS PAD/scheduled: Title -> Library
+PASS PAD/scheduled: Library keeps MENU
+PASS PAD/scheduled: Library Back -> Title
+PASS PAD/scheduled: Title -> Settings
+PASS PAD/scheduled: Settings Back -> Title
+PASS PAD/scheduled: Back on the Title asks before quitting
+PASS PAD/scheduled: the press that opened the confirm did not quit
+PASS PAD/scheduled: accepting the default answer (No) cancels
+PASS PAD/scheduled: choosing Yes quits exactly once
+PASS PAD/scheduled: Start opens the Lobby
+PASS PAD/scheduled: the Start press does not ready the seat
+PASS PAD/scheduled: a fresh press readies
+PASS PAD/scheduled: help opens the Library from the Lobby
+PASS PAD/scheduled: the Lobby Library is driven in the MENU phase
+PASS PAD/scheduled: opening help keeps the seat's ready flag
+PASS PAD/scheduled: Library Back closes the overlay
+PASS PAD/scheduled: Back returns to the Lobby with the Lobby phase
+PASS PAD/scheduled: Lobby Back with a ready seat asks
+PASS PAD/scheduled: the press that asked did not leave
+PASS PAD/scheduled: Back cancels the confirmation (no re-open)
+PASS PAD/scheduled: Back asks again
+PASS PAD/scheduled: Lobby Back returns to the Title with the session cleared
+PASS PAD/scheduled: the tree is not left paused
+PASS PAD/scheduled: a fresh session opens a Lobby again
+PASS PAD/scheduled: unready Lobby Back leaves at once
+PASS pause opens owned by seat 2
+PASS a non-owner cannot open anything from Pause
+PASS the owner moves to Library
+PASS Library opens over Pause with the tree still paused
+PASS the Pause screen is hidden under the overlay
+PASS the item director clock is frozen while the Library is open
+PASS the race clock is frozen while the Library is open
+PASS game keys do nothing under the overlay
+PASS a non-owner cannot drive the Library
+PASS Back returns to Pause with Library still selected
+PASS the Pause state is unchanged by the overlay round trip
+PASS the owner moves to Settings
+PASS Settings opens, still paused
+PASS Settings Back returns to Pause
+PASS the simulation clock never advanced across both overlays
+PASS both seats ready starts the resume countdown
+PASS Library cannot open during the resume countdown
+PASS the scheduled route hosts a lifecycle room
+PASS a room Quit request goes through GameFlow (harness aware)
+PASS R in phase 0 is 'help' (saw ["help"])
+PASS R in phase 4 is 'cheer' (saw ["cheer"])
+PASS R in phase 3 is 'rotate' (saw ["rotate"])
+PASS consume_held_presses drops a press waiting in the same phase
+PASS a fresh press after release still acts
+PASS the stick steps a menu down like the D-pad (saw ["down"])
+PASS the stick steps left outside Play (saw ["left"])
+PASS a deflection between neutral and activation does nothing
+PASS the stick does not navigate in Play
+PASS the stick still runs in Play
+PASS the stick holds a digital direction in a menu
+PASS a phase change releases the stick direction
+PASS cycle 0 ends on the Title
+PASS cycle 1 ends on the Title
+PASS cycle 2 ends on the Title
+PASS cycle 3 ends on the Title
+PASS cycle 4 ends on the Title
+PASS cycle 5 ends on the Title
+PASS cycle 6 ends on the Title
+PASS cycle 7 ends on the Title
+PASS cycle 8 ends on the Title
+PASS cycle 9 ends on the Title
+PASS screen cycles keep the flow's node count stable ([29, 29, 29, 29, 29, 29, 29, 29, 29, 29])
+PASS the tree is never left paused
+PASS cycle 0 leaves no overlay open
+PASS cycle 1 leaves no overlay open
+PASS cycle 2 leaves no overlay open
+PASS cycle 3 leaves no overlay open
+PASS cycle 4 leaves no overlay open
+PASS cycle 5 leaves no overlay open
+PASS cycle 6 leaves no overlay open
+PASS cycle 7 leaves no overlay open
+PASS cycle 8 leaves no overlay open
+PASS cycle 9 leaves no overlay open
+PASS ten overlay cycles keep the node count (1365 -> 1365)
+PASS ten overlay cycles keep the router's signal connections
+PASS ten overlay cycles leave no new orphan nodes
+PASS the audio buses are untouched by opening Library and Settings
+PASS game_flow.gd has no Control.new(
+PASS game_flow.gd has no Label.new(
+PASS game_flow.gd has no Button.new(
+PASS game_flow.gd has no add_theme_
+PASS match_screen_presenter.gd has no Control.new(
+PASS match_screen_presenter.gd has no Label.new(
+PASS match_screen_presenter.gd has no Button.new(
+PASS match_screen_presenter.gd has no add_theme_
+PASS local_input_router.gd has no Control.new(
+PASS local_input_router.gd has no Label.new(
+PASS local_input_router.gd has no Button.new(
+PASS local_input_router.gd has no add_theme_
+P13_NAVIGATION_TESTS checks=205 failures=0

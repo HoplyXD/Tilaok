@@ -1,0 +1,20 @@
+Windowed (non-headless) suites, 2026-10-16, Godot 4.7.stable.official.5b4e0cb0f, Windows 11, NVIDIA GTX 1660 Ti, --fixed-fps 60, synthetic input.
+First pass (all ten suites in sequence):
+run_p03_interactive  14/14
+run_p04_interactive  25 checks, 8 failures  -> stale: variant-cycle wrap assumed a 3-variant pool; fixed, re-run 25/25
+run_p05_interactive  30 checks, 15 failures -> re-run 58 checks, 2 failures: fixed start cells overlap now-larger eggs (seat order rejects the overlap, game correct); test picks free cells, re-run 58/58
+run_p06_interactive  17/17
+run_p08_interactive  87/87
+run_p09_interactive  108/108
+run_p10_interactive  42 checks, 3 failures  -> stale since 2026-10-14 (lab set = 16 families, fixed cells vs large pieces); fixed, re-run 56/56
+run_p11_interactive  85/85
+run_p12_pairs_interactive 40 checks, 3 failures -> intermittent: 7 runs gave 0,3,0,4,0,0,3 failures in different checks (round 2/3 end, sudden death). Rounds place no items; pause stays RUNNING. Open (timing-sensitive windowed suite), not caused by 2026-10-16 changes.
+run_match_ui_interactive 59/59
+Evidence images overwritten by these runs were restored from git; the one new capture was removed.
+
+Second pass after the P19 obstacles were added (31 enabled variants):
+run_p04_interactive  6 failures in one chained run, 0 in the next (25/25)
+run_p05_interactive  chained after P04: 15 and 9 failures; standalone: 58/58 three times
+run_p10_interactive  56/56
+Pause state stayed RUNNING with the window focused during the P05 failure; seeds and claims are deterministic in code.
+So P04/P05/P12-pairs windowed runs are INTERMITTENT on this desktop (an environment or timing dependency not yet identified). Headless equivalents are green. Open item for the integration owner: find the real-time dependency before the freeze.

@@ -21,6 +21,17 @@ const NEW_FAMILIES: PackedStringArray = [
 	"hazard.bubble_planter",
 ]
 
+const FIRST_BATCH: PackedStringArray = [
+	"build.hollow_blocks",
+	"build.bamboo_bridge",
+	"move.tire_spring",
+	"hazard.rail_trumpo",
+	"hazard.parol_pulse",
+	"hazard.slipper_launcher",
+	"utility.walis_cleanup",
+	"hazard.bubble_planter",
+]
+
 var checks := 0
 var failures := 0
 var harness: FoundationHarness
@@ -62,6 +73,45 @@ func _run() -> void:
 # --------------------------------------------------------------------------- Visualizer
 
 
+func _has_first_batch(ids: PackedStringArray) -> bool:
+	for family_id in FIRST_BATCH:
+		if not ids.has(family_id):
+			return false
+	return true
+
+
+func _ids_of(definitions: ItemDefinitions) -> PackedStringArray:
+	var ids := PackedStringArray()
+	for family in definitions.families:
+		ids.append(family.family_id)
+	return ids
+
+
+## The first cell (scanning from `preferred`, then the build region) where the variant is valid
+## and its footprint misses every rect in `taken` (one-use edits occupy none).
+func _free_cell(variant_key: String, preferred: Vector2i, taken: Array[Rect2i]) -> Vector2i:
+	var found := match_room.definitions.find_variant(variant_key)
+	if found.is_empty():
+		return preferred
+	var family := found.family as ItemFamilyDefinition
+	var size := (found.variant as ItemVariantDefinition).footprint_cells
+	var candidates: Array[Vector2i] = [preferred]
+	for row in range(3, 15):
+		for column in range(5, 28):
+			candidates.append(Vector2i(column, row))
+	for cell in candidates:
+		var rect := Rect2i(cell, size)
+		var clear := true
+		for other in taken:
+			clear = clear and not rect.grow(1).intersects(other)
+		if not clear or not bool(match_room.items.validate_placement(variant_key, cell, 0).allowed):
+			continue
+		if not family.one_shot_edit:
+			taken.append(rect)
+		return cell
+	return preferred
+
+
 func _visualizer_session() -> void:
 	_press_harness_button("Item Visualizer")
 	await _frames(3)
@@ -70,7 +120,14 @@ func _visualizer_session() -> void:
 	if viz == null:
 		return
 	_check(not harness.get_node("Layout").visible, "the Visualizer fills the 1920x1080 viewport")
-	_check(viz.family_ids().size() == 8, "the Visualizer lists all eight families")
+	# The lab set also holds the stage blocks, Spikes, Cannon and explosives (since 2026-10-14).
+	_check(
+		_has_first_batch(viz.family_ids()),
+		(
+			"the Visualizer lists all eight first-batch families (%d lab families)"
+			% viz.family_ids().size()
+		)
+	)
 	await _click(viz, "Join K1")
 	await _click(viz, "Join K2")
 	for device_id in PAD_IDS:
@@ -194,8 +251,8 @@ func _match_session() -> void:
 	if match_room == null:
 		return
 	_check(
-		match_room.profile_id == "items_lab" and match_room.definitions.families.size() == 8,
-		"the match loop carries all eight families"
+		match_room.profile_id == "items_lab" and _has_first_batch(_ids_of(match_room.definitions)),
+		"the match loop carries all eight first-batch families"
 	)
 	await _click(match_room, "Join K1")
 	await _click(match_room, "Join K2")
@@ -255,11 +312,13 @@ func _match_session() -> void:
 		var ghost_variant := str(match_room.placement_controller.cursors[seat_index].variant_key)
 		exact = exact and egg_variant == ghost_variant
 	_check(exact, "every egg hands its exact variant to its ghost")
-	# Spread cursors so every placement is valid, then confirm with real inputs.
+	# Spread cursors so every placement is valid, then confirm with real inputs. The lab pool holds
+	# pieces up to 6 cells wide, so each seat moves to the first valid cell clear of lower seats.
 	var cells: Array[Vector2i] = [Vector2i(8, 7), Vector2i(13, 7), Vector2i(19, 7), Vector2i(24, 7)]
+	var taken: Array[Rect2i] = []
 	for seat_index in range(4):
 		var cursor: Dictionary = match_room.placement_controller.cursors[seat_index]
-		cursor.cell = cells[seat_index]
+		cursor.cell = _free_cell(str(cursor.variant_key), cells[seat_index], taken)
 		match_room.placement_controller.cursors[seat_index] = cursor
 	match_room._refresh_all_match_ghosts()
 	await _capture("11_match_place_items_1920x1080.png")

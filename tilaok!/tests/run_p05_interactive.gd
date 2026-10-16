@@ -201,11 +201,17 @@ func _run_round(round_index: int) -> void:
 		_handoff_rows.append(
 			egg_row % [round_index + 1, seat_index + 1, egg_id, egg_variant, ghost_variant]
 		)
-	for seat_index in room.placement_controller.cursors:
+	# Since the P10 families joined the pool (2026-10-16) eggs can be up to 6 cells wide, so each
+	# seat starts from its old cell and moves to the first valid one clear of lower seats' pieces.
+	var taken: Array[Rect2i] = []
+	var seat_order: Array = room.placement_controller.cursors.keys()
+	seat_order.sort()
+	for seat_index in seat_order:
 		var cursor: Dictionary = room.placement_controller.cursors[seat_index]
 		if round_index > 0:
 			cursor.cell.y = 5
-			room.placement_controller.cursors[seat_index] = cursor
+		cursor.cell = _free_cell(str(cursor.variant_key), cursor.cell, taken)
+		room.placement_controller.cursors[seat_index] = cursor
 	room._refresh_all_match_ghosts()
 	await _capture("04_place_exact_variant_pairs_1920x1080.png")
 	var rotated_seat := _find_seat_with_variant(VARIANT_2X3)
@@ -387,6 +393,31 @@ func _choose_unclaimed_egg_with_missing_variant() -> int:
 		):
 			return egg_index
 	return -1
+
+
+## The first cell (scanning right, then down, from `preferred`) where the variant is valid on
+## the current stage and its footprint misses every rect in `taken` (one-use edits occupy none).
+func _free_cell(variant_key: String, preferred: Vector2i, taken: Array[Rect2i]) -> Vector2i:
+	var found := room.definitions.find_variant(variant_key)
+	if found.is_empty():
+		return preferred
+	var family := found.family as ItemFamilyDefinition
+	var size := (found.variant as ItemVariantDefinition).footprint_cells
+	var candidates: Array[Vector2i] = [preferred]
+	for row in range(3, 15):
+		for column in range(5, 28):
+			candidates.append(Vector2i(column, row))
+	for cell in candidates:
+		var rect := Rect2i(cell, size)
+		var clear := true
+		for other in taken:
+			clear = clear and not rect.grow(1).intersects(other)
+		if not clear or not bool(room.items.validate_placement(variant_key, cell, 0).allowed):
+			continue
+		if not family.one_shot_edit:
+			taken.append(rect)
+		return cell
+	return preferred
 
 
 func _find_seat_with_variant(variant_key: String) -> int:

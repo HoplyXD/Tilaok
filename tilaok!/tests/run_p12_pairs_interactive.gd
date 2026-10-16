@@ -193,7 +193,18 @@ func _sudden_death_and_lobby(seat_count: int) -> void:
 		if room._sudden_death_active or room.final_results_visible:
 			break
 	Engine.time_scale = 1.0
-	_check(room._sudden_death_active, "%s: a level score after a stack starts sudden death" % tag)
+	_check(
+		room._sudden_death_active,
+		(
+			"%s: a level score after a stack starts sudden death (scores %s, phase %d, round %d)"
+			% [
+				tag,
+				room.cumulative_score_units,
+				room.phase_controller.phase,
+				room.items.round_number,
+			]
+		)
+	)
 	await scn._steps(30)
 	await _capture("sudden_death_%s" % tag)
 	_check(room.play_twist_text().is_empty(), "%s: sudden death has no Twist" % tag)

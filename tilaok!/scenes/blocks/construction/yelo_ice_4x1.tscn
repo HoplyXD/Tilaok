@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
+[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
+
+[sub_resource type="RectangleShape2D" id="Slab"]
+size = Vector2(256, 64)
+
+[node name="YeloIce4x1" type="AnimatableBody2D"]
+sync_to_physics = false
+script = ExtResource("1_blk")
+
+[node name="BlockData" type="Node2D" parent="."]
+script = ExtResource("2_dat")
+block_name = "Yelo ng Sorbetero"
+family_id = "modifier.sorbetes_ice"
+variant_id = "surface_4x1"
+category = "modifier"
+catalog_order = 32
+library_tell = "A pale-blue ice slab with a frosty edge; you slide further and turn slowly on it."
+library_counterplay = "Let go early to stop in time, or jump off before the edge."
+modes_allowed = PackedStringArray("karera", "lagsanay")
+modes_pending_review = PackedStringArray("kangaroo")
+placement_size = Vector2i(4, 1)
+rotations = PackedInt32Array(0)
+gated_rotations = PackedInt32Array()
+wall_slide_eligible = false
+pool_weight = 20.0
+slippery = true
+
+[node name="Solid" type="CollisionShape2D" parent="."]
+shape = SubResource("Slab")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Fill" type="Polygon2D" parent="Visual"]
+color = Color(0.7, 0.88, 0.97, 1)
+polygon = PackedVector2Array(-128, -32, 128, -32, 128, 32, -128, 32)
+
+[node name="Frost0" type="Line2D" parent="Visual"]
+points = PackedVector2Array(-114, -24, -102, -30, -90, -24, -78, -30)
+width = 3.0
+default_color = Color(1, 1, 1, 0.9)
+
+[node name="Frost1" type="Line2D" parent="Visual"]
+points = PackedVector2Array(-50, -24, -38, -30, -26, -24, -14, -30)
+width = 3.0
+default_color = Color(1, 1, 1, 0.9)
+
+[node name="Frost2" type="Line2D" parent="Visual"]
+points = PackedVector2Array(14, -24, 26, -30, 38, -24, 50, -30)
+width = 3.0
+default_color = Color(1, 1, 1, 0.9)
+
+[node name="Frost3" type="Line2D" parent="Visual"]
+points = PackedVector2Array(78, -24, 90, -30, 102, -24, 114, -30)
+width = 3.0
+default_color = Color(1, 1, 1, 0.9)
+
+[node name="Outline" type="Line2D" parent="Visual"]
+points = PackedVector2Array(-128, -32, 128, -32, 128, 32, -128, 32, -128, -32)
+width = 3.0
+default_color = Color(0.3, 0.5, 0.65, 1)
+
+[node name="Label" type="Label" parent="Visual"]
+offset_left = -122
+offset_top = -28.0
+offset_right = 122
+offset_bottom = -6.0
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.1, 0.12, 1)
+theme_override_constants/outline_size = 4
+text = "ICE • DEBUG"
+horizontal_alignment = 1

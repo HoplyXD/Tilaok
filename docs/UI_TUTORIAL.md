@@ -139,7 +139,7 @@ Tutorial prompts must be skippable after a player has completed them in the curr
 | Step | Shown during | Advances when |
 |---|---|---|
 | 1 Welcome | Lobby | the match leaves the Lobby (number + shape of every seat; run/jump glyphs per device) |
-| 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout) |
+| 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout; claim feedback wins over the Barya note, which repeats the claim key and timer — 2026-10-16) |
 | 3 Place | Place | all confirmed or Place ends; BUILD HERE zone marker; stronger hint when the previous round had no finishers |
 | 4 Karera | Play | the round ends |
 | 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody); all-finish suppresses ordinary awards even with two players, while Barya still counts |

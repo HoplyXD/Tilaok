@@ -244,3 +244,11 @@ The round coin and Pugad preview use code-drawn DEBUG geometry (gold coin disc, 
 | DEBUG Barya egg silhouette | Pugad egg preview | DEBUG placeholder — replace | Jorge/Ivie (art); Shanti (UI cue) |
 
 The live HUD uses text and a seat-number cue; no color-only identification is intended. Human art, contrast/minimum-zoom/accessibility review, native-speaker/cultural review and player comprehension are not yet performed. Keep this task in AI programming disclosure only; no AI-generated final art or audio is authorized or claimed. See the [scoped Barya activation record](evidence/barya/activation_contract_2026-10-15.md) and [engineering captures](evidence/barya/README.md#rendered-captures).
+
+## Debug placeholders recorded — promoted P19 obstacles (2026-10-16)
+
+| Asset ID / implementation | Kind and use | Provenance / status | Human handoff |
+|---|---|---|---|
+| `block.house_stairs.debug_visual` — `scenes/blocks/construction/hagdan_steps_2x2.tscn`, `hagdan_steps_3x3.tscn` | Brown stepped Polygon2D, outline and "STEPS • DEBUG" label | Scene nodes written by Claude (AI) at Jorge's request; no imported image. DEBUG placeholder. | Original house-step art (Jorge / Ivie); cultural check of the name "Hagdan ng Bahay". |
+| `block.toy_burr_strip.debug_visual` — `scenes/blocks/traps/tinik_strip_3x1.tscn`, `tinik_strip_4x1.tscn` | Low green base with rounded burr bumps and "TINIK • DEBUG" label | Same provenance. DEBUG placeholder. | Soft, wholesome burr art (the contract requires a wholesome-art review before Lagsanay/Kangaroo); name check. |
+| `block.sorbetes_ice.debug_visual` — `scenes/blocks/construction/yelo_ice_3x1.tscn`, `yelo_ice_4x1.tscn` | Pale-blue slab with frost marks and "ICE • DEBUG" label | Same provenance. DEBUG placeholder. | Original ice / sorbetero art; name check. |

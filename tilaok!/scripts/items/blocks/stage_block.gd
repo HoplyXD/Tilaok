@@ -160,6 +160,11 @@ func is_solid() -> bool:
 	return collapse_state != CollapseState.GONE
 
 
+## Read by ChickenController for the floor it stands on (Yelo ice).
+func is_slippery() -> bool:
+	return data != null and data.slippery and is_solid()
+
+
 func is_on_ground() -> bool:
 	return test_move(global_transform, Vector2(0.0, 1.0))
 

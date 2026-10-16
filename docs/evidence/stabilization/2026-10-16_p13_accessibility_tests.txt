@@ -1,0 +1,66 @@
+PASS the Master bus exists
+PASS the Music bus exists
+PASS the Effects bus exists
+PASS the Crowd bus exists
+PASS the master slider sets the Master bus to -8.0 dB (-8.0)
+PASS the master slider leaves Music alone
+PASS the master slider leaves Effects alone
+PASS the master slider leaves Crowd alone
+PASS the music slider sets the Music bus to -8.0 dB (-8.0)
+PASS the music slider leaves Master alone
+PASS the music slider leaves Effects alone
+PASS the music slider leaves Crowd alone
+PASS the effects slider sets the Effects bus to -8.0 dB (-8.0)
+PASS the effects slider leaves Master alone
+PASS the effects slider leaves Music alone
+PASS the effects slider leaves Crowd alone
+PASS the crowd slider sets the Crowd bus to -8.0 dB (-8.0)
+PASS the crowd slider leaves Master alone
+PASS the crowd slider leaves Music alone
+PASS the crowd slider leaves Effects alone
+PASS a zero slider silences its bus
+PASS sound starts unmuted
+PASS the Mute switch mutes the Master bus and the setting
+PASS unmuting restores sound
+PASS Full shake is applied
+PASS Reduced shake scales down
+PASS Off shake scales to nothing
+PASS the settings stay valid
+PASS the match room reads the same settings object the Settings screen edits
+PASS Full shakes more than Reduced, Reduced still shakes ({ 0: 6.74263143539429, 1: 1.54249835014343, 2: 0.0 })
+PASS Off never moves the camera
+PASS switching to Off mid-cue stops the shake at once
+PASS changing the setting never advances a simulation clock
+PASS stun brightness at shake 0 has 2.00 peaks per second (limit 3)
+PASS stun brightness at shake 0 never jumps (largest frame step 0.094)
+PASS stun never dims below its steady brightening
+PASS stun brightness at shake 1 has 2.00 peaks per second (limit 3)
+PASS stun brightness at shake 1 never jumps (largest frame step 0.047)
+PASS stun never dims below its steady brightening
+PASS stun brightness at shake 2 has 0.00 peaks per second (limit 3)
+PASS stun brightness at shake 2 never jumps (largest frame step 0.000)
+PASS stun never dims below its steady brightening
+PASS shake Off holds the stun tint steady
+PASS the Parol beam repeats every 3.0 s (well under 3 per second)
+PASS the Parol charge ramp lasts 0.6 s before the beam is solid
+PASS move.tire_spring: sounds ["sfx_launch"] have visual slots ["body", "body_compressed"] and a written tell
+PASS hazard.rail_trumpo: sounds ["sfx_pause"] have visual slots ["rail", "top"] and a written tell
+PASS hazard.parol_pulse: sounds ["sfx_charge", "sfx_on"] have visual slots ["post", "beam_on"] and a written tell
+PASS hazard.slipper_launcher: sounds ["sfx_charge", "sfx_fire"] have visual slots ["launcher", "launcher_charge", "projectile"] and a written tell
+PASS utility.walis_cleanup: sounds ["sfx_sweep"] have visual slots ["broom_outline"] and a written tell
+PASS hazard.bubble_planter: sounds ["sfx_emit", "sfx_capture", "sfx_pop"] have visual slots ["pot", "bubble", "captive_icon"] and a written tell
+PASS 6 families with sound were audited
+PASS the Kangaroo cue tone has a command card on screen
+PASS the card carries the pose name and its instruction as text
+PASS the default font covers the Filipino letters (missing [])
+PASS the symbol glyph gaps are reported (7 of 10 missing)
+PASS 1280x720: the 1280x720 view fits (scale 1.000)
+PASS 1280x720: mid-round text 16 px and HUD 64 px are not below the 720p values
+PASS 1920x1080: the 1280x720 view fits (scale 1.500)
+PASS 1920x1080: mid-round text 24 px and HUD 96 px are not below the 720p values
+PASS 1920x800: the 1280x720 view fits (scale 1.111)
+PASS 1920x800: mid-round text 18 px and HUD 71 px are not below the 720p values
+PASS the logical canvas is 1280x720 (documented supported base)
+PASS settings applied while the flow runs
+PASS leaving the flow restores full volume, unmuted, shake off (no bus leak)
+P13_ACCESSIBILITY_TESTS checks=65 failures=0

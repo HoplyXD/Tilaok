@@ -183,7 +183,7 @@ func _test_definitions() -> void:
 	# 8 first-batch families plus the 2026-10-14 stage blocks, Spikes and Cannon and the
 	# 2026-10-15 Bomb, Dynamite and Nuke.
 	_check(
-		definitions.families.size() == 16,
+		definitions.families.size() == BlockCatalog.families(BlockCatalog.SET_LAB).size(),
 		"T01 eight families (+3 stage blocks, Spikes, Cannon and 3 explosives) are defined"
 	)
 	var expected := {
@@ -324,7 +324,7 @@ func _test_baseline_isolation() -> void:
 	# Since 2026-10-16 (Jorge) the six P10 families are in the main game too, dealt only in the
 	# modes each one is approved for (PugadEggPoolGenerator mode filter).
 	_check(
-		base.families.size() == 16,
+		base.families.size() == BlockCatalog.families(BlockCatalog.SET_MAIN).size(),
 		"baseline load_all defines the main-game blocks including the six P10 families"
 	)
 	var default_tuning := GameplayTuning.new()
@@ -334,9 +334,12 @@ func _test_baseline_isolation() -> void:
 			if key.begins_with(family_id + "."):
 				p10_keys += 1
 	_check(
-		default_tuning.item_enabled_variants.size() == 25 and p10_keys == 14,
 		(
-			"default enabled pool: 11 earlier variants plus the 14 P10 variants (%d, %d P10)"
+			default_tuning.item_enabled_variants == BlockCatalog.default_enabled_keys()
+			and p10_keys == 14
+		),
+		(
+			"default enabled pool is the catalog's enabled set and holds the 14 P10 variants (%d, %d P10)"
 			% [default_tuning.item_enabled_variants.size(), p10_keys]
 		)
 	)
@@ -344,7 +347,7 @@ func _test_baseline_isolation() -> void:
 	_check(spring_pool.has(SPRING), "karera_spring now includes the spring variant")
 	var karera_slice := ItemDefinitions.load_for_profile(GameplayTuning.new(), "karera_slice")
 	_check(
-		karera_slice.families.size() == 16,
+		karera_slice.families.size() == BlockCatalog.families(BlockCatalog.SET_MAIN).size(),
 		"karera_slice loads every main-game block family, P10 included"
 	)
 
@@ -1592,7 +1595,7 @@ func _test_previews_and_library() -> void:
 func _test_visualizer() -> void:
 	await _fresh()
 	_check(
-		room.family_ids().size() == 16,
+		room.family_ids().size() == BlockCatalog.families(BlockCatalog.SET_LAB).size(),
 		"Visualizer lists all eight families (+3 stage blocks, Spikes, Cannon and 3 explosives)"
 	)
 	for family_id in room.family_ids():

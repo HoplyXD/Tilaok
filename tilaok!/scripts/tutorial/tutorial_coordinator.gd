@@ -306,15 +306,17 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 	return result
 
 
+## Claim feedback first: a new player must always see "claimed" / "lost" and the timer. The
+## Barya note (which also repeats the claim key and timer) shows only before any claim.
 func _pugad_variant() -> StringName:
-	if room.tuning.barya_enabled:
-		for egg in room.egg_pool:
-			if BaryaObjectiveDefinition.is_variant(str(egg.get("variant_key", ""))):
-				return &"barya"
 	if not room.claim_feedback.is_empty():
 		return VARIANT_LOST
 	if not room.assignments.is_empty():
 		return VARIANT_CLAIMED
+	if room.tuning.barya_enabled:
+		for egg in room.egg_pool:
+			if BaryaObjectiveDefinition.is_variant(str(egg.get("variant_key", ""))):
+				return &"barya"
 	return &""
 
 

@@ -44,6 +44,8 @@ var stun_immunity_remaining := 0.0
 var gliding := false
 ## Ledge climb (2026-10-16): true while the chicken pulls itself up onto a ledge (input locked).
 var climbing := false
+## True while standing on a slippery block (Yelo ice, 2026-10-16); refreshed every step.
+var on_ice := false
 var ledge_climb_count := 0
 var _climb_from := Vector2.ZERO
 var _climb_to := Vector2.ZERO
@@ -663,12 +665,13 @@ func _apply_tuning() -> void:
 
 
 func _update_horizontal(axis: float, delta: float) -> void:
-	var target := axis * tuning.run_speed_wu_s
+	on_ice = _on_slippery_floor()
+	var target := axis * tuning.run_speed_wu_s * (tuning.ice_speed_scale if on_ice else 1.0)
+	var grip := tuning.ice_accel_scale if on_ice else 1.0
 	if absf(axis) < 0.01:
 		if is_on_floor():
-			locomotion_velocity.x = move_toward(
-				locomotion_velocity.x, 0.0, tuning.brake_wu_s2 * delta
-			)
+			var brake := tuning.brake_wu_s2 * (tuning.ice_brake_scale if on_ice else 1.0)
+			locomotion_velocity.x = move_toward(locomotion_velocity.x, 0.0, brake * delta)
 		elif tuning.air_neutral_drag_wu_s2 > 0.0:
 			locomotion_velocity.x = move_toward(
 				locomotion_velocity.x, 0.0, tuning.air_neutral_drag_wu_s2 * delta
@@ -681,7 +684,24 @@ func _update_horizontal(axis: float, delta: float) -> void:
 		and absf(locomotion_velocity.x) > 0.0
 	):
 		acceleration = tuning.reverse_wu_s2
+	if is_on_floor():
+		acceleration *= grip
 	locomotion_velocity.x = move_toward(locomotion_velocity.x, target, acceleration * delta)
+
+
+## Whether the floor under the chicken (from the last slide) is a slippery block.
+func _on_slippery_floor() -> bool:
+	if not is_on_floor():
+		return false
+	for index in get_slide_collision_count():
+		var collision := get_slide_collision(index)
+		if collision.get_normal().y > -0.7:
+			continue
+		var collider := collision.get_collider()
+		if collider != null and collider.has_method("is_slippery"):
+			if bool(collider.call("is_slippery")):
+				return true
+	return false
 
 
 func _update_vertical(delta: float, jump_down: bool) -> void:

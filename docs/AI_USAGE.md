@@ -302,3 +302,22 @@ At Jorge's request ("continue on phase tasks") and with his two design decisions
 - Updated stale test expectations that encoded the old dev-only P10 policy or older mode flags (P04, P07, P10, P13 Library, Barya).
 
 AI-generated code; no human code review, playtest or balance review claimed. Evidence: `docs/evidence/integration/README.md`.
+
+### Stabilization fixes and submission drafts — October 16, 2026
+
+At Jorge's request ("continue on phase task"), Claude (Claude Opus 5.5 via Claude Code):
+- Fixed the P07 reset audit's stale expectations: one finisher per round, and a physics step after the teleport reset.
+- Fixed the tutorial Pugad copy priority and the Barya note text (`tutorial_coordinator.gd`, `tutorial_script.tres`).
+- Drafted `docs/SYNOPSIS_DRAFT.md` (Template 01 synopsis, trailer shot list, demo outline, capture schedule) and `docs/RELEASE_MANIFEST_DRAFT.md`.
+
+The synopsis is AI-drafted submission copy and must be disclosed as such on Form 03. Human editing, cultural review and approval are pending. No human code review is claimed. Evidence: `docs/evidence/stabilization/README.md`.
+
+### Promoted P19 obstacles and windowed-suite fixes — October 16, 2026
+
+At Jorge's request ("continue on phasetasks"; he chose "pick 3 low-risk ones"), Claude (Claude Opus 5.5 via Claude Code):
+- Generated the Hagdan ng Bahay, Tinik-Tinik Strip and Yelo ng Sorbetero block scenes (DEBUG placeholder polygons and labels, written by a one-off script that was not kept).
+- Generated the `slippery` BlockData flag and the ice tuning and controller hook.
+- Wrote `run_p19_promoted_tests.gd` (25 checks).
+- Made the windowed P04/P05/P10 suites robust to the larger egg pool: free-cell placement and the full variant cycle.
+
+No final art or audio was generated. No human code, art or feel review is claimed. Evidence: `docs/evidence/p19_promoted/README.md`, `docs/evidence/stabilization/2026-10-16_windowed_suites.txt`.

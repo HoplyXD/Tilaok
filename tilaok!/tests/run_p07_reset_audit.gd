@@ -21,6 +21,9 @@ func _run() -> void:
 	room.input_router.registry.set_ready(0, true)
 	room.input_router.registry.set_ready(1, true)
 	_check(room.start_match(), "synthetic reset audit starts a two-seat P07 match")
+	# One finisher per round: since the all-finish rule (GDD section 5, c1eaa9b) a round where
+	# every racer finishes awards nothing, so a lone finisher keeps a score signal each round.
+	room.tuning.match_race_after_first_finish_seconds = 0.05
 
 	var retained_id := ""
 	var removed_id := ""
@@ -64,9 +67,12 @@ func _run() -> void:
 			"round %d enters Play" % (round_index + 1)
 		)
 		var goal_position := room.goal_area.global_position
-		for actor_variant in room.actors.values():
-			(actor_variant as ChickenController).global_position = goal_position
-		await _wait_physics_frames(4)
+		var finisher := room.actors[round_index % 2] as ChickenController
+		finisher.global_position = goal_position
+		for _frame in range(60):
+			await physics_frame
+			if room.phase_controller.phase == MatchPhaseController.Phase.RESULTS:
+				break
 		_check(
 			room.phase_controller.phase == MatchPhaseController.Phase.RESULTS,
 			"round %d reaches scored results from the actual goal trigger" % (round_index + 1)
@@ -94,6 +100,9 @@ func _run() -> void:
 
 		var audit_before := room.reset_audit_rows.size()
 		room._start_next_round()
+		# Real Pugad/Place phases last seconds; step physics so the goal area drops the overlap of
+		# last round's finisher (teleported back to spawn) before this audit enters Play again.
+		await _wait_physics_frames(2)
 		_check(
 			room.reset_audit_rows.size() == audit_before + 1,
 			"round %d recorded one next-round reset" % (round_index + 1)

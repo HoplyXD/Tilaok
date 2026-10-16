@@ -10,7 +10,7 @@
 | Form 01 | Team leader, members, roles, and coach for student teams. | **TBD** | Not started |
 | Form 02 | Waiver and originality declaration, signed as required. | **TBD** | Not started |
 | Form 03 | Asset and AI usage disclosure, signed as required. | **TBD** | Not started |
-| Template 01 | Game title and synopsis, maximum 500 words including gameplay/mechanics. | **TBD** | Not started |
+| Template 01 | Game title and synopsis, maximum 500 words including gameplay/mechanics. | **TBD** | AI first draft (410 words) in [SYNOPSIS_DRAFT](SYNOPSIS_DRAFT.md), awaiting Compliance and cultural review |
 | Trailer | 1–2 minute looping MP4 teaser, understandable without sound through captions. | **TBD** | Not started |
 | Demo video | 3–5 minute MP4 gameplay explanation with voice or captions. | **TBD** | Not started |
 | Game package | PC build with no paid licence requirement. | **TBD** | Not started |
@@ -28,6 +28,8 @@ Keep Form 03 aligned with these repository documents:
 | P03 AI-assisted implementation scope and fixture evidence | `AI_USAGE.md`, `PHASETASK.md` P03, and `evidence/p03/2026-10-13_p03_verification.md` |
 
 Do not represent AI-generated code as manually team-written or claim a playable/tested feature from documentation alone.
+
+**Drafts (2026-10-16):** [SYNOPSIS_DRAFT](SYNOPSIS_DRAFT.md) (synopsis, trailer shot list, demo outline, capture schedule) and [RELEASE_MANIFEST_DRAFT](RELEASE_MANIFEST_DRAFT.md) (content and defect list for the freeze). Both were drafted by Claude (AI) and are unapproved.
 
 ## Synopsis outline
 

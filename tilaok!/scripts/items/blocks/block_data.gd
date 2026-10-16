@@ -109,6 +109,9 @@ const OVERRIDE_FIELDS := {
 @export var stun := false
 @export var stun_seconds := 1.0
 @export var stun_knockback_wu_s := 480.0
+## SLIPPERY: a chicken standing on this block brakes and turns slowly and runs a little faster
+## (Yelo ng Sorbetero ice; rates are GameplayTuning.ice_*). No credit: it never eliminates.
+@export var slippery := false
 
 @export_group("Special")
 @export var special := Special.NONE:

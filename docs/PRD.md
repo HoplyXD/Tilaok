@@ -943,6 +943,8 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 ### REQ-ITEM-009 — Hagdan ng Bahay
 
+**Promoted 2026-10-16 (Jorge):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
+
 **Scope:** EXPANSION · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 
 **Expected behavior:** B; build; UCH Stairs family reference, Filipino staircase design original. Multi-step footholds; can create a steep obstacle. Tell: stair silhouette. Counter: alternate jump route. Solid stepped footprint; 90° rotations. Tune tread count/height and footprint. Terrain in both modes; placer owns removable static piece; medium risk: collision seams. Approved size inventory: 2×2 or 3×3 steps. Grid/world measurements and tuning are provisional. Catalog approval is not implementation or release enablement.
@@ -1064,6 +1066,8 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 ### REQ-ITEM-020 — Yelo ng Sorbetero
 
+**Promoted 2026-10-16 (Jorge):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
+
 **Scope:** EXPANSION · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 
 **Expected behavior:** B; surface modifier; Ice reference. Reduces braking for longer slides; can carry player into danger. Tell: frosty edge pattern. Counter: jump off or plan stopping distance. Surface-only footprint; 90° orientation irrelevant. Tune friction and max speed. Both modes; no trap credit; reset is static. Medium movement tuning. Approved size inventory: 3×1 or 4×1 surface. Grid/world measurements and tuning are provisional. Catalog approval is not implementation or release enablement.
@@ -1085,6 +1089,8 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 
 ### REQ-ITEM-022 — Tinik-Tinik Strip
+
+**Promoted 2026-10-16 (Jorge):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
 
 **Scope:** EXPANSION · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 

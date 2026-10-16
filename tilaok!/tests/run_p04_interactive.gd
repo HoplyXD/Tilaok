@@ -45,9 +45,17 @@ func _run() -> void:
 		room.selected_variant_key == "build.hollow_blocks.stack_2x3",
 		"clicking an egg claims its exact variant for the ghost"
 	)
-	await _click_text_button(room, "Variant: stack_2x3")
-	await _click_text_button(room, "Variant: span_4x1")
-	_check(room.selected_variant_key == "build.hollow_blocks.cell_1x1", "variant cycle wraps")
+	# The pool holds every enabled main-game variant (25 since the P10 families joined it on
+	# 2026-10-16): click the visible Variant button through the whole cycle back to the start.
+	var pool_size := room.tuning.item_enabled_variants.size()
+	var clicks := 0
+	while clicks < pool_size and room.selected_variant_key != "build.hollow_blocks.cell_1x1":
+		await _click_text_button(room, "Variant: %s" % room.selected_variant_key.get_slice(".", 2))
+		clicks += 1
+	_check(
+		room.selected_variant_key == "build.hollow_blocks.cell_1x1" and clicks == pool_size - 1,
+		"variant cycle wraps (%d clicks through %d variants)" % [clicks, pool_size]
+	)
 	_check(
 		room.input_router.phase == LocalInputRouter.Phase.PLACE and room.cursors.size() == 2,
 		"Place button shows one ghost per seat"

@@ -17,7 +17,7 @@ title = "Step 2 of 5 - Pugad"
 body = "Each egg shows the piece inside. Point at one and press {claim}. If someone is faster, pick again. After {pugad_s} seconds you get one."
 glyph_action = "claim"
 variants = {
-"claimed": "Egg claimed! Leftover eggs are handed out when the {pugad_s} second timer ends.", "lost": "Claim lost - pick another egg and press {claim} again.", "barya": "Barya is a round coin, not a build piece. Its picker places it. Touch to carry; elimination drops it. Reach the flag carrying it for +0.5."
+"claimed": "Egg claimed! Leftover eggs are handed out when the {pugad_s} second timer ends.", "lost": "Claim lost - pick another egg and press {claim} again.", "barya": "Point at an egg and press {claim}; after {pugad_s} seconds you get one. The coin egg is Barya, not a build piece: its picker places it, touch to carry, elimination drops it. Reach the flag carrying it for +0.5."
 }
 
 [sub_resource type="Resource" id="Step_2"]

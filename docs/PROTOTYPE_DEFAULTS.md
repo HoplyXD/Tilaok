@@ -88,6 +88,8 @@ New keys (UNMEASURED candidates): `sneak_enabled` true, `sneak_height_wu` 56 (1Ã
 
 **P10 families in the match pool (2026-10-16, decided by Jorge; PROVISIONAL, untuned):** match egg weights `item_spring_weight` 15 (unchanged), `item_trumpo_weight` 20, `item_parol_weight` 15, `item_launcher_weight` 20, `item_walis_weight` 15, `item_bubble_weight` 10 (were 50 for the dev labs, which still override them). Kaing, Tulay and the stage blocks stay at 50, Spikes and Cannon at 50, Bomb 30, Dynamite 20, Nuke 8. Event rounds deal only mode-approved families ([integration evidence](evidence/integration/README.md)). Human balance review is needed.
 
+**Promoted P19 obstacles (2026-10-16, decided by Jorge; PROVISIONAL, untuned):** egg weight 20 for Hagdan ng Bahay, Tinik-Tinik and Yelo. Ice: `ice_brake_scale` 0.12, `ice_accel_scale` 0.6, `ice_speed_scale` 1.25. Synthetic check in the Item Lab: after letting go at full speed, the chicken slides 323 wu on ice and stops at once on the floor; top speed is 700 vs 560 wu/s. The Tinik kill strip is 18 wu tall at the bottom of its cells. See [P19 promoted evidence](evidence/p19_promoted/README.md). Human feel review is needed.
+
 **Ledge climb (2026-10-16, requested by Jorge; UNMEASURED candidates):** `ledge_climb_enabled` true, `ledge_reach_above_head_wu` 24, `ledge_reach_below_head_wu` 64, `ledge_climb_seconds` 0.22, `ledge_climb_max_rise_wu_s` 240. Synthetic check (Item Lab, 60 Hz): a plain jump peaks with the feet at 768 wu and cannot reach the top of a 4-tile wall (704 wu); holding toward the wall, the chicken grabs it and stands at 704 wu. See [fix evidence](evidence/fixes/README.md). Human feel review is still needed.
 
 ### Block scenes, Spikes, Cannon and stun â€” October 14, 2026

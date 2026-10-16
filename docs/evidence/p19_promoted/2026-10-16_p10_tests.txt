@@ -1,0 +1,439 @@
+PASS T01 first-batch tuning validates: []
+PASS T01 eight definitions load and validate: []
+PASS T01 eight families (+3 stage blocks, Spikes, Cannon and 3 explosives) are defined
+PASS T01 move.tire_spring is defined
+PASS T01 move.tire_spring variants | expected: ["tire_2x2"] | actual: ["tire_2x2"]
+PASS T01 move.tire_spring.tire_2x2 footprint (2, 2)
+PASS T01 move.tire_spring.tire_2x2 has explicit regions
+PASS T01 move.tire_spring.tire_2x2 has explicit rotations
+PASS T01 move.tire_spring owner is the placer
+PASS T01 move.tire_spring safe start is explicit: reset_ready
+PASS T01 move.tire_spring mode flags: ["karera"]
+PASS T01 move.tire_spring Lagsanay compatibility review flag is accurate
+PASS T01 move.tire_spring Kangaroo compatibility review flag is accurate
+PASS T01 move.tire_spring is not a release target
+PASS T01 move.tire_spring wall contact is declared
+PASS T01 move.tire_spring has a replaceable visual set
+PASS T01 hazard.rail_trumpo is defined
+PASS T01 hazard.rail_trumpo variants | expected: ["rail_4x1", "rail_5x1", "rail_6x1"] | actual: ["rail_4x1", "rail_5x1", "rail_6x1"]
+PASS T01 hazard.rail_trumpo.rail_4x1 footprint (4, 1)
+PASS T01 hazard.rail_trumpo.rail_4x1 has explicit regions
+PASS T01 hazard.rail_trumpo.rail_4x1 has explicit rotations
+PASS T01 hazard.rail_trumpo.rail_5x1 footprint (5, 1)
+PASS T01 hazard.rail_trumpo.rail_5x1 has explicit regions
+PASS T01 hazard.rail_trumpo.rail_5x1 has explicit rotations
+PASS T01 hazard.rail_trumpo.rail_6x1 footprint (6, 1)
+PASS T01 hazard.rail_trumpo.rail_6x1 has explicit regions
+PASS T01 hazard.rail_trumpo.rail_6x1 has explicit rotations
+PASS T01 hazard.rail_trumpo owner is the placer
+PASS T01 hazard.rail_trumpo safe start is explicit: reset_to_endpoint
+PASS T01 hazard.rail_trumpo mode flags: ["karera", "lagsanay", "kangaroo"]
+PASS T01 hazard.rail_trumpo Lagsanay compatibility review flag is accurate
+PASS T01 hazard.rail_trumpo Kangaroo compatibility review flag is accurate
+PASS T01 hazard.rail_trumpo is not a release target
+PASS T01 hazard.rail_trumpo wall contact is declared
+PASS T01 hazard.rail_trumpo has a replaceable visual set
+PASS T01 hazard.parol_pulse is defined
+PASS T01 hazard.parol_pulse variants | expected: ["span_3x1", "span_4x1", "span_5x1", "span_6x1"] | actual: ["span_3x1", "span_4x1", "span_5x1", "span_6x1"]
+PASS T01 hazard.parol_pulse.span_3x1 footprint (3, 1)
+PASS T01 hazard.parol_pulse.span_3x1 has explicit regions
+PASS T01 hazard.parol_pulse.span_3x1 has explicit rotations
+PASS T01 hazard.parol_pulse.span_4x1 footprint (4, 1)
+PASS T01 hazard.parol_pulse.span_4x1 has explicit regions
+PASS T01 hazard.parol_pulse.span_4x1 has explicit rotations
+PASS T01 hazard.parol_pulse.span_5x1 footprint (5, 1)
+PASS T01 hazard.parol_pulse.span_5x1 has explicit regions
+PASS T01 hazard.parol_pulse.span_5x1 has explicit rotations
+PASS T01 hazard.parol_pulse.span_6x1 footprint (6, 1)
+PASS T01 hazard.parol_pulse.span_6x1 has explicit regions
+PASS T01 hazard.parol_pulse.span_6x1 has explicit rotations
+PASS T01 hazard.parol_pulse owner is the placer
+PASS T01 hazard.parol_pulse safe start is explicit: reset_inactive_charge
+PASS T01 hazard.parol_pulse mode flags: ["karera"]
+PASS T01 hazard.parol_pulse Lagsanay compatibility review flag is accurate
+PASS T01 hazard.parol_pulse Kangaroo compatibility review flag is accurate
+PASS T01 hazard.parol_pulse is not a release target
+PASS T01 hazard.parol_pulse wall contact is declared
+PASS T01 hazard.parol_pulse has a replaceable visual set
+PASS T01 hazard.slipper_launcher is defined
+PASS T01 hazard.slipper_launcher variants | expected: ["lane_4x1", "lane_6x1"] | actual: ["lane_4x1", "lane_6x1"]
+PASS T01 hazard.slipper_launcher.lane_4x1 footprint (1, 1)
+PASS T01 hazard.slipper_launcher.lane_4x1 has explicit regions
+PASS T01 hazard.slipper_launcher.lane_4x1 has explicit rotations
+PASS T01 hazard.slipper_launcher.lane_6x1 footprint (1, 1)
+PASS T01 hazard.slipper_launcher.lane_6x1 has explicit regions
+PASS T01 hazard.slipper_launcher.lane_6x1 has explicit rotations
+PASS T01 hazard.slipper_launcher owner is the placer
+PASS T01 hazard.slipper_launcher safe start is explicit: reset_idle
+PASS T01 hazard.slipper_launcher mode flags: ["karera", "lagsanay", "kangaroo"]
+PASS T01 hazard.slipper_launcher Lagsanay compatibility review flag is accurate
+PASS T01 hazard.slipper_launcher Kangaroo compatibility review flag is accurate
+PASS T01 hazard.slipper_launcher is not a release target
+PASS T01 hazard.slipper_launcher wall contact is declared
+PASS T01 hazard.slipper_launcher has a replaceable visual set
+PASS T01 utility.walis_cleanup is defined
+PASS T01 utility.walis_cleanup variants | expected: ["area_3x3", "area_5x5"] | actual: ["area_3x3", "area_5x5"]
+PASS T01 utility.walis_cleanup.area_3x3 footprint (3, 3)
+PASS T01 utility.walis_cleanup.area_3x3 has explicit regions
+PASS T01 utility.walis_cleanup.area_3x3 has explicit rotations
+PASS T01 utility.walis_cleanup.area_5x5 footprint (5, 5)
+PASS T01 utility.walis_cleanup.area_5x5 has explicit regions
+PASS T01 utility.walis_cleanup.area_5x5 has explicit rotations
+PASS T01 utility.walis_cleanup owner is the placer
+PASS T01 utility.walis_cleanup safe start is explicit: static_no_motion
+PASS T01 utility.walis_cleanup mode flags: ["karera"]
+PASS T01 utility.walis_cleanup Lagsanay compatibility review flag is accurate
+PASS T01 utility.walis_cleanup Kangaroo compatibility review flag is accurate
+PASS T01 utility.walis_cleanup is not a release target
+PASS T01 utility.walis_cleanup wall contact is declared
+PASS T01 utility.walis_cleanup has a replaceable visual set
+PASS T01 hazard.bubble_planter is defined
+PASS T01 hazard.bubble_planter variants | expected: ["path_1x3", "path_1x5"] | actual: ["path_1x3", "path_1x5"]
+PASS T01 hazard.bubble_planter.path_1x3 footprint (1, 1)
+PASS T01 hazard.bubble_planter.path_1x3 has explicit regions
+PASS T01 hazard.bubble_planter.path_1x3 has explicit rotations
+PASS T01 hazard.bubble_planter.path_1x5 footprint (1, 1)
+PASS T01 hazard.bubble_planter.path_1x5 has explicit regions
+PASS T01 hazard.bubble_planter.path_1x5 has explicit rotations
+PASS T01 hazard.bubble_planter owner is the placer
+PASS T01 hazard.bubble_planter safe start is explicit: reset_idle
+PASS T01 hazard.bubble_planter mode flags: ["karera"]
+PASS T01 hazard.bubble_planter Lagsanay compatibility review flag is accurate
+PASS T01 hazard.bubble_planter Kangaroo compatibility review flag is accurate
+PASS T01 hazard.bubble_planter is not a release target
+PASS T01 hazard.bubble_planter wall contact is declared
+PASS T01 hazard.bubble_planter has a replaceable visual set
+PASS T01 Gulong rotates 0/90/180/270
+PASS T19 Parol reserves only its two posts
+PASS T28 Tsinelas rotates 0 and 180 only
+PASS T46 Bula has a fixed upward path (no rotation)
+PASS T37 Walis is a one-shot construction edit with no placed footprint
+PASS T19 an undocumented Parol span 7 is rejected
+PASS T10 a Trumpo rail that does not match its table is rejected
+PASS T28 an unbounded lane is rejected
+PASS T46 a bubble path beyond the arena is rejected
+PASS T01 an undocumented safe start is rejected
+PASS T01 a variant without regions is rejected
+PASS T19 occupied cells outside the footprint are rejected
+PASS baseline load_all defines the main-game blocks including the six P10 families
+PASS default enabled pool is the catalog's enabled set and holds the 14 P10 variants (31, 14 P10)
+PASS karera_spring now includes the spring variant
+PASS karera_slice loads every main-game block family, P10 included
+PASS T02 Gulong rotation 0 trigger | expected: [P: (0.0, 0.0), S: (128.0, 64.0)] | actual: [P: (0.0, 0.0), S: (128.0, 64.0)]
+PASS T02 Gulong rotation 0 body stays 2x2
+PASS T02 Gulong rotation 0 launch face lies on the (0.0, -1.0) edge
+PASS T02 Gulong rotation 1 trigger | expected: [P: (64.0, 0.0), S: (64.0, 128.0)] | actual: [P: (64.0, 0.0), S: (64.0, 128.0)]
+PASS T02 Gulong rotation 1 body stays 2x2
+PASS T02 Gulong rotation 1 launch face lies on the (1.0, 0.0) edge
+PASS T02 Gulong rotation 2 trigger | expected: [P: (0.0, 64.0), S: (128.0, 64.0)] | actual: [P: (0.0, 64.0), S: (128.0, 64.0)]
+PASS T02 Gulong rotation 2 body stays 2x2
+PASS T02 Gulong rotation 2 launch face lies on the (0.0, 1.0) edge
+PASS T02 Gulong rotation 3 trigger | expected: [P: (0.0, 0.0), S: (64.0, 128.0)] | actual: [P: (0.0, 0.0), S: (64.0, 128.0)]
+PASS T02 Gulong rotation 3 body stays 2x2
+PASS T02 Gulong rotation 3 launch face lies on the (-1.0, 0.0) edge
+PASS T11 hazard.rail_trumpo.rail_4x1 turns 0: sweep (256.0, 64.0) == visible rail (256.0, 64.0)
+PASS T11 hazard.rail_trumpo.rail_4x1 turns 1: sweep (64.0, 256.0) == visible rail (64.0, 256.0)
+PASS T11 hazard.rail_trumpo.rail_4x1 turns 2: sweep (256.0, 64.0) == visible rail (256.0, 64.0)
+PASS T11 hazard.rail_trumpo.rail_4x1 turns 3: sweep (64.0, 256.0) == visible rail (64.0, 256.0)
+PASS T11 hazard.rail_trumpo.rail_5x1 turns 0: sweep (320.0, 64.0) == visible rail (320.0, 64.0)
+PASS T11 hazard.rail_trumpo.rail_5x1 turns 1: sweep (64.0, 320.0) == visible rail (64.0, 320.0)
+PASS T11 hazard.rail_trumpo.rail_5x1 turns 2: sweep (320.0, 64.0) == visible rail (320.0, 64.0)
+PASS T11 hazard.rail_trumpo.rail_5x1 turns 3: sweep (64.0, 320.0) == visible rail (64.0, 320.0)
+PASS T11 hazard.rail_trumpo.rail_6x1 turns 0: sweep (384.0, 64.0) == visible rail (384.0, 64.0)
+PASS T11 hazard.rail_trumpo.rail_6x1 turns 1: sweep (64.0, 384.0) == visible rail (64.0, 384.0)
+PASS T11 hazard.rail_trumpo.rail_6x1 turns 2: sweep (384.0, 64.0) == visible rail (384.0, 64.0)
+PASS T11 hazard.rail_trumpo.rail_6x1 turns 3: sweep (64.0, 384.0) == visible rail (64.0, 384.0)
+PASS T29 lane_6x1 turns 0 | expected: x=64 width 384 | actual: [P: (64.0, 0.0), S: (384.0, 64.0)]
+PASS T29 lane_6x1 turns 2 | expected: x=-384 width 384 | actual: [P: (-384.0, 0.0), S: (384.0, 64.0)]
+PASS T47 Bula 1x5 path rises 5 cells above the pot
+PASS T02 Gulong places on the floor: { "allowed": true, "code": "valid", "reason": "Valid placement.", "footprint": [P: (1024.0, 832.0), S: (128.0, 128.0)], "occupied": [[P: (1024.0, 832.0), S: (128.0, 128.0)]], "one_shot": false, "instance_id": "move.tire_spring.tire_2x2#001" }
+PASS T02 Gulong has a spring behavior
+PASS T02 Gulong body is one solid; the face is a trigger
+PASS T05 Gulong declares itself wave-support ineligible (fail closed)
+PASS T05 Gulong face is not wave support | expected: qualifies=false | actual: qualifies=false reason=ineligible surface
+PASS T03 contact on the face launches the chicken (launches=1)
+PASS launch fixture placed
+PASS launch fixture placed
+PASS T03 plain launch rise | expected: 300-340 wu (1550 wu/s, ~320 wu) | actual: 336.3 wu
+PASS T03 timed-jump boost rise | expected: 364-404 wu (1698 wu/s, ~384 wu) | actual: 400.2 wu
+PASS T03 the timed jump boosts height over the plain launch
+PASS T03 spring cooldown holds 0.20 s | expected: 1 launch in first 10 frames | actual: 1
+PASS T03 spring relaunches after cooldown | expected: >=2 launches by frame 40 | actual: 4
+PASS T02 Gulong rotation 1 places
+PASS T03 side launch respects the spring horizontal cap | expected: 0 < vx <= 960 | actual: 960.0
+PASS T04 spring near the ceiling places
+PASS T04 launch never leaves the arena | expected: centre y >= half body height | actual: min centre y 60.01
+PASS owner fixture placed
+PASS T04 the launch is recorded as a setup effect
+PASS T04 spring setup has no credit | expected: owner=1 setup_only=true credit=false | actual: SETUP|player0|move.tire_spring.tire_2x2#001|owner1|t=0.0667|self=false|setup=true|spring launch
+PASS T04 a launch alone never eliminates or credits (no assist)
+PASS T04 spring removal succeeds
+PASS T04 spring record is gone after removal
+PASS T11 rail 5x1 places: { "allowed": true, "code": "valid", "reason": "Valid placement.", "footprint": [P: (896.0, 512.0), S: (320.0, 64.0)], "occupied": [[P: (896.0, 512.0), S: (320.0, 64.0)]], "one_shot": false, "instance_id": "hazard.rail_trumpo.rail_5x1#001" }
+PASS T11 sweep matches the 5-cell rail
+PASS T12 top travels the visible rail and no further | expected: centre x spans 916.0..1196.0 | actual: 916.0..1196.0
+PASS T12 endpoint pause length | expected: 45 frames ±2 | actual: 45 frames
+PASS T12 period | expected: 3.250 s | actual: 3.250 s
+PASS T12 trumpo contact eliminates (frame 14)
+PASS T13 exactly one elimination record
+PASS T13 direct kill credits the placer | expected: owner=1 self=false credit=true | actual: ELIM|player0|hazard.rail_trumpo.rail_5x1#001|owner1|t=1.2708|self=false|setup=false|trumpo contact
+PASS T13 record names the source item
+PASS T13 self-elimination records no credit
+PASS T11 rail 4x1 rotation 0 places
+PASS T11 rotation 0 start direction | expected: (1.0, 0.0) | actual: (1.0, 0.0)
+PASS T11 rotation 0 sweep orientation
+PASS T11 rail 4x1 rotation 1 places
+PASS T11 rotation 1 start direction | expected: (0.0, 1.0) | actual: (0.0, 1.0)
+PASS T11 rotation 1 sweep orientation
+PASS T11 rail 4x1 rotation 2 places
+PASS T11 rotation 2 start direction | expected: (-1.0, 0.0) | actual: (-1.0, 0.0)
+PASS T11 rotation 2 sweep orientation
+PASS T11 rail 4x1 rotation 3 places
+PASS T11 rotation 3 start direction | expected: (0.0, -1.0) | actual: (0.0, -1.0)
+PASS T11 rotation 3 sweep orientation
+PASS T14 a 4800 wu/s top (80 wu/frame) cannot tunnel through a 56 wu body
+PASS T20 Parol span 5 places: { "allowed": true, "code": "valid", "reason": "Valid placement.", "footprint": [P: (832.0, 512.0), S: (320.0, 64.0)], "occupied": [[P: (832.0, 512.0), S: (64.0, 64.0)], [P: (1088.0, 512.0), S: (64.0, 64.0)]], "one_shot": false, "instance_id": "hazard.parol_pulse.span_5x1#001" }
+PASS T20 Parol beam spans the three open cells between the posts | expected: x 896..1088 | actual: [P: (896.0, 512.0), S: (192.0, 64.0)]
+PASS T21 charge starts inside the inactive tail (item time) | expected: 0.900 s ±1 step | actual: 0.900 s
+PASS T21 active starts after 1.5 s inactive (item time) | expected: 1.500 s ±1 step | actual: 1.517 s
+PASS T21 the cycle is 3 s: 1.5 s active per cycle | expected: 180 active frames in 2 cycles ±3 | actual: 180 active frames
+PASS T22 no rapid flashing: transitions per second | expected: <= 1.5 /s | actual: 0.92 /s
+PASS T21 inactive and charge are safe (87 safe frames)
+PASS T21 crossing the active beam eliminates (frame 87)
+PASS T22 Parol placer owns the direct elimination
+PASS T20 a block may sit between the posts (posts reserve only two cells)
+PASS T20 solid cover shortens the beam by exactly its width | expected: 128 wu of beam | actual: 128 wu
+PASS T20 hazard.parol_pulse.span_3x1 turns 0 places
+PASS T20 hazard.parol_pulse.span_3x1 turns 0 beam length | expected: 64 wu | actual: 64 wu
+PASS T20 hazard.parol_pulse.span_3x1 turns 1 places
+PASS T20 hazard.parol_pulse.span_3x1 turns 1 beam length | expected: 64 wu | actual: 64 wu
+PASS T20 hazard.parol_pulse.span_4x1 turns 0 places
+PASS T20 hazard.parol_pulse.span_4x1 turns 0 beam length | expected: 128 wu | actual: 128 wu
+PASS T20 hazard.parol_pulse.span_4x1 turns 1 places
+PASS T20 hazard.parol_pulse.span_4x1 turns 1 beam length | expected: 128 wu | actual: 128 wu
+PASS T20 hazard.parol_pulse.span_5x1 turns 0 places
+PASS T20 hazard.parol_pulse.span_5x1 turns 0 beam length | expected: 192 wu | actual: 192 wu
+PASS T20 hazard.parol_pulse.span_5x1 turns 1 places
+PASS T20 hazard.parol_pulse.span_5x1 turns 1 beam length | expected: 192 wu | actual: 192 wu
+PASS T20 hazard.parol_pulse.span_6x1 turns 0 places
+PASS T20 hazard.parol_pulse.span_6x1 turns 0 beam length | expected: 256 wu | actual: 256 wu
+PASS T20 hazard.parol_pulse.span_6x1 turns 1 places
+PASS T20 hazard.parol_pulse.span_6x1 turns 1 beam length | expected: 256 wu | actual: 256 wu
+PASS T29 launcher lane 4 places: { "allowed": true, "code": "valid", "reason": "Valid placement.", "footprint": [P: (512.0, 512.0), S: (64.0, 64.0)], "occupied": [[P: (512.0, 512.0), S: (64.0, 64.0)]], "one_shot": false, "instance_id": "hazard.slipper_launcher.lane_4x1#001" }
+PASS T29 lane is 4 cells to the right
+PASS T30 telegraph then fire interval | expected: fires ~78 frames after arming ±3 | actual: fired at frame 76, telegraph from 28
+PASS T30 projectile speed | expected: 12.0 wu/frame (720 wu/s) | actual: 12.00 wu/frame
+PASS T31 projectile lifetime is bounded by the lane | expected: vanishes within 3 s TTL | actual: vanished at frame 98
+PASS T30 a slipper hit eliminates
+PASS T31 launcher placer owns the direct hit
+PASS T30 a block can sit in the lane (lanes are not footprints)
+PASS T30 the launcher fired at least once (2)
+PASS T30 solid cover blocks the projectile; the chicken behind it survives
+PASS T30 the lane reports its first blocker (64 of 384 wu)
+PASS T29 a shot whose spawn overlaps a chicken is suppressed (1 suppressed)
+PASS T29 lane 6 at 180 degrees places
+PASS T29 180 degrees fires to the left
+PASS T29 lane 6 is 6 cells
+PASS T29 90 degrees is rejected (only 0/180 are documented)
+PASS T38 fixture pieces placed
+PASS T39 exact cleanup set (same-phase and far pieces excluded) | expected: ["build.hollow_blocks.cell_1x1#001", "build.hollow_blocks.cell_1x1#002"] | actual: ["build.hollow_blocks.cell_1x1#001", "build.hollow_blocks.cell_1x1#002"]
+PASS T38 the resolver reports one one-shot edit and places nothing
+PASS T38 Walis never becomes a placed piece
+PASS T39 preview outlines every exact target | expected: 2 targets | actual: 2
+PASS T39 the preview outlines protected exclusions (2)
+PASS T40 cleanup commits as one atomic edit: { "allowed": true, "removals": ["build.hollow_blocks.cell_1x1#001", "build.hollow_blocks.cell_1x1#002"], "commits": [], "one_shot_edits": [{ "seat_index": 2, "variant_key": "utility.walis_cleanup.area_3x3", "area": [P: (576.0, 448.0), S: (192.0, 192.0)], "targets": ["build.hollow_blocks.cell_1x1#001", "build.hollow_blocks.cell_1x1#002"], "same_phase": ["build.hollow_blocks.cell_1x1#004"], "protected": [] }] }
+PASS T40 removed pieces are gone
+PASS T40 pieces outside the area survive
+PASS T40 same-phase pieces survive
+PASS T40 removed pieces do not return after reset
+PASS T38 overlapping Walis resolve as one removal set | expected: [build.hollow_blocks.cell_1x1#003] once | actual: ["build.hollow_blocks.cell_1x1#003"]
+PASS T38 an area outside the arena is rejected
+PASS T40 Walis has no Play behavior
+PASS T40 lab one-shot edit follows the same target set: { "allowed": true, "code": "one_shot", "reason": "Cleanup removed 1 piece(s).", "one_shot": true, "owner_seat": 1, "removed": ["build.hollow_blocks.cell_1x1#003"], "same_phase": [], "protected": [] }
+PASS T47 Bula 1x5 places: { "allowed": true, "code": "valid", "reason": "Valid placement.", "footprint": [P: (1024.0, 832.0), S: (64.0, 64.0)], "occupied": [[P: (1024.0, 832.0), S: (64.0, 64.0)]], "one_shot": false, "instance_id": "hazard.bubble_planter.path_1x5#001" }
+PASS T48 a bubble captures a chicken (frame 10)
+PASS T48 capture lasts about 2 s | expected: 120 frames ±4 | actual: 121 frames
+PASS T48 the bubble lifts the chicken (rose 242 wu)
+PASS T48 a bubble never eliminates by itself
+PASS T49 capture is a setup record only; no Patibong
+PASS T47 release lands on a safe, non-overlapping position
+PASS T48 capture happened for the immunity scenario
+PASS T48 a held chicken has no control (x unchanged 1056.0)
+PASS T49 the captive is released
+PASS T49 no recapture inside the 1.0 s immunity window
+PASS T49 [removal] capture established
+PASS T49 captive state cleaned on removal | expected: not captured, 0 captives | actual: status=0 captives=0
+PASS T49 [removal] behavior existed
+PASS T49 [death] capture established
+PASS T49 captive state cleaned on death | expected: not captured, 0 captives | actual: status=4 captives=0
+PASS T49 [death] behavior existed
+PASS T49 [round_end] capture established
+PASS T49 captive state cleaned on round_end | expected: not captured, 0 captives | actual: status=0 captives=0
+PASS T49 [round_end] behavior existed
+PASS T49 [reset_match] capture established
+PASS T49 captive state cleaned on reset_match | expected: not captured, 0 captives | actual: status=0 captives=0
+PASS T49 [reset_match] behavior existed
+PASS T47 open space: released in place
+PASS T47 wall overlap: nearest safe spot is clear
+PASS T47 ceiling: spot is pulled inside the arena
+PASS T47 no safe spot: reported, so the caller uses its last safe point with zero velocity
+PASS tie fixture placed
+PASS T14 one terminal outcome per player (1 records)
+PASS T14 equal-time contacts resolve by stable item ID | expected: hazard.rail_trumpo.rail_4x1#001 | actual: hazard.rail_trumpo.rail_4x1#001
+PASS T22 pausing mid-cycle freezes item clocks | expected: elapsed 0.8833 unchanged over 30 paused frames | actual: 0.8833 -> 0.8833 (director 0.8833 -> 0.8833)
+PASS T22 resuming continues the cycle from the paused point
+PASS T05 ten reset cycles keep node counts stable | expected: nodes 299 ±0 | actual: nodes 299
+PASS cap fixture: six launchers placed (6)
+PASS T31 projectile cap is never exceeded | expected: <= 3 active | actual: peak 3
+PASS T31 rotating allocation lets every emitter fire: { "hazard.slipper_launcher.lane_4x1#001": 3, "hazard.slipper_launcher.lane_4x1#002": 3, "hazard.slipper_launcher.lane_4x1#003": 3, "hazard.slipper_launcher.lane_4x1#004": 2, "hazard.slipper_launcher.lane_4x1#005": 2, "hazard.slipper_launcher.lane_4x1#006": 2 }
+PASS T13 items advanced during Play
+PASS T13 trumpo resets to its start endpoint and direction | expected: centre (1196.0, 544.0), direction (-1.0, 0.0), elapsed 0 | actual: centre (1196.0, 544.0), direction (-1.0, 0.0), elapsed 0.000
+PASS T22 parol resets to inactive at t=0 | expected: phase inactive, elapsed ~0 | actual: phase inactive, elapsed 0.000
+PASS T31 launcher resets idle with no projectile | expected: cooldown, 0 projectiles, 0 shots | actual: state 0, 0 projectiles, 0 shots
+PASS T49 bubble emitter resets idle with no bubble | expected: wait, no bubble, 0 captures | actual: state 0, bubble false, 0 captures
+PASS T04 spring resets ready
+PASS S1 bridge + trumpo: sweep stays separate from the bridge footprint
+PASS S2 spring + Parol both place
+PASS S2 inactive, charge and active are all observable
+PASS S2 the launch arc reaches the beam row
+PASS S3 launcher + column cover place
+PASS S3 the lane overlay is drawn for the placement preview
+PASS S3 the ghost shows the lane's first blocker
+PASS S4 bubble + trumpo place
+PASS S4 bubble capture is recorded as setup
+PASS S4 the trumpo owner (not the bubble owner) is credited
+PASS S5 cleanup commits once and clears the obstructing pieces
+PASS S5 the cleared route stays cleared
+PASS S5 still clear next round
+PASS S5 fixture existed
+PASS T06 egg preview configures for move.tire_spring.tire_2x2 turns 0
+PASS T06 move.tire_spring.tire_2x2 turns 0 egg loops (animated)
+PASS T06 egg preview configures for move.tire_spring.tire_2x2 turns 1
+PASS T06 move.tire_spring.tire_2x2 turns 1 egg loops (animated)
+PASS T06 egg preview configures for move.tire_spring.tire_2x2 turns 2
+PASS T06 move.tire_spring.tire_2x2 turns 2 egg loops (animated)
+PASS T06 egg preview configures for move.tire_spring.tire_2x2 turns 3
+PASS T06 move.tire_spring.tire_2x2 turns 3 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_4x1 turns 0
+PASS T06 hazard.rail_trumpo.rail_4x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_4x1 turns 1
+PASS T06 hazard.rail_trumpo.rail_4x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_4x1 turns 2
+PASS T06 hazard.rail_trumpo.rail_4x1 turns 2 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_4x1 turns 3
+PASS T06 hazard.rail_trumpo.rail_4x1 turns 3 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_5x1 turns 0
+PASS T06 hazard.rail_trumpo.rail_5x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_5x1 turns 1
+PASS T06 hazard.rail_trumpo.rail_5x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_5x1 turns 2
+PASS T06 hazard.rail_trumpo.rail_5x1 turns 2 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_5x1 turns 3
+PASS T06 hazard.rail_trumpo.rail_5x1 turns 3 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_6x1 turns 0
+PASS T06 hazard.rail_trumpo.rail_6x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_6x1 turns 1
+PASS T06 hazard.rail_trumpo.rail_6x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_6x1 turns 2
+PASS T06 hazard.rail_trumpo.rail_6x1 turns 2 egg loops (animated)
+PASS T06 egg preview configures for hazard.rail_trumpo.rail_6x1 turns 3
+PASS T06 hazard.rail_trumpo.rail_6x1 turns 3 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_3x1 turns 0
+PASS T06 hazard.parol_pulse.span_3x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_3x1 turns 1
+PASS T06 hazard.parol_pulse.span_3x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_4x1 turns 0
+PASS T06 hazard.parol_pulse.span_4x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_4x1 turns 1
+PASS T06 hazard.parol_pulse.span_4x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_5x1 turns 0
+PASS T06 hazard.parol_pulse.span_5x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_5x1 turns 1
+PASS T06 hazard.parol_pulse.span_5x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_6x1 turns 0
+PASS T06 hazard.parol_pulse.span_6x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.parol_pulse.span_6x1 turns 1
+PASS T06 hazard.parol_pulse.span_6x1 turns 1 egg loops (animated)
+PASS T06 egg preview configures for hazard.slipper_launcher.lane_4x1 turns 0
+PASS T06 hazard.slipper_launcher.lane_4x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.slipper_launcher.lane_4x1 turns 2
+PASS T06 hazard.slipper_launcher.lane_4x1 turns 2 egg loops (animated)
+PASS T06 egg preview configures for hazard.slipper_launcher.lane_6x1 turns 0
+PASS T06 hazard.slipper_launcher.lane_6x1 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.slipper_launcher.lane_6x1 turns 2
+PASS T06 hazard.slipper_launcher.lane_6x1 turns 2 egg loops (animated)
+PASS T06 egg preview configures for utility.walis_cleanup.area_3x3 turns 0
+PASS T06 utility.walis_cleanup.area_3x3 turns 0 egg loops (animated)
+PASS T06 egg preview configures for utility.walis_cleanup.area_5x5 turns 0
+PASS T06 utility.walis_cleanup.area_5x5 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.bubble_planter.path_1x3 turns 0
+PASS T06 hazard.bubble_planter.path_1x3 turns 0 egg loops (animated)
+PASS T06 egg preview configures for hazard.bubble_planter.path_1x5 turns 0
+PASS T06 hazard.bubble_planter.path_1x5 turns 0 egg loops (animated)
+PASS T06 every enabled variant/rotation has an egg preview (32)
+PASS T06 previews are shape-only; names live in the Library
+PASS T08 Library entry exists for move.tire_spring
+PASS T08 move.tire_spring entry has name, sizes, placement, tell, counterplay, controls, modes, animation
+PASS T08 move.tire_spring name is flagged as a working name
+PASS T08 move.tire_spring lists its PLACEHOLDER slots
+PASS T08 Library entry exists for hazard.rail_trumpo
+PASS T08 hazard.rail_trumpo entry has name, sizes, placement, tell, counterplay, controls, modes, animation
+PASS T08 hazard.rail_trumpo name is flagged as a working name
+PASS T08 hazard.rail_trumpo lists its PLACEHOLDER slots
+PASS T08 Library entry exists for hazard.parol_pulse
+PASS T08 hazard.parol_pulse entry has name, sizes, placement, tell, counterplay, controls, modes, animation
+PASS T08 hazard.parol_pulse name is flagged as a working name
+PASS T08 hazard.parol_pulse lists its PLACEHOLDER slots
+PASS T08 Library entry exists for hazard.slipper_launcher
+PASS T08 hazard.slipper_launcher entry has name, sizes, placement, tell, counterplay, controls, modes, animation
+PASS T08 hazard.slipper_launcher name is flagged as a working name
+PASS T08 hazard.slipper_launcher lists its PLACEHOLDER slots
+PASS T08 Library entry exists for utility.walis_cleanup
+PASS T08 utility.walis_cleanup entry has name, sizes, placement, tell, counterplay, controls, modes, animation
+PASS T08 utility.walis_cleanup name is flagged as a working name
+PASS T08 utility.walis_cleanup lists its PLACEHOLDER slots
+PASS T08 Library entry exists for hazard.bubble_planter
+PASS T08 hazard.bubble_planter entry has name, sizes, placement, tell, counterplay, controls, modes, animation
+PASS T08 hazard.bubble_planter name is flagged as a working name
+PASS T08 hazard.bubble_planter lists its PLACEHOLDER slots
+PASS T08 the release filter lists no unreleased family
+PASS Visualizer lists all eight families (+3 stage blocks, Spikes, Cannon and 3 explosives)
+PASS Visualizer selects build.hollow_blocks
+PASS Visualizer selects build.bamboo_bridge
+PASS Visualizer selects move.tire_spring
+PASS Visualizer selects hazard.rail_trumpo
+PASS Visualizer selects hazard.parol_pulse
+PASS Visualizer selects hazard.slipper_launcher
+PASS Visualizer selects utility.walis_cleanup
+PASS Visualizer selects hazard.bubble_planter
+PASS Visualizer selects build.solid_block
+PASS Visualizer selects build.wood_box
+PASS Visualizer selects build.collapsing_block
+PASS Visualizer selects block.spikes
+PASS Visualizer selects block.cannon
+PASS Visualizer selects explosive.bomb
+PASS Visualizer selects explosive.dynamite
+PASS Visualizer selects explosive.nuke
+PASS Visualizer selects build.house_stairs
+PASS Visualizer selects hazard.toy_burr_strip
+PASS Visualizer selects modifier.sorbetes_ice
+PASS Visualizer places a spring
+PASS Visualizer toggles to Play
+PASS Visualizer reads out live item state
+PASS Visualizer slow motion sets 0.25x
+PASS Visualizer spawns test chickens
+PASS Visualizer caps test chickens at four (4)
+PASS Visualizer spawn is bounded
+PASS Visualizer lists every replaceable slot (23)
+PASS every shipped slot is labelled PLACEHOLDER
+PASS audit lists every placeholder slot (23)
+PASS audit finds every PLACEHOLDER_* file (23)
+PASS no family is release-enabled, so no placeholder violates the release gate
+PASS release gate flags a placeholder in an enabled release item | expected: violations for move.tire_spring | actual: ["move.tire_spring still uses PLACEHOLDER slot \'body\'", "move.tire_spring still uses PLACEHOLDER slot \'body_compressed\'", "move.tire_spring still uses PLACEHOLDER slot \'sfx_launch\'"]
+PASS release gate also flags a release item with no visual set
+PASS T20 Parol turns 0 reserves only its two posts | expected: [[P: (896.0, 256.0), S: (64.0, 64.0)], [P: (1152.0, 256.0), S: (64.0, 64.0)]] | actual: [[P: (896.0, 256.0), S: (64.0, 64.0)], [P: (1152.0, 256.0), S: (64.0, 64.0)]]
+PASS T20 Parol turns 1 reserves only its two posts | expected: [[P: (896.0, 256.0), S: (64.0, 64.0)], [P: (896.0, 512.0), S: (64.0, 64.0)]] | actual: [[P: (896.0, 256.0), S: (64.0, 64.0)], [P: (896.0, 512.0), S: (64.0, 64.0)]]
+PASS occupancy fixture placed
+PASS a block may share the beam cells between the posts
+PASS a block cannot take a post cell
+P10_TESTS checks=438 failures=0

@@ -1,0 +1,266 @@
+PASS theme minimum sizes are 12 / 16
+PASS 2-seat scheduled match starts
+PASS round enters Play as KARERA
+PASS Karera 2p: the Play HUD is visible
+PASS Karera 2p: names the round
+PASS Karera 2p: row shows number and exact total (0)
+PASS Karera 2p: row shows number and exact total (0)
+PASS Karera 2p: a row per joined seat (2)
+PASS Karera 2p: a deadline clock is shown
+PASS Karera 2p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Karera 2p: names Karera
+PASS Karera 2p: no TWIST tag without a Twist
+PASS Karera 2p: names the next round
+PASS Karera 2p: every runner reads RUN
+PASS Karera 2p: a finisher reads SECURED (SECURED)
+PASS Karera 2p: the finish window is named
+PASS Karera 2p: no visible text below the theme minimum []
+PASS Karera 2p: no internal ids, seeds or DEBUG text []
+PASS Karera 2p: the round result is shown
+PASS Karera 2p: everyone finishing explains why no points were awarded (Everyone reached the goal; normal awards are zero, but Barya still counts.)
+PASS Karera 2p: no Last Cluck callout on a race
+PASS Karera 2p: results name the next round
+PASS Karera 2p results: no visible text below the theme minimum []
+PASS Karera 2p results: no internal ids, seeds or DEBUG text []
+PASS 2-seat scheduled match starts
+PASS round enters Play as LAGSANAY
+PASS Lagsanay 2p: the Play HUD is visible
+PASS Lagsanay 2p: names the round
+PASS Lagsanay 2p: row shows number and exact total (0)
+PASS Lagsanay 2p: row shows number and exact total (0)
+PASS Lagsanay 2p: a row per joined seat (2)
+PASS Lagsanay 2p: a deadline clock is shown
+PASS Lagsanay 2p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Lagsanay 2p: names Lagsanay
+PASS Lagsanay 2p: the taya reads TAYA
+PASS Lagsanay 2p: the HUD names the taya's number (HEAD START • TAYA P1 ●)
+PASS Lagsanay 2p: the taya countdown shows as a clock
+PASS Lagsanay 2p: no flag in Lagsanay
+PASS Lagsanay 2p: no visible text below the theme minimum []
+PASS Lagsanay 2p: no internal ids, seeds or DEBUG text []
+PASS 2-seat scheduled match starts
+PASS round enters Play as KANGAROO
+PASS Kangaroo 2p: the Play HUD is visible
+PASS Kangaroo 2p: names the round
+PASS Kangaroo 2p: row shows number and exact total (0)
+PASS Kangaroo 2p: row shows number and exact total (0)
+PASS Kangaroo 2p: a row per joined seat (2)
+PASS Kangaroo 2p: a deadline clock is shown
+PASS Kangaroo 2p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Kangaroo 2p: names Kangaroo
+PASS Kangaroo 2p: a command card is shown
+PASS Kangaroo 2p: the card names the pose in text (FREEZE)
+PASS Kangaroo 2p: the card says when and what to do
+PASS Kangaroo 2p: a KANG GA ROO row per seat (2)
+PASS Kangaroo 2p: the row spells KANG GA ROO (P1 ●  KANG  GA  ROO)
+PASS Kangaroo 2p: one miss reads MISS 1/3 (MISS 1/3)
+PASS Kangaroo 2p: the first step is bracketed, the others are not
+PASS Kangaroo 2p: two misses read MISS 2/3 with GA bracketed
+PASS Kangaroo 2p: no visible text below the theme minimum []
+PASS Kangaroo 2p: no internal ids, seeds or DEBUG text []
+PASS Kangaroo 2p: the miss grid is below the HUD bar and any notice ([P: (16.0, 176.0), S: (544.0, 92.0)] vs 146.0)
+PASS Kangaroo 2p: a command card is below the notice ([P: (739.0, 176.0), S: (525.0, 124.0)] vs 146.0)
+PASS Kangaroo 2p: a command card never overlaps the miss grid
+PASS Kangaroo 2p: Kangaroo HUD text meets the mid-round minimum []
+PASS 2-seat scheduled match starts
+PASS round enters Play as KARERA / TWIST: BOMB-TAYA
+PASS Karera+Bomb-Taya 2p: the Play HUD is visible
+PASS Karera+Bomb-Taya 2p: names the round
+PASS Karera+Bomb-Taya 2p: row shows number and exact total (0)
+PASS Karera+Bomb-Taya 2p: row shows number and exact total (0)
+PASS Karera+Bomb-Taya 2p: a row per joined seat (2)
+PASS Karera+Bomb-Taya 2p: a deadline clock is shown
+PASS Karera+Bomb-Taya 2p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Karera+Bomb-Taya 2p: the TWIST label names Bomb-Taya
+PASS Karera+Bomb-Taya 2p: the taya reads TAYA
+PASS Karera+Bomb-Taya 2p: the tag names the taya
+PASS Karera+Bomb-Taya 2p: no visible text below the theme minimum []
+PASS Karera+Bomb-Taya 2p: no internal ids, seeds or DEBUG text []
+PASS 2-seat scheduled match starts
+PASS round enters Play as KARERA / TWIST: KANGAROO
+PASS Karera+Kangaroo 2p: the Play HUD is visible
+PASS Karera+Kangaroo 2p: names the round
+PASS Karera+Kangaroo 2p: row shows number and exact total (0)
+PASS Karera+Kangaroo 2p: row shows number and exact total (0)
+PASS Karera+Kangaroo 2p: a row per joined seat (2)
+PASS Karera+Kangaroo 2p: a deadline clock is shown
+PASS Karera+Kangaroo 2p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Karera+Kangaroo 2p: the TWIST label names Kangaroo
+PASS Karera+Kangaroo 2p: the Twist's command card is shown
+PASS Karera+Kangaroo 2p: KANG GA ROO rows for every runner
+PASS Karera+Kangaroo 2p: a secured finisher keeps SECURED (not a miss label)
+PASS Karera+Kangaroo 2p: no visible text below the theme minimum []
+PASS Karera+Kangaroo 2p: no internal ids, seeds or DEBUG text []
+PASS Karera+Kangaroo 2p: the miss grid is below the HUD bar and any notice ([P: (16.0, 176.0), S: (544.0, 92.0)] vs 146.0)
+PASS Karera+Kangaroo 2p: a command card is below the notice ([P: (739.0, 176.0), S: (525.0, 124.0)] vs 146.0)
+PASS Karera+Kangaroo 2p: a command card never overlaps the miss grid
+PASS Karera+Kangaroo 2p: Kangaroo HUD text meets the mid-round minimum []
+PASS 2-seat scheduled match starts
+PASS round enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kangaroo+Bomb-Taya 2p: the Play HUD is visible
+PASS Kangaroo+Bomb-Taya 2p: names the round
+PASS Kangaroo+Bomb-Taya 2p: row shows number and exact total (0)
+PASS Kangaroo+Bomb-Taya 2p: row shows number and exact total (0)
+PASS Kangaroo+Bomb-Taya 2p: a row per joined seat (2)
+PASS Kangaroo+Bomb-Taya 2p: a deadline clock is shown
+PASS Kangaroo+Bomb-Taya 2p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Kangaroo+Bomb-Taya 2p: the TWIST label names Bomb-Taya
+PASS Kangaroo+Bomb-Taya 2p: the taya reads TAYA over Kangaroo
+PASS Kangaroo+Bomb-Taya 2p: the command card is shown
+PASS Kangaroo+Bomb-Taya 2p: no visible text below the theme minimum []
+PASS Kangaroo+Bomb-Taya 2p: no internal ids, seeds or DEBUG text []
+PASS Kangaroo+Bomb-Taya 2p: the all-eliminated round resolves to results
+PASS Kangaroo+Bomb-Taya 2p: the Last Cluck callout is shown
+PASS Kangaroo+Bomb-Taya 2p: results name the Twist (TWIST: BOMB-TAYA)
+PASS Kangaroo+Bomb-Taya 2p: results name the next round (NEXT R2 KARERA)
+PASS Kangaroo+Bomb-Taya 2p results: no visible text below the theme minimum []
+PASS Kangaroo+Bomb-Taya 2p results: no internal ids, seeds or DEBUG text []
+PASS Kangaroo+Bomb-Taya 2p results: RoundLabel is inside the screen height ([P: (64.0, 36.0), S: (935.0, 45.0)])
+PASS Kangaroo+Bomb-Taya 2p results: RoundLabel is inside the screen width
+PASS Kangaroo+Bomb-Taya 2p results: ReadyHint is inside the screen height ([P: (64.0, 639.0), S: (120.0, 45.0)])
+PASS Kangaroo+Bomb-Taya 2p results: ReadyHint is inside the screen width
+PASS Kangaroo+Bomb-Taya 2p results: AdvanceCountdown is inside the screen height ([P: (993.0, 639.0), S: (223.0, 45.0)])
+PASS Kangaroo+Bomb-Taya 2p results: AdvanceCountdown is inside the screen width
+PASS 4-seat scheduled match starts
+PASS round enters Play as KARERA
+PASS Karera 4p: the Play HUD is visible
+PASS Karera 4p: names the round
+PASS Karera 4p: row shows number and exact total (0)
+PASS Karera 4p: row shows number and exact total (0)
+PASS Karera 4p: row shows number and exact total (0)
+PASS Karera 4p: row shows number and exact total (0)
+PASS Karera 4p: a row per joined seat (4)
+PASS Karera 4p: a deadline clock is shown
+PASS Karera 4p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Karera 4p: names Karera
+PASS Karera 4p: no TWIST tag without a Twist
+PASS Karera 4p: names the next round
+PASS Karera 4p: every runner reads RUN
+PASS Karera 4p: a finisher reads SECURED (SECURED)
+PASS Karera 4p: the finish window is named
+PASS Karera 4p: no visible text below the theme minimum []
+PASS Karera 4p: no internal ids, seeds or DEBUG text []
+PASS Karera 4p: the round result is shown
+PASS Karera 4p: everyone finishing explains why no points were awarded (Everyone reached the goal; normal awards are zero, but Barya still counts.)
+PASS Karera 4p: no Last Cluck callout on a race
+PASS Karera 4p: results name the next round
+PASS Karera 4p results: no visible text below the theme minimum []
+PASS Karera 4p results: no internal ids, seeds or DEBUG text []
+PASS 4-seat scheduled match starts
+PASS round enters Play as LAGSANAY
+PASS Lagsanay 4p: the Play HUD is visible
+PASS Lagsanay 4p: names the round
+PASS Lagsanay 4p: row shows number and exact total (0)
+PASS Lagsanay 4p: row shows number and exact total (0)
+PASS Lagsanay 4p: row shows number and exact total (0)
+PASS Lagsanay 4p: row shows number and exact total (0)
+PASS Lagsanay 4p: a row per joined seat (4)
+PASS Lagsanay 4p: a deadline clock is shown
+PASS Lagsanay 4p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Lagsanay 4p: names Lagsanay
+PASS Lagsanay 4p: the taya reads TAYA
+PASS Lagsanay 4p: the HUD names the taya's number (HEAD START • TAYA P3 ■)
+PASS Lagsanay 4p: the taya countdown shows as a clock
+PASS Lagsanay 4p: no flag in Lagsanay
+PASS Lagsanay 4p: no visible text below the theme minimum []
+PASS Lagsanay 4p: no internal ids, seeds or DEBUG text []
+PASS 4-seat scheduled match starts
+PASS round enters Play as KANGAROO
+PASS Kangaroo 4p: the Play HUD is visible
+PASS Kangaroo 4p: names the round
+PASS Kangaroo 4p: row shows number and exact total (0)
+PASS Kangaroo 4p: row shows number and exact total (0)
+PASS Kangaroo 4p: row shows number and exact total (0)
+PASS Kangaroo 4p: row shows number and exact total (0)
+PASS Kangaroo 4p: a row per joined seat (4)
+PASS Kangaroo 4p: a deadline clock is shown
+PASS Kangaroo 4p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Kangaroo 4p: names Kangaroo
+PASS Kangaroo 4p: a command card is shown
+PASS Kangaroo 4p: the card names the pose in text (FREEZE)
+PASS Kangaroo 4p: the card says when and what to do
+PASS Kangaroo 4p: a KANG GA ROO row per seat (4)
+PASS Kangaroo 4p: the row spells KANG GA ROO (P1 ●  KANG  GA  ROO)
+PASS Kangaroo 4p: one miss reads MISS 1/3 (MISS 1/3)
+PASS Kangaroo 4p: the first step is bracketed, the others are not
+PASS Kangaroo 4p: two misses read MISS 2/3 with GA bracketed
+PASS Kangaroo 4p: no visible text below the theme minimum []
+PASS Kangaroo 4p: no internal ids, seeds or DEBUG text []
+PASS Kangaroo 4p: the miss grid is below the HUD bar and any notice ([P: (16.0, 176.0), S: (544.0, 93.0)] vs 146.0)
+PASS Kangaroo 4p: a command card is below the notice ([P: (739.0, 176.0), S: (525.0, 124.0)] vs 146.0)
+PASS Kangaroo 4p: a command card never overlaps the miss grid
+PASS Kangaroo 4p: Kangaroo HUD text meets the mid-round minimum []
+PASS 4-seat scheduled match starts
+PASS round enters Play as KARERA / TWIST: BOMB-TAYA
+PASS Karera+Bomb-Taya 4p: the Play HUD is visible
+PASS Karera+Bomb-Taya 4p: names the round
+PASS Karera+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Karera+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Karera+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Karera+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Karera+Bomb-Taya 4p: a row per joined seat (4)
+PASS Karera+Bomb-Taya 4p: a deadline clock is shown
+PASS Karera+Bomb-Taya 4p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Karera+Bomb-Taya 4p: the TWIST label names Bomb-Taya
+PASS Karera+Bomb-Taya 4p: the taya reads TAYA
+PASS Karera+Bomb-Taya 4p: the tag names the taya
+PASS Karera+Bomb-Taya 4p: no visible text below the theme minimum []
+PASS Karera+Bomb-Taya 4p: no internal ids, seeds or DEBUG text []
+PASS 4-seat scheduled match starts
+PASS round enters Play as KARERA / TWIST: KANGAROO
+PASS Karera+Kangaroo 4p: the Play HUD is visible
+PASS Karera+Kangaroo 4p: names the round
+PASS Karera+Kangaroo 4p: row shows number and exact total (0)
+PASS Karera+Kangaroo 4p: row shows number and exact total (0)
+PASS Karera+Kangaroo 4p: row shows number and exact total (0)
+PASS Karera+Kangaroo 4p: row shows number and exact total (0)
+PASS Karera+Kangaroo 4p: a row per joined seat (4)
+PASS Karera+Kangaroo 4p: a deadline clock is shown
+PASS Karera+Kangaroo 4p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Karera+Kangaroo 4p: the TWIST label names Kangaroo
+PASS Karera+Kangaroo 4p: the Twist's command card is shown
+PASS Karera+Kangaroo 4p: KANG GA ROO rows for every runner
+PASS Karera+Kangaroo 4p: a secured finisher keeps SECURED (not a miss label)
+PASS Karera+Kangaroo 4p: no visible text below the theme minimum []
+PASS Karera+Kangaroo 4p: no internal ids, seeds or DEBUG text []
+PASS Karera+Kangaroo 4p: the miss grid is below the HUD bar and any notice ([P: (16.0, 176.0), S: (544.0, 93.0)] vs 146.0)
+PASS Karera+Kangaroo 4p: a command card is below the notice ([P: (739.0, 176.0), S: (525.0, 124.0)] vs 146.0)
+PASS Karera+Kangaroo 4p: a command card never overlaps the miss grid
+PASS Karera+Kangaroo 4p: Kangaroo HUD text meets the mid-round minimum []
+PASS 4-seat scheduled match starts
+PASS round enters Play as KANGAROO / TWIST: BOMB-TAYA
+PASS Kangaroo+Bomb-Taya 4p: the Play HUD is visible
+PASS Kangaroo+Bomb-Taya 4p: names the round
+PASS Kangaroo+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Kangaroo+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Kangaroo+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Kangaroo+Bomb-Taya 4p: row shows number and exact total (0)
+PASS Kangaroo+Bomb-Taya 4p: a row per joined seat (4)
+PASS Kangaroo+Bomb-Taya 4p: a deadline clock is shown
+PASS Kangaroo+Bomb-Taya 4p: the HUD bar stays inside the 64 px reservation (64.0)
+PASS Kangaroo+Bomb-Taya 4p: the TWIST label names Bomb-Taya
+PASS Kangaroo+Bomb-Taya 4p: the taya reads TAYA over Kangaroo
+PASS Kangaroo+Bomb-Taya 4p: the command card is shown
+PASS Kangaroo+Bomb-Taya 4p: no visible text below the theme minimum []
+PASS Kangaroo+Bomb-Taya 4p: no internal ids, seeds or DEBUG text []
+PASS Kangaroo+Bomb-Taya 4p: the all-eliminated round resolves to results
+PASS Kangaroo+Bomb-Taya 4p: the Last Cluck callout is shown
+PASS Kangaroo+Bomb-Taya 4p: results name the Twist (TWIST: BOMB-TAYA)
+PASS Kangaroo+Bomb-Taya 4p: results name the next round (NEXT R2 KARERA)
+PASS Kangaroo+Bomb-Taya 4p results: no visible text below the theme minimum []
+PASS Kangaroo+Bomb-Taya 4p results: no internal ids, seeds or DEBUG text []
+PASS Kangaroo+Bomb-Taya 4p results: RoundLabel is inside the screen height ([P: (64.0, 36.0), S: (935.0, 45.0)])
+PASS Kangaroo+Bomb-Taya 4p results: RoundLabel is inside the screen width
+PASS Kangaroo+Bomb-Taya 4p results: ReadyHint is inside the screen height ([P: (64.0, 639.0), S: (120.0, 45.0)])
+PASS Kangaroo+Bomb-Taya 4p results: ReadyHint is inside the screen width
+PASS Kangaroo+Bomb-Taya 4p results: AdvanceCountdown is inside the screen height ([P: (993.0, 639.0), S: (223.0, 45.0)])
+PASS Kangaroo+Bomb-Taya 4p results: AdvanceCountdown is inside the screen width
+PASS 2-seat scheduled match starts
+PASS round enters Play as KARERA
+PASS the last round says FINAL ROUND
+PASS sudden death shows no next round
+PASS 2-seat scheduled match starts
+PASS round enters Play as KARERA
+PASS the Barya carrier has a visible text cue
+PASS carrier row names BARYA
+P13_HUD_TESTS checks=265 failures=0

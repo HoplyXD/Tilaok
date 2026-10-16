@@ -1,0 +1,59 @@
+PASS the script has every step incl. Kangaroo
+PASS kangaroo_poses has a title and body
+PASS kangaroo_supports has a title and body
+PASS kangaroo_misses has a title and body
+PASS the taya step has a Bomb-Taya Twist wording
+PASS the Pugad coach has a Barya pickup and scoring explanation
+PASS the prompts name KANG, GA and ROO
+PASS the prompts name the three poses
+PASS the prompts explain built supports
+PASS the match is in the Pugad
+PASS an enabled Pugad Barya offer changes the live coach copy
+PASS the match is in the Pugad
+PASS the scheduled route attaches the coach
+PASS the Pugad before the first Kangaroo shows the poses
+PASS the poses prompt explains the commands
+PASS its Place shows the built-support prompt
+PASS the supports prompt says to build up
+PASS the Karera round before it shows no Kangaroo prompt
+PASS round 2 runs the Kangaroo Main round
+PASS its Play shows the three-misses prompt (poses and supports were already seen)
+PASS the misses prompt names the marks
+PASS kangaroo_poses is marked seen after it was shown
+PASS kangaroo_supports is marked seen after it was shown
+PASS kangaroo_misses is marked seen after it was shown
+PASS the match is in the Pugad
+PASS K + Bomb-Taya runs
+PASS the taya prompt (Twist wording) shows first on a stacked round
+PASS after the hand-over the Kangaroo prompt takes its turn (kangaroo_misses)
+PASS the match is in the Pugad
+PASS a Lagsanay Main round shows the taya prompt
+PASS the taya prompt hands over after its time and counts as seen
+PASS the match is in the Pugad
+PASS Kangaroo runs as a Twist on Karera
+PASS a Kangaroo Twist shows the misses prompt (supports shown in its Place)
+PASS the match is in the Pugad
+PASS a Bomb-Taya Twist teaches the taya rules with the flag still winning
+PASS the match is in the Pugad
+PASS skipping the tutorial hides the Kangaroo prompts
+PASS a skipped session never reports a prompt as due
+PASS replaying the tutorial makes the Kangaroo prompts due again
+PASS and the poses prompt returns
+PASS the match is in the Pugad
+PASS during the guided first match the Pugad keeps the guided step (pugad)
+PASS tutorial_coordinator.gd never uses FileAccess
+PASS tutorial_coordinator.gd never uses ConfigFile
+PASS tutorial_coordinator.gd never uses DirAccess
+PASS tutorial_coordinator.gd never uses user://
+PASS tutorial_coordinator.gd never uses ResourceSaver
+PASS tutorial_session.gd never uses FileAccess
+PASS tutorial_session.gd never uses ConfigFile
+PASS tutorial_session.gd never uses DirAccess
+PASS tutorial_session.gd never uses user://
+PASS tutorial_session.gd never uses ResourceSaver
+PASS tutorial_script.gd never uses FileAccess
+PASS tutorial_script.gd never uses ConfigFile
+PASS tutorial_script.gd never uses DirAccess
+PASS tutorial_script.gd never uses user://
+PASS tutorial_script.gd never uses ResourceSaver
+P13_TUTORIAL_TESTS checks=58 failures=0

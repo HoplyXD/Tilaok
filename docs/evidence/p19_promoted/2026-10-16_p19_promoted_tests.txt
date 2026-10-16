@@ -1,0 +1,26 @@
+PASS the catalog stays valid: []
+PASS build.house_stairs.steps_2x2 is in the catalog and the match egg pool from its scene alone
+PASS build.house_stairs.steps_3x3 is in the catalog and the match egg pool from its scene alone
+PASS hazard.toy_burr_strip.strip_3x1 is in the catalog and the match egg pool from its scene alone
+PASS hazard.toy_burr_strip.strip_4x1 is in the catalog and the match egg pool from its scene alone
+PASS modifier.sorbetes_ice.surface_3x1 is in the catalog and the match egg pool from its scene alone
+PASS modifier.sorbetes_ice.surface_4x1 is in the catalog and the match egg pool from its scene alone
+PASS mode flags follow the catalog: stairs and ice in both modes, Tinik Karera-only for now
+PASS the 3x3 stairs are three solid step columns (3)
+PASS the Tinik strip has no solid body, only its thin kill strip
+PASS each promoted family has a low provisional egg weight of 20
+PASS place build.house_stairs.steps_3x3 at (14, 6): Valid placement.
+PASS a chicken stands on each of the three steps (feet [512.0, 448.0, 384.0])
+PASS place build.house_stairs.steps_2x2 at (10, 13): Valid placement.
+PASS a rotated 2x2 stairs keeps its three solid cells (12288 wu2)
+PASS place hazard.toy_burr_strip.strip_3x1 at (10, 14): Valid placement.
+PASS walking into a Tinik strip knocks the chicken out
+PASS the knockout is a direct kill credited to the strip's placer (Patibong)
+PASS place hazard.toy_burr_strip.strip_4x1 at (10, 14): Valid placement.
+PASS a chicken 40 wu above the strip (mid-jump) is safe: the hitbox is only the low strip
+PASS place modifier.sorbetes_ice.surface_4x1 at (10, 14): Valid placement.
+PASS place modifier.sorbetes_ice.surface_3x1 at (14, 14): Valid placement.
+PASS letting go on ice slides much further than on the floor (323 vs 0 wu)
+PASS run speed on ice exceeds the normal cap (700 vs 560 wu/s)
+PASS ice never eliminates or records credit (no trap credit)
+P19_PROMOTED_TESTS checks=25 failures=0

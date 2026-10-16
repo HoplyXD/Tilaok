@@ -233,6 +233,16 @@ Each block is its own editable scene in `tilaok!/scenes/blocks/` and enters the 
 
 The Collapsing Block overlaps the proposed *Marupok na Papag* expansion idea (2×1/3×1); it is recorded as a separate 1×1 family and does not approve or replace that proposal.
 
+### Promoted expansion obstacles — 2026-10-16 (decided by Jorge)
+
+Three P19 designs were promoted into the main game as block scenes with DEBUG placeholder art ([evidence](evidence/p19_promoted/README.md)):
+
+| Obstacle | Sizes (tiles) | Behavior | Modes |
+|---|---|---|---|
+| Hagdan ng Bahay (house steps) | 2x2, 3x3 | Solid steps rising toward one side; four rotations. Standable terrain; removable by Walis and explosives. | Karera, Lagsanay (Kangaroo pending review) |
+| Tinik-Tinik Strip (soft burrs) | 3x1, 4x1 | A thin, low kill strip with no solid body; four rotations. Touching it is an elimination credited to the placer (Patibong). | Karera (Lagsanay/Kangaroo after the wholesome-art review) |
+| Yelo ng Sorbetero (ice) | 3x1, 4x1 | A solid slab you can stand on. On it a chicken brakes and turns slowly and runs up to 25% faster, so it slides further. Never eliminates, no credit. | Karera, Lagsanay (Kangaroo pending review) |
+
 ### Block scenes, Spikes, Cannon and stun — 2026-10-14 (requested by Jorge)
 
 - **Every placeable item is a scene** in `tilaok!/scenes/blocks/` with a BlockData customization node (placement box size, solid hitbox, kill/stun hitboxes, anchor/gravity, effects, special). A scene dropped into that folder joins the selection pool automatically. See [ITEMS "Block scenes"](ITEMS.md#block-scenes--how-every-placeable-item-is-authored-2026-10-14).

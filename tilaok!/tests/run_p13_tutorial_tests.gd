@@ -92,7 +92,7 @@ func _test_barya_pugad_prompt() -> void:
 	_check(
 		(
 			_step(flow.tutorial) == "pugad"
-			and str(flow.tutorial.view.body).contains("Barya is a round coin")
+			and str(flow.tutorial.view.body).contains("The coin egg is Barya")
 			and str(flow.tutorial.view.body).contains("+0.5")
 		),
 		"an enabled Pugad Barya offer changes the live coach copy"

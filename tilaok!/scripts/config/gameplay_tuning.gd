@@ -140,6 +140,12 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var block_box_friction_wu_s2: float = 2400.0
 @export var block_collapse_delay_s: float = 2.0
 @export var block_collapse_respawn_s: float = 3.0
+## Yelo ng Sorbetero ice (P19, promoted by Jorge 2026-10-16). PROTOTYPE — UNMEASURED. On a
+## slippery block a grounded chicken brakes and turns with these fractions of its normal rates
+## and its run speed is multiplied by `ice_speed_scale`, so it slides further.
+@export var ice_brake_scale: float = 0.12
+@export var ice_accel_scale: float = 0.6
+@export var ice_speed_scale: float = 1.25
 ## Stun (block STUN hitboxes): re-stun immunity after a stun ends. Duration/knockback are per block.
 @export var stun_immunity_s: float = 0.5
 ## PROTOTYPE item infrastructure values: docs/PROTOTYPE_DEFAULTS.md §4 (items.*, transients.*).
@@ -494,6 +500,15 @@ func _validate_sneak_glide_blocks() -> PackedStringArray:
 		errors.append("stun immunity cannot be negative")
 	if block_collapse_delay_s < 0.0 or block_collapse_respawn_s < 0.0:
 		errors.append("collapse delay and respawn time cannot be negative")
+	if (
+		ice_brake_scale <= 0.0
+		or ice_brake_scale > 1.0
+		or ice_accel_scale <= 0.0
+		or ice_accel_scale > 1.0
+		or ice_speed_scale < 1.0
+		or ice_speed_scale > 2.0
+	):
+		errors.append("ice brake/accel scales must be in (0, 1] and the speed scale in [1, 2]")
 	return errors
 
 

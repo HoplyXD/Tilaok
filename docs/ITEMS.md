@@ -137,6 +137,8 @@ These are design acceptance scenarios, not completed tests:
 
 ## Expansion backlog: 28 additional mechanical designs
 
+**Promoted 2026-10-16 (Jorge):** `build.house_stairs` (Hagdan ng Bahay, `steps_2x2` / `steps_3x3`), `hazard.toy_burr_strip` (Tinik-Tinik Strip, `strip_3x1` / `strip_4x1`) and `modifier.sorbetes_ice` (Yelo ng Sorbetero, `surface_3x1` / `surface_4x1`) are block scenes in the main egg pool (weight 20 each, DEBUG art). Mode flags: stairs and ice allow Karera and Lagsanay, with Kangaroo pending; Tinik allows Karera, with Lagsanay and Kangaroo pending the wholesome-art review. Ice uses the BlockData `slippery` flag with `ice_brake_scale` 0.12, `ice_accel_scale` 0.6 and `ice_speed_scale` 1.25. Evidence: [P19 promoted](evidence/p19_promoted/README.md). Their rows below are unchanged; the other 25 designs remain deferred.
+
 All rows are **original Tilaok proposals**. Reference names indicate mechanic-family inspiration only, not copied behavior or tuning. Shared lifecycle, ownership, access, and accessibility rules above apply; item-specific exceptions and principal tuning needs are stated in each row. All require original assets, provisional-name review, and a race/Lagsanay compatibility pass before enablement.
 
 | ID / working name | Tier; family; reference vs adaptation | Benefit, danger, tell, counterplay; footprint/rotation/regions and tunables | Race/Lagsanay, ownership/reset, dependency/risk |

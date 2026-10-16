@@ -128,10 +128,13 @@ func _test_tuning_and_definitions() -> void:
 	_check(definitions.is_valid(), "shipped definitions validate: %s" % [definitions.errors])
 	# The six P10 families joined the main game on 2026-10-16 (Jorge).
 	_check(
-		definitions.families.size() == 16,
 		(
-			"16 block families are defined (Kaing, Tulay, stage blocks, Spikes, Cannon, explosives,"
-			+ " six P10 families): %d" % definitions.families.size()
+			definitions.families.size() == BlockCatalog.families(BlockCatalog.SET_MAIN).size()
+			and definitions.families.size() >= 16
+		),
+		(
+			"every catalog block family is defined (at least Kaing, Tulay, stage blocks, Spikes, Cannon,"
+			+ " explosives, six P10 families): %d" % definitions.families.size()
 		)
 	)
 	var kaing := definitions.find_family("build.hollow_blocks")
@@ -1627,7 +1630,7 @@ func _test_placeholder_previews_and_library() -> void:
 		identity_ok
 	)
 	var entries := room.library_entries()
-	var fields_ok := entries.size() == 16
+	var fields_ok := entries.size() == room.definitions.families.size()
 	for entry in entries:
 		fields_ok = (
 			fields_ok
