@@ -137,7 +137,7 @@ These are design acceptance scenarios, not completed tests:
 
 ## Expansion backlog: 28 additional mechanical designs
 
-**Promoted 2026-10-16 (Jorge):** `build.house_stairs` (Hagdan ng Bahay, `steps_2x2` / `steps_3x3`), `hazard.toy_burr_strip` (Tinik-Tinik Strip, `strip_3x1` / `strip_4x1`) and `modifier.sorbetes_ice` (Yelo ng Sorbetero, `surface_3x1` / `surface_4x1`) are block scenes in the main egg pool (weight 20 each, DEBUG art). Mode flags: stairs and ice allow Karera and Lagsanay, with Kangaroo pending; Tinik allows Karera, with Lagsanay and Kangaroo pending the wholesome-art review. Ice uses the BlockData `slippery` flag with `ice_brake_scale` 0.12, `ice_accel_scale` 0.6 and `ice_speed_scale` 1.25. Evidence: [P19 promoted](evidence/p19_promoted/README.md). Their rows below are unchanged; the other 25 designs remain deferred.
+**Promoted 2026-10-16 (user request):** `build.house_stairs` (Hagdan ng Bahay, `steps_2x2` / `steps_3x3`), `hazard.toy_burr_strip` (Tinik-Tinik Strip, `strip_3x1` / `strip_4x1`) and `modifier.sorbetes_ice` (Yelo ng Sorbetero, `surface_3x1` / `surface_4x1`) are block scenes in the main egg pool (weight 20 each, DEBUG art). Mode flags: stairs and ice allow Karera and Lagsanay, with Kangaroo pending; Tinik allows Karera, with Lagsanay and Kangaroo pending the wholesome-art review. Ice uses the BlockData `slippery` flag with `ice_brake_scale` 0.12, `ice_accel_scale` 0.6 and `ice_speed_scale` 1.25. Evidence: [P19 promoted](evidence/p19_promoted/README.md). Their rows below are unchanged; the other 25 designs remain deferred.
 
 All rows are **original Tilaok proposals**. Reference names indicate mechanic-family inspiration only, not copied behavior or tuning. Shared lifecycle, ownership, access, and accessibility rules above apply; item-specific exceptions and principal tuning needs are stated in each row. All require original assets, provisional-name review, and a race/Lagsanay compatibility pass before enablement.
 
@@ -194,7 +194,7 @@ All 36 families are approved as the Tilaok design catalog. This approval does no
 
 ## Block scenes — how every placeable item is authored (2026-10-14)
 
-Requested by Jorge: every placeable item is now its own editable scene in `tilaok!/scenes/blocks/` (one scene per size variant), with a **BlockData** customization node in the style of aLima's `ArtifactScannerData`. `BlockCatalog` scans that folder (recursively) whenever item definitions load, so **dropping a new block scene into the folder makes it appear in the Pugad eggs, the Item Lab and the Library with no code, `.tres` or table edit**. The old `data/items/*.tres` families and the `ItemApprovedVariants` table were converted into these scenes (region-for-region identical; checked by a parity script during migration) and removed: the scene folder is now the documented variant table.
+Requested by the user: every placeable item is now its own editable scene in `tilaok!/scenes/blocks/` (one scene per size variant), with a **BlockData** customization node in the style of aLima's `ArtifactScannerData`. `BlockCatalog` scans that folder (recursively) whenever item definitions load, so **dropping a new block scene into the folder makes it appear in the Pugad eggs, the Item Lab and the Library with no code, `.tres` or table edit**. The old `data/items/*.tres` families and the `ItemApprovedVariants` table were converted into these scenes (region-for-region identical; checked by a parity script during migration) and removed: the scene folder is now the documented variant table.
 
 Folders: `construction/` (Kaing 1x1 / 1x3 / 2x3, Tulay 3x1 / 4x1 / 5x1, Solid Block, Wood Box, Collapsing Block), `traps/` (Spikes, Cannon), `explosives/` (Bomb 2x2, Dynamite 3x3, Nuke 4x4: Special = Cleanup, one-use area clears; 2026-10-15), `hazards/` (Gulong, Trumpo rails, Parol spans, Tsinelas lanes, Walis areas, Bula paths).
 
@@ -216,7 +216,7 @@ Since 2026-10-16:
 
 ## Stage blocks — October 14, 2026
 
-Requested by Jorge on 2026-10-14 and implemented as three construction families, each with its own editable scene (collision + DEBUG visual) under `tilaok!/scenes/blocks/`. Since the block-scene migration (see "Block scenes" above) each scene's BlockData placement box is authoritative and the scene is the only definition. All declare solid-side wall eligibility, `modes_allowed` karera/lagsanay, Walis removal and persistence until removed; weights are 50 like Kaing/Tulay (tunable).
+Requested by the user on 2026-10-14 and implemented as three construction families, each with its own editable scene (collision + DEBUG visual) under `tilaok!/scenes/blocks/`. Since the block-scene migration (see "Block scenes" above) each scene's BlockData placement box is authoritative and the scene is the only definition. All declare solid-side wall eligibility, `modes_allowed` karera/lagsanay, Walis removal and persistence until removed; weights are 50 like Kaing/Tulay (tunable).
 
 | Family / variant | Behavior | Safe start |
 |---|---|---|
@@ -252,7 +252,7 @@ Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md).
 
 ## Event and stack integration — 2026-10-16
 
-P04-T11, P04-T20 and the six P10 integration tasks (T07/T16/T25/T34/T43/T52). Decisions by Jorge (2026-10-16): event eggs are filtered by mode, pieces already on the stage are left as they are, and the six P10 families join the real match pool.
+P04-T11, P04-T20 and the six P10 integration tasks (T07/T16/T25/T34/T43/T52). User decisions (2026-10-16): event eggs are filtered by mode, pieces already on the stage are left as they are, and the six P10 families join the real match pool.
 
 - `PugadEggPoolGenerator.generate(..., mode_ids)` deals only families whose `modes_allowed` lists every active mode of the round. The scheduled P12 room passes the locked round's Main and Twist (`P12ScheduledMatchRoom.pugad_mode_ids`). Every family allows Karera, so Karera rounds deal the same seeded eggs as before. Development rooms (P05/P07 harness, P08/P11 labs) keep their fixed pools.
 - A mode still listed as pending review is not dealt. Changing a scene's BlockData mode flags is the way to approve an item for an event.

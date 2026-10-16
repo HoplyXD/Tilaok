@@ -1,7 +1,7 @@
 class_name MapCatalog
 extends RefCounted
 
-## Folder-scanned map list (requested by Jorge, 2026-10-16). Every .tscn under MAPS_DIR
+## Folder-scanned map list (user request, 2026-10-16). Every .tscn under MAPS_DIR
 ## (recursively) whose root is a StageMap with `in_selection` on and no validation errors becomes
 ## a Lobby map choice; the map id is the scene's file name. The built-in default stage is always
 ## the first choice. Broken maps are left out and reported by errors().

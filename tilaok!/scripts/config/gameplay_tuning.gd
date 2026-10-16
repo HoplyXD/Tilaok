@@ -118,7 +118,7 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var wall_jump_recontact_separation_wu: float = 16.0
 @export var wall_contact_probe_wu: float = 1.0
 @export var wall_normal_tolerance_degrees: float = 10.0
-## Ledge climb (requested by Jorge, 2026-10-16). PROTOTYPE — UNMEASURED. In the air, touching a
+## Ledge climb (user request, 2026-10-16). PROTOTYPE — UNMEASURED. In the air, touching a
 ## wall-slide-eligible wall and holding toward it: a ledge top within reach of the head (up to
 ## `ledge_reach_above_head_wu` above it, `ledge_reach_below_head_wu` below it) is climbed in
 ## `ledge_climb_seconds` when there is room to stand on top. Not while rising faster than
@@ -140,7 +140,7 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var block_box_friction_wu_s2: float = 2400.0
 @export var block_collapse_delay_s: float = 2.0
 @export var block_collapse_respawn_s: float = 3.0
-## Yelo ng Sorbetero ice (P19, promoted by Jorge 2026-10-16). PROTOTYPE — UNMEASURED. On a
+## Yelo ng Sorbetero ice (P19, promoted on user request, 2026-10-16). PROTOTYPE — UNMEASURED. On a
 ## slippery block a grounded chicken brakes and turns with these fractions of its normal rates
 ## and its run speed is multiplied by `ice_speed_scale`, so it slides further.
 @export var ice_brake_scale: float = 0.12
@@ -174,7 +174,7 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var item_spring_contact_probe_wu: float = 4.0
 @export var item_spring_horizontal_cap_wu_s: float = 960.0
 @export var item_spring_upward_cap_wu_s: float = 1800.0
-## The six P10 families joined the main match pool on 2026-10-16 (Jorge) with these low
+## The six P10 families joined the main match pool on 2026-10-16 (user request) with these low
 ## PROVISIONAL egg weights (Gulong 15, Trumpo 20, Parol 15, Tsinelas 20, Walis 15, Bula 10).
 @export var item_spring_weight: float = 15.0
 @export var item_trumpo_speed_wu_s: float = 320.0

@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Ledge climb (requested by Jorge, 2026-10-16). Real Godot physics in the Item Lab (64 wu grid),
+## Ledge climb (user request, 2026-10-16). Real Godot physics in the Item Lab (64 wu grid),
 ## synthetic K1 keys. A 4-tile Kaing wall (top 704 wu) is out of reach of a plain jump (apex feet
 ## 768 wu); jumping at it while holding toward it, the chicken grabs the ledge and climbs on top.
 ## Run: godot --headless --fixed-fps 60 --path tilaok! --script res://tests/run_ledge_climb_tests.gd

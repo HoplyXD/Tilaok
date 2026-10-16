@@ -5,7 +5,7 @@ extends SceneTree
 ## scheduled P12 match room, the default player route.
 ## - Catalog mode restrictions: the Pugad deals only families whose `modes_allowed` lists every
 ##   active mode of the round (Main and Twist). Pieces already on the stage stay as they are
-##   (owner decision, Jorge 2026-10-16).
+##   (user decision, 2026-10-16).
 ## - Real pieces, real physics: in every independent mode and supported stack, a direct hazard
 ##   kill (Trumpo, Parol, Tsinelas) credits its placer; Gulong launches and Bula captures with no
 ##   credit; Kaing and Tulay are standable terrain that never eliminates; Walis clears earlier

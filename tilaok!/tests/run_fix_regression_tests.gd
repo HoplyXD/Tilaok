@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Regressions for the 2026-10-16 bug report (Jorge):
+## Regressions for the 2026-10-16 bug report (user):
 ## - a Cannon whose path was drawn past the stage edge made every block invalid, so a started
 ##   match showed only the map (no Lobby, pause or leave);
 ## - pause showed "Seat 3 lost its controller" for empty seats in a 2-player match;

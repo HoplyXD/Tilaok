@@ -4,7 +4,7 @@ Evidence for P04-T11 (Kaing), P04-T20 (Tulay) and P10-T07 / T16 / T25 / T34 / T4
 
 All runs are headless Godot 4.7.stable.official.5b4e0cb0f on Windows 11 with `--fixed-fps 60` and synthetic seats (K1/K2 plus synthetic gamepad IDs). They run on the default arena, with the working tree on `fec0d3f` plus uncommitted changes. Reviewer: Claude (AI, automated). No human, playtest, balance or physical-device review is claimed.
 
-## Owner decisions (Jorge, 2026-10-16)
+## User decisions (2026-10-16)
 
 1. **Filter eggs only.** An event round deals only items approved for that event, and a stacked round deals only items approved for both its Main and its Twist. Pieces already on the stage stay exactly as they are.
 2. **The six P10 families join the real match pool** with low provisional weights: Gulong 15, Trumpo 20, Parol 15, Tsinelas 20, Walis 15, Bula 10.

@@ -1,16 +1,17 @@
 # Fix evidence — October 16, 2026
 
-Bug-fix round and ledge climb requested by Jorge on 2026-10-16. All runs are headless Godot 4.7.stable.official.5b4e0cb0f on Windows 11, `--fixed-fps 60`, synthetic keyboard input, working tree on `fec0d3f` with uncommitted changes. Reviewer: Claude (AI, automated). No human or physical-device review is claimed.
+Bug-fix round and ledge climb requested by the user on 2026-10-16. All runs are headless Godot 4.7.stable.official.5b4e0cb0f on Windows 11, `--fixed-fps 60`, synthetic keyboard input, working tree on `fec0d3f` with uncommitted changes. Reviewer: Claude (AI, automated). No human or physical-device review is claimed.
 
 ## What was fixed or added
 
 | Report / request | Cause or change | Check |
 |---|---|---|
-| "Start local match ... only see the map" | Jorge's Cannon `Path2D` ran about 2700 wu past its barrel, beyond the stage, so the item catalog failed validation and the match could not build its rooms. Paths are now clamped to the stage size, lanes drawn to the edge are cut at the build region or a protected zone (`ItemGeometry.clip_to_stage`), and a block scene that still fails validation is skipped with a warning instead of breaking every block (`BlockCatalog.skipped`). | `run_fix_regression_tests.gd`, `run_blocks_tests.gd` (Cannon lane 960 wu from column 12) |
+| "Start local match ... only see the map" | The Cannon scene's `Path2D` ran about 2700 wu past its barrel, beyond the stage, so the item catalog failed validation and the match could not build its rooms. Paths are now clamped to the stage size, lanes drawn to the edge are cut at the build region or a protected zone (`ItemGeometry.clip_to_stage`), and a block scene that still fails validation is skipped with a warning instead of breaking every block (`BlockCatalog.skipped`). | `run_fix_regression_tests.gd`, `run_blocks_tests.gd` (Cannon lane 960 wu from column 12) |
 | "Pause is bugged and leave and return to lobby does not work" | Same root cause, plus the pause screen listed empty seats as "lost its controller". Only joined seats are listed now. Leave → Yes returns to the Lobby (the confirmation starts on No by design). | `run_fix_regression_tests.gd` (title → lobby, pause, resume, leave) |
 | "Bombs don't explode recently placed blocks" | Explosives now also blow up placements made in the same Place phase inside their blast area. Those placements never appear, and their player sees "Blown up by P#'s Bomb". | `run_explosives_tests.gd` (23) |
 | "Remove the first come first serve" | Confirm order no longer matters. Same-phase overlaps resolve in seat order; notices say only "Tile occupied" or "Invalid spot". | `run_place_claim_tests.gd` (14), `run_barya_tests.gd` (72) |
 | "Add a ledge climb" | `ChickenController` climbs a wall-eligible ledge within reach of the head when the player holds toward the wall and there is room to stand. | `run_ledge_climb_tests.gd` (21), `run_tutorial_gate_tests.gd` (48) |
+| "When sneaking the hitbox will be changed to one tile" | Item hazards and block kill/stun hitboxes (`SweptContact.body_rect`) and the placement-clearance rects used the standing 56×120 box even while sneaking. Now `ChickenController.hit_rect()` returns the 56×56 one-tile sneak body at the feet. The collision body and tag sensor already shrank. | `run_sneak_hitbox_tests.gd` (5): a standing chicken is hit by a head-height slipper and a sneaking one ducks two shots; a piece can go just above a sneaking chicken |
 | "WASD player will have E and F as confirm" | K1 confirm, ready and claim accept E or F; the prompt glyph reads "E / F". | `run_controls_tests.gd` (13) |
 
 ## Ledge climb measurements (Item Lab, 64 wu grid)
@@ -39,6 +40,7 @@ The windowed suites (`run_p05_interactive`, `run_match_ui_interactive`) were not
 ## Logs
 
 - [ledge climb](2026-10-16_ledge_climb_tests.txt)
+- [sneak hitbox](2026-10-16_sneak_hitbox_tests.txt)
 - [controls](2026-10-16_controls_tests.txt)
 - [fix regression](2026-10-16_fix_regression_tests.txt)
 - [blocks](2026-10-16_blocks_tests.txt)

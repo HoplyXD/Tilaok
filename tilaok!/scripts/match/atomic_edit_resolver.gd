@@ -196,7 +196,7 @@ static func resolve(
 
 
 ## Explosives (Bomb, Dynamite, Nuke) also destroy pieces placed in this same Place phase when
-## their footprint touches the blast area (requested by Jorge, 2026-10-16): the placement simply
+## their footprint touches the blast area (user request, 2026-10-16): the placement simply
 ## disappears. Walis Cleanup keeps its contract and spares same-phase pieces.
 static func _blast_same_phase(
 	definitions: ItemDefinitions,

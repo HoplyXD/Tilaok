@@ -1,6 +1,6 @@
 # Template 01 synopsis, shot list and capture schedule — DRAFT (2026-10-16)
 
-**Status:** first draft for PHASETASK [P17-T03](PHASETASK.md#p17-t03). Claude (AI) drafted this text at Jorge's request ("continue on phase task"). It must be disclosed on Form 03 as AI-drafted submission copy.
+**Status:** first draft for PHASETASK [P17-T03](PHASETASK.md#p17-t03). Claude (AI) drafted this text at the user's request ("continue on phase task"). It must be disclosed on Form 03 as AI-drafted submission copy.
 
 It is not reviewed. Before it is used:
 - the Compliance owner must edit and approve it;

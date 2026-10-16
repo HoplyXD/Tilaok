@@ -164,7 +164,7 @@ func _physics_process(delta: float) -> void:
 	_check_bounds()
 
 
-## An eliminated chicken has no control but keeps falling (requested by Jorge, 2026-10-15) until
+## An eliminated chicken has no control but keeps falling (user request, 2026-10-15) until
 ## it lands on a solid, instead of hanging in the air. It drifts no further sideways, never
 ## supports anyone, never touches blocks or hazards again and never reports leaving the stage:
 ## once it falls out of bounds it simply stops.
@@ -591,6 +591,17 @@ func _capture_body_shape() -> void:
 			_standing_size = (_body_shape.shape as RectangleShape2D).size
 			_standing_offset = _body_shape.position
 			return
+
+
+## World-space hitbox used by hazards, block kill/stun hitboxes and placement clearance. While
+## sneaking it is the one-tile sneak body at the feet (2026-10-16); standing, the full body.
+func hit_rect() -> Rect2:
+	var standing := Vector2(tuning.body_width_wu, tuning.body_height_wu)
+	var rect := Rect2(global_position - standing * 0.5, standing)
+	if not sneaking:
+		return rect
+	var height := minf(tuning.sneak_height_wu, standing.y)
+	return Rect2(Vector2(rect.position.x, rect.end.y - height), Vector2(standing.x, height))
 
 
 func _sneak_height() -> float:

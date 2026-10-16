@@ -53,7 +53,7 @@ Event and stacked rounds deal only families approved for every active mode ([int
 |---|---|---|
 | Tutorial | 0 | Guided first match; building is required to reach the flag. |
 | Sample Map | 10 | Team map. |
-| Basic Map | 20 | Jorge's framed map. |
+| Basic Map | 20 | Team-made framed map. |
 | Built-in default stage | — | Always available. |
 
 Decide which maps ship.

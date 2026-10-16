@@ -265,15 +265,7 @@ func _actor_rects() -> Array[Rect2]:
 		var actor := actors[seat_index] as ChickenController
 		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
 			continue
-		rects.append(
-			Rect2(
-				(
-					actor.global_position
-					- Vector2(tuning.body_width_wu * 0.5, tuning.body_height_wu * 0.5)
-				),
-				Vector2(tuning.body_width_wu, tuning.body_height_wu)
-			)
-		)
+		rects.append(actor.hit_rect())
 	return rects
 
 

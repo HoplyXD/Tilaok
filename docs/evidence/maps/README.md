@@ -8,7 +8,7 @@ Build: HEAD `fec0d3f` plus the uncommitted map work; Godot 4.7.stable.official.5
 | [2026-10-16_maps_regression.txt](2026-10-16_maps_regression.txt) | Every headless suite | PASSED except four groups that fail identically on a clean HEAD checkout (listed in the file) |
 | [2026-10-16_lobby_map_row_1080p.png](2026-10-16_lobby_map_row_1080p.png) | Lobby with "MAP ◀ Sample Map (2/2) ▶" (first version) | Rendered |
 | [2026-10-16_tutorial_map_parity.txt](2026-10-16_tutorial_map_parity.txt) | The Tutorial map scene vs the verified tutorial layout it replaced: every field equal | PASSED |
-| [2026-10-16_lobby_basic_map_1080p.png](2026-10-16_lobby_basic_map_1080p.png), [2026-10-16_basic_map_play_1080p.png](2026-10-16_basic_map_play_1080p.png) | Jorge's framed Basic Map in the Lobby and in Play | Rendered |
+| [2026-10-16_lobby_basic_map_1080p.png](2026-10-16_lobby_basic_map_1080p.png), [2026-10-16_basic_map_play_1080p.png](2026-10-16_basic_map_play_1080p.png) | the team's framed Basic Map in the Lobby and in Play | Rendered |
 | [2026-10-16_sample_map_play_1080p.png](2026-10-16_sample_map_play_1080p.png) | Round 1 Play on the Sample Map (its Blocks layer, debug placeholder tiles) | Rendered |
 
 Reproduce:

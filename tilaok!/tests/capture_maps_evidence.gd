@@ -6,7 +6,7 @@ extends SceneTree
 
 const FLOW_SCENE := preload("res://scenes/flow/game_flow.tscn")
 const OUTPUT_DIR := "../docs/evidence/maps"
-## Jorge's Basic Map (framed stage with a tall pillar), 2026-10-16.
+## The Basic Map (framed stage with a tall pillar), 2026-10-16.
 const MAP_ID := "Basic Map"
 
 var failures := 0

@@ -1,0 +1,6 @@
+PASS sneaking shrinks the hitbox to the one-tile body at the feet ([P: (836.0, 840.0), S: (56.0, 120.0)] -> [P: (836.0, 904.0), S: (56.0, 56.0)])
+PASS hazards and block hitboxes read the sneak hitbox (SweptContact.body_rect)
+PASS a standing chicken in the same spot is hit by the slipper (1 shots)
+PASS a sneaking chicken ducks under a head-height slipper lane (2 shots, 0)
+PASS a piece over a standing chicken's head is refused but allowed above a sneaking one (A chicken is too close. Wait for them to move or pick another cell. (player clearance) / Valid placement.)
+SNEAK_HITBOX_TESTS checks=5 failures=0

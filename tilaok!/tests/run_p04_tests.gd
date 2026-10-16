@@ -126,7 +126,7 @@ func _test_tuning_and_definitions() -> void:
 	_check(not broken.validate().is_empty(), "tuning rejects a zero persistent cap")
 	var definitions := ItemDefinitions.load_all(tuning)
 	_check(definitions.is_valid(), "shipped definitions validate: %s" % [definitions.errors])
-	# The six P10 families joined the main game on 2026-10-16 (Jorge).
+	# The six P10 families joined the main game on 2026-10-16 (user request).
 	_check(
 		(
 			definitions.families.size() == BlockCatalog.families(BlockCatalog.SET_MAIN).size()

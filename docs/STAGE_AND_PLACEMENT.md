@@ -64,7 +64,7 @@ All submissions in a Place phase resolve from the same stage snapshot:
 
 1. Gather confirmed placements and cleanup previews.
 2. Resolve each Walis Cleanup target set from that snapshot.
-3. Reject invalid placements. *2026-10-16 (Jorge):* first come, first served (2026-10-14) was removed. Same-phase overlaps resolve in stable seat order (the lower seat keeps the cells, as in the original P05 resolver). Players see only "Tile occupied" or "Invalid spot". Explosives also blow up same-phase placements in their blast area (see GDD).
+3. Reject invalid placements. *2026-10-16 (user request):* first come, first served (2026-10-14) was removed. Same-phase overlaps resolve in stable seat order (the lower seat keeps the cells, as in the original P05 resolver). Players see only "Tile occupied" or "Invalid spot". Explosives also blow up same-phase placements in their blast area (see GDD).
 4. Commit the remaining valid edits together.
 5. Start Play with the committed stage.
 
@@ -233,7 +233,7 @@ Placement is validated against bounds, protected spawn/goal, build region, base 
 
 Placement notes: a variant may reserve only part of its footprint (`occupied_cells`: Parol reserves its two posts, so solids may sit between them and occlude the beam). Lanes, beams and bubble paths declare `blockable`: immutable base geometry may clip them (they are shown to their first blocker) but protected spawn/goal and the build region still reject them. Order inside one physics step: movers/timers advance in stable item-ID order; lethal contacts resolve by recorded time, item ID, then seat with one terminal outcome per player (handed to the race ledger during Karera); captures and carries run for survivors; spring launches apply last.
 
-## Map scenes and the Lobby map selection — 2026-10-16 (requested by Jorge)
+## Map scenes and the Lobby map selection — 2026-10-16 (user request)
 
 **How to make a map.** Duplicate `tilaok!/scenes/maps/sample_map.tscn`, rename the file (the file name is the map id), set **Map Name** on the root, then paint its two TileMapLayers. Save it anywhere under `scenes/maps/` and it appears in the Lobby map selection with no code or data edit (`MapCatalog` scans the folder). Turn off **In Selection** to hide a work-in-progress map.
 

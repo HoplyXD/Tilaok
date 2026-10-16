@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Map scenes (requested by Jorge, 2026-10-16): StageMap scenes in scenes/maps/ with a DevMarkers
+## Map scenes (user request, 2026-10-16): StageMap scenes in scenes/maps/ with a DevMarkers
 ## layer (Spawn / Build Area / Flag) and a Blocks layer. Checks the folder catalog, the
 ## blocks-to-surfaces conversion (the sample map reproduces the default stage's surfaces), marker
 ## mapping, validation, drop-in discovery, a real match room on a map, and the Lobby map

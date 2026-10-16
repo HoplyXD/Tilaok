@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Requested by Jorge, 2026-10-16:
+## Requested by the user, 2026-10-16:
 ## - four shared-keyboard layouts, seated in join order (no layout is tied to a player number):
 ##   WASD (E confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift
 ##   rotate), numpad 8 4 2 6 (0 confirm, 5 rotate);

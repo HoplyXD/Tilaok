@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Place conflicts. First come, first served (2026-10-14) was removed on 2026-10-16 at Jorge's
+## Place conflicts. First come, first served (2026-10-14) was removed on 2026-10-16 at the user's
 ## request: confirming earlier gives no advantage, a ghost only says "Tile occupied" (a piece,
 ## the stage or a chicken is there) or "Invalid spot", and same-phase overlaps resolve in stable
 ## seat order as before (the later seat sees "Tile occupied"). Also checks the main match selector

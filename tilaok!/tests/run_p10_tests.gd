@@ -321,7 +321,7 @@ func _test_definitions() -> void:
 
 func _test_baseline_isolation() -> void:
 	var base := ItemDefinitions.load_all(GameplayTuning.new())
-	# Since 2026-10-16 (Jorge) the six P10 families are in the main game too, dealt only in the
+	# Since 2026-10-16 (user request) the six P10 families are in the main game too, dealt only in the
 	# modes each one is approved for (PugadEggPoolGenerator mode filter).
 	_check(
 		base.families.size() == BlockCatalog.families(BlockCatalog.SET_MAIN).size(),

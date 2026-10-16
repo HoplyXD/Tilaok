@@ -33,7 +33,11 @@ static func first_overlap(from_rect: Rect2, to_rect: Rect2, target: Rect2) -> fl
 	return clampf(entry, 0.0, 1.0)
 
 
+## The chicken's current hitbox: the one-tile sneak body while sneaking (2026-10-16, user request),
+## otherwise the standing body.
 static func body_rect(actor: Node2D, tuning: GameplayTuning) -> Rect2:
+	if actor is ChickenController:
+		return (actor as ChickenController).hit_rect()
 	var size := Vector2(tuning.body_width_wu, tuning.body_height_wu)
 	return Rect2(actor.global_position - size * 0.5, size)
 

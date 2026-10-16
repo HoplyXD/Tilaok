@@ -1,6 +1,6 @@
 extends SceneTree
 
-## P19 promotions requested by Jorge on 2026-10-16 ("pick 3 low-risk ones"): Hagdan ng Bahay
+## P19 promotions requested by the user on 2026-10-16 ("pick 3 low-risk ones"): Hagdan ng Bahay
 ## stairs, Tinik-Tinik Strip and Yelo ng Sorbetero ice, each a scene in scenes/blocks/ with DEBUG
 ## placeholder art. Real Godot physics in the Item Lab (64 wu grid), synthetic K1 keys.
 ## Run: godot --headless --fixed-fps 60 --path tilaok!

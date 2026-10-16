@@ -1,6 +1,6 @@
 # Promoted P19 obstacles — October 16, 2026
 
-Jorge asked to "continue on phasetasks" and chose "pick 3 low-risk ones". Claude (AI) promoted three expansion designs into the main game as block scenes with DEBUG placeholder art.
+The user asked to "continue on phasetasks" and chose "pick 3 low-risk ones". Claude (AI) promoted three expansion designs into the main game as block scenes with DEBUG placeholder art.
 
 Test setup: headless Godot 4.7.stable.official.5b4e0cb0f, Windows 11, Item Lab (default arena, 64 wu grid), one synthetic K1 seat, `--fixed-fps 60`. Reviewer: Claude (AI, automated). No human, art, playtest or feel review is claimed.
 

@@ -593,7 +593,7 @@ func tuning_neutral_threshold() -> float:
 	return tuning.stick_neutral_threshold
 
 
-## Four shared-keyboard layouts (2026-10-16, requested by Jorge). The layout is only a device:
+## Four shared-keyboard layouts (2026-10-16, user request). The layout is only a device:
 ## seats are numbered in join order, so any layout can be any player.
 ## K1 W A S D, E or F confirm, R rotate (Space jump, G back)
 ## K2 Arrow keys, Enter confirm, Right Shift rotate (Right Ctrl jump, Backspace back)

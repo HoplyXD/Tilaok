@@ -161,7 +161,7 @@ Bindings below are **PROTOTYPE—UNTESTED**, not a claim of physical-controller 
 | Rotate; spectator cheer | West | R | P | Right Shift | Num 5 |
 | Pause/request resume | Start/Options | Escape | Escape | Escape | Escape |
 
-**Four keyboard layouts (2026-10-16, requested by Jorge):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard.
+**Four keyboard layouts (2026-10-16, user request):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard.
 
 Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pad takes precedence. Opposite directions cancel motion but still represent intentional input for Freeze. All assigned devices receive the same movement capability; analog walking is not an approved extra. See the source register for full provisional repeat/edge/pause policies.
 
@@ -943,7 +943,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 ### REQ-ITEM-009 — Hagdan ng Bahay
 
-**Promoted 2026-10-16 (Jorge):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
+**Promoted 2026-10-16 (user request):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
 
 **Scope:** EXPANSION · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 
@@ -1066,7 +1066,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 ### REQ-ITEM-020 — Yelo ng Sorbetero
 
-**Promoted 2026-10-16 (Jorge):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
+**Promoted 2026-10-16 (user request):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
 
 **Scope:** EXPANSION · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 
@@ -1090,7 +1090,7 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 
 ### REQ-ITEM-022 — Tinik-Tinik Strip
 
-**Promoted 2026-10-16 (Jorge):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
+**Promoted 2026-10-16 (user request):** implemented as block scenes with DEBUG art and in the match egg pool; presentation, integration and verification tasks stay open (P19). Evidence: [P19 promoted](evidence/p19_promoted/README.md).
 
 **Scope:** EXPANSION · **Design status:** OPTIONAL · **Owner role:** Gameplay (name TBD).
 

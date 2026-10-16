@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Explosives and the Pugad pick lock (requested by Jorge, 2026-10-15).
+## Explosives and the Pugad pick lock (user request, 2026-10-15).
 ## - Bomb 2x2, Dynamite 3x3 and Nuke 4x4 are scene-authored one-shot cleanup blocks: in a real
 ##   match they clear player-built pieces inside their area, including pieces placed in the same
 ##   Place phase (2026-10-16), and show a short placeholder blast.

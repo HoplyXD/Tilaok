@@ -197,7 +197,7 @@ func _test_spikes() -> void:
 		"Spikes: solid bottom half and a kill hitbox, independent of its 1x1 placement box"
 	)
 	# Upright spikes on the floor: landing on the points eliminates, credited to the placer.
-	# (2026-10-15: Jorge narrowed the kill hitbox to 60x24 inside the points, so it is reached
+	# (2026-10-15: the kill hitbox was narrowed to 60x24 inside the points, so it is reached
 	# from above, not by brushing the stone base from the side.)
 	_revive()
 	var ids := _arm([[SPIKES, Vector2i(16, 14)]], 1)
@@ -245,7 +245,7 @@ func _test_cannon() -> void:
 	var ids := _arm([[CANNON, Vector2i(12, 14)]], 1)
 	var cannon := room.items.piece_for(ids[0]) as StageBlock
 	var behavior := cannon.behavior as LauncherBehavior
-	# The Cannon's Path2D is drawn past the stage edge (Jorge, 2026-10-16), so the lane is cut at
+	# The Cannon's Path2D is drawn past the stage edge (since 2026-10-16), so the lane is cut at
 	# the build region's right edge: from the barrel's right side (x 832) to x 1792.
 	var expected_lane := room.arena.build_region.end.x - 13.0 * 64.0
 	_check(
@@ -320,7 +320,7 @@ func _test_stun_controls_and_death() -> void:
 	_check(not actor.is_stunned(), "the stun wears off after its duration")
 	actor.eliminate("test")
 	_check(await _anim_after(2) == &"dead", "an eliminated chicken shows the death sprite")
-	# 2026-10-15 (Jorge): a chicken eliminated in mid-air keeps falling and lands; it does not
+	# 2026-10-15 (user request): a chicken eliminated in mid-air keeps falling and lands; it does not
 	# hang where it died, and it no longer moves sideways or reacts to input.
 	_revive()
 	_put_actor_feet(Vector2(736.0, FLOOR_Y - 256.0))

@@ -2,7 +2,7 @@
 class_name StageMap
 extends Node2D
 
-## Root of a map scene in scenes/maps/ (requested by Jorge, 2026-10-16). MapCatalog scans that
+## Root of a map scene in scenes/maps/ (user request, 2026-10-16). MapCatalog scans that
 ## folder, so a new map scene saved there appears in the Lobby map selection with no code edit.
 ##
 ## A map scene has two TileMapLayer children, both on the 64 px stage grid (cell (x, y) is stage

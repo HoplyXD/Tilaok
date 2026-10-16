@@ -141,13 +141,13 @@ No human art review is claimed by the P05 implementation record. P05 capture scr
 
 | Asset | Used in | Origin | Status |
 |---|---|---|---|
-| `tilaok!/assets/character/Chicken Placeholder Sprite Sheet.png` (2048×1024: 4 cols × 2 rows of 512×512 cells; 256×512 hitbox column per cell) and its `.clip` source | `scenes/characters/chicken.tscn` (all chickens in the P03-based rooms and the match) | Supplied by Jorge (maps/characters role) on 2026-10-14; not AI-generated. Authorship/licence to be confirmed in this register by the team. | PLACEHOLDER — final chicken art replaces the sheet; frames are mapped per animation in the scene's SpriteFrames |
+| `tilaok!/assets/character/Chicken Placeholder Sprite Sheet.png` (2048×1024: 4 cols × 2 rows of 512×512 cells; 256×512 hitbox column per cell) and its `.clip` source | `scenes/characters/chicken.tscn` (all chickens in the P03-based rooms and the match) | Supplied by Art (Jorge/Ivie) on 2026-10-14; not AI-generated. Authorship/licence to be confirmed in this register by the team. | PLACEHOLDER — final chicken art replaces the sheet; frames are mapped per animation in the scene's SpriteFrames |
 
 Cells: row 1 = idle, moving/wall-sliding right, moving/wall-sliding left, sneaking; row 2 = jump/glide still, jump/glide right, jump/glide left, (empty). Shown at ×0.25 (one cell = 128×128 wu = 2 tiles tall) and tinted by seat colour.
 
 ## Block scene visuals and death sprite — 2026-10-14
 
-No production asset was created. Each block scene's `Visual` node (Polygon2D/Line2D/Label placeholders written by `tools/make_block_scenes.gd`; Solid/Wood/Collapsing visuals carried over from their earlier scenes) is a DEBUG placeholder for Jorge/Ivie to replace inside the scene. P10 hazards keep their existing PLACEHOLDER visual sets (`data/items/visual/`). The chicken death pose is Jorge's sprite sheet cell row 2, column 4 (`assets/character/Chicken Placeholder Sprite Sheet.png`, supplied by Jorge, PLACEHOLDER). `assets/character/Blocks Sprite Sheet.png` is currently a copy of the chicken sheet and is not used by the game.
+No production asset was created. Each block scene's `Visual` node (Polygon2D/Line2D/Label placeholders written by `tools/make_block_scenes.gd`; Solid/Wood/Collapsing visuals carried over from their earlier scenes) is a DEBUG placeholder for Jorge/Ivie to replace inside the scene. P10 hazards keep their existing PLACEHOLDER visual sets (`data/items/visual/`). The chicken death pose is the Art (Jorge/Ivie) sprite sheet cell row 2, column 4 (`assets/character/Chicken Placeholder Sprite Sheet.png`, supplied by the team, PLACEHOLDER). `assets/character/Blocks Sprite Sheet.png` is currently a copy of the chicken sheet and is not used by the game.
 
 | Placeholder | Used in | Final owner |
 |---|---|---|
@@ -169,7 +169,7 @@ No production asset was created or imported. The stage tile atlas is a flat thre
 | File | Used in | Status | Final owner |
 |---|---|---|---|
 | `assets/tiles/map_markers_64.png` + `map_markers_tileset.tres` (3 tiles: Spawn, Build Area, Flag; tint plus a shape identifier) | `DevMarkers` layer of map scenes; editor only, removed in the game | Dev tool; drawn by a one-off code generator, never shown to players | Jorge/Ivie (maps) |
-| `assets/tiles/blocks_tileset.tres` | `Blocks` layer of map scenes | Source 0 is Jorge's `Blocks Sprite Sheet.png`, still unfinished (it currently holds the chicken sheet), on a 64 px grid. Source 1 reuses the DEBUG `debug_tiles_64.png` until the block art is ready | Jorge/Ivie (maps) |
+| `assets/tiles/blocks_tileset.tres` | `Blocks` layer of map scenes | Source 0 is Art's (Jorge/Ivie) `Blocks Sprite Sheet.png`, still unfinished (it currently holds the chicken sheet), on a 64 px grid. Source 1 reuses the DEBUG `debug_tiles_64.png` until the block art is ready | Jorge/Ivie (maps) |
 
 ## UI shell placeholders recorded — UI shells (2026-10-14)
 
@@ -227,7 +227,7 @@ No final art, audio or font was generated or imported. Everything below is a dev
 | Spectator cheer cue | `SpectatorCheer.make_stream()` (code-generated 0.45 s noise + hum, plays on the **Crowd** bus) | audio placeholder, no file | PLACEHOLDER — replace with the recorded crowd "yay" (GDD §9) | Shanti |
 | Kangaroo cue tones | `KangarooCommandStyle.make_tone()` (330 / 440 / 554 Hz sine, now on the **Effects** bus) | audio placeholder, no file | PLACEHOLDER — replace (P11 handoff unchanged) | Shanti |
 | Audio bus layout | `tilaok!/default_bus_layout.tres` (Master, Music, Effects, Crowd) | engine resource | engine-authored; the mix is the audio owner's | Shanti |
-| Kangaroo command cards and miss grid | `scenes/ui/components/kangaroo_hud.tscn`, `kangaroo_command_card.tscn` | UI scene, text icons `● ↑ ↔` | PLACEHOLDER wording and look; `Art_PoseIcon` slot is empty | Shanti (UI) / Jorge, Ivie (pose art) |
+| Kangaroo command cards and miss grid | `scenes/ui/components/kangaroo_hud.tscn`, `kangaroo_command_card.tscn` | UI scene, text icons `● ↑ ↔` | PLACEHOLDER wording and look; `Art_PoseIcon` slot is empty | Shanti (UI) / Jorge/Ivie (pose art) |
 | Library copy | `tilaok!/data/ui/library_text.tres` | English text | PLACEHOLDER — needs Filipino / Hiligaynon and cultural review | team (native-speaker review) |
 | Tutorial copy (Kangaroo, Bomb-Taya) | `tilaok!/data/ui/tutorial_script.tres` | English text | PLACEHOLDER — same review | team |
 | UI font | engine default (Open Sans SemiBold) | font | engine-included; lacks `● ▲ ■ ◆ → ↑ ↔` (system fallback) — a final font that covers them is needed | Shanti |
@@ -249,6 +249,6 @@ The live HUD uses text and a seat-number cue; no color-only identification is in
 
 | Asset ID / implementation | Kind and use | Provenance / status | Human handoff |
 |---|---|---|---|
-| `block.house_stairs.debug_visual` — `scenes/blocks/construction/hagdan_steps_2x2.tscn`, `hagdan_steps_3x3.tscn` | Brown stepped Polygon2D, outline and "STEPS • DEBUG" label | Scene nodes written by Claude (AI) at Jorge's request; no imported image. DEBUG placeholder. | Original house-step art (Jorge / Ivie); cultural check of the name "Hagdan ng Bahay". |
+| `block.house_stairs.debug_visual` — `scenes/blocks/construction/hagdan_steps_2x2.tscn`, `hagdan_steps_3x3.tscn` | Brown stepped Polygon2D, outline and "STEPS • DEBUG" label | Scene nodes written by Claude (AI) at the user's request; no imported image. DEBUG placeholder. | Original house-step art (Jorge/Ivie); cultural check of the name "Hagdan ng Bahay". |
 | `block.toy_burr_strip.debug_visual` — `scenes/blocks/traps/tinik_strip_3x1.tscn`, `tinik_strip_4x1.tscn` | Low green base with rounded burr bumps and "TINIK • DEBUG" label | Same provenance. DEBUG placeholder. | Soft, wholesome burr art (the contract requires a wholesome-art review before Lagsanay/Kangaroo); name check. |
 | `block.sorbetes_ice.debug_visual` — `scenes/blocks/construction/yelo_ice_3x1.tscn`, `yelo_ice_4x1.tscn` | Pale-blue slab with frost marks and "ICE • DEBUG" label | Same provenance. DEBUG placeholder. | Original ice / sorbetero art; name check. |

@@ -4,7 +4,7 @@ _Current policy and cumulative disclosure record. Updated 2026-10-14. This file 
 
 ## Current standing programming policy
 
-AI/LLM-assisted programming, including generation and modification of core gameplay code, is the approved standing development workflow for Tilaok!. Francis (lead developer) and Carlos (co-lead developer) use AI/LLMs as the primary code generators and direct development, retaining responsibility for integration, review, testing and delivery. Human responsibility does not mean source code was manually written by humans. The human team handles art, assets and other production work; this programming authorization does not authorize generating final art, audio or other production assets. Current human production assignments are Shanti for UI design and game audio, and Jorge and Ivie for maps, characters, obstacles, traps, effects and related game assets. These assigned production visuals and audio will be created without AI generation.
+AI/LLM-assisted programming, including generation and modification of core gameplay code, is the approved standing development workflow for Tilaok!. The users (the lead developer and the co-lead developer) use AI/LLMs as the primary code generators and direct development, retaining responsibility for integration, review, testing and delivery. Human responsibility does not mean source code was manually written by humans. The human team handles art, assets and other production work; this programming authorization does not authorize generating final art, audio or other production assets. Current human production assignments cover UI design and game audio, and maps, characters, obstacles, traps, effects and related game assets, each held by team members. These assigned production visuals and audio will be created without AI generation.
 
 AI coding agents may implement programming work within an approved task: gameplay mechanics, scripts, scenes used for programming or integration, tools, tests, fixes and refactors. Agents do not need a separate AI-use approval for each approved programming task or phase. Follow the requested task scope and design decisions; standing authorization does not authorize scope expansion, unapproved design changes, data deletion or bypassing required tests. Normal plan approval remains in force when a task requests it. Actual technical verification is required before marking work complete. Human review and release responsibility remain, and review is recorded only when performed.
 
@@ -68,11 +68,11 @@ At the user's direction after the P03 plan approval, OpenAI Codex implemented P0
 
 ### Standing policy and documentation correction — October 13, 2026
 
-At Francis's direction, this documentation correction replaces the earlier internal “team manually writes core code; AI only reviews/documents” policy and phase-specific AI implementation exceptions with the standing AI-assisted programming workflow at the top of this file. This is a policy/documentation change, not gameplay implementation or proof of human review, organizer approval, registration or eligibility. At that time, the current production roles supplied were Francis — lead developer and Carlos — co-lead developer, both using AI-assisted programming; art/asset creators had not yet been assigned in the repository. The later human production-role clarification is recorded below. No surnames, hours, registration facts or reviewer identities are inferred.
+At the lead developer's direction, this documentation correction replaces the earlier internal “team manually writes core code; AI only reviews/documents” policy and phase-specific AI implementation exceptions with the standing AI-assisted programming workflow at the top of this file. This is a policy/documentation change, not gameplay implementation or proof of human review, organizer approval, registration or eligibility. At that time, the current production roles supplied were a lead developer and a co-lead developer, both using AI-assisted programming; art/asset creators had not yet been assigned in the repository. The later human production-role clarification is recorded below. No surnames, hours, registration facts or reviewer identities are inferred.
 
 ### Human production-role clarification — October 13, 2026
 
-Francis later supplied these current assignments: Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These assigned production visuals and audio will be created without AI generation. This records responsibilities only; it does not claim that assets are complete or establish registration, hours, review completion or competition eligibility.
+The lead developer later supplied the current assignments: team members handle UI design and game audio, and maps, characters, obstacles, traps, effects and related game assets. These assigned production visuals and audio will be created without AI generation. This records responsibilities only; it does not claim that assets are complete or establish registration, hours, review completion or competition eligibility.
 
 ### Verification of the PRD/tracker documentation delivery — October 13, 2026
 
@@ -94,7 +94,7 @@ Godot 4.7.2 import, lint/format, automated regressions, GUI harness runs, captur
 
 ### Scene-based UI shells — October 14, 2026
 
-At the user's approved plan, Claude (Anthropic, Sonnet 5.5 via Claude Code) generated the scene-based placeholder UI shells: the project Theme, Control-node screens and components, binding scripts, SAMPLE data resources, the UI Gallery harness room, `run_ui_tests.gd`, `capture_ui_evidence.gd` and the UI_HANDOFF how-to. Some scenes were produced by a small generator script kept out of the repository. No images, fonts or audio were generated. Verified with Godot 4.7.2 import, gdlint/gdformat, the 437-check UI suite and existing suites, rendered captures and a frame-time sample (`docs/evidence/ui-shells/`). No independent human review is claimed; real editor use by Shanti remains open.
+At the user's approved plan, Claude (Anthropic, Sonnet 5.5 via Claude Code) generated the scene-based placeholder UI shells: the project Theme, Control-node screens and components, binding scripts, SAMPLE data resources, the UI Gallery harness room, `run_ui_tests.gd`, `capture_ui_evidence.gd` and the UI_HANDOFF how-to. Some scenes were produced by a small generator script kept out of the repository. No images, fonts or audio were generated. Verified with Godot 4.7.2 import, gdlint/gdformat, the 437-check UI suite and existing suites, rendered captures and a frame-time sample (`docs/evidence/ui-shells/`). No independent human review is claimed; real editor use by the UI role remains open.
 
 ### P06 Karera and scoring implementation — October 14, 2026
 
@@ -123,17 +123,17 @@ At the user's direction under the standing AI-assisted programming workflow, Ope
 Godot 4.7.2 passed 77 focused assertions, 108 rendered interactive assertions, ten ending/restart cycles, relevant regressions, import/parse, GDScript lint/format, Windows export and direct/exported route smoke. Real physics was used for Lagsanay contact transfer. Seats, race finish candidates, shortened timers and one Last Cluck hazard record are synthetic; no human/device/release acceptance is claimed. Frame p95 exceeded the provisional 16.67 ms target. No final art, audio or production asset was generated, and no independent human code review is claimed. Detailed evidence and limitations are in `docs/evidence/p09/README.md`. The approved plan and implementation task are preserved in the conversation; no separate prompt archive was created.
 ### 64 px grid, sneak/glide and stage blocks — October 14, 2026
 
-At Jorge's request in a Claude Code session (Claude Opus 5.5, Anthropic), Claude generated and integrated: the 64 wu grid rescale of `GameplayTuning` (with `with_distance_scale()` / `legacy_32_wu()` keeping the P02 room on its historical scale), tuning-based launch caps, the 64 px stage TileMapLayer (`scenes/stage/stage_tiles.tscn`, `stage_tile_layer.gd`, a code-written flat placeholder atlas via `tools/make_debug_tiles.gd`), W/Up as jump during Play, sneak and glide in `ChickenController`, block contact/push notifications, three scene-authored block families (Solid Block, Wood Box, Collapsing Block) with scripts, data and registration, a `reset_to_placed` safe-start state, an Item Lab egg-row layout fix, the 60-check `run_blocks_tests.gd`, `capture_blocks_evidence.gd`, and updates to existing tests whose hardcoded 32 wu literals changed (expectations scaled, assertions not weakened). Jorge's earlier prototype (`scenes/prototype/`) was read but not copied or modified; its wall slide/jump idea was already implemented in the main controller. The code is AI-generated and is not described as manually team-written.
+At the user's request in a Claude Code session (Claude Opus 5.5, Anthropic), Claude generated and integrated: the 64 wu grid rescale of `GameplayTuning` (with `with_distance_scale()` / `legacy_32_wu()` keeping the P02 room on its historical scale), tuning-based launch caps, the 64 px stage TileMapLayer (`scenes/stage/stage_tiles.tscn`, `stage_tile_layer.gd`, a code-written flat placeholder atlas via `tools/make_debug_tiles.gd`), W/Up as jump during Play, sneak and glide in `ChickenController`, block contact/push notifications, three scene-authored block families (Solid Block, Wood Box, Collapsing Block) with scripts, data and registration, a `reset_to_placed` safe-start state, an Item Lab egg-row layout fix, the 60-check `run_blocks_tests.gd`, `capture_blocks_evidence.gd`, and updates to existing tests whose hardcoded 32 wu literals changed (expectations scaled, assertions not weakened). the team's earlier prototype (`scenes/prototype/`) was read but not copied or modified; its wall slide/jump idea was already implemented in the main controller. The code is AI-generated and is not described as manually team-written.
 
 Verified with Godot 4.7.stable.official.5b4e0cb0f (the 4.7.2 build named elsewhere was not installed on this PC): import, gdlint/gdformat, all eight suites (1,173 synthetic checks, 0 failures) and 1080p rendered captures in `docs/evidence/blocks/`. No human code review, physical-device test or feel/balance review is claimed; P02-T26 stays open. No final art or audio was generated; tile and block visuals are DEBUG placeholders.
 
 ### Merge of the 64 px grid work with P06/P10 — October 14, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) resolved the merge of the 64 px grid/sneak/glide/stage-blocks commit with upstream P06 (Karera scoring) and P10 (first-batch hazards). It kept both sides in the conflicted files, doubled the P10 distance/speed tuning and the safe-release search for the 64 wu grid (adding them to `GameplayTuning.DISTANCE_FIELDS`), tied the spring cap validation to the launch-cap keys, added the stage blocks to the `items_lab` first-batch set, and scaled the 32 wu literals in `run_p10_tests.gd` (and its family/pool count checks for the three blocks) without weakening assertions. Verified with Godot 4.7.stable.official.5b4e0cb0f: foundation, P02 83, wall 85, P03 103, P04 268, P05 137, P06 97, P10 424, UI 437 and blocks 60 checks, 0 failures. No human review or physical-device test; the P10 hazard feel at the new scale still needs a playtest.
+At the user's request, Claude (Claude Opus 5.5 via Claude Code) resolved the merge of the 64 px grid/sneak/glide/stage-blocks commit with upstream P06 (Karera scoring) and P10 (first-batch hazards). It kept both sides in the conflicted files, doubled the P10 distance/speed tuning and the safe-release search for the 64 wu grid (adding them to `GameplayTuning.DISTANCE_FIELDS`), tied the spring cap validation to the launch-cap keys, added the stage blocks to the `items_lab` first-batch set, and scaled the 32 wu literals in `run_p10_tests.gd` (and its family/pool count checks for the three blocks) without weakening assertions. Verified with Godot 4.7.stable.official.5b4e0cb0f: foundation, P02 83, wall 85, P03 103, P04 268, P05 137, P06 97, P10 424, UI 437 and blocks 60 checks, 0 failures. No human review or physical-device test; the P10 hazard feel at the new scale still needs a playtest.
 
 ### Chicken scene and sprite animations — October 14, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated `scenes/characters/chicken.tscn` (controller, body shape and an AnimatedSprite2D whose SpriteFrames map Jorge's placeholder sprite sheet), `chicken_sprite_animator.gd` (state → animation, feet offsets, seat tint), a `draw_debug_body` switch in `ChickenController`, scene use in `P03StageRoom._build_actor`, an egg-preview routing fix for the stage blocks after the P10 merge, and 16 animation checks in `run_blocks_tests.gd`. The sprite sheet itself was supplied by Jorge and was not AI-generated. Verified with Godot 4.7.stable.official.5b4e0cb0f: all ten suites (1,710 checks, 0 failures), lint/format and a 1080p capture. No human review.
+At the user's request, Claude (Claude Opus 5.5 via Claude Code) generated `scenes/characters/chicken.tscn` (controller, body shape and an AnimatedSprite2D whose SpriteFrames map the team's placeholder sprite sheet), `chicken_sprite_animator.gd` (state → animation, feet offsets, seat tint), a `draw_debug_body` switch in `ChickenController`, scene use in `P03StageRoom._build_actor`, an egg-preview routing fix for the stage blocks after the P10 merge, and 16 animation checks in `run_blocks_tests.gd`. The sprite sheet itself was supplied by the team and was not AI-generated. Verified with Godot 4.7.stable.official.5b4e0cb0f: all ten suites (1,710 checks, 0 failures), lint/format and a 1080p capture. No human review.
 
 ### P08 independent Lagsanay — October 14, 2026
 
@@ -154,23 +154,23 @@ Automated evidence currently includes the 78-check focused P11 suite, 85 synthet
 
 ### Guided first match with a build-to-reach-the-flag gate — October 14, 2026
 
-Claude (Sonnet 5.5) in Claude Code generated the data-driven `ArenaLayout`/`ArenaDefinition` hook, the tutorial stage layout resource, `TutorialSession`/`TutorialScript`/`TutorialCoordinator`, the BUILD HERE marker scene, the additive coach-box, pause, library and flow wiring, the PLACEHOLDER English tutorial copy, and the gate, coordinator and capture scripts, under Francis and Carlos's direction and plan approval. The copy is not culturally or linguistically reviewed. Verified on Godot 4.7.2 with synthetic input only: a real-physics gate search (1,860 no-build attempts, none reached the flag; highest feet y 511.94 against a ledge top of 480), 48 gate checks, 140 coordinator/flow checks, 91 rendered capture checks, all existing suites unchanged (P04 keeps the two failures it already had on `origin/main`), gdformat/gdlint, a Windows Desktop debug export and its headless startup. Detailed commands and output: `docs/evidence/tutorial/README.md`. **No human review of the generated code, no novice session and no organizer approval is claimed**; the generated code is not described as manually team-written. No art, audio or production asset was generated. No UCH code, names, characters, art or audio were used. Prompt and output history are in this conversation; no separate archive was created.
+Claude (Sonnet 5.5) in Claude Code generated the data-driven `ArenaLayout`/`ArenaDefinition` hook, the tutorial stage layout resource, `TutorialSession`/`TutorialScript`/`TutorialCoordinator`, the BUILD HERE marker scene, the additive coach-box, pause, library and flow wiring, the PLACEHOLDER English tutorial copy, and the gate, coordinator and capture scripts, under the users' direction and plan approval. The copy is not culturally or linguistically reviewed. Verified on Godot 4.7.2 with synthetic input only: a real-physics gate search (1,860 no-build attempts, none reached the flag; highest feet y 511.94 against a ledge top of 480), 48 gate checks, 140 coordinator/flow checks, 91 rendered capture checks, all existing suites unchanged (P04 keeps the two failures it already had on `origin/main`), gdformat/gdlint, a Windows Desktop debug export and its headless startup. Detailed commands and output: `docs/evidence/tutorial/README.md`. **No human review of the generated code, no novice session and no organizer approval is claimed**; the generated code is not described as manually team-written. No art, audio or production asset was generated. No UCH code, names, characters, art or audio were used. Prompt and output history are in this conversation; no separate archive was created.
 
 ### Block scenes (BlockData), Spikes, Cannon, stun and death sprite — October 14, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated the scene-authored block system: `BlockData` (an aLima-style `@tool` customization node modelled on the `ArtifactScannerData` pattern Jorge supplied), `BlockHitbox`, the folder-scanning `BlockCatalog`, the `StageBlock` runtime (anchor/gravity, push, collapse, projectile visuals), touch kill/stun effects in the item behaviors and director, a per-block tuning-override path, `ChickenController.apply_stun` and the animator's stun/death states, and the scene-preview egg path. A one-time migration script (not kept) converted every `data/items/*.tres` family into one scene per variant region-for-region; a parity script confirmed 0 differences before the `.tres` families, the `ItemApprovedVariants` table and the old piece scenes/scripts were removed. Spikes and Cannon were generated as new block scenes with DEBUG placeholder visuals. Existing P04/P10/blocks tests were updated only where counts, node layout or class names changed; assertions were not weakened. The chicken death pose and sprite sheet are Jorge's; no art or audio was AI-generated. Verification: see `docs/evidence/blocks/` (2026-10-14 block-scene records). No human code review or player feel review is claimed.
+At the user's request, Claude (Claude Opus 5.5 via Claude Code) generated the scene-authored block system: `BlockData` (an aLima-style `@tool` customization node modelled on the `ArtifactScannerData` pattern the user supplied), `BlockHitbox`, the folder-scanning `BlockCatalog`, the `StageBlock` runtime (anchor/gravity, push, collapse, projectile visuals), touch kill/stun effects in the item behaviors and director, a per-block tuning-override path, `ChickenController.apply_stun` and the animator's stun/death states, and the scene-preview egg path. A one-time migration script (not kept) converted every `data/items/*.tres` family into one scene per variant region-for-region; a parity script confirmed 0 differences before the `.tres` families, the `ItemApprovedVariants` table and the old piece scenes/scripts were removed. Spikes and Cannon were generated as new block scenes with DEBUG placeholder visuals. Existing P04/P10/blocks tests were updated only where counts, node layout or class names changed; assertions were not weakened. The chicken death pose and sprite sheet are the team's; no art or audio was AI-generated. Verification: see `docs/evidence/blocks/` (2026-10-14 block-scene records). No human code review or player feel review is claimed.
 
 ### Selector pool and first-come-first-served Place — October 14, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) made the match egg pool catalog-driven (`P07FirstPlayableMatchRoom.allowed_variants()`, used by P07/P09 and the Library) so Spikes, Cannon and future block scenes reach the selector, and changed Place to first come, first served (`MatchPlacementController.confirm_order`/`claimed_by`, `P05MatchRoom._placement_verdict`, confirmation-ordered `AtomicEditResolver`), with the new 12-check `run_place_claim_tests.gd`. This changes the earlier design rule that rejected conflicting placements as a set; GDD and STAGE_AND_PLACEMENT record the change. AI-generated code; no human review claimed.
+At the user's request, Claude (Claude Opus 5.5 via Claude Code) made the match egg pool catalog-driven (`P07FirstPlayableMatchRoom.allowed_variants()`, used by P07/P09 and the Library) so Spikes, Cannon and future block scenes reach the selector, and changed Place to first come, first served (`MatchPlacementController.confirm_order`/`claimed_by`, `P05MatchRoom._placement_verdict`, confirmation-ordered `AtomicEditResolver`), with the new 12-check `run_place_claim_tests.gd`. This changes the earlier design rule that rejected conflicting placements as a set; GDD and STAGE_AND_PLACEMENT record the change. AI-generated code; no human review claimed.
 
 ### Hitbox "Effect" rename and match-kill fix — October 15, 2026
 
-At Jorge's request Claude renamed the BlockHitbox `role` property/enum to `effect`/`Effect` (scenes, catalog, tests). Jorge reported that spikes did not kill: in the P05/P07 match rooms the item hazard director ran after the room had already resolved the race step, and the race ledger accepts only same-tick candidates, so every item elimination (Spikes, Cannon and the P10 hazards) was silently dropped in those matches. The match room now runs the director just before itself (`P05MatchRoom.start_match`), and `run_place_claim_tests.gd` gained a real-match spike-kill regression. AI-generated; no human review claimed.
+At the user's request Claude renamed the BlockHitbox `role` property/enum to `effect`/`Effect` (scenes, catalog, tests). The user reported that spikes did not kill: in the P05/P07 match rooms the item hazard director ran after the room had already resolved the race step, and the race ledger accepts only same-tick candidates, so every item elimination (Spikes, Cannon and the P10 hazards) was silently dropped in those matches. The match room now runs the director just before itself (`P05MatchRoom.start_match`), and `run_place_claim_tests.gd` gained a real-match spike-kill regression. AI-generated; no human review claimed.
 
 ### P12 event schedule and announced Main rounds — October 15, 2026
 
-At Jorge's request, after the P12 plan was approved, Claude (Claude Opus 5.5 via Claude Code) generated:
+At the user's request, after the P12 plan was approved, Claude (Claude Opus 5.5 via Claude Code) generated:
 - `EventSchedule`: seeded per-round locking, Main weights, Twist bands, the disabled compatibility registry and the required-mode refusal.
 - `P12ScheduledMatchRoom` and its scene: the full match on the `--match-route=lifecycle` route, running Lagsanay and Kangaroo Main rounds with the existing controllers and scoring.
 - `KangarooMainRound`, a host for Kangaroo inside the full match, and `KangarooCommandStyle`, which moves the P11 lab's DEBUG prompt, icon, tone and marker code into one shared place.
@@ -187,20 +187,20 @@ AI-generated code; it is not described as manually team-written, and no human co
 
 At the user's request, OpenAI Codex generated and integrated the reusable `ScoreboardChart` / `ScoreColumn`, bounded committed score-presentation history, award legend and Theme tokens, result reveal motion setting, shared chicken SpriteFrames resource reference, round and match result screen changes, focused tests, rendered capture fixture and related documentation. Work was limited to programming and UI layout code; no final art, audio or font was generated. Existing team-supplied placeholder chicken frames were externalized to a shared Godot resource, not redesigned. The user-provided scoreboard image informed only the general layout concept of player columns and a shared score axis; its visual design, colors, typography, decoration, art and branding were not copied. The score values and winner rules did not change.
 
-Automated evidence: 52 scoreboard/history checks; UI binding 185; match UI flow 198; mode UI 62; P06 97; P08 86; P09 77; P11 78; rendered interactive P06/P08/P09/P11 routes 17/87/108/85; import/parse, GDScript format/lint, Windows release export and exported startup all passed. See `docs/evidence/scoreboard/README.md` for captures and limits. Inputs and players were synthetic; no independent human code review, physical-device check or human readability review is claimed. The generated code is not described as manually team-written; Francis and Carlos retain integration, review and delivery responsibility. The prompt and output history are in this conversation; no separate prompt archive was created.
+Automated evidence: 52 scoreboard/history checks; UI binding 185; match UI flow 198; mode UI 62; P06 97; P08 86; P09 77; P11 78; rendered interactive P06/P08/P09/P11 routes 17/87/108/85; import/parse, GDScript format/lint, Windows release export and exported startup all passed. See `docs/evidence/scoreboard/README.md` for captures and limits. Inputs and players were synthetic; no independent human code review, physical-device check or human readability review is claimed. The generated code is not described as manually team-written; the users retain integration, review and delivery responsibility. The prompt and output history are in this conversation; no separate prompt archive was created.
 
 ### Explosives, Pugad pick lock and merge — October 15, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
-- Resolved the merge with `origin/main` (Francis's scoreboard commit `d930bd1`): the P09 race end now binds the scoreboard inside the shared `_conclude_round`, P12 event rounds record their scores for it, and the task counts were recomputed.
+At the user's request, Claude (Claude Opus 5.5 via Claude Code):
+- Resolved the merge with `origin/main` (the scoreboard commit `d930bd1`): the P09 race end now binds the scoreboard inside the shared `_conclude_round`, P12 event rounds record their scores for it, and the task counts were recomputed.
 - Generated the Bomb (2x2), Dynamite (3x3) and Nuke (4x4) block scenes (Special = Cleanup, DEBUG placeholder polygons), the `ExplosionFlash` placeholder blast and its hook in `P05MatchRoom`, and the Pugad pick lock.
-- Added `run_explosives_tests.gd` (23 checks) and `capture_explosives_evidence.gd`. Updated hardcoded family counts in the P04/P10 suites, the match-UI node-count check (egg previews counted as one node) and the two spike checks for Jorge's narrower Spikes hitbox.
+- Added `run_explosives_tests.gd` (23 checks) and `capture_explosives_evidence.gd`. Updated hardcoded family counts in the P04/P10 suites, the match-UI node-count check (egg previews counted as one node) and the two spike checks for the narrower Spikes hitbox set in the editor.
 
 AI-generated code; no human code review or player session is claimed. No final art or audio was generated. Evidence: `docs/evidence/blocks/README.md`.
 
 ### Death fall and P12 Karera + Bomb-Taya pair — October 15, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
+At the user's request, Claude (Claude Opus 5.5 via Claude Code):
 - Made eliminated chickens keep falling until they land (`ChickenController._fall_while_eliminated`, plus a blocks-test regression).
 - Continued the approved P12 plan:
   - `BombTayaTwist` and its `P12ScheduledMatchRoom` integration (HUD tag, taya marker, race-ledger timeout reporting).
@@ -228,7 +228,7 @@ At the project owner's direction, after the owner approved the Stage A plan and 
 - The spectator cheer (`SpectatorCheer`, code-generated placeholder cue) and the keyboard chord recorder.
 - `run_p13_navigation_tests.gd` (205), `run_p13_hud_tests.gd` (264), `run_p13_library_tests.gd` (352), `run_p13_tutorial_tests.gd` (55), `run_p13_accessibility_tests.gd` (65), `run_p13_cheer_tests.gd` (39), `run_p13_recorder_tests.gd` (60), `capture_p13_evidence.gd`, the evidence set in `docs/evidence/p13/`, the PLAYTEST sheets and the documentation updates.
 
-AI-generated code and PLACEHOLDER copy. No human code review, spectator, novice or QA session, physical gamepad or physical keyboard test is claimed. No final art, audio or font was generated; the cheer cue and Kangaroo tones are code-generated placeholders owned by Shanti for replacement. Prompts and outputs are in the session transcript; no separate archive was created.
+AI-generated code and PLACEHOLDER copy. No human code review, spectator, novice or QA session, physical gamepad or physical keyboard test is claimed. No final art, audio or font was generated; the cheer cue and Kangaroo tones are code-generated placeholders owned by the UI/audio role for replacement. Prompts and outputs are in the session transcript; no separate archive was created.
 
 ### Scoring-family clarification — October 15, 2026
 
@@ -246,25 +246,25 @@ The owner clarified that Barya definitely counts even when everyone finishes. Co
 
 At the user's explicit direction to implement the approved Barya plan, OpenAI Codex generated and integrated the round-scoped offer policy, separate seeded RNG stream, objective state/controller and coin scene, Pugad/Place integration, actual-physics pickup/drop/recovery, committed-receipt scoring handoff, result/history/HUD cues, Library/tutorial copy and focused regression/performance runners. Codex also updated the tracker, design/provenance records and evidence. The technical run used Godot 4.7.2, synthetic seat/input events, real Godot Area2D/PhysicsServer overlaps, rendered captures, Windows export and exported startup smoke. Test logs, screenshots, measured limits, procedures and boundaries are in [Barya engineering evidence](evidence/barya/README.md); the user-approved scope/contract is in [the dated activation record](evidence/barya/activation_contract_2026-10-15.md). The request/plan and tool outputs are retained in this task transcript; no separate prompt archive was created.
 
-AI-generated and edited code, scenes, tests, documentation and placeholder copy are not represented as manually team-written. No human code review, named Barya owner, QA reviewer, human play session, physical-device test, final art/audio generation, independent approval or organizer approval is claimed. Francis and Carlos remain the development leads under the standing workflow; task-specific owner/capacity assignment and human review remain open. The coin and egg preview are code geometry marked DEBUG and are recorded in [ASSETS.md](ASSETS.md) for human replacement; they are not production assets. Programming assistance does not grant art/audio approval or change the full release manifest. Record the actual tool/area/extent in Form 03 preparation.
+AI-generated and edited code, scenes, tests, documentation and placeholder copy are not represented as manually team-written. No human code review, named Barya owner, QA reviewer, human play session, physical-device test, final art/audio generation, independent approval or organizer approval is claimed. the users remain the development leads under the standing workflow; task-specific owner/capacity assignment and human review remain open. The coin and egg preview are code geometry marked DEBUG and are recorded in [ASSETS.md](ASSETS.md) for human replacement; they are not production assets. Programming assistance does not grant art/audio approval or change the full release manifest. Record the actual tool/area/extent in Form 03 preparation.
 
 ### Map scenes and Lobby map selection — October 16, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated:
+At the user's request, Claude (Claude Opus 5.5 via Claude Code) generated:
 - `StageMap` (map scene root: DevMarkers → spawn/build/flag, Blocks → merged collision rectangles, validation and editor warnings) and `MapCatalog` (folder scan of `scenes/maps/`).
 - `ArenaLayout.map_scene` and the room's map visual hook.
 - The Lobby map row (scene label, `bind_map`, room polling, GameFlow `selected_map_id`, `--map=`).
-- With a one-off generator script (not kept): the map marker tile image and TileSet, the Blocks TileSet (Jorge's Blocks Sprite Sheet plus the debug tiles) and the Sample Map scene.
+- With a one-off generator script (not kept): the map marker tile image and TileSet, the Blocks TileSet (the team's Blocks Sprite Sheet plus the debug tiles) and the Sample Map scene.
 - `run_maps_tests.gd` (23 checks) and `capture_maps_evidence.gd`.
 
 The marker tiles are dev-only editing aids, never shown to players. No final art was generated. AI-generated code; no human code review claimed. Evidence: `docs/evidence/maps/README.md`.
 
 ### Tutorial map and map-loading fixes — October 16, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
+At the user's request, Claude (Claude Opus 5.5 via Claude Code):
 - Converted the tutorial stage into a map scene (`scenes/maps/tutorial.tscn`, written by a one-off generator, not kept). It was checked field-for-field against the verified layout before that `.tres` was removed.
 - Added the optional `StageMap` Precise settings, the `no_wall_slide` TileSet custom data and `arena.goal` naming.
-- Made cells and markers outside the stage decoration, so Jorge's framed Basic Map loads. Its Map Name and order were also set in the scene, because it still carried the Sample Map's.
+- Made cells and markers outside the stage decoration, so the team's framed Basic Map loads. Its Map Name and order were also set in the scene, because it still carried the Sample Map's.
 - Let the Lobby map row work during the tutorial (picking another map skips it) and rescan the maps folder on each Lobby.
 - Pointed the tutorial gate and tutorial tests at the map, and extended `run_maps_tests.gd` to 27 checks.
 
@@ -272,7 +272,7 @@ AI-generated code; no human code review claimed.
 
 ### Four keyboard layouts, clickable map row, Place block preview, Library Back — October 16, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
+At the user's request, Claude (Claude Opus 5.5 via Claude Code):
 - Added the K3 (IJKL) and K4 (numpad) keyboard layouts and moved K1 confirm from F to E (router, seat registry, prompt glyphs, device labels, key-chord recorder chords C25–C31).
 - Added the Lobby map row's clickable ◀ ▶ buttons, the Place ghost block preview with a facing-arrow badge, and the Library Back button.
 - Updated tests mechanically: F to E key presses, the Library keyboard names, and P05 one-use eggs.
@@ -282,8 +282,8 @@ AI-generated code; no human code review or physical keyboard rollover test claim
 
 ### Bug-fix round: long Cannon, broken blocks, pause, placement overlaps, explosives — October 16, 2026
 
-At Jorge's request (bug report: match showed only the map, pause/leave broken, bombs and recent blocks, remove first come, first served), Claude (Claude Opus 5.5 via Claude Code):
-- Found the cause of the map-only match: Jorge's Cannon path ran past the stage, which made the item catalog invalid. Added the path clamp, the lane clip to the build region (`ItemGeometry.clip_to_stage`) and skipping of invalid block scenes (`BlockCatalog.skipped`).
+At the user's request (bug report: match showed only the map, pause/leave broken, bombs and recent blocks, remove first come, first served), Claude (Claude Opus 5.5 via Claude Code):
+- Found the cause of the map-only match: the Cannon scene's path ran past the stage, which made the item catalog invalid. Added the path clamp, the lane clip to the build region (`ItemGeometry.clip_to_stage`) and skipping of invalid block scenes (`BlockCatalog.skipped`).
 - Fixed the pause panel listing empty seats as lost controllers.
 - Removed first come, first served (seat-order resolution, "Tile occupied" / "Invalid spot" notices) and let explosives blow up same-phase placements.
 - Added `run_fix_regression_tests.gd` (9 checks), rewrote `run_place_claim_tests.gd` and updated the explosives, Barya, P05, Library, match UI and blocks tests to the new rules.
@@ -292,11 +292,11 @@ AI-generated code; no human code review claimed. Evidence: `docs/evidence/fixes/
 
 ### Ledge climb and E / F confirm — October 16, 2026
 
-At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated the `ChickenController` ledge climb with its tuning keys, made F confirm for K1 alongside E, and wrote `run_ledge_climb_tests.gd` (21 checks). AI-generated code; no human code review or feel review claimed. Evidence: `docs/evidence/fixes/README.md`.
+At the user's request, Claude (Claude Opus 5.5 via Claude Code) generated the `ChickenController` ledge climb with its tuning keys, made F confirm for K1 alongside E, and wrote `run_ledge_climb_tests.gd` (21 checks). AI-generated code; no human code review or feel review claimed. Evidence: `docs/evidence/fixes/README.md`.
 
 ### Item event and stack integration — October 16, 2026
 
-At Jorge's request ("continue on phase tasks") and with his two design decisions (filter event eggs only; add the six P10 families to the match pool), Claude (Claude Opus 5.5 via Claude Code):
+At the user's request ("continue on phase tasks") and with the user's two design decisions (filter event eggs only; add the six P10 families to the match pool), Claude (Claude Opus 5.5 via Claude Code):
 - Generated the Pugad mode filter (`PugadEggPoolGenerator.allows_modes`, `EventSchedule.mode_ids`, `pugad_mode_ids` on the match rooms) and set the six P10 scenes to `in_main_game` with low provisional weights.
 - Wrote `run_item_mode_integration_tests.gd` (83 checks).
 - Updated stale test expectations that encoded the old dev-only P10 policy or older mode flags (P04, P07, P10, P13 Library, Barya).
@@ -305,7 +305,7 @@ AI-generated code; no human code review, playtest or balance review claimed. Evi
 
 ### Stabilization fixes and submission drafts — October 16, 2026
 
-At Jorge's request ("continue on phase task"), Claude (Claude Opus 5.5 via Claude Code):
+At the user's request ("continue on phase task"), Claude (Claude Opus 5.5 via Claude Code):
 - Fixed the P07 reset audit's stale expectations: one finisher per round, and a physics step after the teleport reset.
 - Fixed the tutorial Pugad copy priority and the Barya note text (`tutorial_coordinator.gd`, `tutorial_script.tres`).
 - Drafted `docs/SYNOPSIS_DRAFT.md` (Template 01 synopsis, trailer shot list, demo outline, capture schedule) and `docs/RELEASE_MANIFEST_DRAFT.md`.
@@ -314,10 +314,14 @@ The synopsis is AI-drafted submission copy and must be disclosed as such on Form
 
 ### Promoted P19 obstacles and windowed-suite fixes — October 16, 2026
 
-At Jorge's request ("continue on phasetasks"; he chose "pick 3 low-risk ones"), Claude (Claude Opus 5.5 via Claude Code):
+At the user's request ("continue on phasetasks"; he chose "pick 3 low-risk ones"), Claude (Claude Opus 5.5 via Claude Code):
 - Generated the Hagdan ng Bahay, Tinik-Tinik Strip and Yelo ng Sorbetero block scenes (DEBUG placeholder polygons and labels, written by a one-off script that was not kept).
 - Generated the `slippery` BlockData flag and the ice tuning and controller hook.
 - Wrote `run_p19_promoted_tests.gd` (25 checks).
 - Made the windowed P04/P05/P10 suites robust to the larger egg pool: free-cell placement and the full variant cycle.
 
 No final art or audio was generated. No human code, art or feel review is claimed. Evidence: `docs/evidence/p19_promoted/README.md`, `docs/evidence/stabilization/2026-10-16_windowed_suites.txt`.
+
+### Sneak hitbox — October 16, 2026
+
+At the user's request ("when sneaking the hitbox will be change to one tile"), Claude (Claude Opus 5.5 via Claude Code) generated `ChickenController.hit_rect()`, routed hazard and placement-clearance checks through it, and wrote `run_sneak_hitbox_tests.gd` (5 checks). AI-generated code; no human code review claimed.

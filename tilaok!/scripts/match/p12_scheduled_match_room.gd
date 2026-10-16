@@ -136,7 +136,7 @@ func _begin_pugad() -> void:
 
 ## Eggs follow the item catalog's mode flags: a Lagsanay round deals only Lagsanay-approved
 ## families, a stacked round only families approved for both its Main and its Twist. Pieces
-## already on the stage stay as they are (owner decision, Jorge 2026-10-16).
+## already on the stage stay as they are (user decision, 2026-10-16).
 func pugad_mode_ids() -> PackedStringArray:
 	return EventSchedule.mode_ids(current_entry())
 
@@ -335,15 +335,7 @@ func _actor_rects_except(excluded_seat: int) -> Array[Rect2]:
 		var actor := actors[seat_variant] as ChickenController
 		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
 			continue
-		rects.append(
-			Rect2(
-				(
-					actor.global_position
-					- Vector2(tuning.body_width_wu * 0.5, tuning.body_height_wu * 0.5)
-				),
-				Vector2(tuning.body_width_wu, tuning.body_height_wu)
-			)
-		)
+		rects.append(actor.hit_rect())
 	return rects
 
 
