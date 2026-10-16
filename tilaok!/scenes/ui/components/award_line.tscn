@@ -18,15 +18,40 @@ visible = false
 metadata/asset_id = "ui.round_result.award_icon"
 
 [node name="Badge" parent="." instance=ExtResource("2")]
+prefix_text = "P"
 layout_mode = 2
+size_flags_vertical = 0
 unique_name_in_owner = true
 
 [node name="TextLabel" type="Label" parent="."]
 layout_mode = 2
 text = "Award"
-theme_type_variation = &"BodyLabel"
+theme_type_variation = &"ResultText"
 size_flags_horizontal = 3
 autowrap_mode = 3
 custom_minimum_size = Vector2(200, 0)
 unique_name_in_owner = true
 
+
+[node name="ShapeHolder" parent="Badge" index="0"]
+custom_minimum_size = Vector2(22, 22)
+
+[node name="ShapeCircle" parent="Badge/ShapeHolder" index="0"]
+scale = Vector2(0.69, 0.69)
+
+[node name="ShapeTriangle" parent="Badge/ShapeHolder" index="1"]
+scale = Vector2(0.69, 0.69)
+
+[node name="ShapeSquare" parent="Badge/ShapeHolder" index="2"]
+scale = Vector2(0.69, 0.69)
+
+[node name="ShapeDiamond" parent="Badge/ShapeHolder" index="3"]
+scale = Vector2(0.69, 0.69)
+
+[node name="PrefixLabel" parent="Badge/Name" index="0"]
+theme_override_font_sizes/font_size = 16
+
+[node name="NumberLabel" parent="Badge/Name" index="1"]
+theme_override_font_sizes/font_size = 16
+
+[editable path="Badge"]

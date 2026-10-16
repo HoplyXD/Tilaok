@@ -5,3 +5,132 @@
 [node name="ScoreAwardLegend" type="GridContainer"]
 layout_mode = 2
 script = ExtResource("1_script")
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 2
+columns = 2
+
+[node name="Entry_tapos" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_tapos"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "T –"
+theme_type_variation = &"LegendTapos"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_tapos"]
+layout_mode = 2
+text = "Tapos"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16
+
+[node name="Entry_bayani" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_bayani"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "B –"
+theme_type_variation = &"LegendBayani"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_bayani"]
+layout_mode = 2
+text = "Bayani"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16
+
+[node name="Entry_bawi" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_bawi"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "R –"
+theme_type_variation = &"LegendBawi"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_bawi"]
+layout_mode = 2
+text = "Bawi"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16
+
+[node name="Entry_placement" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_placement"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "L –"
+theme_type_variation = &"LegendPlacement"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_placement"]
+layout_mode = 2
+text = "Placement"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16
+
+[node name="Entry_una" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_una"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "1 –"
+theme_type_variation = &"LegendUna"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_una"]
+layout_mode = 2
+text = "Una"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16
+
+[node name="Entry_patibong" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_patibong"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "P –"
+theme_type_variation = &"LegendPatibong"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_patibong"]
+layout_mode = 2
+text = "Patibong"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16
+
+[node name="Entry_barya" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 0)
+theme_override_constants/separation = 6
+
+[node name="Glyph" type="Label" parent="Entry_barya"]
+layout_mode = 2
+custom_minimum_size = Vector2(16, 0)
+text = "C –"
+theme_type_variation = &"LegendBarya"
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Entry_barya"]
+layout_mode = 2
+text = "Barya"
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 16

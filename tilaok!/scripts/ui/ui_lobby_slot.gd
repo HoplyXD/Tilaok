@@ -5,6 +5,7 @@ extends PanelContainer
 
 const FRAME_NORMAL := &"SlotPanel"
 const FRAME_READY := &"SlotPanelReady"
+const OPEN_BADGE_ALPHA := 0.45
 
 @onready var badge: UiPlayerBadge = %Badge
 @onready var _state_label: Label = %StateLabel
@@ -16,14 +17,17 @@ func bind(seat: Dictionary, map: UiPromptMap) -> void:
 	var joined := not seat.is_empty() and bool(seat.get("joined", false))
 	var is_ready := joined and bool(seat.get("ready", false))
 	theme_type_variation = FRAME_READY if is_ready else FRAME_NORMAL
+	# An open slot previews its fixed number + shape, faded, above the "Open slot" text.
+	badge.modulate.a = 1.0 if joined else OPEN_BADGE_ALPHA
 	if not joined:
-		_state_label.text = "OPEN SLOT"
+		badge.bind_preview(seat)
+		_state_label.text = "Open slot"
 		_device_label.text = _join_hint(map)
 		return
 	if not bool(seat.get("connected", true)):
-		_state_label.text = "DEVICE LOST"
+		_state_label.text = "Device lost"
 	else:
-		_state_label.text = "READY" if is_ready else "NOT READY"
+		_state_label.text = "Ready" if is_ready else "Not Ready"
 	_device_label.text = _device_name(seat)
 
 

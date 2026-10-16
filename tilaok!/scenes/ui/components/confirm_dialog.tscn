@@ -1,48 +1,139 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_confirm_dialog.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/vine_divider.tscn" id="4"]
 
 [node name="ConfirmDialog" type="PanelContainer"]
 layout_mode = 3
 script = ExtResource("1")
-theme_type_variation = &"ModalPanel"
-custom_minimum_size = Vector2(420, 140)
+theme_type_variation = &"PanelRivet"
+custom_minimum_size = Vector2(460, 0)
 visible = false
+
+[node name="Decor" type="Control" parent="."]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Backing" type="Panel" parent="Decor"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -46.0
+offset_top = -18.0
+offset_right = -6.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.03
+mouse_filter = 2
+theme_type_variation = &"PaperBacking"
+
+[node name="Art_Panel" type="TextureRect" parent="."]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+metadata/asset_id = "ui.common.confirm_panel"
+
+[node name="Rivets" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RivetTopLeft" type="Panel" parent="Rivets"]
+layout_mode = 1
+offset_left = -30.0
+offset_top = -16.0
+offset_right = -20.0
+offset_bottom = -6.0
+mouse_filter = 2
+theme_type_variation = &"Rivet"
+
+[node name="RivetTopRight" type="Panel" parent="Rivets"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = -16.0
+offset_right = 30.0
+offset_bottom = -6.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_type_variation = &"Rivet"
+
+[node name="RivetBottomLeft" type="Panel" parent="Rivets"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -30.0
+offset_top = 8.0
+offset_right = -20.0
+offset_bottom = 18.0
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"Rivet"
+
+[node name="RivetBottomRight" type="Panel" parent="Rivets"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 8.0
+offset_right = 30.0
+offset_bottom = 18.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"Rivet"
 
 [node name="Content" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 14
+
+[node name="Heading" type="Label" parent="Content"]
+visible = false
+layout_mode = 2
+text = "Heading"
+theme_type_variation = &"PaperTitle"
+horizontal_alignment = 1
+
+[node name="Vine" parent="Content" instance=ExtResource("4")]
+visible = false
+layout_mode = 2
 
 [node name="MessageLabel" type="Label" parent="Content"]
 layout_mode = 2
+custom_minimum_size = Vector2(380, 0)
 text = "Are you sure?"
-theme_type_variation = &"BodyLabel"
+theme_type_variation = &"DialogMessage"
 horizontal_alignment = 1
 autowrap_mode = 3
 unique_name_in_owner = true
 
-[node name="Menu" type="HBoxContainer" parent="Content"]
+[node name="Menu" type="VBoxContainer" parent="Content"]
 layout_mode = 2
+size_flags_horizontal = 4
 script = ExtResource("2")
-theme_override_constants/separation = 16
-alignment = 1
-horizontal = true
+theme_override_constants/separation = 12
 unique_name_in_owner = true
 
-[node name="YesButton" type="Button" parent="Content/Menu"]
+[node name="YesButton" parent="Content/Menu" instance=ExtResource("3")]
 layout_mode = 2
-custom_minimum_size = Vector2(120, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+custom_minimum_size = Vector2(360, 40)
 text = "Yes"
 unique_name_in_owner = true
 
-[node name="NoButton" type="Button" parent="Content/Menu"]
+[node name="NoButton" parent="Content/Menu" instance=ExtResource("3")]
 layout_mode = 2
-custom_minimum_size = Vector2(120, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+custom_minimum_size = Vector2(360, 40)
 text = "No"
 unique_name_in_owner = true
-

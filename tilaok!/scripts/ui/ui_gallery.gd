@@ -21,6 +21,7 @@ const SCREEN_IDS := [
 	"settings",
 	"library",
 	"events",
+	"components",
 ]
 const DEVICES := ["k1", "k2", "gamepad"]
 const FIRST_GAMEPAD_ID := 900

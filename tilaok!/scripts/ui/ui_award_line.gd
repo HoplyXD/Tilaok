@@ -10,6 +10,17 @@ const GLYPHS := {
 	"barya": "C",
 	"placement": "L",
 }
+## Text style per award key: the Legend<Name> Theme types carry the ScoreAward colours.
+const VARIATIONS := {
+	"tapos": &"LegendTapos",
+	"una": &"LegendUna",
+	"bayani": &"LegendBayani",
+	"patibong": &"LegendPatibong",
+	"bawi": &"LegendBawi",
+	"barya": &"LegendBarya",
+	"placement": &"LegendPlacement",
+}
+const VARIATION_PLAIN := &"ResultText"
 
 @onready var badge: UiPlayerBadge = %Badge
 @onready var _text_label: Label = %TextLabel
@@ -20,10 +31,7 @@ func bind(seat: Dictionary, text: String, award_key: String = "") -> void:
 	badge.bind_seat(seat)
 	var glyph := str(GLYPHS.get(award_key, ""))
 	_text_label.text = ("%s · %s" % [glyph, text]) if not glyph.is_empty() else text
-	if GLYPHS.has(award_key):
-		_text_label.add_theme_color_override("font_color", get_theme_color(award_key, "ScoreAward"))
-	else:
-		_text_label.remove_theme_color_override("font_color")
+	_text_label.theme_type_variation = VARIATIONS.get(award_key, VARIATION_PLAIN)
 
 
 func text_value() -> String:

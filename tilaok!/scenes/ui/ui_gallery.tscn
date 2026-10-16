@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/title_screen.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/lobby_screen.tscn" id="2"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/events_overlay.tscn" id="12"]
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="13"]
 [ext_resource type="Script" path="res://scripts/ui/ui_gallery.gd" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/component_sheet.tscn" id="15"]
 
 [node name="UiGallery" type="Control"]
 layout_mode = 3
@@ -24,7 +25,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("13")
-screen_scenes = Array[PackedScene]([ExtResource("1"), ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12")])
+screen_scenes = Array[PackedScene]([ExtResource("1"), ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("15")])
 
 [node name="Backdrop" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -174,6 +175,12 @@ toggle_mode = false
 layout_mode = 2
 focus_mode = 0
 text = "Event overlays"
+toggle_mode = false
+
+[node name="Btn_12" type="Button" parent="Chrome/Scroll/Col/ScreenList"]
+layout_mode = 2
+focus_mode = 0
+text = "Components"
 toggle_mode = false
 
 [node name="DeviceHeading" type="Label" parent="Chrome/Scroll/Col"]

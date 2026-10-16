@@ -7,7 +7,7 @@
 layout_mode = 3
 script = ExtResource("1")
 theme_type_variation = &"SlotPanel"
-custom_minimum_size = Vector2(270, 200)
+custom_minimum_size = Vector2(238, 300)
 
 [node name="Art_SlotFrame" type="TextureRect" parent="."]
 layout_mode = 2
@@ -18,25 +18,36 @@ metadata/asset_id = "ui.lobby.slot_frame"
 
 [node name="Content" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 6
 
 [node name="Badge" parent="Content" instance=ExtResource("2")]
 layout_mode = 2
 size_flags_horizontal = 4
+prefix_text = "Player "
+tint_darken = 0.45
 unique_name_in_owner = true
+
+[node name="PrefixLabel" parent="Content/Badge/Name" index="0"]
+theme_type_variation = &"BadgeNumberDark"
+theme_override_font_sizes/font_size = 28
+
+[node name="NumberLabel" parent="Content/Badge/Name" index="1"]
+theme_type_variation = &"BadgeNumberDark"
+theme_override_font_sizes/font_size = 28
 
 [node name="StateLabel" type="Label" parent="Content"]
 layout_mode = 2
-text = "OPEN SLOT"
-theme_type_variation = &"HeadingLabel"
+text = "Open slot"
+theme_type_variation = &"SlotState"
 horizontal_alignment = 1
 unique_name_in_owner = true
 
 [node name="DeviceLabel" type="Label" parent="Content"]
 layout_mode = 2
 text = ""
-theme_type_variation = &"CaptionLabel"
+theme_type_variation = &"SlotDevice"
 horizontal_alignment = 1
 autowrap_mode = 3
 unique_name_in_owner = true
 
+[editable path="Content/Badge"]

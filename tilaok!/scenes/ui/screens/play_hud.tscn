@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_play_hud.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_chip.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="4"]
 
 [node name="PlayHud" type="Control"]
@@ -50,19 +50,23 @@ theme_override_constants/separation = 8
 [node name="RoundLabel" type="Label" parent="HudBar/Row/Left/Top"]
 layout_mode = 2
 text = "Round 1"
-theme_type_variation = &"HudLabel"
+theme_type_variation = &"HudTitle"
 unique_name_in_owner = true
 
-[node name="ChallengeLabel" type="Label" parent="HudBar/Row/Left/Top"]
+[node name="Sub" type="HBoxContainer" parent="HudBar/Row/Left"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ChallengeLabel" type="Label" parent="HudBar/Row/Left/Sub"]
 layout_mode = 2
 text = "Karera"
-theme_type_variation = &"HudLabel"
+theme_type_variation = &"HudSub"
 unique_name_in_owner = true
 
-[node name="TwistTag" type="Label" parent="HudBar/Row/Left"]
+[node name="TwistTag" type="Label" parent="HudBar/Row/Left/Sub"]
 layout_mode = 2
 text = "TWIST"
-theme_type_variation = &"HudLabel"
+theme_type_variation = &"TwistTag"
 unique_name_in_owner = true
 
 [node name="Fill" type="Control" parent="HudBar/Row"]
@@ -71,22 +75,22 @@ size_flags_horizontal = 3
 
 [node name="ScoreRow1" parent="HudBar/Row" instance=ExtResource("3")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+size_flags_vertical = 4
 unique_name_in_owner = true
 
 [node name="ScoreRow2" parent="HudBar/Row" instance=ExtResource("3")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+size_flags_vertical = 4
 unique_name_in_owner = true
 
 [node name="ScoreRow3" parent="HudBar/Row" instance=ExtResource("3")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+size_flags_vertical = 4
 unique_name_in_owner = true
 
 [node name="ScoreRow4" parent="HudBar/Row" instance=ExtResource("3")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+size_flags_vertical = 4
 unique_name_in_owner = true
 
 [node name="Fill2" type="Control" parent="HudBar/Row"]

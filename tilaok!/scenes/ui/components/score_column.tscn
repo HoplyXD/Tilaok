@@ -17,6 +17,7 @@ animation = &"idle"
 offset = Vector2(0, -57)
 
 [node name="IdentityBadge" parent="." instance=ExtResource("2_badge")]
+prefix_text = "P"
 unique_name_in_owner = true
 
 [node name="ScoreLabel" type="Label" parent="."]

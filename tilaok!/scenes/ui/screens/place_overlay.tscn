@@ -24,26 +24,23 @@ standalone_theme = ExtResource("1")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 140.0
-grow_horizontal = 2
 offset_top = 72.0
+offset_bottom = 120.0
+grow_horizontal = 2
 theme_type_variation = &"SafeAreaMargin"
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_right = 400
 mouse_filter = 2
 
 [node name="Row" type="HBoxContainer" parent="TopRow"]
 layout_mode = 2
 theme_override_constants/separation = 16
-
-[node name="PhaseBanner" parent="TopRow/Row" instance=ExtResource("3")]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="Fill" type="Control" parent="TopRow/Row"]
-layout_mode = 2
-size_flags_horizontal = 3
+alignment = 1
 
 [node name="Countdown" parent="TopRow/Row" instance=ExtResource("4")]
 layout_mode = 2
+size_flags_vertical = 0
 unique_name_in_owner = true
 
 [node name="Right" type="MarginContainer" parent="."]
@@ -52,9 +49,10 @@ anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -400.0
-offset_top = 150.0
-offset_bottom = -60.0
+offset_left = -380.0
+offset_top = 74.0
+offset_right = -16.0
+offset_bottom = -150.0
 grow_horizontal = 0
 grow_vertical = 2
 mouse_filter = 2
@@ -63,6 +61,10 @@ mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 10
 
+[node name="PhaseBanner" parent="Right/Col" instance=ExtResource("3")]
+layout_mode = 2
+unique_name_in_owner = true
+
 [node name="GhostLegend" parent="Right/Col" instance=ExtResource("5")]
 layout_mode = 2
 unique_name_in_owner = true
@@ -70,7 +72,8 @@ unique_name_in_owner = true
 [node name="GhostStatus" type="Label" parent="Right/Col"]
 layout_mode = 2
 text = ""
-theme_type_variation = &"HudLabel"
+theme_type_variation = &"HudTitle"
+horizontal_alignment = 1
 autowrap_mode = 3
 unique_name_in_owner = true
 
@@ -130,22 +133,25 @@ theme_override_constants/separation = 20
 
 [node name="Pointer1" parent="Bottom/Col/PointerChips" instance=ExtResource("7")]
 layout_mode = 2
+prefix_text = "P"
 unique_name_in_owner = true
 
 [node name="Pointer2" parent="Bottom/Col/PointerChips" instance=ExtResource("7")]
 layout_mode = 2
+prefix_text = "P"
 unique_name_in_owner = true
 
 [node name="Pointer3" parent="Bottom/Col/PointerChips" instance=ExtResource("7")]
 layout_mode = 2
+prefix_text = "P"
 unique_name_in_owner = true
 
 [node name="Pointer4" parent="Bottom/Col/PointerChips" instance=ExtResource("7")]
 layout_mode = 2
+prefix_text = "P"
 unique_name_in_owner = true
 
 [node name="Tag" type="Label" parent="Bottom/Col"]
 layout_mode = 2
-text = "PLACEHOLDER Place overlay (ghost drawing stays in ItemGhost)"
+text = "PLACEHOLDER art · Place overlay (ghost drawing stays in ItemGhost)"
 theme_type_variation = &"PlaceholderTag"
-

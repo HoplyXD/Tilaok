@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="1"]
+
+[node name="ConfirmDialogPaper" instance=ExtResource("1")]
+theme_type_variation = &"PanelPaper"
+custom_minimum_size = Vector2(480, 0)
+
+[node name="Backing" parent="Decor" index="0"]
+visible = true
+
+[node name="Art_Panel" parent="." index="1"]
+metadata/asset_id = "ui.title.quit_panel"
+
+[node name="Rivets" parent="." index="2"]
+visible = false
+
+[node name="Heading" parent="Content" index="0"]
+visible = true
+text = "We're sorry to see you go :("
+theme_override_font_sizes/font_size = 40
+
+[node name="Vine" parent="Content" index="1"]
+visible = true
+
+[node name="MessageLabel" parent="Content" index="2"]
+theme_type_variation = &"DialogScript"

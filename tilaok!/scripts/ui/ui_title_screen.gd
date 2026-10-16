@@ -10,6 +10,7 @@ signal quit_requested
 @onready var _build_label: Label = %BuildLabel
 @onready var _join_prompt: UiPromptGlyph = %PressToJoinPrompt
 @onready var _quit_confirm: UiConfirmDialog = %QuitConfirm
+@onready var _quit_scrim: Control = %QuitScrim
 @onready var _start_button: Button = %StartButton
 @onready var _library_button: Button = %LibraryButton
 @onready var _settings_button: Button = %SettingsButton
@@ -55,6 +56,9 @@ func _on_screen_ready() -> void:
 	_settings_button.pressed.connect(func() -> void: settings_requested.emit())
 	_quit_button.pressed.connect(_on_quit_pressed)
 	_quit_confirm.confirmed.connect(func() -> void: quit_requested.emit())
+	_quit_confirm.visibility_changed.connect(
+		func() -> void: _quit_scrim.visible = _quit_confirm.visible
+	)
 	_menu.refresh_items()
 
 
@@ -89,7 +93,7 @@ func _back(_seat_index: int) -> bool:
 
 
 func _on_quit_pressed() -> void:
-	_quit_confirm.open("Quit Tilaok!?")
+	_quit_confirm.open("Are you sure you want to leave?")
 	_menu.set_active(false)
 	_quit_confirm.cancelled.connect(_on_quit_cancelled, CONNECT_ONE_SHOT)
 

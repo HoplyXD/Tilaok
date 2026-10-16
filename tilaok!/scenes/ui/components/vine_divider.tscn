@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[node name="VineDivider" type="Control"]
+custom_minimum_size = Vector2(360, 26)
+layout_mode = 3
+size_flags_horizontal = 4
+mouse_filter = 2
+metadata/asset_id = "ui.common.vine_divider"
+
+[node name="Art_Vine" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+metadata/asset_id = "ui.common.vine_divider"
+
+[node name="Placeholder" type="Node2D" parent="."]
+metadata/note = "PLACEHOLDER vine (graybox line + leaves). Hide this node when Art_Vine has the team's texture."
+
+[node name="Stem" type="Line2D" parent="Placeholder"]
+points = PackedVector2Array(14, 15, 50, 10, 95, 9, 140, 12, 185, 15, 230, 16, 275, 14, 315, 11, 346, 9)
+width = 3.0
+default_color = Color(0.471, 0.275, 0.137, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="LeafLeftUp" type="Polygon2D" parent="Placeholder"]
+position = Vector2(26, 13)
+rotation = -0.6
+color = Color(0.471, 0.275, 0.137, 1)
+polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)
+
+[node name="LeafLeftDown" type="Polygon2D" parent="Placeholder"]
+position = Vector2(20, 15)
+rotation = 0.55
+color = Color(0.471, 0.275, 0.137, 1)
+polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)
+
+[node name="LeafRightUp" type="Polygon2D" parent="Placeholder"]
+position = Vector2(334, 9)
+rotation = -2.55
+color = Color(0.471, 0.275, 0.137, 1)
+polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)
+
+[node name="LeafRightDown" type="Polygon2D" parent="Placeholder"]
+position = Vector2(340, 10)
+rotation = 2.5
+color = Color(0.471, 0.275, 0.137, 1)
+polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)

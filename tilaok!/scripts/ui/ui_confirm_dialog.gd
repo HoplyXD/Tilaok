@@ -31,7 +31,10 @@ func is_open() -> bool:
 	return visible
 
 
+## Yes / No are stacked, so up / down move; left / right keep working as before.
 func navigate(direction: String) -> bool:
+	if not _menu.horizontal:
+		direction = str({"left": "up", "right": "down"}.get(direction, direction))
 	return _menu.move(direction)
 
 

@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_title_screen.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog_paper.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="6"]
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -83,35 +84,27 @@ theme_override_constants/separation = 10
 size_flags_horizontal = 4
 unique_name_in_owner = true
 
-[node name="StartButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="StartButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
 layout_mode = 2
 custom_minimum_size = Vector2(360, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Start local match"
 unique_name_in_owner = true
 
-[node name="LibraryButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="LibraryButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
 layout_mode = 2
 custom_minimum_size = Vector2(360, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Library"
 unique_name_in_owner = true
 
-[node name="SettingsButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="SettingsButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
 layout_mode = 2
 custom_minimum_size = Vector2(360, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Settings"
 unique_name_in_owner = true
 
-[node name="QuitButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="QuitButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
 layout_mode = 2
 custom_minimum_size = Vector2(360, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Quit"
 unique_name_in_owner = true
 
@@ -126,6 +119,17 @@ layout_mode = 2
 text = "build"
 theme_type_variation = &"CaptionLabel"
 horizontal_alignment = 1
+unique_name_in_owner = true
+
+[node name="QuitScrim" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"Scrim"
 unique_name_in_owner = true
 
 [node name="QuitConfirm" parent="." instance=ExtResource("5")]

@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_pause_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/seat_pill.tscn" id="4"]
 [ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/vine_divider.tscn" id="8"]
 
 [node name="PauseScreen" type="Control"]
 layout_mode = 3
@@ -38,8 +40,28 @@ mouse_filter = 2
 
 [node name="Panel" type="PanelContainer" parent="Center"]
 layout_mode = 2
-theme_type_variation = &"Card"
-custom_minimum_size = Vector2(520, 0)
+theme_type_variation = &"PanelPaper"
+custom_minimum_size = Vector2(500, 0)
+
+[node name="Decor" type="Control" parent="Center/Panel"]
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Backing" type="Panel" parent="Center/Panel/Decor"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -46.0
+offset_top = -18.0
+offset_right = -6.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.025
+mouse_filter = 2
+theme_type_variation = &"PaperBacking"
 
 [node name="Art_Panel" type="TextureRect" parent="Center/Panel"]
 layout_mode = 2
@@ -50,13 +72,16 @@ metadata/asset_id = "ui.pause.panel"
 
 [node name="Content" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
 [node name="PausedLabel" type="Label" parent="Center/Panel/Content"]
 layout_mode = 2
-text = "PAUSED"
-theme_type_variation = &"HeadingLabel"
+text = "Paused"
+theme_type_variation = &"PaperTitle"
 horizontal_alignment = 1
+
+[node name="Vine" parent="Center/Panel/Content" instance=ExtResource("8")]
+layout_mode = 2
 
 [node name="Owner" type="HBoxContainer" parent="Center/Panel/Content"]
 layout_mode = 2
@@ -66,60 +91,63 @@ alignment = 1
 [node name="OwnerLabel" type="Label" parent="Center/Panel/Content/Owner"]
 layout_mode = 2
 text = "Paused by"
-theme_type_variation = &"BodyLabel"
+theme_type_variation = &"PaperScript"
 unique_name_in_owner = true
 
 [node name="OwnerBadge" parent="Center/Panel/Content/Owner" instance=ExtResource("3")]
 layout_mode = 2
+prefix_text = "Player "
+tint_darken = 0.45
 unique_name_in_owner = true
+
+[node name="PrefixLabel" parent="Center/Panel/Content/Owner/OwnerBadge/Name" index="0"]
+theme_type_variation = &"BadgeNumberDark"
+
+[node name="NumberLabel" parent="Center/Panel/Content/Owner/OwnerBadge/Name" index="1"]
+theme_type_variation = &"BadgeNumberDark"
 
 [node name="ReasonLabel" type="Label" parent="Center/Panel/Content"]
 layout_mode = 2
 text = "Reason"
-theme_type_variation = &"CaptionLabel"
+theme_type_variation = &"PaperHeading"
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
+autowrap_mode = 3
 unique_name_in_owner = true
 
 [node name="RosterHeading" type="Label" parent="Center/Panel/Content"]
 layout_mode = 2
 text = "Everyone must be ready to resume"
-theme_type_variation = &"BodyLabel"
+theme_type_variation = &"PaperScript"
 horizontal_alignment = 1
 
 [node name="Roster" type="VBoxContainer" parent="Center/Panel/Content"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 6
 
 [node name="Roster1" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+theme_type_variation = &"PillSeat1"
 unique_name_in_owner = true
 
 [node name="Roster2" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+theme_type_variation = &"PillSeat2"
 unique_name_in_owner = true
 
 [node name="Roster3" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
+theme_type_variation = &"PillSeat3"
 unique_name_in_owner = true
 
 [node name="Roster4" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
 layout_mode = 2
-theme_type_variation = &"RowPanelCompact"
-unique_name_in_owner = true
-
-[node name="CountdownLabel" type="Label" parent="Center/Panel/Content"]
-layout_mode = 2
-text = "Resuming in 3"
-theme_type_variation = &"HeadingLabel"
-horizontal_alignment = 1
+theme_type_variation = &"PillSeat4"
 unique_name_in_owner = true
 
 [node name="ReclaimPanel" type="PanelContainer" parent="Center/Panel/Content"]
 layout_mode = 2
-theme_type_variation = &"ToastPanel"
+theme_type_variation = &"PillWarning"
 visible = false
 unique_name_in_owner = true
 
@@ -127,7 +155,15 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Seat lost its controller"
 theme_type_variation = &"BodyLabel"
+horizontal_alignment = 1
 autowrap_mode = 3
+unique_name_in_owner = true
+
+[node name="CountdownLabel" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+text = "Resuming in 3"
+theme_type_variation = &"PaperHeading"
+horizontal_alignment = 1
 unique_name_in_owner = true
 
 [node name="MenuList" type="VBoxContainer" parent="Center/Panel/Content"]
@@ -136,51 +172,43 @@ script = ExtResource("5")
 theme_override_constants/separation = 8
 unique_name_in_owner = true
 
-[node name="ResumeButton" type="Button" parent="Center/Panel/Content/MenuList"]
+[node name="ResumeButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
 layout_mode = 2
-custom_minimum_size = Vector2(320, 38)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+custom_minimum_size = Vector2(0, 38)
 text = "Ready / Resume"
 unique_name_in_owner = true
 
-[node name="SettingsButton" type="Button" parent="Center/Panel/Content/MenuList"]
+[node name="SettingsButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Settings"
 unique_name_in_owner = true
 
-[node name="LibraryButton" type="Button" parent="Center/Panel/Content/MenuList"]
+[node name="LibraryButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Library"
 unique_name_in_owner = true
 
-[node name="LeaveButton" type="Button" parent="Center/Panel/Content/MenuList"]
+[node name="LeaveButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Leave match"
 unique_name_in_owner = true
 
-[node name="SkipTutorialButton" type="Button" parent="Center/Panel/Content/MenuList"]
+[node name="SkipTutorialButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
 visible = false
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
 text = "Skip tutorial"
 unique_name_in_owner = true
 
 [node name="Tag" type="Label" parent="Center/Panel/Content"]
 layout_mode = 2
-text = "PLACEHOLDER pause / reconnect"
+text = "PLACEHOLDER art · pause / reconnect"
 theme_type_variation = &"PlaceholderTag"
+theme_override_colors/font_color = Color(0.616, 0.361, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 horizontal_alignment = 1
 
 [node name="LeaveConfirm" parent="." instance=ExtResource("6")]
@@ -198,3 +226,4 @@ grow_horizontal = 2
 grow_vertical = 2
 unique_name_in_owner = true
 
+[editable path="Center/Panel/Content/Owner/OwnerBadge"]

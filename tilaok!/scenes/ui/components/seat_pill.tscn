@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="1"]
+
+[node name="SeatPill" instance=ExtResource("1")]
+custom_minimum_size = Vector2(0, 32)
+theme_type_variation = &"PillSeat1"
+
+[node name="Row" parent="." index="0"]
+alignment = 1
+
+[node name="Badge" parent="Row" index="0"]
+prefix_text = "Player "
+use_seat_tint = false
+
+[node name="StateLabel" parent="Row" index="1"]
+size_flags_horizontal = 0

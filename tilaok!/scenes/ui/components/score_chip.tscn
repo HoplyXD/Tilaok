@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="1"]
+
+[node name="ScoreChip" instance=ExtResource("1")]
+theme_type_variation = &"ScoreChip"
+
+[node name="Badge" parent="Row" index="0"]
+tint_darken = 0.45
+
+[node name="PrefixLabel" parent="Row/Badge/Name" index="0"]
+theme_type_variation = &"BadgeNumberDark"
+
+[node name="NumberLabel" parent="Row/Badge/Name" index="1"]
+theme_type_variation = &"BadgeNumberDark"
+
+[node name="StateLabel" parent="Row" index="1"]
+theme_type_variation = &"ChipState"
+
+[node name="ScoreLabel" parent="Row" index="2"]
+theme_type_variation = &"ChipLabel"
+
+[editable path="Row/Badge"]

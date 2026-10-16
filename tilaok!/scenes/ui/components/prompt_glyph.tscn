@@ -5,18 +5,27 @@
 [node name="PromptGlyph" type="HBoxContainer"]
 layout_mode = 3
 script = ExtResource("1")
-theme_override_constants/separation = 6
+theme_override_constants/separation = 10
+
+[node name="ActionLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Action"
+theme_type_variation = &"PromptAction"
+vertical_alignment = 1
+unique_name_in_owner = true
 
 [node name="GlyphPanel" type="PanelContainer" parent="."]
 layout_mode = 2
-theme_type_variation = &"RowPanel"
+size_flags_vertical = 4
+theme_type_variation = &"KeyCap"
 
 [node name="GlyphLabel" type="Label" parent="GlyphPanel"]
 layout_mode = 2
 text = "?"
-theme_type_variation = &"BodyLabel"
+theme_type_variation = &"KeyCapLabel"
 horizontal_alignment = 1
-custom_minimum_size = Vector2(28, 0)
+vertical_alignment = 1
+custom_minimum_size = Vector2(30, 48)
 unique_name_in_owner = true
 
 [node name="Art_Glyph" type="TextureRect" parent="."]
@@ -28,10 +37,3 @@ custom_minimum_size = Vector2(28, 28)
 visible = false
 metadata/asset_id = "ui.common.prompt_glyph"
 unique_name_in_owner = true
-
-[node name="ActionLabel" type="Label" parent="."]
-layout_mode = 2
-text = "Action"
-theme_type_variation = &"BodyLabel"
-unique_name_in_owner = true
-
