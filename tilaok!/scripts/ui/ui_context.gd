@@ -8,7 +8,7 @@ const SAMPLE_4P_PATH := "res://data/ui/sample_match_4p.tres"
 const SAMPLE_2P_PATH := "res://data/ui/sample_match_2p.tres"
 const PROMPT_MAP_PATH := "res://data/ui/prompt_map.tres"
 const LIBRARY_TEXT_PATH := "res://data/ui/library_text.tres"
-const DEVICE_KINDS := ["k1", "k2", "gamepad"]
+const DEVICE_KINDS := ["k1", "k2", "k3", "k4", "gamepad"]
 
 var seats: Array[Dictionary] = []
 var player_count := 4
@@ -69,7 +69,8 @@ static func sample_seats(count: int) -> Array[Dictionary]:
 static func device_for_seat(seat: Dictionary) -> String:
 	if str(seat.get("device_kind", "")) == "gamepad":
 		return "gamepad"
-	return "k2" if str(seat.get("keyboard_layout", "")) == "K2" else "k1"
+	var layout := str(seat.get("keyboard_layout", "K1")).to_lower()
+	return layout if layout in ["k1", "k2", "k3", "k4"] else "k1"
 
 
 func joined_seats() -> Array[Dictionary]:

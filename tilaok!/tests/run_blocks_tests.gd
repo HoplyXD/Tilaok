@@ -245,13 +245,19 @@ func _test_cannon() -> void:
 	var ids := _arm([[CANNON, Vector2i(12, 14)]], 1)
 	var cannon := room.items.piece_for(ids[0]) as StageBlock
 	var behavior := cannon.behavior as LauncherBehavior
+	# The Cannon's Path2D is drawn past the stage edge (Jorge, 2026-10-16), so the lane is cut at
+	# the build region's right edge: from the barrel's right side (x 832) to x 1792.
+	var expected_lane := room.arena.build_region.end.x - 13.0 * 64.0
 	_check(
 		(
 			behavior != null
 			and behavior.lane_dir == Vector2.RIGHT
-			and is_equal_approx(behavior.lane_length, 5.0 * 64.0)
+			and is_equal_approx(behavior.lane_length, expected_lane)
 		),
-		"Cannon fires right along its 5-cell Path2D"
+		(
+			"Cannon fires right along its Path2D, cut at the build region edge (%s wu, expected %s)"
+			% [behavior.lane_length if behavior != null else -1.0, expected_lane]
+		)
 	)
 	_check(
 		is_equal_approx(cannon.behavior.tuning.item_launcher_cooldown_s, 2.0),

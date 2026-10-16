@@ -103,6 +103,7 @@ func attach(p_room: P05MatchRoom) -> void:
 	pause_screen.library_requested.connect(_open_overlay.bind(LIBRARY_SCENE))
 	pause_screen.leave_confirmed.connect(_on_leave_confirmed)
 	lobby_screen.leave_requested.connect(_on_lobby_leave)
+	lobby_screen.map_step_requested.connect(func(step: int) -> void: room.request_map_step(step))
 	lobby_screen.back_requested.connect(_on_lobby_back)
 	debug_overlay.join_requested.connect(func(layout: String) -> void: room.join_keyboard(layout))
 	debug_overlay.start_requested.connect(func() -> void: room.start_match())
@@ -498,6 +499,7 @@ func _apply() -> void:
 	match phase:
 		MatchPhaseController.Phase.LOBBY:
 			lobby_screen.bind_live(room.input_router.registry, prompt_map)
+			lobby_screen.bind_map(room.map_choice_label, room.map_selection_enabled)
 		MatchPhaseController.Phase.PUGAD:
 			_apply_pugad(seats)
 		MatchPhaseController.Phase.PLACE:
@@ -751,7 +753,7 @@ func _first_device_kind(seats: Array[Dictionary]) -> String:
 	return "k1"
 
 
-## "Claim egg: F / Enter / South" for the device kinds actually seated (all three if nobody is).
+## "Claim egg: E / Enter / South" for the device kinds actually seated (all three if nobody is).
 func _hint(action: String) -> String:
 	var kinds: Array[String] = []
 	for seat in room.input_router.registry.joined_seats():

@@ -3,8 +3,9 @@ extends RefCounted
 
 
 ## Resolve every player's pending construction edit against one immutable stage snapshot.
-## Cleanup targets are unioned first; remaining edits are considered in confirmation order
-## (first come, first served) when they carry `confirm_order`, else in ascending seat order.
+## Cleanup targets are unioned first; remaining edits are considered in ascending seat order (a
+## later seat whose placement overlaps an earlier one is refused). Explosives (category
+## "explosive") also blow up placements made in the same phase inside their blast area.
 static func resolve(
 	definitions: ItemDefinitions,
 	arena: ArenaDefinition,
@@ -98,23 +99,10 @@ static func resolve(
 		if not edits_by_seat.has(seat_index):
 			edits_by_seat[seat_index] = []
 		edits_by_seat[seat_index].append(edit.duplicate(true))
-	# First come, first served: seats resolve in confirmation order when edits carry one
-	# (`confirm_order`, from MatchPlacementController); otherwise in ascending seat order.
-	var seat_order: Dictionary = {}
-	for seat_key in edits_by_seat:
-		var order := 1_000_000 + int(seat_key)
-		for edit in edits_by_seat[seat_key]:
-			if (edit as Dictionary).has("confirm_order"):
-				order = mini(order, int(edit.confirm_order))
-		seat_order[seat_key] = order
 	var seats: Array = edits_by_seat.keys()
-	seats.sort_custom(
-		func(left: int, right: int) -> bool:
-			if int(seat_order[left]) != int(seat_order[right]):
-				return int(seat_order[left]) < int(seat_order[right])
-			return left < right
-	)
+	seats.sort()
 	var accepted: Array[Dictionary] = []
+	var accepted_footprints: Array[Rect2] = []
 	var committed_snapshot: Array[PlacedItem] = remaining_snapshot.duplicate()
 	for seat_variant in seats:
 		var seat_index := int(seat_variant)
@@ -170,14 +158,16 @@ static func resolve(
 			record.footprint_rect = verdict.footprint
 			seat_additions.append(record)
 		if seat_reason.is_empty():
-			for edit in seat_edits:
-				accepted.append(edit)
+			for index in seat_edits.size():
+				accepted.append(seat_edits[index])
+				accepted_footprints.append(seat_additions[index].footprint_rect)
 			var accepted_ids: Dictionary = {}
 			for addition in seat_additions:
 				accepted_ids[addition.instance_id] = true
 			committed_snapshot.append_array(seat_additions)
 		else:
 			rejected[seat_index] = seat_reason
+	_blast_same_phase(definitions, one_shot_edits, accepted, accepted_footprints, rejected)
 	var signature_rows := PackedStringArray()
 	for item in remaining_snapshot:
 		signature_rows.append(item.signature())
@@ -203,3 +193,28 @@ static func resolve(
 		"rejections": rejected,
 		"signature": "\n".join(signature_rows),
 	}
+
+
+## Explosives (Bomb, Dynamite, Nuke) also destroy pieces placed in this same Place phase when
+## their footprint touches the blast area (requested by Jorge, 2026-10-16): the placement simply
+## disappears. Walis Cleanup keeps its contract and spares same-phase pieces.
+static func _blast_same_phase(
+	definitions: ItemDefinitions,
+	one_shot_edits: Array[Dictionary],
+	accepted: Array[Dictionary],
+	footprints: Array[Rect2],
+	rejected: Dictionary
+) -> void:
+	for blast in one_shot_edits:
+		var found := definitions.find_variant(str(blast.variant_key))
+		if found.is_empty() or (found.family as ItemFamilyDefinition).category != "explosive":
+			continue
+		var area: Rect2 = blast.area
+		var name := (found.family as ItemFamilyDefinition).working_name
+		for index in range(accepted.size() - 1, -1, -1):
+			if not footprints[index].intersects(area, false):
+				continue
+			var seat := int(accepted[index].get("seat_index", -1))
+			rejected[seat] = "Blown up by P%d's %s" % [int(blast.seat_index) + 1, name]
+			accepted.remove_at(index)
+			footprints.remove_at(index)

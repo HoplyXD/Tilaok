@@ -1,0 +1,110 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+PASS every layout maps confirm / rotate / move / jump / ready to its own keys: []
+PASS F no longer confirms (WASD now confirms with E)
+PASS seats follow join order, not the layout: numpad joined first is P1 ([0, 1, 2, 3])
+PASS every action has a prompt for all five devices: []
+PASS prompts show E / O / Enter / Num 0 to confirm
+PASS a numpad seat reads numpad prompts
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+PASS the Place ghost shows the Spikes block itself, upright, with its name
+PASS rotating turns the preview a quarter turn and the facing arrow reads 90°
+PASS switching blocks replaces the preview (one preview, now Kaing)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _ready (res://scripts/flow/game_flow.gd:71)
+       [4] _test_map_buttons_and_library_back (res://tests/run_controls_tests.gd:213)
+       [5] _run (res://tests/run_controls_tests.gd:40)
+       [6] _test_ghost_preview (res://tests/run_controls_tests.gd:196)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _ready (res://scripts/flow/game_flow.gd:71)
+       [4] _test_map_buttons_and_library_back (res://tests/run_controls_tests.gd:213)
+       [5] _run (res://tests/run_controls_tests.gd:40)
+       [6] _test_ghost_preview (res://tests/run_controls_tests.gd:196)
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _test_map_buttons_and_library_back (res://tests/run_controls_tests.gd:218)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _test_map_buttons_and_library_back (res://tests/run_controls_tests.gd:218)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS the Lobby map row has clickable arrows
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _enter_match (res://scripts/flow/game_flow.gd:186)
+       [4] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [5] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _enter_match (res://scripts/flow/game_flow.gd:186)
+       [4] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [5] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS clicking ▶ with the mouse picks the next map (default -> tutorial)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [6] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [6] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS clicking ◀ goes back
+PASS the Library has a Back button that leaves with one click
+CONTROLS_TESTS checks=13 failures=0

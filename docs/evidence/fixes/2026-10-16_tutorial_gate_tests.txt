@@ -1,0 +1,49 @@
+PASS default ArenaLayout reproduces the literal geometry signature
+PASS default build region matches
+PASS default protected goal matches
+PASS default protected spawn matches
+PASS default goal trigger matches
+PASS default spawn feet match
+PASS default id
+PASS default surfaces keep id, immutability and wall eligibility
+PASS default surface count is unchanged (9)
+PASS tutorial layout id
+PASS tutorial keeps arena.floor identical to the default stage
+PASS tutorial keeps arena.base_a identical to the default stage
+PASS tutorial keeps arena.base_b identical to the default stage
+PASS tutorial keeps arena.base_c identical to the default stage
+PASS tutorial keeps arena.base_d identical to the default stage
+PASS spawn, protected spawn and build region are unchanged
+PASS arena.goal is wall-INELIGIBLE (no kicks off the flag ledge)
+PASS arena.goal_cap is wall-INELIGIBLE (no kicks off the flag ledge)
+PASS ledge top is y=480 wu (got 480.0)
+PASS flag trigger rests exactly on the ledge top
+PASS BUILD HERE zone is defined
+PASS BUILD HERE zone is inside the build region
+PASS BUILD HERE zone avoids the protected spawn and goal clearance
+PASS BUILD HERE zone overlaps no immutable base geometry
+PASS flag sits 7.5 tiles above the floor (got 7.5)
+PASS the half-tile ledge cap uses a custom (non-tile) visual
+PASS tutorial layout: floor -> Base A with the real controller
+PASS tutorial layout: Base A -> Base B
+PASS tutorial layout: Base B -> Base C
+PASS tutorial layout: Base C -> Base D (end of the base route)
+PASS base route alone does not reach the flag
+PASS no-build search: flag never reached in 1860 scripted attempts
+PASS no-build highest feet y=511.52 stays below the ledge top y=480.00
+PASS build.hollow_blocks.cell_1x1: at least one BUILD HERE placement reaches the flag
+PASS build.hollow_blocks.stack_2x3: at least one BUILD HERE placement reaches the flag
+PASS build.bamboo_bridge.span_4x1: at least one BUILD HERE placement reaches the flag
+PASS intended answer reaches the flag: 1x1 floating beside the wall
+PASS intended answer reaches the flag: 2x3 turned flat on Base D
+PASS intended answer reaches the flag: Tulay one tile above Base D
+PASS wrong placement (far left, floating) does not reach the flag
+PASS wrong placement (on Base A) does not reach the flag
+PASS wrong placement (above Base B) does not reach the flag
+PASS wrong placement (beside Base C) does not reach the flag
+PASS wrong placement (on the floor under D) does not reach the flag
+PASS a piece is accepted in the BUILD HERE zone
+PASS tutorial arena geometry is identical across consecutive rounds
+PASS construction persists unchanged across consecutive rounds
+PASS layout id stays tutorial for the whole match
+TUTORIAL_GATE_TESTS checks=48 failures=0 attempts=3341

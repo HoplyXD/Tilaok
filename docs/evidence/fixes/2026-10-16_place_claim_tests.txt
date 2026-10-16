@@ -1,0 +1,15 @@
+PASS the match selector offers Spikes, Cannon and the construction blocks: ["build.hollow_blocks.cell_1x1", "build.hollow_blocks.stack_2x3", "build.bamboo_bridge.span_4x1", "build.solid_block.slab_3x1", "build.wood_box.box_2x2", "build.collapsing_block.cell_1x1", "block.spikes.main", "block.cannon.main", "explosive.bomb.main", "explosive.dynamite.main", "explosive.nuke.main"]
+PASS seeded Pugad eggs include Spikes and Cannon (11 variants seen)
+PASS single-size blocks are labelled by name only
+PASS two placements on one spot: the lower seat keeps it, confirmation order does not matter
+PASS the refused player is told: Tile occupied
+PASS other refusals read Invalid spot; the stage itself reads Tile occupied
+PASS P2 confirms a spot
+PASS P1 is not blocked by P2's confirmed spot (no first come, first served)
+PASS both confirmed the same spot: P1 (lower seat) gets it even though P2 confirmed first
+PASS P2 is told Tile occupied: P2: Tile occupied
+PASS at the timer, a valid unconfirmed placement still counts; seat order decides ([0])
+PASS both spike placements commit and Play starts
+PASS landing on placed spikes eliminates the chicken in a real match
+PASS the race ledger records the spike elimination
+PLACE_CLAIM_TESTS checks=14 failures=0

@@ -22,6 +22,7 @@ const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
 ## still selects it explicitly.
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 const ROUTE_PREFIX := "--match-route="
+const MAP_PREFIX := "--map="
 const ROUTE_LIFECYCLE := "lifecycle"
 const ROUTE_FIRST_PLAYABLE := "first_playable"
 ## `-- --match-seed=3` reproduces a match for a facilitator or a bug report (never shown in play).
@@ -33,8 +34,9 @@ const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
 const PLAYTEST_PROFILE := "karera_slice"
-## Guided first match: a stage whose flag ledge needs a built piece, used for one match only.
-const TUTORIAL_LAYOUT := preload("res://data/stage/tutorial_arena_layout.tres")
+## Guided first match: the Tutorial map (scenes/maps/tutorial.tscn), whose flag ledge needs a
+## built piece. Its id is also the tutorial coach's layout id.
+const TUTORIAL_MAP_ID := TutorialCoordinator.TUTORIAL_LAYOUT_ID
 const TUTORIAL_SCRIPT_PATH := "res://data/ui/tutorial_script.tres"
 
 var state := State.TITLE
@@ -52,6 +54,8 @@ var library_text: UiLibraryText
 var tutorial_session := TutorialSession.new()
 var tutorial_script: TutorialScript
 var tutorial: TutorialCoordinator
+## The map for the next match (MapCatalog id; "default" is the built-in stage). Session only.
+var selected_map_id := MapCatalog.DEFAULT_ID
 
 var _screen: UiScreen
 
@@ -63,6 +67,9 @@ func _ready() -> void:
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	library_text = load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 	tutorial_script = load(TUTORIAL_SCRIPT_PATH) as TutorialScript
+	var requested_map := map_from_args(OS.get_cmdline_user_args())
+	if MapCatalog.ids().has(requested_map):
+		selected_map_id = requested_map
 	var requested_route := route_from_args(OS.get_cmdline_user_args())
 	if requested_route == ROUTE_LIFECYCLE:
 		match_scene = LIFECYCLE_SCENE
@@ -171,13 +178,35 @@ func _enter_match() -> void:
 	room.auto_start_on_ready = true
 	room.presentation_settings = settings
 	room.allow_harness_button = not harness_mode
+	# Rescan scenes/maps/ so a map saved while the game runs shows up in this Lobby.
+	MapCatalog.reload()
 	# One map per match: the layout is chosen here, once, before the room builds its arena.
-	if tutorial_session.wants_tutorial_layout():
-		room.arena_layout = TUTORIAL_LAYOUT
+	# While the guided tutorial is pending the match is on the Tutorial map; once it is done or
+	# skipped, a left-over Tutorial selection falls back to the default stage.
+	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
+		selected_map_id = TUTORIAL_MAP_ID
+	elif selected_map_id == TUTORIAL_MAP_ID:
+		selected_map_id = MapCatalog.DEFAULT_ID
+	room.arena_layout = MapCatalog.layout_for(selected_map_id)
+	room.map_choice_label = map_label(selected_map_id)
+	room.map_selection_enabled = MapCatalog.ids().size() > 1
 	room.flow_requested.connect(_on_flow_requested)
 	room.return_requested.connect(_on_room_return)
 	add_child(room)
 	_attach_tutorial()
+
+
+## Lobby map choice. The Tutorial map is the guided match: picking it (re)starts the tutorial for
+## this session; picking any other map while the tutorial is pending skips it (as the pause menu's
+## Skip tutorial does). Library > Replay tutorial also brings it back.
+func _choose_map(map_id: String) -> void:
+	if map_id == TUTORIAL_MAP_ID:
+		if not tutorial_session.is_active():
+			tutorial_session.replay()
+	elif tutorial_session.is_active():
+		tutorial_session.skip()
+	selected_map_id = map_id
+	_enter_match()
 
 
 func _start_replay() -> void:
@@ -210,6 +239,8 @@ func _on_flow_requested(kind: StringName) -> void:
 			# Replay from a room that held the tutorial stage: a fresh room, started at once.
 			_enter_match()
 			_start_replay()
+		&"map_next", &"map_prev":
+			_choose_map(MapCatalog.cycle(selected_map_id, 1 if kind == &"map_next" else -1))
 		&"harness":
 			_open_harness()
 		&"quit":
@@ -307,6 +338,22 @@ static func seed_from_args(arguments: PackedStringArray) -> int:
 		var text := argument.trim_prefix(SEED_PREFIX)
 		if text.is_valid_int() and int(text) >= 0:
 			result = int(text)
+	return result
+
+
+## "Sample Map  (2/3)": the map's name and its place in the selection.
+static func map_label(map_id: String) -> String:
+	var all := MapCatalog.ids()
+	var entry := MapCatalog.entry_for(map_id)
+	return "%s  (%d/%d)" % [str(entry.get("name", map_id)), all.find(map_id) + 1, all.size()]
+
+
+## `--map=<id>` (a scenes/maps/ file name, or "default"); "" when absent.
+static func map_from_args(arguments: PackedStringArray) -> String:
+	var result := ""
+	for argument in arguments:
+		if argument.begins_with(MAP_PREFIX):
+			result = argument.trim_prefix(MAP_PREFIX)
 	return result
 
 

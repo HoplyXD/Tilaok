@@ -86,6 +86,8 @@ The measured P02 baseline controls are left/right and jump only; that historical
 
 New keys (UNMEASURED candidates): `sneak_enabled` true, `sneak_height_wu` 56 (1×1 body), `glide_enabled` true, `glide_fall_cap_wu_s` 180 (wall slide is 240), `block_box_push_speed_wu_s` 160, `block_box_friction_wu_s2` 2400, `block_collapse_delay_s` 2.0, `block_collapse_respawn_s` 3.0, and item weights `item_solid_block_weight` / `item_wood_box_weight` / `item_collapsing_block_weight` 50. Synthetic measurements (Godot 4.7.stable, Item Lab, seed 12345, 60 Hz): glide max 180.0 wu/s; box push 120 wu over 45 ticks; collapse after 120 ticks (2.00 s); respawn after 181 ticks (3.02 s). See [blocks evidence](evidence/blocks/README.md). Human feel review is still needed.
 
+**Ledge climb (2026-10-16, requested by Jorge; UNMEASURED candidates):** `ledge_climb_enabled` true, `ledge_reach_above_head_wu` 24, `ledge_reach_below_head_wu` 64, `ledge_climb_seconds` 0.22, `ledge_climb_max_rise_wu_s` 240. Synthetic check (Item Lab, 60 Hz): a plain jump peaks with the feet at 768 wu and cannot reach the top of a 4-tile wall (704 wu); holding toward the wall, the chicken grabs it and stands at 704 wu. See [fix evidence](evidence/fixes/README.md). Human feel review is still needed.
+
 ### Block scenes, Spikes, Cannon and stun — October 14, 2026
 
 **PROTOTYPE VALUES — UNMEASURED by players.** Per-block values live in each scene's BlockData (`tilaok!/scenes/blocks/`); -1 means the global GameplayTuning value. New/changed numbers:
@@ -266,6 +268,8 @@ Every two no-elimination completions reduce the next response by 0.5 s and reset
 **P supported baseline still requiring physical verification:** two gamepads, or one gamepad plus one keyboard seat. Release target remains 2–4 players using verified gamepads/mixed devices. Two shared-keyboard seats are an explicitly enabled fallback after rollover testing. Four-player keyboard-only support is not promised. Synthetic routing/physics checks pass, but the supplied environment has K1/K2 keyboards and no gamepads; keyboard model/layout and physical rollover remain unknown.
 
 Gamepad labels are positions: South (Xbox A / PlayStation Cross), East (B / Circle), West (X / Square), Start/Options. Keyboard bindings below are provisional physical key positions.
+
+**Four keyboard layouts (2026-10-16, requested by Jorge):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard. In the table below K1 now confirms, readies and claims with **E** (was F). K3 and K4 follow the same pattern with the keys above.
 
 | Phase/action | Gamepad | Keyboard seat K1 | Keyboard seat K2 |
 |---|---|---|---|

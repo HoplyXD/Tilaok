@@ -85,8 +85,8 @@ func _join_seats() -> void:
 	router = room.input_router
 	router.set_shared_keyboard_enabled(true)
 	router.set_phase(LocalInputRouter.Phase.LOBBY)
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	_key(KEY_ENTER, true)
 	_key(KEY_ENTER, false)
 	_pad(10, JOY_BUTTON_A, true)

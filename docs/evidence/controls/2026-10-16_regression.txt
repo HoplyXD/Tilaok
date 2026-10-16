@@ -1,0 +1,42 @@
+Controls / map arrows / block preview / Library back regression — 2026-10-16, HEAD fec0d3f plus uncommitted work. Godot 4.7.stable.official.5b4e0cb0f, headless --fixed-fps 60 unless noted, synthetic input.
+
+run_barya_tests exit=0 | BARYA_TESTS checks=72 failures=0 input=synthetic physics=Godot Area2D
+run_blocks_tests exit=0 | BLOCKS_TESTS checks=111 failures=0
+run_controls_tests exit=0 | CONTROLS_TESTS checks=13 failures=0
+run_explosives_tests exit=0 | EXPLOSIVES_TESTS checks=23 failures=0
+run_foundation_tests exit=0 | Harness lifecycle checks complete: 0 failure(s).
+run_maps_tests exit=0 | MAPS_TESTS checks=27 failures=0
+run_match_ui_binding_tests exit=0 | MATCH_UI_BINDING_TESTS checks=177 failures=0
+run_match_ui_mode_tests exit=0 | MATCH_UI_MODE_TESTS checks=62 failures=0
+run_match_ui_tests exit=0 | MATCH_UI_TESTS checks=190 failures=0
+run_p02_tests exit=0 | P02_TESTS checks=83 failures=0
+run_p02_wall_tests exit=0 | P02_WALL_TESTS checks=85 failures=0
+run_p03_tests exit=0 | P03_TESTS checks=103 failures=0
+run_p04_tests exit=1 | P04_TESTS checks=269 failures=2
+run_p05_tests exit=0 | P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests exit=0 | P06_TEST_SUMMARY checks=102 failures=0
+run_p07_reset_audit exit=1 | P07_RESET_AUTOMATION resets=10 checks=172 failures=10 participants=synthetic
+run_p07_tests exit=0 | P07_TESTS checks=591 failures=0
+run_p08_tests exit=0 | P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests exit=0 | P09_TEST_SUMMARY checks=77 failures=0
+run_p10_tests exit=0 | P10_TESTS checks=435 failures=0
+run_p11_tests exit=0 | P11_TEST_SUMMARY checks=78 failures=0
+run_p12_pairs_tests exit=0 | P12_PAIRS_TESTS checks=285 failures=0
+run_p12_stack_tests exit=0 | P12_STACK_TESTS checks=47 failures=0
+run_p12_tests exit=0 | P12_TESTS checks=61 failures=0
+run_p13_accessibility_tests exit=0 | P13_ACCESSIBILITY_TESTS checks=65 failures=0
+run_p13_cheer_tests exit=0 | P13_CHEER_TESTS checks=39 failures=0
+run_p13_hud_tests exit=0 | P13_HUD_TESTS checks=265 failures=0
+run_p13_library_tests (re-run after updating its keyboard-label check) | P13_LIBRARY_TESTS checks=368 failures=0
+run_p13_navigation_tests exit=0 | P13_NAVIGATION_TESTS checks=205 failures=0
+run_p13_recorder_tests exit=0 | P13_RECORDER_TESTS checks=67 failures=0
+run_p13_tutorial_tests exit=0 | P13_TUTORIAL_TESTS checks=58 failures=0
+run_place_claim_tests exit=0 | PLACE_CLAIM_TESTS checks=15 failures=0
+run_scoreboard_chart_tests exit=0 | SCOREBOARD_CHART_TESTS checks=52 failures=0
+run_tutorial_gate_tests exit=0 | TUTORIAL_GATE_TESTS checks=48 failures=0 attempts=3341
+run_tutorial_tests exit=1 | TUTORIAL_TESTS checks=142 failures=3
+run_ui_tests (re-run after moving the Library Back button to the corner) | UI_TESTS checks=470 failures=4
+run_match_ui_interactive exit=0 | MATCH_UI_INTERACTIVE checks=59 failures=0 captures=D:/Github/Tilaok/docs/evidence/match-ui
+run_p05_interactive (windowed; re-run after counting one-use eggs) | P05_INTERACTIVE checks=58 failures=0
+
+Failures that also occur on a clean fec0d3f checkout: P04 (2); P07 reset audit (10); Tutorial (3, Barya coach text); UI (4, scoreboard screens from d930bd1).

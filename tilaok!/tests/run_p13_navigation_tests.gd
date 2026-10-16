@@ -331,16 +331,16 @@ func _test_router_aliases_and_consume() -> void:
 		router._handle_key(_key_event(KEY_R, false))
 		_check(seen == [entry[1]], "R in phase %s is '%s' (saw %s)" % [entry[0], entry[1], seen])
 	router.set_phase(LocalInputRouter.Phase.MENU)
-	router._handle_key(_key_event(KEY_F, true))
+	router._handle_key(_key_event(KEY_E, true))
 	router.consume_held_presses()
 	_check(
 		not router.consume_pressed(seat, "confirm"),
 		"consume_held_presses drops a press waiting in the same phase"
 	)
-	router._handle_key(_key_event(KEY_F, false))
+	router._handle_key(_key_event(KEY_E, false))
 	seen.clear()
-	router._handle_key(_key_event(KEY_F, true))
-	router._handle_key(_key_event(KEY_F, false))
+	router._handle_key(_key_event(KEY_E, true))
+	router._handle_key(_key_event(KEY_E, false))
 	_check(seen == ["confirm"], "a fresh press after release still acts")
 	router.queue_free()
 	await process_frame
@@ -538,7 +538,7 @@ func _press(kind: String, action: String, pressed: bool) -> void:
 	var keys := {
 		"K1":
 		{
-			"accept": KEY_F,
+			"accept": KEY_E,
 			"back": KEY_G,
 			"up": KEY_W,
 			"down": KEY_S,

@@ -247,3 +247,49 @@ The owner clarified that Barya definitely counts even when everyone finishes. Co
 At the user's explicit direction to implement the approved Barya plan, OpenAI Codex generated and integrated the round-scoped offer policy, separate seeded RNG stream, objective state/controller and coin scene, Pugad/Place integration, actual-physics pickup/drop/recovery, committed-receipt scoring handoff, result/history/HUD cues, Library/tutorial copy and focused regression/performance runners. Codex also updated the tracker, design/provenance records and evidence. The technical run used Godot 4.7.2, synthetic seat/input events, real Godot Area2D/PhysicsServer overlaps, rendered captures, Windows export and exported startup smoke. Test logs, screenshots, measured limits, procedures and boundaries are in [Barya engineering evidence](evidence/barya/README.md); the user-approved scope/contract is in [the dated activation record](evidence/barya/activation_contract_2026-10-15.md). The request/plan and tool outputs are retained in this task transcript; no separate prompt archive was created.
 
 AI-generated and edited code, scenes, tests, documentation and placeholder copy are not represented as manually team-written. No human code review, named Barya owner, QA reviewer, human play session, physical-device test, final art/audio generation, independent approval or organizer approval is claimed. Francis and Carlos remain the development leads under the standing workflow; task-specific owner/capacity assignment and human review remain open. The coin and egg preview are code geometry marked DEBUG and are recorded in [ASSETS.md](ASSETS.md) for human replacement; they are not production assets. Programming assistance does not grant art/audio approval or change the full release manifest. Record the actual tool/area/extent in Form 03 preparation.
+
+### Map scenes and Lobby map selection — October 16, 2026
+
+At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated:
+- `StageMap` (map scene root: DevMarkers → spawn/build/flag, Blocks → merged collision rectangles, validation and editor warnings) and `MapCatalog` (folder scan of `scenes/maps/`).
+- `ArenaLayout.map_scene` and the room's map visual hook.
+- The Lobby map row (scene label, `bind_map`, room polling, GameFlow `selected_map_id`, `--map=`).
+- With a one-off generator script (not kept): the map marker tile image and TileSet, the Blocks TileSet (Jorge's Blocks Sprite Sheet plus the debug tiles) and the Sample Map scene.
+- `run_maps_tests.gd` (23 checks) and `capture_maps_evidence.gd`.
+
+The marker tiles are dev-only editing aids, never shown to players. No final art was generated. AI-generated code; no human code review claimed. Evidence: `docs/evidence/maps/README.md`.
+
+### Tutorial map and map-loading fixes — October 16, 2026
+
+At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
+- Converted the tutorial stage into a map scene (`scenes/maps/tutorial.tscn`, written by a one-off generator, not kept). It was checked field-for-field against the verified layout before that `.tres` was removed.
+- Added the optional `StageMap` Precise settings, the `no_wall_slide` TileSet custom data and `arena.goal` naming.
+- Made cells and markers outside the stage decoration, so Jorge's framed Basic Map loads. Its Map Name and order were also set in the scene, because it still carried the Sample Map's.
+- Let the Lobby map row work during the tutorial (picking another map skips it) and rescan the maps folder on each Lobby.
+- Pointed the tutorial gate and tutorial tests at the map, and extended `run_maps_tests.gd` to 27 checks.
+
+AI-generated code; no human code review claimed.
+
+### Four keyboard layouts, clickable map row, Place block preview, Library Back — October 16, 2026
+
+At Jorge's request, Claude (Claude Opus 5.5 via Claude Code):
+- Added the K3 (IJKL) and K4 (numpad) keyboard layouts and moved K1 confirm from F to E (router, seat registry, prompt glyphs, device labels, key-chord recorder chords C25–C31).
+- Added the Lobby map row's clickable ◀ ▶ buttons, the Place ghost block preview with a facing-arrow badge, and the Library Back button.
+- Updated tests mechanically: F to E key presses, the Library keyboard names, and P05 one-use eggs.
+- Added `run_controls_tests.gd` (13 checks) and `capture_controls_evidence.gd`.
+
+AI-generated code; no human code review or physical keyboard rollover test claimed. Evidence: `docs/evidence/controls/README.md`.
+
+### Bug-fix round: long Cannon, broken blocks, pause, placement overlaps, explosives — October 16, 2026
+
+At Jorge's request (bug report: match showed only the map, pause/leave broken, bombs and recent blocks, remove first come, first served), Claude (Claude Opus 5.5 via Claude Code):
+- Found the cause of the map-only match: Jorge's Cannon path ran past the stage, which made the item catalog invalid. Added the path clamp, the lane clip to the build region (`ItemGeometry.clip_to_stage`) and skipping of invalid block scenes (`BlockCatalog.skipped`).
+- Fixed the pause panel listing empty seats as lost controllers.
+- Removed first come, first served (seat-order resolution, "Tile occupied" / "Invalid spot" notices) and let explosives blow up same-phase placements.
+- Added `run_fix_regression_tests.gd` (9 checks), rewrote `run_place_claim_tests.gd` and updated the explosives, Barya, P05, Library, match UI and blocks tests to the new rules.
+
+AI-generated code; no human code review claimed. Evidence: `docs/evidence/fixes/README.md`.
+
+### Ledge climb and E / F confirm — October 16, 2026
+
+At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated the `ChickenController` ledge climb with its tuning keys, made F confirm for K1 alongside E, and wrote `run_ledge_climb_tests.gd` (21 checks). AI-generated code; no human code review or feel review claimed. Evidence: `docs/evidence/fixes/README.md`.

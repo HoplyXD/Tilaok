@@ -64,7 +64,7 @@ All submissions in a Place phase resolve from the same stage snapshot:
 
 1. Gather confirmed placements and cleanup previews.
 2. Resolve each Walis Cleanup target set from that snapshot.
-3. Reject invalid placements. *Superseded 2026-10-14 (Jorge):* conflicting placements are no longer rejected as a set — the first player to confirm claims the cells (first come, first served); later players cannot confirm over them and edits resolve in confirmation order (see GDD construction rules).
+3. Reject invalid placements. *2026-10-16 (Jorge):* first come, first served (2026-10-14) was removed. Same-phase overlaps resolve in stable seat order (the lower seat keeps the cells, as in the original P05 resolver). Players see only "Tile occupied" or "Invalid spot". Explosives also blow up same-phase placements in their blast area (see GDD).
 4. Commit the remaining valid edits together.
 5. Start Play with the committed stage.
 
@@ -233,6 +233,43 @@ Placement is validated against bounds, protected spawn/goal, build region, base 
 
 Placement notes: a variant may reserve only part of its footprint (`occupied_cells`: Parol reserves its two posts, so solids may sit between them and occlude the beam). Lanes, beams and bubble paths declare `blockable`: immutable base geometry may clip them (they are shown to their first blocker) but protected spawn/goal and the build region still reject them. Order inside one physics step: movers/timers advance in stable item-ID order; lethal contacts resolve by recorded time, item ID, then seat with one terminal outcome per player (handed to the race ledger during Karera); captures and carries run for survivors; spring launches apply last.
 
+## Map scenes and the Lobby map selection — 2026-10-16 (requested by Jorge)
+
+**How to make a map.** Duplicate `tilaok!/scenes/maps/sample_map.tscn`, rename the file (the file name is the map id), set **Map Name** on the root, then paint its two TileMapLayers. Save it anywhere under `scenes/maps/` and it appears in the Lobby map selection with no code or data edit (`MapCatalog` scans the folder). Turn off **In Selection** to hide a work-in-progress map.
+
+| Layer | Tiles | What it does in the game |
+|---|---|---|
+| `DevMarkers` (editing only; removed when the match starts) | **Spawn** (yellow, dot) | The protected spawn area. Chickens appear standing on its bottom edge at its horizontal centre, so that edge must sit on a block. |
+| | **Build Area** (green, hatched) | Where players may build: the rectangle around all Build Area tiles. Building is still refused in the spawn and flag zones and on base blocks. |
+| | **Flag** (red, pennant) | The flag trigger, in open air. Nobody may build within one tile of it. |
+| `Blocks` (`assets/tiles/blocks_tileset.tres`) | Source 0: `Blocks Sprite Sheet.png` (every 64 px cell); source 1: the debug placeholder tiles | Every painted cell inside the 32×16 stage is solid, indestructible base stage. Touching cells merge into rectangles, one collision surface each; the widest lowest rectangle is the floor, and the block the flag stands on is `arena.goal`. Cells outside the stage, such as a frame around it, are drawn only: the game already closes the stage with invisible walls and a ceiling there. Tiles whose TileSet custom data **no_wall_slide** is on make surfaces chickens cannot wall-slide or wall-kick on (debug tile 1,0 has it). The tiles only decide how it looks. The sample map uses source 1 until the block art exists. |
+
+**Precise settings (optional).** For details off the 64 px grid, the root's **Precise** group sets:
+- the spawn feet point;
+- the exact flag rectangle;
+- the protected flag zone;
+- the tutorial BUILD HERE zone;
+- extra non-tile surfaces, drawn as plain boxes.
+
+The Tutorial map uses them for its half-tile flag ledge.
+
+**Tutorial map** (`scenes/maps/tutorial.tscn`, id `tutorial`). It replaced `data/stage/tutorial_arena_layout.tres` on 2026-10-16. Its surfaces, wall flags, half-tile cap, spawn, build region, protected goal, flag and BUILD HERE zone matched that verified layout exactly ([parity record](evidence/maps/2026-10-16_tutorial_map_parity.txt)); the tutorial gate suite now runs on the map (48 checks, 3,341 no-build attempts, flag never reached). Re-run the gate tests after editing the Tutorial map.
+- While the guided tutorial is pending, a new session's first match starts on it.
+- Picking another map in the Lobby skips the tutorial for the session, like the pause menu's Skip tutorial; picking Tutorial again brings it back (as does Library > Replay tutorial).
+- Once the tutorial is done or skipped, a leftover Tutorial selection falls back to the default stage.
+
+**Rules and limits.**
+- A map is the fixed 32×16-tile stage. Containment walls and the ceiling are added automatically; only cells and markers inside the stage count.
+- The Lobby rescans `scenes/maps/` every time it opens, so a map saved while the game is running appears in the next Lobby.
+- A map needs a Map Name, at least one block and at least one of each marker. Broken maps stay out of the selection; `MapCatalog.errors()` and the editor's scene warnings say why.
+- One map per match: the map is chosen in the Lobby (left/right on any joined seat) before the match starts. Changing it rebuilds the Lobby room on the new stage; joined seats stay.
+- The built-in default stage is always the first choice. The guided tutorial match always uses the tutorial stage.
+- From the command line: `-- --map=<id>`.
+
+**Sample Map.** The default stage rebuilt as a map scene. Its collision rectangles, build region, spawn zone and flag equal the built-in default exactly. Spawn x is the centre of the Spawn area (2.5 tiles instead of the built-in 3.0).
+
+Code: `scripts/stage/stage_map.gd`, `scripts/stage/map_catalog.gd`, `ArenaLayout.map_scene`, `P03StageRoom._add_map_visual`, `GameFlow.selected_map_id`. Evidence: [maps evidence](evidence/maps/README.md).
+
 ## Tutorial stage layout — 2026-10-14
 
 **C/P — implemented and verified with synthetic input; guided copy is PLACEHOLDER.** Evidence: [tutorial evidence index](evidence/tutorial/README.md).
@@ -241,7 +278,7 @@ Placement notes: a variant may reserve only part of its footprint (`occupied_cel
 
 **One map per match.** The layout is chosen when a match room is created and never changes. Karera, Lagsanay and sudden-death rounds of that match all play on that stage plus everything built; no mode swaps or alters it. Skipping or replaying the tutorial mid-match does not change the stage. The next match starts on the default layout unless the tutorial is replayed. On the lifecycle route a Replay or Return to Lobby from a tutorial-stage room builds a fresh room (the room hands back to `GameFlow`), so the stage is never carried into the next match.
 
-**Tutorial stage** (`tilaok!/data/stage/tutorial_arena_layout.tres`, id `tutorial`). Floor, Base A–D, spawn, protected spawn and the build region are identical to the default stage; the base route still reaches Base D with no building and no wall movement. Only the goal changes:
+**Tutorial stage** (since 2026-10-16 the Tutorial map `tilaok!/scenes/maps/tutorial.tscn`, id `tutorial`; formerly `data/stage/tutorial_arena_layout.tres`). Floor, Base A–D, spawn, protected spawn and the build region are identical to the default stage; the base route still reaches Base D with no building and no wall movement. Only the goal changes:
 
 | Element | Default | Tutorial |
 |---|---|---|

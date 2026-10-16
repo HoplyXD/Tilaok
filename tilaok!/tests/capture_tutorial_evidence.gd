@@ -165,9 +165,9 @@ func _lagsanay_session() -> void:
 	flow.match_scene = LIFECYCLE_SCENE
 	root.add_child(flow)
 	await _wait_frames(10)
-	_press(KEY_F)
+	_press(KEY_E)
 	await _wait_frames(3)
-	_press(KEY_F)
+	_press(KEY_E)
 	await _wait_frames(5)
 	var room := flow.room
 	_join_k2(room)
@@ -215,9 +215,9 @@ func _new_room(seats: int) -> P05MatchRoom:
 	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(10)
-	_press(KEY_F)
+	_press(KEY_E)
 	await _wait_frames(3)
-	_press(KEY_F)
+	_press(KEY_E)
 	await _wait_frames(5)
 	var room := flow.room
 	_join_k2(room)

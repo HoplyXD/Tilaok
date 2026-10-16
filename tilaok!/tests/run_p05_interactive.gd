@@ -120,7 +120,7 @@ func _run_lobby() -> void:
 		room.presenter.debug_overlay.start_button.disabled,
 		"Start match remains disabled until two or more joined seats are ready"
 	)
-	await _key_tap(KEY_F)
+	await _key_tap(KEY_E)
 	await _key_tap(KEY_ENTER, KEY_LOCATION_UNSPECIFIED, "K2")
 	for device_id in PAD_DEVICE_IDS:
 		_joy_tap(device_id, JOY_BUTTON_A)
@@ -259,14 +259,18 @@ func _run_round(round_index: int) -> void:
 		room.phase_controller.phase == MatchPhaseController.Phase.PLAY,
 		"confirmed edits resolve together before live Karera Play"
 	)
+	# One-use cleanup eggs (Bomb, Dynamite, Nuke; 2026-10-15) resolve as edits, not pieces.
+	var one_shot_seats := {}
+	for edit in room.last_resolution.get("one_shot_edits", []):
+		one_shot_seats[int(edit.seat_index)] = str(edit.variant_key)
 	_check(
-		room.last_resolution.commits.size() == room.assignments.size(),
-		"valid Place submissions materialize one piece per assigned seat"
+		room.last_resolution.commits.size() + one_shot_seats.size() == room.assignments.size(),
+		"valid Place submissions materialize one piece (or one-use edit) per assigned seat"
 	)
 	for seat_index_variant in room.assignments:
 		var seat_index := int(seat_index_variant)
 		var expected_variant := _variant_for_egg(str(room.assignments[seat_index]))
-		var placed_variant := ""
+		var placed_variant := str(one_shot_seats.get(seat_index, ""))
 		for item_variant in room.items.pieces.values():
 			var item := item_variant as PlacedItem
 			if item.owner_seat == seat_index and item.placed_round == room.items.round_number:
@@ -333,7 +337,7 @@ func _run_round(round_index: int) -> void:
 func _advance_all_ready_with_held_key() -> void:
 	# K1 remains down across RESULTS → PUGAD. The one-shot press must be consumed.
 	# It must not become a claim in the next phase.
-	_send_key("K1", KEY_F, true)
+	_send_key("K1", KEY_E, true)
 	_send_key("K2", KEY_ENTER, true)
 	_send_key("K2", KEY_ENTER, false)
 	_joy_button(PAD_DEVICE_IDS[0], JOY_BUTTON_A, true)
@@ -349,7 +353,7 @@ func _advance_all_ready_with_held_key() -> void:
 		room.assignments.is_empty() and room.pending_claims.is_empty(),
 		"held K1 confirm does not auto-claim in next Pugad"
 	)
-	_send_key("K1", KEY_F, false)
+	_send_key("K1", KEY_E, false)
 	await _wait_frames(2)
 
 
@@ -419,7 +423,7 @@ func _seed_with_every_enabled_variant(start_seed: int) -> int:
 
 func _send_claim_press(seat_index: int) -> void:
 	if seat_index == 0:
-		_send_key("K1", KEY_F, true)
+		_send_key("K1", KEY_E, true)
 	elif seat_index == 1:
 		_send_key("K2", KEY_ENTER, true)
 	else:
@@ -428,7 +432,7 @@ func _send_claim_press(seat_index: int) -> void:
 
 func _send_claim_release(seat_index: int) -> void:
 	if seat_index == 0:
-		_send_key("K1", KEY_F, false)
+		_send_key("K1", KEY_E, false)
 	elif seat_index == 1:
 		_send_key("K2", KEY_ENTER, false)
 	else:

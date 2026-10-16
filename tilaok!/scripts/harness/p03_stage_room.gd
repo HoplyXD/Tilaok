@@ -106,7 +106,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func join_keyboard(layout: String) -> int:
-	if layout not in ["K1", "K2"]:
+	if layout not in PlayerSeatRegistry.KEYBOARD_LAYOUTS:
 		return -1
 	var seat_index := input_router.registry.join_keyboard(layout)
 	if seat_index >= 0:
@@ -277,6 +277,7 @@ func _build_world() -> void:
 	stage_tiles = STAGE_TILES_SCENE.instantiate() as StageTileLayer
 	world_layer.add_child(stage_tiles)
 	stage_tiles.paint_arena(arena)
+	_add_map_visual()
 	for spec in arena.surface_specs:
 		_add_static_surface(spec, bool(spec.get("custom_visual", false)))
 	_add_flag_trigger()
@@ -287,6 +288,20 @@ func _build_world() -> void:
 	camera_rig.position = _camera_home()
 	world_layer.add_child(camera_rig)
 	camera_rig.make_current()
+
+
+## A map from scenes/maps/ draws its own Blocks layer instead of the debug stage tiles.
+func _add_map_visual() -> void:
+	if arena_layout == null or arena_layout.map_scene == null:
+		return
+	var map := arena_layout.map_scene.instantiate() as StageMap
+	if map == null:
+		return
+	map.name = "StageMap"
+	map.z_index = stage_tiles.z_index
+	map.scale = Vector2.ONE * tuning.grid_cell_wu / 64.0
+	world_layer.add_child(map)
+	stage_tiles.clear()
 
 
 func _build_hud() -> void:

@@ -270,7 +270,9 @@ func _materialize_placement(
 		piece_tuning = tuning.duplicate() as GameplayTuning
 		for field in variant.tuning_overrides:
 			piece_tuning.set(field, variant.tuning_overrides[field])
-	var regions := ItemGeometry.resolve_regions(variant, turns, tuning)
+	var regions := ItemGeometry.clip_to_stage(
+		ItemGeometry.resolve_regions(variant, turns, tuning), record.footprint_rect, arena
+	)
 	piece.call("configure", record, regions, metadata, family.wall_contact, piece_tuning)
 	var behavior := ItemBehaviorFactory.create_for(family)
 	if behavior != null and piece is HazardPiece:

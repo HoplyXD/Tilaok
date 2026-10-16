@@ -21,8 +21,8 @@ func _capture() -> void:
 	for toggle in room.find_children("*", "CheckButton", true, false):
 		(toggle as CheckButton).set_pressed_no_signal(true)
 	room.input_router.set_phase(LocalInputRouter.Phase.LOBBY)
-	room.input_router._handle_key(_join_event(KEY_F, true))
-	room.input_router._handle_key(_join_event(KEY_F, false))
+	room.input_router._handle_key(_join_event(KEY_E, true))
+	room.input_router._handle_key(_join_event(KEY_E, false))
 	room.input_router._handle_key(_join_event(KEY_ENTER, true))
 	room.input_router._handle_key(_join_event(KEY_ENTER, false))
 	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)

@@ -14,6 +14,9 @@ enum Kind { UNSET = -1, SOLID, ONE_WAY_TOP, TRIGGER, SWEEP, LANE, EFFECT }
 @export var declared_bounded := false
 ## Lane, beam or path that solids may cut short: base-geometry overlap is allowed and clips it.
 @export var blockable := false
+## A projectile path drawn past the stage edge (2026-10-16): when placed, the lane is cut where it
+## would leave the build region or enter a protected zone (ItemGeometry.clip_to_stage).
+@export var reach_stage_edge := false
 ## Scene-authored blocks: what touching this region does ("kill", "stun", "launch", "capture",
 ## or empty). Behaviors filter TRIGGER regions by it.
 @export var effect: StringName = &""

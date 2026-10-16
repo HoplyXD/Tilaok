@@ -1,8 +1,10 @@
 extends SceneTree
 
-## Place phase, first come, first served (requested by Jorge, 2026-10-14): a confirmed placement
-## claims its cells at once, later players cannot confirm over them, and edits resolve in
-## confirmation order. Also checks the main match selector offers every main-game block scene.
+## Place conflicts. First come, first served (2026-10-14) was removed on 2026-10-16 at Jorge's
+## request: confirming earlier gives no advantage, a ghost only says "Tile occupied" (a piece,
+## the stage or a chicken is there) or "Invalid spot", and same-phase overlaps resolve in stable
+## seat order as before (the later seat sees "Tile occupied"). Also checks the main match selector
+## offers every main-game block scene and that placed spikes kill in a real match.
 ## Synthetic input in the real P05 match room. Run:
 ## godot --headless --path tilaok! --script res://tests/run_place_claim_tests.gd
 
@@ -21,9 +23,9 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_selector_pool()
-	_test_resolver_uses_confirm_order()
-	await _test_room_first_come_first_served()
-	await _test_timeout_respects_claims()
+	_test_resolver_seat_order()
+	await _test_room_no_claims()
+	await _test_timeout_seat_order()
 	await _test_match_spikes_kill()
 	print("PLACE_CLAIM_TESTS checks=%d failures=%d" % [checks, failures])
 	await process_frame
@@ -63,36 +65,45 @@ func _test_selector_pool() -> void:
 	)
 
 
-func _test_resolver_uses_confirm_order() -> void:
+func _test_resolver_seat_order() -> void:
 	var tuning := GameplayTuning.new()
 	var definitions := ItemDefinitions.load_all(tuning)
 	var arena := ArenaDefinition.new(tuning)
 	var edits: Array[Dictionary] = [
-		{
-			"seat_index": 0,
-			"variant_key": KAING,
-			"origin_cell": Vector2i(14, 8),
-			"quarter_turns": 0,
-			"cleanup_targets": [],
-			"confirm_order": 1,
-		},
 		{
 			"seat_index": 1,
 			"variant_key": KAING,
 			"origin_cell": Vector2i(14, 8),
 			"quarter_turns": 0,
 			"cleanup_targets": [],
-			"confirm_order": 0,
+		},
+		{
+			"seat_index": 0,
+			"variant_key": KAING,
+			"origin_cell": Vector2i(14, 8),
+			"quarter_turns": 0,
+			"cleanup_targets": [],
 		},
 	]
 	var result := AtomicEditResolver.resolve(definitions, arena, tuning, [], edits, 0)
 	_check(
 		(
 			(result.commits as Array).size() == 1
-			and int(result.commits[0].seat_index) == 1
-			and (result.rejections as Dictionary).has(0)
+			and int(result.commits[0].seat_index) == 0
+			and (result.rejections as Dictionary).has(1)
 		),
-		"the seat that confirmed first keeps a contested spot (not the lower seat number)"
+		"two placements on one spot: the lower seat keeps it, confirmation order does not matter"
+	)
+	_check(
+		P05MatchRoom.short_reason("", str(result.rejections[1])) == "Tile occupied",
+		"the refused player is told: Tile occupied"
+	)
+	_check(
+		(
+			P05MatchRoom.short_reason("protected_spawn") == "Invalid spot"
+			and P05MatchRoom.short_reason("immutable_base") == "Tile occupied"
+		),
+		"other refusals read Invalid spot; the stage itself reads Tile occupied"
 	)
 
 
@@ -117,44 +128,32 @@ func _start_two_seat_place() -> P05MatchRoom:
 	return room
 
 
-func _test_room_first_come_first_served() -> void:
+func _test_room_no_claims() -> void:
 	var room := await _start_two_seat_place()
-	_check(
-		bool(room._placement_verdict(0).allowed) and bool(room._placement_verdict(1).allowed),
-		"before anyone confirms, both players may aim at the same free spot"
-	)
 	room._confirm_placement(1)
-	_check(room.placement_controller.is_confirmed(1), "P2 confirms first and claims the spot")
+	_check(room.placement_controller.is_confirmed(1), "P2 confirms a spot")
 	var p1_verdict := room._placement_verdict(0)
 	_check(
-		not bool(p1_verdict.allowed) and str(p1_verdict.reason).contains("Taken by P2"),
-		"P1's ghost now shows the spot as taken by P2: %s" % p1_verdict.reason
+		bool(p1_verdict.allowed) and bool(room.placement_verdicts[0].allowed),
+		"P1 is not blocked by P2's confirmed spot (no first come, first served)"
 	)
-	_check(
-		not bool(room.placement_verdicts[0].allowed),
-		"P1's ghost turned invalid as soon as P2 confirmed"
-	)
-	room._confirm_placement(0)
-	_check(
-		not room.placement_controller.is_confirmed(0),
-		"P1 cannot confirm on the claimed spot (first come, first served)"
-	)
-	room.placement_controller.move(0, Vector2i(2, 0))
-	room._refresh_all_match_ghosts()
-	_check(bool(room._placement_verdict(0).allowed), "a free spot elsewhere is still allowed")
 	room._confirm_placement(0)
 	var owners := {}
 	for record in room.items.pieces.values():
 		owners[(record as PlacedItem).origin_cell] = (record as PlacedItem).owner_seat
 	_check(
-		owners.get(Vector2i(14, 8), -1) == 1 and owners.get(Vector2i(16, 8), -1) == 0,
-		"both placements commit: P2 owns the contested spot, P1 its free one"
+		owners.get(Vector2i(14, 8), -1) == 0 and owners.size() == 1,
+		"both confirmed the same spot: P1 (lower seat) gets it even though P2 confirmed first"
+	)
+	_check(
+		str(room.place_notice).contains("P2: Tile occupied"),
+		"P2 is told Tile occupied: %s" % room.place_notice
 	)
 	room.queue_free()
 	await process_frame
 
 
-func _test_timeout_respects_claims() -> void:
+func _test_timeout_seat_order() -> void:
 	var room := await _start_two_seat_place()
 	room._confirm_placement(1)
 	room._finish_place_timeout()
@@ -162,8 +161,11 @@ func _test_timeout_respects_claims() -> void:
 	for record in room.items.pieces.values():
 		owners.append((record as PlacedItem).owner_seat)
 	_check(
-		owners == [1],
-		"at the timer, an unconfirmed placement on a claimed spot is discarded (%s)" % [owners]
+		owners == [0],
+		(
+			"at the timer, a valid unconfirmed placement still counts; seat order decides (%s)"
+			% [owners]
+		)
 	)
 	room.queue_free()
 	await process_frame

@@ -52,13 +52,13 @@ func _four_player_session() -> void:
 	await _wait_frames(30)
 	_check(flow.state == GameFlow.State.TITLE, "boot lands on the Title")
 	await _capture("01_title_nobody_joined")
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	await _wait_frames(3)
 	await _capture("02_title_menu_one_seat")
-	_key(KEY_F, true)
+	_key(KEY_E, true)
 	await _wait_frames(3)
-	_key(KEY_F, false)
+	_key(KEY_E, false)
 	var room := flow.room
 	_check(room != null, "Start from the Title opens the match room")
 	await _wait_frames(3)
@@ -70,8 +70,8 @@ func _four_player_session() -> void:
 		_pad(pad, JOY_BUTTON_A, false)
 	await _wait_frames(3)
 	_check(room.actors.size() == 4, "K1, K2 and two synthetic gamepads fill four seats")
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, true)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, false)
 	await _wait_frames(3)
@@ -87,11 +87,11 @@ func _four_player_session() -> void:
 	)
 	await _capture("05_pugad_four_players_pointing_at_egg_1")
 	# One same-tick contest: the losers get a text lost-claim cue.
-	_key(KEY_F, true)
+	_key(KEY_E, true)
 	_key(KEY_ENTER, true)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, true)
 	_pad(PAD_IDS[1], JOY_BUTTON_A, true)
-	_key(KEY_F, false)
+	_key(KEY_E, false)
 	_key(KEY_ENTER, false)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, false)
 	_pad(PAD_IDS[1], JOY_BUTTON_A, false)
@@ -174,8 +174,8 @@ func _debug_overlay_pair(room: P05MatchRoom) -> void:
 
 func _next_round_with_three_finishers(room: P05MatchRoom) -> void:
 	# All four confirm; the held key rule is covered by run_match_ui_tests.
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	_key(KEY_ENTER, true)
 	_key(KEY_ENTER, false)
 	for pad in PAD_IDS:
@@ -242,8 +242,8 @@ func _worst_case_results_fixture(room: P05MatchRoom) -> void:
 
 
 func _pause_resume_and_leave(room: P05MatchRoom) -> void:
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	_key(KEY_ENTER, true)
 	_key(KEY_ENTER, false)
 	for pad in PAD_IDS:
@@ -262,8 +262,8 @@ func _pause_resume_and_leave(room: P05MatchRoom) -> void:
 	await _wait_frames(4)
 	_check(room.get_tree().paused, "a pause request pauses the tree")
 	await _capture("16_pause_owner_seat_2")
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	for pad in PAD_IDS:
 		_pad(pad, JOY_BUTTON_A, true)
 		_pad(pad, JOY_BUTTON_A, false)
@@ -301,22 +301,22 @@ func _pause_resume_and_leave(room: P05MatchRoom) -> void:
 		"one South press on a new pad reclaims seat 4"
 	)
 	# Take the pause menu, then Leave -> confirm -> Lobby -> Back -> Title.
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	await _wait_frames(3)
 	for _step in 3:
 		_key(KEY_S, true)
 		_key(KEY_S, false)
 		await _wait_frames(1)
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	await _wait_frames(3)
 	await _capture("20_pause_leave_confirmation")
 	_key(KEY_A, true)
 	_key(KEY_A, false)
 	await _wait_frames(1)
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	await _wait_frames(6)
 	_check(
 		(
@@ -342,18 +342,18 @@ func _two_player_session() -> void:
 	flow.match_scene = GameFlow.MATCH_SCENE
 	root.add_child(flow)
 	await _wait_frames(10)
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	await _wait_frames(3)
-	_key(KEY_F, true)
+	_key(KEY_E, true)
 	await _wait_frames(2)
-	_key(KEY_F, false)
+	_key(KEY_E, false)
 	var room := flow.room
 	_key(KEY_ENTER, true)
 	_key(KEY_ENTER, false)
 	await _wait_frames(2)
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	_key(KEY_ENTER, true)
 	_key(KEY_ENTER, false)
 	await _wait_frames(4)
@@ -530,11 +530,11 @@ func _settled_canvas_scale(room: P05MatchRoom) -> float:
 
 
 func _confirm_everyone() -> void:
-	_key(KEY_F, true)
+	_key(KEY_E, true)
 	_key(KEY_ENTER, true)
 	for pad in PAD_IDS:
 		_pad(pad, JOY_BUTTON_A, true)
-	_key(KEY_F, false)
+	_key(KEY_E, false)
 	_key(KEY_ENTER, false)
 	for pad in PAD_IDS:
 		_pad(pad, JOY_BUTTON_A, false)

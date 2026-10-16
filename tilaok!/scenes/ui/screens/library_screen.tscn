@@ -253,3 +253,14 @@ text = "PLACEHOLDER art; copy pending Filipino / Hiligaynon review"
 theme_type_variation = &"PlaceholderTag"
 horizontal_alignment = 1
 
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 184.0
+offset_bottom = 64.0
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "◀  Back"
+tooltip_text = "Back"
+unique_name_in_owner = true

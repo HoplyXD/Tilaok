@@ -53,6 +53,7 @@ var _cycle_time := 0.0
 @onready var _entry_body: Label = %EntryBody
 @onready var _animation_host: Control = %AnimationHost
 @onready var _filter_button: Button = %ReleaseFilterButton
+@onready var _back_button: Button = %BackButton
 
 
 static func dev_mode_requested() -> bool:
@@ -176,6 +177,8 @@ func _on_screen_ready() -> void:
 	dev_mode = dev_mode_requested()
 	_filter_button.visible = dev_mode
 	_filter_button.toggle_mode = true
+	# A mouse-clickable way out (2026-10-16); the back key still steps entries -> categories first.
+	_back_button.pressed.connect(func() -> void: back_requested.emit())
 	_category_list.item_activated.connect(_on_category_activated)
 	_entry_list.selection_changed.connect(_show_entry)
 	_entry_list.item_activated.connect(_on_entry_activated)

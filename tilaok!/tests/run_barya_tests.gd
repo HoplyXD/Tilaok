@@ -258,9 +258,11 @@ func _test_claims_and_placement_rules() -> void:
 		tuning
 	)
 	placement.set_confirmed(0, true)
+	# First come, first served was removed (2026-10-16): a confirmed Barya no longer reserves its
+	# cell during Place; the coin is checked after construction commits (recovery or discard).
 	_check(
-		placement.claimed_by(1, "build.hollow_blocks.cell_1x1", placement.cursors[0].cell, 0) == 0,
-		"confirmed Barya reserves a 1×1 first-confirm cell"
+		not placement.has_method("claimed_by"),
+		"a confirmed Barya does not reserve its cell during Place (no first come, first served)"
 	)
 	var timeout_edits := placement.timeout_edits({0: true, 1: false})
 	_check(
@@ -550,10 +552,16 @@ func _test_real_round_loop() -> void:
 	other_cursor.cell = Vector2i(5, 3)
 	room.placement_controller.cursors[seats[1]] = other_cursor
 	room._confirm_placement(seats[0])
+	# No first come, first served since 2026-10-16: the confirmed coin does not block the cell.
 	_check(
-		str(room._placement_verdict(seats[1]).get("code", "")) == "claimed",
-		"first Barya confirmation reserves its footprint"
+		bool(room._placement_verdict(seats[1]).get("allowed", false)),
+		"a confirmed Barya does not reserve its cell for the rest of Place"
 	)
+	# Keep this scenario construction-free: the other seat aims at a protected (invalid) cell.
+	other_cursor = room.placement_controller.cursors[seats[1]]
+	other_cursor.cell = Vector2i(1, 12)
+	room.placement_controller.cursors[seats[1]] = other_cursor
+	room._refresh_all_match_ghosts()
 	await _capture_barya("02-place-locked")
 	room._finish_place_timeout()
 	_check(

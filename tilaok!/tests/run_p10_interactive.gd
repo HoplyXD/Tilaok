@@ -87,7 +87,7 @@ func _visualizer_session() -> void:
 	viz.move_cursor(0, Vector2i.ZERO)
 	await _tap_key(KEY_R)
 	_check(int(viz.cursors[0].turns) == 1, "K1 rotate key turns the Gulong ghost to 90 degrees")
-	await _tap_key(KEY_F)
+	await _tap_key(KEY_E)
 	var spring_id := _id_with_variant(SPRING)
 	_check(not spring_id.is_empty(), "K1 confirm places the Gulong exactly as ghosted")
 	_check(
@@ -129,7 +129,7 @@ func _visualizer_session() -> void:
 	viz.select_family("hazard.slipper_launcher")
 	viz.cursors[0].cell = Vector2i(6, 4)
 	viz.move_cursor(0, Vector2i.ZERO)
-	await _tap_key(KEY_F)
+	await _tap_key(KEY_E)
 	_check(
 		not _id_with_family("hazard.slipper_launcher").is_empty(), "K1 confirms a Tsinelas Launcher"
 	)
@@ -204,7 +204,7 @@ func _match_session() -> void:
 		if seat >= 0:
 			match_room.input_router.seat_joined.emit(seat)
 	_check(match_room.actors.size() == 4, "four seats join the match")
-	await _key_tap_match(KEY_F)
+	await _key_tap_match(KEY_E)
 	await _key_tap_match(KEY_ENTER)
 	for device_id in PAD_IDS:
 		_pad_tap(device_id, JOY_BUTTON_A)
@@ -425,7 +425,7 @@ func _pad_tap(device_id: int, button: JoyButton) -> void:
 func _send_confirm(seat_index: int, pressed: bool) -> void:
 	if seat_index < 2:
 		var event := InputEventKey.new()
-		var key := KEY_F if seat_index == 0 else KEY_ENTER
+		var key := KEY_E if seat_index == 0 else KEY_ENTER
 		event.keycode = key
 		event.physical_keycode = key
 		event.pressed = pressed

@@ -38,7 +38,10 @@ static func build(
 		family, variant, origin_cell, turns, tuning
 	):
 		overlay.append({"kind": "occupied", "rect": occupied})
-	for region in ItemGeometry.resolve_regions(variant, turns, tuning):
+	var regions := ItemGeometry.clip_to_stage(
+		ItemGeometry.resolve_regions(variant, turns, tuning), footprint, arena
+	)
+	for region in regions:
 		var rect: Rect2 = region.rect
 		rect.position += footprint.position
 		var kind: ItemRegionSpec.Kind = region.kind

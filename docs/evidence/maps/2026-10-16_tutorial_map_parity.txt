@@ -1,0 +1,12 @@
+Tutorial map parity — 2026-10-16. scenes/maps/tutorial.tscn (via MapCatalog/StageMap) vs data/stage/tutorial_arena_layout.tres (the verified tutorial layout, removed after this check). Godot 4.7, headless.
+
+IDS ["default", "tutorial", "sample_map", "Basic Map"] ERR []
+surfaces equal: true
+spawn_feet old=(192.0, 960.0) new=(192.0, 960.0) eq=true
+protected_spawn old=[P: (0.0, 704.0), S: (320.0, 256.0)] new=[P: (0.0, 704.0), S: (320.0, 256.0)] eq=true
+build_region old=[P: (320.0, 192.0), S: (1472.0, 768.0)] new=[P: (320.0, 192.0), S: (1472.0, 768.0)] eq=true
+protected_goal old=[P: (1792.0, 288.0), S: (256.0, 672.0)] new=[P: (1792.0, 288.0), S: (256.0, 672.0)] eq=true
+goal_trigger old=[P: (1920.0, 352.0), S: (64.0, 128.0)] new=[P: (1920.0, 352.0), S: (64.0, 128.0)] eq=true
+build_here_zone old=[P: (1536.0, 512.0), S: (256.0, 192.0)] new=[P: (1536.0, 512.0), S: (256.0, 192.0)] eq=true
+layout_id old=tutorial new=tutorial eq=true
+flag height old=7.5 new=7.5

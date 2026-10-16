@@ -68,7 +68,10 @@ static func validate(
 				return _reject(
 					_code_for_arena_reason(str(arena_result.reason)), str(arena_result.reason)
 				)
-	for region in ItemGeometry.resolve_regions(variant, turns, tuning):
+	var regions := ItemGeometry.clip_to_stage(
+		ItemGeometry.resolve_regions(variant, turns, tuning), footprint, arena
+	)
+	for region in regions:
 		var region_kind: ItemRegionSpec.Kind = region.kind
 		if not ItemRegionSpec.is_bounded_extent_kind(region_kind) or family.one_shot_edit:
 			continue

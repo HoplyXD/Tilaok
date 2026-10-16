@@ -208,6 +208,10 @@ Folders: `construction/` (Kaing 1x1 / 1x3 / 2x3, Tulay 3x1 / 4x1 / 5x1, Solid Bl
 
 To add a block: duplicate a scene in `scenes/blocks/` (e.g. `traps/spikes.tscn`), rename it, change BlockData and the shapes, save. Hitbox shapes are rectangles; keep touch hitboxes inside the placement box.
 
+Since 2026-10-16:
+- A projectile path drawn longer than the stage (for example a Cannon aimed "to the far side") is clamped to the stage width or height from its start, so it shoots across the whole stage.
+- A block scene that still fails validation is left out of the game, and the Output panel says which block and why ("BlockCatalog: … left out: …"). Before this, one broken block made every block invalid and a started match showed only the map.
+
 ## Stage blocks — October 14, 2026
 
 Requested by Jorge on 2026-10-14 and implemented as three construction families, each with its own editable scene (collision + DEBUG visual) under `tilaok!/scenes/blocks/`. Since the block-scene migration (see "Block scenes" above) each scene's BlockData placement box is authoritative and the scene is the only definition. All declare solid-side wall eligibility, `modes_allowed` karera/lagsanay, Walis removal and persistence until removed; weights are 50 like Kaing/Tulay (tunable).

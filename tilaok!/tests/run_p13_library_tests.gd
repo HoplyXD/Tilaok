@@ -124,11 +124,14 @@ func _test_pages(text: UiLibraryText, tuning: GameplayTuning, context: Dictionar
 	var controls := _body(text, context, "How to Play", "Controls")
 	_check(
 		(
-			controls.contains("Keyboard 1")
+			controls.contains("Keyboard WASD")
+			and controls.contains("Keyboard IJKL")
+			and controls.contains("Keyboard arrows")
+			and controls.contains("Keyboard numpad")
 			and controls.contains("Gamepad")
 			and controls.contains("West")
 		),
-		"controls list all three device kinds"
+		"controls list the four keyboard layouts and the gamepad"
 	)
 	var shake := _body(text, context, "Accessibility", "Screen shake")
 	_check(shake.contains("Current setting: Off"), "the shake page reflects the setting")

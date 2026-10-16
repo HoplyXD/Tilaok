@@ -44,7 +44,7 @@ func _test_matrix(recorder: KeyChordRecorder) -> void:
 		"D",
 		"W",
 		"Space",
-		"F",
+		"E",
 		"G",
 		"R",
 		"Left",

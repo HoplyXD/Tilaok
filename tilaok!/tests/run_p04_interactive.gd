@@ -61,7 +61,7 @@ func _run() -> void:
 	await _tap(KEY_R)
 	_check(room.cursors[0].turns == 1, "K1 rotate key turns the 2x3 ghost to 3x2")
 	await _tap(KEY_D)
-	await _tap(KEY_F)
+	await _tap(KEY_E)
 	_check(
 		room.items.persistent_count() == 1, "K1 confirm places a rotated 3x2 piece (lab placement)"
 	)
@@ -79,7 +79,7 @@ func _run() -> void:
 		room.last_message.contains("Rotation unavailable"),
 		"Tulay shows the disabled-rotation cue while vertical is gated"
 	)
-	await _tap(KEY_F)
+	await _tap(KEY_E)
 	_check(room.items.persistent_count() == 3, "K1 confirm places the one-way Tulay")
 	for _step in range(9):
 		await _tap(KEY_LEFT)

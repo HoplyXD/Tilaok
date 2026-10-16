@@ -10,7 +10,6 @@ extends SceneTree
 ## finishes in seconds; the result is identical to real time.
 
 const ROOM_SCENE := preload("res://scenes/fixtures/item_lab.tscn")
-const TUTORIAL_LAYOUT := preload("res://data/stage/tutorial_arena_layout.tres")
 const KAING_1X1 := "build.hollow_blocks.cell_1x1"
 const KAING_2X3 := "build.hollow_blocks.stack_2x3"
 const TULAY_4X1 := "build.bamboo_bridge.span_4x1"
@@ -39,6 +38,9 @@ const INTENDED: Array[Dictionary] = [
 	{"v": TULAY_4X1, "cell": Vector2i(24, 9), "turns": 0, "why": "Tulay one tile above Base D"},
 ]
 
+## The Tutorial map scene (scenes/maps/tutorial.tscn) since 2026-10-16; it reproduces the
+## verified tutorial layout exactly (docs/evidence/maps/2026-10-16_tutorial_map_parity.txt).
+var tutorial_layout := MapCatalog.layout_for("tutorial")
 var failures := 0
 var checks := 0
 var room: ItemLabRoom
@@ -56,7 +58,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_test_default_parity()
 	_test_tutorial_layout_contract()
-	room = _make_room(TUTORIAL_LAYOUT)
+	room = _make_room(tutorial_layout)
 	root.add_child(room)
 	for _frame in range(3):
 		await physics_frame
@@ -140,12 +142,12 @@ func _test_default_parity() -> void:
 func _test_tutorial_layout_contract() -> void:
 	var tuning := GameplayTuning.new()
 	var default_arena := ArenaDefinition.new(tuning)
-	var arena := ArenaDefinition.new(tuning, TUTORIAL_LAYOUT)
+	var arena := ArenaDefinition.new(tuning, tutorial_layout)
 	_check(arena.layout_id == "tutorial", "tutorial layout id")
 	var shared := ["arena.floor", "arena.base_a", "arena.base_b", "arena.base_c", "arena.base_d"]
 	for surface_id in shared:
 		_check(
-			_rect_of(arena, surface_id) == _rect_of(default_arena, surface_id),
+			_rect_of(arena, _tid(surface_id)) == _rect_of(default_arena, surface_id),
 			"tutorial keeps %s identical to the default stage" % surface_id
 		)
 	_check(
@@ -190,14 +192,25 @@ func _test_tutorial_layout_contract() -> void:
 			clear_of_base = false
 	_check(clear_of_base, "BUILD HERE zone overlaps no immutable base geometry")
 	_check(
-		is_equal_approx(TUTORIAL_LAYOUT.flag_height_tiles(), 7.5),
-		"flag sits 7.5 tiles above the floor (got %s)" % TUTORIAL_LAYOUT.flag_height_tiles()
+		is_equal_approx(tutorial_layout.flag_height_tiles(), 7.5),
+		"flag sits 7.5 tiles above the floor (got %s)" % tutorial_layout.flag_height_tiles()
 	)
 	var tile_painted := true
 	for spec in arena.surface_specs:
 		if str(spec.id) == "arena.goal_cap":
 			tile_painted = not bool(spec.custom_visual)
 	_check(not tile_painted, "the half-tile ledge cap uses a custom (non-tile) visual")
+
+
+## The tutorial map names its merged blocks generically ("arena.block_NN"); the built-in stage's
+## base ids map to the tutorial surface with the same rectangle (empty if none matches).
+func _tid(default_id: String) -> String:
+	var tuning := GameplayTuning.new()
+	var wanted := _rect_of(ArenaDefinition.new(tuning), default_id)
+	for spec in ArenaDefinition.new(tuning, tutorial_layout).surface_specs:
+		if spec.rect == wanted:
+			return str(spec.id)
+	return ""
 
 
 func _rect_of(arena: ArenaDefinition, surface_id: String) -> Rect2:
@@ -227,23 +240,23 @@ func _test_base_route_reaches_platform_d() -> void:
 	_key(KEY_SPACE, true)
 	await _frames(24)
 	_key(KEY_SPACE, false)
-	var on_a := await _wait_for_surface("arena.base_a", 18)
+	var on_a := await _wait_for_surface(_tid("arena.base_a"), 18)
 	_check(on_a, "tutorial layout: floor -> Base A with the real controller")
 	_key(KEY_SPACE, true)
 	await _frames(24)
 	_key(KEY_SPACE, false)
-	var on_b := await _wait_for_surface("arena.base_b", 20)
+	var on_b := await _wait_for_surface(_tid("arena.base_b"), 20)
 	_check(on_b, "tutorial layout: Base A -> Base B")
 	_key(KEY_SPACE, true)
 	await _frames(24)
 	_key(KEY_SPACE, false)
-	var on_c := await _wait_for_surface("arena.base_c", 44)
+	var on_c := await _wait_for_surface(_tid("arena.base_c"), 44)
 	_check(on_c, "tutorial layout: Base B -> Base C")
 	await _frames(8)
 	_key(KEY_SPACE, true)
 	await _frames(24)
 	_key(KEY_SPACE, false)
-	var on_d := await _wait_for_surface("arena.base_d", 20)
+	var on_d := await _wait_for_surface(_tid("arena.base_d"), 20)
 	_check(on_d, "tutorial layout: Base C -> Base D (end of the base route)")
 	_key(KEY_D, false)
 	await _frames(40)
@@ -261,7 +274,7 @@ func _test_no_build_gate() -> void:
 	var count := 0
 	var surfaces := ["arena.floor", "arena.base_a", "arena.base_b", "arena.base_c", "arena.base_d"]
 	for surface_id in surfaces:
-		var rect := _rect_of(room.arena, surface_id)
+		var rect := _rect_of(room.arena, _tid(surface_id))
 		var x := rect.position.x + 30.0
 		while x <= rect.end.x - 30.0 + 0.1:
 			for run_dir in RUN_DIRS:
@@ -387,7 +400,7 @@ func _try_placement(variant_key: String, origin: Vector2i, turns: int) -> bool:
 		return false
 	room.items.begin_play()
 	room.input_router.set_phase(LocalInputRouter.Phase.PLAY)
-	var rect := _rect_of(room.arena, "arena.base_d")
+	var rect := _rect_of(room.arena, _tid("arena.base_d"))
 	for x_offset in SOLUTION_X_OFFSETS:
 		for delay in SOLUTION_DELAYS:
 			for pattern in SOLUTION_PATTERNS:

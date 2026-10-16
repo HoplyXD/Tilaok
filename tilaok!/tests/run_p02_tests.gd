@@ -190,15 +190,15 @@ func _test_keyboard_join_edges() -> void:
 		router.registry.joined_seats().is_empty(), "shared keyboard movement key cannot join a seat"
 	)
 	router._handle_key(_event(KEY_D, false))
-	router._handle_key(_event(KEY_F, true))
+	router._handle_key(_event(KEY_E, true))
 	_check(
 		router.registry.joined_seats().size() == 1 and not router.registry.get_seat(0).ready,
 		"fresh K1 join press does not also ready the seat"
 	)
-	router._handle_key(_event(KEY_F, false))
-	router._handle_key(_event(KEY_F, true))
+	router._handle_key(_event(KEY_E, false))
+	router._handle_key(_event(KEY_E, true))
 	_check(router.registry.get_seat(0).ready, "ready requires a separate fresh press after joining")
-	router._handle_key(_event(KEY_F, false))
+	router._handle_key(_event(KEY_E, false))
 	router.registry.set_ready(0, false)
 	router._handle_key(_event(KEY_ENTER, true))
 	_check(
@@ -212,9 +212,9 @@ func _test_keyboard_join_edges() -> void:
 func _test_keyboard_routing() -> void:
 	var router := room.input_router
 	router.set_phase(LocalInputRouter.Phase.PLAY)
-	router._handle_key(_event(KEY_F, true))
+	router._handle_key(_event(KEY_E, true))
 	_check(not router.consume_pressed(0, "ready"), "K1 lobby-ready binding is ignored in Play")
-	router._handle_key(_event(KEY_F, false))
+	router._handle_key(_event(KEY_E, false))
 	router._handle_key(_event(KEY_R, true))
 	_check(
 		room._pause_label.text.contains("rotate unavailable"),
@@ -239,7 +239,7 @@ func _test_keyboard_routing() -> void:
 		router.movement_axis(0) == 0.0 and router.has_direction_intent(0),
 		"opposing keys cancel movement but preserve intent"
 	)
-	router._handle_key(_event(KEY_F, true, true))
+	router._handle_key(_event(KEY_E, true, true))
 	_check(not router.consume_pressed(0, "ready"), "OS key echo cannot create a ready edge")
 	router._handle_key(_event(KEY_A, false))
 	router._handle_key(_event(KEY_D, false))
@@ -253,17 +253,17 @@ func _test_keyboard_routing() -> void:
 		not router._held.has("kbd:K1:%d" % KEY_SPACE),
 		"release of a held key clears it after that key becomes unbound"
 	)
-	router._handle_key(_event(KEY_F, true))
+	router._handle_key(_event(KEY_E, true))
 	_check(router.consume_pressed(0, "claim"), "K1 confirm maps to claim in Pugad")
 	router.set_phase(LocalInputRouter.Phase.PLACE)
 	_check(
 		not router.consume_pressed(0, "confirm"),
 		"held claim cannot confirm after transition into Place"
 	)
-	router._handle_key(_event(KEY_F, false))
-	router._handle_key(_event(KEY_F, true))
+	router._handle_key(_event(KEY_E, false))
+	router._handle_key(_event(KEY_E, true))
 	_check(router.consume_pressed(0, "confirm"), "fresh K1 press confirms in Place")
-	router._handle_key(_event(KEY_F, false))
+	router._handle_key(_event(KEY_E, false))
 	router.set_phase(LocalInputRouter.Phase.PLAY)
 	_check(
 		room.pause_coordinator.menu_owner == -1,
@@ -294,9 +294,9 @@ func _test_navigation_repeat() -> void:
 	router._handle_key(_event(KEY_D, false))
 	router.set_phase(LocalInputRouter.Phase.MENU)
 	router._handle_key(_event(KEY_D, true))
-	router._handle_key(_event(KEY_F, true))
+	router._handle_key(_event(KEY_E, true))
 	_check(router.consume_pressed(0, "confirm"), "K1 South/confirm maps in Menu")
-	router._handle_key(_event(KEY_F, false))
+	router._handle_key(_event(KEY_E, false))
 	var menu_early := router.repeat_navigation(0, "right", 0.249)
 	var menu_repeat := router.repeat_navigation(0, "right", 0.002)
 	_check(not menu_early and menu_repeat, "menu repeat uses 0.25s delay")

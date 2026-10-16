@@ -70,7 +70,12 @@ func bind_state(
 	for index in rosters.size():
 		var seat: Dictionary = seats[index] if index < seats.size() else {}
 		var text := "READY" if bool(seat.get("ready", false)) else "WAITING"
-		if not seat.is_empty() and not bool(seat.get("connected", true)):
+		# Only a joined seat can lose its device; empty seats are never "missing".
+		if (
+			not seat.is_empty()
+			and bool(seat.get("joined", true))
+			and not bool(seat.get("connected", true))
+		):
 			text = "DEVICE LOST"
 			missing.append(int(seat.seat))
 		rosters[index].bind_roster(seat, text)

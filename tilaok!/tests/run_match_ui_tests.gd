@@ -75,7 +75,7 @@ func _test_two_rounds_through_the_whole_flow() -> void:
 		),
 		"build label names the profile and never the seed"
 	)
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	await process_frame
 	_check(
 		(
@@ -84,14 +84,14 @@ func _test_two_rounds_through_the_whole_flow() -> void:
 		),
 		"the first press joins seat 1 and does not ready it"
 	)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	await process_frame
 	_check(
 		title.get_node("%MenuList").visible and flow.router.phase == LocalInputRouter.Phase.MENU,
 		"a joined seat reveals the Title menu (MENU phase)"
 	)
 	# Start while F stays held: the held press must not leak into the Lobby.
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	await process_frame
 	var room := flow.room
 	_check(room != null and flow.state == GameFlow.State.IN_MATCH, "Start opens the match room")
@@ -110,10 +110,10 @@ func _test_two_rounds_through_the_whole_flow() -> void:
 		not bool(flow.router.registry.get_seat(0).ready),
 		"the Start press is consumed (Title -> Lobby): seat 1 is not ready"
 	)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	await process_frame
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	await process_frame
 	_check(bool(flow.router.registry.get_seat(0).ready), "a fresh press readies seat 1")
 	_check(
@@ -171,9 +171,9 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		"round %d: Pugad countdown starts at the tuned 8 s" % round_number
 	)
 	# Both seats point at egg 0 and claim on the same tick: one wins, one sees a lost-claim cue.
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	_key("K2", KEY_ENTER, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	_key("K2", KEY_ENTER, false)
 	await _wait_physics_frames(2)
 	await process_frame
@@ -198,8 +198,8 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		_key("K1", KEY_D, true)
 		_key("K1", KEY_D, false)
 		await process_frame
-		_key("K1", KEY_F, true)
-		_key("K1", KEY_F, false)
+		_key("K1", KEY_E, true)
+		_key("K1", KEY_E, false)
 	else:
 		_key("K2", KEY_RIGHT, true)
 		_key("K2", KEY_RIGHT, false)
@@ -239,9 +239,9 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		"round %d: Place countdown starts at the tuned 15 s" % round_number
 	)
 	# Confirm both with the keyboard; the edits resolve together and Play starts.
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	_key("K2", KEY_ENTER, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	_key("K2", KEY_ENTER, false)
 	await _wait_physics_frames(2)
 	await process_frame
@@ -295,7 +295,7 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 			"round %d: award row %d equals the view model" % [round_number, index + 1]
 		)
 	# K1 stays held through the advance; K2 confirms. The held press must not claim in the next Pugad.
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	_key("K2", KEY_ENTER, true)
 	_key("K2", KEY_ENTER, false)
 	await _wait_physics_frames(2)
@@ -308,7 +308,7 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		room.assignments.is_empty() and room.pending_claims.is_empty(),
 		"round %d: the held confirm is consumed (Results -> Pugad)" % round_number
 	)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	await _wait_frames(2)
 	for seat_index in 2:
 		var units := int(room.cumulative_score_units[seat_index])
@@ -362,8 +362,8 @@ func _test_pause_menu_ownership_and_resume() -> void:
 	_key("K1", KEY_S, false)
 	await process_frame
 	_check(menu.selected == 0, "a non-owner cannot move the pause menu")
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	await process_frame
 	_check(bool(room.input_router.registry.get_seat(0).ready), "a non-owner confirm only readies")
 	await process_frame
@@ -432,15 +432,15 @@ func _test_pause_menu_ownership_and_resume() -> void:
 		_key("K1", KEY_S, true)
 		_key("K1", KEY_S, false)
 		await process_frame
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	await process_frame
 	_check(pause.get_node("%LeaveConfirm").is_open(), "Leave asks for confirmation before leaving")
 	_key("K1", KEY_A, true)
 	_key("K1", KEY_A, false)
 	await process_frame
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	await _wait_frames(3)
 	_check(
 		flow.room != null and flow.room != room and not get_root_paused(),
@@ -473,8 +473,8 @@ func _test_pause_menu_input_is_not_game_input() -> void:
 		room.placement_controller.cursors[1].cell == cell_before,
 		"menu arrows while paused do not move the Place cursor"
 	)
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	_key("K2", KEY_UP, true)
 	_key("K2", KEY_UP, false)
 	await process_frame
@@ -512,8 +512,8 @@ func _test_shared_pause_first_confirm() -> void:
 	_check(
 		room.pause_coordinator.pause_reason == "shared system pause", "reason is the shared pause"
 	)
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	await _wait_frames(2)
 	_check(room.pause_coordinator.menu_owner == 0, "the first fresh confirm takes the menu")
 	_check(
@@ -531,17 +531,17 @@ func _test_disconnect_and_reclaim(phase_name: String) -> void:
 	await _new_flow()
 	_join_title_k1()
 	await _wait_frames(2)
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	await process_frame
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	await process_frame
 	var room := flow.room
 	# Gamepad seat 2 joins the Lobby with A, then both ready.
 	_pad(PAD_IDS[0], JOY_BUTTON_A, true)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, false)
 	await process_frame
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, true)
 	_pad(PAD_IDS[0], JOY_BUTTON_A, false)
 	await _wait_frames(2)
@@ -732,9 +732,9 @@ func _test_title_lobby_cycles() -> void:
 	for cycle in range(CYCLES_FOR_LIFECYCLE):
 		_join_title_k1()
 		await _wait_frames(2)
-		_key("K1", KEY_F, true)
+		_key("K1", KEY_E, true)
 		await process_frame
-		_key("K1", KEY_F, false)
+		_key("K1", KEY_E, false)
 		await _wait_frames(2)
 		_check(flow.room != null, "cycle %d: Title -> Lobby opens a room" % (cycle + 1))
 		# K1 G = back: Lobby -> Title (clears the session).
@@ -807,16 +807,16 @@ func _room_in_play() -> P05MatchRoom:
 	await _new_flow()
 	_join_title_k1()
 	await _wait_frames(2)
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	await process_frame
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	await process_frame
 	var room := flow.room
 	_key("K2", KEY_ENTER, true)
 	_key("K2", KEY_ENTER, false)
 	await process_frame
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	_key("K2", KEY_ENTER, true)
 	_key("K2", KEY_ENTER, false)
 	await _wait_frames(2)
@@ -829,16 +829,16 @@ func _room_in_place() -> P05MatchRoom:
 	await _new_flow()
 	_join_title_k1()
 	await _wait_frames(2)
-	_key("K1", KEY_F, true)
+	_key("K1", KEY_E, true)
 	await process_frame
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, false)
 	await process_frame
 	var room := flow.room
 	_key("K2", KEY_ENTER, true)
 	_key("K2", KEY_ENTER, false)
 	await process_frame
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 	_key("K2", KEY_ENTER, true)
 	_key("K2", KEY_ENTER, false)
 	await _wait_frames(2)
@@ -873,8 +873,8 @@ func _finish_race_and_advance(room: P05MatchRoom, round_index: int) -> void:
 
 
 func _join_title_k1() -> void:
-	_key("K1", KEY_F, true)
-	_key("K1", KEY_F, false)
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
 
 
 ## Each egg preview counts as one node: its contents are the rolled block's own Visual, which

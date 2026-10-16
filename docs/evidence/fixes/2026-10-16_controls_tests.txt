@@ -1,0 +1,14 @@
+PASS every layout maps confirm / rotate / move / jump / ready to its own keys: []
+PASS WASD confirms with E or F
+PASS seats follow join order, not the layout: numpad joined first is P1 ([0, 1, 2, 3])
+PASS every action has a prompt for all five devices: []
+PASS prompts show E / O / Enter / Num 0 to confirm
+PASS a numpad seat reads numpad prompts
+PASS the Place ghost shows the Spikes block itself, upright, with its name
+PASS rotating turns the preview a quarter turn and the facing arrow reads 90°
+PASS switching blocks replaces the preview (one preview, now Kaing)
+PASS the Lobby map row has clickable arrows
+PASS clicking ▶ with the mouse picks the next map (default -> tutorial)
+PASS clicking ◀ goes back
+PASS the Library has a Back button that leaves with one click
+CONTROLS_TESTS checks=13 failures=0

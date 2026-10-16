@@ -1,0 +1,181 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_catalog (res://tests/run_maps_tests.gd:49)
+       [4] _run (res://tests/run_maps_tests.gd:26)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_catalog (res://tests/run_maps_tests.gd:49)
+       [4] _run (res://tests/run_maps_tests.gd:26)
+PASS the selection lists the built-in default, then the maps folder by order: ["default", "tutorial", "sample_map", "Basic Map"]
+PASS every map in the folder validates: []
+PASS a map is listed under its Map Name
+PASS the default stage needs no layout
+PASS left/right cycling wraps around the selection
+PASS painted blocks merge into exactly the default stage's collision rectangles
+PASS Build Area, Spawn and Flag markers give the default build region, spawn zone and flag
+PASS chickens spawn standing on the Spawn area's bottom edge; the flag is protected
+PASS the widest lowest rectangle is the floor; the block under the flag is arena.goal
+PASS the Tutorial map's surfaces, wall flags and half-tile cap match the verified stage
+PASS Tutorial spawn, build region, protected goal, half-tile flag and BUILD HERE zone match
+PASS a complete map validates: []
+PASS touching cells merge into rectangles; the bottom row is the floor: [["arena.block_01", [P: (20.0, 10.0), S: (4.0, 1.0)]], ["arena.block_02", [P: (20.0, 11.0), S: (1.0, 4.0)]], ["arena.floor", [P: (0.0, 15.0), S: (32.0, 1.0)]]]
+PASS markers map to spawn feet, build region, flag and the flag's 1-tile protection
+PASS a map without a Flag marker is rejected with a reason: ["Paint at least one Flag marker tile inside the stage."]
+PASS a map with a frame outside the stage validates
+PASS frame cells add no collision and outside markers are ignored
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_drop_in_and_broken_maps (res://tests/run_maps_tests.gd:309)
+       [4] _run (res://tests/run_maps_tests.gd:31)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_drop_in_and_broken_maps (res://tests/run_maps_tests.gd:309)
+       [4] _run (res://tests/run_maps_tests.gd:31)
+WARNING: MapCatalog: res://scenes/maps/zz_test_broken_map.tscn: Paint at least one Flag marker tile inside the stage.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:114)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_drop_in_and_broken_maps (res://tests/run_maps_tests.gd:309)
+       [4] _run (res://tests/run_maps_tests.gd:31)
+PASS a map scene saved into scenes/maps/ appears in the selection with no other edit
+PASS a broken map stays out of the selection and is reported
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_drop_in_and_broken_maps (res://tests/run_maps_tests.gd:327)
+       [4] _run (res://tests/run_maps_tests.gd:31)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _test_drop_in_and_broken_maps (res://tests/run_maps_tests.gd:327)
+       [4] _run (res://tests/run_maps_tests.gd:31)
+PASS removing the scene removes the map
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+PASS in a match the map's Blocks layer is the stage picture; dev markers and debug tiles are gone
+PASS a chicken spawns on the map's floor and stands on its generated collision (feet 960.0)
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _enter_match (res://scripts/flow/game_flow.gd:186)
+       [4] _test_lobby_map_selection (res://tests/run_maps_tests.gd:377)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _enter_match (res://scripts/flow/game_flow.gd:186)
+       [4] _test_lobby_map_selection (res://tests/run_maps_tests.gd:377)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS a new session's first match is on the Tutorial map, and the map row is still choosable
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [6] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [6] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [2] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [3] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS picking another map rebuilds the stage, keeps the seat and skips the tutorial
+PASS the Lobby shows the chosen map: MAP  ◀  Sample Map  (3/4)  ▶
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _enter_match (res://scripts/flow/game_flow.gd:186)
+       [4] _choose_map (res://scripts/flow/game_flow.gd:209)
+       [5] _on_flow_requested (res://scripts/flow/game_flow.gd:243)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS picking the Tutorial map again brings the guided tutorial back
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _test_lobby_map_selection (res://tests/run_maps_tests.gd:417)
+       [6] _press (res://tests/run_maps_tests.gd:368)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] entry_for (res://scripts/stage/map_catalog.gd:47)
+       [3] layout_for (res://scripts/stage/map_catalog.gd:55)
+       [4] _enter_match (res://scripts/flow/game_flow.gd:190)
+       [5] _test_lobby_map_selection (res://tests/run_maps_tests.gd:417)
+       [6] _press (res://tests/run_maps_tests.gd:368)
+P04_ITEM_LAB_READY families=10 enabled_variants=11 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+PASS after the tutorial is done or skipped, the next match falls back to the default stage
+MAPS_TESTS checks=27 failures=0

@@ -1,0 +1,24 @@
+PASS explosive.bomb.main is in the catalog from its scene alone
+PASS Bomb is a one-shot (2, 2) cleanup
+PASS Bomb is in the match selector pool
+PASS Bomb is labelled by name
+PASS explosive.dynamite.main is in the catalog from its scene alone
+PASS Dynamite is a one-shot (3, 3) cleanup
+PASS Dynamite is in the match selector pool
+PASS Dynamite is labelled by name
+PASS explosive.nuke.main is in the catalog from its scene alone
+PASS Nuke is a one-shot (4, 4) cleanup
+PASS Nuke is in the match selector pool
+PASS Nuke is labelled by name
+PASS P1 claims the first egg
+PASS after claiming, P1 can no longer move to another egg
+PASS P2, who has not claimed yet, can still browse
+PASS a second claim press never swaps P1's egg
+PASS round 1 builds two Kaing pieces
+PASS the bomb destroys the earlier Kaing in its 2x2 area
+PASS a piece outside the blast area is untouched
+PASS a piece placed in the blast area in the same Place phase is blown up too
+PASS the bomb shows one placeholder blast
+PASS Play starts after the blast
+PASS the nuke clears its 4x4 area and nothing outside it: [(18, 8)]
+EXPLOSIVES_TESTS checks=23 failures=0

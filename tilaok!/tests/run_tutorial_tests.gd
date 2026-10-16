@@ -43,9 +43,7 @@ func _run() -> void:
 	var tuning := GameplayTuning.new()
 	_default_signature = ArenaDefinition.new(tuning).arena_geometry_signature()
 	_tutorial_signature = (
-		ArenaDefinition
-		. new(tuning, load("res://data/stage/tutorial_arena_layout.tres"))
-		. arena_geometry_signature()
+		ArenaDefinition.new(tuning, MapCatalog.layout_for("tutorial")).arena_geometry_signature()
 	)
 	_test_script_resource()
 	_test_session_memory()
@@ -604,12 +602,12 @@ func _room_in_lobby(seat_count: int) -> P05MatchRoom:
 
 ## Title: one press joins K1, the next (on the menu) starts the match.
 func _join_title() -> void:
-	_key(KEY_F, true)
-	_key(KEY_F, false)
+	_key(KEY_E, true)
+	_key(KEY_E, false)
 	await _wait_frames(2)
-	_key(KEY_F, true)
+	_key(KEY_E, true)
 	await process_frame
-	_key(KEY_F, false)
+	_key(KEY_E, false)
 	await _wait_frames(2)
 
 

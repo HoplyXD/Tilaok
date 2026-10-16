@@ -1,15 +1,15 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bhdwi8hf8frb0"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_wtt3y"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_aa8ry"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="3_nw3c4"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_wtt3y"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_aa8ry"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="3_nw3c4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v2iee"]
 size = Vector2(64, 64)
 
 [sub_resource type="Curve2D" id="Curve2D_lhs17"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 352, 0)
+"points": PackedVector2Array(0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 2749, -5)
 }
 point_count = 2
 
@@ -47,6 +47,10 @@ shape = SubResource("RectangleShape2D_v2iee")
 curve = SubResource("Curve2D_lhs17")
 
 [node name="Hitbox" type="Area2D" parent="Projectile" unique_id=1942666549]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("3_nw3c4")
 
 [node name="Shape" type="CollisionShape2D" parent="Projectile/Hitbox" unique_id=2138759686]

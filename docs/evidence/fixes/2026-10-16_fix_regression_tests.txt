@@ -1,0 +1,10 @@
+PASS a projectile path drawn past the stage is clamped to the stage width from its start ([P: (32.0, -34.5), S: (2048.0, 64.0)])
+PASS the item catalog is valid and the Cannon loads: []
+PASS a broken block scene is left out and reported; every other block still loads
+PASS Start local match opens the Lobby screen (not just the map)
+PASS two ready players start the match
+PASS pausing a 2-player match shows no 'seat lost its controller' panel for empty seats
+PASS after every player is ready the resume countdown finishes and play continues
+PASS Leave match asks for confirmation (No is preselected)
+PASS Leave match -> Yes returns everyone to the Lobby with their seats
+FIX_REGRESSION_TESTS checks=9 failures=0

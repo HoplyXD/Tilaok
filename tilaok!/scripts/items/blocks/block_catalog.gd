@@ -35,6 +35,7 @@ static func scan(directory: String = BLOCKS_DIR) -> Dictionary:
 			entries.append(entry)
 	var result := _build_families(entries, errors)
 	_cache[directory] = result
+	_drop_invalid(result)
 	return result
 
 
@@ -85,6 +86,11 @@ static func _strip_labels(node: Node) -> void:
 
 static func errors(directory: String = BLOCKS_DIR) -> PackedStringArray:
 	return scan(directory).errors
+
+
+## Blocks left out of the catalog because they fail validation (see _build_families).
+static func skipped(directory: String = BLOCKS_DIR) -> PackedStringArray:
+	return scan(directory).get("skipped", PackedStringArray())
 
 
 ## {family_id: {variant_id: footprint}} for every scanned block: the documented variant table.
@@ -289,6 +295,12 @@ static func _collect_regions(root: Node2D, data: BlockData) -> Dictionary:
 			region.declared_bounded = true
 			region.blockable = true
 			region.effect = effect
+			# Clamped to the stage (drawn past it): "as far as it can go" once placed.
+			var stage := Vector2(StageMap.ARENA_SIZE) * BlockData.AUTHOR_CELL_WU
+			region.reach_stage_edge = (
+				is_equal_approx(path_rect.size.x, stage.x)
+				or is_equal_approx(path_rect.size.y, stage.y)
+			)
 			regions.append(region)
 	return {
 		"regions": regions,
@@ -382,11 +394,16 @@ static func _path_rect(projectile: Node2D, root: Node) -> Rect2:
 		for index in range(1, path.curve.point_count - 1):
 			rect = rect.expand(transform * path.curve.get_point_position(index))
 		var thickness := BlockData.AUTHOR_CELL_WU
+		# A path longer than the stage is clamped to the stage size, keeping its start: a Cannon
+		# drawn "to the far side" still shoots across the whole stage (2026-10-16).
+		var stage := Vector2(StageMap.ARENA_SIZE) * BlockData.AUTHOR_CELL_WU
 		if rect.size.y < rect.size.x:
-			return Rect2(
-				rect.position.x, rect.get_center().y - thickness * 0.5, rect.size.x, thickness
-			)
-		return Rect2(rect.get_center().x - thickness * 0.5, rect.position.y, thickness, rect.size.y)
+			var length := minf(rect.size.x, stage.x)
+			var left := start.x if finish.x >= start.x else start.x - length
+			return Rect2(left, rect.get_center().y - thickness * 0.5, length, thickness)
+		var height := minf(rect.size.y, stage.y)
+		var top := start.y if finish.y >= start.y else start.y - height
+		return Rect2(rect.get_center().x - thickness * 0.5, top, thickness, height)
 	return Rect2()
 
 
@@ -437,4 +454,23 @@ static func _build_families(entries: Array[Dictionary], errors: PackedStringArra
 				return a.variant_id < b.variant_id
 		)
 		families.append(family)
-	return {"families": families, "scenes": scenes, "errors": errors}
+	return {
+		"families": families, "scenes": scenes, "errors": errors, "skipped": PackedStringArray()
+	}
+
+
+## One broken block scene must not take every block (and the match) down with it: it is left
+## out of the catalog and reported. Runs after the scan is cached, because GameplayTuning's
+## defaults read the catalog.
+static func _drop_invalid(result: Dictionary) -> void:
+	var check_tuning := GameplayTuning.new()
+	var kept: Array[ItemFamilyDefinition] = []
+	for family in result.families:
+		var problems := ItemDefinitionValidator.validate_family(family, check_tuning)
+		if problems.is_empty():
+			kept.append(family)
+			continue
+		var message := "%s left out: %s" % [family.family_id, "; ".join(problems)]
+		result.skipped.append(message)
+		push_warning("BlockCatalog: " + message)
+	result.families = kept

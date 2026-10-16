@@ -18,6 +18,11 @@ var item_label := ""
 var compact_label := false
 ## World-space region overlay from ItemOverlayBuilder; empty for the P04 families.
 var overlay: Array[Dictionary] = []
+## Quarter turns of the previewed block (drawn as a facing arrow); -1 = no rotation badge.
+var rotation_turns := -1
+
+var _preview: Node2D
+var _preview_key := ""
 
 
 func show_state(
@@ -38,6 +43,37 @@ func show_state(
 	item_label = new_item_label
 	z_index = 40
 	queue_redraw()
+
+
+## Block preview (2026-10-16): the block's own Visual, see-through, rotated exactly as it will be
+## placed, plus a facing arrow (the block's "up" after rotation) and its name in the label, so
+## players see what they are placing and which way it faces.
+func set_block_preview(
+	variant: ItemVariantDefinition, variant_key: String, quarter_turns: int, cell_wu: float
+) -> void:
+	if variant_key != _preview_key:
+		clear_block_preview()
+		_preview_key = variant_key
+		_preview = BlockCatalog.preview_visual(variant)
+		if _preview != null:
+			_preview.name = "BlockPreview"
+			_preview.modulate = Color(1.0, 1.0, 1.0, 0.65)
+			add_child(_preview)
+	rotation_turns = ItemGeometry.normalized_turns(quarter_turns)
+	if _preview != null:
+		_preview.position = footprint_rect.get_center()
+		_preview.rotation = float(rotation_turns) * PI * 0.5
+		_preview.scale = Vector2.ONE * cell_wu / 64.0
+	queue_redraw()
+
+
+func clear_block_preview() -> void:
+	if _preview != null and is_instance_valid(_preview):
+		remove_child(_preview)
+		_preview.queue_free()
+	_preview = null
+	_preview_key = ""
+	rotation_turns = -1
 
 
 func set_overlay(new_overlay: Array[Dictionary]) -> void:
@@ -147,9 +183,12 @@ func _draw() -> void:
 	var mark := "OK" if valid else "X"
 	var text := (
 		"%s %s" % [seat_label, mark]
-		if compact_label
+		if compact_label and item_label.is_empty()
 		else "%s %s • %s" % [seat_label, mark, item_label]
 	)
+	if rotation_turns >= 0:
+		text += "  %d°" % (rotation_turns * 90)
+		_draw_facing_badge()
 	if not valid and not compact_label:
 		text += " — " + reason
 	var anchor := footprint_rect.position + Vector2(0.0, -8.0)
@@ -157,6 +196,24 @@ func _draw() -> void:
 		font, anchor + Vector2(1.0, 1.0), text, HORIZONTAL_ALIGNMENT_LEFT, 720.0, 12, Color.BLACK
 	)
 	draw_string(font, anchor, text, HORIZONTAL_ALIGNMENT_LEFT, 720.0, 12, Color.WHITE)
+
+
+## A round badge on the footprint's top-right corner with an arrow pointing where the block's top
+## faces (up at 0°, right at 90°, down at 180°, left at 270°): rotation without relying on colour.
+func _draw_facing_badge() -> void:
+	var center := Vector2(footprint_rect.end.x, footprint_rect.position.y)
+	var facing := Vector2.UP.rotated(float(rotation_turns) * PI * 0.5)
+	var side := Vector2(-facing.y, facing.x)
+	draw_circle(center, 13.0, Color("#1d2930"))
+	draw_arc(center, 13.0, 0.0, TAU, 24, Color.WHITE, 2.0)
+	var tip := center + facing * 8.0
+	draw_line(center - facing * 7.0, tip, Color.WHITE, 3.0)
+	draw_colored_polygon(
+		PackedVector2Array(
+			[tip + facing * 2.0, tip - facing * 5.0 + side * 5.0, tip - facing * 5.0 - side * 5.0]
+		),
+		Color.WHITE
+	)
 
 
 func _draw_arrow(strip: Rect2, normal: Vector2) -> void:

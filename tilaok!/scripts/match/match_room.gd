@@ -39,6 +39,10 @@ const PHASE_TO_INPUT := {
 ## GameFlow sets this so a Lobby where every joined seat is ready starts without a mouse click.
 ## The harness and the P05/P06 tests keep the manual Start (default false).
 var auto_start_on_ready := false
+## Lobby map row (set by GameFlow before the room enters the tree): the chosen map's name and
+## whether left/right may change it. Changing it asks the flow for a fresh room on that map.
+var map_choice_label := ""
+var map_selection_enabled := false
 ## Shown by the DEBUG overlay on open; the harness sets it before the room enters the tree.
 var debug_overlay_default := false
 ## GameFlow enables the overlay's developer-harness button (debug builds only).
@@ -135,7 +139,9 @@ func _process(delta: float) -> void:
 		return
 	_update_identity_badges()
 	_update_camera_targets()
-	if phase_controller.phase == MatchPhaseController.Phase.PUGAD:
+	if phase_controller.phase == MatchPhaseController.Phase.LOBBY:
+		_poll_map_selection()
+	elif phase_controller.phase == MatchPhaseController.Phase.PUGAD:
 		if phase_controller.advance(delta):
 			_finish_pugad_timeout()
 	elif phase_controller.phase == MatchPhaseController.Phase.PLACE:
@@ -163,6 +169,37 @@ func _physics_process(delta: float) -> void:
 		_apply_race_outcomes(step_result.new_outcomes)
 		if bool(step_result.ended):
 			_finish_race(str(step_result.end_reason))
+
+
+## Lobby: any joined seat's left/right changes the map (one map per match, so the flow rebuilds
+## the room on the new stage; joined seats stay on the shared router).
+func _poll_map_selection() -> void:
+	if not map_selection_enabled or flow_requested.get_connections().is_empty():
+		return
+	for seat in input_router.registry.joined_seats():
+		var seat_index := int(seat.seat)
+		var step := 0
+		if input_router.consume_pressed(seat_index, "left"):
+			step = -1
+		elif input_router.consume_pressed(seat_index, "right"):
+			step = 1
+		if step != 0:
+			request_map_step(step)
+			return
+
+
+## Lobby only: ask the flow for the next (+1) or previous (-1) map (keys or the row's arrows).
+func request_map_step(step: int) -> void:
+	if (
+		step == 0
+		or not map_selection_enabled
+		or phase_controller.phase != MatchPhaseController.Phase.LOBBY
+		or flow_requested.get_connections().is_empty()
+	):
+		return
+	# Deferred: the flow frees this room, so never mid-frame.
+	map_selection_enabled = false
+	flow_requested.emit.call_deferred(&"map_next" if step > 0 else &"map_prev")
 
 
 func _build_hud() -> void:
@@ -608,11 +645,22 @@ func _refresh_match_ghost(seat_index: int) -> void:
 		"P%d %s%s" % [int(seat.identity), mark, " • LOCKED" if cursor.confirmed else ""],
 		_short_variant_label(str(cursor.variant_key))
 	)
-	(_ghosts[seat_index] as ItemGhost).compact_label = true
+	var ghost := _ghosts[seat_index] as ItemGhost
+	ghost.compact_label = true
 	if not objective:
-		(_ghosts[seat_index] as ItemGhost).set_overlay(
+		ghost.set_overlay(
 			overlay_for_cursor(str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns))
 		)
+		# Show the block itself, turned the way it will be placed (type + rotation at a glance).
+		var preview_variant := definitions.find_variant(str(cursor.variant_key))
+		ghost.set_block_preview(
+			preview_variant.variant as ItemVariantDefinition,
+			str(cursor.variant_key),
+			int(cursor.quarter_turns),
+			tuning.grid_cell_wu
+		)
+	else:
+		ghost.clear_block_preview()
 	for pointer in pointers:
 		if str(pointer.id) == "p05_cursor_%d" % seat_index:
 			pointer.rect = footprint
@@ -720,17 +768,14 @@ func _confirm_placement(seat_index: int) -> void:
 		return
 	place_notices.erase(seat_index)
 	placement_controller.set_confirmed(seat_index, true)
-	last_message = (
-		"P%d claimed that spot first; other players can no longer place there." % (seat_index + 1)
-	)
+	last_message = "P%d confirmed their placement." % (seat_index + 1)
 	_refresh_all_match_ghosts()
 	_refresh_match_ui()
 	if placement_controller.all_confirmed():
 		_resolve_place_edits(placement_controller.confirmed_edits())
 
 
-## Placement check for a seat's cursor: the stage rules plus first come, first served. Cells
-## already claimed by an earlier confirmed placement are taken for this Place phase.
+## Placement check for a seat's cursor (stage rules), with a short player-facing reason.
 func _placement_verdict(seat_index: int) -> Dictionary:
 	var cursor: Dictionary = placement_controller.cursors[seat_index]
 	var variant_key := str(cursor.variant_key)
@@ -743,20 +788,23 @@ func _placement_verdict(seat_index: int) -> Dictionary:
 			variant_key, cursor.cell, int(cursor.quarter_turns), _actor_rects()
 		)
 	)
-	if not bool(verdict.allowed) or bool(cursor.confirmed):
+	if bool(verdict.allowed):
 		return verdict
-	var owner := placement_controller.claimed_by(
-		seat_index, str(cursor.variant_key), cursor.cell, int(cursor.quarter_turns)
-	)
-	if owner < 0:
-		return verdict
-	var seat := input_router.registry.get_seat(owner)
-	var label := int(seat.identity) if not seat.is_empty() else owner + 1
-	return {
-		"allowed": false,
-		"code": "claimed",
-		"reason": "Taken by P%d (first come, first served)" % label,
-	}
+	var short := verdict.duplicate()
+	short.reason = short_reason(str(verdict.get("code", "")), str(verdict.get("reason", "")))
+	return short
+
+
+## "Tile occupied" (a piece, the stage or a chicken is there) or "Invalid spot" (2026-10-16).
+static func short_reason(code: String, reason: String = "") -> String:
+	if (
+		code in ["item_overlap", "immutable_base", "player_clearance"]
+		or reason.begins_with("Overlaps")
+	):
+		return "Tile occupied"
+	if reason.begins_with("Blown up"):
+		return reason
+	return "Invalid spot"
 
 
 func _show_placement_locked(seat_index: int) -> void:
@@ -802,7 +850,8 @@ func _resolve_place_edits(edits: Array[Dictionary]) -> void:
 	var rejection_lines := PackedStringArray()
 	for seat_index in resolver_result.rejections:
 		var rejection := (
-			"P%d rejected: %s" % [int(seat_index) + 1, resolver_result.rejections[seat_index]]
+			"P%d: %s"
+			% [int(seat_index) + 1, short_reason("", str(resolver_result.rejections[seat_index]))]
 		)
 		messages.append(rejection)
 		rejection_lines.append(rejection)

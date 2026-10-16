@@ -19,7 +19,13 @@ const CONTROL_ACTIONS := [
 	["pause", "Pause"],
 	["cheer", "Cheer (when out)"],
 ]
-const DEVICE_LABELS := {"k1": "Keyboard 1", "k2": "Keyboard 2", "gamepad": "Gamepad"}
+const DEVICE_LABELS := {
+	"k1": "Keyboard WASD",
+	"k2": "Keyboard arrows",
+	"k3": "Keyboard IJKL",
+	"k4": "Keyboard numpad",
+	"gamepad": "Gamepad",
+}
 
 @export var categories: PackedStringArray = PackedStringArray()
 @export var titles: PackedStringArray = PackedStringArray()

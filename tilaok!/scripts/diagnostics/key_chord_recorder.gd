@@ -54,7 +54,7 @@ const CHORDS: Array[Dictionary] = [
 		"keys": ["D", "W", "Right", "Up"]
 	},
 	{"id": "C10", "group": "Place", "label": "K1 pointer + rotate", "keys": ["D", "R"]},
-	{"id": "C11", "group": "Place", "label": "K1 pointer + confirm", "keys": ["D", "F"]},
+	{"id": "C11", "group": "Place", "label": "K1 pointer + confirm", "keys": ["D", "E"]},
 	{"id": "C12", "group": "Place", "label": "K1 diagonal + rotate", "keys": ["W", "D", "R"]},
 	{"id": "C13", "group": "Place", "label": "K2 pointer + rotate", "keys": ["Right", "RShift"]},
 	{"id": "C14", "group": "Place", "label": "K2 pointer + confirm", "keys": ["Right", "Enter"]},
@@ -74,9 +74,9 @@ const CHORDS: Array[Dictionary] = [
 		"id": "C17",
 		"group": "Two seats",
 		"label": "both diagonal pointers + confirm",
-		"keys": ["W", "D", "F", "Up", "Right", "Enter"]
+		"keys": ["W", "D", "E", "Up", "Right", "Enter"]
 	},
-	{"id": "C18", "group": "Menus", "label": "both seats claim / confirm", "keys": ["F", "Enter"]},
+	{"id": "C18", "group": "Menus", "label": "both seats claim / confirm", "keys": ["E", "Enter"]},
 	{"id": "C19", "group": "Menus", "label": "K1 back + K2 back", "keys": ["G", "Backspace"]},
 	{
 		"id": "C20",
@@ -103,6 +103,29 @@ const CHORDS: Array[Dictionary] = [
 		"label": "K2 cheers while K1 runs + jumps",
 		"keys": ["RShift", "D", "Space"]
 	},
+	# Four keyboard players (2026-10-16): K3 = I J K L / O / P, K4 = Numpad 8 4 2 6 / 0 / 5.
+	{"id": "C25", "group": "Four seats", "label": "K3 run + jump", "keys": ["L", "I"]},
+	{"id": "C26", "group": "Four seats", "label": "K4 run + jump", "keys": ["Num 6", "Num 8"]},
+	{"id": "C27", "group": "Place", "label": "K3 pointer + confirm", "keys": ["L", "O"]},
+	{"id": "C28", "group": "Place", "label": "K4 pointer + rotate", "keys": ["Num 6", "Num 5"]},
+	{
+		"id": "C29",
+		"group": "Four seats",
+		"label": "all four run right",
+		"keys": ["D", "Right", "L", "Num 6"]
+	},
+	{
+		"id": "C30",
+		"group": "Four seats",
+		"label": "all four run right + jump",
+		"keys": ["D", "W", "Right", "Up", "L", "I", "Num 6", "Num 8"]
+	},
+	{
+		"id": "C31",
+		"group": "Four seats",
+		"label": "all four confirm",
+		"keys": ["E", "Enter", "O", "Num 0"]
+	},
 ]
 
 const KEY_NAMES := {
@@ -112,9 +135,15 @@ const KEY_NAMES := {
 	KEY_UP: "Up",
 	KEY_DOWN: "Down",
 	KEY_ENTER: "Enter",
-	KEY_KP_ENTER: "Enter",
 	KEY_BACKSPACE: "Backspace",
 	KEY_ESCAPE: "Esc",
+	KEY_KP_8: "Num 8",
+	KEY_KP_4: "Num 4",
+	KEY_KP_2: "Num 2",
+	KEY_KP_6: "Num 6",
+	KEY_KP_0: "Num 0",
+	KEY_KP_5: "Num 5",
+	KEY_KP_PERIOD: "Num .",
 }
 
 var index := 0

@@ -63,6 +63,38 @@ theme_type_variation = &"BodyLabel"
 horizontal_alignment = 1
 unique_name_in_owner = true
 
+[node name="MapRow" type="HBoxContainer" parent="Safe/Content"]
+layout_mode = 2
+visible = false
+theme_override_constants/separation = 12
+alignment = 1
+unique_name_in_owner = true
+
+[node name="PrevMapButton" type="Button" parent="Safe/Content/MapRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(56, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "◀"
+tooltip_text = "Previous map"
+unique_name_in_owner = true
+
+[node name="MapLabel" type="Label" parent="Safe/Content/MapRow"]
+layout_mode = 2
+text = "MAP  •  Default stage"
+theme_type_variation = &"BodyLabel"
+horizontal_alignment = 1
+unique_name_in_owner = true
+
+[node name="NextMapButton" type="Button" parent="Safe/Content/MapRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(56, 44)
+focus_mode = 0
+theme_type_variation = &"TilaokMenuButton"
+text = "▶"
+tooltip_text = "Next map"
+unique_name_in_owner = true
+
 [node name="Slots" type="HBoxContainer" parent="Safe/Content"]
 layout_mode = 2
 theme_override_constants/separation = 12

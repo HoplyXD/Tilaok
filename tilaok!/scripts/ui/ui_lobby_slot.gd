@@ -38,13 +38,14 @@ func device_text() -> String:
 func _device_name(seat: Dictionary) -> String:
 	if str(seat.get("device_kind", "")) == "gamepad":
 		return "Gamepad %d" % (int(seat.get("device_id", 0)) + 1)
-	return "Keyboard %s" % str(seat.get("keyboard_layout", ""))
+	var kind := str(seat.get("keyboard_layout", "")).to_lower()
+	return str(UiLibraryText.DEVICE_LABELS.get(kind, "Keyboard %s" % kind.to_upper()))
 
 
 func _join_hint(map: UiPromptMap) -> String:
 	if map == null:
 		return "Press ready to join"
-	return (
-		"Press %s, %s or %s to join"
-		% [map.glyph("ready", "k1"), map.glyph("ready", "k2"), map.glyph("ready", "gamepad")]
-	)
+	var keys := PackedStringArray()
+	for kind in ["k1", "k3", "k2", "k4"]:
+		keys.append(map.glyph("ready", kind))
+	return "Press %s or %s to join" % [", ".join(keys), map.glyph("ready", "gamepad")]

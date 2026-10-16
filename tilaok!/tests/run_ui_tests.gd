@@ -321,17 +321,17 @@ func _test_input_behaviour() -> void:
 		(title.get_node("%MenuList") as UiMenuList).selected == 0,
 		"K2 cannot drive a menu owned by seat 1"
 	)
-	await _tap(KEY_F)
+	await _tap(KEY_E)
 	_check(started[0] == 1, "K1 confirm activates Start exactly once (got %d)" % started[0])
 	_check(gallery.current is UiLobbyScreen, "Start opens the lobby")
-	await _send_key(KEY_F, true)
+	await _send_key(KEY_E, true)
 	gallery.show_screen(gallery.index_of("title"))
 	await process_frame
 	_check(
 		not gallery.router.consume_pressed(0, "ready"),
 		"a held press is consumed by the screen transition"
 	)
-	await _send_key(KEY_F, false)
+	await _send_key(KEY_E, false)
 	gallery.show_screen(gallery.index_of("settings"))
 	await process_frame
 	var settings := gallery.current as UiSettingsScreen

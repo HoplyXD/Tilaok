@@ -19,6 +19,9 @@ extends Resource
 @export var build_here_zone_tiles := Rect2()
 ## Tile row of the floor top, used to describe how high the flag sits.
 @export var floor_top_tile := 15.0
+## A map scene (scenes/maps/, StageMap root) whose Blocks layer is the stage picture. Set by
+## MapCatalog; null keeps the debug stage tiles. Collision always comes from `surfaces`.
+@export var map_scene: PackedScene
 
 
 static func make_default() -> ArenaLayout:

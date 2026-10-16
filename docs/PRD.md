@@ -151,15 +151,17 @@ Launch → title → join/ready lobby → guided first Karera → Pugad → Plac
 
 Bindings below are **PROTOTYPE—UNTESTED**, not a claim of physical-controller validation. K1/K2 are key groups, not fixed player numbers. South/East/West identify controller button positions (A/B/X on Xbox). Shared Escape is a system pause key.
 
-| Action | Gamepad | K1 | K2 |
-|---|---|---|---|
-| Join/ready; claim; confirm | South | F | Enter |
-| Back/leave | East | G | Backspace |
-| Menu/Pugad/Place navigation | D-pad/left stick | WASD | Arrows |
-| Run | D-pad/stick horizontal | A/D | Left/Right |
-| Jump | South | Space | Right Ctrl |
-| Rotate; spectator cheer | West | R | Right Shift |
-| Pause/request resume | Start/Options | Escape | Escape |
+| Action | Gamepad | K1 (WASD) | K3 (IJKL) | K2 (arrows) | K4 (numpad) |
+|---|---|---|---|---|---|
+| Join/ready; claim; confirm | South | E or F | O | Enter | Num 0 |
+| Back/leave | East | G | U | Backspace | Num . |
+| Menu/Pugad/Place navigation | D-pad/left stick | WASD | IJKL | Arrows | Num 8 4 2 6 |
+| Run | D-pad/stick horizontal | A/D | J/L | Left/Right | Num 4/6 |
+| Jump | South | W or Space | I | Up or Right Ctrl | Num 8 |
+| Rotate; spectator cheer | West | R | P | Right Shift | Num 5 |
+| Pause/request resume | Start/Options | Escape | Escape | Escape | Escape |
+
+**Four keyboard layouts (2026-10-16, requested by Jorge):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard.
 
 Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pad takes precedence. Opposite directions cancel motion but still represent intentional input for Freeze. All assigned devices receive the same movement capability; analog walking is not an approved extra. See the source register for full provisional repeat/edge/pause policies.
 

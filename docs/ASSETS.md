@@ -164,6 +164,13 @@ No production asset was created or imported. The stage tile atlas is a flat thre
 | `Visual` nodes in `scenes/blocks/solid_block.tscn`, `wood_box.tscn`, `collapsing_block.tscn` | Solid Block, Wood Box, Collapsing Block | DEBUG placeholder — replace inside each scene's `Visual` node | Jorge/Ivie (obstacles) |
 | Code-drawn egg silhouettes for the three blocks (`item_egg_preview.gd`) | Pugad eggs, Item Lab | DEBUG placeholder — replace | Jorge/Ivie, Shanti (UI) |
 
+## Map editing tiles — 2026-10-16
+
+| File | Used in | Status | Final owner |
+|---|---|---|---|
+| `assets/tiles/map_markers_64.png` + `map_markers_tileset.tres` (3 tiles: Spawn, Build Area, Flag; tint plus a shape identifier) | `DevMarkers` layer of map scenes; editor only, removed in the game | Dev tool; drawn by a one-off code generator, never shown to players | Jorge/Ivie (maps) |
+| `assets/tiles/blocks_tileset.tres` | `Blocks` layer of map scenes | Source 0 is Jorge's `Blocks Sprite Sheet.png`, still unfinished (it currently holds the chicken sheet), on a 64 px grid. Source 1 reuses the DEBUG `debug_tiles_64.png` until the block art is ready | Jorge/Ivie (maps) |
+
 ## UI shell placeholders recorded — UI shells (2026-10-14)
 
 No production asset was created or imported. The UI uses flat Theme StyleBoxes, the engine default font and Polygon2D placeholder seat shapes, all labeled PLACEHOLDER. Final art is human-made and goes under `tilaok!/assets/ui/<screen>/`, named `ui.<screen>.<element>`, and is assigned to the matching `Art_<Element>` node. Register each file here before it ships.

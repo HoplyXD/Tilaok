@@ -2,8 +2,8 @@ extends SceneTree
 
 ## Explosives and the Pugad pick lock (requested by Jorge, 2026-10-15).
 ## - Bomb 2x2, Dynamite 3x3 and Nuke 4x4 are scene-authored one-shot cleanup blocks: in a real
-##   match they clear player-built pieces from earlier rounds inside their area, never pieces
-##   placed in the same Place phase, and show a short placeholder blast.
+##   match they clear player-built pieces inside their area, including pieces placed in the same
+##   Place phase (2026-10-16), and show a short placeholder blast.
 ## - After a seat claims a Pugad egg it can no longer move its selection.
 ## Synthetic input in the real P05 match room. Run:
 ## godot --headless --fixed-fps 60 --path tilaok! --script res://tests/run_explosives_tests.gd
@@ -153,8 +153,11 @@ func _test_bomb_clears_earlier_pieces() -> void:
 	_check(not cells.has(Vector2i(14, 8)), "the bomb destroys the earlier Kaing in its 2x2 area")
 	_check(cells.has(Vector2i(18, 8)), "a piece outside the blast area is untouched")
 	_check(
-		cells.has(Vector2i(15, 9)),
-		"a piece placed in the same Place phase survives (one shared snapshot)"
+		(
+			not cells.has(Vector2i(15, 9))
+			and str(room.last_resolution.rejections.get(1, "")) == "Blown up by P1's Bomb"
+		),
+		"a piece placed in the blast area in the same Place phase is blown up too"
 	)
 	var flashes := room.world_layer.get_children().filter(
 		func(node: Node) -> bool: return node is ExplosionFlash

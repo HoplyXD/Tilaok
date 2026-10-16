@@ -3,6 +3,8 @@ extends UiScreen
 
 signal ready_toggled(seat_index: int)
 signal leave_requested(seat_index: int)
+## A click on the map row's arrows: -1 previous map, +1 next map.
+signal map_step_requested(step: int)
 
 const MIN_PLAYERS := 2
 
@@ -10,6 +12,10 @@ var slots: Array[UiLobbySlot] = []
 var seats: Array[Dictionary] = []
 
 @onready var _need_players_label: Label = %NeedPlayersLabel
+@onready var _map_row: Control = %MapRow
+@onready var _map_label: Label = %MapLabel
+@onready var _prev_map_button: Button = %PrevMapButton
+@onready var _next_map_button: Button = %NextMapButton
 @onready var _start_hint: UiPromptGlyph = %StartHint
 @onready var _help_hint: UiPromptGlyph = %HelpHint
 @onready var _back_hint: UiPromptGlyph = %BackHint
@@ -54,6 +60,15 @@ func bind_live(registry: PlayerSeatRegistry, map: UiPromptMap) -> void:
 	bind_seats(seat_data, map, device_kind)
 
 
+## The map the match will use (maps from scenes/maps/). `choosable` adds the left/right arrows;
+## an empty name hides the row.
+func bind_map(map_name: String, choosable: bool) -> void:
+	_map_row.visible = not map_name.is_empty()
+	_map_label.text = "MAP  •  %s" % map_name
+	_prev_map_button.visible = choosable
+	_next_map_button.visible = choosable
+
+
 func joined_count() -> int:
 	var count := 0
 	for slot in slots:
@@ -64,6 +79,8 @@ func joined_count() -> int:
 
 func _on_screen_ready() -> void:
 	slots = [%Slot1, %Slot2, %Slot3, %Slot4]
+	_prev_map_button.pressed.connect(func() -> void: map_step_requested.emit(-1))
+	_next_map_button.pressed.connect(func() -> void: map_step_requested.emit(1))
 
 
 func _show_state(index: int, ctx: UiContext) -> void:

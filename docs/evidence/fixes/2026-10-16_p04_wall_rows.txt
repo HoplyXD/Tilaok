@@ -1,0 +1,15 @@
+ERROR: FAIL mode flags: Kaing karera+lagsanay; Tulay karera, Lagsanay pending review
+PASS T09 Kaing 1x1 top | expected: stands with feet at y=512 on build.hollow_blocks.cell_1x1#001, eligible player-built support | actual: floor=true feet=511.96 reason=eligible built support
+PASS T09 Kaing 2x3 top | expected: stands with feet at y=512 on build.hollow_blocks.stack_2x3#001, eligible player-built support | actual: floor=true feet=511.96 reason=eligible built support
+PASS T09 Kaing rotated 3x2 top | expected: stands with feet at y=512 on build.hollow_blocks.stack_2x3#001, eligible player-built support | actual: floor=true feet=511.96 reason=eligible built support
+PASS T09 Kaing solid side | expected: stopped at x>=796 (block right edge 768 + half body 28); side contact is not support | actual: min_x=796.00 side_counted=false
+PASS T09 Kaing route foothold | expected: chicken jumps from the floor onto the 1x1 foothold (top y=896) | actual: on_foothold=true feet=895.93
+PASS T09 Kaing underside | expected: head stops at the solid underside y=576 with a ceiling contact | actual: highest_head=576.05 ceiling=true
+PASS T09/T18 disabled variant: Kaing 1x3 column | expected: footprint (64.0, 192.0) and a chicken stands on its top at y=512 | actual: footprint (64.0, 192.0) feet=511.95 stands=true
+PASS T09/T18 disabled variant: Kaing 1x3 rotated 3x1 | expected: footprint (192.0, 64.0) and a chicken stands on its top at y=512 | actual: footprint (192.0, 64.0) feet=511.95 stands=true
+PASS T09/T18 disabled variant: Tulay 3x1 | expected: footprint (192.0, 64.0) and a chicken stands on its top at y=512 | actual: footprint (192.0, 64.0) feet=511.95 stands=true
+PASS T09/T18 disabled variant: Tulay 5x1 | expected: footprint (320.0, 64.0) and a chicken stands on its top at y=512 | actual: footprint (320.0, 64.0) feet=511.95 stands=true
+PASS T09 Kaing wall eligibility | expected: metadata ELIGIBLE and the wall probe finds the solid side | actual: metadata=1 probe=true
+PASS T09 Kaing wall slide and kick | expected: slides on the Kaing side at or below the configured cap, then a fresh jump kicks away | actual: slid=true speed=240.0 kicked_away=true vx=-480.0
+ERROR: FAIL profiles that do not list seed families keep an empty item pool
+P04_TESTS checks=269 failures=2

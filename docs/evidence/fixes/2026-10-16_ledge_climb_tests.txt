@@ -1,0 +1,22 @@
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS jumping at a 4-tile wall while holding toward it climbs the ledge and stands on top: { "climbs": 1, "feet": 703.999877929688, "x": 351.924041748047, "best_feet": 703.5, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS without the ledge climb the same jump cannot get on top (the wall really is too tall): { "climbs": 0, "feet": 959.996826171875, "x": 291.924011230469, "best_feet": 767.945129394531, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 9): Valid placement.
+PASS no climb when there is no room to stand on the ledge: { "climbs": 0, "feet": 959.996826171875, "x": 291.924011230469, "best_feet": 767.945129394531, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS no climb when the player is not holding toward the wall: { "climbs": 0, "feet": 959.994506835938, "x": 291.924011230469, "best_feet": 767.945068359375, "floor": true }
+LEDGE_CLIMB_TESTS checks=21 failures=0

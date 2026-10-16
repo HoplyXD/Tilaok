@@ -2,6 +2,8 @@ class_name PlayerSeatRegistry
 extends RefCounted
 
 const MAX_SEATS := 4
+## Shared-keyboard layouts (see LocalInputRouter._keyboard_layout_for_key).
+const KEYBOARD_LAYOUTS := ["K1", "K2", "K3", "K4"]
 const SHAPES := ["CIRCLE", "TRIANGLE", "SQUARE", "DIAMOND"]
 const COLORS := [Color("#f2c14e"), Color("#63a7ff"), Color("#f07c6c"), Color("#89c77b")]
 
@@ -44,7 +46,7 @@ func join_gamepad(device_id: int) -> int:
 
 
 func join_keyboard(layout: String) -> int:
-	if layout not in ["K1", "K2"] or seat_for_keyboard(layout) >= 0:
+	if layout not in KEYBOARD_LAYOUTS or seat_for_keyboard(layout) >= 0:
 		return -1
 	var index := _first_empty_seat()
 	if index < 0:

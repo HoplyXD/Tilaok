@@ -63,20 +63,22 @@ Each seat has a fixed number and shape from join until return to lobby. **Colour
 
 Prompts must show the correct glyph for the device that seat uses. Gamepad labels are **positions**, not brand symbols: South, East, West, Start/Options.
 
-| Action | Gamepad | Keyboard K1 | Keyboard K2 |
-|---|---|---|---|
-| Join / ready toggle (lobby) | South | F | Enter |
-| Leave lobby / back | East | G | Backspace |
-| Menu / Pugad / Place navigate | D-pad or left stick | W A S D | Arrow keys |
-| Run left / right | D-pad or left stick X | A / D | Left / Right |
-| Jump | South | Space | Right Ctrl |
-| Claim egg (Pugad) | South | F | Enter |
-| Move placement pointer | D-pad or left stick | W A S D | Arrow keys |
-| Rotate clockwise | West | R | Right Shift |
-| Confirm placement | South | F | Enter |
-| Results: ready | South | F | Enter |
-| Pause / request resume | Start / Options | Escape (shared) | Escape (shared) |
-| Spectator cheer | West | R | Right Shift |
+| Action | Gamepad | WASD (K1) | IJKL (K3) | Arrows (K2) | Numpad (K4) |
+|---|---|---|---|---|---|
+| Join / ready toggle (lobby) | South | E or F | O | Enter | Num 0 |
+| Leave lobby / back | East | G | U | Backspace | Num . |
+| Menu / Pugad / Place navigate | D-pad or left stick | W A S D | I J K L | Arrow keys | Num 8 4 2 6 |
+| Run left / right | D-pad or left stick X | A / D | J / L | Left / Right | Num 4 / 6 |
+| Jump (hold to glide) | South | W or Space | I | Up or Right Ctrl | Num 8 |
+| Claim egg (Pugad) | South | E or F | O | Enter | Num 0 |
+| Move placement pointer | D-pad or left stick | W A S D | I J K L | Arrow keys | Num 8 4 2 6 |
+| Rotate clockwise | West | R | P | Right Shift | Num 5 |
+| Confirm placement | South | E or F | O | Enter | Num 0 |
+| Results: ready | South | E or F | O | Enter | Num 0 |
+| Pause / request resume | Start / Options | Escape (shared) | Escape (shared) | Escape (shared) | Escape (shared) |
+| Spectator cheer | West | R | P | Right Shift | Num 5 |
+
+**Four keyboard layouts (2026-10-16, requested by Jorge):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard. The Lobby map row's ◀ ▶ arrows and the Library's Back button also take mouse clicks.
 
 **Wall slide / wall jump (CURRENT, enabled by default):** while airborne and touching a qualifying solid side, a chicken slides at a capped fall speed; holding toward the wall is not required. A fresh jump press kicks away once per contact. Holding jump does not repeat; the chicken must separate from the wall before kicking it again. This needs a short Library/tutorial cue and no HUD element ([UI_TUTORIAL.md](UI_TUTORIAL.md) future-extension note).
 
