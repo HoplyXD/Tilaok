@@ -211,7 +211,7 @@ No human review, human playtest, physical-device session, or final-art/audio wor
 
 ### P13 UX, onboarding and accessibility — October 15, 2026
 
-P13 is 8/14 (T01, T03, T05, T06, T07, T09, T13, T14) on synthetic engineering evidence; the scheduled full match is now the default player route. Remaining before the Oct 21 freeze review, all needing people or devices: the keyboard chord session ([PLAYTEST Sheet A](PLAYTEST.md#sheet-a--p02-t03--p02-t04-physical-keyboard-chords-recorder), owner), two identical gamepads for P13-T02 / P02-T08, spectator, novice and QA sessions (Sheets C–E), the cheer check (Sheet F), Filipino / Hiligaynon review of the Library and tutorial copy, and Shanti's font and cue replacements ([ASSETS P13 register](ASSETS.md#placeholders-recorded--p13-2026-10-15)). Evidence: [P13](evidence/p13/README.md).
+P13 is 11/18 (T01, T03, T05, T06, T07, T09, T13, T14 and the 2026-10-17 reference restyle T15–T17) on synthetic engineering evidence; Shanti's design review of the restyle and the physical keyboard/gamepad pass are P13-T18 ([PLAYTEST Sheet G](PLAYTEST.md#sheet-g--p13-t18-reference-restyle-review)); the scheduled full match is now the default player route. Remaining before the Oct 21 freeze review, all needing people or devices: the keyboard chord session ([PLAYTEST Sheet A](PLAYTEST.md#sheet-a--p02-t03--p02-t04-physical-keyboard-chords-recorder), owner), two identical gamepads for P13-T02 / P02-T08, spectator, novice and QA sessions (Sheets C–E), the cheer check (Sheet F), Filipino / Hiligaynon review of the Library and tutorial copy, and Shanti's font and cue replacements ([ASSETS P13 register](ASSETS.md#placeholders-recorded--p13-2026-10-15)). Evidence: [P13](evidence/p13/README.md).
 
 ## Team and integration defaults
 

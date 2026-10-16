@@ -1267,7 +1267,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Acceptance:** Gamepad and keyboard traverse every screen/back/quit route without traps or accidental game input; opening Library from pause keeps simulation paused and preserves return context.
 
-**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** implemented and synthetically verified on the scheduled full match (default route): [navigation suite](evidence/p13/test_logs/run_p13_navigation_tests.txt) (205 checks), captures in [P13 evidence](evidence/p13/README.md). Physical gamepad traversal is COULD-NOT-RUN (P13-T02 / P02-T08; owner's dated override D1).
+**Source:** [UI_TUTORIAL.md](UI_TUTORIAL.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence (2026-10-15):** implemented and synthetically verified on the scheduled full match (default route): [navigation suite](evidence/p13/test_logs/run_p13_navigation_tests.txt) (205 checks), captures in [P13 evidence](evidence/p13/README.md). Physical gamepad traversal is COULD-NOT-RUN (P13-T02 / P02-T08; owner's dated override D1). **Reference restyle (2026-10-17):** the Title, Lobby, Pause and both confirmations (rivet Leave match, torn-paper Quit with stacked Yes / No) were restyled from the team's Figma screens with no route or ownership change; navigation re-run 205 / 0 and the restyle suites are in [ui-reference evidence](evidence/ui-reference/README.md). Human design review and physical devices remain open (P13-T18).
 
 
 ### REQ-UI-003 — Explain current play and results in the HUD

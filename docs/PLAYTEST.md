@@ -697,3 +697,43 @@ Eight 1280×720 captures cover Pugad offer, Place lock, coin available, carrier,
 The Windows Desktop debug export and exported console-wrapper startup smoke passed for the default lifecycle route, direct P12 harness room with Barya on and with `--barya-disabled`, and the P07 first-playable route. This establishes export/startup only, not a clean-PC package review. Full logs, procedure, captures and exact command lines are in [Barya evidence](evidence/barya/README.md).
 
 **Still open:** human gameplay/comprehension, physical keyboard/controller, QA/accessibility and minimum-zoom review, balance and cultural review, production art/audio, individual owner/capacity assignment, target-PC performance, independent reviewer, P00-T04 release-manifest ratification, and other release gates. No outcome is inferred for these sheets.
+
+## Reference UI restyle — October 17, 2026
+
+Engineering evidence for the restyle of the Lobby, Play HUD, Place, Round result, Pause and both confirmations from the team's Figma PNG exports (decisions and deviations: [UI_HANDOFF](UI_HANDOFF.md#reference-restyle-from-the-figma-screens--2026-10-17)). It is not a human design review or a physical-device test.
+
+| Field | Record |
+|---|---|
+| Build | `main` `d837e7b` plus the restyle change set (commit recorded in the [evidence index](evidence/ui-reference/README.md)) |
+| Engine | Godot 4.7.2.stable.official, `C:\Godot\Godot_v4.7.2-stable_win64_console.exe` |
+| Date / machine | 2026-10-17 · Windows 11 Pro · AMD Ryzen 5 5500 · AMD Radeon RX 580 2048SP · 1920×1080 144 Hz |
+| Seats / input | Gallery SAMPLE seats at 1–4 players; synthetic keyboard and gamepad events only; no physical controller |
+| Reviewer | engineering run (AI-assisted, Claude); no human reviewer |
+
+| Check | Result |
+|---|---|
+| All 41 headless suites (40 existing + `run_ui_theme_tests` 87 checks) | PASSED — 5,212 counted checks; only the two pre-existing `run_ui_tests` contract failures (`%Outcome1`, `%Final1`) remain, unchanged from `d837e7b` |
+| Round result fit with live 4-player Kangaroo + Bomb-Taya awards | FAILED first (title and countdown off-screen), fixed, re-run `run_p13_hud_tests` 265 / 0 — PASSED |
+| Windowed live flow (`run_match_ui_interactive` 59 / 0, `run_p09_interactive` 108 / 0, isolated copy) | PASSED |
+| Rendered 1920×1080 captures, 2/3/4 players, beside each reference | PASSED — 27 renders, 21 side-by-sides, deviations listed in the [evidence index](evidence/ui-reference/README.md) |
+| Frame cost, 4-player Round result, VSync off | median 0.452 ms, p95 0.716 ms, worst 0.882 ms; 131 draw calls; 118.7 MiB static / 56.4 MiB video — PASSED against 16.67 ms / 512 MiB |
+| Screen-switch cleanup (10 cycles of 13 gallery screens) | node count stable, no new orphans — PASSED |
+| Windows debug export + exported startup | PASSED (`TILAOK_FLOW_READY state=title`) |
+| gdformat / gdlint | COULD-NOT-RUN (not installed on this PC) |
+| Human design review, couch-distance readability, physical keyboard / gamepad | COULD-NOT-RUN — Sheet G below (P13-T18) |
+
+### Sheet G — P13-T18 reference restyle review
+
+Needs the UI designer (Shanti) plus one other person, a 1080p screen viewed from about 2.5 m (couch distance), one keyboard and one gamepad. Open the harness → **UI Gallery** (F9 hides the panel) and then the live **Player flow**.
+
+| # | Step | Expected | Result / notes |
+|---|---|---|---|
+| 1 | Gallery → Components | Plank Normal / Selected / Pressed / Disabled, paper and rivet panels, pills, chips, key-caps and status pills match the Figma "Button Variants" and "Panels" boards closely enough to approve, or a change list is written | |
+| 2 | Gallery → Lobby, Pause, Round result, Place, Play HUD at 2, 3 and 4 players | Layout, hierarchy, fonts and colours match the Figma screens; every listed deviation in UI_HANDOFF is acceptable or noted | |
+| 3 | From 2.5 m, read every Lobby card, HUD chip, Place pill and result label | Nothing unreadable; seat identity readable by number and shape, not colour alone | |
+| 4 | Live flow, keyboard: Title → Quit → Up/Down and Left/Right between Yes and No, Back cancels | Torn-paper "We're sorry to see you go" dialog; selection moves both ways; No is preselected | |
+| 5 | Live match, gamepad: pause, move through every Pause entry, Leave match → Yes/No with the D-pad | Rivet dialog; owner-only menu; no input leaks into the match | |
+| 6 | Unplug the gamepad while paused | Maroon warning pill names the seat; reclaim works as before | |
+| 7 | Confirm the font choices and the Mountains of Christmas licence note in ASSETS | Fonts approved or replacements named | |
+
+Record the date, devices, build, who observed and the result in the table; **never fill a result in by inference.**

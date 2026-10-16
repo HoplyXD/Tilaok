@@ -1,6 +1,6 @@
 # Tilaok! Asset, Licence, and Cultural Verification Register
 
-**Status:** pre-production register. No production art, audio, fonts, or third-party assets have been recorded in this repository yet. Do not treat this document as evidence that an asset has been created, licensed, or approved.
+**Status:** pre-production register. No production art or audio has been recorded in this repository yet. Since 2026-10-17 five third-party fonts (SIL OFL 1.1 / Apache 2.0) are registered in [Reference restyle fonts and placeholders](#reference-restyle-fonts-and-placeholders--2026-10-17); their final approval is still open. Do not treat this document as evidence that an asset has been created, licensed, or approved beyond what a row records.
 
 ## Asset policy
 
@@ -106,7 +106,7 @@ AI assistance is allowed by the competition only when accurately disclosed. For 
 - Choose and document the final 2D art direction.
 - Assign an asset-register owner.
 - Identify a qualified native-speaker/cultural reviewer.
-- Select the project font and confirm its distribution licence.
+- Approve the project fonts registered on 2026-10-17 (licences recorded; Mountains of Christmas has an OFL/Apache discrepancy to note in credits) and confirm Filipino glyph coverage (ñ, accented vowels) during copy review.
 - Decide whether music is team-made, commissioned, or licensed.
 - Populate the register as soon as the first production asset is created or imported.
 
@@ -230,7 +230,7 @@ No final art, audio or font was generated or imported. Everything below is a dev
 | Kangaroo command cards and miss grid | `scenes/ui/components/kangaroo_hud.tscn`, `kangaroo_command_card.tscn` | UI scene, text icons `● ↑ ↔` | PLACEHOLDER wording and look; `Art_PoseIcon` slot is empty | Shanti (UI) / Jorge/Ivie (pose art) |
 | Library copy | `tilaok!/data/ui/library_text.tres` | English text | PLACEHOLDER — needs Filipino / Hiligaynon and cultural review | team (native-speaker review) |
 | Tutorial copy (Kangaroo, Bomb-Taya) | `tilaok!/data/ui/tutorial_script.tres` | English text | PLACEHOLDER — same review | team |
-| UI font | engine default (Open Sans SemiBold) | font | engine-included; lacks `● ▲ ■ ◆ → ↑ ↔` (system fallback) — a final font that covers them is needed | Shanti |
+| UI font | engine default (Open Sans SemiBold) | font | engine-included; lacks `● ▲ ■ ◆ → ↑ ↔` (system fallback) — a final font that covers them is needed. **Superseded 2026-10-17** by the fonts in [Reference restyle fonts](#reference-restyle-fonts-and-placeholders--2026-10-17); the symbol glyphs still use the system fallback | Shanti |
 
 Provenance: all of the above was generated or edited by AI-assisted programming under Francis and Carlos's direction and is disclosed in [AI_USAGE.md](AI_USAGE.md). Nothing is licensed from a third party.
 
@@ -252,3 +252,29 @@ The live HUD uses text and a seat-number cue; no color-only identification is in
 | `block.house_stairs.debug_visual` — `scenes/blocks/construction/hagdan_steps_2x2.tscn`, `hagdan_steps_3x3.tscn` | Brown stepped Polygon2D, outline and "STEPS • DEBUG" label | Scene nodes written by Claude (AI) at the user's request; no imported image. DEBUG placeholder. | Original house-step art (Jorge/Ivie); cultural check of the name "Hagdan ng Bahay". |
 | `block.toy_burr_strip.debug_visual` — `scenes/blocks/traps/tinik_strip_3x1.tscn`, `tinik_strip_4x1.tscn` | Low green base with rounded burr bumps and "TINIK • DEBUG" label | Same provenance. DEBUG placeholder. | Soft, wholesome burr art (the contract requires a wholesome-art review before Lagsanay/Kangaroo); name check. |
 | `block.sorbetes_ice.debug_visual` — `scenes/blocks/construction/yelo_ice_3x1.tscn`, `yelo_ice_4x1.tscn` | Pale-blue slab with frost marks and "ICE • DEBUG" label | Same provenance. DEBUG placeholder. | Original ice / sorbetero art; name check. |
+
+## Reference restyle fonts and placeholders — 2026-10-17
+
+The user supplied the font files and licence texts on 2026-10-17 (`C:\Users\omsha\Downloads\fonts`) and asked for Handlee to replace the Lemonade font used in the Figma design (Lemonade was not supplied and is not in the build). Only the files the UI uses were copied into `tilaok!/assets/fonts/`, each with its licence text; Mountains of Christmas Regular was supplied but not imported. Name-table data below was read from each file with Godot 4.7.2 (`FontFile.get_ot_name_strings()`). Files are unmodified (SHA-256 recorded). AI assistance: Claude Code copied and registered the files and wired them into the Theme; it did not create or edit any font.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | Status |
+|---|---|---|---|---|---|---|
+| `font.handlee` | `assets/fonts/handlee/Handlee-Regular.ttf` (SHA-256 `9fa2f002…7eac5b`) | font; Theme default (body, buttons, legends) | Joe Prince / Admix Designs, v1.001; Google Fonts distribution | SIL OFL 1.1, Reserved Font Name "Handlee"; `assets/fonts/handlee/OFL.txt` | None | Imported — approval open |
+| `font.margarine` | `assets/fonts/margarine/Margarine-Regular.ttf` (`53cc27f8…5b718b`) | font; headings, slot state, chips, HUD round line | Astigmatic (AOETI), v1.000; Google Fonts | SIL OFL 1.1, Reserved Font Name "Margarine"; `assets/fonts/margarine/OFL.txt` | None | Imported — approval open |
+| `font.mountains_of_christmas_bold` | `assets/fonts/mountains_of_christmas/MountainsofChristmas-Bold.ttf` (`4b0e7a1f…50fed76`) | font; screen titles (Lobby, Paused, Round result, quit heading), Title logo text | Crystal Kluge / Tart Workshop (Font Diner), v1.003; Google Fonts | The supplied `LICENSE.txt` is Apache 2.0 (Google Fonts distributes this family under Apache 2.0); the font's own name table says SIL OFL 1.1 with Reserved Font Name "Mountains of Christmas". Both permit bundling in a game; keep both texts with the build and credit the font. | None | Imported — approval open; licence discrepancy noted |
+| `font.mansalva` | `assets/fonts/mansalva/Mansalva-Regular.ttf` (`2050cf99…68d8568`) | font; handwritten captions (Pause subtitle, quit message, result headings) | Carolina Short / The Mansalva Project Authors, v2.112; Google Fonts | SIL OFL 1.1; `assets/fonts/mansalva/OFL.txt` (header year 2019, font says 2022) | None | Imported — approval open |
+| `font.road_rage` | `assets/fonts/road_rage/RoadRage-Regular.ttf` (`d079b917…7eaaf3`) | font; prompt words (Ready / Help / Back) and key-caps | Robert E. Leuschke / The Road Rage Project Authors, v1.010; Google Fonts | SIL OFL 1.1; `assets/fonts/road_rage/OFL.txt` | None | Imported — approval open |
+
+Cultural review: not required for the fonts themselves; Filipino/Hiligaynon copy must be checked for glyph coverage (ñ, accented vowels) during the existing copy review. Symbol glyphs `● ▲ ■ ◆ ◀ ▶ → ↑ ↔` still come from the system fallback font (unchanged from P13).
+
+**Placeholders written for the restyle (programming, not production art).** All are scene nodes or Theme StyleBoxes written by Claude (AI) from the user-supplied reference PNGs; the PNGs themselves are the team's design exports and are not shipped (only downscaled side-by-side evidence JPGs are kept in `docs/evidence/ui-reference/`).
+
+| Item | Where | Status | Human handoff |
+|---|---|---|---|
+| Plank button (flat fill, light top edge, dark under-shadow, two rivet dots) | Theme `sb_plank*`, `plank_button.tscn` | PLACEHOLDER approximation of "Button Variants" | Shanti: wood-plank texture states via `ui.common.plank_button` |
+| Torn-paper panel and brown backing page | Theme `sb_paper`, `PaperBacking`; Pause and quit dialog `Decor/Backing` | PLACEHOLDER: straight edges, no grain or torn edge | Shanti: transparent torn-paper art via `ui.pause.panel`, `ui.title.quit_panel` |
+| Rivet panel | Theme `sb_rivet_panel`, `Rivets` nodes in `confirm_dialog.tscn` | PLACEHOLDER approximation | Shanti: `ui.common.confirm_panel` |
+| Vine divider | `vine_divider.tscn` `Placeholder` (Line2D + four leaf polygons) | PLACEHOLDER | Shanti: `ui.common.vine_divider` |
+| Chalkboard frame | Theme `sb_chalkboard` | PLACEHOLDER (flat green, flat white frame) | Shanti: `ui.round_result.chalkboard` |
+| Warm lobby backdrop | Theme `BackdropWarm` (GradientTexture2D in the Theme, no file) | PLACEHOLDER gradient sampled from the Lobby export | Shanti: `ui.lobby.background` |
+| Menu icons (play, gear, book, leave) | not implemented | Missing | Shanti: icon set (button `icon` property) |

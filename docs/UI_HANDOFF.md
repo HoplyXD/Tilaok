@@ -39,7 +39,7 @@ UI that cannot be integrated before the freeze should be scoped by priority (sec
 | Performance budget | 60 FPS / 16.67 ms at 1080p, ≤ 512 MiB; keep UI cheap (atlases, no per-frame allocation) | LOCKED |
 | Title/action-safe margin | Suggest 5 % inset (64 × 36 logical px) | PROPOSAL |
 | Minimum body text size | Suggest ≥ 16 logical px for anything read mid-round; ≥ 12 only for non-critical labels | PROPOSAL |
-| Font | Engine default today. Final typeface, language mix and licence | OPEN |
+| Font | Since 2026-10-17: Handlee (body), Margarine, Mountains of Christmas Bold, Mansalva and Road Rage, supplied by the team with their licences (see [the reference restyle section](#reference-restyle-from-the-figma-screens--2026-10-17)). Language mix still open | CURRENT (fonts); OPEN (language mix) |
 | 2D art style | Not chosen | OPEN |
 
 **Readability rule (LOCKED):** every cue must remain legible at minimum camera zoom, with the stage crowded by persistent items.
@@ -256,3 +256,30 @@ The reusable `ScoreboardChart` and `ScoreColumn` components are live in the roun
 - Result reveal motion is a separate Normal / Reduced / Off setting; Screen shake is unchanged. Resize and repeated readiness binds do not restart the same result, and early advance settles the chart before navigation.
 
 Rendered 1280×720, 1920×800 and 1920×1080 examples and the exact engineering limits are indexed in [scoreboard evidence](evidence/scoreboard/README.md). The placeholder SpriteFrames and Theme values are not final production art; final art and human readability review remain with the team.
+
+## Reference restyle from the Figma screens — 2026-10-17
+
+Source: nine PNG exports of the team Figma file "UI-Tilaok-" (Lobby, Obstacle Place, Round Results, Pause Menu, Pause Menu (With Warning), Leave Match Confirmation, Confirm Exit UI, Panels, Button Variants), supplied by the user in the request. The Figma link itself could not be read (no Figma connector in the session), so layout, colour and spacing come from the PNGs; colours were sampled from the exports and are approximations until exact Figma values are supplied. Some exports show a game screenshot behind the new UI; that background is reference only.
+
+**Owner decisions (2026-10-17):** keep the code's seat shapes and colours (the reference's P3 diamond / P4 square and dark seat colours are **not** adopted) and only restyle the UI; use the supplied fonts with **Handlee in place of Lemonade**; the rivet panel is the in-game **Leave match** confirmation and the torn-paper panel is the **Quit the game** confirmation on the Title.
+
+| Piece | Where | What it is |
+|---|---|---|
+| Fonts | `tilaok!/assets/fonts/` | Handlee (Theme default, body), Margarine (headings, slot state, chips), Mountains of Christmas Bold (screen titles), Mansalva (handwritten captions), Road Rage (prompt words and key-caps). Licences beside each file; register in [ASSETS](ASSETS.md#reference-restyle-fonts-and-placeholders--2026-10-17). |
+| Theme tokens | `tilaok!/assets/ui/theme/tilaok_theme.tres` | Every earlier type keeps its name. New: `BackdropWarm`, `PanelPaper`, `PaperBacking`, `PanelRivet`, `Rivet`, `ScoreChip`, `PillSeat1…4`, `PillWarning`, `KeyCap`, `KeyCapLabel`, `PromptAction`, `ChalkboardPanel`, `ChalkLabel`, `ScreenTitle`, `PaperTitle`, `PaperHeading`, `PaperScript`, `PaperBody`, `DialogMessage`, `DialogScript`, `ResultTitle`, `ResultSubtitle`, `ResultHeading`, `ResultText`, `SlotState`, `SlotDevice`, `LobbyNote`, `BadgeNumberDark`, `ChipLabel`, `ChipState`, `HudTitle`, `HudSub`, `TwistTag`, `GuideTitle`, `GuideBody`, `Legend<Award>`. `TilaokMenuButton` / `MenuButtonSelected` are now the wooden plank (Normal / Hovered = router-selected / Pressed / Disabled). `Legend<Award>` letter colours must equal `ScoreAward/<award>` (a test checks it). `PillSeat1…4` are darkened versions of `PlayerSeatRegistry.COLORS`; change both together. |
+| Plank button | `scenes/ui/components/plank_button.tscn` | Button + `RivetLeft` / `RivetRight` nodes. Used by Title, Pause and both confirmations; other menus get the plank look from the Theme without rivets. |
+| Vine divider | `scenes/ui/components/vine_divider.tscn` | `Art_Vine` slot (`ui.common.vine_divider`) over a PLACEHOLDER Line2D + leaf polygons under `Placeholder`; hide `Placeholder` once the texture is set. |
+| Seat pill / score chip | `seat_pill.tscn`, `score_chip.tscn` (inherited from `score_row.tscn`) | Pause roster pill (seat colour fill, cream shape, "Player N") and Play HUD chip (cream, darkened seat-colour shape, "PN"). The badge's new exports: `prefix_text`, `tint_darken`, `use_seat_tint`, `plain_tint`. |
+| Confirmations | `confirm_dialog.tscn` (rivet, Yes / No stacked) and `confirm_dialog_paper.tscn` (inherited: torn-paper skin, "We're sorry to see you go :(" heading and vine) | Same `UiConfirmDialog` script and API. Up / Down move between Yes and No; Left / Right still work. |
+| Lobby | `lobby_screen.tscn`, `lobby_slot.tscn` | Warm backdrop, "Lobby" title, tall cream cards, Ready / Help / Back words with key-caps. An open slot previews its fixed "Player N" and shape, faded, above "Open slot" (`UiPlayerBadge.bind_preview`; the seat still counts as empty). |
+| Play HUD | `play_hud.tscn` | Round on line 1, challenge + TWIST on line 2, cream score chips; still exactly 64 px. |
+| Place | `place_overlay.tscn`, `phase_banner.tscn`, `ghost_legend.tscn` | The phase banner is the cream Guide card (title + wrapped controls) at the top of the right column, above the status pills (mark + text + colour); the Place timer bar sits top-centre. |
+| Round result | `round_result_screen.tscn`, `score_award_legend.tscn`, `award_line.tscn` | Orange title + vine, chalkboard chart with the Ready key-cap and next-round line in its header, Awards and Score Legend column, Next round bar bottom-right. The legend's entries are now authored in the scene. |
+| Pause | `pause_screen.tscn` | Torn-paper panel with a brown backing page, "Paused" title, vine, seat pills, maroon warning pill for a lost controller, plank buttons. |
+| Component sheet | `scenes/ui/screens/component_sheet.tscn` (UI Gallery → **Components**) | Every look side by side: plank states, paper and rivet panels, pills, chips, key-caps, status pills, chalkboard legend and timer. |
+
+**Not changed:** node names and `%Unique` contracts in sections 12 and 13a, signals, input routing, scoring and copy except: lobby slot states read "Open slot / Not Ready / Ready / Device lost", the Lobby heading reads "Lobby", Pause reads "Paused", the result legend heading reads "Score Legend", and the Title quit message reads "Are you sure you want to leave?" under the new heading.
+
+**Deviations from the reference (on purpose):** seat shapes and colours stay as in section 4 (owner decision); state words stay inside pills and chips (READY / WAITING / RUN / SAFE…) because the resume and HUD rules need them; Place status pills keep their `[OK] / [X] / [LOCK] / [NO TURN] / [SET]` marks and existing wording so colour is never the only cue; the round-result Score Legend uses two columns so ten award rows still fit at 1280×720; menu buttons keep "Ready / Resume" and "Leave match"; plank text has a thin brown outline for contrast on the orange Hovered plank; the torn paper edge, wood grain, chalk texture, button icons (play, gear, book, leave) and vine art are not reproduced. They need the team's transparent exports, because the PNGs are opaque on white. Side-by-side captures: [ui-reference evidence](evidence/ui-reference/README.md).
+
+**Art requests for the team (empty slots, PLACEHOLDER until filled):** `ui.pause.panel` and `ui.title.quit_panel` (torn paper with backing, transparent PNG, 9-slice friendly), `ui.common.confirm_panel` (rivet panel), `ui.common.plank_button` states, `ui.common.vine_divider`, `ui.round_result.chalkboard`, `ui.lobby.slot_frame`, `ui.lobby.background`, menu icons, and seat shape art via `Art_Circle/Triangle/Square/Diamond`.

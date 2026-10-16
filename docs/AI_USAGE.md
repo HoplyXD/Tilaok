@@ -325,3 +325,14 @@ No final art or audio was generated. No human code, art or feel review is claime
 ### Sneak hitbox — October 16, 2026
 
 At the user's request ("when sneaking the hitbox will be change to one tile"), Claude (Claude Opus 5.5 via Claude Code) generated `ChickenController.hit_rect()`, routed hazard and placement-clearance checks through it, and wrote `run_sneak_hitbox_tests.gd` (5 checks). AI-generated code; no human code review claimed.
+
+### Reference UI restyle from the Figma screens — October 17, 2026
+
+At the user's request (a Stage A / Stage B "UI enhancement from design reference" prompt with nine PNG exports of the team Figma file and the instruction to keep the existing UI code and enhance it), Claude via Claude Code wrote the Stage A plan with Claude Sonnet 5.5 and, after the user's `approved` and design answers (keep seat shapes/colours; use the supplied fonts with Handlee replacing Lemonade; rivet panel for in-game Leave match, torn paper for Quit; build every piece in scenes so it shows in the 2D editor), implemented it with Claude Opus 5.5. Claude:
+- Sampled colours from the PNGs with a throwaway Godot script and generated the restyled Theme (`tilaok_theme.tres`: new StyleBoxes, font assignments and type variations; every earlier type name kept).
+- Copied the user-supplied font files and licence texts into `tilaok!/assets/fonts/` unmodified and registered them in ASSETS.md (it did not create or edit a font).
+- Generated the scene components `plank_button.tscn`, `vine_divider.tscn` (PLACEHOLDER line/leaf polygons), `score_chip.tscn`, `seat_pill.tscn`, `confirm_dialog_paper.tscn`, `component_sheet.tscn` and restyled `confirm_dialog`, `lobby_slot`, `player_badge`, `prompt_glyph`, `phase_banner`, `score_row`, `score_award_legend`, `award_line`, `score_column` and the Title, Lobby, Play HUD, Place, Round result and Pause screens.
+- Generated small script changes: badge `prefix_text` / `tint_darken` / `use_seat_tint` / `bind_preview`, stacked Yes/No navigation in `UiConfirmDialog`, lobby slot copy and open-slot preview, Title quit scrim, award-line colour by Theme type, scene-authored legend, the gallery Components entry.
+- Wrote `tests/run_ui_theme_tests.gd` and `tests/capture_ui_reference_evidence.gd` and ran the regressions and captures recorded in [ui-reference evidence](evidence/ui-reference/README.md).
+
+AI-generated code and placeholder visuals; no final art, icon, texture or audio was generated. The reference PNGs and fonts were supplied by the user; their authorship/approval is the team's to record. No human code review, visual design review or physical-controller test is claimed.

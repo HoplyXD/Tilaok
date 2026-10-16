@@ -1,0 +1,106 @@
+Reference UI restyle — delivery checks (2026-10-17)
+Engine: Godot 4.7.2.stable.official.ed1daf0bf (C:\Godot\Godot_v4.7.2-stable_win64_console.exe); Windows 11 Pro; AMD Ryzen 5 5500; Radeon RX 580 2048SP
+Build: main d837e7b + restyle change set (working tree). Synthetic input only.
+
+== Baseline before any change (main d837e7b, headless, no --fixed-fps)
+run_ui_tests exit=1
+run_match_ui_tests exit=0
+run_match_ui_binding_tests exit=0
+run_match_ui_mode_tests exit=0
+run_scoreboard_chart_tests exit=0
+run_p13_hud_tests exit=0
+run_p13_navigation_tests exit=0
+run_p13_accessibility_tests exit=0
+run_p13_library_tests exit=0
+run_p13_tutorial_tests exit=0
+run_foundation_tests exit=0
+baseline run_ui_tests failures: score_award_legend.gd and ui_award_line.gd source rule; round_result_screen %Outcome1; match_result_screen %Final1
+
+== After: batch 1 (headless, real time)
+run_barya_tests exit=0 BARYA_TESTS checks=72 failures=0 input=synthetic physics=Godot Area2D
+run_blocks_tests exit=0 BLOCKS_TESTS checks=111 failures=0
+run_controls_tests exit=0 CONTROLS_TESTS checks=13 failures=0
+run_explosives_tests exit=0 EXPLOSIVES_TESTS checks=23 failures=0
+run_fix_regression_tests exit=0 FIX_REGRESSION_TESTS checks=9 failures=0
+run_foundation_tests exit=0 Harness lifecycle checks complete: 0 failure(s).
+run_item_mode_integration_tests exit=0 ITEM_MODE_INTEGRATION_TESTS checks=83 failures=0
+run_ledge_climb_tests exit=0 LEDGE_CLIMB_TESTS checks=21 failures=0
+run_maps_tests exit=0 MAPS_TESTS checks=27 failures=0
+run_match_ui_binding_tests exit=0 MATCH_UI_BINDING_TESTS checks=177 failures=0
+run_match_ui_mode_tests exit=0 MATCH_UI_MODE_TESTS checks=62 failures=0
+run_match_ui_tests exit=0 MATCH_UI_TESTS checks=190 failures=0
+run_p02_tests exit=0 P02_TESTS checks=83 failures=0
+run_p02_wall_tests exit=0 P02_WALL_TESTS checks=85 failures=0
+run_p03_tests exit=0 P03_TESTS checks=103 failures=0
+run_p04_tests exit=0 P04_TESTS checks=270 failures=0
+run_p05_tests exit=0 P05_TEST_SUMMARY checks=137 failures=0
+run_p06_tests exit=0 P06_TEST_SUMMARY checks=102 failures=0
+run_p07_tests exit=0 P07_TESTS checks=591 failures=0
+run_p08_tests exit=0 P08_TEST_SUMMARY checks=86 failures=0
+run_p09_tests exit=0 P09_TEST_SUMMARY checks=77 failures=0
+run_p10_tests exit=0 P10_TESTS checks=438 failures=0
+run_p11_tests exit=0 P11_TEST_SUMMARY checks=78 failures=0
+run_p12_pairs_tests exit=0 P12_PAIRS_TESTS checks=285 failures=0
+run_p12_stack_tests exit=0 P12_STACK_TESTS checks=47 failures=0
+
+== After: batch 2 (headless --fixed-fps 60)
+run_p12_tests exit=0 P12_TESTS checks=61 failures=0
+run_p13_accessibility_tests exit=0 P13_ACCESSIBILITY_TESTS checks=65 failures=0
+run_p13_cheer_tests exit=0 P13_CHEER_TESTS checks=39 failures=0
+run_p13_hud_tests exit=1 P13_HUD_TESTS checks=265 failures=2
+run_p13_library_tests exit=0 P13_LIBRARY_TESTS checks=422 failures=0
+run_p13_navigation_tests exit=0 P13_NAVIGATION_TESTS checks=205 failures=0
+run_p13_recorder_tests exit=0 P13_RECORDER_TESTS checks=67 failures=0
+run_p13_tutorial_tests exit=0 P13_TUTORIAL_TESTS checks=58 failures=0
+run_p19_promoted_tests exit=0 P19_PROMOTED_TESTS checks=25 failures=0
+run_place_claim_tests exit=0 PLACE_CLAIM_TESTS checks=14 failures=0
+run_scoreboard_chart_tests exit=0 SCOREBOARD_CHART_TESTS checks=52 failures=0
+run_sneak_hitbox_tests exit=0 SNEAK_HITBOX_TESTS checks=5 failures=0
+run_tutorial_gate_tests exit=0 TUTORIAL_GATE_TESTS checks=48 failures=0 attempts=3341
+run_tutorial_tests exit=0 TUTORIAL_TESTS checks=142 failures=0
+run_ui_tests exit=1 UI_TESTS checks=487 failures=2
+run_ui_theme_tests exit=0 UI_THEME_TESTS checks=87 failures=0
+run_match_ui_tests exit=0 MATCH_UI_TESTS checks=190 failures=0
+run_match_ui_binding_tests exit=0 MATCH_UI_BINDING_TESTS checks=177 failures=0
+run_match_ui_mode_tests exit=0 MATCH_UI_MODE_TESTS checks=62 failures=0
+
+== After the Round result fit fix: UI-touching suites re-run (headless --fixed-fps 60)
+run_p13_hud_tests exit=0 P13_HUD_TESTS checks=265 failures=0
+run_ui_tests exit=1 UI_TESTS checks=487 failures=2
+run_ui_theme_tests exit=0 UI_THEME_TESTS checks=87 failures=0
+run_match_ui_tests exit=0 MATCH_UI_TESTS checks=190 failures=0
+run_match_ui_binding_tests exit=0 MATCH_UI_BINDING_TESTS checks=177 failures=0
+run_match_ui_mode_tests exit=0 MATCH_UI_MODE_TESTS checks=62 failures=0
+run_scoreboard_chart_tests exit=0 SCOREBOARD_CHART_TESTS checks=52 failures=0
+run_p13_tutorial_tests exit=0 P13_TUTORIAL_TESTS checks=58 failures=0
+run_p13_accessibility_tests exit=0 P13_ACCESSIBILITY_TESTS checks=65 failures=0
+run_p13_navigation_tests exit=0 P13_NAVIGATION_TESTS checks=205 failures=0
+run_p13_library_tests exit=0 P13_LIBRARY_TESTS checks=422 failures=0
+run_tutorial_tests exit=0 TUTORIAL_TESTS checks=142 failures=0
+
+== After the export re-save of tilaok_theme.tres / round_result_screen.tscn (final files)
+run_ui_tests UI_TESTS checks=487 failures=2
+run_ui_theme_tests UI_THEME_TESTS checks=87 failures=0
+run_p13_hud_tests P13_HUD_TESTS checks=265 failures=0
+run_match_ui_binding_tests MATCH_UI_BINDING_TESTS checks=177 failures=0
+remaining run_ui_tests failures (pre-existing, unchanged): round_result_screen %Outcome1 is UiScoreRow; match_result_screen %Final1 is UiScoreRow
+
+== Windowed live-flow suites (isolated project copy so committed captures were not overwritten)
+MATCH_UI_INTERACTIVE checks=59 failures=0 captures=C:/Users/omsha/AppData/Local/Temp/claude/f--Users-Achuchu-Documents-VSCode-Tilaok-Tilaok/2d5a6d51-c405-44c2-90de-126755d48112/scratchpad/iso/docs/evidence/match-ui
+P09_INTERACTIVE_SUMMARY checks=108 failures=0
+P09_INTERACTIVE_SUMMARY checks=108 failures=0
+
+== Import / parse
+Godot --headless --path tilaok! --import: no parse or import errors
+
+== Lint / format
+gdformat / gdlint: COULD-NOT-RUN (not installed on this PC; no Python). Manual scan: no line over 100 columns, no trailing whitespace in changed GDScript.
+
+== Export smoke
+Godot --headless --path tilaok! --export-debug 'Windows Desktop' <scratch>/tilaok-ui-restyle.exe: exit 0 (exe 103,076,864 B, pck 3,373,904 B)
+tilaok-ui-restyle.console.exe --headless --quit-after 120: exit 0; log: TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+Note: the export run re-saved tilaok_theme.tres and round_result_screen.tscn in Godot's canonical format (uids, unique_id); content unchanged and re-tested above.
+
+== Performance (capture_ui_reference_evidence.gd, windowed 1920x1080, vsync off, 4-player Round result, 300 frames)
+UI_REFERENCE_CAPTURE saved=27 compared=21 vsync=off frames=300 median_ms=0.452 p95_ms=0.716 worst_ms=0.882 nodes=354 draw_calls=131 mem_static_mib=118.7 video_mib=56.4
+With vsync on, every screen (including the near-empty Title) measures ~31 ms per sample on this 144 Hz display: display pacing, not UI cost.
