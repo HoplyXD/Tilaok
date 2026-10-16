@@ -36,7 +36,6 @@ rotations = PackedInt32Array(0)
 gated_rotations = PackedInt32Array()
 wall_slide_eligible = false
 counts_as_support = false
-in_main_game = false
 weight_tuning_key = &"item_bubble_weight"
 special = 1
 projectile_node = NodePath("Bubble")

@@ -171,6 +171,23 @@ func twist_options(main: int) -> Array[int]:
 	return options
 
 
+## The item catalog's mode id ("karera", "lagsanay", "kangaroo") for a challenge.
+static func mode_id(challenge: int) -> String:
+	return main_name(challenge).to_lower()
+
+
+## Every mode active in a round: its Main, plus its Twist when one is scheduled.
+static func mode_ids(entry: Dictionary) -> PackedStringArray:
+	var result := PackedStringArray()
+	if entry.is_empty():
+		return result
+	result.append(mode_id(int(entry.main)))
+	var twist := int(entry.get("twist", Challenge.NONE))
+	if twist != Challenge.NONE and not result.has(mode_id(twist)):
+		result.append(mode_id(twist))
+	return result
+
+
 ## "KARERA" or "KARERA / TWIST: BOMB-TAYA" for logs and tests.
 static func describe(entry: Dictionary) -> String:
 	if entry.is_empty():

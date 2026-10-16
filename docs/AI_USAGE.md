@@ -293,3 +293,12 @@ AI-generated code; no human code review claimed. Evidence: `docs/evidence/fixes/
 ### Ledge climb and E / F confirm — October 16, 2026
 
 At Jorge's request, Claude (Claude Opus 5.5 via Claude Code) generated the `ChickenController` ledge climb with its tuning keys, made F confirm for K1 alongside E, and wrote `run_ledge_climb_tests.gd` (21 checks). AI-generated code; no human code review or feel review claimed. Evidence: `docs/evidence/fixes/README.md`.
+
+### Item event and stack integration — October 16, 2026
+
+At Jorge's request ("continue on phase tasks") and with his two design decisions (filter event eggs only; add the six P10 families to the match pool), Claude (Claude Opus 5.5 via Claude Code):
+- Generated the Pugad mode filter (`PugadEggPoolGenerator.allows_modes`, `EventSchedule.mode_ids`, `pugad_mode_ids` on the match rooms) and set the six P10 scenes to `in_main_game` with low provisional weights.
+- Wrote `run_item_mode_integration_tests.gd` (83 checks).
+- Updated stale test expectations that encoded the old dev-only P10 policy or older mode flags (P04, P07, P10, P13 Library, Barya).
+
+AI-generated code; no human code review, playtest or balance review claimed. Evidence: `docs/evidence/integration/README.md`.

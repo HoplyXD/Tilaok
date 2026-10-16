@@ -1,0 +1,404 @@
+PASS library_text.tres loads with pages
+PASS How to Play has pages
+PASS How to Play / The round loop carries the PLACEHOLDER tag
+PASS How to Play / The round loop has no 'SAMPLE'
+PASS How to Play / The round loop has no 'res://'
+PASS How to Play / The round loop has no 'uid://'
+PASS How to Play / The round loop has no 'seed'
+PASS How to Play / The round loop has no ' wu'
+PASS How to Play / The round loop has no 'DEBUG'
+PASS How to Play / The round loop has no 'shape_id'
+PASS How to Play / The round loop has no unfilled token
+PASS How to Play / Controls carries the PLACEHOLDER tag
+PASS How to Play / Controls has no 'SAMPLE'
+PASS How to Play / Controls has no 'res://'
+PASS How to Play / Controls has no 'uid://'
+PASS How to Play / Controls has no 'seed'
+PASS How to Play / Controls has no ' wu'
+PASS How to Play / Controls has no 'DEBUG'
+PASS How to Play / Controls has no 'shape_id'
+PASS How to Play / Controls has no unfilled token
+PASS How to Play / Placing a piece carries the PLACEHOLDER tag
+PASS How to Play / Placing a piece has no 'SAMPLE'
+PASS How to Play / Placing a piece has no 'res://'
+PASS How to Play / Placing a piece has no 'uid://'
+PASS How to Play / Placing a piece has no 'seed'
+PASS How to Play / Placing a piece has no ' wu'
+PASS How to Play / Placing a piece has no 'DEBUG'
+PASS How to Play / Placing a piece has no 'shape_id'
+PASS How to Play / Placing a piece has no unfilled token
+PASS How to Play / The stage grows carries the PLACEHOLDER tag
+PASS How to Play / The stage grows has no 'SAMPLE'
+PASS How to Play / The stage grows has no 'res://'
+PASS How to Play / The stage grows has no 'uid://'
+PASS How to Play / The stage grows has no 'seed'
+PASS How to Play / The stage grows has no ' wu'
+PASS How to Play / The stage grows has no 'DEBUG'
+PASS How to Play / The stage grows has no 'shape_id'
+PASS How to Play / The stage grows has no unfilled token
+PASS How to Play / Winning carries the PLACEHOLDER tag
+PASS How to Play / Winning has no 'SAMPLE'
+PASS How to Play / Winning has no 'res://'
+PASS How to Play / Winning has no 'uid://'
+PASS How to Play / Winning has no 'seed'
+PASS How to Play / Winning has no ' wu'
+PASS How to Play / Winning has no 'DEBUG'
+PASS How to Play / Winning has no 'shape_id'
+PASS How to Play / Winning has no unfilled token
+PASS Karera has pages
+PASS Karera / The race carries the PLACEHOLDER tag
+PASS Karera / The race has no 'SAMPLE'
+PASS Karera / The race has no 'res://'
+PASS Karera / The race has no 'uid://'
+PASS Karera / The race has no 'seed'
+PASS Karera / The race has no ' wu'
+PASS Karera / The race has no 'DEBUG'
+PASS Karera / The race has no 'shape_id'
+PASS Karera / The race has no unfilled token
+PASS Karera / Scoring carries the PLACEHOLDER tag
+PASS Karera / Scoring has no 'SAMPLE'
+PASS Karera / Scoring has no 'res://'
+PASS Karera / Scoring has no 'uid://'
+PASS Karera / Scoring has no 'seed'
+PASS Karera / Scoring has no ' wu'
+PASS Karera / Scoring has no 'DEBUG'
+PASS Karera / Scoring has no 'shape_id'
+PASS Karera / Scoring has no unfilled token
+PASS Karera / Too easy, too hard carries the PLACEHOLDER tag
+PASS Karera / Too easy, too hard has no 'SAMPLE'
+PASS Karera / Too easy, too hard has no 'res://'
+PASS Karera / Too easy, too hard has no 'uid://'
+PASS Karera / Too easy, too hard has no 'seed'
+PASS Karera / Too easy, too hard has no ' wu'
+PASS Karera / Too easy, too hard has no 'DEBUG'
+PASS Karera / Too easy, too hard has no 'shape_id'
+PASS Karera / Too easy, too hard has no unfilled token
+PASS Karera / Karera + Bomb-Taya carries the PLACEHOLDER tag
+PASS Karera / Karera + Bomb-Taya has no 'SAMPLE'
+PASS Karera / Karera + Bomb-Taya has no 'res://'
+PASS Karera / Karera + Bomb-Taya has no 'uid://'
+PASS Karera / Karera + Bomb-Taya has no 'seed'
+PASS Karera / Karera + Bomb-Taya has no ' wu'
+PASS Karera / Karera + Bomb-Taya has no 'DEBUG'
+PASS Karera / Karera + Bomb-Taya has no 'shape_id'
+PASS Karera / Karera + Bomb-Taya has no unfilled token
+PASS Karera / Karera + Kangaroo carries the PLACEHOLDER tag
+PASS Karera / Karera + Kangaroo has no 'SAMPLE'
+PASS Karera / Karera + Kangaroo has no 'res://'
+PASS Karera / Karera + Kangaroo has no 'uid://'
+PASS Karera / Karera + Kangaroo has no 'seed'
+PASS Karera / Karera + Kangaroo has no ' wu'
+PASS Karera / Karera + Kangaroo has no 'DEBUG'
+PASS Karera / Karera + Kangaroo has no 'shape_id'
+PASS Karera / Karera + Kangaroo has no unfilled token
+PASS Lagsanay has pages
+PASS Lagsanay / Taya, pass and timer carries the PLACEHOLDER tag
+PASS Lagsanay / Taya, pass and timer has no 'SAMPLE'
+PASS Lagsanay / Taya, pass and timer has no 'res://'
+PASS Lagsanay / Taya, pass and timer has no 'uid://'
+PASS Lagsanay / Taya, pass and timer has no 'seed'
+PASS Lagsanay / Taya, pass and timer has no ' wu'
+PASS Lagsanay / Taya, pass and timer has no 'DEBUG'
+PASS Lagsanay / Taya, pass and timer has no 'shape_id'
+PASS Lagsanay / Taya, pass and timer has no unfilled token
+PASS Lagsanay / Placement points carries the PLACEHOLDER tag
+PASS Lagsanay / Placement points has no 'SAMPLE'
+PASS Lagsanay / Placement points has no 'res://'
+PASS Lagsanay / Placement points has no 'uid://'
+PASS Lagsanay / Placement points has no 'seed'
+PASS Lagsanay / Placement points has no ' wu'
+PASS Lagsanay / Placement points has no 'DEBUG'
+PASS Lagsanay / Placement points has no 'shape_id'
+PASS Lagsanay / Placement points has no unfilled token
+PASS Lagsanay / Last Cluck carries the PLACEHOLDER tag
+PASS Lagsanay / Last Cluck has no 'SAMPLE'
+PASS Lagsanay / Last Cluck has no 'res://'
+PASS Lagsanay / Last Cluck has no 'uid://'
+PASS Lagsanay / Last Cluck has no 'seed'
+PASS Lagsanay / Last Cluck has no ' wu'
+PASS Lagsanay / Last Cluck has no 'DEBUG'
+PASS Lagsanay / Last Cluck has no 'shape_id'
+PASS Lagsanay / Last Cluck has no unfilled token
+PASS Lagsanay / As a Twist: Bomb-Taya carries the PLACEHOLDER tag
+PASS Lagsanay / As a Twist: Bomb-Taya has no 'SAMPLE'
+PASS Lagsanay / As a Twist: Bomb-Taya has no 'res://'
+PASS Lagsanay / As a Twist: Bomb-Taya has no 'uid://'
+PASS Lagsanay / As a Twist: Bomb-Taya has no 'seed'
+PASS Lagsanay / As a Twist: Bomb-Taya has no ' wu'
+PASS Lagsanay / As a Twist: Bomb-Taya has no 'DEBUG'
+PASS Lagsanay / As a Twist: Bomb-Taya has no 'shape_id'
+PASS Lagsanay / As a Twist: Bomb-Taya has no unfilled token
+PASS Lagsanay / Sudden Death carries the PLACEHOLDER tag
+PASS Lagsanay / Sudden Death has no 'SAMPLE'
+PASS Lagsanay / Sudden Death has no 'res://'
+PASS Lagsanay / Sudden Death has no 'uid://'
+PASS Lagsanay / Sudden Death has no 'seed'
+PASS Lagsanay / Sudden Death has no ' wu'
+PASS Lagsanay / Sudden Death has no 'DEBUG'
+PASS Lagsanay / Sudden Death has no 'shape_id'
+PASS Lagsanay / Sudden Death has no unfilled token
+PASS Kangaroo has pages
+PASS Kangaroo / The giant slipper carries the PLACEHOLDER tag
+PASS Kangaroo / The giant slipper has no 'SAMPLE'
+PASS Kangaroo / The giant slipper has no 'res://'
+PASS Kangaroo / The giant slipper has no 'uid://'
+PASS Kangaroo / The giant slipper has no 'seed'
+PASS Kangaroo / The giant slipper has no ' wu'
+PASS Kangaroo / The giant slipper has no 'DEBUG'
+PASS Kangaroo / The giant slipper has no 'shape_id'
+PASS Kangaroo / The giant slipper has no unfilled token
+PASS Kangaroo / Freeze carries the PLACEHOLDER tag
+PASS Kangaroo / Freeze has no 'SAMPLE'
+PASS Kangaroo / Freeze has no 'res://'
+PASS Kangaroo / Freeze has no 'uid://'
+PASS Kangaroo / Freeze has no 'seed'
+PASS Kangaroo / Freeze has no ' wu'
+PASS Kangaroo / Freeze has no 'DEBUG'
+PASS Kangaroo / Freeze has no 'shape_id'
+PASS Kangaroo / Freeze has no unfilled token
+PASS Kangaroo / Rising wave carries the PLACEHOLDER tag
+PASS Kangaroo / Rising wave has no 'SAMPLE'
+PASS Kangaroo / Rising wave has no 'res://'
+PASS Kangaroo / Rising wave has no 'uid://'
+PASS Kangaroo / Rising wave has no 'seed'
+PASS Kangaroo / Rising wave has no ' wu'
+PASS Kangaroo / Rising wave has no 'DEBUG'
+PASS Kangaroo / Rising wave has no 'shape_id'
+PASS Kangaroo / Rising wave has no unfilled token
+PASS Kangaroo / Hug carries the PLACEHOLDER tag
+PASS Kangaroo / Hug has no 'SAMPLE'
+PASS Kangaroo / Hug has no 'res://'
+PASS Kangaroo / Hug has no 'uid://'
+PASS Kangaroo / Hug has no 'seed'
+PASS Kangaroo / Hug has no ' wu'
+PASS Kangaroo / Hug has no 'DEBUG'
+PASS Kangaroo / Hug has no 'shape_id'
+PASS Kangaroo / Hug has no unfilled token
+PASS Kangaroo / Three misses carries the PLACEHOLDER tag
+PASS Kangaroo / Three misses has no 'SAMPLE'
+PASS Kangaroo / Three misses has no 'res://'
+PASS Kangaroo / Three misses has no 'uid://'
+PASS Kangaroo / Three misses has no 'seed'
+PASS Kangaroo / Three misses has no ' wu'
+PASS Kangaroo / Three misses has no 'DEBUG'
+PASS Kangaroo / Three misses has no 'shape_id'
+PASS Kangaroo / Three misses has no unfilled token
+PASS Kangaroo / Slipper Storm carries the PLACEHOLDER tag
+PASS Kangaroo / Slipper Storm has no 'SAMPLE'
+PASS Kangaroo / Slipper Storm has no 'res://'
+PASS Kangaroo / Slipper Storm has no 'uid://'
+PASS Kangaroo / Slipper Storm has no 'seed'
+PASS Kangaroo / Slipper Storm has no ' wu'
+PASS Kangaroo / Slipper Storm has no 'DEBUG'
+PASS Kangaroo / Slipper Storm has no 'shape_id'
+PASS Kangaroo / Slipper Storm has no unfilled token
+PASS Kangaroo / As a Twist carries the PLACEHOLDER tag
+PASS Kangaroo / As a Twist has no 'SAMPLE'
+PASS Kangaroo / As a Twist has no 'res://'
+PASS Kangaroo / As a Twist has no 'uid://'
+PASS Kangaroo / As a Twist has no 'seed'
+PASS Kangaroo / As a Twist has no ' wu'
+PASS Kangaroo / As a Twist has no 'DEBUG'
+PASS Kangaroo / As a Twist has no 'shape_id'
+PASS Kangaroo / As a Twist has no unfilled token
+PASS Accessibility has pages
+PASS Accessibility / Who is who carries the PLACEHOLDER tag
+PASS Accessibility / Who is who has no 'SAMPLE'
+PASS Accessibility / Who is who has no 'res://'
+PASS Accessibility / Who is who has no 'uid://'
+PASS Accessibility / Who is who has no 'seed'
+PASS Accessibility / Who is who has no ' wu'
+PASS Accessibility / Who is who has no 'DEBUG'
+PASS Accessibility / Who is who has no 'shape_id'
+PASS Accessibility / Who is who has no unfilled token
+PASS Accessibility / Cues you can see and hear carries the PLACEHOLDER tag
+PASS Accessibility / Cues you can see and hear has no 'SAMPLE'
+PASS Accessibility / Cues you can see and hear has no 'res://'
+PASS Accessibility / Cues you can see and hear has no 'uid://'
+PASS Accessibility / Cues you can see and hear has no 'seed'
+PASS Accessibility / Cues you can see and hear has no ' wu'
+PASS Accessibility / Cues you can see and hear has no 'DEBUG'
+PASS Accessibility / Cues you can see and hear has no 'shape_id'
+PASS Accessibility / Cues you can see and hear has no unfilled token
+PASS Accessibility / Screen shake carries the PLACEHOLDER tag
+PASS Accessibility / Screen shake has no 'SAMPLE'
+PASS Accessibility / Screen shake has no 'res://'
+PASS Accessibility / Screen shake has no 'uid://'
+PASS Accessibility / Screen shake has no 'seed'
+PASS Accessibility / Screen shake has no ' wu'
+PASS Accessibility / Screen shake has no 'DEBUG'
+PASS Accessibility / Screen shake has no 'shape_id'
+PASS Accessibility / Screen shake has no unfilled token
+PASS Accessibility / Sound carries the PLACEHOLDER tag
+PASS Accessibility / Sound has no 'SAMPLE'
+PASS Accessibility / Sound has no 'res://'
+PASS Accessibility / Sound has no 'uid://'
+PASS Accessibility / Sound has no 'seed'
+PASS Accessibility / Sound has no ' wu'
+PASS Accessibility / Sound has no 'DEBUG'
+PASS Accessibility / Sound has no 'shape_id'
+PASS Accessibility / Sound has no unfilled token
+PASS Accessibility / Cheering carries the PLACEHOLDER tag
+PASS Accessibility / Cheering has no 'SAMPLE'
+PASS Accessibility / Cheering has no 'res://'
+PASS Accessibility / Cheering has no 'uid://'
+PASS Accessibility / Cheering has no 'seed'
+PASS Accessibility / Cheering has no ' wu'
+PASS Accessibility / Cheering has no 'DEBUG'
+PASS Accessibility / Cheering has no 'shape_id'
+PASS Accessibility / Cheering has no unfilled token
+PASS Accessibility / Display carries the PLACEHOLDER tag
+PASS Accessibility / Display has no 'SAMPLE'
+PASS Accessibility / Display has no 'res://'
+PASS Accessibility / Display has no 'uid://'
+PASS Accessibility / Display has no 'seed'
+PASS Accessibility / Display has no ' wu'
+PASS Accessibility / Display has no 'DEBUG'
+PASS Accessibility / Display has no 'shape_id'
+PASS Accessibility / Display has no unfilled token
+PASS Barya has pages
+PASS Barya / The round coin carries the PLACEHOLDER tag
+PASS Barya / The round coin has no 'SAMPLE'
+PASS Barya / The round coin has no 'res://'
+PASS Barya / The round coin has no 'uid://'
+PASS Barya / The round coin has no 'seed'
+PASS Barya / The round coin has no ' wu'
+PASS Barya / The round coin has no 'DEBUG'
+PASS Barya / The round coin has no 'shape_id'
+PASS Barya / The round coin has no unfilled token
+PASS Karera scoring quotes the calculator values
+PASS Karera Library explains that Una is its only finish-order bonus
+PASS Karera Library explains ordinary suppression and the all-finish Barya exception
+PASS Lagsanay Library explains fourth-place placement and independent trap points
+PASS Bayani and Bawi
+PASS Barya Library page explains its round-only pickup, drop and award
+PASS target and limit
+PASS numbers follow live tuning, not literals
+PASS taya countdowns
+PASS placement values come from the resolver
+PASS controls list the four keyboard layouts and the gamepad
+PASS the shake page reflects the setting
+PASS a stack page is absent while its row is disabled
+PASS the Bomb-Taya Twist page is absent while no row uses it
+PASS Karera + Bomb-Taya is listed when enabled
+PASS Karera + Kangaroo is listed when enabled
+PASS Kangaroo Twist page when enabled
+PASS Kangaroo pages are absent when the mode is not available
+PASS Barya Library page is absent while the objective is disabled
+PASS disabled Barya category is hidden from live Library navigation
+PASS enabled Barya category appears in live Library navigation
+PASS the build enables 16 families
+PASS every enabled family has exactly one entry (16/16)
+PASS build.hollow_blocks has a tell and counterplay
+PASS build.hollow_blocks lists controls for every device and its sizes
+PASS build.hollow_blocks lists its permitted modes
+PASS build.hollow_blocks has a looping animation variant
+PASS build.bamboo_bridge has a tell and counterplay
+PASS build.bamboo_bridge lists controls for every device and its sizes
+PASS build.bamboo_bridge lists its permitted modes
+PASS build.bamboo_bridge has a looping animation variant
+PASS move.tire_spring has a tell and counterplay
+PASS move.tire_spring lists controls for every device and its sizes
+PASS move.tire_spring lists its permitted modes
+PASS move.tire_spring has a looping animation variant
+PASS hazard.rail_trumpo has a tell and counterplay
+PASS hazard.rail_trumpo lists controls for every device and its sizes
+PASS hazard.rail_trumpo lists its permitted modes
+PASS hazard.rail_trumpo has a looping animation variant
+PASS hazard.parol_pulse has a tell and counterplay
+PASS hazard.parol_pulse lists controls for every device and its sizes
+PASS hazard.parol_pulse lists its permitted modes
+PASS hazard.parol_pulse has a looping animation variant
+PASS hazard.slipper_launcher has a tell and counterplay
+PASS hazard.slipper_launcher lists controls for every device and its sizes
+PASS hazard.slipper_launcher lists its permitted modes
+PASS hazard.slipper_launcher has a looping animation variant
+PASS utility.walis_cleanup has a tell and counterplay
+PASS utility.walis_cleanup lists controls for every device and its sizes
+PASS utility.walis_cleanup lists its permitted modes
+PASS utility.walis_cleanup has a looping animation variant
+PASS hazard.bubble_planter has a tell and counterplay
+PASS hazard.bubble_planter lists controls for every device and its sizes
+PASS hazard.bubble_planter lists its permitted modes
+PASS hazard.bubble_planter has a looping animation variant
+PASS build.solid_block has a tell and counterplay
+PASS build.solid_block lists controls for every device and its sizes
+PASS build.solid_block lists its permitted modes
+PASS build.solid_block has a looping animation variant
+PASS build.wood_box has a tell and counterplay
+PASS build.wood_box lists controls for every device and its sizes
+PASS build.wood_box lists its permitted modes
+PASS build.wood_box has a looping animation variant
+PASS build.collapsing_block has a tell and counterplay
+PASS build.collapsing_block lists controls for every device and its sizes
+PASS build.collapsing_block lists its permitted modes
+PASS build.collapsing_block has a looping animation variant
+PASS block.spikes has a tell and counterplay
+PASS block.spikes lists controls for every device and its sizes
+PASS block.spikes lists its permitted modes
+PASS block.spikes has a looping animation variant
+PASS block.cannon has a tell and counterplay
+PASS block.cannon lists controls for every device and its sizes
+PASS block.cannon lists its permitted modes
+PASS block.cannon has a looping animation variant
+PASS explosive.bomb has a tell and counterplay
+PASS explosive.bomb lists controls for every device and its sizes
+PASS explosive.bomb lists its permitted modes
+PASS explosive.bomb has a looping animation variant
+PASS explosive.dynamite has a tell and counterplay
+PASS explosive.dynamite lists controls for every device and its sizes
+PASS explosive.dynamite lists its permitted modes
+PASS explosive.dynamite has a looping animation variant
+PASS explosive.nuke has a tell and counterplay
+PASS explosive.nuke lists controls for every device and its sizes
+PASS explosive.nuke lists its permitted modes
+PASS explosive.nuke has a looping animation variant
+PASS build.hollow_blocks is listed
+PASS build.bamboo_bridge is listed
+PASS move.tire_spring is listed
+PASS hazard.rail_trumpo is listed
+PASS hazard.parol_pulse is listed
+PASS hazard.slipper_launcher is listed
+PASS utility.walis_cleanup is listed
+PASS hazard.bubble_planter is listed
+PASS build.solid_block is listed
+PASS build.wood_box is listed
+PASS build.collapsing_block is listed
+PASS block.spikes is listed
+PASS block.cannon is listed
+PASS explosive.bomb is listed
+PASS explosive.dynamite is listed
+PASS explosive.nuke is listed
+PASS build.hollow_blocks animates each enabled size ["build.hollow_blocks.cell_1x1", "build.hollow_blocks.stack_2x3"]
+PASS hazard.rail_trumpo animates each enabled size ["hazard.rail_trumpo.rail_4x1", "hazard.rail_trumpo.rail_5x1", "hazard.rail_trumpo.rail_6x1"]
+PASS hazard.parol_pulse animates each enabled size ["hazard.parol_pulse.span_3x1", "hazard.parol_pulse.span_4x1", "hazard.parol_pulse.span_5x1", "hazard.parol_pulse.span_6x1"]
+PASS hazard.slipper_launcher animates each enabled size ["hazard.slipper_launcher.lane_4x1", "hazard.slipper_launcher.lane_6x1"]
+PASS utility.walis_cleanup animates each enabled size ["utility.walis_cleanup.area_3x3", "utility.walis_cleanup.area_5x5"]
+PASS hazard.bubble_planter animates each enabled size ["hazard.bubble_planter.path_1x3", "hazard.bubble_planter.path_1x5"]
+PASS at least one family has several enabled sizes
+PASS no disabled family leaks into the Library []
+PASS the release filter button and reference mode stay hidden without --library-dev
+PASS entry buttons are shown (8)
+PASS navigating down reaches every row once (16 rows, 8 slots)
+PASS down from the last row wraps to the first
+PASS up from the first row wraps to the last
+PASS a player build shows no reference rows even if given them
+PASS a reference row is clearly marked not playable
+PASS a reference row is clearly marked not playable
+PASS a reference row is clearly marked not playable
+PASS a reference row is clearly marked not playable
+PASS a reference row is clearly marked not playable
+PASS a reference row is clearly marked not playable
+PASS dev mode lists reference content (6 rows)
+PASS reference rows come after, and never replace, the playable rows
+PASS a gamepad opens the Library from the Title
+PASS the D-pad and South step through every category ["How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility", "How to Play"]
+PASS Right enters the entry list
+PASS East returns to the categories
+PASS East from the categories leaves the Library
+PASS How to Play ends with the Replay tutorial entry
+PASS activating Replay tutorial requests it once
+PASS the Pugad is on screen
+PASS no visible Pugad text names an item []
+PASS the Pugad shows its own text (8 labels)
+P13_LIBRARY_TESTS checks=403 failures=0

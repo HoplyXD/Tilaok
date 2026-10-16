@@ -327,6 +327,12 @@ func run_debug_action() -> void:
 	pass
 
 
+## The modes this round's eggs must be approved for. Rooms with a fixed development pool deal
+## it unfiltered; the scheduled P12 room returns the locked round's Main and Twist.
+func pugad_mode_ids() -> PackedStringArray:
+	return PackedStringArray()
+
+
 ## P12 can replace one Pugad egg with a round-scoped objective without changing the ordinary
 ## generator or its random stream. Other routes keep the generated pool unchanged.
 func _augment_pugad_egg_pool(_seat_count: int) -> void:
@@ -418,7 +424,11 @@ func _begin_pugad() -> void:
 	for seat in joined:
 		seat_indices.append(int(seat.seat))
 	egg_pool = PugadEggPoolGenerator.generate(
-		definitions, tuning, match_streams, seat_indices.size() + tuning.match_pugad_extra_eggs
+		definitions,
+		tuning,
+		match_streams,
+		seat_indices.size() + tuning.match_pugad_extra_eggs,
+		pugad_mode_ids()
 	)
 	_augment_pugad_egg_pool(seat_indices.size())
 	for seat_index in seat_indices:

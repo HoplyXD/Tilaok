@@ -134,6 +134,13 @@ func _begin_pugad() -> void:
 	_notify_presentation(&"eggs")
 
 
+## Eggs follow the item catalog's mode flags: a Lagsanay round deals only Lagsanay-approved
+## families, a stacked round only families approved for both its Main and its Twist. Pieces
+## already on the stage stay as they are (owner decision, Jorge 2026-10-16).
+func pugad_mode_ids() -> PackedStringArray:
+	return EventSchedule.mode_ids(current_entry())
+
+
 func _augment_pugad_egg_pool(_seat_count: int) -> void:
 	var entry := current_entry()
 	var slot := BaryaOfferPolicy.roll_offer(

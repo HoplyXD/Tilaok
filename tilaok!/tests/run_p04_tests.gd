@@ -126,9 +126,13 @@ func _test_tuning_and_definitions() -> void:
 	_check(not broken.validate().is_empty(), "tuning rejects a zero persistent cap")
 	var definitions := ItemDefinitions.load_all(tuning)
 	_check(definitions.is_valid(), "shipped definitions validate: %s" % [definitions.errors])
+	# The six P10 families joined the main game on 2026-10-16 (Jorge).
 	_check(
-		definitions.families.size() == 10,
-		"ten block families are defined (Kaing, Tulay, stage blocks, Spikes, Cannon, explosives)"
+		definitions.families.size() == 16,
+		(
+			"16 block families are defined (Kaing, Tulay, stage blocks, Spikes, Cannon, explosives,"
+			+ " six P10 families): %d" % definitions.families.size()
+		)
 	)
 	var kaing := definitions.find_family("build.hollow_blocks")
 	var tulay := definitions.find_family("build.bamboo_bridge")
@@ -194,14 +198,22 @@ func _test_tuning_and_definitions() -> void:
 		),
 		"ownership, safe start, removal and persistence are explicit"
 	)
+	# Since the P11 Kangaroo contract lab (reviewed construction) the scenes also allow Kangaroo;
+	# Tulay's Lagsanay safe-floor review is still open (P04-T20, 2026-10-16).
 	_check(
 		(
-			kaing.modes_allowed.has("karera")
-			and kaing.modes_allowed.has("lagsanay")
-			and tulay.modes_allowed == PackedStringArray(["karera"])
+			kaing.modes_allowed == PackedStringArray(["karera", "lagsanay", "kangaroo"])
+			and kaing.modes_pending_review.is_empty()
+			and tulay.modes_allowed == PackedStringArray(["karera", "kangaroo"])
 			and tulay.modes_pending_review == PackedStringArray(["lagsanay"])
 		),
-		"mode flags: Kaing karera+lagsanay; Tulay karera, Lagsanay pending review"
+		(
+			"mode flags: Kaing karera+lagsanay+kangaroo; Tulay karera+kangaroo, Lagsanay pending"
+			+ (
+				" review (%s / %s pending %s)"
+				% [kaing.modes_allowed, tulay.modes_allowed, tulay.modes_pending_review]
+			)
+		)
 	)
 	_check(
 		(
@@ -1392,6 +1404,15 @@ func _test_catalog_and_harness() -> void:
 		"Lagsanay Lab lists only its mode-compatible first-batch construction and hazards"
 	)
 	harness.selected_profile_id = "kangaroo_contract_lab"
+	var kangaroo_family_ids: Array[String] = []
+	for entry in harness._current_catalog().entries:
+		kangaroo_family_ids.append(str(entry.content_id))
+	kangaroo_family_ids.sort()
+	_check(
+		kangaroo_family_ids == lagsanay_family_ids,
+		"Kangaroo Contract Lab lists its reviewed construction and two direct hazards (P11)"
+	)
+	harness.selected_profile_id = "stack_lab"
 	_check(
 		harness._current_catalog().entries.is_empty(),
 		"profiles that do not list seed families keep an empty item pool"
@@ -1543,7 +1564,14 @@ func _test_wall_eligibility() -> void:
 
 func _test_placeholder_previews_and_library() -> void:
 	var expected_keys := [KAING_1X1, KAING_2X3, TULAY_4X1, SOLID_3X1, WOOD_BOX_2X2, COLLAPSE_1X1]
-	_check(room.egg_previews.size() == 11, "one placeholder egg preview per enabled variant")
+	var enabled_count := BlockCatalog.default_enabled_keys().size()
+	_check(
+		room.egg_previews.size() == enabled_count,
+		(
+			"one placeholder egg preview per enabled variant (%d of %d)"
+			% [room.egg_previews.size(), enabled_count]
+		)
+	)
 	var text_free := true
 	for key in expected_keys:
 		var egg := room.egg_previews.get(key) as ItemEggPreview
@@ -1599,7 +1627,7 @@ func _test_placeholder_previews_and_library() -> void:
 		identity_ok
 	)
 	var entries := room.library_entries()
-	var fields_ok := entries.size() == 10
+	var fields_ok := entries.size() == 16
 	for entry in entries:
 		fields_ok = (
 			fields_ok

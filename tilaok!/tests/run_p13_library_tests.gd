@@ -276,6 +276,8 @@ func _test_items_and_scrolling(
 	var slots := screen.visible_slot_count()
 	_check(slots > 0, "entry buttons are shown (%d)" % slots)
 	screen._set_zone(UiLibraryScreen.ZONE_ENTRIES)
+	# Start from the first row: an earlier step may have left another entry selected.
+	screen._move_entries_to(0)
 	var reached := PackedStringArray()
 	reached.append(str(screen.current_row().title))
 	for _step in screen.rows.size() - 1:
@@ -299,7 +301,15 @@ func _test_items_and_scrolling(
 func _test_dev_reference_rows(
 	text: UiLibraryText, tuning: GameplayTuning, context: Dictionary
 ) -> void:
-	var definitions := ItemDefinitions.load_for_profile(tuning, "karera_slice")
+	# Every lab family is in the main game since 2026-10-16, so the live set here leaves the six
+	# P10 families out to keep the reference-row path covered.
+	var main := ItemDefinitions.load_for_profile(tuning, "karera_slice")
+	var subset: Array[ItemFamilyDefinition] = []
+	for family in main.families:
+		if not (family.family_id.begins_with("hazard.") or family.family_id.begins_with("move.")):
+			if family.family_id != "utility.walis_cleanup":
+				subset.append(family)
+	var definitions := ItemDefinitions.from_families(subset, tuning)
 	var lab := UiLibraryScreen.reference_definitions_for(tuning)
 	var player := LIBRARY_SCENE.instantiate() as UiLibraryScreen
 	root.add_child(player)

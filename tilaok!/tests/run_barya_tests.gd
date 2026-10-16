@@ -550,6 +550,10 @@ func _test_real_round_loop() -> void:
 	room.placement_controller.cursors[seats[0]] = coin_cursor
 	var other_cursor: Dictionary = room.placement_controller.cursors[seats[1]]
 	other_cursor.cell = Vector2i(5, 3)
+	# The other seat's random egg may be a large P10 piece that never fits this corner cell
+	# (2026-10-16); a 1x1 Kaing isolates the reservation rule.
+	var other_variant := str(other_cursor.variant_key)
+	other_cursor.variant_key = "build.hollow_blocks.cell_1x1"
 	room.placement_controller.cursors[seats[1]] = other_cursor
 	room._confirm_placement(seats[0])
 	# No first come, first served since 2026-10-16: the confirmed coin does not block the cell.
@@ -559,6 +563,7 @@ func _test_real_round_loop() -> void:
 	)
 	# Keep this scenario construction-free: the other seat aims at a protected (invalid) cell.
 	other_cursor = room.placement_controller.cursors[seats[1]]
+	other_cursor.variant_key = other_variant
 	other_cursor.cell = Vector2i(1, 12)
 	room.placement_controller.cursors[seats[1]] = other_cursor
 	room._refresh_all_match_ghosts()

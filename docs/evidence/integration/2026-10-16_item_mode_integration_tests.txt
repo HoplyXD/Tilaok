@@ -1,0 +1,98 @@
+PASS build.hollow_blocks is in the main match egg pool (P10 families joined 2026-10-16)
+PASS build.bamboo_bridge is in the main match egg pool (P10 families joined 2026-10-16)
+PASS move.tire_spring is in the main match egg pool (P10 families joined 2026-10-16)
+PASS hazard.rail_trumpo is in the main match egg pool (P10 families joined 2026-10-16)
+PASS hazard.parol_pulse is in the main match egg pool (P10 families joined 2026-10-16)
+PASS hazard.slipper_launcher is in the main match egg pool (P10 families joined 2026-10-16)
+PASS utility.walis_cleanup is in the main match egg pool (P10 families joined 2026-10-16)
+PASS hazard.bubble_planter is in the main match egg pool (P10 families joined 2026-10-16)
+PASS the six P10 families use low provisional match weights (15/20/15/20/15/10)
+PASS Karera: 1500 eggs deal only the 16 families approved for karera (bad [], missing [])
+PASS Lagsanay: 1500 eggs deal only the 11 families approved for lagsanay (bad [], missing [])
+PASS Kangaroo: 1500 eggs deal only the 9 families approved for kangaroo (bad [], missing [])
+PASS Karera + Bomb-Taya: 1500 eggs deal only the 11 families approved for karera,lagsanay (bad [], missing [])
+PASS Karera + Kangaroo: 1500 eggs deal only the 9 families approved for karera,kangaroo (bad [], missing [])
+PASS Kangaroo + Bomb-Taya: 1500 eggs deal only the 8 families approved for kangaroo,lagsanay (bad [], missing [])
+PASS every family allows Karera, so Karera rounds deal exactly the unfiltered seeded eggs
+PASS Karera: the room's Pugad (28 eggs) deals only karera-approved items (bad [])
+PASS Lagsanay: the room's Pugad (28 eggs) deals only lagsanay-approved items (bad [])
+PASS Kangaroo: the room's Pugad (28 eggs) deals only kangaroo-approved items (bad [])
+PASS Karera + Bomb-Taya: the room's Pugad (28 eggs) deals only karera,lagsanay-approved items (bad [])
+PASS Karera + Kangaroo: the room's Pugad (28 eggs) deals only karera,kangaroo-approved items (bad [])
+PASS Kangaroo + Bomb-Taya: the room's Pugad (28 eggs) deals only kangaroo,lagsanay-approved items (bad [])
+PASS Karera: rail_trumpo placed by P1 is on the stage in Play
+PASS Karera: rail_trumpo eliminates P2 and credits its placer P1 (Patibong) after 60 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 79, "event_id": "1:1:item:hazard.rail_trumpo.rail_4x1#001:79:1", "source_item_id": "hazard.rail_trumpo.rail_4x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera: parol_pulse placed by P1 is on the stage in Play
+PASS Karera: parol_pulse eliminates P2 and credits its placer P1 (Patibong) after 150 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 234, "event_id": "1:1:item:hazard.parol_pulse.span_5x1#001:234:1", "source_item_id": "hazard.parol_pulse.span_5x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera: slipper_launcher placed by P1 is on the stage in Play
+PASS Karera: slipper_launcher eliminates P2 and credits its placer P1 (Patibong) after 159 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 398, "event_id": "1:1:item:hazard.slipper_launcher.lane_6x1#001:398:1", "source_item_id": "hazard.slipper_launcher.lane_6x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera: Gulong launches P2 (1 launch, rose 309 wu) with no elimination or credit
+PASS Karera: Bula captures P2 and releases it (1 / 1) with no elimination or credit
+PASS Karera: hollow_blocks is standable, wave-support eligible terrain that never eliminates (feet 768.0)
+PASS Karera: bamboo_bridge is standable, wave-support eligible terrain that never eliminates (feet 640.0)
+PASS Lagsanay: rail_trumpo placed by P1 is on the stage in Play
+PASS Lagsanay: rail_trumpo eliminates P2 and credits its placer P1 (Patibong) after 60 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 1035, "physics_time": 0.98333333333333, "time_comparable": true, "event_id": "1:1:p12:Lagsanay:item:hazard.rail_trumpo.rail_4x1#001:1035:1", "source_item_id": "hazard.rail_trumpo.rail_4x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Lagsanay: parol_pulse placed by P1 is on the stage in Play
+PASS Lagsanay: parol_pulse eliminates P2 and credits its placer P1 (Patibong) after 150 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 1190, "physics_time": 2.48333333333333, "time_comparable": true, "event_id": "1:1:p12:Lagsanay:item:hazard.parol_pulse.span_5x1#001:1190:1", "source_item_id": "hazard.parol_pulse.span_5x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Lagsanay: slipper_launcher placed by P1 is on the stage in Play
+PASS Lagsanay: slipper_launcher eliminates P2 and credits its placer P1 (Patibong) after 159 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 1354, "physics_time": 2.63888888888888, "time_comparable": true, "event_id": "1:1:p12:Lagsanay:item:hazard.slipper_launcher.lane_6x1#001:1354:1", "source_item_id": "hazard.slipper_launcher.lane_6x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Lagsanay: Gulong launches P2 (1 launch, rose 309 wu) with no elimination or credit
+PASS Lagsanay: Bula captures P2 and releases it (1 / 1) with no elimination or credit
+PASS Lagsanay: hollow_blocks is standable, wave-support eligible terrain that never eliminates (feet 768.0)
+PASS Lagsanay: bamboo_bridge is standable, wave-support eligible terrain that never eliminates (feet 640.0)
+PASS Kangaroo: rail_trumpo placed by P1 is on the stage in Play
+PASS Kangaroo: rail_trumpo eliminates P2 and credits its placer P1 (Patibong) after 60 steps: { "seat_index": 1, "cause": "direct_hazard", "physics_tick": 1991, "physics_time": 0.98333333333333, "time_comparable": true, "direct_owner_seat": 0, "source_item_id": "hazard.rail_trumpo.rail_4x1#001", "event_id": "1:1:p12:Kangaroo:item:hazard.rail_trumpo.rail_4x1#001:1991:1" }
+PASS Kangaroo: parol_pulse placed by P1 is on the stage in Play
+PASS Kangaroo: parol_pulse eliminates P2 and credits its placer P1 (Patibong) after 150 steps: { "seat_index": 1, "cause": "direct_hazard", "physics_tick": 2146, "physics_time": 2.48333333333333, "time_comparable": true, "direct_owner_seat": 0, "source_item_id": "hazard.parol_pulse.span_5x1#001", "event_id": "1:1:p12:Kangaroo:item:hazard.parol_pulse.span_5x1#001:2146:1" }
+PASS Kangaroo: slipper_launcher placed by P1 is on the stage in Play
+PASS Kangaroo: slipper_launcher eliminates P2 and credits its placer P1 (Patibong) after 159 steps: { "seat_index": 1, "cause": "direct_hazard", "physics_tick": 2310, "physics_time": 2.63888888888888, "time_comparable": true, "direct_owner_seat": 0, "source_item_id": "hazard.slipper_launcher.lane_6x1#001", "event_id": "1:1:p12:Kangaroo:item:hazard.slipper_launcher.lane_6x1#001:2310:1" }
+PASS Kangaroo: Gulong launches P2 (1 launch, rose 309 wu) with no elimination or credit
+PASS Kangaroo: Bula captures P2 and releases it (1 / 1) with no elimination or credit
+PASS Kangaroo: hollow_blocks is standable, wave-support eligible terrain that never eliminates (feet 768.0)
+PASS Kangaroo: bamboo_bridge is standable, wave-support eligible terrain that never eliminates (feet 640.0)
+PASS Karera + Bomb-Taya: rail_trumpo placed by P1 is on the stage in Play
+PASS Karera + Bomb-Taya: rail_trumpo eliminates P2 and credits its placer P1 (Patibong) after 60 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 2947, "event_id": "1:1:item:hazard.rail_trumpo.rail_4x1#001:2947:1", "source_item_id": "hazard.rail_trumpo.rail_4x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera + Bomb-Taya: parol_pulse placed by P1 is on the stage in Play
+PASS Karera + Bomb-Taya: parol_pulse eliminates P2 and credits its placer P1 (Patibong) after 150 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 3102, "event_id": "1:1:item:hazard.parol_pulse.span_5x1#001:3102:1", "source_item_id": "hazard.parol_pulse.span_5x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera + Bomb-Taya: slipper_launcher placed by P1 is on the stage in Play
+PASS Karera + Bomb-Taya: slipper_launcher eliminates P2 and credits its placer P1 (Patibong) after 159 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 3266, "event_id": "1:1:item:hazard.slipper_launcher.lane_6x1#001:3266:1", "source_item_id": "hazard.slipper_launcher.lane_6x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera + Bomb-Taya: Gulong launches P2 (1 launch, rose 309 wu) with no elimination or credit
+PASS Karera + Bomb-Taya: Bula captures P2 and releases it (1 / 1) with no elimination or credit
+PASS Karera + Bomb-Taya: hollow_blocks is standable, wave-support eligible terrain that never eliminates (feet 768.0)
+PASS Karera + Bomb-Taya: bamboo_bridge is standable, wave-support eligible terrain that never eliminates (feet 640.0)
+PASS Karera + Kangaroo: rail_trumpo placed by P1 is on the stage in Play
+PASS Karera + Kangaroo: rail_trumpo eliminates P2 and credits its placer P1 (Patibong) after 60 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 3903, "event_id": "1:1:kangaroo:item:hazard.rail_trumpo.rail_4x1#001:3903:1", "source_item_id": "hazard.rail_trumpo.rail_4x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera + Kangaroo: parol_pulse placed by P1 is on the stage in Play
+PASS Karera + Kangaroo: parol_pulse eliminates P2 and credits its placer P1 (Patibong) after 150 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 4058, "event_id": "1:1:kangaroo:item:hazard.parol_pulse.span_5x1#001:4058:1", "source_item_id": "hazard.parol_pulse.span_5x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera + Kangaroo: slipper_launcher placed by P1 is on the stage in Play
+PASS Karera + Kangaroo: slipper_launcher eliminates P2 and credits its placer P1 (Patibong) after 159 steps: { "seat_index": 1, "outcome": "eliminated", "physics_tick": 4222, "event_id": "1:1:kangaroo:item:hazard.slipper_launcher.lane_6x1#001:4222:1", "source_item_id": "hazard.slipper_launcher.lane_6x1#001", "direct_owner_seat": 0, "cause": "direct_hazard" }
+PASS Karera + Kangaroo: Gulong launches P2 (1 launch, rose 309 wu) with no elimination or credit
+PASS Karera + Kangaroo: Bula captures P2 and releases it (1 / 1) with no elimination or credit
+PASS Karera + Kangaroo: hollow_blocks is standable, wave-support eligible terrain that never eliminates (feet 768.0)
+PASS Karera + Kangaroo: bamboo_bridge is standable, wave-support eligible terrain that never eliminates (feet 640.0)
+PASS Kangaroo + Bomb-Taya: rail_trumpo placed by P1 is on the stage in Play
+PASS Kangaroo + Bomb-Taya: rail_trumpo eliminates P2 and credits its placer P1 (Patibong) after 60 steps: { "seat_index": 1, "cause": "direct_hazard", "physics_tick": 4859, "physics_time": 0.98333333333333, "time_comparable": true, "direct_owner_seat": 0, "source_item_id": "hazard.rail_trumpo.rail_4x1#001", "event_id": "1:1:p12:Kangaroo:item:hazard.rail_trumpo.rail_4x1#001:4859:1" }
+PASS Kangaroo + Bomb-Taya: parol_pulse placed by P1 is on the stage in Play
+PASS Kangaroo + Bomb-Taya: parol_pulse eliminates P2 and credits its placer P1 (Patibong) after 150 steps: { "seat_index": 1, "cause": "direct_hazard", "physics_tick": 5014, "physics_time": 2.48333333333333, "time_comparable": true, "direct_owner_seat": 0, "source_item_id": "hazard.parol_pulse.span_5x1#001", "event_id": "1:1:p12:Kangaroo:item:hazard.parol_pulse.span_5x1#001:5014:1" }
+PASS Kangaroo + Bomb-Taya: slipper_launcher placed by P1 is on the stage in Play
+PASS Kangaroo + Bomb-Taya: slipper_launcher eliminates P2 and credits its placer P1 (Patibong) after 159 steps: { "seat_index": 1, "cause": "direct_hazard", "physics_tick": 5178, "physics_time": 2.63888888888888, "time_comparable": true, "direct_owner_seat": 0, "source_item_id": "hazard.slipper_launcher.lane_6x1#001", "event_id": "1:1:p12:Kangaroo:item:hazard.slipper_launcher.lane_6x1#001:5178:1" }
+PASS Kangaroo + Bomb-Taya: Gulong launches P2 (1 launch, rose 309 wu) with no elimination or credit
+PASS Kangaroo + Bomb-Taya: Bula captures P2 and releases it (1 / 1) with no elimination or credit
+PASS Kangaroo + Bomb-Taya: hollow_blocks is standable, wave-support eligible terrain that never eliminates (feet 768.0)
+PASS Kangaroo + Bomb-Taya: bamboo_bridge is standable, wave-support eligible terrain that never eliminates (feet 640.0)
+PASS Karera: Walis clears P2's earlier Kaing in Place, leaves no Play piece and no credit
+MODE_TABLE build.hollow_blocks | allowed karera,lagsanay,kangaroo | pending review - | wave support support | weight 50
+MODE_TABLE build.bamboo_bridge | allowed karera,kangaroo | pending review lagsanay | wave support support | weight 50
+MODE_TABLE move.tire_spring | allowed karera | pending review lagsanay,kangaroo | wave support none | weight 15
+MODE_TABLE hazard.rail_trumpo | allowed karera,lagsanay,kangaroo | pending review - | wave support none | weight 20
+MODE_TABLE hazard.parol_pulse | allowed karera | pending review lagsanay,kangaroo | wave support none | weight 15
+MODE_TABLE hazard.slipper_launcher | allowed karera,lagsanay,kangaroo | pending review - | wave support none | weight 20
+MODE_TABLE utility.walis_cleanup | allowed karera | pending review lagsanay,kangaroo | wave support none | weight 15
+MODE_TABLE hazard.bubble_planter | allowed karera | pending review lagsanay,kangaroo | wave support none | weight 10
+MODE_TABLE Karera eggs exclude: 
+MODE_TABLE Lagsanay eggs exclude: bamboo_bridge, tire_spring, parol_pulse, walis_cleanup, bubble_planter
+MODE_TABLE Kangaroo eggs exclude: tire_spring, parol_pulse, walis_cleanup, bubble_planter
+MODE_TABLE Karera + Bomb-Taya eggs exclude: bamboo_bridge, tire_spring, parol_pulse, walis_cleanup, bubble_planter
+MODE_TABLE Karera + Kangaroo eggs exclude: tire_spring, parol_pulse, walis_cleanup, bubble_planter
+MODE_TABLE Kangaroo + Bomb-Taya eggs exclude: bamboo_bridge, tire_spring, parol_pulse, walis_cleanup, bubble_planter
+ITEM_MODE_INTEGRATION_TESTS checks=83 failures=0

@@ -36,7 +36,6 @@ rotations = PackedInt32Array(0, 2)
 gated_rotations = PackedInt32Array()
 wall_slide_eligible = false
 counts_as_support = false
-in_main_game = false
 weight_tuning_key = &"item_launcher_weight"
 kill = true
 special = 1

@@ -27,6 +27,8 @@ All characters are chickens. Instead of the traditional sabong where roosters fi
 
 The stage **persists and grows** across rounds. Pugad and building continue during event rounds too, so traps become terrain for events.
 
+**Event-round eggs (2026-10-16, decided by Jorge):** an event round's Pugad only deals items approved for that event, and a stacked round only items approved for both its Main and its Twist (each item's mode flags; see [ITEMS](ITEMS.md#event-and-stack-integration--2026-10-16)). Pieces already on the stage stay exactly as they are and keep working in every round. Since the same date, Gulong, Trumpo, Parol, Tsinelas, Walis and Bula are in the real match's egg pool, with low provisional weights.
+
 **Maps (2026-10-16, requested by Jorge):** stages are map scenes in `scenes/maps/` (see [STAGE_AND_PLACEMENT](STAGE_AND_PLACEMENT.md#map-scenes-and-the-lobby-map-selection--2026-10-16-requested-by-jorge)). Players pick the map in the Lobby, and one map is used for the whole match. The built-in default stage stays available.
 
 **Starting stage:** a hand-built base layout with a spawn on the left, a flag on the right, a solid floor and a few platforms, so round 1 already has something to run across. Base stage pieces, the spawn and the flag are indestructible. Raised player-built geometry is the intended way to prepare for Kangaroo's Rising wave; a team that does not build useful elevation can lose to it. (Exact layout to be designed and playtested.)

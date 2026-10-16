@@ -35,7 +35,6 @@ gated_rotations = PackedInt32Array()
 reserve_only_solid_cells = true
 wall_slide_eligible = false
 counts_as_support = false
-in_main_game = false
 weight_tuning_key = &"item_parol_weight"
 special = 3
 preview_silhouette = "parol"

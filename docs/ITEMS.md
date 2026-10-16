@@ -243,11 +243,32 @@ Tell / counterplay: Solid — gray brick slab, jump over or route around. Box �
 | `build.solid_block` 3×1 (and rotated 1×3) — 2026-10-14 | yes | yes (default pool and `items_lab`) | yes | no |
 | `build.wood_box` 2×2 — 2026-10-14 | yes | yes (default pool and `items_lab`) | yes | no |
 | `build.collapsing_block` 1×1 — 2026-10-14 | yes | yes (default pool and `items_lab`) | yes | no |
-| Lagsanay/Kangaroo/stack interaction of any first-batch family | no | no | no | no |
+| Lagsanay/Kangaroo/stack interaction of any first-batch family | yes (2026-10-16) | yes (mode-filtered P12 eggs) | yes ([integration](evidence/integration/README.md)) | no |
 | The 28 expansion families | no | no | no | no |
 
 Evidence: [P04 verification index](evidence/p04/2026-10-13_p04_verification.md). Placeholder eggs, ghosts and Library entries exist (P04-T10/T12/T19/T21 passed on code-drawn DEBUG placeholders; final art is human-made and still open). Event/stack integration and release enablement (P04-T11/T13/T20/T22) remain blocked. Kaing declares solid-side wall eligibility and Tulay declares itself ineligible as data; wall movement itself is a separate extension that is enabled by default as core movement.
 
+## Event and stack integration — 2026-10-16
+
+P04-T11, P04-T20 and the six P10 integration tasks (T07/T16/T25/T34/T43/T52). Decisions by Jorge (2026-10-16): event eggs are filtered by mode, pieces already on the stage are left as they are, and the six P10 families join the real match pool.
+
+- `PugadEggPoolGenerator.generate(..., mode_ids)` deals only families whose `modes_allowed` lists every active mode of the round. The scheduled P12 room passes the locked round's Main and Twist (`P12ScheduledMatchRoom.pugad_mode_ids`). Every family allows Karera, so Karera rounds deal the same seeded eggs as before. Development rooms (P05/P07 harness, P08/P11 labs) keep their fixed pools.
+- A mode still listed as pending review is not dealt. Changing a scene's BlockData mode flags is the way to approve an item for an event.
+- Verified with real pieces and real physics on the P12 room in Karera, Lagsanay, Kangaroo, Karera + Bomb-Taya, Karera + Kangaroo and Kangaroo + Bomb-Taya: [integration evidence](evidence/integration/README.md).
+
+| Family | Allowed modes | Pending review | Wave support | Match weight | Event/stack result (2026-10-16) |
+|---|---|---|---|---|---|
+| Kaing (`build.hollow_blocks`) | Karera, Lagsanay, Kangaroo | — | support | 50 | Standable terrain in all six round types; never eliminates; no credit. |
+| Tulay (`build.bamboo_bridge`) | Karera, Kangaroo | Lagsanay (safe-floor review) | support | 50 | Not dealt in Lagsanay rounds or Bomb-Taya stacks; a Tulay already on the stage stays standable in every round type. |
+| Gulong (`move.tire_spring`) | Karera | Lagsanay, Kangaroo | none | 15 | Dealt in Karera rounds only. A placed Gulong launches in every round type with no elimination or credit. |
+| Trumpo (`hazard.rail_trumpo`) | Karera, Lagsanay, Kangaroo | — | none | 20 | Direct kill credits its placer in all six round types. |
+| Parol (`hazard.parol_pulse`) | Karera | Lagsanay, Kangaroo | none | 15 | Dealt in Karera rounds only. A placed Parol still kills, and credits its placer, in every round type. |
+| Tsinelas (`hazard.slipper_launcher`) | Karera, Lagsanay, Kangaroo | — | none | 20 | Direct kill credits its placer in all six round types. |
+| Walis (`utility.walis_cleanup`) | Karera | Lagsanay, Kangaroo | none | 15 | Dealt in Karera rounds only; clears earlier pieces in Place; no Play piece, no credit. |
+| Bula (`hazard.bubble_planter`) | Karera | Lagsanay, Kangaroo | none | 10 | Dealt in Karera rounds only. A placed Bula captures and releases in every round type with no elimination or credit. |
+
+Explosives (Bomb, Dynamite, Nuke), Spikes, Cannon and the stage blocks keep their scene flags (all three modes for explosives, Spikes and Cannon; Karera and Lagsanay for Solid Block, Wood Box and Collapsing Block). Release enablement (`release_target`) is still an owner decision per family (P04-T13/T22, P10 verify tasks), and all art is still DEBUG placeholder.
+
 ### P10 implementation notes (2026-10-14)
 
-Evidence: [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). All six new families declare `modes_allowed = karera` and `modes_pending_review = lagsanay, kangaroo`; wall contact is `ineligible` and wave-support role is `none` (fail closed). Spring "genuinely supported by a separate safe face" is not implemented. Parol's "3–6 cell fixture span" is built as the total span including both posts, so the beam is span − 2 cells and the 6×1 figure is the bounded envelope (approved Stage A decision D7). Presentation is PLACEHOLDER only (see [ASSETS.md](ASSETS.md)); names remain working names awaiting native-speaker review. Direct eliminations are typed `AttributionRecord`s and are handed to the P06 race ledger; the ledger owns the terminal commit and drops self-kill credit. Bubble capture and spring launches are setup records and never earn Patibong.
+Evidence: [P10 verification index](evidence/p10/2026-10-14_p10_verification.md). *(2026-10-16: Trumpo and Tsinelas have since been approved for Lagsanay and Kangaroo by the P08/P11 labs; see [Event and stack integration](#event-and-stack-integration--2026-10-16) for the current flags.)* All six new families declare `modes_allowed = karera` and `modes_pending_review = lagsanay, kangaroo`; wall contact is `ineligible` and wave-support role is `none` (fail closed). Spring "genuinely supported by a separate safe face" is not implemented. Parol's "3–6 cell fixture span" is built as the total span including both posts, so the beam is span − 2 cells and the 6×1 figure is the bounded envelope (approved Stage A decision D7). Presentation is PLACEHOLDER only (see [ASSETS.md](ASSETS.md)); names remain working names awaiting native-speaker review. Direct eliminations are typed `AttributionRecord`s and are handed to the P06 race ledger; the ledger owns the terminal commit and drops self-kill credit. Bubble capture and spring launches are setup records and never earn Patibong.

@@ -44,9 +44,11 @@ func _run() -> void:
 	)
 	_check(
 		not (
-			room._validate_p07_egg_pool([{"variant_key": "hazard.rail_trumpo.rail_4x1"}]).is_empty()
+			room
+			. _validate_p07_egg_pool([{"variant_key": "build.hollow_blocks.column_1x3"}])
+			. is_empty()
 		),
-		"P07 pool validator rejects a variant outside the main-game pool (a P10 hazard)"
+		"P07 pool validator rejects a variant outside the main-game pool (Kaing 1x3, off by default)"
 	)
 	_check(
 		(

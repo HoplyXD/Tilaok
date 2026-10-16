@@ -2,11 +2,15 @@ class_name PugadEggPoolGenerator
 extends RefCounted
 
 
+## `mode_ids` are the round's active modes (Main and any Twist, e.g. ["karera", "lagsanay"]).
+## When given, only families whose `modes_allowed` lists every one of them are dealt (catalog mode
+## restrictions, P04-T11/T20 and P10 integration tasks). Empty means no mode filter.
 static func generate(
 	definitions: ItemDefinitions,
 	tuning: GameplayTuning,
 	streams: SeededDiagnosticStreams,
-	egg_count: int
+	egg_count: int,
+	mode_ids: PackedStringArray = PackedStringArray()
 ) -> Array[Dictionary]:
 	var pool: Array[Dictionary] = []
 	if definitions == null or tuning == null or streams == null or egg_count <= 0:
@@ -14,6 +18,8 @@ static func generate(
 	var eligible_families: Array[Dictionary] = []
 	var total_weight := 0.0
 	for family in definitions.families:
+		if not allows_modes(family, mode_ids):
+			continue
 		var variants := definitions.enabled_variant_keys(family.family_id)
 		if variants.is_empty():
 			continue
@@ -36,3 +42,13 @@ static func generate(
 		var variant_key := variants[streams.egg.randi_range(0, variants.size() - 1)]
 		pool.append({"egg_id": "egg_%02d" % (index + 1), "variant_key": variant_key})
 	return pool
+
+
+## True when the family is approved for every active mode. A mode still pending review is not.
+static func allows_modes(family: ItemFamilyDefinition, mode_ids: PackedStringArray) -> bool:
+	if family == null:
+		return false
+	for mode_id in mode_ids:
+		if not family.modes_allowed.has(mode_id):
+			return false
+	return true

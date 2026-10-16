@@ -851,6 +851,8 @@ Backlog comparison never silently replaces Langit-Lupa, Agawan Buko or another a
 **Source:** [GDD.md](GDD.md); [ITEMS.md](ITEMS.md). **Implementation/evidence:** not yet available; runtime checks COULD-NOT-RUN until a suitable implemented build and required hardware are available. Non-code decisions require their own documented review.
 
 
+**Event and stack integration (2026-10-16):** REQ-ITEM-001 to REQ-ITEM-008 now have their event/scoring integration implemented and verified on synthetic evidence (P04-T11/T20, P10-T07/T16/T25/T34/T43/T52): mode-filtered Pugad eggs on the scheduled match route and real-piece credit checks in every independent mode and supported stack. The six P10 families are in the match pool. Release enablement remains open per family. See [ITEMS](ITEMS.md#event-and-stack-integration--2026-10-16).
+
 ### REQ-ITEM-001 — Hollow Blocks / Kaing Stack
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).

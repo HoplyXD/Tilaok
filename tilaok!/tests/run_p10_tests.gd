@@ -321,22 +321,31 @@ func _test_definitions() -> void:
 
 func _test_baseline_isolation() -> void:
 	var base := ItemDefinitions.load_all(GameplayTuning.new())
-	# The default pool is Kaing/Tulay plus the stage blocks, Spikes and Cannon; P10 hazards stay out.
+	# Since 2026-10-16 (Jorge) the six P10 families are in the main game too, dealt only in the
+	# modes each one is approved for (PugadEggPoolGenerator mode filter).
 	_check(
-		base.families.size() == 10,
-		"baseline load_all defines Kaing, Tulay, the stage blocks, Spikes, Cannon and explosives"
+		base.families.size() == 16,
+		"baseline load_all defines the main-game blocks including the six P10 families"
 	)
 	var default_tuning := GameplayTuning.new()
+	var p10_keys := 0
+	for key in default_tuning.item_enabled_variants:
+		for family_id in NEW_FAMILIES:
+			if key.begins_with(family_id + "."):
+				p10_keys += 1
 	_check(
-		default_tuning.item_enabled_variants.size() == 11,
-		"default enabled pool has no P10 hazard variants (11)"
+		default_tuning.item_enabled_variants.size() == 25 and p10_keys == 14,
+		(
+			"default enabled pool: 11 earlier variants plus the 14 P10 variants (%d, %d P10)"
+			% [default_tuning.item_enabled_variants.size(), p10_keys]
+		)
 	)
 	var spring_pool := ItemEnabledProfiles.enabled_variants("karera_spring")
 	_check(spring_pool.has(SPRING), "karera_spring now includes the spring variant")
 	var karera_slice := ItemDefinitions.load_for_profile(GameplayTuning.new(), "karera_slice")
 	_check(
-		karera_slice.families.size() == 10,
-		"karera_slice loads the main-game blocks (P04 pair, stage blocks, Spikes, Cannon, explosives)"
+		karera_slice.families.size() == 16,
+		"karera_slice loads every main-game block family, P10 included"
 	)
 
 
