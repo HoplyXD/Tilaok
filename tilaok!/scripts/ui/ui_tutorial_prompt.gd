@@ -8,11 +8,13 @@ extends UiScreen
 
 signal skip_requested
 
-## Virtual-pixel top edge of the box: under the phase banner during a match, lower in the
-## Lobby (so it stays off the seat slots' text). Left column, narrow: it never covers the
-## Pugad eggs, the Place legend, the 64 px HUD bar or the Place status strip.
+## Virtual-pixel top edge of the box: under the phase banner during a match. Left column,
+## narrow: it never covers the Place legend, the 64 px HUD bar or the Place status strip.
 @export var match_offset_top := 167.0
-@export var lobby_offset_top := 372.0
+## The Welcome step (Lobby) sits in the top-left corner, wider and shorter, so it stays above
+## the seat slots (top at y 196) and left of the map arrows (x 452), even with four players.
+@export var lobby_offset_top := 24.0
+@export var lobby_width := 400.0
 ## Left edge for the Results step: inside the strip the Round result screen keeps free, so the
 ## box never covers an outcome row or an award line. The 263 px card ends at x 1210.
 @export var results_offset_left := 947.0
@@ -64,7 +66,7 @@ func bind_live(view: Dictionary) -> void:
 	if not shown:
 		return
 	var step_id := str(view.get("step_id", ""))
-	var width := _match_right - _match_left
+	var width := lobby_width if step_id == "welcome" else _match_right - _match_left
 	var left := results_offset_left if step_id == "results" else _match_left
 	_anchor.offset_left = left
 	_anchor.offset_right = left + width

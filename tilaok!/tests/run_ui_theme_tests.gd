@@ -53,9 +53,11 @@ const NEW_TYPES := [
 ]
 ## Exact values from the Figma "Button Variants" frame (16:434):
 ## state -> [fill, outline gradient Theme type, gradient stop colours at 0 / 0.639 / 0.884].
+## Owner decision 2026-10-17: the Normal and Hovered fills are swapped (Normal orange, Hovered
+## and router-selected brown).
 const PLANK_FIGMA := {
-	"normal": ["#b77748", "PlankStroke", ["#000000", "#665b44", "#d8c190"]],
-	"hover": ["#eb9c62", "PlankStroke", ["#000000", "#665b44", "#d8c190"]],
+	"normal": ["#eb9c62", "PlankStroke", ["#000000", "#665b44", "#d8c190"]],
+	"hover": ["#b77748", "PlankStroke", ["#000000", "#665b44", "#d8c190"]],
 	"pressed": ["#885a39", "PlankStrokePressed", ["#000000", "#665b44", "#e5cd98"]],
 	"disabled": ["#bc9d86", "PlankStrokeDisabled", ["#484848", "#918b80", "#d4c39e"]],
 }
@@ -98,6 +100,7 @@ func _run() -> void:
 	await _test_place_frame()
 	await _test_pugad_frame()
 	await _test_tutorial_card()
+	await _test_final_result_frame()
 	print("UI_THEME_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -757,15 +760,14 @@ func _test_tutorial_card() -> void:
 	var skip := prompt.get_node("%SkipText") as Label
 	_check(
 		(
-			(prompt.get_node("Anchor/Box/Content/Header/Title") as Label).text == "Guide:"
-			and step.text == "Step 5 of 5 - Results"
+			step.text == "Step 5 of 5 - Results"
 			and step.theme_type_variation == &"TutorialCardCaption"
 			and (prompt.get_node("%BodyLabel") as Label).theme_type_variation
 			== &"TutorialCardBody"
 			and skip.text == "Pause > Skip tutorial"
 			and skip.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT
 		),
-		"coach card reads Guide:, the step line, the body and a right-aligned skip caption"
+		"coach card reads the step line, the body and a right-aligned skip caption"
 	)
 	_check(
 		(
@@ -778,12 +780,11 @@ func _test_tutorial_card() -> void:
 	var box := (prompt.get_node("Anchor/Box") as Control).get_global_rect()
 	_check(
 		(
-			is_equal_approx(box.size.x, 263.0)
-			and is_equal_approx(box.position.x, 947.0)
+			is_equal_approx(box.position.x, 947.0)
 			and box.end.x <= 1210.0 + 0.01
 			and is_equal_approx(prompt.results_strip_width, 303.0)
 		),
-		"Results card is 263 px wide at x 947 and ends at 1210 inside the reserved strip (%s)" % box
+		"Results card sits at x 947 and ends by 1210 inside the reserved strip (%s)" % box
 	)
 	view.step_id = "pugad"
 	prompt.bind_live(view)
@@ -793,14 +794,148 @@ func _test_tutorial_card() -> void:
 		box.position.is_equal_approx(Vector2(24.0, 167.0)),
 		"match card sits in the left column at (24, 167) (%s)" % box
 	)
+	# Welcome (Lobby): top-left corner, above the seat slots (y 196) and left of the map arrows
+	# (x 452), with the longest four-player text (three keyboards and a gamepad).
+	view.step_id = "welcome"
+	view.title = "Step 1 of 5 - Welcome"
+	view.body = (
+		"You are 1 CIRCLE, 2 TRIANGLE, 3 SQUARE, 4 DIAMOND. Look for your number and shape"
+		+ " above your chicken. Run: A / D / Left / Right / J / L / D-pad / Left stick."
+		+ " Jump: Space / Right Ctrl / I / South."
+	)
+	prompt.bind_live(view)
+	await process_frame
+	await process_frame
+	box = (prompt.get_node("Anchor/Box") as Control).get_global_rect()
+	_check(
+		(
+			box.position.is_equal_approx(Vector2(24.0, 24.0))
+			and is_equal_approx(box.size.x, 400.0)
+			and box.end.y < 196.0
+			and box.end.x < 452.0
+		),
+		"Welcome card sits top-left, above the Lobby slots and left of the map arrows (%s)" % box
+	)
 	prompt.queue_free()
 	var hud := (load("res://scenes/match/match_hud.tscn") as PackedScene).instantiate()
 	var anchor := hud.get_node("TutorialPrompt/Anchor") as Control
 	_check(
-		is_equal_approx(anchor.offset_right - anchor.offset_left, 263.0),
-		"the match HUD's coach box is the card's 263 px width"
+		anchor.offset_left == 24.0 and anchor.offset_right <= 287.0,
+		"the match HUD's coach box stays in the left column (x 24 to %.0f)" % anchor.offset_right
 	)
 	hud.free()
+	await process_frame
+
+
+## Final results from Figma frame 100:77 "Winner Results" (711 x 400, built at 1.8x).
+func _test_final_result_frame() -> void:
+	_check(
+		(
+			UiMatchResultScreen.winner_text({"identity": 2, "shape": "TRIANGLE"}, 1)
+			== "Winner - P2  Triangle"
+		),
+		"winner line reads like the frame: Winner - P2  Triangle"
+	)
+	var holder := Control.new()
+	holder.size = Vector2(1280, 720)
+	root.add_child(holder)
+	var screen := (
+		(load("res://scenes/ui/screens/match_result_screen.tscn") as PackedScene).instantiate()
+		as UiMatchResultScreen
+	)
+	holder.add_child(screen)
+	var ctx := UiContext.make(4, "k1")
+	screen.show_state(0, ctx)
+	for i in 4:
+		await process_frame
+	var title := screen.get_node("%TitleLabel") as Label
+	_check(
+		(
+			title.text == "Final Results"
+			and title.theme_type_variation == &"ResultTitle"
+			and title.get_theme_font_size("font_size") == 115
+			and _near(title.get_theme_color("font_outline_color"), Color.html("#624a39"))
+		),
+		"title is the frame's Final Results, Mountains of Christmas 115 px with the brown outline"
+	)
+	var vine := screen.get_node("Safe/Content/TitleArea/Art_Vine") as TextureRect
+	_check(
+		(
+			vine.texture != null
+			and vine.texture.resource_path.ends_with("ui.match_result.vine.svg")
+			and absf(vine.texture.get_width() - 902.5) < 1.0
+			and vine.get_global_rect().position.is_equal_approx(Vector2(608.4, 64.8))
+		),
+		"the frame's vine sits at (608.4, 64.8) at 1.8x"
+	)
+	var board := screen.get_node("Safe/Content/Columns/Chalkboard") as Control
+	var board_rect := board.get_global_rect()
+	_check(
+		(
+			board.theme_type_variation == &"ChalkboardPanel"
+			and board_rect.position.is_equal_approx(Vector2(40, 162))
+			and absf(board_rect.size.x - 1031.0) < 1.0
+			and absf(board_rect.end.y - 648.0) < 1.5
+		),
+		"chalkboard fills the frame's 40-1071 x 162-648 (%s)" % board_rect
+	)
+	var winner := screen.get_node("%WinnerLabel") as Label
+	_check(
+		(
+			winner.text.begins_with("Winner - P1  ")
+			and winner.theme_type_variation == &"ChalkLabel"
+			and not (screen.get_node("%WinnerBadge") as Control).visible
+		),
+		"winner line is chalk text on the board header (%s)" % winner.text
+	)
+	var awards := screen.get_node("Safe/Content/Columns/Awards") as Control
+	var outcome := screen.get_node("%OutcomeLabel") as Label
+	var legend := screen.get_node("%ScoreAwardLegend") as GridContainer
+	_check(
+		(
+			outcome.get_parent() == awards
+			and outcome.theme_type_variation == &"ResultText"
+			and is_equal_approx(awards.get_global_rect().position.x, 1091.0)
+			and legend.columns == 1
+		),
+		"outcome sits under Awards at x 1091 and the Score Legend is one column"
+	)
+	var planks := {
+		"%ReplayButton": ["Replay", 111.6],
+		"%LobbyButton": ["Return to Lobby", 494.5],
+		"%QuitButton": ["Quit", 864.0],
+	}
+	for path in planks:
+		var button := screen.get_node(path) as Button
+		var spec: Array = planks[path]
+		var rect := button.get_global_rect()
+		_check(
+			(
+				button is UiPlankButton
+				and button.text == spec[0]
+				and rect.size.is_equal_approx(Vector2(333, 31))
+				and absf(rect.position.x - float(spec[1])) < 1.0
+				and absf(rect.position.y - 664.2) < 1.0
+				and button.get_node_or_null("DropShadow") != null
+			),
+			"%s plank is 333 x 31 at the frame's x %.1f, y 664 (%s)" % [spec[0], spec[1], rect]
+		)
+	_check(screen.get_node_or_null("Safe/Content/Tag") == null, "no placeholder tag on the screen")
+	screen.show_state(1, ctx)
+	for i in 3:
+		await process_frame
+	var cluck := screen.get_node("%LastCluckCallout") as Control
+	_check(
+		(
+			cluck.visible
+			and not (cluck.get_node("%PhaseLabel") as Control).visible
+			and (cluck.get_node("%DetailLabel") as Label).text.begins_with("Last Cluck!")
+			and absf((screen.get_node("%ReplayButton") as Control).get_global_rect().position.y - 664.2)
+			< 1.0
+		),
+		"Last Cluck line shows under the winner without moving the plank row"
+	)
+	holder.queue_free()
 	await process_frame
 
 

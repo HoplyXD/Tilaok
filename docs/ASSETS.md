@@ -321,3 +321,11 @@ Read from frame `2:5` "Obstacle Pick" through the Figma MCP connector. The frame
 |---|---|---|---|---|---|---|---|
 | `ui.pugad.nest` | `assets/ui/pugad/ui.pugad.nest.png` (SHA-256 `3304f362…40efb8a`, 1005 × 937) | UI raster; Pugad nest (`Nest`) | The image fill of the team's layer "nest 1" (`15:319`) | **Source and licence to confirm** (an illustration placed in the Figma file) | Cropped and scaled to the frame's crop (scale 1.163, top 227 px of the 864 × 1222 original); transparency kept | Crop matching and placement ([AI_USAGE](AI_USAGE.md#pugad-pick-screen-built-from-the-figma-frame--october-17-2026)) | Imported — provenance open |
 | `ui.pugad.egg` | `assets/ui/pugad/ui.pugad.egg.svg` (SHA-256 `01cafa5e…9a24022`; `svg/scale=2.7`) | UI vector; egg card shape | Team Figma layer "Ellipse 15" (`15:317`) | Team-made (to confirm); Figma file history | None | Download and placement only | Imported — creator confirmation open |
+
+## Final results (winner) screen from the Figma frame — 2026-10-17
+
+Read from frame `100:77` "Winner Results" through the Figma MCP connector. The frame's chart guide lines ("Lines") and seat symbols are drawn by the existing chart and badge components and are not imported.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.match_result.vine` | `assets/ui/match_result/ui.match_result.vine.svg` (SHA-256 `954c6726…865051b`; `svg/scale=1.8`) | UI vector; Final results title vine (`TitleArea/Art_Vine`) | Team Figma layer "Deco Line" (`100:84`), the Round result vine's drawing at 1.24x | Team-made (to confirm); Figma file history | None | Download and placement only ([AI_USAGE](AI_USAGE.md#final-results-screen-built-from-the-figma-frame--october-17-2026)) | Imported — creator confirmation open |

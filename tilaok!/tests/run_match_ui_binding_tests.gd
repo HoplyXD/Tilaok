@@ -134,9 +134,10 @@ func _test_result_bindings() -> void:
 			_check(
 				(
 					row.state_text().contains(str(outcome.score_delta_text))
-					and row.state_text().contains(str(outcome.outcome))
+					and row.state_text().contains(ScoreColumn.short_status(str(outcome.outcome)))
+					and not row.state_text().contains(";")
 				),
-				"%s: seat %d shows delta and outcome text" % [label, index + 1]
+				"%s: seat %d shows delta and its one-line outcome" % [label, index + 1]
 			)
 			_check(
 				(

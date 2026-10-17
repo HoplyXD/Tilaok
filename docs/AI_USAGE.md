@@ -403,5 +403,16 @@ At the user's request (the link to frame `91:2` "Tutorial": "make the ui of the 
 - Rebuilt `tutorial_prompt.tscn` as the "Guide:" card: a header holding the title and step line, then the body and the skip caption. The `%Unique` nodes are kept; the chip glyphs and the placeholder tag are hidden.
 - Changed `ui_tutorial_prompt.gd`: the Results position and reserved strip for the 263 px card, and gallery samples that match the live card. Widened the coach box in `match_hud.tscn`.
 - Measured text rows and line breaks of a 1080p Godot render against the Figma render with scratch scripts, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#tutorial-coach-card-from-the-figma-frame--2026-10-17).
+- Follow-up ("the step 1 tutorial, put it on the top left of the screen because its blocking the other elements on the ui"): rendered trial widths over the Lobby, then generated the Welcome-step position (`lobby_offset_top` 24, new `lobby_width` 400) in `ui_tutorial_prompt.gd`. Also updated the card checks in `run_ui_theme_tests.gd` to the owner's own scene edit (title removed) and the new position. Kept the owner's scene edits as made.
 
 AI-generated code and Theme values; the Figma design is the team's. No human code review, visual design review or physical-device test is claimed.
+
+### Final results screen built from the Figma frame — October 17, 2026
+
+At the user's request (the link to frame `100:77` "Winner Results": "make an exact copy of this for the winner ui"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) made one `get_design_context` call and one read-only `use_figma` dump of the frame's paints, effects and text styles. A `download_assets` render was refused by the plan's call limit. Claude then:
+- Downloaded the frame's vine vector unchanged and imported it as `ui.match_result.vine.svg`.
+- Rebuilt `match_result_screen.tscn` from the frame, reusing the Round result's Theme types, chalkboard grain and chart, and the Pause plank buttons. Changed `ui_match_result_screen.gd`: the winner line text, no placeholder tag, gallery sample copy.
+- Updated the winner check in `run_match_ui_mode_tests.gd` and added the frame checks to `run_ui_theme_tests.gd`. Measured 1080p renders against the frame's screenshot with scratch scripts, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#final-results-winner-screen-from-the-figma-frame--2026-10-17).
+- Follow-up ("can you interchange the color of the buttons normal and hovered"; the user chose "everywhere"): Claude swapped the fills of `sb_plank` and `sb_plank_hover` in the Theme, updated `PLANK_FIGMA` in `run_ui_theme_tests.gd`, and recorded the decision in [UI_HANDOFF](UI_HANDOFF.md#plank-button-from-the-figma-frame--2026-10-17).
+
+AI-generated code and scene values; the Figma design and vine vector are the team's. No human code review, visual design review or physical-device test is claimed.

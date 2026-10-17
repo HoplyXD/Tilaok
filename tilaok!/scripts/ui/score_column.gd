@@ -21,6 +21,21 @@ const AWARD_COLORS := {
 	"placement": "placement",
 	"previous_total": "previous_total",
 }
+## One short line per outcome sentence under the chart (first matching prefix wins). The full
+## sentence stays in the results model; anything not listed keeps its first clause.
+const SHORT_STATUS := [
+	["Reached the flag", "Reached the flag"],
+	["Did not reach the flag before", "Out of time"],
+	["Did not reach the flag within", "Finish window closed"],
+	["The Bomb-Taya timer expired", "Taya timer ran out"],
+	["Taya timer expired", "Taya timer ran out"],
+	["Eliminated after the third failed Kangaroo command", "3 missed commands"],
+	["Directly eliminated by a trap", "Eliminated by a trap"],
+	["Eliminated by a direct trap", "Eliminated by a trap"],
+	["Eliminated by a hazard", "Eliminated by a hazard"],
+	["Eliminated before reaching the flag", "Eliminated"],
+]
+const READY_MARK := "READY · "
 const MOTION_NORMAL := PresentationSettings.RESULT_REVEAL_NORMAL
 const MOTION_REDUCED := PresentationSettings.RESULT_REVEAL_REDUCED
 const MOTION_OFF := PresentationSettings.RESULT_REVEAL_OFF
@@ -136,6 +151,18 @@ func state_text() -> String:
 	return "%s · %s" % [_delta_label.text, _status_label.text]
 
 
+## "READY · Reached the flag; secured." -> "READY · Reached the flag".
+static func short_status(text: String) -> String:
+	var ready := text.begins_with(READY_MARK)
+	var sentence := text.trim_prefix(READY_MARK).strip_edges()
+	var short := sentence.get_slice(";", 0).strip_edges().trim_suffix(".")
+	for pair in SHORT_STATUS:
+		if sentence.begins_with(str(pair[0])):
+			short = str(pair[1])
+			break
+	return (READY_MARK + short) if ready else short
+
+
 func bar_top_y() -> float:
 	return _plot_height - _units_to_pixels(visible_total_units())
 
@@ -221,7 +248,14 @@ func _refresh_labels() -> void:
 		_delta_label.text = "+%s" % ScoreFormat.format_units(revealed_delta)
 	else:
 		_delta_label.text = str(_row.get("delta_text", ""))
-	_status_label.text = str(_row.get("status", ""))
+	# READY rides on the short delta line so the outcome below keeps its one line.
+	var status := short_status(str(_row.get("status", "")))
+	if status.begins_with(READY_MARK):
+		status = status.trim_prefix(READY_MARK)
+		_delta_label.text = (
+			"%s · READY" % _delta_label.text if not _delta_label.text.is_empty() else "READY"
+		)
+	_status_label.text = status
 
 
 func _layout_marker() -> void:
@@ -231,10 +265,11 @@ func _layout_marker() -> void:
 	badge.size.x = size.x
 	_score_label.position = Vector2(0.0, _plot_height + 44.0)
 	_score_label.size = Vector2(size.x, 24.0)
-	_delta_label.position = Vector2(0.0, _plot_height + 68.0)
+	# The delta sits clearly below the total, then one status line.
+	_delta_label.position = Vector2(0.0, _plot_height + 76.0)
 	_delta_label.size = Vector2(size.x, 20.0)
-	_status_label.position = Vector2(0.0, _plot_height + 88.0)
-	_status_label.size = Vector2(size.x, maxf(size.y - _plot_height - 88.0, 24.0))
+	_status_label.position = Vector2(0.0, _plot_height + 98.0)
+	_status_label.size = Vector2(size.x, 22.0)
 	var top := bar_top_y()
 	_chicken.position = Vector2(size.x * 0.5, top - _chicken_foot_offset())
 

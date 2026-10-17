@@ -36,7 +36,7 @@ unique_name_in_owner = true
 theme_type_variation = &"CaptionLabel"
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
-autowrap_mode = 3
+text_overrun_behavior = 3
 unique_name_in_owner = true
 
 [node name="PrefixLabel" parent="IdentityBadge/Name" index="0"]

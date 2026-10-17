@@ -1,46 +1,52 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_match_result_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/phase_banner.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/scoreboard_chart.tscn" id="7_chart"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="8_legend"]
-[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="6"]
+[ext_resource type="PackedScene" uid="uid://dmu78knnloi11" path="res://scenes/ui/components/plank_button.tscn" id="9_plank"]
+[ext_resource type="Texture2D" uid="uid://dgtot12b1mdhn" path="res://assets/ui/match_result/ui.match_result.vine.svg" id="10_vine"]
+
+[sub_resource type="StyleBoxEmpty" id="sb_callout_empty"]
 
 [node name="MatchResultScreen" type="Control"]
 layout_mode = 3
-script = ExtResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("2")
 standalone_theme = ExtResource("1")
+metadata/figma_node = "UI-Tilaok- 100:77 Winner Results (711x400, built at 1.8x)"
 
 [node name="Backdrop" type="PanelContainer" parent="."]
 layout_mode = 1
-theme_type_variation = &"Backdrop"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"ResultBackdrop"
 
 [node name="Art_Background" type="TextureRect" parent="."]
 layout_mode = 1
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 6
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
 metadata/asset_id = "ui.match_result.winner_banner"
 
 [node name="Safe" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,95 +54,314 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SafeAreaMargin"
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 25
 
 [node name="Content" type="VBoxContainer" parent="Safe"]
 layout_mode = 2
-theme_override_constants/separation = 14
-alignment = 1
+theme_override_constants/separation = 0
 
-[node name="Winner" type="HBoxContainer" parent="Safe/Content"]
+[node name="TitleArea" type="Control" parent="Safe/Content"]
+custom_minimum_size = Vector2(0, 162)
 layout_mode = 2
-theme_override_constants/separation = 16
-alignment = 1
+mouse_filter = 2
+metadata/note = "Title and vine placed as in the frame (Figma x 1.8, relative to the 40 px left margin); the board starts at y 162."
 
-[node name="WinnerBadge" parent="Safe/Content/Winner" instance=ExtResource("3")]
-layout_mode = 2
+[node name="TitleLabel" type="Label" parent="Safe/Content/TitleArea"]
 unique_name_in_owner = true
-
-[node name="WinnerLabel" type="Label" parent="Safe/Content/Winner"]
-layout_mode = 2
-text = "WINNER"
-theme_type_variation = &"TitleLabel"
-unique_name_in_owner = true
-
-[node name="OutcomeLabel" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "SAMPLE gallery data"
-theme_type_variation = &"BodyLabel"
+layout_mode = 0
+offset_left = -9.4
+offset_right = 550.4
+offset_bottom = 163.0
+theme_type_variation = &"ResultTitle"
+theme_override_font_sizes/font_size = 115
+text = "Final Results"
 horizontal_alignment = 1
-autowrap_mode = 3
-unique_name_in_owner = true
 
-[node name="LastCluckCallout" parent="Safe/Content" instance=ExtResource("4")]
-layout_mode = 2
-visible = false
-size_flags_horizontal = 4
-unique_name_in_owner = true
+[node name="Art_Vine" type="TextureRect" parent="Safe/Content/TitleArea"]
+layout_mode = 0
+offset_left = 568.4
+offset_top = 64.8
+offset_right = 1220.0
+offset_bottom = 120.2
+mouse_filter = 2
+texture = ExtResource("10_vine")
+expand_mode = 1
+stretch_mode = 2
+metadata/asset_id = "ui.match_result.vine"
+metadata/note = "The frame's Deco Line, imported at svg/scale 1.8 (902 x 55 px). The node ends at the screen margin; the texture is drawn at full size from its left edge and, as in the frame, runs off the right edge."
 
-[node name="ResultsRow" type="HBoxContainer" parent="Safe/Content"]
+[node name="Columns" type="HBoxContainer" parent="Safe/Content"]
 layout_mode = 2
-theme_override_constants/separation = 20
 size_flags_vertical = 3
+theme_override_constants/separation = 20
 
-[node name="FinalChart" parent="Safe/Content/ResultsRow" instance=ExtResource("7_chart")]
+[node name="Chalkboard" type="PanelContainer" parent="Safe/Content/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"ChalkboardPanel"
+
+[node name="Art_Chalkboard" type="TextureRect" parent="Safe/Content/Columns/Chalkboard"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+metadata/asset_id = "ui.match_result.chalkboard"
+
+[node name="Board" type="VBoxContainer" parent="Safe/Content/Columns/Chalkboard"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderMargin" type="MarginContainer" parent="Safe/Content/Columns/Chalkboard/Board"]
+layout_mode = 2
+theme_override_constants/margin_left = 29
+theme_override_constants/margin_top = -3
+theme_override_constants/margin_right = 23
+
+[node name="HeaderStack" type="VBoxContainer" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="BoardHeader" type="HBoxContainer" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="WinnerBadge" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack/BoardHeader" instance=ExtResource("3")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="WinnerLabel" type="Label" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack/BoardHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"ChalkLabel"
+text = "Winner - P2  Triangle"
+text_overrun_behavior = 3
+
+[node name="LastCluckCallout" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack" instance=ExtResource("4")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &""
+theme_override_styles/panel = SubResource("sb_callout_empty")
+metadata/note = "Not in the frame: the Last Cluck explanation (it already starts with \"Last Cluck!\") on a chalk line under the winner."
+
+[node name="PhaseLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack/LastCluckCallout/Row" index="0"]
+visible = false
+
+[node name="DetailLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack/LastCluckCallout/Row" index="1"]
+custom_minimum_size = Vector2(0, 0)
+theme_type_variation = &"ChalkLabel"
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 0
+
+[node name="FinalChart" parent="Safe/Content/Columns/Chalkboard/Board" instance=ExtResource("7_chart")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_minimum_size = Vector2(720, 270)
-unique_name_in_owner = true
 
-[node name="ScoreAwardLegend" parent="Safe/Content/ResultsRow" instance=ExtResource("8_legend")]
+[node name="Grain" type="Control" parent="Safe/Content/Columns/Chalkboard"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 1
+mouse_filter = 2
+
+[node name="GrainPatch" type="Panel" parent="Safe/Content/Columns/Chalkboard/Grain"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.5
+anchor_bottom = 1.5
+offset_left = -20.0
+offset_top = -27.0
+offset_right = 52.0
+offset_bottom = 36.0
+scale = Vector2(0.666667, 0.666667)
+mouse_filter = 2
+theme_type_variation = &"ChalkGrain"
+
+[node name="Awards" type="VBoxContainer" parent="Safe/Content/Columns"]
+custom_minimum_size = Vector2(169, 0)
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="AwardsHeader" type="Control" parent="Safe/Content/Columns/Awards"]
+custom_minimum_size = Vector2(0, 59.3)
+layout_mode = 2
+mouse_filter = 2
+metadata/note = "Holds the heading on the frame's baseline: Handlee's line box is taller than Figma's Lemonade Thin, so the outcome text starts inside it, as in the frame."
+
+[node name="AwardsHeading" type="Label" parent="Safe/Content/Columns/Awards/AwardsHeader"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 15.7
+offset_bottom = 70.7
+grow_horizontal = 2
+theme_type_variation = &"ResultHeading"
+text = "Awards"
+
+[node name="OutcomeLabel" type="Label" parent="Safe/Content/Columns/Awards"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_type_variation = &"ResultText"
+theme_override_constants/line_spacing = -1
+text = "Highest score after round 12 ended the match."
+autowrap_mode = 3
+
+[node name="AwardsFill" type="Control" parent="Safe/Content/Columns/Awards"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="LegendHeading" type="Label" parent="Safe/Content/Columns/Awards"]
+layout_mode = 2
+theme_type_variation = &"ResultHeading"
+theme_override_font_sizes/font_size = 30
+text = "Score Legend"
+
+[node name="LegendMargin" type="MarginContainer" parent="Safe/Content/Columns/Awards"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+
+[node name="ScoreAwardLegend" parent="Safe/Content/Columns/Awards/LegendMargin" instance=ExtResource("8_legend")]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/v_separation = -2
+columns = 1
+
+[node name="AwardsBottom" type="Control" parent="Safe/Content/Columns/Awards"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ButtonsGap" type="Control" parent="Safe/Content"]
+custom_minimum_size = Vector2(0, 16.2)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="MenuList" type="HBoxContainer" parent="Safe/Content"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 0
 script = ExtResource("6")
-theme_override_constants/separation = 16
-alignment = 1
 horizontal = true
-unique_name_in_owner = true
+metadata/note = "Planks at the frame's x 111.6 / 494.5 / 864 (gaps 49.9 and 36 px, as drawn)."
 
-[node name="ReplayButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="Lead" type="Control" parent="Safe/Content/MenuList"]
+custom_minimum_size = Vector2(71.6, 0)
 layout_mode = 2
-custom_minimum_size = Vector2(200, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+mouse_filter = 2
+
+[node name="ReplayButton" parent="Safe/Content/MenuList" instance=ExtResource("9_plank")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(333, 31)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Replay"
-unique_name_in_owner = true
 
-[node name="LobbyButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="RivetLeft" parent="Safe/Content/MenuList/ReplayButton" index="0"]
+offset_left = 7.7
+offset_top = -1.1
+offset_right = 14.9
+offset_bottom = 6.1
+
+[node name="RivetRight" parent="Safe/Content/MenuList/ReplayButton" index="1"]
+offset_left = -17.5
+offset_top = -1.1
+offset_right = -10.3
+offset_bottom = 6.1
+
+[node name="DropShadow" type="Panel" parent="Safe/Content/MenuList/ReplayButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="Gap1" type="Control" parent="Safe/Content/MenuList"]
+custom_minimum_size = Vector2(49.9, 0)
 layout_mode = 2
-custom_minimum_size = Vector2(240, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+mouse_filter = 2
+
+[node name="LobbyButton" parent="Safe/Content/MenuList" instance=ExtResource("9_plank")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(333, 31)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Return to Lobby"
-unique_name_in_owner = true
 
-[node name="QuitButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="RivetLeft" parent="Safe/Content/MenuList/LobbyButton" index="0"]
+offset_left = 7.7
+offset_top = -1.1
+offset_right = 14.9
+offset_bottom = 6.1
+
+[node name="RivetRight" parent="Safe/Content/MenuList/LobbyButton" index="1"]
+offset_left = -17.5
+offset_top = -1.1
+offset_right = -10.3
+offset_bottom = 6.1
+
+[node name="DropShadow" type="Panel" parent="Safe/Content/MenuList/LobbyButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="Gap2" type="Control" parent="Safe/Content/MenuList"]
+custom_minimum_size = Vector2(36, 0)
 layout_mode = 2
-custom_minimum_size = Vector2(160, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+mouse_filter = 2
+
+[node name="QuitButton" parent="Safe/Content/MenuList" instance=ExtResource("9_plank")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(333, 31)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Quit"
-unique_name_in_owner = true
 
-[node name="Tag" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "PLACEHOLDER match result"
-theme_type_variation = &"PlaceholderTag"
-horizontal_alignment = 1
+[node name="RivetLeft" parent="Safe/Content/MenuList/QuitButton" index="0"]
+offset_left = 7.7
+offset_top = -1.1
+offset_right = 14.9
+offset_bottom = 6.1
 
+[node name="RivetRight" parent="Safe/Content/MenuList/QuitButton" index="1"]
+offset_left = -17.5
+offset_top = -1.1
+offset_right = -10.3
+offset_bottom = 6.1
+
+[node name="DropShadow" type="Panel" parent="Safe/Content/MenuList/QuitButton"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[editable path="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/HeaderStack/LastCluckCallout"]
+[editable path="Safe/Content/MenuList/ReplayButton"]
+[editable path="Safe/Content/MenuList/LobbyButton"]
+[editable path="Safe/Content/MenuList/QuitButton"]

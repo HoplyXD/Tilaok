@@ -1,6 +1,11 @@
 class_name UiMatchResultScreen
 extends UiScreen
 
+## Final results, built from Figma frame 100:77 "Winner Results" (UI-Tilaok-) at 1.8x: the winner
+## reads "Winner - P2  Triangle" on the chalkboard header, the outcome sits under Awards, and
+## Replay / Return to Lobby / Quit are the plank row. The winner badge stays bound but hidden
+## (the text names number and shape, as in the frame).
+
 signal replay_requested
 signal lobby_requested
 signal quit_requested
@@ -10,7 +15,6 @@ signal menu_selection_changed(index: int)
 @onready var _winner_label: Label = %WinnerLabel
 @onready var _outcome_label: Label = %OutcomeLabel
 @onready var _last_cluck: UiPhaseBanner = %LastCluckCallout
-@onready var _tag: Label = $Safe/Content/Tag
 @onready var _menu: UiMenuList = %MenuList
 @onready var _replay_button: Button = %ReplayButton
 @onready var _lobby_button: Button = %LobbyButton
@@ -26,11 +30,18 @@ func router_phase() -> int:
 	return LocalInputRouter.Phase.RESULTS
 
 
+## The frame's winner line: "Winner - P2  Triangle" (two spaces, shape in title case).
+static func winner_text(seat: Dictionary, fallback_seat: int) -> String:
+	return (
+		"Winner - P%d  %s"
+		% [int(seat.get("identity", fallback_seat + 1)), str(seat.get("shape", "")).capitalize()]
+	)
+
+
 func bind_match(sample: UiSampleMatch, seats: Array[Dictionary], cluck: bool, tie: bool) -> void:
-	_tag.visible = true
 	var winner: Dictionary = seats[sample.winner_seat] if sample.winner_seat < seats.size() else {}
 	_winner_badge.bind_seat(winner)
-	_winner_label.text = "TIE - shared win" if tie else "WINNER"
+	_winner_label.text = "Tie - shared win" if tie else winner_text(winner, sample.winner_seat)
 	var rows: Array[Dictionary] = []
 	for index in seats.size():
 		var seat: Dictionary = seats[index]
@@ -55,15 +66,16 @@ func bind_match(sample: UiSampleMatch, seats: Array[Dictionary], cluck: bool, ti
 		)
 	_chart.bind_rows(rows, 80, "sample-final:%d" % sample.winner_seat, seats)
 	_last_cluck.visible = cluck
-	_last_cluck.set_phase("LAST CLUCK!", "Won on the final round")
-	_outcome_label.text = "SAMPLE gallery data"
+	_last_cluck.set_phase(
+		"LAST CLUCK!", "Last Cluck! SAMPLE: the latest elimination won the final round."
+	)
+	_outcome_label.text = "Highest score after round 12 ended the match."
 
 
 ## Live P09 binding. SAMPLE gallery resources are never read on this path.
 func bind_final_match(
 	model: MatchResultsViewModel, motion_mode: int = PresentationSettings.RESULT_REVEAL_NORMAL
 ) -> void:
-	_tag.visible = false
 	var seats: Array[Dictionary] = model.final_seats
 	var winner_seat := model.winner_seat
 	var winner: Dictionary = {}
@@ -72,10 +84,7 @@ func bind_final_match(
 			winner = seat
 			break
 	_winner_badge.bind_seat(winner)
-	_winner_label.text = (
-		"WINNER — P%d %s"
-		% [int(winner.get("identity", winner_seat + 1)), str(winner.get("shape", ""))]
-	)
+	_winner_label.text = winner_text(winner, winner_seat)
 	_outcome_label.text = model.final_outcome_text
 	var chart_rows: Array = model.score_presentation.get("seats", []).duplicate(true)
 	if chart_rows.is_empty():

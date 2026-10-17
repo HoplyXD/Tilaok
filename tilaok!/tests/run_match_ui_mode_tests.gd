@@ -255,7 +255,10 @@ func _test_final_match_result_and_confirmation() -> void:
 		"every other match screen is hidden behind the final result"
 	)
 	var winner_label := presenter.match_result_screen.get_node("%WinnerLabel") as Label
-	_check(winner_label.text.begins_with("WINNER"), "the winner is named (%s)" % winner_label.text)
+	_check(
+		winner_label.text.begins_with("Winner - P"),
+		"the winner is named with number and shape (%s)" % winner_label.text
+	)
 	var final_columns := presenter.match_result_screen.chart().chart_columns()
 	_check(final_columns.size() == 3, "one final chart column per original participant")
 	_check(

@@ -332,13 +332,15 @@ Source: frame `16:434` "Button Variants" of the team Figma file "UI-Tilaok-". Ea
 
 | State | Figma | In Godot |
 |---|---|---|
-| Normal | fill `#b77748`; 1 px inside **gradient** outline, stops `#000000` 0 → `#665b44` 0.639 → `#d8c190` 0.884; radius 3 | `sb_plank` fill, plus the `Stroke` ring with `PlankStroke` |
-| Hovered (router-selected) | fill `#eb9c62`, same outline as Normal | `sb_plank_hover` (also `MenuButtonSelected` normal), `PlankStroke` |
+| Normal | fill `#b77748`; 1 px inside **gradient** outline, stops `#000000` 0 → `#665b44` 0.639 → `#d8c190` 0.884; radius 3 | `sb_plank` fill (**`#eb9c62` since the swap below**), plus the `Stroke` ring with `PlankStroke` |
+| Hovered (router-selected) | fill `#eb9c62`, same outline as Normal | `sb_plank_hover` (also `MenuButtonSelected` normal) (**`#b77748` since the swap below**), `PlankStroke` |
 | Pressed | fill `#885a39`; outline stops `#000000` → `#665b44` → `#e5cd98`; 1 px `#764019` inner outline; inner shadow `0 4` blur 4, black 25 %, on the whole group | `sb_plank_pressed`, `PlankStrokePressed`, and `PressedLook`: `Frame` (`PlankPressedFrame`, 2 px `#764019`), `ShadeTop` / `ShadeLeft` / `ShadeRight` (black gradients computed from the shadow: 24 % at the top edge fading to 0 by 16 px, 12.5 % at the sides fading by 10 px). The text no longer shifts down 1 px |
 | Disabled | fill `#bc9d86`; outline stops `#484848` → `#918b80` → `#d4c39e`; rivets `#775f57`; white text | `sb_plank_disabled`, `PlankStrokeDisabled`, rivets switch to `RivetDisabled`, `font_disabled_color` white |
 | Outline direction | `gradientTransform` row 1: t = −0.216 u − 0.683 v + 1.165 over the button (cream along the top and upper left, near-black at the bottom right) | every `PlankStroke*` GradientTexture2D uses `fill_from (0.49039, 1.55062)` → `fill_to (0.06946, 0.21961)`, which gives the same t at any button size |
 | Rivets | 5 px circles `#483934`, 7 px in from each end | 9 px `Rivet` circles, 13 px in, 1 px below centre |
 | Text | Margarine 12 → 22 px, white, centred | unchanged (already 22 px) |
+
+**Owner decision (2026-10-17): Normal and Hovered fills swapped everywhere.** At the owner's request ("interchange the color of the buttons normal and hovered"), `sb_plank` (Normal) is now orange `#eb9c62`, and `sb_plank_hover` (Hovered and router-selected) is now brown `#b77748`. This covers every plank: Title, Pause, Lobby map arrows, Settings, Library, both confirmations and Final results. Pressed and Disabled, the outline, the rivets and the text are unchanged. `run_ui_theme_tests.gd` (`PLANK_FIGMA`) checks the swapped fills.
 
 **How the outline is built:** a stylebox has one border colour, so `Stroke` is a Panel drawing a 2 px rounded ring (`PlankStrokeMask`, white) with **Clip Children = Clip Only**; its child `Gradient` fills the whole button with the `PlankStroke*` gradient and only shows inside the ring. `PressedLook` (`PlankClip`, also Clip Only) clips the pressed shadow to the rounded plank and is drawn after the outline, so it darkens the outline, inner frame and text tops as Figma's group shadow does. To change a colour, edit the gradient of `tex_plank_stroke*` or the stops of `grad_plank_shade_*` in the Theme. `ui_plank_button.gd` only picks the Theme type per state (outline gradient, `PressedLook` visible, rivet colour). `RivetLeft` / `RivetRight` keep child indices 0 and 1 (the Lobby map arrows hide them through those overrides).
 
@@ -466,4 +468,39 @@ Source: frame `91:2` "Tutorial" (262 × 315; the card is 234 × 271) of the team
 
 **Open issue (needs a decision):** with 3 or 4 players, the Pugad pick screen (section above) puts egg spot E at x 94–270, y 212–497, under the coach card (x 24–287 from y 167). During the tutorial's Pugad step the card hides that egg. The old 250 px box covered it too, so the card's width is not the cause. `capture_tutorial_evidence.gd` reports it as "4p pugad: box does not overlap Egg1".
 
+**Later edits (2026-10-17):**
+- **Owner scene edit:** in `tutorial_prompt.tscn` the "Guide:" title is removed, `Header` is 26.5 px, the body has a 15 px override and the base `Anchor` is 222 px wide. `match_hud.tscn` still overrides the in-match box to 24–287 (263 px), so a match shows 263 px until that override changes.
+- **Welcome step (owner request: "put it on the top left of the screen because its blocking the other elements"):** the Lobby card now sits at (24, 24), 400 px wide (`lobby_offset_top` 24, new `lobby_width` 400). The narrow card at the top-left would cover the Player 1 name. At 400 px, the longest 4-player text (three keyboards and a gamepad) ends at y 179. That is above the seat slots (y 196) and left of the map arrows (x 452). Other steps are unchanged.
+- **Checked:** run_ui_theme_tests 166 pass (the title check was dropped; new: the Welcome card's top-left position, width and clearance). tutorial 142 and p13_tutorial 58 pass, and run_ui_tests keeps its two older failures. `capture_tutorial_evidence.gd` from an isolated copy: 58 checks, 1 failure, the Pugad overlap above. The 2p and 4p Lobby captures show the card clear of the title, map row and slots.
+
 **Checked (synthetic, 2026-10-17):** a 1080p Godot render beside the Figma render, compared with scratch scripts: the title, the step line, all 8 body lines and the footer land within about 1 Figma px, with the same line breaks. run_ui_theme_tests 165 checks pass (new: card paper, three text types, card copy and alignment, hidden chips and tag, Results position and strip, match position, match HUD width). tutorial 142, p13_tutorial 58, match_ui 196, match_ui_binding 177, match_ui_mode 62, p13_accessibility 65 and p13_navigation 205 pass. run_ui_tests 498 keeps its two older failures. `capture_tutorial_evidence.gd`, run from an isolated copy (captures not committed): 46 checks, 2 failures. One is the Pugad overlap above. In the other, the 2-player Place shot lost window focus, so the game paused and hid the card and marker; the same check passed for 4 players. The Results and Lobby captures show the card clear of the awards, legend and slot text. gdformat / gdlint are not installed on this PC (COULD-NOT-RUN). Not a human design review.
+
+## Final results (winner) screen from the Figma frame — 2026-10-17
+
+Source: frame `100:77` "Winner Results" (711 × 400, ×1.8) of the team Figma file "UI-Tilaok-", read through the Figma MCP connector: one `get_design_context` and one read-only paint and effect dump. The plan's call limit was reached before a 2.7x render could be exported, so checks use the frame's 1x screenshot scaled to 1080p. The frame reuses the Round result's pieces (title style, chalkboard with white frame and grain, Awards / Score Legend type, the Button Variants plank).
+
+| Piece | Figma | In Godot (`match_result_screen.tscn`) |
+|---|---|---|
+| Backdrop | `#253437` at 75 % | `ResultBackdrop` |
+| Title | "Final Results" Mountains of Christmas Bold 64, `#ffa666`, 1 px `#624a39` outside stroke, box x 17–328 | `%TitleLabel` in `TitleArea` (a plain 162 px Control): `ResultTitle` at 115 px |
+| Vine | "Deco Line" 501 × 31 at (338, 36): the Round result drawing at 1.24x | `TitleArea/Art_Vine`, `ui.match_result.vine.svg` at svg/scale 1.8 (902 × 55), drawn from x 608.4 off the right edge |
+| Board | `#022c02`, 6 px white outside stroke, MONOTONE noise 25 %, (28, 96) 561 × 258 plus the players strip | `ChalkboardPanel` 40–1071 × 162–648 with the Round result's `Grain` patch; `%FinalChart` inside |
+| Winner line | "Winner - P2  Triangle" Margarine 16 white at (49, 104) | `%WinnerLabel` (`ChalkLabel` 29 px) on the board header; text `UiMatchResultScreen.winner_text()` = "Winner - P%d  %s" with the shape in title case |
+| Awards | "Awards" Lemonade Thin 22, outcome Margarine 10 `#ffc092` at x 606 | `AwardsHeader/AwardsHeading` (`ResultHeading` 40) on the frame's baseline; `%OutcomeLabel` (`ResultText` 18, line spacing −1) = the live outcome ("Highest score after round 12 ended the match.") |
+| Score Legend | heading Lemonade Thin 20 at (606, 234); one column at (615, 257) | `LegendHeading` (`ResultHeading` **30**), `%ScoreAwardLegend` with `columns = 1` |
+| Buttons | three 185 × 17 planks at x 62 / 274.71 / 480, y 369; `#b77748`, gradient outline, 4 px `#483934` rivets, group drop shadow `0 2` 25 %, Margarine 8 white | `%MenuList` (horizontal `UiMenuList`): `plank_button.tscn` 333 × 31 at x 112 / 495 / 864, y 664, font 14, rivets 7.2 px as placed in the frame, `DropShadow` (`PauseButtonShadow`) 3.6 px below; spacers `Lead` / `Gap1` / `Gap2` |
+
+**Measured (1080p render against the frame scaled to 1080p, in Figma px):** title glyph rows within 0.3; winner line, "Awards", the three outcome lines, "Score Legend" and all seven legend rows within about 1.2; plank text within 1. Board edges and plank positions match the frame to the pixel (Quit at x 864 after rounding).
+
+**Still working:** `%WinnerBadge`, `%WinnerLabel`, `%OutcomeLabel`, `%LastCluckCallout` (`UiPhaseBanner`), `%FinalChart`, `%ScoreAwardLegend`, `%MenuList`, `%ReplayButton`, `%LobbyButton`, `%QuitButton`, the signals, router-driven menu selection, the live P09 binding and the gallery states.
+
+**Deviations (on purpose):**
+- The chart keeps its bars, chickens, totals, TARGET line and WINNER / FINAL SCORE status under each badge, so the plot is shorter than the frame's empty chart (as on the Round result). Seat colours and shapes stay the game's.
+- The selected menu entry shows the orange Hovered plank (the menu is router-driven, as on Pause).
+- "Score Legend" is 30 px, not 36. Handlee (the stand-in for Lemonade Thin) at 36 px is 199 px wide and would run past the screen edge in the frame's 169 px column.
+- The Last Cluck explanation, which the frame has no slot for, shows as a white 18 px chalk line under the winner line, only in that case. Its "LAST CLUCK!" title label is hidden because the explanation already starts with "Last Cluck!".
+- The winner badge is hidden (the line names number and shape, as in the frame); the old PLACEHOLDER tag is removed.
+- The live outcome keeps its final full stop ("…ended the match.").
+- The two plank gaps are 49.9 and 36 px, as placed in the frame (the second rounds 36.5 to 36 so Quit lands on x 864).
+
+**Checked (synthetic, 2026-10-17):** gallery renders (4 players; Last Cluck) and a live `bind_final_match` render (3 players, sudden death won by Last Cluck: two-line explanation, four-line outcome; legend and planks unmoved). run_ui_theme_tests 177 pass (new: winner text format, title, vine, board, winner line, Awards column and one-column legend, three planks, no tag, Last Cluck line). run_match_ui_mode_tests 62 (winner check now "Winner - P"), match_ui 196, match_ui_binding 177, scoreboard_chart 52, p13_navigation 205, p13_accessibility 65 and p09 77 pass. run_ui_tests 498 keeps its two older failures. gdformat / gdlint not installed (COULD-NOT-RUN). Not a human design review.
