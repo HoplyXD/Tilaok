@@ -1,121 +1,119 @@
-[gd_scene load_steps=1 format=3]
-
-
+[gd_scene format=3]
 
 [node name="GhostLegend" type="VBoxContainer"]
+custom_minimum_size = Vector2(166, 0)
 layout_mode = 3
-theme_override_constants/separation = 6
+mouse_filter = 2
+theme_override_constants/separation = 5
 
 [node name="Art_LegendIcons" type="TextureRect" parent="."]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-visible = false
 metadata/asset_id = "ui.place.legend_icons"
 
 [node name="LegendValid" type="PanelContainer" parent="."]
-layout_mode = 2
-theme_type_variation = &"GhostValid"
 unique_name_in_owner = true
-
-[node name="Row" type="HBoxContainer" parent="LegendValid"]
+custom_minimum_size = Vector2(0, 29)
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+theme_type_variation = &"PlaceTabValid"
 
-[node name="Mark" type="Label" parent="LegendValid/Row"]
+[node name="Col" type="VBoxContainer" parent="LegendValid"]
 layout_mode = 2
-text = "[OK]"
-theme_type_variation = &"HudLabel"
-custom_minimum_size = Vector2(96, 0)
+mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="Text" type="Label" parent="LegendValid/Row"]
+[node name="Strip" type="Panel" parent="LegendValid/Col"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-text = "Valid: you can place here"
-theme_type_variation = &"BodyLabel"
-size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"PlaceTabValidStrip"
+
+[node name="Text" type="Label" parent="LegendValid/Col"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+theme_type_variation = &"PlaceTabText"
+text = "Valid place to place an obstacle"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LegendInvalid" type="PanelContainer" parent="."]
-layout_mode = 2
-theme_type_variation = &"GhostInvalid"
 unique_name_in_owner = true
-
-[node name="Row" type="HBoxContainer" parent="LegendInvalid"]
+custom_minimum_size = Vector2(0, 29)
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+theme_type_variation = &"PlaceTabBlocked"
 
-[node name="Mark" type="Label" parent="LegendInvalid/Row"]
+[node name="Col" type="VBoxContainer" parent="LegendInvalid"]
 layout_mode = 2
-text = "[X]"
-theme_type_variation = &"HudLabel"
-custom_minimum_size = Vector2(96, 0)
+mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="Text" type="Label" parent="LegendInvalid/Row"]
+[node name="Strip" type="Panel" parent="LegendInvalid/Col"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-text = "Blocked: the reason is shown"
-theme_type_variation = &"BodyLabel"
-size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"PlaceTabBlockedStrip"
+
+[node name="Text" type="Label" parent="LegendInvalid/Col"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+theme_type_variation = &"PlaceTabText"
+text = "Blocked: cant place an obstacle"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LegendProtected" type="PanelContainer" parent="."]
-layout_mode = 2
-theme_type_variation = &"GhostProtected"
 unique_name_in_owner = true
-
-[node name="Row" type="HBoxContainer" parent="LegendProtected"]
+custom_minimum_size = Vector2(0, 29)
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+theme_type_variation = &"PlaceTabProtected"
 
-[node name="Mark" type="Label" parent="LegendProtected/Row"]
+[node name="Col" type="VBoxContainer" parent="LegendProtected"]
 layout_mode = 2
-text = "[LOCK]"
-theme_type_variation = &"HudLabel"
-custom_minimum_size = Vector2(96, 0)
+mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="Text" type="Label" parent="LegendProtected/Row"]
+[node name="Strip" type="Panel" parent="LegendProtected/Col"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"PlaceTabProtectedStrip"
+
+[node name="Text" type="Label" parent="LegendProtected/Col"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+theme_type_variation = &"PlaceTabText"
 text = "Protected zone: no building"
-theme_type_variation = &"BodyLabel"
-size_flags_horizontal = 3
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LegendRotationOff" type="PanelContainer" parent="."]
-layout_mode = 2
-theme_type_variation = &"GhostRotationOff"
 unique_name_in_owner = true
-
-[node name="Row" type="HBoxContainer" parent="LegendRotationOff"]
+custom_minimum_size = Vector2(0, 29)
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+theme_type_variation = &"PlaceTabRotation"
 
-[node name="Mark" type="Label" parent="LegendRotationOff/Row"]
+[node name="Col" type="VBoxContainer" parent="LegendRotationOff"]
 layout_mode = 2
-text = "[NO TURN]"
-theme_type_variation = &"HudLabel"
-custom_minimum_size = Vector2(96, 0)
+mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="Text" type="Label" parent="LegendRotationOff/Row"]
+[node name="Strip" type="Panel" parent="LegendRotationOff/Col"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-text = "Cannot rotate this way"
-theme_type_variation = &"BodyLabel"
-size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"PlaceTabRotationStrip"
 
-[node name="LegendConfirmed" type="PanelContainer" parent="."]
+[node name="Text" type="Label" parent="LegendRotationOff/Col"]
+custom_minimum_size = Vector2(0, 21)
 layout_mode = 2
-theme_type_variation = &"GhostConfirmed"
-unique_name_in_owner = true
-
-[node name="Row" type="HBoxContainer" parent="LegendConfirmed"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Mark" type="Label" parent="LegendConfirmed/Row"]
-layout_mode = 2
-text = "[SET]"
-theme_type_variation = &"HudLabel"
-custom_minimum_size = Vector2(96, 0)
-
-[node name="Text" type="Label" parent="LegendConfirmed/Row"]
-layout_mode = 2
-text = "Placed"
-theme_type_variation = &"BodyLabel"
-size_flags_horizontal = 3
-
+theme_type_variation = &"PlaceTabText"
+text = "Cannot Rotate this way"
+horizontal_alignment = 1
+vertical_alignment = 1

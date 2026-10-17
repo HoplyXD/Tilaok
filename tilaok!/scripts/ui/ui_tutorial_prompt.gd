@@ -1,7 +1,8 @@
 class_name UiTutorialPrompt
 extends UiScreen
 
-## Coach box. In the gallery it shows SAMPLE steps and `_back()` still emits `skip_requested`.
+## Coach box: the "Guide:" card from Figma frame 91:2 (UI-Tilaok-), shown at 1.125x so the body
+## stays 18 px. In the gallery it shows SAMPLE steps and `_back()` still emits `skip_requested`.
 ## In a live match `bind_live()` makes it display-only: it is never attached to the input bridge,
 ## never owns a router phase and never reacts to Back, so no press can activate it twice.
 
@@ -13,10 +14,10 @@ signal skip_requested
 @export var match_offset_top := 167.0
 @export var lobby_offset_top := 372.0
 ## Left edge for the Results step: inside the strip the Round result screen keeps free, so the
-## box never covers an outcome row or an award line.
-@export var results_offset_left := 960.0
+## box never covers an outcome row or an award line. The 263 px card ends at x 1210.
+@export var results_offset_left := 947.0
 ## Width the Round result screen reserves at its right edge for this box (box width + gap).
-@export var results_strip_width := 290.0
+@export var results_strip_width := 303.0
 
 var _live := false
 var _match_left := 0.0
@@ -71,8 +72,8 @@ func bind_live(view: Dictionary) -> void:
 	_anchor.offset_bottom = _anchor.offset_top
 	_step_label.text = str(view.get("title", ""))
 	_body_label.text = str(view.get("body", ""))
-	# The glyphs are written into the body text per seat device; the chip row would not fit the
-	# narrow column, so it is hidden while live (the gallery still shows it).
+	# The glyphs are written into the body text per seat device, so the chip glyphs stay hidden:
+	# the card's footer is the skip caption alone, as in the Figma frame.
 	_prompt.visible = false
 	_skip_text.text = str(view.get("skip_caption", ""))
 	_skip_hint.visible = false
@@ -81,17 +82,17 @@ func bind_live(view: Dictionary) -> void:
 
 func _show_state(index: int, ctx: UiContext) -> void:
 	_live = false
-	_prompt.visible = true
-	_skip_hint.visible = true
+	# Same card as in a match: the chip glyphs stay hidden (scene default) and the footer keeps
+	# the scene's "Pause > Skip tutorial" caption.
 	var steps := [
 		[
-			"Step 1 of 6",
+			"Step 1 of 5 - Welcome",
 			"Find your chicken: look for your number and shape. Run and jump to the marker.",
 			"jump"
 		],
-		["Step 3 of 6", ctx.sample.tutorial_body, "claim"],
+		["Step 2 of 5 - Pugad", ctx.sample.tutorial_body, "claim"],
 		[
-			"Step 4 of 6",
+			"Step 3 of 5 - Build a way up",
 			"Move the piece, rotate it, then confirm. Red outline means it cannot go there.",
 			"rotate"
 		],

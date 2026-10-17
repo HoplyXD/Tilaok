@@ -158,17 +158,27 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		presenter.pugad_overlay.visible_egg_count() == room.egg_pool.size(),
 		"round %d: one egg slot per pool egg (%d)" % [round_number, room.egg_pool.size()]
 	)
+	# Figma "Obstacle Pick": Pugad carries its own HUD rail and chip column.
 	_check(
-		(presenter.play_hud.get_node("%RoundLabel") as Label).text == "Round %d" % round_number,
-		"round %d: HUD names the round" % round_number
+		(
+			not presenter.play_hud.visible
+			and (presenter.pugad_overlay.get_node("%HudRound") as Label).text
+			== "Round %d" % round_number
+		),
+		"round %d: the Pugad HUD names the round" % round_number
 	)
 	_check(
 		presenter.pugad_overlay.get_node("%Egg1").selector_numbers() == PackedInt32Array([1, 2]),
 		"round %d: both seats' number badges show on the egg they point at" % round_number
 	)
 	_check(
-		presenter.pugad_overlay.get_node("%Countdown").seconds_text() == "8",
+		presenter.pugad_overlay.get_node("%Countdown").seconds_text() == "8s",
 		"round %d: Pugad countdown starts at the tuned 8 s" % round_number
+	)
+	_check(
+		presenter.pugad_overlay.hud_chips[0].state_text() == "Choosing"
+		and presenter.pugad_overlay.count_text() == "0 / 2 picked",
+		"round %d: chips read Choosing and the count reads 0 / 2 picked" % round_number
 	)
 	# Both seats point at egg 0 and claim on the same tick: one wins, one sees a lost-claim cue.
 	_key("K1", KEY_E, true)
@@ -225,17 +235,24 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		room._refresh_all_match_ghosts()
 		await process_frame
 	for index in 2:
+		# Figma "Obstacle Place": the HUD chip carries Placing / Placed; the old status row stays
+		# bound (exact variant) but is not shown.
 		var seat_row: UiScoreRow = presenter.place_overlay.seat_rows[index]
 		var variant := room.variant_label(str(room.placement_controller.cursors[index].variant_key))
 		_check(
-			seat_row.visible and seat_row.state_text().begins_with(variant),
+			seat_row.state_text().begins_with(variant) and not seat_row.is_visible_in_tree(),
 			(
-				"round %d: seat %d row names its exact variant (%s)"
+				"round %d: seat %d row stays bound to its exact variant (%s), hidden by design"
 				% [round_number, index + 1, variant]
 			)
 		)
+		_check(
+			presenter.play_hud.visible
+			and presenter.play_hud.score_rows[index].state_text() == "Placing",
+			"round %d: seat %d HUD chip reads Placing" % [round_number, index + 1]
+		)
 	_check(
-		presenter.place_overlay.get_node("%Countdown").seconds_text() == "15",
+		presenter.place_overlay.get_node("%Countdown").seconds_text() == "15 secs",
 		"round %d: Place countdown starts at the tuned 15 s" % round_number
 	)
 	# Confirm both with the keyboard; the edits resolve together and Play starts.
@@ -314,7 +331,7 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		var units := int(room.cumulative_score_units[seat_index])
 		_check(
 			(
-				presenter.play_hud.score_rows[seat_index].score_text()
+				presenter.pugad_overlay.hud_chips[seat_index].score_text()
 				== ScoreFormat.format_units(units)
 			),
 			(
@@ -324,8 +341,8 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		)
 	if round_number == 1:
 		_check(
-			(presenter.play_hud.get_node("%RoundLabel") as Label).text == "Round 2",
-			"the next round is labelled Round 2"
+			(presenter.pugad_overlay.get_node("%HudRound") as Label).text == "Round 2",
+			"the next round is labelled Round 2 (Pugad HUD)"
 		)
 		_check(
 			presenter.result_screen.visible == false and presenter.pugad_overlay.visible,

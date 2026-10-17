@@ -1,13 +1,14 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c6lyy367kr0fu"]
 
-[node name="VineDivider" type="Control"]
+[node name="VineDivider" type="Control" unique_id=1308786859]
 custom_minimum_size = Vector2(360, 26)
 layout_mode = 3
+anchors_preset = 0
 size_flags_horizontal = 4
 mouse_filter = 2
 metadata/asset_id = "ui.common.vine_divider"
 
-[node name="Art_Vine" type="TextureRect" parent="."]
+[node name="Art_Vine" type="TextureRect" parent="." unique_id=1316467102]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,10 +20,10 @@ expand_mode = 1
 stretch_mode = 5
 metadata/asset_id = "ui.common.vine_divider"
 
-[node name="Placeholder" type="Node2D" parent="."]
+[node name="Placeholder" type="Node2D" parent="." unique_id=509868973]
 metadata/note = "PLACEHOLDER vine (graybox line + leaves). Hide this node when Art_Vine has the team's texture."
 
-[node name="Stem" type="Line2D" parent="Placeholder"]
+[node name="Stem" type="Line2D" parent="Placeholder" unique_id=1939124907]
 points = PackedVector2Array(14, 15, 50, 10, 95, 9, 140, 12, 185, 15, 230, 16, 275, 14, 315, 11, 346, 9)
 width = 3.0
 default_color = Color(0.471, 0.275, 0.137, 1)
@@ -31,25 +32,25 @@ begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
 
-[node name="LeafLeftUp" type="Polygon2D" parent="Placeholder"]
+[node name="LeafLeftUp" type="Polygon2D" parent="Placeholder" unique_id=447563109]
 position = Vector2(26, 13)
 rotation = -0.6
 color = Color(0.471, 0.275, 0.137, 1)
 polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)
 
-[node name="LeafLeftDown" type="Polygon2D" parent="Placeholder"]
+[node name="LeafLeftDown" type="Polygon2D" parent="Placeholder" unique_id=222052666]
 position = Vector2(20, 15)
 rotation = 0.55
 color = Color(0.471, 0.275, 0.137, 1)
 polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)
 
-[node name="LeafRightUp" type="Polygon2D" parent="Placeholder"]
+[node name="LeafRightUp" type="Polygon2D" parent="Placeholder" unique_id=38846618]
 position = Vector2(334, 9)
 rotation = -2.55
 color = Color(0.471, 0.275, 0.137, 1)
 polygon = PackedVector2Array(0, 0, 5, -4, 12, -4, 16, 0, 12, 4, 5, 4)
 
-[node name="LeafRightDown" type="Polygon2D" parent="Placeholder"]
+[node name="LeafRightDown" type="Polygon2D" parent="Placeholder" unique_id=1714098273]
 position = Vector2(340, 10)
 rotation = 2.5
 color = Color(0.471, 0.275, 0.137, 1)

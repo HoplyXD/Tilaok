@@ -304,3 +304,20 @@ Read from frame `36:221` "Round Results" through the Figma MCP connector: a read
 | Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
 |---|---|---|---|---|---|---|---|
 | `ui.round_result.countdown_fill` | `assets/ui/round_result/ui.round_result.countdown_fill.svg` (SHA-256 `87ec215d…456a011`; `svg/scale=1.8`) | UI vector; Round result countdown fill (`CountdownBar` fill StyleBoxTexture) | Team Figma layer "Time remaining bar" (`50:7`) | Team-made (to confirm); Figma file history | Only the fill path and its gradient kept, moved to the origin (shape and stops unchanged) | Download, crop and placement ([AI_USAGE](AI_USAGE.md#round-result-effects-pass--october-17-2026)) | Imported — creator confirmation open |
+
+## Place screen from the Figma frame — 2026-10-17
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.place.timer_fill` | `assets/ui/place/ui.place.timer_fill.svg` (SHA-256 `0d756e0b…281d5e2`; `svg/scale=1.8`) | UI vector; Place timer fill (`PlaceTimerBar` fill StyleBoxTexture) | Team Figma layer "Time remaining bar" (`36:307`, frame `18:8`) | Team-made (to confirm); Figma file history | Only the fill path and its gradient kept, moved to the origin | Download, crop and placement ([AI_USAGE](AI_USAGE.md#place-screen-built-from-the-figma-frame--october-17-2026)) | Imported — creator confirmation open |
+
+The frame's background screenshot (`image 5`) is reference only and is not imported.
+
+## Pugad pick screen from the Figma frame — 2026-10-17
+
+Read from frame `2:5` "Obstacle Pick" through the Figma MCP connector. The frame's background screenshot (`image 5`) is reference only and is not imported.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.pugad.nest` | `assets/ui/pugad/ui.pugad.nest.png` (SHA-256 `3304f362…40efb8a`, 1005 × 937) | UI raster; Pugad nest (`Nest`) | The image fill of the team's layer "nest 1" (`15:319`) | **Source and licence to confirm** (an illustration placed in the Figma file) | Cropped and scaled to the frame's crop (scale 1.163, top 227 px of the 864 × 1222 original); transparency kept | Crop matching and placement ([AI_USAGE](AI_USAGE.md#pugad-pick-screen-built-from-the-figma-frame--october-17-2026)) | Imported — provenance open |
+| `ui.pugad.egg` | `assets/ui/pugad/ui.pugad.egg.svg` (SHA-256 `01cafa5e…9a24022`; `svg/scale=2.7`) | UI vector; egg card shape | Team Figma layer "Ellipse 15" (`15:317`) | Team-made (to confirm); Figma file history | None | Download and placement only | Imported — creator confirmation open |

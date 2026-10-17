@@ -1,23 +1,22 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://nxjmky2pw7hp"]
 
-[ext_resource type="Script" path="res://scripts/ui/ui_confirm_dialog.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="3"]
+[ext_resource type="Script" uid="uid://droflj2lus67u" path="res://scripts/ui/ui_confirm_dialog.gd" id="1"]
+[ext_resource type="Script" uid="uid://df5wjjgm7jhcf" path="res://scripts/ui/ui_menu_list.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dmu78knnloi11" path="res://scenes/ui/components/plank_button.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/vine_divider.tscn" id="4"]
 
-[node name="ConfirmDialog" type="PanelContainer"]
-layout_mode = 3
-script = ExtResource("1")
-theme_type_variation = &"PanelRivet"
-custom_minimum_size = Vector2(460, 0)
+[node name="ConfirmDialog" type="PanelContainer" unique_id=1306435472]
 visible = false
+custom_minimum_size = Vector2(460, 0)
+theme_type_variation = &"PanelRivet"
+script = ExtResource("1")
 
-[node name="Decor" type="Control" parent="."]
+[node name="Decor" type="Control" parent="." unique_id=451936930]
 show_behind_parent = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Backing" type="Panel" parent="Decor"]
+[node name="Backing" type="Panel" parent="Decor" unique_id=569440847]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -33,107 +32,56 @@ rotation = -0.03
 mouse_filter = 2
 theme_type_variation = &"PaperBacking"
 
-[node name="Art_Panel" type="TextureRect" parent="."]
+[node name="Art_Panel" type="TextureRect" parent="." unique_id=1234011086]
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 metadata/asset_id = "ui.common.confirm_panel"
 
-[node name="Rivets" type="Control" parent="."]
+[node name="Rivets" type="Control" parent="." unique_id=1678429782]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="RivetTopLeft" type="Panel" parent="Rivets"]
-layout_mode = 1
-offset_left = -30.0
-offset_top = -16.0
-offset_right = -20.0
-offset_bottom = -6.0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="RivetTopRight" type="Panel" parent="Rivets"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = 20.0
-offset_top = -16.0
-offset_right = 30.0
-offset_bottom = -6.0
-grow_horizontal = 0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="RivetBottomLeft" type="Panel" parent="Rivets"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -30.0
-offset_top = 8.0
-offset_right = -20.0
-offset_bottom = 18.0
-grow_vertical = 0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="RivetBottomRight" type="Panel" parent="Rivets"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 8.0
-offset_right = 30.0
-offset_bottom = 18.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="Content" type="VBoxContainer" parent="."]
+[node name="Content" type="VBoxContainer" parent="." unique_id=1026295141]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Heading" type="Label" parent="Content"]
+[node name="Heading" type="Label" parent="Content" unique_id=519359282]
 visible = false
 layout_mode = 2
-text = "Heading"
 theme_type_variation = &"PaperTitle"
+text = "Heading"
 horizontal_alignment = 1
 
-[node name="Vine" parent="Content" instance=ExtResource("4")]
+[node name="Vine" parent="Content" unique_id=1707058276 instance=ExtResource("4")]
 visible = false
 layout_mode = 2
 
-[node name="MessageLabel" type="Label" parent="Content"]
-layout_mode = 2
+[node name="MessageLabel" type="Label" parent="Content" unique_id=1509522132]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(380, 0)
-text = "Are you sure?"
+layout_mode = 2
 theme_type_variation = &"DialogMessage"
+text = "Are you sure?"
 horizontal_alignment = 1
 autowrap_mode = 3
-unique_name_in_owner = true
 
-[node name="Menu" type="VBoxContainer" parent="Content"]
+[node name="Menu" type="VBoxContainer" parent="Content" unique_id=1424142934]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
-script = ExtResource("2")
 theme_override_constants/separation = 12
-unique_name_in_owner = true
+script = ExtResource("2")
 
-[node name="YesButton" parent="Content/Menu" instance=ExtResource("3")]
-layout_mode = 2
+[node name="YesButton" parent="Content/Menu" unique_id=1468049582 instance=ExtResource("3")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(360, 40)
+layout_mode = 2
 text = "Yes"
-unique_name_in_owner = true
 
-[node name="NoButton" parent="Content/Menu" instance=ExtResource("3")]
-layout_mode = 2
-custom_minimum_size = Vector2(360, 40)
-text = "No"
+[node name="NoButton" parent="Content/Menu" unique_id=1083934273 instance=ExtResource("3")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 40)
+layout_mode = 2
+text = "No"

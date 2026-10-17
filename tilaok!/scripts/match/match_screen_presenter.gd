@@ -19,6 +19,9 @@ const DEBUG_OVERLAY_FLAG := "--debug-overlay"
 const LIST_SEPARATOR := "   •   "
 const PHASE_NAMES := ["LOBBY", "PUGAD", "PLACE", "PLAY", "RESULTS"]
 const CHEER_STATE_TEXT := "CHEER!"
+## HUD chip words during Place (Figma "Obstacle Place").
+const PLACE_STATE_PLACING := "Placing"
+const PLACE_STATE_PLACED := "Placed"
 
 var room: P05MatchRoom
 var bridge: UiInputBridge
@@ -485,16 +488,10 @@ func _apply() -> void:
 	result_screen.visible = phase == MatchPhaseController.Phase.RESULTS and not final_results
 	# The room binds the final model and drives replay / lobby / quit itself (P09).
 	match_result_screen.visible = final_results
+	# Pugad draws its own HUD rail and chip column (Figma "Obstacle Pick").
 	play_hud.visible = (
 		not final_results
-		and (
-			phase
-			in [
-				MatchPhaseController.Phase.PUGAD,
-				MatchPhaseController.Phase.PLACE,
-				MatchPhaseController.Phase.PLAY,
-			]
-		)
+		and phase in [MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.PLAY]
 	)
 	match phase:
 		MatchPhaseController.Phase.LOBBY:
@@ -539,7 +536,16 @@ func _apply_pugad(seats: Array[Dictionary]) -> void:
 		pugad_overlay.bind_announcement(
 			str(announcement.get("title", "")), str(announcement.get("detail", ""))
 		)
-	var hint := "%s  ·  %s" % [_hint("navigate"), _hint("claim")]
+	pugad_overlay.bind_live_hud(
+		room.items.round_number + 1,
+		room.play_challenge_text(),
+		room.play_twist_text(),
+		seats,
+		room.cumulative_score_units,
+		room.assignments
+	)
+	# The frame's hint row reads "← → Choose" and "<pick keys>  Pick"; pass the pick keys.
+	var hint := _glyphs("claim")
 	pugad_overlay.bind_live_state(
 		seats,
 		room.assignments,
@@ -578,7 +584,10 @@ func _apply_place(seats: Array[Dictionary]) -> void:
 			text = str(verdict.get("reason", ""))
 		if not text.is_empty():
 			reasons.append("%s: %s" % [_seat_tag(seats, seat_index), text])
-	var hint := "%s  ·  %s  ·  %s" % [_hint("navigate"), _hint("rotate"), _hint("confirm")]
+	# The Guide card writes the keys as the frame does ("W A S D/Arrow keys"), one action per line.
+	var hint := (
+		"\n".join([_hint("navigate"), _hint("rotate"), _hint("confirm")]).replace(" / ", "/")
+	)
 	place_overlay.bind_live(
 		seats,
 		rows,
@@ -724,6 +733,8 @@ func _lost_claim_text(seats: Array[Dictionary]) -> String:
 
 
 func _state_text(seat_index: int, phase: MatchPhaseController.Phase) -> String:
+	if phase == MatchPhaseController.Phase.PLACE:
+		return _place_state_text(seat_index)
 	if phase != MatchPhaseController.Phase.PLAY:
 		return ""
 	if _cheer_marks.has(seat_index):
@@ -732,6 +743,14 @@ func _state_text(seat_index: int, phase: MatchPhaseController.Phase) -> String:
 	if not mode_state.is_empty():
 		return mode_state
 	return _lifecycle_state_text(seat_index)
+
+
+## The HUD chip during Place: Placed once the seat confirmed its piece, Placing before.
+func _place_state_text(seat_index: int) -> String:
+	var cursors: Dictionary = room.placement_controller.cursors
+	if not cursors.has(seat_index):
+		return ""
+	return PLACE_STATE_PLACED if bool(cursors[seat_index].confirmed) else PLACE_STATE_PLACING
 
 
 func _lifecycle_state_text(seat_index: int) -> String:
@@ -755,6 +774,11 @@ func _first_device_kind(seats: Array[Dictionary]) -> String:
 
 ## "Claim egg: E / Enter / South" for the device kinds actually seated (all three if nobody is).
 func _hint(action: String) -> String:
+	return "%s: %s" % [prompt_map.action_name(action), _glyphs(action)]
+
+
+## The joined seats' glyphs for one action ("South / Enter"), one per device kind.
+func _glyphs(action: String) -> String:
 	var kinds: Array[String] = []
 	for seat in room.input_router.registry.joined_seats():
 		var kind := UiContext.device_for_seat(seat)
@@ -765,7 +789,7 @@ func _hint(action: String) -> String:
 	var glyphs := PackedStringArray()
 	for kind in kinds:
 		glyphs.append(prompt_map.glyph(action, kind))
-	return "%s: %s" % [prompt_map.action_name(action), " / ".join(glyphs)]
+	return " / ".join(glyphs)
 
 
 func _play_hint() -> String:

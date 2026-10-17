@@ -1,8 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene format=3 uid="uid://8i8x2vnxhpnh"]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/ui_component_sheet.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="3"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://7g6qyfdfnotd" path="res://scripts/ui/ui_component_sheet.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dmu78knnloi11" path="res://scenes/ui/components/plank_button.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/seat_pill.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_chip.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="6"]
@@ -11,28 +11,29 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_ring.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_bar.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/arrow_plank_button.tscn" id="12"]
 
-[node name="ComponentSheet" type="Control"]
+[node name="ComponentSheet" type="Control" unique_id=1216811618]
 layout_mode = 3
-script = ExtResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("2")
 standalone_theme = ExtResource("1")
 
-[node name="Backdrop" type="PanelContainer" parent="."]
+[node name="Backdrop" type="PanelContainer" parent="." unique_id=104108585]
 layout_mode = 1
-theme_type_variation = &"BackdropWarm"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"BackdropWarm"
 
-[node name="Safe" type="MarginContainer" parent="."]
+[node name="Safe" type="MarginContainer" parent="." unique_id=2132896434]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,131 +44,150 @@ theme_type_variation = &"SafeAreaMargin"
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="Columns" type="HBoxContainer" parent="Safe"]
+[node name="Columns" type="HBoxContainer" parent="Safe" unique_id=1063732508]
 layout_mode = 2
 theme_override_constants/separation = 32
 
-[node name="Left" type="VBoxContainer" parent="Safe/Columns"]
+[node name="Left" type="VBoxContainer" parent="Safe/Columns" unique_id=548055809]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="ButtonsHeading" type="Label" parent="Safe/Columns/Left"]
+[node name="ButtonsHeading" type="Label" parent="Safe/Columns/Left" unique_id=1539606488]
 layout_mode = 2
-text = "Plank button · normal / selected / pressed / disabled"
 theme_type_variation = &"LobbyNote"
+text = "Plank button · normal / selected / pressed / disabled"
 
-[node name="Normal" parent="Safe/Columns/Left" instance=ExtResource("3")]
+[node name="Normal" parent="Safe/Columns/Left" unique_id=817076523 instance=ExtResource("3")]
 layout_mode = 2
 text = "Normal"
 
-[node name="Selected" parent="Safe/Columns/Left" instance=ExtResource("3")]
+[node name="Selected" parent="Safe/Columns/Left" unique_id=156503589 instance=ExtResource("3")]
 layout_mode = 2
 theme_type_variation = &"MenuButtonSelected"
 text = "Selected"
 
-[node name="Pressed" parent="Safe/Columns/Left" instance=ExtResource("3")]
+[node name="Pressed" parent="Safe/Columns/Left" unique_id=949227499 instance=ExtResource("3")]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
 text = "Pressed"
 
-[node name="Disabled" parent="Safe/Columns/Left" instance=ExtResource("3")]
+[node name="Disabled" parent="Safe/Columns/Left" unique_id=2106530156 instance=ExtResource("3")]
 layout_mode = 2
 disabled = true
 text = "Disabled"
 
-[node name="PillsHeading" type="Label" parent="Safe/Columns/Left"]
+[node name="PillsHeading" type="Label" parent="Safe/Columns/Left" unique_id=1150871035]
 layout_mode = 2
-text = "Seat pills (Pause roster)"
 theme_type_variation = &"LobbyNote"
+text = "Seat pills (Pause roster)"
 
-[node name="Pills" type="VBoxContainer" parent="Safe/Columns/Left"]
+[node name="Pills" type="VBoxContainer" parent="Safe/Columns/Left" unique_id=718124321]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Pill1" parent="Safe/Columns/Left/Pills" instance=ExtResource("4")]
-layout_mode = 2
+[node name="Pill1" parent="Safe/Columns/Left/Pills" unique_id=1976431600 instance=ExtResource("4")]
 unique_name_in_owner = true
+layout_mode = 2
 
-[node name="Pill2" parent="Safe/Columns/Left/Pills" instance=ExtResource("4")]
+[node name="Pill2" parent="Safe/Columns/Left/Pills" unique_id=68822783 instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PillSeat2"
-unique_name_in_owner = true
 
-[node name="Pill3" parent="Safe/Columns/Left/Pills" instance=ExtResource("4")]
+[node name="Pill3" parent="Safe/Columns/Left/Pills" unique_id=1034485348 instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PillSeat3"
-unique_name_in_owner = true
 
-[node name="Pill4" parent="Safe/Columns/Left/Pills" instance=ExtResource("4")]
+[node name="Pill4" parent="Safe/Columns/Left/Pills" unique_id=1964569087 instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PillSeat4"
-unique_name_in_owner = true
 
-[node name="ChipsHeading" type="Label" parent="Safe/Columns/Left"]
+[node name="ChipsHeading" type="Label" parent="Safe/Columns/Left" unique_id=2025716741]
 layout_mode = 2
-text = "Score chips (Play HUD)"
 theme_type_variation = &"LobbyNote"
+text = "Score chips (Play HUD)"
 
-[node name="Chips" type="GridContainer" parent="Safe/Columns/Left"]
+[node name="Chips" type="GridContainer" parent="Safe/Columns/Left" unique_id=990120087]
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 6
 columns = 2
 
-[node name="Chip1" parent="Safe/Columns/Left/Chips" instance=ExtResource("5")]
-layout_mode = 2
+[node name="Chip1" parent="Safe/Columns/Left/Chips" unique_id=1304598685 instance=ExtResource("5")]
 unique_name_in_owner = true
-
-[node name="Chip2" parent="Safe/Columns/Left/Chips" instance=ExtResource("5")]
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Chip3" parent="Safe/Columns/Left/Chips" instance=ExtResource("5")]
+[node name="Chip2" parent="Safe/Columns/Left/Chips" unique_id=489242668 instance=ExtResource("5")]
+unique_name_in_owner = true
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Chip4" parent="Safe/Columns/Left/Chips" instance=ExtResource("5")]
+[node name="Chip3" parent="Safe/Columns/Left/Chips" unique_id=829796154 instance=ExtResource("5")]
+unique_name_in_owner = true
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Prompts" type="HBoxContainer" parent="Safe/Columns/Left"]
+[node name="Chip4" parent="Safe/Columns/Left/Chips" unique_id=1056295555 instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Prompts" type="HBoxContainer" parent="Safe/Columns/Left" unique_id=1798501778]
 layout_mode = 2
 theme_override_constants/separation = 28
 
-[node name="ReadyPrompt" parent="Safe/Columns/Left/Prompts" instance=ExtResource("6")]
-layout_mode = 2
+[node name="ReadyPrompt" parent="Safe/Columns/Left/Prompts" unique_id=1210731395 instance=ExtResource("6")]
 unique_name_in_owner = true
-
-[node name="HelpPrompt" parent="Safe/Columns/Left/Prompts" instance=ExtResource("6")]
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="BackPrompt" parent="Safe/Columns/Left/Prompts" instance=ExtResource("6")]
+[node name="HelpPrompt" parent="Safe/Columns/Left/Prompts" unique_id=1040813817 instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Right" type="VBoxContainer" parent="Safe/Columns"]
+[node name="BackPrompt" parent="Safe/Columns/Left/Prompts" unique_id=1728143289 instance=ExtResource("6")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MapArrows" type="HBoxContainer" parent="Safe/Columns/Left" unique_id=1638553489]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MapPrev" parent="Safe/Columns/Left/MapArrows" unique_id=411375441 instance=ExtResource("12")]
+layout_mode = 2
+
+[node name="MapArrowsLabel" type="Label" parent="Safe/Columns/Left/MapArrows" unique_id=1174014183]
+layout_mode = 2
+theme_type_variation = &"LobbyNote"
+text = "Lobby map arrows"
+vertical_alignment = 1
+
+[node name="MapNext" parent="Safe/Columns/Left/MapArrows" unique_id=1485526912 instance=ExtResource("12")]
+layout_mode = 2
+
+[node name="Arrow" parent="Safe/Columns/Left/MapArrows/MapNext" index="4"]
+scale = Vector2(-1, 1)
+
+[node name="Right" type="VBoxContainer" parent="Safe/Columns" unique_id=1239600712]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="Panels" type="HBoxContainer" parent="Safe/Columns/Right"]
+[node name="Panels" type="HBoxContainer" parent="Safe/Columns/Right" unique_id=40826116]
 layout_mode = 2
 theme_override_constants/separation = 36
 
-[node name="PaperSample" type="PanelContainer" parent="Safe/Columns/Right/Panels"]
+[node name="PaperSample" type="PanelContainer" parent="Safe/Columns/Right/Panels" unique_id=220034126]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"PanelPaper"
 
-[node name="Decor" type="Control" parent="Safe/Columns/Right/Panels/PaperSample"]
+[node name="Decor" type="Control" parent="Safe/Columns/Right/Panels/PaperSample" unique_id=965379197]
 show_behind_parent = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Backing" type="Panel" parent="Safe/Columns/Right/Panels/PaperSample/Decor"]
+[node name="Backing" type="Panel" parent="Safe/Columns/Right/Panels/PaperSample/Decor" unique_id=1376810607]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -182,131 +202,83 @@ rotation = -0.04
 mouse_filter = 2
 theme_type_variation = &"PaperBacking"
 
-[node name="Col" type="VBoxContainer" parent="Safe/Columns/Right/Panels/PaperSample"]
+[node name="Col" type="VBoxContainer" parent="Safe/Columns/Right/Panels/PaperSample" unique_id=1033403096]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Safe/Columns/Right/Panels/PaperSample/Col"]
+[node name="Title" type="Label" parent="Safe/Columns/Right/Panels/PaperSample/Col" unique_id=407442141]
 layout_mode = 2
-text = "Paper"
 theme_type_variation = &"PaperTitle"
 theme_override_font_sizes/font_size = 36
+text = "Paper"
 horizontal_alignment = 1
 
-[node name="VineHolder" type="Control" parent="Safe/Columns/Right/Panels/PaperSample/Col"]
+[node name="VineHolder" type="Control" parent="Safe/Columns/Right/Panels/PaperSample/Col" unique_id=1574538599]
 custom_minimum_size = Vector2(200, 16)
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2
 
-[node name="Vine" parent="Safe/Columns/Right/Panels/PaperSample/Col/VineHolder" instance=ExtResource("7")]
+[node name="Vine" parent="Safe/Columns/Right/Panels/PaperSample/Col/VineHolder" unique_id=1420798782 instance=ExtResource("7")]
+layout_mode = 0
+anchors_preset = 0
 scale = Vector2(0.55, 0.55)
 
-[node name="Body" type="Label" parent="Safe/Columns/Right/Panels/PaperSample/Col"]
+[node name="Body" type="Label" parent="Safe/Columns/Right/Panels/PaperSample/Col" unique_id=1138402933]
 layout_mode = 2
-text = "Pause, Title quit"
 theme_type_variation = &"PaperScript"
+text = "Pause, Title quit"
 horizontal_alignment = 1
 
-[node name="RivetSample" type="PanelContainer" parent="Safe/Columns/Right/Panels"]
+[node name="RivetSample" type="PanelContainer" parent="Safe/Columns/Right/Panels" unique_id=939059144]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"PanelRivet"
 
-[node name="Rivets" type="Control" parent="Safe/Columns/Right/Panels/RivetSample"]
+[node name="Rivets" type="Control" parent="Safe/Columns/Right/Panels/RivetSample" unique_id=2071597453]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="RivetTopLeft" type="Panel" parent="Safe/Columns/Right/Panels/RivetSample/Rivets"]
-layout_mode = 1
-offset_left = -30.0
-offset_top = -16.0
-offset_right = -20.0
-offset_bottom = -6.0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="RivetTopRight" type="Panel" parent="Safe/Columns/Right/Panels/RivetSample/Rivets"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = 20.0
-offset_top = -16.0
-offset_right = 30.0
-offset_bottom = -6.0
-grow_horizontal = 0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="RivetBottomLeft" type="Panel" parent="Safe/Columns/Right/Panels/RivetSample/Rivets"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -30.0
-offset_top = 8.0
-offset_right = -20.0
-offset_bottom = 18.0
-grow_vertical = 0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="RivetBottomRight" type="Panel" parent="Safe/Columns/Right/Panels/RivetSample/Rivets"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 8.0
-offset_right = 30.0
-offset_bottom = 18.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-theme_type_variation = &"Rivet"
-
-[node name="Body" type="Label" parent="Safe/Columns/Right/Panels/RivetSample"]
+[node name="Body" type="Label" parent="Safe/Columns/Right/Panels/RivetSample" unique_id=278107199]
 layout_mode = 2
+theme_type_variation = &"DialogMessage"
 text = "Rivet panel
 Leave match"
-theme_type_variation = &"DialogMessage"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LegendHeading" type="Label" parent="Safe/Columns/Right"]
+[node name="LegendHeading" type="Label" parent="Safe/Columns/Right" unique_id=1090957904]
 layout_mode = 2
-text = "Place status pills (mark + text, not colour alone)"
 theme_type_variation = &"LobbyNote"
+text = "Place status pills (mark + text, not colour alone)"
 
-[node name="GhostLegend" parent="Safe/Columns/Right" instance=ExtResource("8")]
+[node name="GhostLegend" parent="Safe/Columns/Right" unique_id=1167300287 instance=ExtResource("8")]
 layout_mode = 2
 
-[node name="Chalk" type="PanelContainer" parent="Safe/Columns/Right"]
+[node name="Chalk" type="PanelContainer" parent="Safe/Columns/Right" unique_id=1512055902]
 layout_mode = 2
 theme_type_variation = &"ChalkboardPanel"
 
-[node name="Row" type="HBoxContainer" parent="Safe/Columns/Right/Chalk"]
+[node name="Row" type="HBoxContainer" parent="Safe/Columns/Right/Chalk" unique_id=2026687787]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="ScoreAwardLegend" parent="Safe/Columns/Right/Chalk/Row" instance=ExtResource("9")]
-layout_mode = 2
+[node name="ScoreAwardLegend" parent="Safe/Columns/Right/Chalk/Row" unique_id=1999352677 instance=ExtResource("9")]
 
-[node name="Countdown" parent="Safe/Columns/Right/Chalk/Row" instance=ExtResource("10")]
+[node name="Countdown" parent="Safe/Columns/Right/Chalk/Row" unique_id=982442669 instance=ExtResource("10")]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="ResultTimerNote" type="Label" parent="Safe/Columns/Right"]
+[node name="ResultTimerNote" type="Label" parent="Safe/Columns/Right" unique_id=1617291457]
 layout_mode = 2
-text = "Round result timer (countdown bar)"
 theme_type_variation = &"LobbyNote"
+text = "Round result timer (countdown bar)"
 
-[node name="ResultTimer" type="PanelContainer" parent="Safe/Columns/Right"]
+[node name="ResultTimer" type="PanelContainer" parent="Safe/Columns/Right" unique_id=411725066]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_type_variation = &"ResultBackdrop"
 
-[node name="CountdownBar" parent="Safe/Columns/Right/ResultTimer" instance=ExtResource("11")]
+[node name="CountdownBar" parent="Safe/Columns/Right/ResultTimer" unique_id=741831066 instance=ExtResource("11")]
 layout_mode = 2
+
+[editable path="Safe/Columns/Left/MapArrows/MapNext"]

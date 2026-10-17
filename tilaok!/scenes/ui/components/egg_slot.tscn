@@ -1,60 +1,95 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_egg_slot.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/pill_badge.tscn" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/pugad/ui.pugad.egg.svg" id="3"]
 
-[node name="EggSlot" type="PanelContainer"]
+[node name="EggSlot" type="Control"]
+custom_minimum_size = Vector2(176.4, 284.4)
 layout_mode = 3
+anchors_preset = 0
+offset_right = 176.4
+offset_bottom = 284.4
+mouse_filter = 2
 script = ExtResource("1")
-theme_type_variation = &"EggFrame"
-custom_minimum_size = Vector2(100, 150)
+
+[node name="Egg" type="TextureRect" parent="."]
+layout_mode = 0
+offset_top = 27.0
+offset_right = 171.5
+offset_bottom = 245.8
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+metadata/asset_id = "ui.pugad.egg"
 
 [node name="Art_EggFrame" type="TextureRect" parent="."]
-layout_mode = 2
+visible = false
+layout_mode = 0
+offset_top = 27.0
+offset_right = 171.5
+offset_bottom = 245.8
 mouse_filter = 2
 expand_mode = 1
-stretch_mode = 6
 metadata/asset_id = "ui.pugad.egg_frame"
 
-[node name="Content" type="VBoxContainer" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="PreviewHost" type="Control" parent="Content"]
-layout_mode = 2
-custom_minimum_size = Vector2(84, 104)
+[node name="PreviewHost" type="Control" parent="."]
 unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.75
+offset_top = 32.4
+offset_right = 85.75
+offset_bottom = 136.4
+scale = Vector2(2, 2)
+mouse_filter = 2
 
-[node name="OwnerBadge" parent="Content" instance=ExtResource("2")]
-layout_mode = 2
+[node name="Pill" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 visible = false
-size_flags_horizontal = 4
+custom_minimum_size = Vector2(131.4, 43.2)
+layout_mode = 0
+offset_left = 23.4
+offset_top = 217.8
+offset_right = 154.8
+offset_bottom = 261.0
+mouse_filter = 2
+theme_type_variation = &"EggPill1"
+
+[node name="Row" type="HBoxContainer" parent="Pill"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="OwnerBadge" parent="Pill/Row" instance=ExtResource("2")]
 unique_name_in_owner = true
-
-[node name="Selectors" type="GridContainer" parent="Content"]
-layout_mode = 2
-theme_override_constants/h_separation = 4
-theme_override_constants/v_separation = 2
-size_flags_horizontal = 4
-columns = 2
-
-[node name="Selector1" parent="Content/Selectors" instance=ExtResource("2")]
-layout_mode = 2
 visible = false
-unique_name_in_owner = true
-
-[node name="Selector2" parent="Content/Selectors" instance=ExtResource("2")]
 layout_mode = 2
-visible = false
-unique_name_in_owner = true
 
-[node name="Selector3" parent="Content/Selectors" instance=ExtResource("2")]
+[node name="Selector1" parent="Pill/Row" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
-visible = false
-unique_name_in_owner = true
 
-[node name="Selector4" parent="Content/Selectors" instance=ExtResource("2")]
+[node name="Selector2" parent="Pill/Row" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
-visible = false
-unique_name_in_owner = true
 
+[node name="Selector3" parent="Pill/Row" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Selector4" parent="Pill/Row" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="Pill/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"EggPillStatus"
+text = "✓ Picked"
+horizontal_alignment = 2

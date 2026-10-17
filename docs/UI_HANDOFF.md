@@ -375,3 +375,95 @@ Source: frames `5:44` "Pause Menu" and `5:81` "Pause Menu (With Warning)" of the
 - Plank text keeps its thin brown outline.
 
 **Checked (synthetic, 2026-10-17):** 1080p renders beside the Figma renders. The backing edge pixels and the bottom shadow band match row for row, and line glyph rows land within 0.6 Figma px of the frame. Pill and plank text sit within about 1 Figma px. In-game capture over the scrim shows no white box. run_ui_theme_tests 133 checks (new Pause frame and live-state checks), run_ui_tests 490 (the same two older failures), match_ui 190, match_ui_mode 62, match_ui_binding 177, fix_regression 9, p13_navigation 205, p13_accessibility 65 and tutorial 142 all pass. Not a human design review.
+
+## Place from the Figma frame — 2026-10-17
+
+Source: frame `18:8` "Obstacle Place" (711 × 400, ×1.8), read through the Figma MCP connector (read-only paint and effect dump, 2.7x render). The frame's background is a screenshot of the old debug Place screen; the new UI drawn over it replaces the PLACE banner, the `[OK]`/`[X]` legend and the bottom status rows. Seat colours and shapes stay the game's (owner decision).
+
+| Piece | Figma | In Godot |
+|---|---|---|
+| HUD rail (all phases) | `#2d2920`, `#607477` bottom line, 43 px tall | `HudBar` same colours, **64 px** (the stage camera reserves 64 px, `camera_hud_reservation_px`); elements keep their 1.8x sizes and sit higher to fit |
+| Round / level | Margarine 15 `#fff8e8` / Mansalva 9 `#b9c8c6` | `HudTitle` 27 px / `HudSub` Mansalva 16 `#b9c8c6`, pinned in a 54 px block (`Left` is a plain Control) |
+| Score chips | 107 × 22, `#f6e8ce`, 0.7 px `#9d5c00`, radius 3; symbol 10 px with cream stroke; "P1" Margarine 8 `#483934`; state Mansalva 8 `#784623`; score Margarine 10; at x 107 / 219 / 331 / 443 | `score_chip.tscn` 192.6 × 39.6, the same colours, outlined 18 px symbol (game colours darkened), `ChipName` / `ChipState` 16 px (mid-round minimum, Figma 14.4), `ChipLabel` 18 px; chips left-aligned at the frame's x |
+| Chip state in Place | "Placing" / "Placed" | presenter `_place_state_text`: Placed once the seat confirmed, else Placing |
+| Timer | 125 × 4 bar `#173c50` with `#89b1d5` 0.7 px frame, the "Time remaining bar" trapezoid fill; "8 secs" Margarine 5 | `place_timer.tscn` (`%Countdown`, `UiCountdownRing` with " secs"), fill `ui.place.timer_fill.svg` (its own slant: 18 over 4), clipped to the rounded bar under the frame; label 12 px (minimum label size) |
+| Guide card | 151 × 51, `#f6e7cd`, 0.7 px `#d6ba87`, radius 3, drop shadow `0 4` blur 4 25 %, four 3 px `#483934` rivets, "Guide" Margarine 13 `#483934`, three lines Margarine 8 `#8d5125` | `%PhaseBanner` with `GuideCard` / `GuideCardTitle` 23 px / `GuideCardBody` 14 px, `Rivets` nodes; title "Guide"; the live hint is one action per line in the frame's "W A S D/Arrow keys" style (Pugad's banner is unchanged) |
+| Status tabs | four 92 × 16.4 tabs with a 4.7 px top strip, Road Rage 10 white: Valid `#3f675a`/`#7ad18d`, Blocked `#5e0d0e`/`#b40a0c`, Protected `#8a8c5a`/`#d3e018`, Cannot rotate `#4c5653`/`#9db9a3` | `ghost_legend.tscn` rebuilt: `PlaceTab*` / `PlaceTab*Strip` / `PlaceTabText` 18 px, frame copy unchanged; positions within 0.7 px of the render |
+
+**Still working:** every `%Unique` node (`Countdown`, `PhaseBanner`, `GhostLegend`, `GhostStatus`, `ReasonToast`, `SeatStatus1…4`, `Pointer1…4`), the rejection toast, the live countdown and hint, and the HUD in Pugad and Play.
+
+**Deviations (on purpose):**
+- The HUD rail stays 64 px, not 77 px.
+- The chip name and state are 16 px, not 14.4, and the timer label is 12 px, not 9, to meet the readability minimums.
+- `GhostStatus` ("N of M locked") and the per-seat `SeatStatus` rows stay bound but hidden, as the frame drops them. The chips carry Placing / Placed.
+- The "Placed" legend row is gone, as in the frame.
+- The world ghosts (`item_ghost.gd`) still draw their own colours: valid `#7fd68a` is close to the tab, but blocked `#ef6a5b`, protected `#f2b84b` and rotate-off differ from the tabs (open question for the team).
+- The frame's 30 % black layer over the stage is not added. It reads as a mock-up dim and would darken the ghosts.
+- "cant" is kept as written in the frame.
+
+**Checked (synthetic, 2026-10-17):** 1080p render over the frame's own background screenshot. The chips, Guide card, tabs and timer land at the frame's positions; the tabs measure within 0.7 px. run_ui_theme_tests 149 checks pass (new: HUD rail, chip styles, Guide card and rivets, four tab colours and copy, timer, hidden old rows, 64 px rail). run_match_ui_tests 194 pass (Place now checks the chips read Placing and the hidden rows stay bound). match_ui_mode 62, match_ui_binding 177, p13_accessibility 65, p13_navigation 205, p13_tutorial 58, tutorial 142, p13_cheer 39, fix_regression 9, p05 137 and p03 103 pass. run_ui_tests keeps its two older failures. run_p13_hud_tests shows only the recorded Kangaroo timing flake. Not a human design review.
+
+## Pugad pick screen from the Figma frame — 2026-10-17
+
+Source: frame `2:5` "Obstacle Pick" (711 × 392, ×1.8), read through the Figma MCP connector: a read-only paint and effect dump, a 2.7x render, and the nest layer's image. The frame's background is a screenshot of the old debug Pugad screen.
+
+**Owner decisions (2026-10-17):**
+- **Follow the GDD on eggs.** The cards show the live item preview but no item name or description (GDD §Pugad: names and descriptions belong in the Library). The frame's "Tulay" / "A little foothold" lines are not built.
+- **Keep players + 2 eggs.** The frame's four card spots are used as drawn, and two more spots in the same tilted style sit left and right of the nest for 5 and 6 eggs.
+- Seat colours and shapes stay the game's (earlier decision).
+
+| Piece | Figma | In Godot |
+|---|---|---|
+| Dim | `#191818` at 41 % below the HUD | `Dim` ColorRect from 69.4 px (the frame's 3 px gap below the rail) |
+| Pugad HUD | rail `#2d2920` / `#607477`; "Round 1" Margarine 11 `#fff8e8`; "Karera" Mansalva 9 `#b9c8c6`; `#e8c46e` live dot + "PUGAD" Margarine 13 `#f6e7cd`; four chips stacked at the right (120 × 22, `#f6e7cd`, 0.7 px `#d6ba87`) reading Picked / Choosing | `pugad_overlay.tscn/Hud`: the rail stays 64 px like the Play HUD; `PugadRound` 20 px, `HudSub`, `PugadPhaseDot` and `PugadPhase` 23 px; `HudChip1…4` are `score_chip.tscn` with `ScoreChipPaper` (216 × 39.6). The Play HUD hides during Pugad (presenter) |
+| Nest | image layer `15:319`, cropped | `ui.pugad.nest.png`: the team's nest image, cropped to the frame's crop (scale 1.163, top 227 px), transparent background |
+| Title | `#784623` backing tilted 0.8° behind a `#f6e7cd` card with a 1 px `#d6ba87` frame; "Pick an obstacle" Mountains of Christmas Bold 25 `#784623`; "One pick each. Make the next race your own!" Mansalva 10 `#483934` | `Title/Backing` and `Title/Card` (`PugadTitleBacking`, `PugadTitleCard`), `PugadTitle` 45 px, `PugadInstruction` 18 px |
+| Egg cards | 98 × 158, the "Ellipse 15" egg (`#faeed2`, 1 px `#d8c190`), tilted 11.84 / 2.12 / -3.8 / -12.49°; pick pill in the seat colour with an outlined symbol, "P1" Margarine 9 and "✓ Picked" / "Choosing…" Margarine 8 `#fff8e8` | `egg_slot.tscn`: `ui.pugad.egg.svg`, the live `ItemEggPreview` inside it at 2x with its placeholder shell off (`draw_shell = false`), and `%Pill` (`EggPill1…4` in the game seat colours, `pill_badge.tscn`, `EggPillName` 16 px, `EggPillStatus` 14 px) |
+| Card layout | four hand-placed spots | `Spots/Spots4…6/SpotN` markers, each with a `Pill` marker, copied onto `Egg1…6` by `UiPugadOverlay._layout_eggs`. Spots4 = the frame (A, B, D, C left to right); Spots5 adds E at the left; Spots6 adds F at the right |
+| Countdown | "2 / 4 picked" Margarine 9 `#fff8e8`, "8s" Margarine 11 `#f5dea0`, the 218 × 7 bar with the "Time remaining bar" fill | `pugad_countdown.tscn` (`%Countdown`, "N / M picked" caption, "s" suffix), the same `CountdownBar` style and trapezoid fill as the Round result |
+| Hints | "← → Choose" and "South / Enter  Pick", Mansalva 10 `#fff8e8` | `%NavHint` / `%PickHint` (`PugadHint` 18 px); the pick keys come live from the joined devices |
+
+**Still working:**
+- Every `%Unique` contract (`Egg1…6` with `%OwnerBadge` / `%Selector1…4`, `Countdown`, `PhaseBanner` kept but hidden, `AnnounceBanner`, `LostClaimToast`).
+- The egg slot API (`configure`, `set_claim_owner`, `set_selectors`, `selector_numbers`, `claim_owner_number`).
+- The next-round announcement and the lost-claim toast at the bottom left, and the twist tag in the Pugad HUD.
+- `%EggRow` is now the card layer (`Control`); the UI contract test follows.
+
+**Deviations (on purpose):**
+- The HUD rail is 64 px, not 77 px, as on the other screens.
+- Chip text is 16 px, not 14.4, and the pill status is 14 px, not 14.4 (readability minimums).
+- The egg preview is the live item animation, not the frame's static plank drawing.
+- No name or description on cards (GDD).
+- Two extra card spots exist for 5 and 6 eggs.
+- Margarine has no ✓ glyph, so it comes from the system symbol font, as in Figma's render.
+- Where cards overlap, the frame's layer order is kept, so a pill can tuck slightly under the next egg.
+
+**Checked (synthetic, 2026-10-17):** 1080p renders over the frame's own background for 4 eggs (the frame) and 6 eggs. run_ui_theme_tests 156 checks pass (new: title, paper chips, 4 eggs for 2 players, first card spot, no name or description, pill words, dim and nest, Pugad HUD, count and hint). run_match_ui_tests 196 pass (the Pugad HUD names the round, chips read Choosing, "0 / 2 picked", "8s", next-round totals on the Pugad chips). match_ui_mode 62, match_ui_binding 177, barya 72, p13_accessibility 65, p13_navigation 205, p13_tutorial 58, tutorial 142, p13_cheer 39, fix_regression 9, p05 137 and p12 61 pass. run_ui_tests keeps its two older failures. run_p13_hud_tests shows only the recorded Kangaroo timing flake. Not a human design review.
+
+## Tutorial coach card from the Figma frame — 2026-10-17
+
+Source: frame `91:2` "Tutorial" (262 × 315; the card is 234 × 271) of the team Figma file "UI-Tilaok-", read through the Figma MCP connector (one `get_design_context`). **Owner decision (2026-10-17):** keep the coach box's footprint and show the frame at **×1.125**, so the body stays 18 px. The ×1.8 used for the full-screen frames would make the card 421 px wide with 29 px body text.
+
+| Piece | Figma | In Godot |
+|---|---|---|
+| Card | 234 × 271, `#f6e7cd`, 0.7 px `#d6ba87`, radius 3, drop shadow `0 4` blur 4 25 % | `TutorialCard` (`sb_tutorial_card`): 263 px wide, 1 px outline, radius 3, 4 px shadow at `0 4.5`; the height follows the text |
+| Title | "Guide:" Mountains of Christmas Bold 32 `#784623`, centred | `Header/Title`, `TutorialCardTitle` 36 px |
+| Step line | "Step 5 of 5 - Results" Margarine 12 `#94796f` | `%StepLabel`, `TutorialCardCaption` 14 px |
+| Body | Margarine 16 `#483934`, 218 px wide | `%BodyLabel`, `TutorialCardBody` 18 px |
+| Footer | "Pause > Skip Tutorial" Margarine 12 `#94796f`, right-aligned 4 px from the edge | `%SkipText`, `TutorialCardCaption` 14 px, right-aligned |
+
+**Layout:** `Header` is a plain Control (62.9 px) that holds the title and the step line at the frame's baselines. Godot's line boxes are taller than Figma's, so a VBox could not keep both. The body, `FooterGap` (13.9 px) and the footer row follow. The card sits at (24, 167) in a match and 372 px down in the Lobby, as before, now 263 px wide. In Results it moves to x 947, so its right edge stays at 1210, and the Round result reserves 303 px (was 290).
+
+**Still working:** `%Anchor`, `%StepLabel`, `%BodyLabel`, `%PromptGlyph`, `%SkipText`, `%SkipHint`, `%Tag`, `bind_live` / `bind_step`, the display-only rules of section 16, and the copy in `tutorial_script.tres` (unchanged).
+
+**Deviations (on purpose):**
+- The step line and footer are 14 px; ×1.125 gives 13.5, and font sizes are whole pixels.
+- The footer still reads "Pause > Skip tutorial", matching the Pause button's label rather than the frame's "Skip Tutorial".
+- The frame's body is sample copy with typos ("awares", "playes"). The live text comes from the script.
+- The chip glyphs (`%PromptGlyph`, `%SkipHint`) and the PLACEHOLDER tag are hidden, as the frame has none. The copy is still unreviewed placeholder English.
+- The body uses the card's full inner width (250 px, not the frame's 245). Godot counts a trailing space when it wraps; with the extra room, the frame's sample breaks into the same 8 lines.
+- The base scene's `Anchor` now sits at the in-match position without `SafeAreaMargin`, so the 2D editor and the UI Gallery show the card as players see it. The gallery uses the 5-step titles.
+
+**Open issue (needs a decision):** with 3 or 4 players, the Pugad pick screen (section above) puts egg spot E at x 94–270, y 212–497, under the coach card (x 24–287 from y 167). During the tutorial's Pugad step the card hides that egg. The old 250 px box covered it too, so the card's width is not the cause. `capture_tutorial_evidence.gd` reports it as "4p pugad: box does not overlap Egg1".
+
+**Checked (synthetic, 2026-10-17):** a 1080p Godot render beside the Figma render, compared with scratch scripts: the title, the step line, all 8 body lines and the footer land within about 1 Figma px, with the same line breaks. run_ui_theme_tests 165 checks pass (new: card paper, three text types, card copy and alignment, hidden chips and tag, Results position and strip, match position, match HUD width). tutorial 142, p13_tutorial 58, match_ui 196, match_ui_binding 177, match_ui_mode 62, p13_accessibility 65 and p13_navigation 205 pass. run_ui_tests 498 keeps its two older failures. `capture_tutorial_evidence.gd`, run from an isolated copy (captures not committed): 46 checks, 2 failures. One is the Pugad overlap above. In the other, the 2-player Place shot lost window focus, so the game paused and hid the card and marker; the same check passed for 4 players. The Results and Lobby captures show the card clear of the awards, legend and slot text. gdformat / gdlint are not installed on this PC (COULD-NOT-RUN). Not a human design review.

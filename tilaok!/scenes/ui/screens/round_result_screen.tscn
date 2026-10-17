@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_bar.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/scoreboard_chart.tscn" id="8_chart"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="9_legend"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/vine_divider.tscn" id="10_vine"]
+[ext_resource type="PackedScene" uid="uid://c6lyy367kr0fu" path="res://scenes/ui/components/vine_divider.tscn" id="10_vine"]
 [ext_resource type="Texture2D" uid="uid://nme127wdd1mh" path="res://assets/ui/common/ui.common.vine_divider.svg" id="11_vine_art"]
 
 [node name="RoundResultScreen" type="Control" unique_id=736251260]
@@ -103,12 +103,12 @@ custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 size_flags_horizontal = 1
 
-[node name="Art_Vine" parent="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine" index="0"]
+[node name="Art_Vine" parent="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine" index="0" unique_id=1316467102]
 texture = ExtResource("11_vine_art")
 stretch_mode = 2
 metadata/note = "Imported at svg/scale 1.8 = the Figma 727 x 45 px; drawn at that size from the left (STRETCH_KEEP) and, as in the frame, it runs off the right edge."
 
-[node name="Placeholder" parent="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine" index="1"]
+[node name="Placeholder" parent="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine" index="1" unique_id=509868973]
 visible = false
 
 [node name="EndReasonLabel" type="Label" parent="Safe/Content/TitleBlock" unique_id=456194395]
@@ -180,13 +180,13 @@ layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 13
 
+[node name="ActionLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader/ReadyHint" index="0"]
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_font_sizes/font_size = 29
+
 [node name="GlyphLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader/ReadyHint/GlyphPanel" index="0"]
 custom_minimum_size = Vector2(13, 35)
 theme_override_font_sizes/font_size = 36
-
-[node name="ActionLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader/ReadyHint" index="2"]
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_font_sizes/font_size = 29
 
 [node name="ScoreChart" parent="Safe/Content/Columns/Chalkboard/Board" unique_id=1670431326 instance=ExtResource("8_chart")]
 unique_name_in_owner = true
@@ -194,12 +194,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Grain" type="Control" parent="Safe/Content/Columns/Chalkboard"]
+[node name="Grain" type="Control" parent="Safe/Content/Columns/Chalkboard" unique_id=1731814444]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="GrainPatch" type="Panel" parent="Safe/Content/Columns/Chalkboard/Grain"]
+[node name="GrainPatch" type="Panel" parent="Safe/Content/Columns/Chalkboard/Grain" unique_id=1626741992]
 layout_mode = 1
+anchors_preset = -1
 anchor_right = 1.5
 anchor_bottom = 1.5
 offset_left = -20.0

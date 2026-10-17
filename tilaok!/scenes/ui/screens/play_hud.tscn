@@ -1,142 +1,140 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://damnoym7dmysw"]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/ui_play_hud.gd" id="2"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://bjhjwikeft1t7" path="res://scripts/ui/ui_play_hud.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_chip.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="4"]
 
-[node name="PlayHud" type="Control"]
+[node name="PlayHud" type="Control" unique_id=873868963]
 layout_mode = 3
-script = ExtResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("2")
 standalone_theme = ExtResource("1")
 
-[node name="HudBar" type="PanelContainer" parent="."]
+[node name="HudBar" type="PanelContainer" parent="." unique_id=1386513423]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 1
-theme_type_variation = &"HudBar"
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 64.0
 grow_horizontal = 2
-custom_minimum_size = Vector2(0, 64)
-unique_name_in_owner = true
+theme_type_variation = &"HudBar"
 
-[node name="Art_HudBar" type="TextureRect" parent="HudBar"]
+[node name="Art_HudBar" type="TextureRect" parent="HudBar" unique_id=1316281007]
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 metadata/asset_id = "ui.play_hud.bar"
 
-[node name="Row" type="HBoxContainer" parent="HudBar"]
+[node name="Row" type="HBoxContainer" parent="HudBar" unique_id=175219272]
 layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Left" type="Control" parent="HudBar/Row" unique_id=1194225457]
+custom_minimum_size = Vector2(162, 54)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="Top" type="HBoxContainer" parent="HudBar/Row/Left" unique_id=2069716334]
+layout_mode = 0
+offset_right = 162.0
+offset_bottom = 39.0
 theme_override_constants/separation = 8
-alignment = 1
 
-[node name="Left" type="VBoxContainer" parent="HudBar/Row"]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="Top" type="HBoxContainer" parent="HudBar/Row/Left"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="RoundLabel" type="Label" parent="HudBar/Row/Left/Top"]
-layout_mode = 2
-text = "Round 1"
-theme_type_variation = &"HudTitle"
+[node name="RoundLabel" type="Label" parent="HudBar/Row/Left/Top" unique_id=1045898910]
 unique_name_in_owner = true
-
-[node name="Sub" type="HBoxContainer" parent="HudBar/Row/Left"]
 layout_mode = 2
+theme_type_variation = &"HudTitle"
+text = "Round 1"
+
+[node name="Sub" type="HBoxContainer" parent="HudBar/Row/Left" unique_id=1025789768]
+layout_mode = 0
+offset_top = 31.5
+offset_right = 162.0
+offset_bottom = 58.5
 theme_override_constants/separation = 10
 
-[node name="ChallengeLabel" type="Label" parent="HudBar/Row/Left/Sub"]
+[node name="ChallengeLabel" type="Label" parent="HudBar/Row/Left/Sub" unique_id=768840450]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Karera"
 theme_type_variation = &"HudSub"
-unique_name_in_owner = true
+text = "Karera"
 
-[node name="TwistTag" type="Label" parent="HudBar/Row/Left/Sub"]
+[node name="TwistTag" type="Label" parent="HudBar/Row/Left/Sub" unique_id=2027495432]
+unique_name_in_owner = true
 layout_mode = 2
-text = "TWIST"
 theme_type_variation = &"TwistTag"
-unique_name_in_owner = true
+text = "TWIST"
 
-[node name="Fill" type="Control" parent="HudBar/Row"]
+[node name="ScoreRow1" parent="HudBar/Row" unique_id=187964607 instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ScoreRow2" parent="HudBar/Row" unique_id=1923905521 instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ScoreRow3" parent="HudBar/Row" unique_id=1024362479 instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ScoreRow4" parent="HudBar/Row" unique_id=385454529 instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Fill2" type="Control" parent="HudBar/Row" unique_id=341705645]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScoreRow1" parent="HudBar/Row" instance=ExtResource("3")]
-layout_mode = 2
-size_flags_vertical = 4
-unique_name_in_owner = true
-
-[node name="ScoreRow2" parent="HudBar/Row" instance=ExtResource("3")]
-layout_mode = 2
-size_flags_vertical = 4
-unique_name_in_owner = true
-
-[node name="ScoreRow3" parent="HudBar/Row" instance=ExtResource("3")]
-layout_mode = 2
-size_flags_vertical = 4
-unique_name_in_owner = true
-
-[node name="ScoreRow4" parent="HudBar/Row" instance=ExtResource("3")]
-layout_mode = 2
-size_flags_vertical = 4
-unique_name_in_owner = true
-
-[node name="Fill2" type="Control" parent="HudBar/Row"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Right" type="VBoxContainer" parent="HudBar/Row"]
+[node name="Right" type="VBoxContainer" parent="HudBar/Row" unique_id=1096128193]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Top" type="HBoxContainer" parent="HudBar/Row/Right"]
+[node name="Top" type="HBoxContainer" parent="HudBar/Row/Right" unique_id=697483009]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TimerLabel" type="Label" parent="HudBar/Row/Right/Top"]
+[node name="TimerLabel" type="Label" parent="HudBar/Row/Right/Top" unique_id=1726302508]
+unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"HudLabel"
 text = "0:00"
-theme_type_variation = &"HudLabel"
-unique_name_in_owner = true
 
-[node name="NextEventLabel" type="Label" parent="HudBar/Row/Right/Top"]
+[node name="NextEventLabel" type="Label" parent="HudBar/Row/Right/Top" unique_id=1594357095]
+unique_name_in_owner = true
 layout_mode = 2
-text = ""
 theme_type_variation = &"HudLabel"
-unique_name_in_owner = true
 
-[node name="UpNextLabel" type="Label" parent="HudBar/Row/Right"]
+[node name="UpNextLabel" type="Label" parent="HudBar/Row/Right" unique_id=585688760]
+unique_name_in_owner = true
 layout_mode = 2
-text = ""
 theme_type_variation = &"HudLabel"
-unique_name_in_owner = true
 
-[node name="NoticeRow" type="MarginContainer" parent="."]
+[node name="NoticeRow" type="MarginContainer" parent="." unique_id=509076002]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 72.0
-offset_bottom = 132.0
+offset_bottom = 151.0
 grow_horizontal = 2
-theme_type_variation = &"SafeAreaMargin"
 mouse_filter = 2
+theme_type_variation = &"SafeAreaMargin"
+theme_override_constants/margin_top = 6
 
-[node name="NoticeToast" parent="NoticeRow" instance=ExtResource("4")]
-layout_mode = 2
-visible = false
-size_flags_vertical = 0
+[node name="NoticeToast" parent="NoticeRow" unique_id=2029079429 instance=ExtResource("4")]
 unique_name_in_owner = true
-
+layout_mode = 2
+size_flags_vertical = 0

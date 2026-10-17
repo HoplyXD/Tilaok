@@ -4,6 +4,11 @@ extends UiScreen
 signal claim_requested(seat_index: int, slot_index: int, variant_key: String)
 
 const SELECTION_SECONDS := 8.0
+## HUD chip words and the countdown caption (Figma "Obstacle Pick").
+const PICKED_STATE := "Picked"
+const CHOOSING_STATE := "Choosing"
+const PICK_HINT_FORMAT := "%s  Pick"
+const COUNT_FORMAT := "%d / %d picked"
 
 var egg_slots: Array[UiEggSlot] = []
 var selected := 0
@@ -13,6 +18,12 @@ var _egg_ids := PackedStringArray()
 @onready var _countdown: UiCountdownRing = %Countdown
 @onready var _announce: UiPhaseBanner = %AnnounceBanner
 @onready var _lost_claim: UiToastLine = %LostClaimToast
+@onready var _round_label: Label = %HudRound
+@onready var _challenge_label: Label = %HudChallenge
+@onready var _twist_tag: Label = %HudTwist
+@onready var _pick_hint: Label = %PickHint
+@onready var _spots: Control = %Spots
+@onready var hud_chips: Array[UiScoreRow] = [%HudChip1, %HudChip2, %HudChip3, %HudChip4]
 
 
 func state_names() -> PackedStringArray:
@@ -35,7 +46,41 @@ func bind_eggs(
 			shown += 1
 	selected = 0
 	_refresh_selection()
+	_layout_eggs(shown)
 	return shown
+
+
+## Places each egg card on its nest spot for this many eggs. The spots are scene markers
+## (Spots/Spots4…6/SpotN, each with a Pill marker) so the layout stays editable in the 2D editor.
+func _layout_eggs(count: int) -> void:
+	var spots := _spots.get_node_or_null("Spots%d" % clampi(count, 4, 6))
+	if spots == null:
+		return
+	for index in mini(egg_slots.size(), spots.get_child_count()):
+		var spot := spots.get_child(index) as Control
+		var pill := spot.get_node("Pill") as Control
+		egg_slots[index].position = spot.position
+		egg_slots[index].rotation = spot.rotation
+		egg_slots[index].set_pill_rect(pill.position, pill.size, pill.rotation)
+
+
+## Live: the Pugad HUD rail (round, challenge, twist) and the chip column with Picked / Choosing.
+func bind_live_hud(
+	round_number: int,
+	challenge_text: String,
+	twist_text: String,
+	seats: Array[Dictionary],
+	score_units: Dictionary,
+	assignments: Dictionary
+) -> void:
+	_round_label.text = "Round %d" % round_number
+	_challenge_label.text = challenge_text
+	_twist_tag.text = twist_text
+	_twist_tag.visible = not twist_text.is_empty()
+	for index in hud_chips.size():
+		var seat: Dictionary = seats[index] if index < seats.size() else {}
+		var state := PICKED_STATE if assignments.has(index) else CHOOSING_STATE
+		hud_chips[index].bind_units(seat, int(score_units.get(index, 0)), state)
 
 
 ## Live: reconfigure the egg row once per round from the real pool (stable egg ids per slot).
@@ -73,7 +118,16 @@ func bind_live_state(
 	total: float
 ) -> void:
 	_phase_banner.set_phase("PUGAD", hint_text)
+	_pick_hint.text = PICK_HINT_FORMAT % hint_text
 	_countdown.set_time(remaining, total)
+	var joined := 0
+	var picked := 0
+	for seat in seats:
+		if bool(seat.get("joined", false)):
+			joined += 1
+			if assignments.has(int(seat.get("seat", -1))):
+				picked += 1
+	_set_count(picked, joined)
 	_lost_claim.show_text(lost_text)
 	for index in egg_slots.size():
 		var slot := egg_slots[index]
@@ -115,8 +169,25 @@ func _on_screen_ready() -> void:
 		slot.claimed.connect(_on_egg_claimed.bind(slot))
 
 
+func count_text() -> String:
+	return (_countdown.get_node("%CaptionLabel") as Label).text
+
+
+func _set_count(picked: int, total: int) -> void:
+	(_countdown.get_node("%CaptionLabel") as Label).text = COUNT_FORMAT % [picked, total]
+
+
 func _show_state(index: int, ctx: UiContext) -> void:
 	_phase_banner.set_phase("PUGAD", "Pick an egg")
+	_pick_hint.text = PICK_HINT_FORMAT % "South / Enter"
+	var sample_assignments := {}
+	if index != 0:
+		for seat_index in ctx.joined_seats().size():
+			sample_assignments[seat_index] = true
+	else:
+		sample_assignments = {0: true, 1: true}
+	bind_live_hud(1, "Karera", "", ctx.seats, {}, sample_assignments)
+	_set_count(sample_assignments.size(), ctx.joined_seats().size())
 	_countdown.set_time(5.0, SELECTION_SECONDS)
 	_announce.visible = index == 3
 	_announce.set_phase("NEXT ROUND IS AN EVENT", "Round 8: Lagsanay")
@@ -125,11 +196,24 @@ func _show_state(index: int, ctx: UiContext) -> void:
 	for family in ctx.definitions.families:
 		keys.append_array(ctx.definitions.enabled_variant_keys(family.family_id))
 	var padded := PackedStringArray()
-	for slot_index in 6:
+	# GDD placeholder: players + 2 eggs.
+	for slot_index in mini(egg_slots.size(), ctx.joined_seats().size() + 2):
 		padded.append(keys[slot_index % keys.size()] if not keys.is_empty() else "")
 	bind_eggs(ctx.definitions, padded, ctx.tuning)
 	for slot in egg_slots:
 		slot.set_claim_owner({})
+	if index == 0:
+		# The frame's sample: P1 and P2 picked, P3 and P4 choosing.
+		var seats := ctx.joined_seats()
+		var sample := [[0, 0, true], [1, 2, true], [2, 1, false], [3, 3, false]]
+		for entry in sample:
+			if int(entry[0]) < seats.size() and int(entry[1]) < visible_egg_count():
+				var seat: Dictionary = seats[int(entry[0])]
+				if bool(entry[2]):
+					show_claim(int(entry[1]), seat)
+				else:
+					var choosers: Array[Dictionary] = [seat]
+					egg_slots[int(entry[1])].set_selectors(choosers)
 	if index == 1:
 		for seat_index in ctx.joined_seats().size():
 			show_claim(seat_index, ctx.seats[seat_index])

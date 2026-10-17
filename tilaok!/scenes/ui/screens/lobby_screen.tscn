@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://b5jcnilhk48c6" path="res://scripts/ui/ui_lobby_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/lobby_slot.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/arrow_plank_button.tscn" id="5"]
 
 [node name="LobbyScreen" type="Control" unique_id=1161190802]
 layout_mode = 3
@@ -51,7 +51,7 @@ theme_override_constants/margin_bottom = 20
 
 [node name="Content" type="VBoxContainer" parent="Safe" unique_id=153944139]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 17
 
 [node name="Heading" type="Label" parent="Safe/Content" unique_id=1233954720]
 layout_mode = 2
@@ -77,16 +77,8 @@ alignment = 1
 
 [node name="PrevMapButton" parent="Safe/Content/MapRow" unique_id=1775807588 instance=ExtResource("5")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 36)
 layout_mode = 2
 tooltip_text = "Previous map"
-text = "◀"
-
-[node name="RivetLeft" parent="Safe/Content/MapRow/PrevMapButton" index="0"]
-visible = false
-
-[node name="RivetRight" parent="Safe/Content/MapRow/PrevMapButton" index="1"]
-visible = false
 
 [node name="MapLabel" type="Label" parent="Safe/Content/MapRow" unique_id=1432052948]
 unique_name_in_owner = true
@@ -98,16 +90,11 @@ vertical_alignment = 1
 
 [node name="NextMapButton" parent="Safe/Content/MapRow" unique_id=1459119476 instance=ExtResource("5")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 36)
 layout_mode = 2
 tooltip_text = "Next map"
-text = "▶"
 
-[node name="RivetLeft" parent="Safe/Content/MapRow/NextMapButton" index="0"]
-visible = false
-
-[node name="RivetRight" parent="Safe/Content/MapRow/NextMapButton" index="1"]
-visible = false
+[node name="Arrow" parent="Safe/Content/MapRow/NextMapButton" index="4"]
+scale = Vector2(-1, 1)
 
 [node name="Slots" type="HBoxContainer" parent="Safe/Content" unique_id=1544552410]
 layout_mode = 2
@@ -133,7 +120,7 @@ layout_mode = 2
 
 [node name="Hints" type="HBoxContainer" parent="Safe/Content" unique_id=915623569]
 layout_mode = 2
-theme_override_constants/separation = 96
+theme_override_constants/separation = 76
 alignment = 1
 
 [node name="StartHint" parent="Safe/Content/Hints" unique_id=2099877663 instance=ExtResource("4")]
@@ -148,13 +135,4 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Tag" type="Label" parent="Safe/Content" unique_id=583353721]
-layout_mode = 2
-theme_type_variation = &"PlaceholderTag"
-theme_override_colors/font_color = Color(0.616, 0.361, 0, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-text = "PLACEHOLDER art · lobby"
-horizontal_alignment = 1
-
-[editable path="Safe/Content/MapRow/PrevMapButton"]
 [editable path="Safe/Content/MapRow/NextMapButton"]

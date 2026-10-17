@@ -372,3 +372,36 @@ At the user's request (the link to frame `36:221` "Round Results", after asking 
 - Added the frame checks to `tests/run_ui_theme_tests.gd`, compared 1080p renders with the Figma render, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#effects-pass--2026-10-17).
 
 AI-generated code and Theme values; the Figma design and vector are the team's. No human code review, visual design review or physical-device test is claimed.
+
+### Place screen built from the Figma frame — October 17, 2026
+
+At the user's request (the link to frame `18:8` "Obstacle Place": "this is the obstacle place ui can you put it urself"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) made one read-only `use_figma` dump of the frame's paints, effects and text styles and one `download_assets` call (a 2.7x render and the SVGs). Claude then:
+- Generated the Theme changes: the HUD rail, chips, Guide card, status tabs and Place timer types.
+- Generated the scene changes: `place_timer.tscn`, the rebuilt `ghost_legend.tscn` and `place_overlay.tscn`, the restyled `score_chip.tscn`, and the HUD layout in `play_hud.tscn`. It placed the team's "Time remaining bar" vector unchanged except for cropping.
+- Generated the script changes: in `match_screen_presenter.gd`, "Placing" / "Placed" chip states and the three-line Guide hint; in `ui_place_overlay.gd`, the Guide title.
+- Updated `run_match_ui_tests.gd` (the chips read Placing, the hidden rows stay bound, "15 secs"), added the Place checks to `run_ui_theme_tests.gd`, compared 1080p renders with the Figma render, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#place-from-the-figma-frame--2026-10-17).
+
+AI-generated code and Theme values; the Figma design and vector are the team's. No human code review, visual design review or physical-device test is claimed.
+
+### Pugad pick screen built from the Figma frame — October 17, 2026
+
+At the user's request (the link to frame `2:5`: "pick obstacle screen. make it the exact same as the frame"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) made one read-only `use_figma` dump and two `download_assets` calls (the frame at 2.7x, and the nest layer). It asked the user two design questions; the user chose to follow the GDD (no item name or description on eggs) and to keep players + 2 eggs with two extra card spots. Claude then:
+- Imported the egg vector unchanged. It rebuilt the nest asset from the team's original image by matching the frame's crop, because the layer export came back on white.
+- Generated the Theme types, the scenes (`pugad_overlay.tscn`, the rebuilt `egg_slot.tscn`, `pill_badge.tscn`, `pugad_countdown.tscn`) and the scripts:
+  - `ui_egg_slot.gd`: pick pill.
+  - `ui_pugad_overlay.gd`: card spots, Pugad HUD, count and hint.
+  - `item_egg_preview.gd`: the `draw_shell` switch.
+  - `match_screen_presenter.gd`: Pugad HUD binding, the Play HUD hidden in Pugad, `_glyphs`.
+- Updated `run_match_ui_tests.gd` and the `run_ui_tests.gd` contract, added the Pugad checks to `run_ui_theme_tests.gd`, compared 1080p renders with the Figma render, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#pugad-pick-screen-from-the-figma-frame--2026-10-17).
+
+AI-generated code and Theme values; the Figma design, egg vector and nest image are the team's (nest image provenance open). No human code review, visual design review or physical-device test is claimed.
+
+### Tutorial coach card built from the Figma frame — October 17, 2026
+
+At the user's request (the link to frame `91:2` "Tutorial": "make the ui of the tutorial like this"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) made one `get_design_context` call. It asked the user one design question; the user chose to keep the coach box's current footprint and scale the frame by 1.125 (body text stays 18 px) instead of the ×1.8 used for the full-screen frames. Claude then:
+- Generated the Theme types `TutorialCard`, `TutorialCardTitle`, `TutorialCardCaption` and `TutorialCardBody` (colours and fonts from the frame).
+- Rebuilt `tutorial_prompt.tscn` as the "Guide:" card: a header holding the title and step line, then the body and the skip caption. The `%Unique` nodes are kept; the chip glyphs and the placeholder tag are hidden.
+- Changed `ui_tutorial_prompt.gd`: the Results position and reserved strip for the 263 px card, and gallery samples that match the live card. Widened the coach box in `match_hud.tscn`.
+- Measured text rows and line breaks of a 1080p Godot render against the Figma render with scratch scripts, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#tutorial-coach-card-from-the-figma-frame--2026-10-17).
+
+AI-generated code and Theme values; the Figma design is the team's. No human code review, visual design review or physical-device test is claimed.

@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_countdown_ring.gd" id="1"]
+
+[node name="PlaceTimer" type="HBoxContainer"]
+theme_override_constants/separation = 4
+alignment = 2
+script = ExtResource("1")
+seconds_suffix = " secs"
+
+[node name="SecondsLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"PlaceTimerLabel"
+text = "8 secs"
+
+[node name="BarHolder" type="Control" parent="."]
+custom_minimum_size = Vector2(225, 7.2)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="Clip" type="Panel" parent="BarHolder"]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlaceTimerClip"
+
+[node name="Bar" type="ProgressBar" parent="BarHolder/Clip"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlaceTimerBar"
+value = 70.0
+show_percentage = false
+
+[node name="Frame" type="Panel" parent="BarHolder"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlaceTimerFrame"

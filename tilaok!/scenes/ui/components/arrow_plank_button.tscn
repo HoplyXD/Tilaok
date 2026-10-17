@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="1"]
+
+[node name="ArrowPlankButton" instance=ExtResource("1")]
+custom_minimum_size = Vector2(64, 36)
+text = ""
+metadata/asset_id = "ui.common.arrow_plank_button"
+
+[node name="RivetLeft" parent="." index="0"]
+visible = false
+
+[node name="RivetRight" parent="." index="1"]
+visible = false
+
+[node name="Arrow" type="Control" parent="." index="4"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -11.0
+offset_right = 14.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(14, 11)
+mouse_filter = 2
+metadata/note = "Painted sign arrow pointing left; set scale (-1, 1) to point right. PLACEHOLDER shape until the team's arrow art arrives."
+
+[node name="Shadow" type="Polygon2D" parent="Arrow"]
+position = Vector2(1, 2)
+color = Color(0.361, 0.196, 0.075, 0.45)
+antialiased = true
+polygon = PackedVector2Array(1, 11, 12.5, 1, 12.5, 6.5, 27, 6.5, 27, 15.5, 12.5, 15.5, 12.5, 21)
+
+[node name="Fill" type="Polygon2D" parent="Arrow"]
+color = Color(1, 0.973, 0.91, 1)
+antialiased = true
+polygon = PackedVector2Array(1, 11, 12.5, 1, 12.5, 6.5, 27, 6.5, 27, 15.5, 12.5, 15.5, 12.5, 21)
+
+[node name="Outline" type="Line2D" parent="Arrow"]
+points = PackedVector2Array(1, 11, 12.5, 1, 12.5, 6.5, 27, 6.5, 27, 15.5, 12.5, 15.5, 12.5, 21)
+closed = true
+width = 2.4
+default_color = Color(0.361, 0.196, 0.075, 1)
+joint_mode = 2
+antialiased = true

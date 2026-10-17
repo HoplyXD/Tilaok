@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="1"]
+
+[node name="PillBadge" instance=ExtResource("1")]
+size_flags_vertical = 4
+theme_override_constants/separation = 9
+prefix_text = "P"
+use_seat_tint = false
+
+[node name="ShapeHolder" parent="." index="0"]
+custom_minimum_size = Vector2(16, 16)
+size_flags_vertical = 4
+
+[node name="ShapeCircle" parent="ShapeHolder" index="0"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="ShapeHolder/ShapeCircle" index="0"]
+visible = true
+
+[node name="ShapeTriangle" parent="ShapeHolder" index="1"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="ShapeHolder/ShapeTriangle" index="0"]
+visible = true
+
+[node name="ShapeSquare" parent="ShapeHolder" index="2"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="ShapeHolder/ShapeSquare" index="0"]
+visible = true
+
+[node name="ShapeDiamond" parent="ShapeHolder" index="3"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="ShapeHolder/ShapeDiamond" index="0"]
+visible = true
+
+[node name="PrefixLabel" parent="Name" index="0"]
+theme_type_variation = &"EggPillName"
+
+[node name="NumberLabel" parent="Name" index="1"]
+custom_minimum_size = Vector2(0, 0)
+theme_type_variation = &"EggPillName"

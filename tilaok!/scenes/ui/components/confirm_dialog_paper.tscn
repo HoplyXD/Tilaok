@@ -1,27 +1,29 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://ld1es1fq5wgo"]
 
-[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://nxjmky2pw7hp" path="res://scenes/ui/components/confirm_dialog.tscn" id="1"]
 
-[node name="ConfirmDialogPaper" instance=ExtResource("1")]
-theme_type_variation = &"PanelPaper"
+[node name="ConfirmDialogPaper" unique_id=1107685626 instance=ExtResource("1")]
+visible = true
 custom_minimum_size = Vector2(480, 0)
+theme_type_variation = &"PanelPaper"
 
-[node name="Backing" parent="Decor" index="0"]
+[node name="Backing" parent="Decor" parent_id_path=PackedInt32Array(451936930) index="0" unique_id=569440847]
 visible = true
 
-[node name="Art_Panel" parent="." index="1"]
+[node name="Art_Panel" parent="." index="1" unique_id=1234011086]
 metadata/asset_id = "ui.title.quit_panel"
 
-[node name="Rivets" parent="." index="2"]
+[node name="Rivets" parent="." index="2" unique_id=1678429782]
 visible = false
 
-[node name="Heading" parent="Content" index="0"]
+[node name="Heading" parent="Content" parent_id_path=PackedInt32Array(1026295141) index="0" unique_id=519359282]
 visible = true
-text = "We're sorry to see you go :("
 theme_override_font_sizes/font_size = 40
+text = "We're sorry to see you go :("
 
-[node name="Vine" parent="Content" index="1"]
+[node name="Vine" parent="Content" parent_id_path=PackedInt32Array(1026295141) index="1" unique_id=1707058276]
 visible = true
 
-[node name="MessageLabel" parent="Content" index="2"]
+[node name="MessageLabel" parent="Content" parent_id_path=PackedInt32Array(1026295141) index="2" unique_id=1509522132]
 theme_type_variation = &"DialogScript"
+text = "Are you sure you want to leave?"

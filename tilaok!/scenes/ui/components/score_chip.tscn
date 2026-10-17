@@ -3,21 +3,62 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="1"]
 
 [node name="ScoreChip" instance=ExtResource("1")]
+custom_minimum_size = Vector2(192.6, 39.6)
 theme_type_variation = &"ScoreChip"
 
+[node name="Row" parent="." index="0"]
+theme_override_constants/separation = 9
+
 [node name="Badge" parent="Row" index="0"]
+size_flags_vertical = 4
+theme_override_constants/separation = 9
 tint_darken = 0.45
 
+[node name="ShapeHolder" parent="Row/Badge" index="0"]
+custom_minimum_size = Vector2(18, 18)
+size_flags_vertical = 4
+
+[node name="ShapeCircle" parent="Row/Badge/ShapeHolder" index="0"]
+scale = Vector2(0.5625, 0.5625)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeCircle" index="0"]
+visible = true
+width = 2.24
+
+[node name="ShapeTriangle" parent="Row/Badge/ShapeHolder" index="1"]
+scale = Vector2(0.5625, 0.5625)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeTriangle" index="0"]
+visible = true
+width = 2.24
+
+[node name="ShapeSquare" parent="Row/Badge/ShapeHolder" index="2"]
+scale = Vector2(0.5625, 0.5625)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeSquare" index="0"]
+visible = true
+width = 2.24
+
+[node name="ShapeDiamond" parent="Row/Badge/ShapeHolder" index="3"]
+scale = Vector2(0.5625, 0.5625)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeDiamond" index="0"]
+visible = true
+width = 2.24
+
 [node name="PrefixLabel" parent="Row/Badge/Name" index="0"]
-theme_type_variation = &"BadgeNumberDark"
+theme_type_variation = &"ChipName"
 
 [node name="NumberLabel" parent="Row/Badge/Name" index="1"]
-theme_type_variation = &"BadgeNumberDark"
+custom_minimum_size = Vector2(0, 0)
+theme_type_variation = &"ChipName"
 
 [node name="StateLabel" parent="Row" index="1"]
 theme_type_variation = &"ChipState"
 
 [node name="ScoreLabel" parent="Row" index="2"]
+custom_minimum_size = Vector2(0, 0)
 theme_type_variation = &"ChipLabel"
+horizontal_alignment = 2
 
 [editable path="Row/Badge"]

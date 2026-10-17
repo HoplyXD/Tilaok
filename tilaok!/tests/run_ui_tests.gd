@@ -58,7 +58,7 @@ const CONTRACT := {
 		"Countdown": "UiCountdownRing",
 		"AnnounceBanner": "UiPhaseBanner",
 		"LostClaimToast": "UiToastLine",
-		"EggRow": "HBoxContainer",
+		"EggRow": "Control",
 		"Egg1": "UiEggSlot",
 		"Egg6": "UiEggSlot",
 	},

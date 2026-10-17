@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://dm41mxkfcm4la" path="res://assets/fonts/mountains_of_christmas/MountainsofChristmas-Bold.ttf" id="font_mountains"]
 [ext_resource type="FontFile" uid="uid://2i1hklmi0b4g" path="res://assets/fonts/road_rage/RoadRage-Regular.ttf" id="font_road_rage"]
 [ext_resource type="Texture2D" uid="uid://bgoragjwm3ayw" path="res://assets/ui/round_result/ui.round_result.countdown_fill.svg" id="tex_countdown_fill"]
+[ext_resource type="Texture2D" uid="uid://bmhbqf2jj4xi8" path="res://assets/ui/place/ui.place.timer_fill.svg" id="tex_place_timer_fill"]
 
 [sub_resource type="StyleBoxFlat" id="sb_backdrop"]
 bg_color = Color(0.145, 0.204, 0.216, 1)
@@ -148,6 +149,42 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="sb_egg_pill_1"]
+content_margin_left = 12.6
+content_margin_right = 12.6
+bg_color = Color(0.478, 0.361, 0.071, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_egg_pill_2"]
+content_margin_left = 12.6
+content_margin_right = 12.6
+bg_color = Color(0.114, 0.247, 0.478, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_egg_pill_3"]
+content_margin_left = 12.6
+content_margin_right = 12.6
+bg_color = Color(0.478, 0.133, 0.098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_egg_pill_4"]
+content_margin_left = 12.6
+content_margin_right = 12.6
+bg_color = Color(0.184, 0.373, 0.153, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="sb_ghost_confirmed"]
 content_margin_left = 12.0
 content_margin_top = 4.0
@@ -228,14 +265,33 @@ shadow_color = Color(0, 0, 0, 0.3)
 shadow_size = 3
 shadow_offset = Vector2(0, 2)
 
+[sub_resource type="StyleBoxFlat" id="sb_guide_card"]
+content_margin_left = 19.8
+content_margin_top = 1.8
+content_margin_right = 16.2
+content_margin_bottom = 3.6
+bg_color = Color(0.96471, 0.90588, 0.80392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 7
+shadow_offset = Vector2(0, 7.2)
+
 [sub_resource type="StyleBoxFlat" id="sb_hud"]
-content_margin_left = 16.0
-content_margin_top = 4.0
+content_margin_left = 21.6
+content_margin_top = 2.0
 content_margin_right = 16.0
-content_margin_bottom = 4.0
-bg_color = Color(0.176, 0.161, 0.125, 0.97)
-border_width_bottom = 3
-border_color = Color(0.29, 0.259, 0.208, 1)
+content_margin_bottom = 8.0
+bg_color = Color(0.17647, 0.16078, 0.12549, 1)
+border_width_bottom = 2
+border_color = Color(0.37647, 0.4549, 0.46667, 1)
 
 [sub_resource type="StyleBoxFlat" id="sb_keycap"]
 content_margin_left = 9.0
@@ -420,6 +476,80 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
+[sub_resource type="StyleBoxFlat" id="sb_tab_blocked"]
+bg_color = Color(0.36863, 0.05098, 0.0549, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_blocked_strip"]
+bg_color = Color(0.70588, 0.03922, 0.04706, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_protected"]
+bg_color = Color(0.54118, 0.54902, 0.35294, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_protected_strip"]
+bg_color = Color(0.82745, 0.87843, 0.09412, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_rotation"]
+bg_color = Color(0.29804, 0.33725, 0.32549, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_rotation_strip"]
+bg_color = Color(0.61569, 0.72549, 0.63922, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_valid"]
+bg_color = Color(0.24706, 0.40392, 0.35294, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_tab_valid_strip"]
+bg_color = Color(0.47843, 0.81961, 0.55294, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_place_timer_bg"]
+bg_color = Color(0.09, 0.235, 0.314, 1)
+
+[sub_resource type="StyleBoxTexture" id="sb_place_timer_fill"]
+texture = ExtResource("tex_place_timer_fill")
+texture_margin_right = 32.0
+
+[sub_resource type="StyleBoxFlat" id="sb_place_timer_clip"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_place_timer_frame"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.53725, 0.69412, 0.83529, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="StyleBoxFlat" id="sb_plank_clip"]
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 5
@@ -548,6 +678,28 @@ corner_radius_top_right = 9
 corner_radius_bottom_right = 9
 corner_radius_bottom_left = 9
 
+[sub_resource type="StyleBoxFlat" id="sb_pugad_dot"]
+bg_color = Color(0.9098, 0.76863, 0.43137, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_pugad_title_backing"]
+bg_color = Color(0.47059, 0.27451, 0.13725, 1)
+
+[sub_resource type="StyleBoxFlat" id="sb_pugad_title_card"]
+content_margin_left = 14.4
+content_margin_top = 7.2
+content_margin_right = 14.4
+content_margin_bottom = 0.0
+bg_color = Color(0.96471, 0.90588, 0.80392, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.83922, 0.72941, 0.52941, 1)
+
 [sub_resource type="StyleBoxFlat" id="sb_result_backdrop"]
 bg_color = Color(0.145, 0.204, 0.216, 0.75)
 
@@ -598,20 +750,36 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="sb_score_chip"]
-content_margin_left = 10.0
-content_margin_top = 2.0
-content_margin_right = 12.0
-content_margin_bottom = 2.0
-bg_color = Color(0.965, 0.906, 0.804, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.616, 0.361, 0, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+content_margin_left = 10.8
+content_margin_top = 0.0
+content_margin_right = 10.8
+content_margin_bottom = 0.0
+bg_color = Color(0.96471, 0.9098, 0.80784, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.61569, 0.36078, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_score_chip_paper"]
+content_margin_left = 10.8
+content_margin_top = 0.0
+content_margin_right = 10.8
+content_margin_bottom = 0.0
+bg_color = Color(0.96471, 0.90588, 0.80392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="sb_score_column"]
 bg_color = Color(1, 1, 1, 0.06)
@@ -696,6 +864,25 @@ shadow_color = Color(0, 0, 0, 0.3)
 shadow_size = 3
 shadow_offset = Vector2(0, 2)
 
+[sub_resource type="StyleBoxFlat" id="sb_tutorial_card"]
+content_margin_left = 9.0
+content_margin_top = 7.0
+content_margin_right = 3.3
+content_margin_bottom = 2.9
+bg_color = Color(0.96471, 0.90588, 0.80392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 4
+shadow_offset = Vector2(0, 4.5)
+
 [resource]
 default_font = ExtResource("font_handlee")
 default_font_size = 16
@@ -743,14 +930,20 @@ ChartBadgeNumber/colors/font_shadow_color = Color(0, 0, 0, 0)
 ChartBadgeNumber/font_sizes/font_size = 27
 ChartBadgeNumber/fonts/font = ExtResource("font_margarine")
 ChipLabel/base_type = &"Label"
-ChipLabel/colors/font_color = Color(0.282, 0.224, 0.204, 1)
+ChipLabel/colors/font_color = Color(0.28235, 0.22353, 0.20392, 1)
 ChipLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
-ChipLabel/font_sizes/font_size = 20
+ChipLabel/font_sizes/font_size = 18
+ChipLabel/fonts/font = ExtResource("font_margarine")
+ChipName/base_type = &"Label"
+ChipName/colors/font_color = Color(0.28235, 0.22353, 0.20392, 1)
+ChipName/colors/font_shadow_color = Color(0, 0, 0, 0)
+ChipName/font_sizes/font_size = 16
+ChipName/fonts/font = ExtResource("font_margarine")
 ChipState/base_type = &"Label"
 ChipState/colors/font_color = Color(0.471, 0.275, 0.137, 1)
 ChipState/colors/font_shadow_color = Color(0, 0, 0, 0)
 ChipState/font_sizes/font_size = 16
-ChipState/fonts/font = ExtResource("font_margarine")
+ChipState/fonts/font = ExtResource("font_mansalva")
 CountdownBar/base_type = &"ProgressBar"
 CountdownBar/styles/background = SubResource("sb_countdown_bg")
 CountdownBar/styles/fill = SubResource("sb_countdown_fill")
@@ -778,6 +971,24 @@ EggFrame/base_type = &"PanelContainer"
 EggFrame/styles/panel = SubResource("sb_egg")
 EggFrameSelected/base_type = &"PanelContainer"
 EggFrameSelected/styles/panel = SubResource("sb_egg_selected")
+EggPill1/base_type = &"PanelContainer"
+EggPill1/styles/panel = SubResource("sb_egg_pill_1")
+EggPill2/base_type = &"PanelContainer"
+EggPill2/styles/panel = SubResource("sb_egg_pill_2")
+EggPill3/base_type = &"PanelContainer"
+EggPill3/styles/panel = SubResource("sb_egg_pill_3")
+EggPill4/base_type = &"PanelContainer"
+EggPill4/styles/panel = SubResource("sb_egg_pill_4")
+EggPillName/base_type = &"Label"
+EggPillName/colors/font_color = Color(1, 0.97255, 0.9098, 1)
+EggPillName/colors/font_shadow_color = Color(0, 0, 0, 0)
+EggPillName/font_sizes/font_size = 16
+EggPillName/fonts/font = ExtResource("font_margarine")
+EggPillStatus/base_type = &"Label"
+EggPillStatus/colors/font_color = Color(1, 0.97255, 0.9098, 1)
+EggPillStatus/colors/font_shadow_color = Color(0, 0, 0, 0)
+EggPillStatus/font_sizes/font_size = 14
+EggPillStatus/fonts/font = ExtResource("font_margarine")
 GhostConfirmed/base_type = &"PanelContainer"
 GhostConfirmed/styles/panel = SubResource("sb_ghost_confirmed")
 GhostInvalid/base_type = &"PanelContainer"
@@ -792,6 +1003,19 @@ GuideBody/base_type = &"Label"
 GuideBody/colors/font_color = Color(0.553, 0.318, 0.145, 1)
 GuideBody/colors/font_shadow_color = Color(0, 0, 0, 0)
 GuideBody/font_sizes/font_size = 17
+GuideCard/base_type = &"PanelContainer"
+GuideCard/styles/panel = SubResource("sb_guide_card")
+GuideCardBody/base_type = &"Label"
+GuideCardBody/colors/font_color = Color(0.55294, 0.31765, 0.1451, 1)
+GuideCardBody/colors/font_shadow_color = Color(0, 0, 0, 0)
+GuideCardBody/constants/line_spacing = 0
+GuideCardBody/font_sizes/font_size = 14
+GuideCardBody/fonts/font = ExtResource("font_margarine")
+GuideCardTitle/base_type = &"Label"
+GuideCardTitle/colors/font_color = Color(0.28235, 0.22353, 0.20392, 1)
+GuideCardTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+GuideCardTitle/font_sizes/font_size = 23
+GuideCardTitle/fonts/font = ExtResource("font_margarine")
 GuideTitle/base_type = &"Label"
 GuideTitle/colors/font_color = Color(0.282, 0.224, 0.204, 1)
 GuideTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
@@ -805,12 +1029,12 @@ HudBar/styles/panel = SubResource("sb_hud")
 HudLabel/base_type = &"Label"
 HudLabel/font_sizes/font_size = 18
 HudSub/base_type = &"Label"
-HudSub/colors/font_color = Color(1, 0.973, 0.91, 0.9)
+HudSub/colors/font_color = Color(0.72549, 0.78431, 0.77647, 1)
 HudSub/font_sizes/font_size = 16
-HudSub/fonts/font = ExtResource("font_margarine")
+HudSub/fonts/font = ExtResource("font_mansalva")
 HudTitle/base_type = &"Label"
 HudTitle/colors/font_color = Color(1, 0.973, 0.91, 1)
-HudTitle/font_sizes/font_size = 24
+HudTitle/font_sizes/font_size = 27
 HudTitle/fonts/font = ExtResource("font_margarine")
 KeyCap/base_type = &"PanelContainer"
 KeyCap/styles/panel = SubResource("sb_keycap")
@@ -931,6 +1155,39 @@ PillSeat4/base_type = &"PanelContainer"
 PillSeat4/styles/panel = SubResource("sb_pill_4")
 PillWarning/base_type = &"PanelContainer"
 PillWarning/styles/panel = SubResource("sb_pill_warning")
+PlaceTabBlocked/base_type = &"PanelContainer"
+PlaceTabBlocked/styles/panel = SubResource("sb_tab_blocked")
+PlaceTabBlockedStrip/base_type = &"Panel"
+PlaceTabBlockedStrip/styles/panel = SubResource("sb_tab_blocked_strip")
+PlaceTabProtected/base_type = &"PanelContainer"
+PlaceTabProtected/styles/panel = SubResource("sb_tab_protected")
+PlaceTabProtectedStrip/base_type = &"Panel"
+PlaceTabProtectedStrip/styles/panel = SubResource("sb_tab_protected_strip")
+PlaceTabRotation/base_type = &"PanelContainer"
+PlaceTabRotation/styles/panel = SubResource("sb_tab_rotation")
+PlaceTabRotationStrip/base_type = &"Panel"
+PlaceTabRotationStrip/styles/panel = SubResource("sb_tab_rotation_strip")
+PlaceTabText/base_type = &"Label"
+PlaceTabText/colors/font_color = Color(1, 1, 1, 1)
+PlaceTabText/colors/font_shadow_color = Color(0, 0, 0, 0)
+PlaceTabText/font_sizes/font_size = 18
+PlaceTabText/fonts/font = ExtResource("font_road_rage")
+PlaceTabValid/base_type = &"PanelContainer"
+PlaceTabValid/styles/panel = SubResource("sb_tab_valid")
+PlaceTabValidStrip/base_type = &"Panel"
+PlaceTabValidStrip/styles/panel = SubResource("sb_tab_valid_strip")
+PlaceTimerBar/base_type = &"ProgressBar"
+PlaceTimerBar/styles/background = SubResource("sb_place_timer_bg")
+PlaceTimerBar/styles/fill = SubResource("sb_place_timer_fill")
+PlaceTimerClip/base_type = &"Panel"
+PlaceTimerClip/styles/panel = SubResource("sb_place_timer_clip")
+PlaceTimerFrame/base_type = &"Panel"
+PlaceTimerFrame/styles/panel = SubResource("sb_place_timer_frame")
+PlaceTimerLabel/base_type = &"Label"
+PlaceTimerLabel/colors/font_color = Color(1, 1, 1, 1)
+PlaceTimerLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
+PlaceTimerLabel/font_sizes/font_size = 12
+PlaceTimerLabel/fonts/font = ExtResource("font_margarine")
 PlaceholderTag/base_type = &"Label"
 PlaceholderTag/colors/font_color = Color(0.949, 0.757, 0.306, 1)
 PlaceholderTag/font_sizes/font_size = 14
@@ -961,6 +1218,47 @@ PromptAction/constants/shadow_offset_x = 2
 PromptAction/constants/shadow_offset_y = 2
 PromptAction/font_sizes/font_size = 34
 PromptAction/fonts/font = ExtResource("font_road_rage")
+PugadCountCaption/base_type = &"Label"
+PugadCountCaption/colors/font_color = Color(1, 0.97255, 0.9098, 1)
+PugadCountCaption/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadCountCaption/font_sizes/font_size = 16
+PugadCountCaption/fonts/font = ExtResource("font_margarine")
+PugadCountSeconds/base_type = &"Label"
+PugadCountSeconds/colors/font_color = Color(0.96078, 0.87059, 0.62745, 1)
+PugadCountSeconds/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadCountSeconds/font_sizes/font_size = 20
+PugadCountSeconds/fonts/font = ExtResource("font_margarine")
+PugadHint/base_type = &"Label"
+PugadHint/colors/font_color = Color(1, 0.97255, 0.9098, 1)
+PugadHint/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadHint/font_sizes/font_size = 18
+PugadHint/fonts/font = ExtResource("font_mansalva")
+PugadInstruction/base_type = &"Label"
+PugadInstruction/colors/font_color = Color(0.28235, 0.22353, 0.20392, 1)
+PugadInstruction/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadInstruction/font_sizes/font_size = 18
+PugadInstruction/fonts/font = ExtResource("font_mansalva")
+PugadPhase/base_type = &"Label"
+PugadPhase/colors/font_color = Color(0.96471, 0.90588, 0.80392, 1)
+PugadPhase/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadPhase/font_sizes/font_size = 23
+PugadPhase/fonts/font = ExtResource("font_margarine")
+PugadPhaseDot/base_type = &"Panel"
+PugadPhaseDot/styles/panel = SubResource("sb_pugad_dot")
+PugadRound/base_type = &"Label"
+PugadRound/colors/font_color = Color(1, 0.97255, 0.9098, 1)
+PugadRound/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadRound/font_sizes/font_size = 20
+PugadRound/fonts/font = ExtResource("font_margarine")
+PugadTitle/base_type = &"Label"
+PugadTitle/colors/font_color = Color(0.47059, 0.27451, 0.13725, 1)
+PugadTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+PugadTitle/font_sizes/font_size = 45
+PugadTitle/fonts/font = ExtResource("font_mountains")
+PugadTitleBacking/base_type = &"Panel"
+PugadTitleBacking/styles/panel = SubResource("sb_pugad_title_backing")
+PugadTitleCard/base_type = &"PanelContainer"
+PugadTitleCard/styles/panel = SubResource("sb_pugad_title_card")
 ResultBackdrop/base_type = &"PanelContainer"
 ResultBackdrop/styles/panel = SubResource("sb_result_backdrop")
 ResultHeading/base_type = &"Label"
@@ -1023,6 +1321,8 @@ ScoreAxis/font_sizes/font_size = 16
 ScoreAxis/fonts/font = ExtResource("font_margarine")
 ScoreChip/base_type = &"PanelContainer"
 ScoreChip/styles/panel = SubResource("sb_score_chip")
+ScoreChipPaper/base_type = &"PanelContainer"
+ScoreChipPaper/styles/panel = SubResource("sb_score_chip_paper")
 ScoreColumn/base_type = &"Control"
 ScoreColumn/styles/panel = SubResource("sb_score_column")
 ScreenTitle/base_type = &"Label"
@@ -1065,6 +1365,24 @@ TitleLabel/font_sizes/font_size = 64
 TitleLabel/fonts/font = ExtResource("font_mountains")
 ToastPanel/base_type = &"PanelContainer"
 ToastPanel/styles/panel = SubResource("sb_toast")
+TutorialCard/base_type = &"PanelContainer"
+TutorialCard/styles/panel = SubResource("sb_tutorial_card")
+TutorialCardBody/base_type = &"Label"
+TutorialCardBody/colors/font_color = Color(0.28235, 0.22353, 0.20392, 1)
+TutorialCardBody/colors/font_shadow_color = Color(0, 0, 0, 0)
+TutorialCardBody/constants/line_spacing = 0
+TutorialCardBody/font_sizes/font_size = 18
+TutorialCardBody/fonts/font = ExtResource("font_margarine")
+TutorialCardCaption/base_type = &"Label"
+TutorialCardCaption/colors/font_color = Color(0.58039, 0.47451, 0.43529, 1)
+TutorialCardCaption/colors/font_shadow_color = Color(0, 0, 0, 0)
+TutorialCardCaption/font_sizes/font_size = 14
+TutorialCardCaption/fonts/font = ExtResource("font_margarine")
+TutorialCardTitle/base_type = &"Label"
+TutorialCardTitle/colors/font_color = Color(0.47059, 0.27451, 0.13725, 1)
+TutorialCardTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+TutorialCardTitle/font_sizes/font_size = 36
+TutorialCardTitle/fonts/font = ExtResource("font_mountains")
 TwistTag/base_type = &"Label"
 TwistTag/colors/font_color = Color(1, 0.651, 0.4, 1)
 TwistTag/font_sizes/font_size = 16

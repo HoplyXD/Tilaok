@@ -1,5 +1,6 @@
 # assets/ui/place
 
-Drop final art for the place screen here (PNG for raster, SVG for icons).
-Name files ui.place.<element>.<ext> and assign them in the Godot inspector to the matching Art_<Element> node.
-Register every file in docs/ASSETS.md before it ships. Nothing is in this folder yet: the UI uses flat Theme StyleBoxes (PLACEHOLDER).
+Art for the Place screen (team Figma frame "Obstacle Place", 18:8). Register every file in docs/ASSETS.md before it ships.
+
+- ui.place.timer_fill.svg: the frame's "Time remaining bar" vector (slanted end, blue gradient), used as the Place timer fill.
+- Open slot: ui.place.legend_icons (Art_LegendIcons in ghost_legend.tscn).

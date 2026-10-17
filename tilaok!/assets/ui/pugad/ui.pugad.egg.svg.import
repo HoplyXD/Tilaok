@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dg1rn0wtqbxhm"
-path="res://.godot/imported/Normal.png-e00b0ffc1427da116e3d07e5e42bd00c.ctex"
+uid="uid://wuxeaifohiol"
+path="res://.godot/imported/ui.pugad.egg.svg-19510364d0b5a20e407704fe6174bc0f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/ui/components/Normal.png"
-dest_files=["res://.godot/imported/Normal.png-e00b0ffc1427da116e3d07e5e42bd00c.ctex"]
+source_file="res://assets/ui/pugad/ui.pugad.egg.svg"
+dest_files=["res://.godot/imported/ui.pugad.egg.svg-19510364d0b5a20e407704fe6174bc0f.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=2.7
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

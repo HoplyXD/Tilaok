@@ -95,6 +95,9 @@ func _run() -> void:
 	await _test_component_sheet()
 	await _test_pause_frame()
 	await _test_round_result_frame()
+	await _test_place_frame()
+	await _test_pugad_frame()
+	await _test_tutorial_card()
 	print("UI_THEME_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -564,6 +567,240 @@ func _test_round_result_frame() -> void:
 				outlined = (polygon.get_node("Outline") as Line2D).visible
 	_check(outlined, "chart player symbols carry the Figma cream outline")
 	screen.queue_free()
+	await process_frame
+
+
+## Place details read from Figma frame 18:8 (HUD rail, chips, Guide card, status tabs, timer).
+func _test_place_frame() -> void:
+	var hud_box := theme.get_stylebox("panel", "HudBar") as StyleBoxFlat
+	_check(
+		_near(hud_box.bg_color, Color.html("#2d2920"))
+		and _near(hud_box.border_color, Color.html("#607477"))
+		and hud_box.border_width_bottom == 2,
+		"HUD rail is the Figma #2d2920 with a #607477 bottom line"
+	)
+	var chip_box := theme.get_stylebox("panel", "ScoreChip") as StyleBoxFlat
+	_check(
+		_near(chip_box.bg_color, Color.html("#f6e8ce"))
+		and _near(chip_box.border_color, Color.html("#9d5c00"))
+		and _near(theme.get_color("font_color", "ChipState"), Color.html("#784623"))
+		and theme.get_font("font", "ChipState").resource_path.ends_with("Mansalva-Regular.ttf")
+		and _near(theme.get_color("font_color", "ChipName"), Color.html("#483934"))
+		and theme.get_font_size("font_size", "ChipLabel") == 18,
+		"score chips use the frame's cream, outline, Mansalva state and Margarine name / score"
+	)
+	var place := (
+		(load("res://scenes/ui/screens/place_overlay.tscn") as PackedScene).instantiate()
+		as UiPlaceOverlay
+	)
+	var hud := (load("res://scenes/ui/screens/play_hud.tscn") as PackedScene).instantiate() as Control
+	root.add_child(hud)
+	root.add_child(place)
+	var ctx := UiContext.make(4, "k1")
+	place.show_state(0, ctx)
+	await process_frame
+	await process_frame
+	var guide := place.get_node("%PhaseBanner") as UiPhaseBanner
+	_check(
+		guide.theme_type_variation == &"GuideCard"
+		and guide.title_text() == "Guide"
+		and guide.get_node("Rivets").get_child_count() == 4,
+		"Place guide is the riveted Guide card"
+	)
+	var tabs := {
+		"LegendValid": ["#3f675a", "#7ad18d", "Valid place to place an obstacle"],
+		"LegendInvalid": ["#5e0d0e", "#b40a0c", "Blocked: cant place an obstacle"],
+		"LegendProtected": ["#8a8c5a", "#d3e018", "Protected zone: no building"],
+		"LegendRotationOff": ["#4c5653", "#9db9a3", "Cannot Rotate this way"],
+	}
+	for tab_name in tabs:
+		var tab := place.get_node("%GhostLegend").get_node("%" + tab_name) as PanelContainer
+		var spec: Array = tabs[tab_name]
+		var strip := tab.get_node("Col/Strip") as Panel
+		_check(
+			_near((tab.get_theme_stylebox("panel") as StyleBoxFlat).bg_color, Color.html(spec[0]))
+			and _near(
+				(strip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color, Color.html(spec[1])
+			)
+			and (tab.get_node("Col/Text") as Label).text == spec[2],
+			"%s tab matches the frame (%s / %s)" % [tab_name, spec[0], spec[1]]
+		)
+	var timer := place.get_node("%Countdown") as UiCountdownRing
+	timer.set_time(8.0, 15.0)
+	_check(
+		timer.seconds_text() == "8 secs"
+		and (timer.get_node("%Bar") as ProgressBar).theme_type_variation == &"PlaceTimerBar",
+		"Place timer reads '8 secs' on the slanted blue bar"
+	)
+	_check(
+		place.get_node_or_null("Bottom/Col/Tag") == null
+		and not (place.get_node("%GhostStatus") as Control).visible
+		and not (place.get_node("Bottom/Col/StatusRow") as Control).visible,
+		"no placeholder tag; the old locked count and status rows stay hidden"
+	)
+	_check(
+		is_equal_approx((hud.get_node("%HudBar") as Control).size.y, 64.0),
+		"HUD rail stays inside the 64 px stage reservation"
+	)
+	place.queue_free()
+	hud.queue_free()
+	await process_frame
+
+
+## Pugad pick screen from Figma frame 2:5 "Obstacle Pick" (owner decisions: no item name or
+## description on eggs, per the GDD; players + 2 eggs with two extra card spots).
+func _test_pugad_frame() -> void:
+	_check(
+		_near(theme.get_color("font_color", "PugadTitle"), Color.html("#784623"))
+		and theme.get_font_size("font_size", "PugadTitle") == 45
+		and _near(
+			(theme.get_stylebox("panel", "ScoreChipPaper") as StyleBoxFlat).border_color,
+			Color.html("#d6ba87")
+		),
+		"Pick title is Mountains of Christmas 45 #784623; Pugad chips use the paper outline"
+	)
+	var pugad := (
+		(load("res://scenes/ui/screens/pugad_overlay.tscn") as PackedScene).instantiate()
+		as UiPugadOverlay
+	)
+	root.add_child(pugad)
+	var ctx := UiContext.make(2, "k1")
+	pugad.show_state(0, ctx)
+	await process_frame
+	await process_frame
+	_check(pugad.visible_egg_count() == 4, "2 players get players + 2 = 4 egg cards")
+	var spot := pugad.get_node("%Spots").get_node("Spots4/Spot1") as Control
+	var egg1 := pugad.egg_slots[0]
+	_check(
+		egg1.position.is_equal_approx(Vector2(329.4, 250.4))
+		and is_equal_approx(egg1.rotation, spot.rotation),
+		"egg 1 sits on the frame's first card spot (329.4, 250.4, -11.84 degrees)"
+	)
+	var labels := egg1.find_children("*", "Label", true, false)
+	var texts := PackedStringArray()
+	for label in labels:
+		if not (label.get_parent() is HBoxContainer and label.get_parent().name == "Name"):
+			texts.append((label as Label).text)
+	_check(
+		texts == PackedStringArray(["✓ Picked"]),
+		"egg cards carry no item name or description, only the pick status (%s)" % texts
+	)
+	var chooser: Array[Dictionary] = [ctx.seats[1]]
+	pugad.egg_slots[1].set_selectors(chooser)
+	_check(
+		egg1.pill_text() == "✓ Picked" and pugad.egg_slots[1].pill_text() == "Choosing…",
+		"the pick pill reads ✓ Picked for the owner and Choosing… for a chooser"
+	)
+	var dim := pugad.get_node("Dim") as ColorRect
+	_check(
+		dim.color.is_equal_approx(Color(0.09804, 0.09412, 0.09412, 0.41))
+		and (pugad.get_node("Nest") as TextureRect).texture != null,
+		"the frame's 41 % #191818 dim and the nest art are in place"
+	)
+	_check(
+		(pugad.get_node("%HudRound") as Label).text == "Round 1"
+		and pugad.hud_chips[0].state_text() == "Picked"
+		and pugad.count_text() == "2 / 2 picked"
+		and (pugad.get_node("%PickHint") as Label).text == "South / Enter  Pick",
+		"Pugad HUD, chip state, picked count and hint follow the frame"
+	)
+	pugad.queue_free()
+	await process_frame
+
+
+## Tutorial coach card from Figma frame 91:2 "Tutorial", shown at 1.125x (owner decision: keep
+## the coach box footprint so the body stays 18 px, not the x1.8 of the full-screen frames).
+func _test_tutorial_card() -> void:
+	var card_box := theme.get_stylebox("panel", "TutorialCard") as StyleBoxFlat
+	_check(
+		(
+			_near(card_box.bg_color, Color.html("#f6e7cd"))
+			and _near(card_box.border_color, Color.html("#d6ba87"))
+			and card_box.border_width_left == 1
+			and card_box.corner_radius_top_left == 3
+			and _near(card_box.shadow_color, Color(0, 0, 0, 0.25))
+		),
+		"Tutorial card is the frame's #f6e7cd paper, 1 px #d6ba87 outline, radius 3, 25 % shadow"
+	)
+	var text_types := {
+		"TutorialCardTitle": ["#784623", 36, "MountainsofChristmas-Bold.ttf"],
+		"TutorialCardCaption": ["#94796f", 14, "Margarine-Regular.ttf"],
+		"TutorialCardBody": ["#483934", 18, "Margarine-Regular.ttf"],
+	}
+	for type_name in text_types:
+		var spec: Array = text_types[type_name]
+		_check(
+			(
+				_near(theme.get_color("font_color", type_name), Color.html(spec[0]))
+				and theme.get_font_size("font_size", type_name) == spec[1]
+				and theme.get_font("font", type_name).resource_path.ends_with(spec[2])
+			),
+			"%s is %s %d px %s" % [type_name, spec[2], spec[1], spec[0]]
+		)
+	var prompt := (
+		(load("res://scenes/ui/screens/tutorial_prompt.tscn") as PackedScene).instantiate()
+		as UiTutorialPrompt
+	)
+	root.add_child(prompt)
+	var view := {
+		"visible": true,
+		"step_id": "results",
+		"title": "Step 5 of 5 - Results",
+		"body": "Everyone reached the flag.",
+		"skip_caption": "Pause > Skip tutorial",
+		"tag": "PLACEHOLDER copy",
+	}
+	prompt.bind_live(view)
+	await process_frame
+	await process_frame
+	var step := prompt.get_node("%StepLabel") as Label
+	var skip := prompt.get_node("%SkipText") as Label
+	_check(
+		(
+			(prompt.get_node("Anchor/Box/Content/Header/Title") as Label).text == "Guide:"
+			and step.text == "Step 5 of 5 - Results"
+			and step.theme_type_variation == &"TutorialCardCaption"
+			and (prompt.get_node("%BodyLabel") as Label).theme_type_variation
+			== &"TutorialCardBody"
+			and skip.text == "Pause > Skip tutorial"
+			and skip.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT
+		),
+		"coach card reads Guide:, the step line, the body and a right-aligned skip caption"
+	)
+	_check(
+		(
+			not (prompt.get_node("%PromptGlyph") as Control).visible
+			and not (prompt.get_node("%SkipHint") as Control).visible
+			and not (prompt.get_node("%Tag") as Control).visible
+		),
+		"no chip glyphs or placeholder tag on the card, as in the frame"
+	)
+	var box := (prompt.get_node("Anchor/Box") as Control).get_global_rect()
+	_check(
+		(
+			is_equal_approx(box.size.x, 263.0)
+			and is_equal_approx(box.position.x, 947.0)
+			and box.end.x <= 1210.0 + 0.01
+			and is_equal_approx(prompt.results_strip_width, 303.0)
+		),
+		"Results card is 263 px wide at x 947 and ends at 1210 inside the reserved strip (%s)" % box
+	)
+	view.step_id = "pugad"
+	prompt.bind_live(view)
+	await process_frame
+	box = (prompt.get_node("Anchor/Box") as Control).get_global_rect()
+	_check(
+		box.position.is_equal_approx(Vector2(24.0, 167.0)),
+		"match card sits in the left column at (24, 167) (%s)" % box
+	)
+	prompt.queue_free()
+	var hud := (load("res://scenes/match/match_hud.tscn") as PackedScene).instantiate()
+	var anchor := hud.get_node("TutorialPrompt/Anchor") as Control
+	_check(
+		is_equal_approx(anchor.offset_right - anchor.offset_left, 263.0),
+		"the match HUD's coach box is the card's 263 px width"
+	)
+	hud.free()
 	await process_frame
 
 

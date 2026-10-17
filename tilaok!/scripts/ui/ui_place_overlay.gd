@@ -5,6 +5,9 @@ const PLACE_SECONDS := 15.0
 const MARK_VALID := "[OK] Valid"
 const MARK_BLOCKED := "[X] Blocked"
 const MARK_LOCKED := "[SET] Locked"
+## Guide card (Figma "Obstacle Place"): title and the gallery sample of the live three-line hint.
+const GUIDE_TITLE := "Guide"
+const SAMPLE_GUIDE := "Move: W A S D/Arrow keys\nRotate: R/Right Shift\nConfirm: F/Enter"
 
 var pointer_chips: Array[UiPlayerBadge] = []
 var seat_rows: Array[UiScoreRow] = []
@@ -35,7 +38,7 @@ func bind_live(
 	remaining: float,
 	total: float
 ) -> void:
-	_phase_banner.set_phase("PLACE", hint_text)
+	_phase_banner.set_phase(GUIDE_TITLE, hint_text)
 	_countdown.set_time(remaining, total)
 	# The status rows below carry each seat's number and shape; the identity chips stay hidden.
 	for chip in pointer_chips:
@@ -64,7 +67,7 @@ func _on_screen_ready() -> void:
 
 
 func _show_state(index: int, ctx: UiContext) -> void:
-	_phase_banner.set_phase("PLACE", "Position, rotate, confirm")
+	_phase_banner.set_phase(GUIDE_TITLE, SAMPLE_GUIDE)
 	_countdown.set_time(11.0, PLACE_SECONDS)
 	for chip_index in pointer_chips.size():
 		var seat: Dictionary = ctx.seats[chip_index] if chip_index < ctx.seats.size() else {}

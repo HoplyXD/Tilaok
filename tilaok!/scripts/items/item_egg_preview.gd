@@ -17,6 +17,9 @@ const HAZARD_MAX_SCALE := 0.6
 ## Silhouettes drawn here as simple shapes; every other family uses ItemSilhouettePainter.
 const BOX_SILHOUETTES := ["crate", "bamboo_bridge", "solid_block", "wood_box", "collapsing_block"]
 
+## False skips the code-drawn shell, for an egg card that draws the team's egg art behind the item.
+@export var draw_shell := true
+
 var variant_key := ""
 var quarter_turns := 0
 var selected := false
@@ -105,7 +108,8 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	if _barya_preview:
 		var center := custom_minimum_size * 0.5
-		_draw_egg(center, selected)
+		if draw_shell:
+			_draw_egg(center, selected)
 		draw_circle(center + Vector2(0.0, 8.0), 17.0, Color("#f4c95d"))
 		draw_circle(center + Vector2(0.0, 8.0), 12.0, Color("#8b5421"))
 		var font := ThemeDB.fallback_font
@@ -133,7 +137,8 @@ func _draw() -> void:
 		return
 	var wobble := sin(loop_phase() * TAU)
 	var center := custom_minimum_size * 0.5 + Vector2(0.0, wobble * 2.5)
-	_draw_egg(center, selected)
+	if draw_shell:
+		_draw_egg(center, selected)
 	_draw_silhouette(center + Vector2(0.0, 6.0), wobble)
 
 

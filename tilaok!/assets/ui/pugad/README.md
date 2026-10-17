@@ -1,5 +1,7 @@
 # assets/ui/pugad
 
-Drop final art for the pugad screen here (PNG for raster, SVG for icons).
-Name files ui.pugad.<element>.<ext> and assign them in the Godot inspector to the matching Art_<Element> node.
-Register every file in docs/ASSETS.md before it ships. Nothing is in this folder yet: the UI uses flat Theme StyleBoxes (PLACEHOLDER).
+Art for the Pugad pick screen (team Figma frame "Obstacle Pick", 2:5). Register every file in docs/ASSETS.md before it ships.
+
+- ui.pugad.nest.png: the frame's nest image, cropped as in the frame (transparent background).
+- ui.pugad.egg.svg: the frame's egg card shape ("Ellipse 15").
+- Open slot: ui.pugad.egg_frame (Art_EggFrame in egg_slot.tscn).
