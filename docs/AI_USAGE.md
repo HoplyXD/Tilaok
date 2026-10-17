@@ -336,3 +336,39 @@ At the user's request (a Stage A / Stage B "UI enhancement from design reference
 - Wrote `tests/run_ui_theme_tests.gd` and `tests/capture_ui_reference_evidence.gd` and ran the regressions and captures recorded in [ui-reference evidence](evidence/ui-reference/README.md).
 
 AI-generated code and placeholder visuals; no final art, icon, texture or audio was generated. The reference PNGs and fonts were supplied by the user; their authorship/approval is the team's to record. No human code review, visual design review or physical-controller test is claimed.
+
+### Round result built from the Figma frame — October 17, 2026
+
+At the user's request ("how do i make one of the ui i made in figma here to be in a godot ui", then the link to frame `36:221` "Round Results" of the team Figma file "UI-Tilaok-"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) read the frame's design context (layout, colours, font sizes, screenshot) with one `get_design_context` call and downloaded the frame's SVG assets. The user chose to widen the Awards column so award explanations still fit. Claude then:
+- Imported the team's "Deco Line" vine SVG unmodified as `ui.common.vine_divider.svg` and assigned it on the Round result only (it did not draw, edit or generate the art).
+- Generated the Theme changes (exact Figma colours and sizes at 1.8x: result title/subtitle/headings/text, chalkboard, legend fonts, chart axis font and lines, `CountdownBar`/`CountdownCaption`/`CountdownSeconds`, `ResultBackdrop`, `ResultTitleBlock`/`ResultTitleBlockStacked`, `ChartBadgeNumber`), the new `countdown_bar.tscn`, the rebuilt `round_result_screen.tscn`, the legend dash, the chart badge font, and the script changes in `ui_round_result_screen.gd` (title case, Next Round header, gallery sample copy, end-reason tuck/stack, legend fit and the explanation fallback when award lines do not fit), `ui_award_line.gd` (`height_for_width`), `ui_countdown_ring.gd` (`seconds_suffix`, BoxContainer base) and `scoreboard_chart.gd` (Theme axis font, 2 px lines).
+- Updated the round-heading expectation in `run_match_ui_binding_tests.gd` to "Round 3 Result" and ran the regressions and captures listed in [UI_HANDOFF](UI_HANDOFF.md#round-result-from-the-figma-frame--2026-10-17).
+
+AI-generated code and layout; the Figma design and the vine art are the team's. No human code review, visual design review or physical-device test is claimed.
+
+### Plank button built from the Figma frame — October 17, 2026
+
+At the user's request ("build this button variation in godot" with the link to frame `16:434` "Button Variants" of the team Figma file "UI-Tilaok-", then "strictly follow the gradient on the buttons and make sure the color is right"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) read the frame with two `get_design_context` calls and one read-only `use_figma` call that returned the exact fills, gradient strokes (stops and transform) and effects; it downloaded the two rivet ellipse SVGs to a scratch folder only to read their colours (they were not imported). Claude then:
+- Generated the Theme changes in `tilaok_theme.tres`: exact fills for the four plank states at 1.8x, the outline gradients (`PlankStroke`, `PlankStrokePressed`, `PlankStrokeDisabled`) with the Figma stops and direction, the ring and clip shapes (`PlankStrokeMask`, `PlankClip`), the pressed inner frame and shadow gradients computed from the Figma inner shadow (`PlankPressedFrame`, `PlankPressedShadeTop/Left/Right`), `RivetDisabled` and white disabled text.
+- Generated `scripts/ui/ui_plank_button.gd` and the `Stroke` and `PressedLook` nodes and rivet size/position in `plank_button.tscn`.
+- Added the exact-value, gradient and state checks to `tests/run_ui_theme_tests.gd`, compared rendered outline pixels with the Figma gradient formula in a scratch script, rendered a side-by-side with the Figma screenshot and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#plank-button-from-the-figma-frame--2026-10-17).
+
+AI-generated code and Theme values; the Figma design is the team's. No human code review, visual design review or physical-device test is claimed.
+
+### Pause screen built from the Figma frames — October 17, 2026
+
+At the user's request ("make this pause frame. make sure that all the details are still the same and functioning. the colors, fonts should be the same" with the link to frame `5:44`, then "keep the ui pills according to the color of the player in our game rn but follow the figma as a reference with all the details in it", adding frame `5:81` for "texture, effects and such"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) read the frames with one `get_design_context`, two read-only `use_figma` dumps (exact paints, gradients, effects, text styles, the frame's differences) and two `download_assets` exports (`5:81` and the paper layer `5:67` at 2.7x). Claude then:
+- Imported the frame's icon images, the Iconoir leave icon (with its MIT licence fetched from upstream) and the vine SVG unchanged; recovered transparency on the white-backed paper export; and measured the pills' glass effect into a white highlight overlay with a scratch Godot script. It did not draw or design art.
+- Generated the Theme changes (paper margins, backing colour and grain noise from the Figma noise values, title FontVariation, script, pill and warning text types, pill styles without borders, button shadow), the restyled `seat_pill.tscn` (standalone: glass overlay, centred symbol and name, state word on the right), outline nodes in `player_badge.tscn`, the rebuilt `pause_screen.tscn`, `shape_matches_panel` in `ui_score_row.gd`, and the `ui_pause_screen.gd` changes (frame copy, reason line only when informative, countdown in line 2's slot, the lost seat's pill becoming the reclaim pill).
+- Added the Pause checks to `tests/run_ui_theme_tests.gd`, changed the owner-label expectation in `run_match_ui_tests.gd` to "paused by", compared 1080p renders with the Figma renders pixel by pixel (backing, shadow, text rows) and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#pause-screen-from-the-figma-frames--2026-10-17).
+
+AI-generated code and Theme values; the Figma design and art are the team's (icon image provenance still open). No human code review, visual design review or physical-device test is claimed.
+
+### Round result effects pass — October 17, 2026
+
+At the user's request (the link to frame `36:221` "Round Results", after asking that Figma frames be followed exactly, including gradients, textures and effects), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) made one read-only `use_figma` dump of the frame's exact paints, effects and text styles and one `download_assets` call (a 2.7x render and the SVGs). Claude then:
+- Generated the Theme changes: the `ResultTitle` outline (calibrated by measuring both renders), the white square chalkboard frame, the `ChalkGrain` type, and the countdown fill StyleBoxTexture. It placed the team's "Time remaining bar" vector unchanged except for cropping to the fill path.
+- Generated the chalkboard grain overlay in `round_result_screen.tscn`, the symbol outline overrides in `score_column.tscn`, and removed the placeholder tag from the scene and from `ui_round_result_screen.gd`.
+- Added the frame checks to `tests/run_ui_theme_tests.gd`, compared 1080p renders with the Figma render, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#effects-pass--2026-10-17).
+
+AI-generated code and Theme values; the Figma design and vector are the team's. No human code review, visual design review or physical-device test is claimed.

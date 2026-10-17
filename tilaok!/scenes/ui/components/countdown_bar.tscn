@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_countdown_ring.gd" id="1"]
+
+[node name="CountdownBar" type="VBoxContainer"]
+custom_minimum_size = Vector2(392, 0)
+layout_mode = 3
+script = ExtResource("1")
+seconds_suffix = "s"
+theme_override_constants/separation = 0
+
+[node name="Bar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 13)
+layout_mode = 2
+theme_type_variation = &"CountdownBar"
+value = 70.0
+show_percentage = false
+
+[node name="Labels" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CaptionLabel" type="Label" parent="Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CountdownCaption"
+text = "Next round"
+
+[node name="SecondsLabel" type="Label" parent="Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CountdownSeconds"
+text = "8s"
+horizontal_alignment = 2

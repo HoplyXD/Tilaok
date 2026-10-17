@@ -351,7 +351,7 @@ func _test_pause_menu_ownership_and_resume() -> void:
 	_check(
 		(
 			pause.get_node("%OwnerBadge").number_text() == "2"
-			and (pause.get_node("%OwnerLabel") as Label).text == "Paused by"
+			and (pause.get_node("%OwnerLabel") as Label).text == "paused by"
 		),
 		"the owner badge shows seat 2"
 	)

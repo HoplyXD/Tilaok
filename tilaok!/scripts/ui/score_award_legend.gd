@@ -1,7 +1,7 @@
 class_name ScoreAwardLegend
 extends GridContainer
 
-## Letter + name for every score type. The entries are authored in score_award_legend.tscn
+## Letter, dash and name for every score type. The entries are authored in score_award_legend.tscn
 ## (one Entry_<key> per token); each letter's colour is the Legend<Name> Theme type, kept equal to
 ## the ScoreAward/<key> chart colour.
 

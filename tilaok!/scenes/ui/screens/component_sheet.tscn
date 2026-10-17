@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_component_sheet.gd" id="2"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/ghost_legend.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_ring.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_bar.tscn" id="11"]
 
 [node name="ComponentSheet" type="Control"]
 layout_mode = 3
@@ -296,3 +297,16 @@ layout_mode = 2
 [node name="Countdown" parent="Safe/Columns/Right/Chalk/Row" instance=ExtResource("10")]
 layout_mode = 2
 size_flags_vertical = 4
+
+[node name="ResultTimerNote" type="Label" parent="Safe/Columns/Right"]
+layout_mode = 2
+text = "Round result timer (countdown bar)"
+theme_type_variation = &"LobbyNote"
+
+[node name="ResultTimer" type="PanelContainer" parent="Safe/Columns/Right"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"ResultBackdrop"
+
+[node name="CountdownBar" parent="Safe/Columns/Right/ResultTimer" instance=ExtResource("11")]
+layout_mode = 2

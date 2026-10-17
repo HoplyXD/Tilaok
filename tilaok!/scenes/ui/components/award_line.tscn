@@ -49,9 +49,9 @@ scale = Vector2(0.69, 0.69)
 scale = Vector2(0.69, 0.69)
 
 [node name="PrefixLabel" parent="Badge/Name" index="0"]
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 
 [node name="NumberLabel" parent="Badge/Name" index="1"]
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 
 [editable path="Badge"]

@@ -5,6 +5,9 @@ extends PanelContainer
 
 const SCORE_STEP := 0.125
 
+## True paints the badge shape in this row's own panel colour (the Pause pill's outlined symbol).
+@export var shape_matches_panel := false
+
 @onready var badge: UiPlayerBadge = %Badge
 @onready var _score_label: Label = %ScoreLabel
 @onready var _state_label: Label = %StateLabel
@@ -34,6 +37,10 @@ func bind_texts(seat: Dictionary, score_text: String, state_text: String) -> voi
 
 func bind_roster(seat: Dictionary, text: String) -> void:
 	visible = not seat.is_empty() and bool(seat.get("joined", false))
+	if shape_matches_panel:
+		var box := get_theme_stylebox("panel") as StyleBoxFlat
+		if box != null:
+			badge.plain_tint = box.bg_color
 	badge.bind_seat(seat)
 	_score_label.visible = false
 	_state_label.text = text

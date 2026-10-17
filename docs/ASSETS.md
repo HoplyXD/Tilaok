@@ -271,10 +271,36 @@ Cultural review: not required for the fonts themselves; Filipino/Hiligaynon copy
 
 | Item | Where | Status | Human handoff |
 |---|---|---|---|
-| Plank button (flat fill, light top edge, dark under-shadow, two rivet dots) | Theme `sb_plank*`, `plank_button.tscn` | PLACEHOLDER approximation of "Button Variants" | Shanti: wood-plank texture states via `ui.common.plank_button` |
+| Plank button (flat fill, 2 px gradient outline ring, two rivet dots; Pressed inner frame and group shadow) | Theme `sb_plank*`, `PlankStroke*`, `PlankClip`, `PlankPressed*`, `RivetDisabled`, `plank_button.tscn` + `ui_plank_button.gd` | Since 2026-10-17 built from the exact values of Figma frame `16:434` "Button Variants" (Theme StyleBoxes and GradientTexture2D resources with the Figma stops, no image file; the frame's two rivet ellipse SVGs are reproduced as Theme circles of the same colours, not imported) | Shanti: wood-plank texture states via `ui.common.plank_button` if a textured look is wanted |
 | Torn-paper panel and brown backing page | Theme `sb_paper`, `PaperBacking`; Pause and quit dialog `Decor/Backing` | PLACEHOLDER: straight edges, no grain or torn edge | Shanti: transparent torn-paper art via `ui.pause.panel`, `ui.title.quit_panel` |
 | Rivet panel | Theme `sb_rivet_panel`, `Rivets` nodes in `confirm_dialog.tscn` | PLACEHOLDER approximation | Shanti: `ui.common.confirm_panel` |
-| Vine divider | `vine_divider.tscn` `Placeholder` (Line2D + four leaf polygons) | PLACEHOLDER | Shanti: `ui.common.vine_divider` |
+| Vine divider | `vine_divider.tscn` `Placeholder` (Line2D + four leaf polygons) | Round result: replaced by the team's Figma vine (below), 2026-10-17. Pause and Leave-match dialog: still PLACEHOLDER | Shanti: confirm the same vine (brown) for Pause and the dialogs |
 | Chalkboard frame | Theme `sb_chalkboard` | PLACEHOLDER (flat green, flat white frame) | Shanti: `ui.round_result.chalkboard` |
 | Warm lobby backdrop | Theme `BackdropWarm` (GradientTexture2D in the Theme, no file) | PLACEHOLDER gradient sampled from the Lobby export | Shanti: `ui.lobby.background` |
 | Menu icons (play, gear, book, leave) | not implemented | Missing | Shanti: icon set (button `icon` property) |
+
+**Team art imported from the Figma file — 2026-10-17.** Read from frame `36:221` "Round Results" of the team Figma file "UI-Tilaok-" through the Figma MCP connector (asset download of layer `36:259` "Deco Line"). Claude Code copied the SVG into the project unchanged and assigned it in the scene; it did not create or edit the art. The frame's other SVGs (chart gridlines, countdown bar, seat symbols) are not shipped as files: the gridlines and bar are drawn by the chart and Theme from the frame's exact values, and the seat symbols differ from the owner-approved seat shapes/colours.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.common.vine_divider` | `assets/ui/common/ui.common.vine_divider.svg` (SHA-256 `45d281c9…888d369`; imported at `svg/scale=2.0`) | UI vector; Round result title vine (`Vine/Art_Vine`) | Team Figma file "UI-Tilaok-", layer "Deco Line" (node `36:259`); team designer to confirm authorship | Team-made (to confirm); Figma file history is the proof location | None | Download and placement only ([AI_USAGE](AI_USAGE.md#round-result-built-from-the-figma-frame--october-17-2026)) | Imported — creator confirmation and approval open |
+
+## Pause screen built from the Figma frames — 2026-10-17
+
+Read from frames `5:44` "Pause Menu" and `5:81` "Pause Menu (With Warning)" of the team Figma file "UI-Tilaok-" through the Figma MCP connector (design context, a read-only paint/effect dump, and asset downloads of `5:81` and the paper layer `5:67` at 2.7x). Claude Code copied the icon and vine files unchanged. It produced two files from the team's Figma renders: it recovered transparency on the paper export, which came back on white, and it measured the pills' glass look into an overlay. It did not draw or design any of the art. The backing grain is a Godot NoiseTexture2D in the Theme, set from the Figma noise values (no image file).
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.pause.panel` | `assets/ui/pause/ui.pause.panel.png` (SHA-256 `74d14682…ae08f64`) | UI raster; Pause paper (`Decor/PaperArt/Art_Panel`, 9-slice) | Figma render of the team's layer `5:67` "Rectangle 11" (fill, drop shadow, TEXTURE and NOISE effects) | Team-made (to confirm); Figma file history | Transparency recovered from the white-backed export (round trip over white within 4/255) | Export, transparency recovery and placement ([AI_USAGE](AI_USAGE.md#pause-screen-built-from-the-figma-frames--october-17-2026)) | Imported — creator confirmation open |
+| `ui.pause.pill_glass` | `assets/ui/pause/ui.pause.pill_glass.png` (SHA-256 `3f76abf9…d0cc7bd`) | UI raster; white highlight overlay on every Pause pill and the reclaim pill (9-slice) | Measured from the Figma 2.7x render of pill `5:256` (the team's GLASS effects) | Team-made design (to confirm) | Derived: per-pixel highlight alpha = (render − fill) / (white − fill) | Derivation script and placement (same entry) | Imported — creator confirmation open |
+| `ui.pause.vine` | `assets/ui/pause/ui.pause.vine.svg` (SHA-256 `27b32379…7fbf214`; `svg/scale=3.0`) | UI vector; Pause title vine | Team Figma layer "Deco Line" (`5:245`) | Team-made (to confirm) | None | Download and placement only | Imported — creator confirmation open |
+| `ui.pause.icon_resume` / `icon_settings` / `icon_library` | `ui.pause.icon_resume.png` (`163228f7…5c16f8e`), `ui.pause.icon_settings.png` (`5b02065a…9ca5f15`), `ui.pause.icon_library.png` (`bc672427…3df1cda`) (300 × 300, mipmaps on) | UI raster icons on the Resume / Settings / Library planks | Image fills placed in the Figma frame (`15:77`, `15:80`, `15:83`) | **Unknown — source and licence to confirm before release** | None | Download and placement only | Imported — provenance open |
+| `ui.pause.icon_leave` | `assets/ui/pause/ui.pause.icon_leave.svg` (`9d15b123…e69ca10`; `svg/scale=4.0`) | UI vector; Leave Match plank icon | Iconoir "transition-left-solid" (via the Figma frame, node `15:89`) | MIT, © 2021 Luca Burgio; `assets/ui/pause/ICONOIR_LICENSE.txt` (`869b60da…2eb4fa2`, upstream LICENSE) | None | Download and placement only | Imported — third-party, licensed |
+
+## Round result effects pass — 2026-10-17
+
+Read from frame `36:221` "Round Results" through the Figma MCP connector: a read-only paint and effect dump plus a 2.7x render and SVG download. The board grain is the Theme's existing NoiseTexture2D (`ChalkGrain`, set from the Figma noise values), with no image file.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.round_result.countdown_fill` | `assets/ui/round_result/ui.round_result.countdown_fill.svg` (SHA-256 `87ec215d…456a011`; `svg/scale=1.8`) | UI vector; Round result countdown fill (`CountdownBar` fill StyleBoxTexture) | Team Figma layer "Time remaining bar" (`50:7`) | Team-made (to confirm); Figma file history | Only the fill path and its gradient kept, moved to the origin (shape and stops unchanged) | Download, crop and placement ([AI_USAGE](AI_USAGE.md#round-result-effects-pass--october-17-2026)) | Imported — creator confirmation open |

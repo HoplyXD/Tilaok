@@ -1,44 +1,44 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://iryvxrkfpf1i"]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/ui_lobby_screen.gd" id="2"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://b5jcnilhk48c6" path="res://scripts/ui/ui_lobby_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/lobby_slot.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="5"]
 
-[node name="LobbyScreen" type="Control"]
+[node name="LobbyScreen" type="Control" unique_id=1161190802]
 layout_mode = 3
-script = ExtResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("2")
 standalone_theme = ExtResource("1")
 
-[node name="Backdrop" type="PanelContainer" parent="."]
+[node name="Backdrop" type="PanelContainer" parent="." unique_id=628572105]
 layout_mode = 1
-theme_type_variation = &"BackdropWarm"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"BackdropWarm"
 
-[node name="Art_Background" type="TextureRect" parent="."]
+[node name="Art_Background" type="TextureRect" parent="." unique_id=674371928]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 metadata/asset_id = "ui.lobby.background"
 
-[node name="Safe" type="MarginContainer" parent="."]
+[node name="Safe" type="MarginContainer" parent="." unique_id=165791476]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,36 +49,38 @@ theme_type_variation = &"SafeAreaMargin"
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 20
 
-[node name="Content" type="VBoxContainer" parent="Safe"]
+[node name="Content" type="VBoxContainer" parent="Safe" unique_id=153944139]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Heading" type="Label" parent="Safe/Content"]
+[node name="Heading" type="Label" parent="Safe/Content" unique_id=1233954720]
 layout_mode = 2
-text = "Lobby"
 theme_type_variation = &"ScreenTitle"
+theme_override_colors/font_shadow_color = Color(0.2901961, 0.16862746, 0.07450981, 0.23137255)
+theme_override_constants/shadow_offset_y = 3
+text = "Lobby"
 horizontal_alignment = 1
 
-[node name="NeedPlayersLabel" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "Need at least 2 players to start"
-theme_type_variation = &"LobbyNote"
-horizontal_alignment = 1
+[node name="NeedPlayersLabel" type="Label" parent="Safe/Content" unique_id=1524333837]
 unique_name_in_owner = true
-
-[node name="MapRow" type="HBoxContainer" parent="Safe/Content"]
 layout_mode = 2
+theme_type_variation = &"LobbyNote"
+text = "Need at least 2 players to start"
+horizontal_alignment = 1
+
+[node name="MapRow" type="HBoxContainer" parent="Safe/Content" unique_id=1613455612]
+unique_name_in_owner = true
 visible = false
+layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
-unique_name_in_owner = true
 
-[node name="PrevMapButton" parent="Safe/Content/MapRow" instance=ExtResource("5")]
-layout_mode = 2
-custom_minimum_size = Vector2(64, 36)
-text = "◀"
-tooltip_text = "Previous map"
+[node name="PrevMapButton" parent="Safe/Content/MapRow" unique_id=1775807588 instance=ExtResource("5")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 36)
+layout_mode = 2
+tooltip_text = "Previous map"
+text = "◀"
 
 [node name="RivetLeft" parent="Safe/Content/MapRow/PrevMapButton" index="0"]
 visible = false
@@ -86,20 +88,20 @@ visible = false
 [node name="RivetRight" parent="Safe/Content/MapRow/PrevMapButton" index="1"]
 visible = false
 
-[node name="MapLabel" type="Label" parent="Safe/Content/MapRow"]
+[node name="MapLabel" type="Label" parent="Safe/Content/MapRow" unique_id=1432052948]
+unique_name_in_owner = true
 layout_mode = 2
-text = "MAP  •  Default stage"
 theme_type_variation = &"LobbyNote"
+text = "MAP  •  Default stage"
 horizontal_alignment = 1
 vertical_alignment = 1
-unique_name_in_owner = true
 
-[node name="NextMapButton" parent="Safe/Content/MapRow" instance=ExtResource("5")]
-layout_mode = 2
-custom_minimum_size = Vector2(64, 36)
-text = "▶"
-tooltip_text = "Next map"
+[node name="NextMapButton" parent="Safe/Content/MapRow" unique_id=1459119476 instance=ExtResource("5")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 36)
+layout_mode = 2
+tooltip_text = "Next map"
+text = "▶"
 
 [node name="RivetLeft" parent="Safe/Content/MapRow/NextMapButton" index="0"]
 visible = false
@@ -107,51 +109,51 @@ visible = false
 [node name="RivetRight" parent="Safe/Content/MapRow/NextMapButton" index="1"]
 visible = false
 
-[node name="Slots" type="HBoxContainer" parent="Safe/Content"]
+[node name="Slots" type="HBoxContainer" parent="Safe/Content" unique_id=1544552410]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 34
 alignment = 1
-size_flags_vertical = 3
 
-[node name="Slot1" parent="Safe/Content/Slots" instance=ExtResource("3")]
-layout_mode = 2
+[node name="Slot1" parent="Safe/Content/Slots" unique_id=1326995131 instance=ExtResource("3")]
 unique_name_in_owner = true
-
-[node name="Slot2" parent="Safe/Content/Slots" instance=ExtResource("3")]
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Slot3" parent="Safe/Content/Slots" instance=ExtResource("3")]
+[node name="Slot2" parent="Safe/Content/Slots" unique_id=1317479845 instance=ExtResource("3")]
+unique_name_in_owner = true
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Slot4" parent="Safe/Content/Slots" instance=ExtResource("3")]
+[node name="Slot3" parent="Safe/Content/Slots" unique_id=60130784 instance=ExtResource("3")]
+unique_name_in_owner = true
 layout_mode = 2
-unique_name_in_owner = true
 
-[node name="Hints" type="HBoxContainer" parent="Safe/Content"]
+[node name="Slot4" parent="Safe/Content/Slots" unique_id=184173754 instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Hints" type="HBoxContainer" parent="Safe/Content" unique_id=915623569]
 layout_mode = 2
 theme_override_constants/separation = 96
 alignment = 1
 
-[node name="StartHint" parent="Safe/Content/Hints" instance=ExtResource("4")]
-layout_mode = 2
+[node name="StartHint" parent="Safe/Content/Hints" unique_id=2099877663 instance=ExtResource("4")]
 unique_name_in_owner = true
-
-[node name="HelpHint" parent="Safe/Content/Hints" instance=ExtResource("4")]
 layout_mode = 2
+
+[node name="HelpHint" parent="Safe/Content/Hints" unique_id=2080100909 instance=ExtResource("4")]
 unique_name_in_owner = true
-
-[node name="BackHint" parent="Safe/Content/Hints" instance=ExtResource("4")]
 layout_mode = 2
+
+[node name="BackHint" parent="Safe/Content/Hints" unique_id=1604707036 instance=ExtResource("4")]
 unique_name_in_owner = true
-
-[node name="Tag" type="Label" parent="Safe/Content"]
 layout_mode = 2
-text = "PLACEHOLDER art · lobby"
+
+[node name="Tag" type="Label" parent="Safe/Content" unique_id=583353721]
+layout_mode = 2
 theme_type_variation = &"PlaceholderTag"
 theme_override_colors/font_color = Color(0.616, 0.361, 0, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+text = "PLACEHOLDER art · lobby"
 horizontal_alignment = 1
 
 [editable path="Safe/Content/MapRow/PrevMapButton"]

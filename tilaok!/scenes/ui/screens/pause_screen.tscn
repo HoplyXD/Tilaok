@@ -1,35 +1,41 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene format=3 uid="uid://bbqq2yd3urff2"]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/ui_pause_screen.gd" id="2"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://bpas4uvni6suk" path="res://scripts/ui/ui_pause_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/seat_pill.tscn" id="4"]
-[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="5"]
+[ext_resource type="Script" uid="uid://df5wjjgm7jhcf" path="res://scripts/ui/ui_menu_list.gd" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/plank_button.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/vine_divider.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://dmu78knnloi11" path="res://scenes/ui/components/plank_button.tscn" id="7"]
+[ext_resource type="Texture2D" uid="uid://6t8sxy0a64a3" path="res://assets/ui/pause/ui.pause.panel.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://vavcmpw3cm2q" path="res://assets/ui/pause/ui.pause.vine.svg" id="9"]
+[ext_resource type="Texture2D" uid="uid://cvtvk56xyp3bh" path="res://assets/ui/pause/ui.pause.pill_glass.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://dlkicm3qlldwj" path="res://assets/ui/pause/ui.pause.icon_resume.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://cntnscynlisdk" path="res://assets/ui/pause/ui.pause.icon_settings.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://c1j1sh5ynpdxq" path="res://assets/ui/pause/ui.pause.icon_library.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://b5ixk8xktyaig" path="res://assets/ui/pause/ui.pause.icon_leave.svg" id="14"]
 
-[node name="PauseScreen" type="Control"]
+[node name="PauseScreen" type="Control" unique_id=1256522892]
 layout_mode = 3
-script = ExtResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("2")
 standalone_theme = ExtResource("1")
 
-[node name="Scrim" type="PanelContainer" parent="."]
+[node name="Scrim" type="PanelContainer" parent="." unique_id=588670390]
 layout_mode = 1
-theme_type_variation = &"Scrim"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"Scrim"
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Center" type="CenterContainer" parent="." unique_id=1658968119]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,180 +44,453 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Panel" type="PanelContainer" parent="Center"]
+[node name="Panel" type="PanelContainer" parent="Center" unique_id=1019099098]
+custom_minimum_size = Vector2(385, 506)
 layout_mode = 2
-theme_type_variation = &"PanelPaper"
-custom_minimum_size = Vector2(500, 0)
+theme_type_variation = &"PausePaper"
 
-[node name="Decor" type="Control" parent="Center/Panel"]
+[node name="Decor" type="Control" parent="Center/Panel" unique_id=1898930215]
 show_behind_parent = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Backing" type="Panel" parent="Center/Panel/Decor"]
+[node name="Backing" type="Panel" parent="Center/Panel/Decor" unique_id=1074785110]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -46.0
-offset_top = -18.0
-offset_right = -6.0
-offset_bottom = 22.0
+offset_left = -29.62
+offset_top = -33.33
+offset_right = 22.38
+offset_bottom = 19.67
 grow_horizontal = 2
 grow_vertical = 2
-rotation = -0.025
+rotation = -0.04091
+pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-theme_type_variation = &"PaperBacking"
+theme_type_variation = &"PauseBacking"
 
-[node name="Art_Panel" type="TextureRect" parent="Center/Panel"]
-layout_mode = 2
+[node name="Grain" type="Control" parent="Center/Panel/Decor/Backing" unique_id=751434398]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 6
+
+[node name="GrainPatch" type="Panel" parent="Center/Panel/Decor/Backing/Grain" unique_id=300699099]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.5
+anchor_bottom = 1.5
+scale = Vector2(0.666667, 0.666667)
+mouse_filter = 2
+theme_type_variation = &"PauseBackingGrain"
+
+[node name="PaperArt" type="Control" parent="Center/Panel/Decor" unique_id=1044384148]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -31.88
+offset_top = -39.2
+offset_right = 44.25
+offset_bottom = 40.67
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Art_Panel" type="NinePatchRect" parent="Center/Panel/Decor/PaperArt" unique_id=216169650]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.5
+anchor_bottom = 1.5
+scale = Vector2(0.666667, 0.666667)
+texture = ExtResource("8")
+patch_margin_left = 48
+patch_margin_top = 48
+patch_margin_right = 48
+patch_margin_bottom = 64
 metadata/asset_id = "ui.pause.panel"
 
-[node name="Content" type="VBoxContainer" parent="Center/Panel"]
+[node name="Content" type="VBoxContainer" parent="Center/Panel" unique_id=718101386]
 layout_mode = 2
-theme_override_constants/separation = 6
+mouse_filter = 2
+theme_override_constants/separation = 0
 
-[node name="PausedLabel" type="Label" parent="Center/Panel/Content"]
+[node name="TitleRow" type="Control" parent="Center/Panel/Content" unique_id=1906768064]
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
+mouse_filter = 2
+
+[node name="PausedLabel" type="Label" parent="Center/Panel/Content/TitleRow" unique_id=796038291]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -2.0
+offset_right = -2.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_type_variation = &"PauseTitle"
 text = "Paused"
-theme_type_variation = &"PaperTitle"
 horizontal_alignment = 1
 
-[node name="Vine" parent="Center/Panel/Content" instance=ExtResource("8")]
+[node name="VineRow" type="Control" parent="Center/Panel/Content" unique_id=1108440909]
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
+mouse_filter = 2
 
-[node name="Owner" type="HBoxContainer" parent="Center/Panel/Content"]
+[node name="Vine" type="TextureRect" parent="Center/Panel/Content/VineRow" unique_id=291965146]
+layout_mode = 0
+offset_left = 1.6
+offset_top = 0.6
+offset_right = 324.95
+offset_bottom = 25.03
+mouse_filter = 2
+texture = ExtResource("9")
+expand_mode = 1
+metadata/asset_id = "ui.pause.vine"
+
+[node name="ReasonRow" type="Control" parent="Center/Panel/Content" unique_id=477498698]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="ReasonLabel" type="Label" parent="Center/Panel/Content/ReasonRow" unique_id=1915526278]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -2.0
+offset_top = -5.27
+offset_right = -2.0
+offset_bottom = 24.73
+grow_horizontal = 2
+theme_type_variation = &"PauseScript"
+text = "Reason"
+horizontal_alignment = 1
+
+[node name="OwnerRow" type="Control" parent="Center/Panel/Content" unique_id=465230854]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Owner" type="HBoxContainer" parent="Center/Panel/Content/OwnerRow" unique_id=986655023]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -2.0
+offset_top = -5.27
+offset_right = -2.0
+offset_bottom = 24.73
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
 alignment = 1
 
-[node name="OwnerLabel" type="Label" parent="Center/Panel/Content/Owner"]
-layout_mode = 2
-text = "Paused by"
-theme_type_variation = &"PaperScript"
+[node name="OwnerLabel" type="Label" parent="Center/Panel/Content/OwnerRow/Owner" unique_id=348630895]
 unique_name_in_owner = true
-
-[node name="OwnerBadge" parent="Center/Panel/Content/Owner" instance=ExtResource("3")]
 layout_mode = 2
+size_flags_vertical = 0
+theme_type_variation = &"PauseScript"
+text = "shared pause · any player can take the menu"
+
+[node name="OwnerBadge" parent="Center/Panel/Content/OwnerRow/Owner" unique_id=1346416026 instance=ExtResource("3")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
 prefix_text = "Player "
 tint_darken = 0.45
+
+[node name="ShapeHolder" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge" index="0"]
+custom_minimum_size = Vector2(16, 16)
+size_flags_vertical = 4
+
+[node name="ShapeCircle" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge/ShapeHolder" index="0"]
+scale = Vector2(0.5, 0.5)
+
+[node name="ShapeTriangle" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge/ShapeHolder" index="1"]
+scale = Vector2(0.5, 0.5)
+
+[node name="ShapeSquare" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge/ShapeHolder" index="2"]
+scale = Vector2(0.5, 0.5)
+
+[node name="ShapeDiamond" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge/ShapeHolder" index="3"]
+scale = Vector2(0.5, 0.5)
+
+[node name="PrefixLabel" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge/Name" index="0"]
+theme_type_variation = &"PauseScript"
+
+[node name="NumberLabel" parent="Center/Panel/Content/OwnerRow/Owner/OwnerBadge/Name" index="1"]
+custom_minimum_size = Vector2(0, 0)
+theme_type_variation = &"PauseScript"
+
+[node name="HeadingRow" type="Control" parent="Center/Panel/Content" unique_id=1032946768]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RosterHeading" type="Label" parent="Center/Panel/Content/HeadingRow" unique_id=147296036]
 unique_name_in_owner = true
-
-[node name="PrefixLabel" parent="Center/Panel/Content/Owner/OwnerBadge/Name" index="0"]
-theme_type_variation = &"BadgeNumberDark"
-
-[node name="NumberLabel" parent="Center/Panel/Content/Owner/OwnerBadge/Name" index="1"]
-theme_type_variation = &"BadgeNumberDark"
-
-[node name="ReasonLabel" type="Label" parent="Center/Panel/Content"]
-layout_mode = 2
-text = "Reason"
-theme_type_variation = &"PaperHeading"
-theme_override_font_sizes/font_size = 18
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -3.8
+offset_top = -5.67
+offset_right = -3.8
+offset_bottom = 24.33
+grow_horizontal = 2
+theme_type_variation = &"PauseScript"
+text = "everyone must be ready to resume"
 horizontal_alignment = 1
-autowrap_mode = 3
+
+[node name="CountdownLabel" type="Label" parent="Center/Panel/Content/HeadingRow" unique_id=64976362]
 unique_name_in_owner = true
-
-[node name="RosterHeading" type="Label" parent="Center/Panel/Content"]
-layout_mode = 2
-text = "Everyone must be ready to resume"
-theme_type_variation = &"PaperScript"
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -4.0000124
+offset_top = 3.999998
+offset_right = -4.0
+offset_bottom = 34.0
+grow_horizontal = 2
+theme_type_variation = &"PauseScript"
+text = "resuming in 3"
 horizontal_alignment = 1
 
-[node name="Roster" type="VBoxContainer" parent="Center/Panel/Content"]
+[node name="Roster" type="VBoxContainer" parent="Center/Panel/Content" unique_id=312197803]
+unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="Roster1" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
-layout_mode = 2
-theme_type_variation = &"PillSeat1"
+[node name="Roster1" parent="Center/Panel/Content/Roster" unique_id=214638791 instance=ExtResource("4")]
 unique_name_in_owner = true
+layout_mode = 2
 
-[node name="Roster2" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+[node name="Roster2" parent="Center/Panel/Content/Roster" unique_id=1592314833 instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PillSeat2"
-unique_name_in_owner = true
 
-[node name="Roster3" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+[node name="Roster3" parent="Center/Panel/Content/Roster" unique_id=941857023 instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PillSeat3"
-unique_name_in_owner = true
 
-[node name="Roster4" parent="Center/Panel/Content/Roster" instance=ExtResource("4")]
+[node name="Roster4" parent="Center/Panel/Content/Roster" unique_id=1617589225 instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PillSeat4"
-unique_name_in_owner = true
 
-[node name="ReclaimPanel" type="PanelContainer" parent="Center/Panel/Content"]
-layout_mode = 2
-theme_type_variation = &"PillWarning"
+[node name="ReclaimPanel" type="PanelContainer" parent="Center/Panel/Content/Roster" unique_id=927424121]
+unique_name_in_owner = true
 visible = false
-unique_name_in_owner = true
-
-[node name="ReclaimLabel" type="Label" parent="Center/Panel/Content/ReclaimPanel"]
 layout_mode = 2
-text = "Seat lost its controller"
-theme_type_variation = &"BodyLabel"
+theme_type_variation = &"PillSeat3"
+
+[node name="Glass" type="Control" parent="Center/Panel/Content/Roster/ReclaimPanel" unique_id=94100317]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GlassPatch" type="NinePatchRect" parent="Center/Panel/Content/Roster/ReclaimPanel/Glass" unique_id=122183769]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.5
+anchor_bottom = 1.5
+scale = Vector2(0.666667, 0.666667)
+texture = ExtResource("10")
+patch_margin_left = 40
+patch_margin_top = 18
+patch_margin_right = 40
+patch_margin_bottom = 18
+metadata/asset_id = "ui.pause.pill_glass"
+
+[node name="ReclaimMargin" type="MarginContainer" parent="Center/Panel/Content/Roster/ReclaimPanel" unique_id=757276921]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 10
+
+[node name="ReclaimLabel" type="Label" parent="Center/Panel/Content/Roster/ReclaimPanel/ReclaimMargin" unique_id=922177956]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(324, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"PauseWarningText"
+text = "Player 3 has lost its controller. Press South on the new controller to take the seat back. Left/Right picks another missing seat."
 horizontal_alignment = 1
 autowrap_mode = 3
-unique_name_in_owner = true
 
-[node name="CountdownLabel" type="Label" parent="Center/Panel/Content"]
+[node name="ButtonGap" type="Control" parent="Center/Panel/Content" unique_id=676240462]
+custom_minimum_size = Vector2(0, 33)
 layout_mode = 2
-text = "Resuming in 3"
-theme_type_variation = &"PaperHeading"
-horizontal_alignment = 1
-unique_name_in_owner = true
+mouse_filter = 2
 
-[node name="MenuList" type="VBoxContainer" parent="Center/Panel/Content"]
+[node name="MenuList" type="VBoxContainer" parent="Center/Panel/Content" unique_id=1509407285]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 4
 script = ExtResource("5")
-theme_override_constants/separation = 8
-unique_name_in_owner = true
 
-[node name="ResumeButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
-text = "Ready / Resume"
+[node name="ResumeButton" parent="Center/Panel/Content/MenuList" unique_id=1217900932 instance=ExtResource("7")]
 unique_name_in_owner = true
-
-[node name="SettingsButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
+custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+theme_override_font_sizes/font_size = 14
+text = "Resume"
+
+[node name="DropShadow" type="Panel" parent="Center/Panel/Content/MenuList/ResumeButton" unique_id=1881744229]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="Icon" type="TextureRect" parent="Center/Panel/Content/MenuList/ResumeButton" unique_id=1417739998]
+texture_filter = 5
+layout_mode = 0
+offset_left = 121.3
+offset_top = 5.4
+offset_right = 137.5
+offset_bottom = 21.6
+mouse_filter = 2
+texture = ExtResource("11")
+expand_mode = 1
+metadata/asset_id = "ui.pause.icon_resume"
+
+[node name="SettingsButton" parent="Center/Panel/Content/MenuList" unique_id=390554332 instance=ExtResource("7")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Settings"
-unique_name_in_owner = true
 
-[node name="LibraryButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
+[node name="DropShadow" type="Panel" parent="Center/Panel/Content/MenuList/SettingsButton" unique_id=1866984922]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="Icon" type="TextureRect" parent="Center/Panel/Content/MenuList/SettingsButton" unique_id=662045231]
+texture_filter = 5
+layout_mode = 0
+offset_left = 121.5
+offset_top = 9.0
+offset_right = 134.1
+offset_bottom = 21.6
+mouse_filter = 2
+texture = ExtResource("12")
+expand_mode = 1
+metadata/asset_id = "ui.pause.icon_settings"
+
+[node name="LibraryButton" parent="Center/Panel/Content/MenuList" unique_id=384890625 instance=ExtResource("7")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+theme_override_font_sizes/font_size = 14
 text = "Library"
-unique_name_in_owner = true
 
-[node name="LeaveButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
+[node name="DropShadow" type="Panel" parent="Center/Panel/Content/MenuList/LibraryButton" unique_id=1759041080]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="Icon" type="TextureRect" parent="Center/Panel/Content/MenuList/LibraryButton" unique_id=480506481]
+texture_filter = 5
+layout_mode = 0
+offset_left = 123.7
+offset_top = 9.0
+offset_right = 136.3
+offset_bottom = 21.6
+mouse_filter = 2
+texture = ExtResource("13")
+expand_mode = 1
+metadata/asset_id = "ui.pause.icon_library"
+
+[node name="LeaveButton" parent="Center/Panel/Content/MenuList" unique_id=1400532403 instance=ExtResource("7")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
-text = "Leave match"
-unique_name_in_owner = true
+theme_override_font_sizes/font_size = 14
+text = "Leave Match"
 
-[node name="SkipTutorialButton" parent="Center/Panel/Content/MenuList" instance=ExtResource("7")]
+[node name="DropShadow" type="Panel" parent="Center/Panel/Content/MenuList/LeaveButton" unique_id=276550808]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="Icon" type="TextureRect" parent="Center/Panel/Content/MenuList/LeaveButton" unique_id=2135154276]
+texture_filter = 5
+layout_mode = 0
+offset_left = 112.56
+offset_top = 10.18
+offset_right = 123.85
+offset_bottom = 20.42
+mouse_filter = 2
+texture = ExtResource("14")
+expand_mode = 1
+metadata/asset_id = "ui.pause.icon_leave"
+
+[node name="SkipTutorialButton" parent="Center/Panel/Content/MenuList" unique_id=2129494576 instance=ExtResource("7")]
+unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+theme_override_font_sizes/font_size = 14
 text = "Skip tutorial"
+
+[node name="DropShadow" type="Panel" parent="Center/Panel/Content/MenuList/SkipTutorialButton" unique_id=1937326885]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.6
+offset_bottom = 3.6
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PauseButtonShadow"
+
+[node name="LeaveConfirm" parent="." unique_id=961030723 instance=ExtResource("6")]
 unique_name_in_owner = true
-
-[node name="Tag" type="Label" parent="Center/Panel/Content"]
-layout_mode = 2
-text = "PLACEHOLDER art · pause / reconnect"
-theme_type_variation = &"PlaceholderTag"
-theme_override_colors/font_color = Color(0.616, 0.361, 0, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-horizontal_alignment = 1
-
-[node name="LeaveConfirm" parent="." instance=ExtResource("6")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -224,6 +503,5 @@ offset_right = 230.0
 offset_bottom = 70.0
 grow_horizontal = 2
 grow_vertical = 2
-unique_name_in_owner = true
 
-[editable path="Center/Panel/Content/Owner/OwnerBadge"]
+[editable path="Center/Panel/Content/OwnerRow/Owner/OwnerBadge"]

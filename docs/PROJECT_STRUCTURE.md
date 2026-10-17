@@ -254,7 +254,7 @@ The chart is shared by live round and final match results. Scores and winner rul
 |---|---|---|
 | Fonts | `tilaok!/assets/fonts/<family>/` | Handlee, Margarine, Mountains of Christmas Bold, Mansalva, Road Rage, each with its licence text ([ASSETS](ASSETS.md#reference-restyle-fonts-and-placeholders--2026-10-17)) |
 | Theme | `tilaok!/assets/ui/theme/tilaok_theme.tres` | restyled tokens and new type variations; earlier type names unchanged ([UI_HANDOFF](UI_HANDOFF.md#reference-restyle-from-the-figma-screens--2026-10-17)) |
-| New components | `tilaok!/scenes/ui/components/plank_button.tscn`, `vine_divider.tscn`, `score_chip.tscn`, `seat_pill.tscn`, `confirm_dialog_paper.tscn` | chip, pill and paper dialog are inherited scenes (`score_row.tscn`, `confirm_dialog.tscn`) |
+| New components | `tilaok!/scenes/ui/components/plank_button.tscn` (script `scripts/ui/ui_plank_button.gd`: Pressed frame and Disabled rivets), `seat_pill.tscn` (Pause pill, standalone since 2026-10-17: glass overlay, outlined symbol), `vine_divider.tscn`, `score_chip.tscn`, `seat_pill.tscn`, `confirm_dialog_paper.tscn`, `countdown_bar.tscn` (Round result timer, stacked `UiCountdownRing`) | chip, pill and paper dialog are inherited scenes (`score_row.tscn`, `confirm_dialog.tscn`) |
 | Component sheet | `tilaok!/scenes/ui/screens/component_sheet.tscn`, `scripts/ui/ui_component_sheet.gd` | UI Gallery → Components; every look side by side |
 | Tests and captures | `tilaok!/tests/run_ui_theme_tests.gd`, `capture_ui_reference_evidence.gd` | evidence in [docs/evidence/ui-reference](evidence/ui-reference/README.md) |
 

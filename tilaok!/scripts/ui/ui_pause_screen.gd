@@ -16,6 +16,16 @@ const REASON_TEXT := {
 	"application focus changed": "The window changed - everybody ready up again",
 	"device status changed": "A controller changed - everybody ready up again",
 }
+## Reasons the Figma layout already says in its first line ("paused by" / "shared pause"), so the
+## extra reason line stays hidden for them and the panel keeps the frame's exact layout.
+const QUIET_REASONS := [
+	"participant requested pause",
+	"shared system pause",
+	"a player paused the game",
+	"the game is paused",
+]
+const OWNER_TEXT := "paused by"
+const SHARED_TEXT := "shared pause · any player can take the menu"
 
 var rosters: Array[UiScoreRow] = []
 var _missing_seats: Array[int] = []
@@ -29,7 +39,10 @@ var _device := "k1"
 @onready var _owner_badge: UiPlayerBadge = %OwnerBadge
 @onready var _owner_label: Label = %OwnerLabel
 @onready var _reason_label: Label = %ReasonLabel
+@onready var _reason_row: Control = %ReasonRow
 @onready var _countdown_label: Label = %CountdownLabel
+@onready var _roster_heading: Label = %RosterHeading
+@onready var _roster_box: Container = %Roster
 @onready var _menu: UiMenuList = %MenuList
 @onready var _reclaim_panel: Control = %ReclaimPanel
 @onready var _reclaim_label: Label = %ReclaimLabel
@@ -63,9 +76,7 @@ func bind_state(
 			owner_data = seat
 	_owner_badge.bind_seat(owner_data)
 	_owner_badge.visible = not owner_data.is_empty()
-	_owner_label.text = (
-		"Paused by" if not owner_data.is_empty() else "Shared pause - any player can take the menu"
-	)
+	_owner_label.text = OWNER_TEXT if not owner_data.is_empty() else SHARED_TEXT
 	var missing: Array[int] = []
 	for index in rosters.size():
 		var seat: Dictionary = seats[index] if index < seats.size() else {}
@@ -80,17 +91,30 @@ func bind_state(
 			missing.append(int(seat.seat))
 		rosters[index].bind_roster(seat, text)
 	_missing_seats = missing
+	# The reason gets its own line only when the frame's lines and the reclaim pill do not say it.
+	_reason_row.visible = (
+		not reason.is_empty() and missing.is_empty() and not QUIET_REASONS.has(reason.to_lower())
+	)
+	# The countdown takes the "everyone must be ready" line's place: everyone is ready by then.
 	_countdown_label.visible = countdown > 0.0
-	_countdown_label.text = "Resuming in %d" % int(ceilf(countdown))
+	_countdown_label.text = "resuming in %d" % int(ceilf(countdown))
+	_roster_heading.visible = not _countdown_label.visible
 	_reclaim_panel.visible = not missing.is_empty()
 	if not missing.is_empty():
 		var target := int(status.get("reclaim_seat", missing[0]))
+		_show_reclaim_pill(target)
 		_reclaim_label.text = (
-			"Seat %d lost its controller. Press %s on the new controller to take the seat back."
-			% [target + 1, _map.glyph("confirm", "gamepad") if _map != null else "South"]
+			(
+				"Player %d has lost its controller. "
+				+ "Press %s on the new controller to take the seat back."
+			)
+			% [
+				_player_number(seats, target),
+				_map.glyph("confirm", "gamepad") if _map != null else "South",
+			]
 		)
 		if missing.size() > 1:
-			_reclaim_label.text += " Left / Right picks another missing seat."
+			_reclaim_label.text += " Left/Right picks another missing seat."
 	_menu.refresh_items()
 	if bool(status.get("leave_confirm", false)):
 		# Keep the dialog's selection when a refresh arrives while it is already open.
@@ -102,6 +126,23 @@ func bind_state(
 
 static func reason_text(reason: String) -> String:
 	return str(REASON_TEXT.get(reason.to_lower(), reason))
+
+
+## The lost seat's pill becomes the tall reclaim pill (Figma frame "Pause Menu (With Warning)"):
+## same place in the roster, same seat colour, the message inside.
+func _show_reclaim_pill(target: int) -> void:
+	if target < 0 or target >= rosters.size():
+		return
+	rosters[target].visible = false
+	_reclaim_panel.theme_type_variation = StringName("PillSeat%d" % (target + 1))
+	_roster_box.move_child(_reclaim_panel, rosters[target].get_index())
+
+
+## The number the seat's pill shows ("Player N"), falling back to the seat slot.
+static func _player_number(seats: Array[Dictionary], target: int) -> int:
+	if target >= 0 and target < seats.size():
+		return int(seats[target].get("identity", target + 1))
+	return target + 1
 
 
 ## The presenter calls this when a ready edge or device change happens while paused.
@@ -148,11 +189,11 @@ func _show_state(index: int, ctx: UiContext) -> void:
 	bind_prompts(ctx.prompt_map, ctx.device_kind)
 	var seats := ctx.seats.duplicate(true)
 	var reasons := [
-		"Participant requested pause",
-		"Everyone must be ready to resume",
-		"Everyone is ready",
-		"Assigned device disconnected",
-		"Participant requested pause",
+		"participant requested pause",
+		"participant requested pause",
+		"participant requested pause",
+		"assigned device disconnected",
+		"participant requested pause",
 	]
 	for seat in seats:
 		seat.ready = false
@@ -167,7 +208,7 @@ func _show_state(index: int, ctx: UiContext) -> void:
 		seats[1].ready = false
 	var countdown := 3.0 if index == 2 else 0.0
 	bind_state(
-		reasons[clampi(index, 0, reasons.size() - 1)],
+		reason_text(reasons[clampi(index, 0, reasons.size() - 1)]),
 		ctx.owner_seat,
 		countdown,
 		seats,

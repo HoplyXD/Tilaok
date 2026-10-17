@@ -5,12 +5,13 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/award_line.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_ring.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_bar.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/scoreboard_chart.tscn" id="8_chart"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_award_legend.tscn" id="9_legend"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/vine_divider.tscn" id="10_vine"]
+[ext_resource type="Texture2D" uid="uid://nme127wdd1mh" path="res://assets/ui/common/ui.common.vine_divider.svg" id="11_vine_art"]
 
-[node name="RoundResultScreen" type="Control" unique_id=325094884]
+[node name="RoundResultScreen" type="Control" unique_id=736251260]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,17 +21,18 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2")
 standalone_theme = ExtResource("1")
+metadata/figma_node = "UI-Tilaok- 36:221 Round Results (711x400, built at 1.8x)"
 
-[node name="Backdrop" type="PanelContainer" parent="." unique_id=164976272]
+[node name="Backdrop" type="PanelContainer" parent="." unique_id=776373016]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"Backdrop"
+theme_type_variation = &"ResultBackdrop"
 
-[node name="Art_Background" type="TextureRect" parent="." unique_id=276531343]
+[node name="Art_Background" type="TextureRect" parent="." unique_id=1824193737]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,7 +44,8 @@ expand_mode = 1
 stretch_mode = 6
 metadata/asset_id = "ui.round_result.card"
 
-[node name="Safe" type="MarginContainer" parent="." unique_id=540540147]
+[node name="Safe" type="MarginContainer" parent="." unique_id=801879946]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,216 +53,304 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"SafeAreaMargin"
-theme_override_constants/margin_left = 36
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 36
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 7
 
-[node name="Content" type="VBoxContainer" parent="Safe" unique_id=501246064]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="TitleRow" type="HBoxContainer" parent="Safe/Content" unique_id=1937694702]
-layout_mode = 2
-theme_override_constants/separation = 18
-
-[node name="RoundLabel" type="Label" parent="Safe/Content/TitleRow" unique_id=833975716]
+[node name="Content" type="VBoxContainer" parent="Safe" unique_id=70410050]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"ResultTitle"
-text = "Round result"
+theme_override_constants/separation = 0
 
-[node name="LastCluckCallout" type="Label" parent="Safe/Content/TitleRow" unique_id=1734662744]
+[node name="TitleBlock" type="VBoxContainer" parent="Safe/Content" unique_id=1483419329]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ResultTitleBlock"
+metadata/note = "ResultTitleBlock tucks the end reason under the title baseline, as in the Figma frame; the script switches to ResultTitleBlockStacked when the reason is too wide to sit beside the title."
+
+[node name="TitleRow" type="HBoxContainer" parent="Safe/Content/TitleBlock" unique_id=613647891]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="RoundLabel" type="Label" parent="Safe/Content/TitleBlock/TitleRow" unique_id=547657231]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_type_variation = &"ResultTitle"
+text = "Round Result"
+
+[node name="LastCluckCallout" type="Label" parent="Safe/Content/TitleBlock/TitleRow" unique_id=1863441415]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_type_variation = &"HeadingLabel"
 text = "LAST CLUCK!"
 
-[node name="TitleSide" type="VBoxContainer" parent="Safe/Content/TitleRow" unique_id=892828301]
+[node name="TitleSide" type="VBoxContainer" parent="Safe/Content/TitleBlock/TitleRow" unique_id=1885214018]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
-alignment = 1
 
-[node name="Vine" parent="Safe/Content/TitleRow/TitleSide" unique_id=1700249046 instance=ExtResource("10_vine")]
-modulate = Color(2.15, 2.4, 2.9, 1)
+[node name="VineTop" type="Control" parent="Safe/Content/TitleBlock/TitleRow/TitleSide" unique_id=1848510300]
+custom_minimum_size = Vector2(0, 61)
 layout_mode = 2
-size_flags_horizontal = 0
+mouse_filter = 2
 
-[node name="EndReasonLabel" type="Label" parent="Safe/Content/TitleRow/TitleSide" unique_id=1362086111]
+[node name="Vine" parent="Safe/Content/TitleBlock/TitleRow/TitleSide" unique_id=1776291604 instance=ExtResource("10_vine")]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 1
+
+[node name="Art_Vine" parent="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine" index="0"]
+texture = ExtResource("11_vine_art")
+stretch_mode = 2
+metadata/note = "Imported at svg/scale 1.8 = the Figma 727 x 45 px; drawn at that size from the left (STRETCH_KEEP) and, as in the frame, it runs off the right edge."
+
+[node name="Placeholder" parent="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine" index="1"]
+visible = false
+
+[node name="EndReasonLabel" type="Label" parent="Safe/Content/TitleBlock" unique_id=456194395]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 theme_type_variation = &"ResultSubtitle"
 horizontal_alignment = 2
 autowrap_mode = 3
 
-[node name="Columns" type="HBoxContainer" parent="Safe/Content" unique_id=354769503]
+[node name="BoardGap" type="Control" parent="Safe/Content" unique_id=1447496847]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Columns" type="HBoxContainer" parent="Safe/Content" unique_id=2040339488]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="Chalkboard" type="PanelContainer" parent="Safe/Content/Columns" unique_id=462435977]
+[node name="Chalkboard" type="PanelContainer" parent="Safe/Content/Columns" unique_id=521933000]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.2
 theme_type_variation = &"ChalkboardPanel"
 
-[node name="Art_Chalkboard" type="TextureRect" parent="Safe/Content/Columns/Chalkboard" unique_id=222160542]
+[node name="Art_Chalkboard" type="TextureRect" parent="Safe/Content/Columns/Chalkboard" unique_id=875683096]
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 metadata/asset_id = "ui.round_result.chalkboard"
 
-[node name="Board" type="VBoxContainer" parent="Safe/Content/Columns/Chalkboard" unique_id=1660749363]
+[node name="Board" type="VBoxContainer" parent="Safe/Content/Columns/Chalkboard" unique_id=1768493614]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 0
 
-[node name="BoardHeader" type="HBoxContainer" parent="Safe/Content/Columns/Chalkboard/Board" unique_id=462857788]
+[node name="HeaderMargin" type="MarginContainer" parent="Safe/Content/Columns/Chalkboard/Board" unique_id=1232041432]
 layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 2
+theme_override_constants/margin_left = 29
+theme_override_constants/margin_right = 23
 
-[node name="NextRoundLabel" type="Label" parent="Safe/Content/Columns/Chalkboard/Board/BoardHeader" unique_id=1537262159]
+[node name="BoardHeader" type="HBoxContainer" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin" unique_id=286203544]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NextRoundCaption" type="Label" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader" unique_id=8180297]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ChalkLabel"
+text = "Next Round:"
+
+[node name="NextRoundLabel" type="Label" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader" unique_id=2030674641]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"ChalkLabel"
-autowrap_mode = 3
+text_overrun_behavior = 3
 
-[node name="ReadyHint" parent="Safe/Content/Columns/Chalkboard/Board/BoardHeader" unique_id=865845147 instance=ExtResource("6")]
+[node name="HeaderFill" type="Control" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader" unique_id=1530168412]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ReadyHint" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader" unique_id=1774632827 instance=ExtResource("6")]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 13
 
-[node name="ScoreChart" parent="Safe/Content/Columns/Chalkboard/Board" unique_id=1073639165 instance=ExtResource("8_chart")]
+[node name="GlyphLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader/ReadyHint/GlyphPanel" index="0"]
+custom_minimum_size = Vector2(13, 35)
+theme_override_font_sizes/font_size = 36
+
+[node name="ActionLabel" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader/ReadyHint" index="2"]
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_font_sizes/font_size = 29
+
+[node name="ScoreChart" parent="Safe/Content/Columns/Chalkboard/Board" unique_id=1670431326 instance=ExtResource("8_chart")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Awards" type="VBoxContainer" parent="Safe/Content/Columns" unique_id=1880390463]
+[node name="Grain" type="Control" parent="Safe/Content/Columns/Chalkboard"]
 layout_mode = 2
-size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="GrainPatch" type="Panel" parent="Safe/Content/Columns/Chalkboard/Grain"]
+layout_mode = 1
+anchor_right = 1.5
+anchor_bottom = 1.5
+offset_left = -20.0
+offset_top = -27.0
+offset_right = 52.0
+offset_bottom = 36.0
+scale = Vector2(0.666667, 0.666667)
+mouse_filter = 2
+theme_type_variation = &"ChalkGrain"
+
+[node name="Awards" type="VBoxContainer" parent="Safe/Content/Columns" unique_id=994539360]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="AwardsHeading" type="Label" parent="Safe/Content/Columns/Awards" unique_id=701456660]
+[node name="AwardsTop" type="Control" parent="Safe/Content/Columns/Awards" unique_id=1237420340]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AwardsHeading" type="Label" parent="Safe/Content/Columns/Awards" unique_id=669517291]
 layout_mode = 2
 theme_type_variation = &"ResultHeading"
 text = "Awards"
 
-[node name="Award1" parent="Safe/Content/Columns/Awards" unique_id=1773438959 instance=ExtResource("4")]
+[node name="Award1" parent="Safe/Content/Columns/Awards" unique_id=1342774724 instance=ExtResource("4")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Award2" parent="Safe/Content/Columns/Awards" unique_id=1180041120 instance=ExtResource("4")]
+[node name="Award2" parent="Safe/Content/Columns/Awards" unique_id=326846381 instance=ExtResource("4")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Award3" parent="Safe/Content/Columns/Awards" unique_id=687676335 instance=ExtResource("4")]
+[node name="Award3" parent="Safe/Content/Columns/Awards" unique_id=1434625148 instance=ExtResource("4")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Award4" parent="Safe/Content/Columns/Awards" unique_id=2027134934 instance=ExtResource("4")]
+[node name="Award4" parent="Safe/Content/Columns/Awards" unique_id=1915564665 instance=ExtResource("4")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Award5" parent="Safe/Content/Columns/Awards" unique_id=2011782663 instance=ExtResource("4")]
+[node name="Award5" parent="Safe/Content/Columns/Awards" unique_id=923042498 instance=ExtResource("4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="Award6" parent="Safe/Content/Columns/Awards" unique_id=1288803651 instance=ExtResource("4")]
+[node name="Award6" parent="Safe/Content/Columns/Awards" unique_id=810553186 instance=ExtResource("4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="Award7" parent="Safe/Content/Columns/Awards" unique_id=1972249683 instance=ExtResource("4")]
+[node name="Award7" parent="Safe/Content/Columns/Awards" unique_id=1866634970 instance=ExtResource("4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="Award8" parent="Safe/Content/Columns/Awards" unique_id=171642280 instance=ExtResource("4")]
+[node name="Award8" parent="Safe/Content/Columns/Awards" unique_id=378947959 instance=ExtResource("4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="Award9" parent="Safe/Content/Columns/Awards" unique_id=1014431260 instance=ExtResource("4")]
+[node name="Award9" parent="Safe/Content/Columns/Awards" unique_id=313275149 instance=ExtResource("4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="Award10" parent="Safe/Content/Columns/Awards" unique_id=1423424097 instance=ExtResource("4")]
+[node name="Award10" parent="Safe/Content/Columns/Awards" unique_id=1693347947 instance=ExtResource("4")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="AwardsFill" type="Control" parent="Safe/Content/Columns/Awards" unique_id=1020853548]
+[node name="AwardsFill" type="Control" parent="Safe/Content/Columns/Awards" unique_id=982314069]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="LegendHeading" type="Label" parent="Safe/Content/Columns/Awards" unique_id=755400747]
+[node name="LegendHeading" type="Label" parent="Safe/Content/Columns/Awards" unique_id=1060650898]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ResultHeading"
+theme_override_font_sizes/font_size = 36
 text = "Score Legend"
 
-[node name="ScoreAwardLegend" parent="Safe/Content/Columns/Awards" unique_id=180525724 instance=ExtResource("9_legend")]
+[node name="LegendMargin" type="MarginContainer" parent="Safe/Content/Columns/Awards" unique_id=231723872]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 16
 
-[node name="TutorialStrip" type="Control" parent="Safe/Content/Columns" unique_id=1165213840]
+[node name="ScoreAwardLegend" parent="Safe/Content/Columns/Awards/LegendMargin" unique_id=1587516455 instance=ExtResource("9_legend")]
+unique_name_in_owner = true
+theme_override_constants/v_separation = -2
+
+[node name="AwardsBottom" type="Control" parent="Safe/Content/Columns/Awards" unique_id=1605950282]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+mouse_filter = 2
+
+[node name="TutorialStrip" type="Control" parent="Safe/Content/Columns" unique_id=1631337759]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 mouse_filter = 2
 
-[node name="NoScoreReason" parent="Safe/Content" unique_id=1237762002 instance=ExtResource("5")]
-unique_name_in_owner = true
-visible = false
+[node name="FooterGap" type="Control" parent="Safe/Content" unique_id=1533484185]
+custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
+mouse_filter = 2
 
-[node name="Footer" type="HBoxContainer" parent="Safe/Content" unique_id=1295159258]
+[node name="Footer" type="HBoxContainer" parent="Safe/Content" unique_id=1124573740]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="DeadlineLabel" type="Label" parent="Safe/Content/Footer" unique_id=1148215138]
-unique_name_in_owner = true
+[node name="FooterNotes" type="VBoxContainer" parent="Safe/Content/Footer" unique_id=477424024]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 4.0
-theme_type_variation = &"ResultText"
-autowrap_mode = 3
+theme_override_constants/separation = 2
 
-[node name="ContextRow" type="HBoxContainer" parent="Safe/Content/Footer" unique_id=954774007]
+[node name="NoScoreReason" parent="Safe/Content/Footer/FooterNotes" unique_id=960202322 instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TextLabel" parent="Safe/Content/Footer/FooterNotes/NoScoreReason/Row" index="1"]
+custom_minimum_size = Vector2(400, 0)
+
+[node name="NotesRow" type="HBoxContainer" parent="Safe/Content/Footer/FooterNotes" unique_id=851301646]
 layout_mode = 2
 theme_override_constants/separation = 24
-alignment = 1
 
-[node name="TwistLine" type="Label" parent="Safe/Content/Footer/ContextRow" unique_id=1733952430]
+[node name="DeadlineLabel" type="Label" parent="Safe/Content/Footer/FooterNotes/NotesRow" unique_id=558395991]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 3
+
+[node name="TwistLine" type="Label" parent="Safe/Content/Footer/FooterNotes/NotesRow" unique_id=2043714301]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_type_variation = &"ResultText"
+theme_override_font_sizes/font_size = 14
 
-[node name="FooterFill" type="Control" parent="Safe/Content/Footer" unique_id=261678569]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="NextIn" type="Label" parent="Safe/Content/Footer" unique_id=1674127550]
-layout_mode = 2
-theme_type_variation = &"ResultText"
-text = "Next round"
-
-[node name="AdvanceCountdown" parent="Safe/Content/Footer" unique_id=1292739216 instance=ExtResource("7")]
+[node name="AdvanceCountdown" parent="Safe/Content/Footer" unique_id=611945469 instance=ExtResource("7")]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 8
 
-[node name="Bar" parent="Safe/Content/Footer/AdvanceCountdown" index="1"]
-custom_minimum_size = Vector2(300, 18)
-
-[node name="SecondsLabel" parent="Safe/Content/Footer/AdvanceCountdown" index="2"]
-theme_override_font_sizes/font_size = 22
-
-[node name="Tag" type="Label" parent="Safe/Content" unique_id=1536318414]
-layout_mode = 2
-theme_type_variation = &"PlaceholderTag"
-text = "PLACEHOLDER art · round result"
-horizontal_alignment = 1
-
-[editable path="Safe/Content/Footer/AdvanceCountdown"]
+[editable path="Safe/Content/TitleBlock/TitleRow/TitleSide/Vine"]
+[editable path="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader/ReadyHint"]
+[editable path="Safe/Content/Footer/FooterNotes/NoScoreReason"]

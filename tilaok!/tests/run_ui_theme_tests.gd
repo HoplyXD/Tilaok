@@ -40,7 +40,28 @@ const NEW_TYPES := [
 	"ChipState",
 	"GuideTitle",
 	"GuideBody",
+	"RivetDisabled",
+	"PlankPressedFrame",
+	"PlankPressedShadeTop",
+	"PlankPressedShadeLeft",
+	"PlankPressedShadeRight",
+	"PlankClip",
+	"PlankStroke",
+	"PlankStrokePressed",
+	"PlankStrokeDisabled",
+	"PlankStrokeMask",
 ]
+## Exact values from the Figma "Button Variants" frame (16:434):
+## state -> [fill, outline gradient Theme type, gradient stop colours at 0 / 0.639 / 0.884].
+const PLANK_FIGMA := {
+	"normal": ["#b77748", "PlankStroke", ["#000000", "#665b44", "#d8c190"]],
+	"hover": ["#eb9c62", "PlankStroke", ["#000000", "#665b44", "#d8c190"]],
+	"pressed": ["#885a39", "PlankStrokePressed", ["#000000", "#665b44", "#e5cd98"]],
+	"disabled": ["#bc9d86", "PlankStrokeDisabled", ["#484848", "#918b80", "#d4c39e"]],
+}
+const PLANK_STOP_OFFSETS := [0.0, 0.639, 0.884]
+## Figma gradientTransform row 1: t = -0.216 u - 0.683 v + 1.165 over the button's u, v.
+const PLANK_GRADIENT_T := Vector3(-0.216, -0.683, 1.165)
 const LEGEND_TYPES := {
 	"tapos": "LegendTapos",
 	"una": "LegendUna",
@@ -72,6 +93,8 @@ func _run() -> void:
 	await _test_confirm_dialogs()
 	await _test_lobby_open_slot()
 	await _test_component_sheet()
+	await _test_pause_frame()
+	await _test_round_result_frame()
 	print("UI_THEME_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -140,8 +163,96 @@ func _test_plank_button() -> void:
 		(plank.get_node("RivetLeft") as Control).mouse_filter == Control.MOUSE_FILTER_IGNORE,
 		"rivets never swallow a click"
 	)
+	for state in PLANK_FIGMA:
+		var spec: Array = PLANK_FIGMA[state]
+		var box := theme.get_stylebox(state, "TilaokMenuButton") as StyleBoxFlat
+		var fill := Color.html(str(spec[0]))
+		_check(
+			box != null
+			and _near(box.bg_color, fill)
+			and box.shadow_size == 0
+			and box.shadow_offset == Vector2.ZERO,
+			"plank %s fill is the Figma #%s with no drop shadow" % [state, fill.to_html(false)]
+		)
+		_check(
+			_gradient_matches(str(spec[1]), spec[2]),
+			"plank %s outline gradient matches Figma stops %s and direction" % [state, spec[2]]
+		)
+	var stroke := plank.get_node("Stroke") as Control
+	var stroke_gradient := plank.get_node("Stroke/Gradient") as Control
+	var pressed_look := plank.get_node("PressedLook") as Control
+	_check(
+		stroke.clip_children == CanvasItem.CLIP_CHILDREN_ONLY
+		and pressed_look.clip_children == CanvasItem.CLIP_CHILDREN_ONLY,
+		"outline gradient and pressed shadow are clipped to the rounded plank shape"
+	)
+	var rivet := plank.get_node("RivetLeft") as Control
+	_check(
+		not pressed_look.visible
+		and rivet.theme_type_variation == &"Rivet"
+		and stroke_gradient.theme_type_variation == &"PlankStroke",
+		"Normal plank: normal outline gradient, no pressed shadow, dark rivets"
+	)
+	plank.toggle_mode = true
+	plank.button_pressed = true
+	await process_frame
+	await process_frame
+	_check(
+		pressed_look.visible and stroke_gradient.theme_type_variation == &"PlankStrokePressed",
+		"Pressed plank shows its inner frame, group shadow and pressed outline gradient"
+	)
+	plank.button_pressed = false
+	plank.disabled = true
+	await process_frame
+	await process_frame
+	_check(
+		not pressed_look.visible
+		and stroke_gradient.theme_type_variation == &"PlankStrokeDisabled"
+		and rivet.theme_type_variation == &"RivetDisabled"
+		and (plank.get_node("RivetRight") as Control).theme_type_variation == &"RivetDisabled",
+		"Disabled plank uses the grey outline gradient and fades both rivets"
+	)
+	_check(
+		_near(theme.get_stylebox("panel", "RivetDisabled").bg_color, Color.html("#775f57")),
+		"disabled rivet colour is the Figma #775f57"
+	)
+	plank.disabled = false
+	await process_frame
+	await process_frame
+	_check(rivet.theme_type_variation == &"Rivet", "re-enabled plank restores the dark rivets")
 	plank.queue_free()
 	await process_frame
+
+
+## True when the Theme type's gradient has the Figma stops and runs in the Figma direction.
+func _gradient_matches(type_name: String, colors: Array) -> bool:
+	var box := theme.get_stylebox("panel", type_name) as StyleBoxTexture
+	if box == null or not (box.texture is GradientTexture2D):
+		return false
+	var texture := box.texture as GradientTexture2D
+	var gradient := texture.gradient
+	if gradient.get_point_count() != PLANK_STOP_OFFSETS.size():
+		return false
+	for i in PLANK_STOP_OFFSETS.size():
+		if absf(gradient.get_offset(i) - PLANK_STOP_OFFSETS[i]) > 0.001:
+			return false
+		if not _near(gradient.get_color(i), Color.html(str(colors[i]))):
+			return false
+	# Godot's linear fill: t = (p - from) . (to - from) / |to - from|^2. Compare with Figma's t.
+	var span := texture.fill_to - texture.fill_from
+	var corners: Array[Vector2] = [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1), Vector2(1, 1)]
+	for corner in corners:
+		var godot_t: float = (corner - texture.fill_from).dot(span) / span.length_squared()
+		var figma_t: float = (
+			PLANK_GRADIENT_T.x * corner.x + PLANK_GRADIENT_T.y * corner.y + PLANK_GRADIENT_T.z
+		)
+		if absf(godot_t - figma_t) > 0.002:
+			return false
+	return true
+
+
+func _near(a: Color, b: Color) -> bool:
+	return absf(a.r - b.r) < 0.004 and absf(a.g - b.g) < 0.004 and absf(a.b - b.b) < 0.004
 
 
 func _test_badge_variants() -> void:
@@ -258,6 +369,201 @@ func _test_component_sheet() -> void:
 			"component sheet pill %d shows its number" % (index + 1)
 		)
 	sheet.queue_free()
+	await process_frame
+
+
+## Pause screen built from Figma frames 5:44 / 5:81: exact frame values, game seat colours, and
+## the live states (shared / owner, quiet reason, countdown, reclaim pill) still working.
+func _test_pause_frame() -> void:
+	var pause := (
+		(load("res://scenes/ui/screens/pause_screen.tscn") as PackedScene).instantiate() as UiPauseScreen
+	)
+	root.add_child(pause)
+	await process_frame
+	pause.bind_prompts(UiContext.make(4, "gamepad").prompt_map, "gamepad")
+	var seats := UiContext.sample_seats(4)
+	pause.bind_state(UiPauseScreen.reason_text("shared system pause"), -1, 0.0, seats, {})
+	await process_frame
+	await process_frame
+	var panel := pause.get_node("Center/Panel") as Control
+	_check(
+		panel.size.is_equal_approx(Vector2(385, 506)),
+		"Pause paper is the Figma 214 x 281 at 1.8x (%s)" % panel.size
+	)
+	var paper_art := pause.get_node("Center/Panel/Decor/PaperArt/Art_Panel") as NinePatchRect
+	var paper_image := paper_art.texture.get_image()
+	_check(
+		paper_image.get_pixel(0, 0).a < 0.05 and paper_image.get_pixel(300, 400).a > 0.99,
+		"paper art is the Figma render with a transparent surround and an opaque sheet"
+	)
+	var backing := pause.get_node("Center/Panel/Decor/Backing") as Control
+	_check(
+		absf(rad_to_deg(backing.rotation) + 2.344) < 0.01
+		and _near(theme.get_stylebox("panel", "PauseBacking").bg_color, Color.html("#9e6941")),
+		"backing is the Figma #9e6941 sheet turned 2.344 degrees"
+	)
+	var title := pause.get_node("Center/Panel/Content/TitleRow/PausedLabel") as Label
+	_check(
+		title.text == "Paused"
+		and title.get_theme_font_size("font_size") == 43
+		and _near(title.get_theme_color("font_color"), Color.html("#784623")),
+		"title is Mountains of Christmas 24 -> 43 px #784623"
+	)
+	var owner_label := pause.get_node("%OwnerLabel") as Label
+	var heading := pause.get_node("%RosterHeading") as Label
+	_check(
+		owner_label.text == "shared pause · any player can take the menu"
+		and heading.text == "everyone must be ready to resume"
+		and heading.visible
+		and _near(owner_label.get_theme_color("font_color"), Color.BLACK)
+		and owner_label.get_theme_font_size("font_size") == 18,
+		"shared pause shows the frame's two Mansalva lines in black"
+	)
+	_check(not (pause.get_node("%ReasonRow") as Control).visible, "a plain pause adds no reason line")
+	for index in 4:
+		var pill := pause.rosters[index]
+		var pill_color := (pill.get_theme_stylebox("panel") as StyleBoxFlat).bg_color
+		var shape := pill.badge.get_node("ShapeHolder/Shape" + str(seats[index].shape).capitalize()) as Polygon2D
+		_check(
+			pill.visible
+			and pill_color.is_equal_approx(
+				(theme.get_stylebox("panel", "PillSeat%d" % (index + 1)) as StyleBoxFlat).bg_color
+			)
+			and shape.color.is_equal_approx(pill_color)
+			and (shape.get_node("Outline") as Line2D).visible,
+			"pill %d keeps the game colour; its shape is pill-coloured with a cream outline" % (index + 1)
+		)
+	_check(
+		pause.rosters[0].get_node("Glass/GlassPatch") is NinePatchRect,
+		"pills carry the Figma glass overlay"
+	)
+	var texts := []
+	for name in ["ResumeButton", "SettingsButton", "LibraryButton", "LeaveButton"]:
+		var button := pause.get_node("%" + name) as Button
+		texts.append(button.text)
+		_check(
+			button.get_theme_font_size("font_size") == 14
+			and button.get_node_or_null("Icon") is TextureRect
+			and (button.get_node("DropShadow") as Control).show_behind_parent,
+			"%s: 14 px label, Figma icon and group drop shadow" % name
+		)
+	_check(texts == ["Resume", "Settings", "Library", "Leave Match"], "button labels follow the frame")
+	# Owner, informative reason and countdown.
+	for seat in seats:
+		seat.ready = true
+	pause.bind_state(UiPauseScreen.reason_text("application focus lost"), 1, 2.2, seats, {})
+	await process_frame
+	_check(
+		owner_label.text == "paused by" and (pause.get_node("%OwnerBadge") as Control).visible,
+		"owner pause reads 'paused by' with the owner badge"
+	)
+	_check(
+		(pause.get_node("%ReasonRow") as Control).visible
+		and (pause.get_node("%ReasonLabel") as Label).text == "The game window lost focus",
+		"an informative reason gets its own line"
+	)
+	_check(
+		(pause.get_node("%CountdownLabel") as Label).visible
+		and (pause.get_node("%CountdownLabel") as Label).text == "resuming in 3"
+		and not heading.visible,
+		"the countdown takes the 'everyone must be ready' line"
+	)
+	# Reclaim: seat 3 lost, then a second missing seat.
+	seats[2].connected = false
+	pause.bind_state(
+		UiPauseScreen.reason_text("assigned device disconnected"), -1, 0.0, seats, {"reclaim_seat": 2}
+	)
+	await process_frame
+	var reclaim := pause.get_node("%ReclaimPanel") as PanelContainer
+	var reclaim_label := pause.get_node("%ReclaimLabel") as Label
+	_check(
+		reclaim.visible
+		and not pause.rosters[2].visible
+		and reclaim.get_index() == pause.rosters[2].get_index() - 1
+		and reclaim.theme_type_variation == &"PillSeat3"
+		and not (pause.get_node("%ReasonRow") as Control).visible,
+		"the lost seat's pill becomes the tall reclaim pill in its place and colour"
+	)
+	_check(
+		reclaim_label.text.begins_with("Player 3 has lost its controller. Press South on the new")
+		and not reclaim_label.text.contains("Left/Right"),
+		"reclaim pill uses the frame's wording (%s)" % reclaim_label.text
+	)
+	seats[1].connected = false
+	pause.bind_state(
+		UiPauseScreen.reason_text("assigned device disconnected"), -1, 0.0, seats, {"reclaim_seat": 1}
+	)
+	await process_frame
+	_check(
+		reclaim_label.text.begins_with("Player 2 has lost")
+		and reclaim_label.text.ends_with("Left/Right picks another missing seat.")
+		and pause.rosters[2].visible
+		and pause.rosters[2].state_text() == "DEVICE LOST"
+		and reclaim.theme_type_variation == &"PillSeat2",
+		"with two missing seats the pill follows the chosen seat and mentions Left/Right"
+	)
+	pause.queue_free()
+	await process_frame
+
+
+## Round result details read from Figma frame 36:221 (exact paints and effects).
+func _test_round_result_frame() -> void:
+	_check(
+		_near(theme.get_color("font_outline_color", "ResultTitle"), Color.html("#624a39"))
+		and theme.get_constant("outline_size", "ResultTitle") == 6,
+		"result title has the Figma 1 px #624a39 outline (measured 3.96 vs 3.87 px at 1080p)"
+	)
+	var board := theme.get_stylebox("panel", "ChalkboardPanel") as StyleBoxFlat
+	_check(
+		_near(board.bg_color, Color.html("#022c02"))
+		and _near(board.border_color, Color.WHITE)
+		and board.corner_radius_top_left == 0,
+		"chalkboard is #022c02 with a square white frame"
+	)
+	var fill := theme.get_stylebox("fill", "CountdownBar") as StyleBoxTexture
+	var fill_image := fill.texture.get_image()
+	var w := fill_image.get_width()
+	var h := fill_image.get_height()
+	_check(
+		fill.texture.resource_path.ends_with("ui.round_result.countdown_fill.svg")
+		and fill.texture_margin_right == 33.0
+		and fill_image.get_pixel(w - 4, 0).a > 0.9
+		and fill_image.get_pixel(w - 4, h - 1).a < 0.05,
+		"countdown fill is the Figma trapezoid (slanted right end kept by a 33 px margin)"
+	)
+	var screen := (
+		(load("res://scenes/ui/screens/round_result_screen.tscn") as PackedScene).instantiate()
+		as UiScreen
+	)
+	root.add_child(screen)
+	screen.show_state(0, UiContext.make(4, "k1"))
+	await process_frame
+	await process_frame
+	var chalk := screen.get_node("Safe/Content/Columns/Chalkboard") as Control
+	var grain := screen.get_node("Safe/Content/Columns/Chalkboard/Grain/GrainPatch") as Control
+	var grain_rect := Rect2(grain.global_position, grain.size * grain.scale)
+	_check(
+		grain.theme_type_variation == &"ChalkGrain"
+		and grain_rect.position.distance_to(chalk.global_position) < 0.5
+		and grain_rect.size.distance_to(chalk.size) < 0.5,
+		"the Figma grain covers the whole chalkboard, frame included"
+	)
+	_check(screen.get_node_or_null("Safe/Content/Tag") == null, "no PLACEHOLDER tag on the result")
+	var column := screen.find_child("Column1", true, false)
+	if column == null:
+		for node in screen.find_children("*", "UiPlayerBadge", true, false):
+			if node.get_parent() is Control and node.name == "IdentityBadge":
+				column = node.get_parent()
+				break
+	var outlined := false
+	if column != null:
+		var badge := column.get_node("IdentityBadge") as UiPlayerBadge
+		for shape in ["ShapeCircle", "ShapeTriangle", "ShapeSquare", "ShapeDiamond"]:
+			var polygon := badge.get_node("ShapeHolder/" + shape) as Polygon2D
+			if polygon.visible:
+				outlined = (polygon.get_node("Outline") as Line2D).visible
+	_check(outlined, "chart player symbols carry the Figma cream outline")
+	screen.queue_free()
 	await process_frame
 
 

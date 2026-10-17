@@ -1,5 +1,6 @@
 # assets/ui/round_result
 
-Drop final art for the round_result screen here (PNG for raster, SVG for icons).
-Name files ui.round_result.<element>.<ext> and assign them in the Godot inspector to the matching Art_<Element> node.
-Register every file in docs/ASSETS.md before it ships. Nothing is in this folder yet: the UI uses flat Theme StyleBoxes (PLACEHOLDER).
+Art for the Round result screen (team Figma frame "Round Results", 36:221). Register every file in docs/ASSETS.md before it ships.
+
+- ui.round_result.countdown_fill.svg: the frame's "Time remaining bar" vector (slanted end, blue gradient), used as the countdown fill.
+- Open slot: ui.round_result.chalkboard (a hand-made board texture for Art_Chalkboard). The board's grain is the Theme's ChalkGrain noise until then.

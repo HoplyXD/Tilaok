@@ -1,17 +1,104 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/ui_score_row.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/pause/ui.pause.pill_glass.png" id="3"]
 
-[node name="SeatPill" instance=ExtResource("1")]
-custom_minimum_size = Vector2(0, 32)
+[node name="SeatPill" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 29)
 theme_type_variation = &"PillSeat1"
+script = ExtResource("1")
+shape_matches_panel = true
 
-[node name="Row" parent="." index="0"]
+[node name="Glass" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GlassPatch" type="NinePatchRect" parent="Glass"]
+layout_mode = 1
+anchor_right = 1.5
+anchor_bottom = 1.5
+scale = Vector2(0.666667, 0.666667)
+mouse_filter = 2
+texture = ExtResource("3")
+patch_margin_left = 40
+patch_margin_top = 18
+patch_margin_right = 40
+patch_margin_bottom = 18
+metadata/asset_id = "ui.pause.pill_glass"
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Badge" parent="Row" index="0"]
+[node name="Badge" parent="Row" instance=ExtResource("2")]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
 prefix_text = "Player "
 use_seat_tint = false
+unique_name_in_owner = true
 
-[node name="StateLabel" parent="Row" index="1"]
-size_flags_horizontal = 0
+[node name="ShapeHolder" parent="Row/Badge" index="0"]
+custom_minimum_size = Vector2(16, 16)
+size_flags_vertical = 4
+
+[node name="ShapeCircle" parent="Row/Badge/ShapeHolder" index="0"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeCircle" index="0"]
+visible = true
+
+[node name="ShapeTriangle" parent="Row/Badge/ShapeHolder" index="1"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeTriangle" index="0"]
+visible = true
+
+[node name="ShapeSquare" parent="Row/Badge/ShapeHolder" index="2"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeSquare" index="0"]
+visible = true
+
+[node name="ShapeDiamond" parent="Row/Badge/ShapeHolder" index="3"]
+scale = Vector2(0.5, 0.5)
+
+[node name="Outline" parent="Row/Badge/ShapeHolder/ShapeDiamond" index="0"]
+visible = true
+
+[node name="PrefixLabel" parent="Row/Badge/Name" index="0"]
+theme_type_variation = &"PausePillLabel"
+
+[node name="NumberLabel" parent="Row/Badge/Name" index="1"]
+custom_minimum_size = Vector2(0, 0)
+theme_type_variation = &"PausePillLabel"
+
+[node name="Balance" type="Control" parent="Row"]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="StateBox" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_right = 12
+
+[node name="StateLabel" type="Label" parent="StateBox"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_type_variation = &"PausePillLabel"
+text = ""
+unique_name_in_owner = true
+
+[node name="ScoreLabel" type="Label" parent="StateBox"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"PausePillLabel"
+text = "0"
+unique_name_in_owner = true
+
+[editable path="Row/Badge"]

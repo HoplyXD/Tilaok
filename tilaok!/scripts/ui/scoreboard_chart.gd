@@ -145,11 +145,11 @@ func _draw() -> void:
 	var axis_color := get_theme_color("guide", "ScoreAxis")
 	var text_color := get_theme_color("label", "ScoreAxis")
 	var baseline_color := get_theme_color("baseline", "ScoreAxis")
-	var font := get_theme_default_font()
-	var font_size := 13
+	var font := get_theme_font("font", "ScoreAxis")
+	var font_size := get_theme_font_size("font_size", "ScoreAxis")
 	for units in range(0, _axis_max_units + 1, TICK_UNITS):
 		var y := baseline - float(units) * plot_height / float(_axis_max_units)
-		draw_line(Vector2(axis_x, y), Vector2(right, y), axis_color, 1.0)
+		draw_line(Vector2(axis_x, y), Vector2(right, y), axis_color, 2.0)
 		draw_string(
 			font,
 			Vector2(1.0, y + font_size * 0.35),
@@ -176,7 +176,7 @@ func _draw() -> void:
 		font_size,
 		get_theme_color("target", "ScoreAxis")
 	)
-	draw_line(Vector2(axis_x, baseline), Vector2(right, baseline), baseline_color, 3.0)
+	draw_line(Vector2(axis_x, baseline), Vector2(right, baseline), baseline_color, 2.0)
 
 
 func _rebuild_columns(preserve_elapsed: bool) -> void:

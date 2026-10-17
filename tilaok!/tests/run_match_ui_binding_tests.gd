@@ -106,7 +106,7 @@ func _test_result_bindings() -> void:
 		screen.bind_live(model, seats, ready, 6.0, 8.0, "k1", load(UiContext.PROMPT_MAP_PATH))
 		var label := str(case.name)
 		_check(
-			(screen.get_node("%RoundLabel") as Label).text == "Round 3 result",
+			(screen.get_node("%RoundLabel") as Label).text == "Round 3 Result",
 			"%s: round heading" % label
 		)
 		_check(

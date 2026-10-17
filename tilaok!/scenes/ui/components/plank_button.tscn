@@ -1,37 +1,117 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dmu78knnloi11"]
 
-[node name="PlankButton" type="Button"]
+[ext_resource type="Script" uid="uid://bbrm7txjuju2d" path="res://scripts/ui/ui_plank_button.gd" id="1"]
+
+[node name="PlankButton" type="Button" unique_id=1322834009]
 custom_minimum_size = Vector2(340, 40)
 focus_mode = 0
 theme_type_variation = &"TilaokMenuButton"
 text = "Plank"
+script = ExtResource("1")
 metadata/asset_id = "ui.common.plank_button"
 
-[node name="RivetLeft" type="Panel" parent="."]
+[node name="RivetLeft" type="Panel" parent="." unique_id=1965681812]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 14.0
-offset_top = -5.0
-offset_right = 24.0
+offset_left = 13.0
+offset_top = -4.0
+offset_right = 22.0
 offset_bottom = 5.0
 grow_vertical = 2
 mouse_filter = 2
 theme_type_variation = &"Rivet"
 
-[node name="RivetRight" type="Panel" parent="."]
+[node name="RivetRight" type="Panel" parent="." unique_id=1462928185]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -24.0
-offset_top = -5.0
-offset_right = -14.0
+offset_left = -22.0
+offset_top = -4.0
+offset_right = -13.0
 offset_bottom = 5.0
 grow_horizontal = 0
 grow_vertical = 2
 mouse_filter = 2
 theme_type_variation = &"Rivet"
+
+[node name="Stroke" type="Panel" parent="."]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlankStrokeMask"
+
+[node name="Gradient" type="Panel" parent="Stroke"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlankStroke"
+
+[node name="PressedLook" type="Panel" parent="." unique_id=30400798]
+visible = false
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlankClip"
+
+[node name="Frame" type="Panel" parent="PressedLook" unique_id=1779250260]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlankPressedFrame"
+
+[node name="ShadeTop" type="Panel" parent="PressedLook" unique_id=1289745711]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 16.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"PlankPressedShadeTop"
+
+[node name="ShadeLeft" type="Panel" parent="PressedLook"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 10.0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlankPressedShadeLeft"
+
+[node name="ShadeRight" type="Panel" parent="PressedLook"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -10.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"PlankPressedShadeRight"
