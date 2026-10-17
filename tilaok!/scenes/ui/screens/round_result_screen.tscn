@@ -169,14 +169,10 @@ size_flags_horizontal = 3
 theme_type_variation = &"ChalkLabel"
 text_overrun_behavior = 3
 
-[node name="HeaderFill" type="Control" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader" unique_id=1530168412]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
 [node name="ReadyHint" parent="Safe/Content/Columns/Chalkboard/Board/HeaderMargin/BoardHeader" unique_id=1774632827 instance=ExtResource("6")]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 10
 size_flags_vertical = 4
 theme_override_constants/separation = 13
 

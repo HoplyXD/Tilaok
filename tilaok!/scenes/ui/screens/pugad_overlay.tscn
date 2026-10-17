@@ -85,18 +85,18 @@ text = "TWIST"
 
 [node name="PhaseDot" type="Panel" parent="Hud" unique_id=4610761]
 layout_mode = 0
-offset_left = 182.0
+offset_left = 272.0
 offset_top = 28.2
-offset_right = 191.0
+offset_right = 281.0
 offset_bottom = 37.2
 mouse_filter = 2
 theme_type_variation = &"PugadPhaseDot"
 
 [node name="PhaseLabel" type="Label" parent="Hud" unique_id=1728326562]
 layout_mode = 0
-offset_left = 205.4
+offset_left = 295.4
 offset_top = 16.0
-offset_right = 321.2
+offset_right = 411.2
 offset_bottom = 49.8
 theme_type_variation = &"PugadPhase"
 text = "PUGAD"
