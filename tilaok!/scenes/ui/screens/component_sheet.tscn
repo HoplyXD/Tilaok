@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_ring.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_bar.tscn" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/arrow_plank_button.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/menu_action_button.tscn" id="13"]
+[ext_resource type="Texture2D" uid="uid://pkpif3rw7i75" path="res://assets/ui/common/ui.common.icon_play.svg" id="14"]
 
 [node name="ComponentSheet" type="Control" unique_id=1216811618]
 layout_mode = 3
@@ -280,5 +282,25 @@ theme_type_variation = &"ResultBackdrop"
 
 [node name="CountdownBar" parent="Safe/Columns/Right/ResultTimer" unique_id=741831066 instance=ExtResource("11")]
 layout_mode = 2
+
+[node name="MenuActions" type="HBoxContainer" parent="Safe/Columns/Right"]
+layout_mode = 2
+theme_override_constants/separation = 24
+metadata/note = "Menu action button (Title menu, Figma 103:562): selected and normal. No heading: the column has no room for one."
+
+[node name="MenuActionSelected" parent="Safe/Columns/Right/MenuActions" instance=ExtResource("13")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 0
+theme_type_variation = &"MenuActionSelected"
+text = "Selected"
+selected = true
+action_icon = ExtResource("14")
+
+[node name="MenuActionNormal" parent="Safe/Columns/Right/MenuActions" instance=ExtResource("13")]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 0
+text = "Normal"
 
 [editable path="Safe/Columns/Left/MapArrows/MapNext"]

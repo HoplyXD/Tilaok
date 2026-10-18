@@ -416,3 +416,13 @@ At the user's request (the link to frame `100:77` "Winner Results": "make an exa
 - Follow-up ("can you interchange the color of the buttons normal and hovered"; the user chose "everywhere"): Claude swapped the fills of `sb_plank` and `sb_plank_hover` in the Theme, updated `PLANK_FIGMA` in `run_ui_theme_tests.gd`, and recorded the decision in [UI_HANDOFF](UI_HANDOFF.md#plank-button-from-the-figma-frame--2026-10-17).
 
 AI-generated code and scene values; the Figma design and vine vector are the team's. No human code review, visual design review or physical-device test is claimed.
+
+### Menu action buttons built from the Figma frame — October 18, 2026
+
+At the user's request (the link to frame `103:562` "Menu actions" of the team Figma file "UI-Tilaok-": "make the buttons variations like this"; asked how the selection should move, the user chose "Brown = selected"), Claude (Claude Opus 5.5 via Claude Code, with the official Figma MCP connector) made one `get_design_context` call, checked its flat colours against the screenshot's pixels and downloaded the frame's SVGs. It identified the play icon as Lucide "play" and downloaded Lucide's upstream LICENSE. Claude then:
+- Copied the pointer and play SVGs unchanged into `assets/ui/common/` with the licence file.
+- Generated the `MenuAction*` Theme types in `tilaok_theme.tres` from the frame's values (edge, face, inset edge, fastening dots, solid drop shadows, label styles, icon gap).
+- Generated `scripts/ui/ui_menu_action_button.gd` and `scenes/ui/components/menu_action_button.tscn`; changed `ui_menu_list.gd` so items with `set_selected` set their own look; switched the Title menu in `title_screen.tscn` to the new buttons ("Play" label, play icon, 16 px gap) and added both looks to `component_sheet.tscn`.
+- Added the checks to `tests/run_ui_theme_tests.gd`, measured 1x and 1080p renders against the Figma screenshot with scratch scripts, and ran the regressions listed in [UI_HANDOFF](UI_HANDOFF.md#menu-action-buttons-from-the-figma-frame--2026-10-18).
+
+AI-generated code and Theme values; the Figma design and pointer vector are the team's; the play icon is Lucide's (ISC). The hover, pressed and disabled looks are Claude's derivations, not from the frame. No human code review, visual design review or physical-device test is claimed.

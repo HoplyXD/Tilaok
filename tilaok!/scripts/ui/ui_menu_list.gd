@@ -140,10 +140,11 @@ func _apply() -> void:
 	for index in items.size():
 		var item := items[index]
 		var is_selected := active and index == selected
-		if item is BaseButton:
-			item.theme_type_variation = VARIATION_SELECTED if is_selected else VARIATION_NORMAL
-		elif item.has_method("set_selected"):
+		# Items with their own selected look (option rows, menu action buttons) set it themselves.
+		if item.has_method("set_selected"):
 			item.call("set_selected", is_selected)
+		elif item is BaseButton:
+			item.theme_type_variation = VARIATION_SELECTED if is_selected else VARIATION_NORMAL
 
 
 func _on_item_pressed(index: int) -> void:

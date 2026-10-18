@@ -62,6 +62,20 @@ const PLANK_FIGMA := {
 	"disabled": ["#bc9d86", "PlankStrokeDisabled", ["#484848", "#918b80", "#d4c39e"]],
 }
 const PLANK_STOP_OFFSETS := [0.0, 0.639, 0.884]
+## Exact values from the Figma "Menu actions" frame (103:562): Theme type -> [style or colour
+## name, expected colour]. Normal is "Menu action" (103:571), Selected is "Play action" (103:563).
+const MENU_ACTION_FIGMA := {
+	"MenuAction": ["normal", "#b99669"],
+	"MenuActionSelected": ["normal", "#86502f"],
+	"MenuActionFace": ["panel", "#ead5af"],
+	"MenuActionFaceSelected": ["panel", "#b77748"],
+	"MenuActionInset": ["panel", "#f8e9cb"],
+	"MenuActionInsetSelected": ["panel", "#e6b484"],
+	"MenuActionFastening": ["panel", "#ae8659"],
+	"MenuActionFasteningSelected": ["panel", "#86502f"],
+	"MenuActionShadow": ["panel", "#af895d66"],
+	"MenuActionShadowSelected": ["panel", "#754526"],
+}
 ## Figma gradientTransform row 1: t = -0.216 u - 0.683 v + 1.165 over the button's u, v.
 const PLANK_GRADIENT_T := Vector3(-0.216, -0.683, 1.165)
 const LEGEND_TYPES := {
@@ -91,6 +105,7 @@ func _run() -> void:
 	_test_theme_tokens()
 	_test_fonts()
 	await _test_plank_button()
+	await _test_menu_action_button()
 	await _test_badge_variants()
 	await _test_confirm_dialogs()
 	await _test_lobby_open_slot()
@@ -259,6 +274,145 @@ func _gradient_matches(type_name: String, colors: Array) -> bool:
 
 func _near(a: Color, b: Color) -> bool:
 	return absf(a.r - b.r) < 0.004 and absf(a.g - b.g) < 0.004 and absf(a.b - b.b) < 0.004
+
+
+## Menu action button from Figma frame 103:562 "Menu actions": exact colours, the 54 / 72 px
+## heights, the pointer and icon only while selected, and the Title menu moving the brown look.
+func _test_menu_action_button() -> void:
+	for type_name in MENU_ACTION_FIGMA:
+		var spec: Array = MENU_ACTION_FIGMA[type_name]
+		var box := theme.get_stylebox(str(spec[0]), str(type_name)) as StyleBoxFlat
+		var want := Color.html(str(spec[1]))
+		# The inset edge is an outline only; everything else is a fill.
+		var got := Color.BLACK
+		if box != null:
+			got = box.bg_color if box.draw_center else box.border_color
+		_check(
+			box != null and _near(got, want) and absf(got.a - want.a) < 0.004,
+			"%s is the Figma %s" % [type_name, spec[1]]
+		)
+	var shadow := theme.get_stylebox("panel", "MenuActionShadow") as StyleBoxFlat
+	var shadow_selected := theme.get_stylebox("panel", "MenuActionShadowSelected") as StyleBoxFlat
+	_check(
+		shadow.get_expand_margin(SIDE_BOTTOM) == 3.0
+		and shadow_selected.get_expand_margin(SIDE_BOTTOM) == 4.0,
+		"menu action drop shadows reach 3 px (normal) and 4 px (selected) below, as Figma 0 3 0 / 0 4 0"
+	)
+	_check(
+		(
+			_near(theme.get_color("font_color", "MenuActionText"), Color.html("#684127"))
+			and theme.get_font_size("font_size", "MenuActionText") == 22
+			and _near(theme.get_color("font_color", "MenuActionTextSelected"), Color.html("#fff8e8"))
+			and theme.get_font_size("font_size", "MenuActionTextSelected") == 31
+			and theme.get_constant("separation", "MenuActionRow") == 13
+		),
+		"menu action text: Margarine 22 #684127, selected 31 #fff8e8, 13 px after the icon"
+	)
+	var holder := VBoxContainer.new()
+	root.add_child(holder)
+	holder.theme = theme
+	var button := (
+		(load(COMPONENT_DIR + "menu_action_button.tscn") as PackedScene).instantiate()
+		as UiMenuActionButton
+	)
+	button.text = "Play"
+	button.action_icon = load("res://assets/ui/common/ui.common.icon_play.svg") as Texture2D
+	holder.add_child(button)
+	await process_frame
+	await process_frame
+	var pointer := button.get_node("Pointer") as Control
+	var icon := button.get_node("ActionLabel/Icon") as Control
+	var label := button.get_node("ActionLabel/Label") as Label
+	_check(
+		(
+			button.size.is_equal_approx(Vector2(388, 54))
+			and not pointer.visible
+			and not icon.visible
+			and label.text == "Play"
+			and label.theme_type_variation == &"MenuActionText"
+			and button.get_node("Face").theme_type_variation == &"MenuActionFace"
+		),
+		"normal menu action is 388 x 54, cream, text only, no pointer (%s)" % button.size
+	)
+	button.set_selected(true)
+	await process_frame
+	await process_frame
+	_check(
+		(
+			button.size.is_equal_approx(Vector2(388, 72))
+			and pointer.visible
+			and icon.visible
+			and label.theme_type_variation == &"MenuActionTextSelected"
+			and button.get_node("Face").theme_type_variation == &"MenuActionFaceSelected"
+			and button.get_node("Inset").theme_type_variation == &"MenuActionInsetSelected"
+			and button.get_node("FasteningLeft").theme_type_variation == &"MenuActionFasteningSelected"
+		),
+		"selected menu action is 388 x 72, brown, icon and pointer shown (%s)" % button.size
+	)
+	_check(
+		(
+			pointer.get_rect().is_equal_approx(Rect2(-29, 25, 15, 22))
+			and button.get_node("FasteningLeft").get_rect().is_equal_approx(Rect2(18, 33.5, 5, 5))
+			and button.get_node("Inset").get_rect().is_equal_approx(Rect2(5, 5, 378, 60))
+		),
+		"pointer, fastening and inset edge sit where the frame puts them"
+	)
+	button.text = "Settings"
+	await process_frame
+	_check(label.text == "Settings", "the visible label follows the button text")
+	holder.queue_free()
+	await process_frame
+
+	var title := (
+		(load("res://scenes/ui/screens/title_screen.tscn") as PackedScene).instantiate()
+		as UiTitleScreen
+	)
+	root.add_child(title)
+	await process_frame
+	title.show_state(0, UiContext.make(1, "k1"))
+	await process_frame
+	await process_frame
+	var menu := title.get_node("%MenuList") as UiMenuList
+	var buttons: Array[UiMenuActionButton] = []
+	for item in menu.items:
+		if item is UiMenuActionButton:
+			buttons.append(item)
+	_check(
+		buttons.size() == 4 and buttons[0].text == "Play" and buttons[0].action_icon != null,
+		"Title menu is four menu action buttons, Play first with the play icon"
+	)
+	if buttons.size() == 4:
+		_check(
+			(
+				buttons[0].selected
+				and buttons[0].size.y == 72.0
+				and buttons[1].size.y == 54.0
+				and is_equal_approx(buttons[1].position.y - buttons[0].position.y, 88.0)
+			),
+			"Title opens on Play selected (72 px), the rest 54 px, 16 px apart"
+		)
+		menu.move("down")
+		await process_frame
+		await process_frame
+		_check(
+			(
+				not buttons[0].selected
+				and buttons[1].selected
+				and buttons[0].size.y == 54.0
+				and buttons[1].size.y == 72.0
+				and buttons[1].get_node("Pointer").visible
+				and not buttons[0].get_node("Pointer").visible
+			),
+			"moving down hands the brown, tall look and the pointer to Library"
+		)
+		menu.set_active(false)
+		await process_frame
+		_check(
+			buttons.all(func(b: UiMenuActionButton) -> bool: return not b.selected),
+			"an inactive Title menu (quit dialog open) shows no selected button"
+		)
+	title.queue_free()
+	await process_frame
 
 
 func _test_badge_variants() -> void:

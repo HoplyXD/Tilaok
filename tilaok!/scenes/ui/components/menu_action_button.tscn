@@ -1,0 +1,131 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_menu_action_button.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://crpah4u353nph" path="res://assets/ui/common/ui.common.menu_pointer.svg" id="2"]
+
+[node name="MenuActionButton" type="Button"]
+custom_minimum_size = Vector2(388, 0)
+offset_right = 388.0
+offset_bottom = 54.0
+focus_mode = 0
+theme_type_variation = &"MenuAction"
+text = "Menu action"
+script = ExtResource("1")
+metadata/asset_id = "ui.common.menu_action"
+metadata/figma = "Menu actions 103:562 (Normal 103:571, Selected 103:563)"
+
+[node name="Shadow" type="Panel" parent="."]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuActionShadow"
+metadata/note = "Solid drop shadow (Figma 0 3 0 / 0 4 0). Its stylebox reaches 3 or 4 px below the button with expand_margin_bottom."
+
+[node name="Face" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_top = 1.5
+offset_right = -1.5
+offset_bottom = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuActionFace"
+metadata/note = "The plank fill. The button's own stylebox around it is the 1.5 px edge."
+
+[node name="Inset" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuActionInset"
+metadata/note = "Figma \"Inset edge\": 1 px line, 5 px in from the top and sides, 7 px from the bottom."
+
+[node name="FasteningLeft" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 18.0
+offset_top = -2.5
+offset_right = 23.0
+offset_bottom = 2.5
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuActionFastening"
+
+[node name="FasteningRight" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -2.5
+offset_right = -18.0
+offset_bottom = 2.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuActionFastening"
+
+[node name="ActionLabel" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"MenuActionRow"
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="ActionLabel"]
+visible = false
+texture_filter = 5
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="ActionLabel"]
+layout_mode = 2
+theme_type_variation = &"MenuActionText"
+text = "Menu action"
+vertical_alignment = 1
+
+[node name="Pointer" type="TextureRect" parent="."]
+visible = false
+texture_filter = 5
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -29.0
+offset_top = -11.0
+offset_right = -14.0
+offset_bottom = 11.0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+metadata/asset_id = "ui.common.menu_pointer"
+metadata/note = "Figma \"Selection pointer\": 15 x 22, 14 px left of the button, shown only while selected."
