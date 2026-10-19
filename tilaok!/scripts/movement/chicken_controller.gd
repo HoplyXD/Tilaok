@@ -245,6 +245,7 @@ func _try_start_ledge_climb(axis: float, stunned_now: bool) -> bool:
 	return true
 
 
+# gdlint: disable=max-returns
 ## Where the chicken would stand after climbing the ledge on `side`, or Vector2.INF when there is
 ## no climbable ledge: the top face beside the head must belong to a wall-slide-eligible surface
 ## (so wall-ineligible ledges, like the tutorial's flag ledge, stay unclimbable) and both the
@@ -267,6 +268,9 @@ func find_ledge_target(side: int) -> Vector2:
 	var hit := get_world_2d().direct_space_state.intersect_ray(query)
 	if hit.is_empty() or (hit.normal as Vector2).y > -0.7:
 		return Vector2.INF
+	var ledge_collider := hit.collider as Node
+	if ledge_collider == null or ledge_collider.get_instance_id() != _wall_collider_id:
+		return Vector2.INF
 	var metadata := SupportSurfaceMetadata.for_collider(hit.collider as Node)
 	if (
 		metadata == null
@@ -278,7 +282,12 @@ func find_ledge_target(side: int) -> Vector2:
 		return Vector2.INF
 	var lifted := Vector2(global_position.x, ledge_y - half.y - _standing_offset.y - 0.5)
 	var target := Vector2(probe_x + float(side) * half.x, lifted.y)
-	if not _body_fits(lifted) or not _body_fits(target):
+	if (
+		not _body_fits(lifted)
+		or not _body_fits(target)
+		or test_move(global_transform, lifted - global_position, null, 0.0)
+		or test_move(Transform2D(global_rotation, lifted), target - lifted, null, 0.0)
+	):
 		return Vector2.INF
 	return target
 
@@ -294,15 +303,19 @@ func _body_fits(origin: Vector2) -> bool:
 	return get_world_2d().direct_space_state.intersect_shape(query, 1).is_empty()
 
 
-## Up first, then over the edge; no physics during the pull-up, then a normal standing landing.
+## Rise clear of the ledge before moving over; each interpolation step is collision checked.
 func _advance_ledge_climb(delta: float) -> void:
 	_climb_elapsed += delta
 	var t := clampf(_climb_elapsed / tuning.ledge_climb_seconds, 0.0, 1.0)
 	var rise := clampf(t / 0.6, 0.0, 1.0)
-	var over := clampf((t - 0.6) / 0.4, 0.0, 1.0)
-	global_position = Vector2(
+	var over := clampf((t - 0.65) / 0.35, 0.0, 1.0)
+	var next_position := Vector2(
 		lerpf(_climb_from.x, _climb_to.x, over), lerpf(_climb_from.y, _climb_to.y, rise)
 	)
+	if test_move(global_transform, next_position - global_position, null, 0.0):
+		_abort_ledge_climb()
+		return
+	global_position = next_position
 	velocity = Vector2.ZERO
 	if t >= 1.0:
 		cancel_ledge_climb()
@@ -312,6 +325,10 @@ func _advance_ledge_climb(delta: float) -> void:
 func cancel_ledge_climb() -> void:
 	climbing = false
 	_climb_elapsed = 0.0
+
+
+func _abort_ledge_climb() -> void:
+	cancel_ledge_climb()
 
 
 func set_snapshot(snapshot: ConfigurationSnapshot) -> void:

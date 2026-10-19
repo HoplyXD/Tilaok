@@ -1,0 +1,53 @@
+# Unintended upward wall movement — reproduction and fix evidence
+
+Date: 2026-10-19 (Asia/Manila)
+Checkout: `C:\Users\roman\Desktop\Vscode Projects\Tilaok`, `main`, baseline `e810b05a1cafe2dcbc2be9db6528d7093dde927f`; working tree was clean before this task.
+Engine: `D:\Downloads\Godot_v4.7.2-stable_win64_console.exe`, `4.7.2.stable.official.ed1daf0bf`; exported with installed 4.7.2 templates.
+Profile/seed/tick: Item Lab `karera_slice`, seed `12345`, fixed 60 Hz; synthetic K1 keyboard.
+Reviewer: Codex (AI-generated implementation and automated verification); no human code review or feel review claimed.
+
+## Cause
+
+`_update_vertical()` only caps positive (downward) locomotion velocity when wall contact is active. The slide cap did not add lift. The actual ascent came from `_try_start_ledge_climb()` accepting an eligible top found by a vertical ray in `find_ledge_target()` without checking that the top collider was the same collider currently contacted by `WallContactProbe`. A separate eligible surface near the chicken therefore looked like a ledge on a tall wall. The climb set locomotion velocity to zero and interpolated the body upward to that false target.
+
+The old climb also assigned `global_position` directly and began its horizontal phase at the same instant its vertical rise finished. That let interpolation cross geometry and made the first diagonal up/over step collide with the wall corner. The updated path validates the vertical and horizontal sweeps at climb start, finishes the rise before the over-edge movement, and checks every interpolated movement against collisions. A blocker appearing during the climb stops that movement step; a fresh attempt remains subject to the same collision checks.
+
+## Before and after
+
+| Measure | Before fix | After fix |
+|---|---:|---:|
+| Ordinary jump peak feet from floor y=960 | 767.945 wu | 767.945 wu |
+| False unrelated shelf top | y=704 wu | y=704 wu |
+| False climbs | 1 | 0 |
+| False case final feet | 703.9999 wu | 960.00 wu after landing |
+| Extra ascent beyond ordinary jump apex | 63.946 wu | 0 wu |
+| Valid four-cell ledge climb count | 1 | 1 |
+| Valid ledge landing feet | 703.9999 wu | 703.9999 wu |
+
+Before-fix details and the failed assertion are retained in [the reproduction log](2026-10-19_before_fix_reproduction.log). After-fix integration output is [run_ledge_climb_tests](2026-10-19_run_ledge_climb_tests.log). Rendered after-fix Item Lab frames are in [the capture folder](2026-10-19-wall-ascent/); the pre-fix state was measured in physics but a rendered before image was not saved.
+
+## Verification results
+
+| Check | Result | Command / evidence |
+|---|---|---|
+| Reproduce defect before fix | PASSED — defect reproduced | `--headless --fixed-fps 60 --path 'tilaok!' --script 'res://tests/run_ledge_climb_tests.gd'`; exit 1 on the false-ledged assertion; exact observations above. |
+| Ledge climb integration | PASSED | Same command after fix; 37 checks, 0 failures. Valid ledge climbs once; unrelated tops on both wall sides, insufficient headroom, and released direction do not climb. A blocker added during a climb prevents the chicken from crossing it. |
+| Wall movement | PASSED | `run_p02_wall_tests.gd`; 85 checks, 0 failures. Both wall sides, descent cap, ascent, fresh press, held jump, separation/recontact, moving wall, external launch, support/Rising wave, pause/lifecycle/reset. |
+| Baseline movement | PASSED | `run_p02_tests.gd`; 83 checks, 0 failures. |
+| Blocks, sneak, glide and character animation | PASSED | `run_blocks_tests.gd`; 111 checks, 0 failures. |
+| Stage and support | PASSED | `run_p03_tests.gd`; 103 checks, 0 failures. |
+| Rising-wave / Kangaroo support semantics | PASSED | `run_p11_tests.gd`; 78 checks, 0 failures. |
+| Tutorial route gate | COULD-NOT-RUN | Full `run_tutorial_gate_tests.gd` exceeded the run window. `--quick` skipped its long no-build search but its remaining solution search still did not finish before interruption; partial output is in `2026-10-19_run_tutorial_gate_tests_quick.log`. |
+| Tutorial contract | PASSED | `run_tutorial_tests.gd`; 142 checks, 0 failures. |
+| P13 tutorial route | PASSED | `run_p13_tutorial_tests.gd`; 58 checks, 0 failures. Existing invalid UID warnings fell back to valid text resource paths; process exit 0. |
+| Godot import/parse | PASSED | `--headless --editor --path 'tilaok!' --quit`; exit 0 on the installed 4.7.2 build. |
+| Affected-file lint | PASSED | `gdlint` on controller and both affected runners; exit 0. |
+| Affected-file format | PASSED | `gdformat --check` on controller and both affected runners; 3 unchanged, exit 0. |
+| Whole-project lint | FAILED — existing unrelated findings | `gdlint 'tilaok!'`; five reported findings in `scripts/ui/ui_egg_slot.gd`, `scripts/ui/ui_pugad_overlay.gd`, `scripts/ui/ui_round_result_screen.gd`, and `tests/run_ui_theme_tests.gd`. No finding in task files. |
+| Whole-project format | FAILED — existing unrelated findings | `gdformat --check 'tilaok!'`; five files would reformat: `scripts/match/match_screen_presenter.gd`, `scripts/ui/ui_round_result_screen.gd`, `tests/capture_ui_reference_evidence.gd`, `tests/run_match_ui_tests.gd`, and `tests/run_ui_theme_tests.gd`. No task file was left unformatted. |
+| Rendered after-fix sequence | PASSED | Windowed Compatibility renderer on NVIDIA GeForce RTX 4050 Laptop GPU; `capture_wall_ascent_evidence.gd -- --label=after`; exit 0. Three 1280×720 PNG frames show the body beside the tall wall, apex, and post-jump landing; capture summary: climbs=0, peak feet=767.95, final feet=960.00. No pre-fix render was captured. |
+| Windows release export | PASSED after expected setup | `--headless --path 'tilaok!' --export-release 'Windows Desktop' '../build/tilaok-p02.exe'`; exit 0 with installed 4.7.2 templates. First attempt returned exit 1 because the configured ignored `build/` output directory did not yet exist; created it and reran. |
+| Exported startup smoke | PASSED | `build/tilaok-p02.exe --headless --quit-after 90`; exit 0, engine reported 4.7.2. |
+| Physical device / human feel review | COULD-NOT-RUN | Synthetic K1 only; no physical controller or human reviewer evidence. Existing P02 gates remain open. |
+
+Automated reports are stored beside this file using the `2026-10-19_run_*.log` prefix. Temporary diagnostic print statements were removed; the regression emits only its measured false-top summary.

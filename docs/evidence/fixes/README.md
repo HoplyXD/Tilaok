@@ -51,3 +51,6 @@ The windowed suites (`run_p05_interactive`, `run_match_ui_interactive`) were not
 - [P04 rows](2026-10-16_p04_wall_rows.txt)
 
 Human feel review of the ledge climb, and physical keyboard checks of E / F, remain open (PHASETASK P02-T29).
+## Unintended upward wall movement regression — October 19, 2026
+
+- [Unintended upward wall movement regression — October 19, 2026](2026-10-19_wall_upward_slide_fix.txt): reproduced a false ledge climb above a tall wall, matched ledge top to the actual contacted collider, collision-checked the pull-up, and recorded synthetic physics/render/export evidence.

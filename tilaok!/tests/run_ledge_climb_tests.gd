@@ -11,6 +11,7 @@ const FLOOR_Y := 960.0
 const WALL_TOP := 704.0
 const WALL_COL := 5
 const WALL_LEFT := WALL_COL * 64.0
+const WallFixtureBuilder = preload("res://scripts/harness/wall_fixture_builder.gd")
 
 var failures := 0
 var checks := 0
@@ -35,6 +36,9 @@ func _run() -> void:
 	await _test_disabled()
 	await _test_no_room_on_top()
 	await _test_not_holding_toward_wall()
+	await _test_unrelated_top_is_not_a_ledge()
+	await _test_unrelated_top_is_not_a_ledge_on_left_wall()
+	await _test_climb_stops_at_new_blocker()
 	print("LEDGE_CLIMB_TESTS checks=%d failures=%d" % [checks, failures])
 	room.queue_free()
 	await process_frame
@@ -94,17 +98,23 @@ func _build(extra: Array = []) -> void:
 
 ## Run at the wall holding right, jump when close, keep holding right until a climb finishes
 ## (or 1.5 s pass), then let go and sample where the chicken stands.
-func _attempt(hold_toward_wall: bool = true) -> Dictionary:
+func _attempt(
+	hold_toward_wall: bool = true, wall_side: int = 1, wall_x: float = WALL_LEFT
+) -> Dictionary:
 	var climbs_before := actor.ledge_climb_count
-	_key(KEY_D, true)
+	var toward_key := KEY_D if wall_side > 0 else KEY_A
+	_key(toward_key, true)
 	for _frame in range(40):
 		await physics_frame
-		if actor.global_position.x > WALL_LEFT - 60.0:
+		if (
+			(wall_side > 0 and actor.global_position.x > wall_x - 60.0)
+			or (wall_side < 0 and actor.global_position.x < wall_x + 60.0)
+		):
 			break
 	_key(KEY_W, true)
 	await _frames(4)
 	if not hold_toward_wall:
-		_key(KEY_D, false)
+		_key(toward_key, false)
 	var best_feet := INF
 	for frame in range(90):
 		await physics_frame
@@ -114,7 +124,7 @@ func _attempt(hold_toward_wall: bool = true) -> Dictionary:
 		if actor.ledge_climb_count > climbs_before and not actor.climbing:
 			break
 	_key(KEY_W, false)
-	_key(KEY_D, false)
+	_key(toward_key, false)
 	await _frames(3)
 	return {
 		"climbs": actor.ledge_climb_count - climbs_before,
@@ -173,3 +183,114 @@ func _test_not_holding_toward_wall() -> void:
 		int(result.climbs) == 0,
 		"no climb when the player is not holding toward the wall: %s" % [result]
 	)
+
+
+func _test_unrelated_top_is_not_a_ledge() -> void:
+	await _build()
+	room.items.reset_match()
+	var tall_wall := WallFixtureBuilder.add_solid(
+		room.world_layer,
+		"ledge_test.tall_wall",
+		Rect2(Vector2(320.0, 300.0), Vector2(4.0, 600.0)),
+		true
+	)
+	var nearby_shelf := WallFixtureBuilder.add_solid(
+		room.world_layer,
+		"ledge_test.unrelated_shelf",
+		Rect2(Vector2(322.0, 704.0), Vector2(64.0, 16.0)),
+		true
+	)
+	actor.global_position = Vector2(200.0, FLOOR_Y - room.tuning.body_height_wu * 0.5)
+	actor.velocity = Vector2.ZERO
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.reset_wall_state()
+	await _frames(3)
+	var result := await _attempt()
+	_check(
+		int(result.climbs) == 0,
+		(
+			"a top on unrelated geometry cannot trigger a climb while touching a tall wall: %s"
+			% [result]
+		)
+	)
+	var natural_jump_rise := FLOOR_Y - float(result.best_feet)
+	print(
+		(
+			"LEDGE_METRIC unrelated_top_y=704.00 natural_jump_rise=%.2f false_climbs=%d"
+			% [natural_jump_rise, int(result.climbs)]
+		)
+	)
+	tall_wall.queue_free()
+	nearby_shelf.queue_free()
+	await _frames(2)
+
+
+func _test_unrelated_top_is_not_a_ledge_on_left_wall() -> void:
+	await _build()
+	room.items.reset_match()
+	WallFixtureBuilder.add_solid(
+		room.world_layer,
+		"ledge_test.tall_wall_left",
+		Rect2(Vector2(500.0, 300.0), Vector2(4.0, 600.0)),
+		true
+	)
+	WallFixtureBuilder.add_solid(
+		room.world_layer,
+		"ledge_test.unrelated_shelf_left",
+		Rect2(Vector2(438.0, 704.0), Vector2(64.0, 16.0)),
+		true
+	)
+	actor.global_position = Vector2(650.0, FLOOR_Y - room.tuning.body_height_wu * 0.5)
+	actor.velocity = Vector2.ZERO
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.reset_wall_state()
+	await _frames(3)
+	var result := await _attempt(true, -1, 504.0)
+	_check(
+		int(result.climbs) == 0,
+		(
+			"a top on unrelated geometry cannot trigger a climb while touching a tall left wall: %s"
+			% [result]
+		)
+	)
+
+
+func _test_climb_stops_at_new_blocker() -> void:
+	await _build()
+	_key(KEY_D, true)
+	for _frame in range(40):
+		await physics_frame
+		if actor.global_position.x > WALL_LEFT - 60.0:
+			break
+	_key(KEY_W, true)
+	await _frames(4)
+	for _frame in range(50):
+		await physics_frame
+		if actor.climbing:
+			break
+	_check(actor.climbing, "valid ledge climb starts before a new path blocker is added")
+	if not actor.climbing:
+		return
+	await _frames(8)
+	WallFixtureBuilder.add_solid(
+		room.world_layer,
+		"ledge_test.mid_climb_blocker",
+		Rect2(Vector2(321.0, 600.0), Vector2(2.0, 100.0)),
+		true
+	)
+	await _frames(8)
+	_check(
+		actor.ledge_climb_count >= 1 and not actor.climbing and actor.global_position.x < 321.0,
+		(
+			"a blocker that appears in the over-edge path prevents movement through it: %s"
+			% [
+				{
+					"climbs": actor.ledge_climb_count,
+					"climbing": actor.climbing,
+					"position": actor.global_position,
+				}
+			]
+		)
+	)
+	_key(KEY_W, false)
+	_key(KEY_D, false)

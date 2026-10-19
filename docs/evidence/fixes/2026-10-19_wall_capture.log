@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=19 enabled_variants=31 profile=karera_slice
+WALL_ASCENT_FRAME label=after frame=jump near the tall wall path=C:/Users/roman/Desktop/Vscode Projects/Tilaok/tilaok!/../docs/evidence/fixes/2026-10-19-wall-ascent/after_01_jump_near_wall.png position=(291.9252, 812.9451) climbs=0
+WALL_ASCENT_FRAME label=after frame=apex / ledge selection path=C:/Users/roman/Desktop/Vscode Projects/Tilaok/tilaok!/../docs/evidence/fixes/2026-10-19-wall-ascent/after_02_apex_or_false_climb.png position=(291.9252, 744.7368) climbs=0
+WALL_ASCENT_FRAME label=after frame=result after holding toward the wall path=C:/Users/roman/Desktop/Vscode Projects/Tilaok/tilaok!/../docs/evidence/fixes/2026-10-19-wall-ascent/after_03_result.png position=(291.924, 899.999) climbs=0
+WALL_ASCENT_CAPTURE label=after climbs=0 peak_feet=767.95 final_feet=960.00 wall_side=0 sliding=false

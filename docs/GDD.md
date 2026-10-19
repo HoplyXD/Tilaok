@@ -219,6 +219,7 @@ Terminal, opening-freeze, capture and external-force precedence remain unchanged
 - In the air, touching a wall-slide-eligible wall while **holding toward it**: if the top of that wall is within reach of the chicken's head (up to 24 wu above it, 64 wu below it) and there is room to stand there, the chicken pulls itself up onto the ledge in 0.22 s. It rises first, then steps over the edge, and lands standing.
 - Not while rising fast (over 240 wu/s), so a full jump still reaches its apex before grabbing. Not while stunned, sneaking, launched or on the ground.
 - Wall-ineligible ledges (the tutorial flag ledge, `no_wall_slide` map tiles) cannot be climbed, so they still need a proper route. No climb when a block above leaves too little headroom.
+- The detected top must belong to the same solid collider whose eligible side the chicken is touching. Check both the upward and over-the-edge path against blocking geometry; a nearby top from another collider is not a climb target, and an obstruction that appears during the pull-up cancels it.
 - Input is locked during the pull-up. A launch, reset or elimination cancels it.
 
 ### Stage blocks — 2026-10-14

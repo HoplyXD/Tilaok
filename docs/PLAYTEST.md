@@ -237,6 +237,21 @@ The full command/evidence inventory is in [P03 verification](evidence/p03/2026-1
 | Windows export + startup | PASSED — startup only | Release export (matching 4.7.2 templates) and `--headless --quit-after 90` of the exported executable both exit 0. | [export](evidence/p02-wall/2026-10-13_export.txt), [runtime](evidence/p02-wall/2026-10-13_export_runtime.txt) |
 | `--write-movie` clip | COULD NOT RUN | Not attempted; stills only. | — |
 
+## Unintended upward wall movement regression — October 19, 2026
+
+**Build identity:** `main` working tree based on `e810b05`; Godot `4.7.2.stable.official.ed1daf0bf`; Item Lab (`karera_slice`), seed `12345`, 60 Hz; synthetic K1 keyboard input. Reviewer: Codex (AI, automated); no human feel or physical-device review is claimed. The report was reproduced with real CharacterBody2D physics before changing the controller.
+
+| Check | Status | Procedure and observed result | Evidence / limit |
+|---|---|---|---|
+| Pre-fix reproduction | PASSED — defect reproduced | Hold right and jump at a 600 wu tall eligible wall whose top is at y=300, with a separate eligible shelf at y=704. The controller reported one ledge climb and ended with feet at 704 wu although the same jump's peak was 767.945 wu (normal rise 192.055 wu from the 960 wu floor; the false climb added 63.945 wu above the jump apex). | [regression log](evidence/fixes/2026-10-19_wall_upward_slide_fix.txt); the failing assertion is retained as before-fix evidence. |
+| Post-fix false ledge, both sides | PASSED | Repeat against right and left walls. No climb starts; peak feet remain 767.945 wu (right) and 768.019 wu (left); unrelated shelves are not treated as the contacted wall's top. | `run_ledge_climb_tests.gd`, 37 checks. |
+| Valid ledge, blocked clearance, direction | PASSED | The original 4-tile wall still produces exactly one climb and lands at feet y=704 wu. Insufficient headroom and releasing wall direction produce zero climbs. | `run_ledge_climb_tests.gd`. |
+| Blocker appears during pull-up | PASSED | A solid inserted into the over-edge path during a climb stops movement before the chicken crosses it. | `run_ledge_climb_tests.gd`; retry may begin while wall direction remains held, and is also collision checked. |
+| Wall movement and fresh input | PASSED | Left/right slide cap and support isolation, fresh kick, held-jump, separation/recontact, moving-wall contact, external launch, lifecycle, pause, reset, ground/coyote, and ascent behavior remain covered. | `run_p02_wall_tests.gd`, 85 assertions. |
+| Rendered after-fix sequence | PASSED | Three 1280×720 Item Lab frames show the body beside the wall, near the jump apex, and after landing. The pre-fix defect was captured in real-physics measurements, but a pre-fix rendered frame was not saved. | [capture folder](evidence/fixes/2026-10-19-wall-ascent/); no human/art claim. |
+| Physical-device and human review | COULD-NOT-RUN | Synthetic K1 only; no human feel review or physical controller session. Existing P02 gates remain open. | See P02-T18/T22 and P02-T29. |
+| Windows export and startup smoke | PASSED | Exported with the installed 4.7.2 templates; `tilaok-p02.exe --headless --quit-after 90` exited 0. | [full command/result record](evidence/fixes/2026-10-19_wall_upward_slide_fix.txt). |
+
 ## 64 px grid, sneak/glide and stage blocks — October 14, 2026
 
 Build: working tree on `19b3653`; Godot 4.7.stable.official.5b4e0cb0f; Windows 11; Item Lab (`karera_slice`), seed 12345, 60 Hz; synthetic K1/K2 keyboard events; 1–2 seats. Reviewer: Claude (AI, automated; no human reviewer).

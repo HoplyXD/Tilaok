@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=19 enabled_variants=31 profile=karera_slice
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS jumping at a 4-tile wall while holding toward it climbs the ledge and stands on top: { "climbs": 1, "feet": 703.999877929688, "x": 351.924041748047, "best_feet": 703.5, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS without the ledge climb the same jump cannot get on top (the wall really is too tall): { "climbs": 0, "feet": 959.996826171875, "x": 291.924011230469, "best_feet": 767.945129394531, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 9): Valid placement.
+PASS no climb when there is no room to stand on the ledge: { "climbs": 0, "feet": 959.996826171875, "x": 291.924011230469, "best_feet": 767.945129394531, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS no climb when the player is not holding toward the wall: { "climbs": 0, "feet": 959.994506835938, "x": 291.924011230469, "best_feet": 767.945068359375, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS a top on unrelated geometry cannot trigger a climb while touching a tall wall: { "climbs": 0, "feet": 959.9990234375, "x": 291.924011230469, "best_feet": 767.945129394531, "floor": true }
+LEDGE_METRIC unrelated_top_y=704.00 natural_jump_rise=192.05 false_climbs=0
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS a top on unrelated geometry cannot trigger a climb while touching a tall left wall: { "climbs": 0, "feet": 831.995361328125, "x": 532.075988769531, "best_feet": 768.018859863281, "floor": true }
+PASS place build.hollow_blocks.cell_1x1 at (5, 11): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 12): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 13): Valid placement.
+PASS place build.hollow_blocks.cell_1x1 at (5, 14): Valid placement.
+PASS valid ledge climb starts before a new path blocker is added
+PASS a blocker that appears in the over-edge path prevents movement through it: { "climbs": 2, "climbing": false, "position": (292.9906, 643.9814) }
+LEDGE_CLIMB_TESTS checks=37 failures=0

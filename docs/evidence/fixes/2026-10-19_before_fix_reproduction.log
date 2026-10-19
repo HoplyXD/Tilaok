@@ -1,0 +1,7 @@
+BEFORE-FIX REPRODUCTION
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+Command: & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --fixed-fps 60 --path 'tilaok!' --script 'res://tests/run_ledge_climb_tests.gd'
+Fixture: real Item Lab CharacterBody2D; 600 wu tall eligible wall (x=320..324, y=300..900); separate eligible shelf (x=322..386, y=704..720); floor y=960; synthetic K1 held right + one jump.
+Expected before fix: zero climbs because the ray's eligible top belongs to a different collider than the contacted wall; normal jump peaks at feet y=767.945 wu.
+Actual before fix: exit code 1; failing assertion "a top on unrelated geometry cannot trigger a climb while touching a tall wall". Result: climbs=1, final feet y=703.9999 wu, best_feet=703.5 wu, floor=true. The unrelated top at y=704 caused 63.946 wu of ascent beyond the normal jump apex.
+Observed valid control: the same runner's original four-cell wall still climbed once to feet y=703.9999 wu; wall movement itself did not produce the measured extra lift.
