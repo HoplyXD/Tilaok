@@ -1,5 +1,7 @@
 # AI Assistance Record — Tilaok!
 
+**New approved documentation track (2026-10-19):** Codex authored `NETWORKED_LIVE_BUILD.md` and `PHASETASK_NETWORKED_LIVE_BUILD.md` and reconciled related project guidance under the user-approved plan. This was documentation work only: no runtime code, Android export, network session, gameplay test, physical-device test or human review was performed. Future programming work remains under the standing AI-assisted programming policy and must record actual assistance and evidence when it occurs.
+
 _Current policy and cumulative disclosure record. Updated 2026-10-14. This file prepares evidence for DOST Form 03; it is not the signed form._
 
 ## Current standing programming policy

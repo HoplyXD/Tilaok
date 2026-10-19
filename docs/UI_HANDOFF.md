@@ -1,5 +1,7 @@
 # Tilaok! UI Handoff Spec — for UI design (Shanti)
 
+**Future networked UI direction (approved 2026-10-19):** the current handoff describes offline UI. The separately gated phone client uses a shared landscape arena, independent touch movement and build-aim controls, LAN Lobby ID/QR/manual IP entry, and host/client lifecycle cues. See [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) and its [touch UX tasks](PHASETASK_NETWORKED_LIVE_BUILD.md#nlb-p10--touch-ux-tutorial-accessibility-mixed-device-parity); this direction is not implemented or an October submission obligation.
+
 **Written 2026-10-13.** Status: handoff draft for human UI design. It collects what the existing project documents and the current code already fix, marks what is only a proposal, and lists the decisions still open. It does not replace [UI_TUTORIAL.md](UI_TUTORIAL.md), [GDD.md](GDD.md) or [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); when they disagree with this file, they win and this file is wrong.
 
 **Tags used below:** **LOCKED** = recorded in a project contract. **CURRENT** = what the code does today (may be a placeholder). **PROPOSAL** = my suggestion, needs a human decision. **OPEN** = nobody has decided.

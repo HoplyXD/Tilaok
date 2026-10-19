@@ -1,5 +1,7 @@
 # Tilaok! — Game Design Document
 
+**Track status (2026-10-19):** the current executable and this core loop describe the offline baseline. The user-approved future PC-host/Android shared-arena, live-placement round flow is separately gated and not implemented. See [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md) for approved target rules and migration contracts; preserve the current rules and scoring unless that specification explicitly defines a transition.
+
 _Last updated: 2026-10-14 — guided first match uses a tutorial-only stage where building is required to reach the flag (§10); Place confirmation locks each edit with no undo during that round; also, block scenes with BlockData (kill/stun hitboxes, anchor/gravity, specials), Spikes, Cannon, stun and the death sprite (user request), 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (user request, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
 
 ## 1. Pitch

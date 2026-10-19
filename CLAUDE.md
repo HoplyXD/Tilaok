@@ -1,5 +1,7 @@
 # CLAUDE.md — Tilaok!
 
+**Networked live-build track (approved 2026-10-19):** this is future, separately gated work, not an October 21 freeze or October 25 submission obligation. The current executable remains offline/local. Follow [the specification](docs/NETWORKED_LIVE_BUILD.md) and [its tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md) only when that track is scheduled; this scoped exception supersedes the older local-only guidance for that track.
+
 Context for Claude Code sessions in this repo.
 
 ## What this is
@@ -39,7 +41,7 @@ AI/LLM-assisted programming, including generation of core gameplay code, is the 
 - Record actual assistance in `docs/AI_USAGE.md` and Form 03 preparation. Preserve available prompts, outputs and history; never invent missing records or assume generated code is free of provenance/licensing concerns. Do not copy UCH or third-party core implementations.
 
 ## Working conventions
-- Local multiplayer only (no networking) for the deadline.
+- The October deadline build remains local/offline. Networked work is the separately gated approved target described above; it does not enter the freeze or submission obligation.
 - Polish over quantity: base loop + Lagsanay first, then more events.
 - Update `docs/GDD.md` when design decisions change.
 

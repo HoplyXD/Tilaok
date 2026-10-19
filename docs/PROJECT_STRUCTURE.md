@@ -1,5 +1,7 @@
 # Project structure and responsibility map
 
+**Networked target status (2026-10-19):** no network transport/RPC implementation or Android export preset was present at inspection. PC-host/Android shared-arena/live-placement architecture is approved future work; see [spec](NETWORKED_LIVE_BUILD.md) and [separate tracker](PHASETASK_NETWORKED_LIVE_BUILD.md). Current commands and implementation maps describe the offline project.
+
 P01 foundation plus P02 input/movement, P03 graybox stage/camera/support, P04 item infrastructure, P05 lobby/Pugad/atomic Place, P06 Karera with explained race results, scoped P07 First Playable, standalone P08 Lagsanay Lab, P09 full-match lifecycle, and P11 independent Kangaroo route run on Godot 4.7. The main scene opens a local development harness; choose P03 Graybox Arena, Item Lab, P05 Match Loop, P07 First Playable, P08 Lagsanay Lab, P09 Match Lifecycle or P11 Kangaroo Lab. P07–P09 and P11 are development routes over a local 2–4 seat loop. P08, P09 and P11 have technical evidence but are not release profiles; P07 player/device/human acceptance remains open. P09 ends at the score target or round 12 and routes tied leaders to Lagsanay on the same constructed stage; it does not implement P12 scheduling/stacks. P11 independently evaluates Freeze, Rising and Hug with a seeded Slipper Storm; it does not instantiate the Lagsanay controller. Human acceptance, event stacks, persistent saves, networking, final production UI/art and complete release onboarding remain unimplemented.
 
 | Area | P01 path | Responsibility and current state |

@@ -1,5 +1,7 @@
 # Tilaok! Production Plan
 
+**Networked live-build track:** approved target direction is recorded in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md); all implementation and verification is future work tracked separately in [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md). It does not change October submission staffing, gates or deadlines. The current platform/export records remain the offline baseline.
+
 **Status:** pre-production planning document with implemented P02 movement/input, P03 graybox stage/camera/support, P04 item infrastructure/Kaing/Tulay, P05 construction loop, P06 Karera/scoring, and P07–P09 development routes plus synthetic engineering verification. P07 human/device acceptance, P08 entry/release gate and P09 performance/human acceptance remain open; do not mark release gates complete. Francis is lead developer and Carlos is co-lead developer; both use AI-assisted programming. Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets. These human production outputs will not be AI-generated. `ROADMAP.md` remains the scope and schedule source of truth.
 
 ## Delivery principle

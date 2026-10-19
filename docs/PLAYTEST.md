@@ -1,5 +1,7 @@
 # Tilaok! Verification and Playtest Plan
 
+**Networked verification status (2026-10-19):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. The approved PC-host/Android track has no gameplay, network, export or physical-device verification from this documentation task. Future required cases are tracked in [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), with proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
+
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
 ## Current verification status

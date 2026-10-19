@@ -1,5 +1,7 @@
 # Roadmap
 
+**Separately gated future track (approved 2026-10-19):** PC-hosted matches with Android clients and live placement are documented in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md), with a separate [12-phase tracker](PHASETASK_NETWORKED_LIVE_BUILD.md). It does not enter the October 21 freeze or October 25 submission denominator. Keep the existing offline route available; scheduling or release promotion requires a separate scope decision.
+
 Deadline: **Oct 25, 2026** (as of Oct 12, 2026).
 
 ## Priorities

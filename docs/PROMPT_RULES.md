@@ -1,5 +1,7 @@
 # Prompt-writing rules — Tilaok!
 
+**Scope update (2026-10-19):** local-only describes the existing offline baseline. The user-approved PC-host/Android/live-placement track is an explicit, separately gated exception documented in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) and [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md); use those contracts when drafting prompts for that track. No implementation or release scope is implied by this note.
+
 Standing user preferences consolidated on 2026-10-13. Read this document before drafting or revising any implementation or phase prompt. New explicit user decisions may supersede these preferences; record material changes here. This is reusable guidance, not a generated task prompt.
 
 ## Role and output
@@ -16,7 +18,7 @@ Standing user preferences consolidated on 2026-10-13. Read this document before 
 - Verify the current checkout, branch, worktrees, remote, status and relevant history. Never assume an earlier checkout location or commit is still current.
 - Inspect the complete requested PHASETASK phase, linked PRD requirements, dependencies, GDD, specialized contracts, actual implementation and evidence. Read relevant code headers and bodies; documentation alone is not proof of implementation.
 - Search prior art with `git log --all -i --grep="<keyword>"`, existing systems and available merged-PR history. Report EXISTS / PARTIAL / NONE with current path:line references.
-- Identify affected scripts/scenes, assets, input, game-loop contracts, data and networking. Tilaok is local-only; do not add networking or persistence without a request.
+- Identify affected scripts/scenes, assets, input, game-loop contracts, data and networking. The current October submission baseline is local-only; networked work is authorized only within the separately gated PC-host/Android scope in `NETWORKED_LIVE_BUILD.md` and its tracker. Do not expand that scope or add persistence without a request.
 - Verify actual installed/connected tools, engine, export templates, test runners and lint/format commands. Do not present planned commands, synthetic devices or unavailable integrations as verified resources.
 - Research when requested; prefer original/official sources for engine APIs. UCH research is mechanical inspiration only, never permission to copy code, assets, names or characters.
 
@@ -50,7 +52,7 @@ After approval, require persistence through the entire approved scope, fixes, re
 
 - Use relevant engine/game requirements, not irrelevant template boilerplate: config-driven tuning, lifecycle cleanup, bounded spawning, readable number/shape identities, supported-device parity, licensed/original content and platform compliance.
 - Preserve provisional values and inactive proposals until explicitly revised. Risky economy, monetization or save-format changes, if ever requested, need a flag and rollback path. Networked or saved-data work, if requested later, needs authority/validation and versioning/recovery safeguards.
-- Name applicable measured budgets. Current provisional Tilaok targets are 60 FPS / 16.67 ms at 1080p, 512 MiB process memory and 0 B/s gameplay traffic; reverify current documents before quoting them.
+- Name applicable measured budgets. Offline provisional targets are 60 FPS / 16.67 ms at 1080p, 512 MiB process memory and 0 B/s gameplay traffic. Networked targets are proposed and unmeasured in `NETWORKED_LIVE_BUILD.md`; reverify the applicable document before quoting a budget.
 - Include lint/format, import/parse, existing regressions, focused tests, actual rendered playtests, screenshots/clips, performance/cleanup checks and export smoke checks as applicable.
 - Record build/revision, engine, date, profile/seed, player count, actual devices or synthetic input, procedure, expected/actual result, evidence and actual reviewer.
 - Mark checks PASSED / FAILED / COULD-NOT-RUN with reasons. Never check an unrun test. Synthetic input is not physical-controller/rollover/reconnect evidence; fixture testing is not full-game or release verification.

@@ -1,5 +1,7 @@
 # Tilaok! — Product Requirements Document
 
+**Track status (2026-10-19):** existing release requirements and evidence describe the offline submission baseline. The approved PC-host/Android/live-placement work is a separate future track, not an October submission obligation; its requirements and acceptance tracker are in [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md) and [PHASETASK_NETWORKED_LIVE_BUILD](PHASETASK_NETWORKED_LIVE_BUILD.md). Older local-only and zero-traffic requirements apply to the offline route only.
+
 **Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
 **Product owner:** Producer, name TBD. **Development leads:** Francis (lead developer) and Carlos (co-lead developer); both use AI-assisted programming. **Human production roles:** Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets without AI generation. Registration status, capacity, audio backup, individual task owners and review completion remain unrecorded. This document was prepared with disclosed AI assistance; it is not evidence of a completed game.
@@ -1363,7 +1365,7 @@ Required presentation expresses Filipino barrio identity through original chicke
 
 ## 15. Technical and quality requirements
 
-This is a local-only Godot game, not a service. There are no public APIs, remote endpoints, accounts or network/save migrations. Proposed interfaces describe responsibilities: assigned player inputs; actual support contacts; item definition/lifecycle; atomic stage edit set; terminal outcome ledger; exact score calculation; Main/Twist scheduling; presentation fed by resolved state. Names/paths in the tracker are suggested NEW components, not existing code or a mandated framework.
+The current October release baseline is a local-only Godot game, not a service. It has no public APIs, remote endpoints, accounts or network/save migrations. The separately gated approved PC-host/Android target is specified in NETWORKED_LIVE_BUILD.md. Proposed interfaces describe responsibilities: assigned player inputs; actual support contacts; item definition/lifecycle; atomic stage edit set; terminal outcome ledger; exact score calculation; Main/Twist scheduling; presentation fed by resolved state. Names/paths in the tracker are suggested NEW components, not existing code or a mandated framework.
 
 The available engine does not verify the target version. Do not change project version to make prose appear complete. Central tunables are provisional; capability switches prevent unverified content entering production. Memory/performance targets are budgets awaiting measurement, not achievements.
 
@@ -1416,7 +1418,7 @@ The available engine does not verify the target version. Do not change project v
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** QA (name TBD).
 
-**Expected behavior:** Provisional targets: 60 FPS/16.67 ms at 1080p, 512 MiB process memory pending target-PC confirmation, 0 B/s gameplay networking. Measure base, representative four-player and worst-case round-12 stages at persistent/transient caps and repeated restarts. Record median/p95/worst frame times, memory and object counts.
+**Expected behavior:** Offline-baseline provisional targets: 60 FPS/16.67 ms at 1080p, 512 MiB process memory pending target-PC confirmation, and 0 B/s gameplay traffic. The separate networked track has proposed, unmeasured budgets in NETWORKED_LIVE_BUILD.md. Measure base, representative four-player and worst-case round-12 stages at persistent/transient caps and repeated restarts. Record median/p95/worst frame times, memory and object counts.
 
 **Acceptance:** Evidence names OS/CPU/GPU/RAM, build, resolution, duration, counts and modes; compare against confirmed budgets, investigate spikes/growth, and record any budget revision explicitly. No measured results are fabricated.
 

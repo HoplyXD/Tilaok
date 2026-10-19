@@ -1,5 +1,7 @@
 # Tilaok!
 
+**Current build:** offline, local 2–4 player baseline. The approved PC-host/Android/live-placement proposal is separately gated future work and is not an October submission obligation. See [networked live-build specification](docs/NETWORKED_LIVE_BUILD.md) and [separate tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md).
+
 > A Filipino party platformer where chickens build the level, then try to survive it.
 
 **Tilaok!** (the rooster's crow) is our entry for the **DOST Level Up 3.0 Esports Game Dev Challenge** (finals 26–27 November 2026, GMall of GenSan, General Santos City).
@@ -11,6 +13,8 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
+- [Networked Live Build Specification](docs/NETWORKED_LIVE_BUILD.md): approved future PC-host/Android target, architecture, input and placement contracts
+- [Networked Live Build Tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md): separate 12-phase, 36-task implementation and verification track (0/36 checked)
 - [Phased Implementation Tracker](docs/PHASETASK.md): 180/421 task records checked; P13 is 11/18 (scoreboard, the routes, HUD, Library, tutorial and accessibility on the scheduled default route, and the 2026-10-17 reference UI restyle; physical-device and human sessions, including the restyle design review, open); P12 is 10/10 technical (seeded schedule, announcements, the three verified Twist pairs and the owner-approved terminal-order table on the default scheduled route; human sessions open); P11 is 13/13 on standalone development-route engineering evidence (human/device/balance and performance gates remain); P09 is 4/4 and P08 is 6/6 technical; P07 is 0/4 with player/device gates open; P10 is 48/54 on placeholder art (event/stack integration passed 2026-10-16 and the six families are in the match pool; release enablement open); P05 is 12/12 and P06 is 8/8; P04 is 20/22, P03 is 7/7 (map scenes added) and P02 is 24/34 (physical-device and human-review tasks open; includes the 2026-10-14 sneak/glide/64 px grid/stage-blocks extension)
 - [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order

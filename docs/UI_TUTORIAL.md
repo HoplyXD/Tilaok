@@ -1,5 +1,7 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
+**Future networked extension (approved 2026-10-19):** this document currently specifies offline onboarding. A separately gated tutorial update must teach shared-arena phone play, active build mode, accepted/rejected placement, LAN joining and host pause while preserving the offline tutorial. See [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) and [NLB-P10](PHASETASK_NETWORKED_LIVE_BUILD.md#nlb-p10--touch-ux-tutorial-accessibility-mixed-device-parity).
+
 
 ## Experience goals
 

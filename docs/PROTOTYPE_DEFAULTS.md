@@ -1,5 +1,7 @@
 # Tilaok! Prototype Defaults and Team Handoff
 
+**Traffic budget scope:** the existing 0 B/s gameplay-traffic value is the offline baseline expectation. It is not a target for the approved future network track. Proposed, unmeasured host/phone budgets are listed in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md#8-performance-verification-and-gates); do not treat them as achieved measurements.
+
 **PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, or establish competition eligibility. The wall-movement extension below was approved October 13, 2026; its rule choices are active design direction, while numeric starting values remain untested. Other proposed rule changes remain inactive until explicitly accepted.
 
 ## 1. Recommendation and evidence
