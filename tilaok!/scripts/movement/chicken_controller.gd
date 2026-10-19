@@ -19,6 +19,7 @@ signal stunned(seconds: float)
 ## body is then skipped, but the number/shape identity marker above the head is still drawn.
 @export var draw_debug_body := true
 
+var simulation_authority := SimulationAuthority.offline()
 var support_tracker: SupportTracker
 var support_actor_id := ""
 var lifecycle := PlayerLifecycleState.new()
@@ -88,7 +89,12 @@ func _exit_tree() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if input_router == null or get_tree().paused:
+	if (
+		input_router == null
+		or get_tree().paused
+		or simulation_authority == null
+		or not simulation_authority.can_commit()
+	):
 		return
 	var in_play := input_router.phase == LocalInputRouter.Phase.PLAY
 	if not in_play:
@@ -203,7 +209,7 @@ func _advance_locked_state(delta: float) -> bool:
 
 
 func set_snapshot(snapshot: ConfigurationSnapshot) -> void:
-	if snapshot == null or snapshot.gameplay == null:
+	if not _can_mutate() or snapshot == null or snapshot.gameplay == null:
 		return
 	tuning = snapshot.gameplay
 	_apply_tuning()
@@ -213,7 +219,8 @@ func set_snapshot(snapshot: ConfigurationSnapshot) -> void:
 ## Negative caps use the tuning launch caps.
 func launch(force: Vector2, max_horizontal: float = -1.0, max_upward: float = -1.0) -> void:
 	if (
-		lifecycle.is_terminal()
+		not _can_mutate()
+		or lifecycle.is_terminal()
 		or (
 			lifecycle.status
 			in [PlayerLifecycleState.Status.CAPTURED, PlayerLifecycleState.Status.OPENING_FREEZE]
@@ -236,7 +243,7 @@ func launch(force: Vector2, max_horizontal: float = -1.0, max_upward: float = -1
 
 
 func set_captured(captured: bool, source_id: String = "") -> void:
-	if lifecycle.is_terminal():
+	if not _can_mutate() or lifecycle.is_terminal():
 		return
 	if captured:
 		if lifecycle.status == PlayerLifecycleState.Status.OPENING_FREEZE:
@@ -259,7 +266,7 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 ## Moves a captured chicken with its bubble. Only a CAPTURED chicken may be carried, so a bubble
 ## can never teleport an active, secured or eliminated player.
 func carry_captive_to(world_position: Vector2) -> bool:
-	if lifecycle.status != PlayerLifecycleState.Status.CAPTURED:
+	if not _can_mutate() or lifecycle.status != PlayerLifecycleState.Status.CAPTURED:
 		return false
 	global_position = world_position
 	velocity = Vector2.ZERO
@@ -269,6 +276,8 @@ func carry_captive_to(world_position: Vector2) -> bool:
 ## Clears forced motion and buffered input so a lower-priority state cannot resume after a
 ## capture or release. Does not alter lifecycle status.
 func clear_external_motion() -> void:
+	if not _can_mutate():
+		return
 	external_velocity = Vector2.ZERO
 	locomotion_velocity = Vector2.ZERO
 	velocity = Vector2.ZERO
@@ -277,7 +286,7 @@ func clear_external_motion() -> void:
 
 
 func set_opening_freeze(frozen: bool) -> void:
-	if lifecycle.is_terminal():
+	if not _can_mutate() or lifecycle.is_terminal():
 		return
 	if frozen:
 		lifecycle.status = PlayerLifecycleState.Status.OPENING_FREEZE
@@ -300,15 +309,21 @@ func contact_overlaps() -> Array[Node2D]:
 
 
 func secure(reason: String = "secured") -> bool:
+	if not _can_mutate():
+		return false
 	return _set_terminal(PlayerLifecycleState.Status.SECURED, reason)
 
 
 func eliminate(reason: String = "eliminated") -> bool:
+	if not _can_mutate():
+		return false
 	return _set_terminal(PlayerLifecycleState.Status.ELIMINATED, reason)
 
 
 ## Restores this seat for a new round without recreating its node or identity markers.
 func reset_for_round(spawn_position: Vector2) -> void:
+	if not _can_mutate():
+		return
 	_clear_support()
 	global_position = spawn_position
 	velocity = Vector2.ZERO
@@ -330,7 +345,12 @@ func reset_for_round(spawn_position: Vector2) -> void:
 ## Stun touch: freeze controls for `seconds` and knock back (through launch, so all launch caps
 ## and precedence apply). Refused while terminal, captured, frozen or stun-immune.
 func apply_stun(seconds: float, knockback: Vector2 = Vector2.ZERO) -> bool:
-	if seconds <= 0.0 or stun_immunity_remaining > 0.0 or lifecycle.is_terminal():
+	if (
+		not _can_mutate()
+		or seconds <= 0.0
+		or stun_immunity_remaining > 0.0
+		or lifecycle.is_terminal()
+	):
 		return false
 	if (
 		lifecycle.status
@@ -350,11 +370,15 @@ func is_stunned() -> bool:
 
 
 func clear_stun() -> void:
+	if not _can_mutate():
+		return
 	stun_remaining = 0.0
 	stun_immunity_remaining = 0.0
 
 
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
+	if not _can_mutate():
+		return false
 	if not lifecycle.set_status(status, reason):
 		return false
 	_clear_support()
@@ -805,3 +829,7 @@ func _on_phase_changed(
 		jump_was_held = false
 		reset_wall_state()
 		clear_stun()
+
+
+func _can_mutate() -> bool:
+	return simulation_authority != null and simulation_authority.can_commit()

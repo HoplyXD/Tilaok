@@ -1,0 +1,103 @@
+COMMAND: Godot 4.7.2 --headless --editor --path tilaok! --quit
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+EXIT_CODE=0
+COMMAND: gdformat --check (all changed/new GDScript)
+would reformat tilaok!/scripts/input/remote_seat_input_adapter.gd
+1 file would be reformatted, 31 files would be left unchanged.
+EXIT_CODE=1
+FINAL RECHECK: gdformat --check (all changed/new GDScript)
+32 files would be left unchanged
+EXIT_CODE=0
+FINAL RECHECK: gdlint (all changed/new GDScript)
+tilaok!/tests/run_nlb_p01_tests.gd:4: Error: Max allowed line length (100) exceeded (max-line-length)
+Failure: 1 problem found
+EXIT_CODE=1
+FINAL RECHECK 2: gdformat --check
+32 files would be left unchanged
+EXIT_CODE=0
+FINAL RECHECK 2: gdlint
+Success: no problems found
+EXIT_CODE=0
+FINAL RECHECK 2: git diff --check
+warning: in the working copy of 'docs/AI_USAGE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/NETWORKED_LIVE_BUILD.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PHASETASK_NETWORKED_LIVE_BUILD.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PROJECT_STRUCTURE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/input/local_input_router.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/items/runtime/hazard_piece.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/barya_round_objective.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/event_schedule.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/match_lifecycle_coordinator.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/match_room.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/race_outcome_ledger.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/movement/chicken_controller.gd', CRLF will be replaced by LF the next time Git touches it
+EXIT_CODE=0
+FINAL SOURCE RECHECK: Godot import
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (3 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | PlayerSeatRegistry[39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | RemoteSeatInputAdapter[39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+EXIT_CODE=0
+FINAL SOURCE RECHECK: gdformat --check
+32 files would be left unchanged
+EXIT_CODE=0
+FINAL SOURCE RECHECK: gdlint
+Success: no problems found
+EXIT_CODE=0
+FINAL SOURCE RECHECK: git diff --check
+warning: in the working copy of 'docs/AI_USAGE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/INDEX.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/NETWORKED_LIVE_BUILD.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PHASETASK_NETWORKED_LIVE_BUILD.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PROJECT_STRUCTURE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/input/local_input_router.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/items/runtime/hazard_piece.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/barya_round_objective.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/event_schedule.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/match_lifecycle_coordinator.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/match_room.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/race_outcome_ledger.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/movement/chicken_controller.gd', CRLF will be replaced by LF the next time Git touches it
+EXIT_CODE=0

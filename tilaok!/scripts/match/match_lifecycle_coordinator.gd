@@ -6,6 +6,7 @@ extends RefCounted
 enum Decision { INVALID, CONTINUE, WINNER, SUDDEN_DEATH }
 
 var match_id := -1
+var authority := SimulationAuthority.offline()
 var completed_round := 0
 var tied_seats: Array[int] = []
 var winner_seat := -1
@@ -15,7 +16,7 @@ var sudden_death_resolved := false
 
 
 func begin(new_match_id: int) -> bool:
-	if new_match_id <= 0:
+	if not _can_mutate() or new_match_id <= 0:
 		return false
 	match_id = new_match_id
 	completed_round = 0
@@ -32,7 +33,8 @@ func finish_round(
 	active_round: int, totals_units: Dictionary, target_units: int, round_limit: int
 ) -> Dictionary:
 	if (
-		match_id <= 0
+		not _can_mutate()
+		or match_id <= 0
 		or terminal_reason != ""
 		or active_round != completed_round + 1
 		or target_units <= 0
@@ -66,7 +68,7 @@ func finish_round(
 
 
 func retry_sudden_death() -> int:
-	if tied_seats.size() < 2 or sudden_death_resolved:
+	if not _can_mutate() or tied_seats.size() < 2 or sudden_death_resolved:
 		return -1
 	sudden_death_attempt += 1
 	return sudden_death_attempt
@@ -76,7 +78,8 @@ func resolve_sudden_death(
 	callback_match_id: int, callback_round: int, callback_attempt: int, callback_winner: int
 ) -> bool:
 	if (
-		callback_match_id != match_id
+		not _can_mutate()
+		or callback_match_id != match_id
 		or callback_round != completed_round
 		or callback_attempt != sudden_death_attempt
 		or tied_seats.size() < 2
@@ -111,3 +114,7 @@ func _decision(kind: Decision) -> Dictionary:
 		"reason": terminal_reason,
 		"attempt": sudden_death_attempt,
 	}
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

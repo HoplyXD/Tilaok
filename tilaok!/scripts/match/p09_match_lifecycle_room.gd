@@ -46,6 +46,8 @@ func set_match_seed(value: int) -> void:
 
 func _ready() -> void:
 	super._ready()
+	lifecycle.authority = simulation_authority
+	lagsanay_controller.authority = simulation_authority
 	process_physics_priority = 300
 	if not is_instance_valid(input_router) or presenter == null:
 		return
@@ -89,11 +91,15 @@ func _notification(what: int) -> void:
 
 
 func _process(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	super._process(delta)
 	_update_taya_marker()
 
 
 func _physics_process(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	super._physics_process(delta)
 	if (
 		get_tree().paused
@@ -105,7 +111,7 @@ func _physics_process(delta: float) -> void:
 
 
 func start_match() -> bool:
-	if phase_controller.phase != MatchPhaseController.Phase.LOBBY:
+	if not _simulation_can_commit() or phase_controller.phase != MatchPhaseController.Phase.LOBBY:
 		return false
 	if not LobbyViewModel.can_start(input_router.registry):
 		return false
@@ -136,6 +142,8 @@ func start_match() -> bool:
 
 
 func _finish_race(reason: String) -> void:
+	if not _simulation_can_commit():
+		return
 	if (
 		phase_controller.phase != MatchPhaseController.Phase.PLAY
 		or _sudden_death_active
@@ -181,6 +189,8 @@ func _finish_race(reason: String) -> void:
 func _conclude_round(
 	active_round: int, continue_model: MatchResultsViewModel, continue_message: String
 ) -> void:
+	if not _simulation_can_commit():
+		return
 	var decision := lifecycle.finish_round(
 		active_round,
 		cumulative_score_units,
@@ -211,6 +221,8 @@ func _conclude_round(
 
 
 func _start_sudden_death(decision: Dictionary) -> void:
+	if not _simulation_can_commit():
+		return
 	_sudden_death_match_id = int(decision.match_id)
 	_sudden_death_round = int(decision.completed_round)
 	_sudden_death_attempt = int(decision.attempt)
@@ -290,6 +302,8 @@ func _apply_sudden_death_roster(participants: Array[int]) -> void:
 
 
 func _advance_sudden_death_physics(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	var contacts := _sudden_death_tag_contacts()
 	var result := lagsanay_controller.advance_step(
 		delta, Engine.get_physics_frames(), contacts, actors
@@ -365,6 +379,8 @@ func _apply_sudden_death_outcomes(outcomes: Array, last_cluck: bool) -> void:
 func _finish_sudden_death(
 	callback_match_id: int, callback_round: int, callback_attempt: int, last_cluck: bool
 ) -> void:
+	if not _simulation_can_commit():
+		return
 	if not lifecycle.callback_is_current(callback_match_id, callback_round, callback_attempt):
 		return
 	if not _sudden_death_active or not lagsanay_controller.ended:
@@ -830,6 +846,8 @@ func _update_diagnostics() -> void:
 
 
 func reset_room() -> void:
+	if not _simulation_can_commit():
+		return
 	var saved_spectators := _spectator_state.duplicate(true)
 	_sudden_death_active = false
 	_last_taya_seat = -1

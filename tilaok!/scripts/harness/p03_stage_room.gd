@@ -23,6 +23,7 @@ var arena: ArenaDefinition
 var arena_layout: ArenaLayout
 var support_tracker := SupportTracker.new()
 var input_router: LocalInputRouter
+var simulation_authority := SimulationAuthority.offline()
 var pause_coordinator: PauseRecoveryCoordinator
 var camera_rig: BoundedStageCamera
 var world_layer: Node2D
@@ -60,6 +61,9 @@ func _ready() -> void:
 	# GameFlow injects one shared router so seats and held-press state survive Title <-> match.
 	if input_router == null:
 		input_router = LocalInputRouter.new()
+	if simulation_authority == null or not simulation_authority.configured:
+		return
+	input_router.set_authority(simulation_authority)
 	pause_coordinator = PauseRecoveryCoordinator.new()
 	snapshot = ConfigurationSnapshot.create(
 		tuning, PresentationSettings.new(), profile_id, _seed, _run_id
@@ -68,13 +72,16 @@ func _ready() -> void:
 	world_scale = tuning.grid_cell_wu / 32.0
 	support_line_y = 384.0 * world_scale
 	arena = ArenaDefinition.new(tuning, arena_layout)
+	arena.authority = simulation_authority
 	support_tracker.configure(tuning)
+	support_tracker.authority = simulation_authority
 	input_router.tuning = tuning
 	input_router.set_shared_keyboard_enabled(true)
 	input_router.set_phase(LocalInputRouter.Phase.LOBBY)
 	if input_router.get_parent() == null:
 		add_child(input_router)
 	pause_coordinator.input_router = input_router
+	pause_coordinator.authority = simulation_authority
 	add_child(pause_coordinator)
 	input_router.seat_joined.connect(_on_seat_joined)
 	input_router.pause_requested.connect(_on_pause_requested)
@@ -102,6 +109,8 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	support_tracker.finalize_physics_step(Engine.get_physics_frames())
 
 
@@ -378,6 +387,7 @@ func _build_actor(seat_index: int) -> ChickenController:
 	actor.marker_color = seat.color
 	actor.tuning = tuning
 	actor.input_router = input_router
+	actor.simulation_authority = simulation_authority
 	actor.support_tracker = support_tracker
 	actor.support_actor_id = "seat_%d" % seat_index
 	actor.bounds = Rect2(

@@ -14,6 +14,7 @@ const CHEVRON_SPACING_WU := 32.0
 @export var style := Style.CRATE
 
 var placed: PlacedItem
+var simulation_authority := SimulationAuthority.offline()
 var metadata: SupportSurfaceMetadata
 var wall_contact := ""
 var footprint_size := Vector2.ZERO

@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status:** Future implementation track. All tasks start unchecked and `TODO`; no runtime work is claimed. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status:** NLB-P00 documentation and the NLB-P01 local action/authority foundation are implemented and verified. Transport, Android, and live-placement work remain future, separately gated tasks. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,12 +12,12 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 3/36 checked; 33 TODO; actual results PASSED 3, NOT RUN 33.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 6/36 checked; 30 TODO; actual results PASSED 6, NOT RUN 30.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
 | NLB-P00 | Decisions, baseline, protocol requirements | 3 | Approved docs | PASSED (3/3) |
-| NLB-P01 | Local action/seat abstraction and authority boundary | 3 | P00 | TODO |
+| NLB-P01 | Local action/seat abstraction and authority boundary | 3 | P00 | PASSED (3/3) |
 | NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | TODO |
 | NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | TODO |
 | NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | TODO |
@@ -29,7 +29,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 33 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 3. Result totals: PASSED 3 · FAILED 0 · COULD-NOT-RUN 0 · NOT RUN 33. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 30 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 22 · VERIFY 12 · checked 6. Result totals: PASSED 6 · FAILED 0 · COULD-NOT-RUN 0 · NOT RUN 30. Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -92,37 +92,37 @@ Counts are derived from the task records in this document. Current: **12 phases,
 
 ## NLB-P01 — Local action/seat abstraction and authority boundary
 
-**Phase goal:** route local and remote logical actions through one simulation-facing seat interface. **Entry:** P00 exit. **Dependencies:** P00. **Systems touched:** input router, seat registry, movement, match rooms, pause boundary. **Decisions:** network peer owns a host-assigned seat; host devices enter locally; gameplay rules stay shared. **Exit:** offline route behaves as before and host/client ownership boundaries are testable. **Evidence:** input ownership matrix, regression outputs, state-boundary review.
+**Phase goal:** route local and remote logical actions through one simulation-facing seat interface. **Entry:** P00 exit. **Dependencies:** P00. **Systems touched:** input router, seat registry, movement, match rooms, pause boundary. **Decisions:** network peer owns a host-assigned seat; host devices enter locally; gameplay rules stay shared. **Exit:** offline route behaves as before and host/client ownership boundaries are testable. **Status:** PASSED (3/3). **Evidence:** [P01 verification and matrices](evidence/nlb/p01/verification-2026-10-19.md), [raw regression output](evidence/nlb/p01/regression-output-2026-10-19.log), and [rendered route captures](evidence/nlb/p01/captures/).
 
-### [ ] NLB-P01-T01 — IMPLEMENT — Add input-source and authority adapters
+### [x] NLB-P01-T01 — IMPLEMENT — Add input-source and authority adapters
 
 - **Owner role:** Gameplay / Networking.
 - **Requirements:** NLB-REQ-001, NLB-REQ-002, NLB-REQ-003, NLB-REQ-016.
 - **Dependencies:** NLB-P00-T03.
 - **Work:** separate logical held/edge/axis input from keyboard/gamepad source details; add local-host and remote-seat adapters; keep simulation authority checks explicit. Preserve existing seat identities and offline configuration.
 - **Acceptance:** movement, jump, sneak/glide, actions, menu/readiness, and pause requests enter a shared per-seat interface; remote identity cannot choose its own seat.
-- **Evidence:** action mapping table, focused regression output, source ownership map.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [action mapping and ownership matrix](evidence/nlb/p01/verification-2026-10-19.md#action-mapping-and-ownership-matrix), [focused regression output](evidence/nlb/p01/regression-output-2026-10-19.log), [capture runner](../tilaok!/tests/capture_nlb_p01_route.gd).
+- **Status:** DONE · **Actual result:** PASSED — K1–K4, gamepad, remote injected actions, axis intent, phase-edge neutralization, duplicate/revoked/over-capacity/spoofed source IDs and spectator-host seat occupancy passed. No physical gamepad evidence is claimed.
 
-### [ ] NLB-P01-T02 — IMPLEMENT — Isolate host-owned simulation entry points
+### [x] NLB-P01-T02 — IMPLEMENT — Isolate host-owned simulation entry points
 
 - **Owner role:** Gameplay.
 - **Requirements:** NLB-REQ-002, NLB-REQ-003, NLB-REQ-016.
 - **Dependencies:** NLB-P01-T01.
 - **Work:** route all physics, item lifecycle, stage edits, RNG, timers, terminal ledger, scoring, and phase transitions through host-authorized simulation calls; provide read-only state/presentation inputs to clients.
 - **Acceptance:** clients cannot write authoritative actor transforms, item possession, terminal outcomes, timers, RNG results, or scores.
-- **Evidence:** authority table and negative-call tests for each prohibited state mutation.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [authority boundary matrix](evidence/nlb/p01/verification-2026-10-19.md#authority-boundary-matrix), [focused denial checks](evidence/nlb/p01/regression-output-2026-10-19.log).
+- **Status:** DONE · **Actual result:** PASSED — client presentation calls were denied for seat ownership/readiness, actor state, item lifecycle/transient budget, stage/support, event RNG/timers, lifecycle, phase, Barya and race state; detached nested snapshots remained isolated.
 
-### [ ] NLB-P01-T03 — VERIFY — Offline and authority regression
+### [x] NLB-P01-T03 — VERIFY — Offline and authority regression
 
 - **Owner role:** QA.
 - **Requirements:** NLB-REQ-001, NLB-REQ-002, NLB-REQ-003.
 - **Dependencies:** NLB-P01-T01, NLB-P01-T02.
 - **Work:** rerun offline input, match, movement, score, item, pause and reset coverage; exercise host spectator versus host-player seat layouts.
 - **Acceptance:** offline route retains current behavior and scores; spectator consumes no seat; supported player total remains two through four.
-- **Evidence:** commands/logs, route captures, seat/authority matrix, actual review record.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [verification report](evidence/nlb/p01/verification-2026-10-19.md), [regression outputs](evidence/nlb/p01/regression-output-2026-10-19.log), [rendered Lobby → next-round captures](evidence/nlb/p01/captures/), [capture console log](evidence/nlb/p01/rendered-route-2026-10-19.log).
+- **Status:** DONE · **Actual result:** PASSED — selected offline, 2/3/4-seat, match/event, scoring, pause/input, item, UI-route and reset regressions passed; a rendered two-seat Lobby → Pugad → Place → Play → results → next-round route completed. The supplemental tutorial gate search is COULD-NOT-RUN after sustained multi-minute execution; `run_ui_tests.gd` FAILED two result-row type assertions outside the P01 changed files. Both limits are retained in the report. Synthetic input only; no independent human review is claimed.
 
 ## NLB-P02 — PC host session, LAN discovery, pairing, compatibility
 

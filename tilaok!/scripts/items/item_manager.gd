@@ -10,6 +10,11 @@ signal item_placed(instance_id: String)
 signal item_removed(instance_id: String, reason: String)
 
 var tuning: GameplayTuning
+var authority := SimulationAuthority.offline():
+	set(value):
+		authority = value
+		if budget != null:
+			budget.authority = value
 var arena: ArenaDefinition
 var support_tracker: SupportTracker
 var definitions: ItemDefinitions
@@ -30,13 +35,19 @@ func configure(
 	source_arena: ArenaDefinition,
 	source_tracker: SupportTracker,
 	source_definitions: ItemDefinitions,
-	parent_for_pieces: Node
+	parent_for_pieces: Node,
+	source_authority: SimulationAuthority = null
 ) -> void:
+	if source_authority != null:
+		authority = source_authority
+	if not _can_mutate():
+		return
 	tuning = source_tuning
 	arena = source_arena
 	support_tracker = source_tracker
 	definitions = source_definitions
 	world_parent = parent_for_pieces
+	budget.authority = authority
 	budget.configure(tuning)
 	if director != null and is_instance_valid(director):
 		director.queue_free()
@@ -50,7 +61,7 @@ func _exit_tree() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not in_play:
+	if not in_play or authority == null or not authority.can_commit():
 		return
 	if grace_remaining > 0.0:
 		grace_remaining = maxf(0.0, grace_remaining - delta)
@@ -87,6 +98,8 @@ func place(
 	owner_seat: int,
 	actor_rects: Array[Rect2] = []
 ) -> Dictionary:
+	if not _can_mutate():
+		return {"allowed": false, "code": "authority_denied", "reason": "Not authoritative."}
 	if in_play:
 		return {
 			"allowed": false,
@@ -104,6 +117,8 @@ func place(
 ## Applies one already-resolved P05 batch. All removals and additions are preflighted before
 ## mutating the live stage; IDs and materialization follow the resolver's stable seat order.
 func commit_batch(resolution: Dictionary, actor_rects: Array[Rect2] = []) -> Dictionary:
+	if not _can_mutate():
+		return {"allowed": false, "reason": "Not authoritative."}
 	if in_play:
 		return {"allowed": false, "reason": "Construction is only committed during Place."}
 	if not bool(resolution.get("allowed", false)):
@@ -264,6 +279,8 @@ func _materialize_placement(
 		arena.unregister_player_construction(record.instance_id)
 		support_tracker.invalidate_surface(record.instance_id)
 		return {"allowed": false, "code": "scene", "reason": "Block scene could not be loaded."}
+	if piece is ConstructionPiece:
+		(piece as ConstructionPiece).simulation_authority = authority
 	# A block that overrides tuning (e.g. a faster cannon) gets its own copy for its behavior.
 	var piece_tuning := tuning
 	if not variant.tuning_overrides.is_empty():
@@ -302,6 +319,8 @@ func _instantiate_piece(_family: ItemFamilyDefinition, variant: ItemVariantDefin
 
 ## The removal API Walis Cleanup (P10) will call. force is for reset/teardown only.
 func remove(instance_id: String, reason: String, force: bool = false) -> Dictionary:
+	if not _can_mutate():
+		return {"allowed": false, "code": "authority_denied", "reason": "Not authoritative."}
 	if not pieces.has(instance_id):
 		return {"allowed": false, "code": "unknown_item", "reason": "No such construction."}
 	if in_play and not force:
@@ -333,6 +352,8 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 
 
 func enter_place() -> void:
+	if not _can_mutate():
+		return
 	in_play = false
 	grace_remaining = 0.0
 	_set_blocks_active(false)
@@ -340,6 +361,8 @@ func enter_place() -> void:
 
 ## Deterministic Play start: static construction has nothing to restore; movers reset here.
 func begin_play() -> PackedStringArray:
+	if not _can_mutate():
+		return PackedStringArray()
 	in_play = true
 	grace_remaining = tuning.item_activation_grace_s
 	director.release_all_captives()
@@ -357,6 +380,8 @@ func begin_play() -> PackedStringArray:
 
 ## Round end: transients and captives clear; placed construction persists.
 func end_round() -> PackedStringArray:
+	if not _can_mutate():
+		return PackedStringArray()
 	var released := end_play_attempt()
 	round_number += 1
 	return released
@@ -364,6 +389,8 @@ func end_round() -> PackedStringArray:
 
 ## Ends an extra mode attempt without advancing ItemManager's completed match-round counter.
 func end_play_attempt() -> PackedStringArray:
+	if not _can_mutate():
+		return PackedStringArray()
 	in_play = false
 	grace_remaining = 0.0
 	director.release_all_captives()
@@ -377,6 +404,8 @@ func end_play_attempt() -> PackedStringArray:
 
 ## Match reset: construction is removed, counters restart, transients clear.
 func reset_match() -> PackedStringArray:
+	if not _can_mutate():
+		return PackedStringArray()
 	if director != null:
 		director.release_all_captives()
 	var released := budget.clear_all()
@@ -430,3 +459,7 @@ func _sorted_ids() -> Array:
 	var ids: Array = pieces.keys()
 	ids.sort()
 	return ids
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

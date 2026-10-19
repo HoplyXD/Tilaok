@@ -1,3 +1,4 @@
+# gdlint: disable=max-returns
 class_name BombTayaTwist
 extends RefCounted
 
@@ -25,6 +26,7 @@ extends RefCounted
 const EVENT_TIME_EPSILON := 0.000001
 
 var round_id := ""
+var authority := SimulationAuthority.offline()
 var seat_indices: Array[int] = []
 var rng: RandomNumberGenerator
 var active := false
@@ -53,6 +55,8 @@ func begin(
 	timeout_3p: float,
 	timeout_4p: float
 ) -> bool:
+	if not _can_mutate():
+		return false
 	reset()
 	if (
 		new_round_id.is_empty()
@@ -83,6 +87,8 @@ func begin(
 
 
 func reset() -> void:
+	if not _can_mutate():
+		return
 	round_id = ""
 	seat_indices.clear()
 	active = false
@@ -114,6 +120,8 @@ func advance_step(
 	tag_contacts: Array[Dictionary],
 	finishing: Array[int] = []
 ) -> Dictionary:
+	if not _can_mutate():
+		return {}
 	var result := {
 		"head_start_ended": false,
 		"timeout_seat": -1,
@@ -265,3 +273,7 @@ func _sorted(seats: Array[int]) -> Array[int]:
 			result.append(seat)
 	result.sort()
 	return result
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

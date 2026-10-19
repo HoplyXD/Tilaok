@@ -41,7 +41,7 @@ func _ready() -> void:
 	items = ItemManager.new()
 	items.name = "ItemManager"
 	add_child(items)
-	items.configure(tuning, arena, support_tracker, definitions, world_layer)
+	items.configure(tuning, arena, support_tracker, definitions, world_layer, simulation_authority)
 	items.actors_source = _actors_for_items
 	var enabled := _enabled_variant_keys()
 	selected_variant_key = enabled[0] if not enabled.is_empty() else ""

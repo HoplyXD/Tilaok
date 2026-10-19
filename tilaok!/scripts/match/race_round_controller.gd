@@ -2,6 +2,7 @@ class_name RaceRoundController
 extends RefCounted
 
 var ledger := RaceOutcomeLedger.new()
+var authority := SimulationAuthority.offline()
 var hard_cap_seconds := 60.0
 var post_first_finish_seconds := 15.0
 var elapsed_seconds := 0.0
@@ -25,6 +26,9 @@ func configure(hard_cap: float, post_finish: float) -> bool:
 
 
 func begin(round_id: String, seats: Array[int], starting_totals: Dictionary) -> bool:
+	if not _can_mutate():
+		return false
+	ledger.authority = authority
 	if not ledger.begin(round_id, seats, starting_totals):
 		return false
 	elapsed_seconds = 0.0
@@ -37,6 +41,8 @@ func begin(round_id: String, seats: Array[int], starting_totals: Dictionary) -> 
 
 ## The step's candidates resolve before deadline checks so a finish on a boundary counts.
 func advance_step(delta: float, physics_tick: int, candidates: Array[Dictionary]) -> Dictionary:
+	if not _can_mutate():
+		return {"active": active, "ended": ended, "new_outcomes": [], "end_reason": end_reason}
 	if not active or ended:
 		return {"active": active, "ended": ended, "new_outcomes": [], "end_reason": end_reason}
 	elapsed_seconds += maxf(0.0, delta)
@@ -77,3 +83,7 @@ func _end(reason: String) -> void:
 	active = false
 	ended = true
 	end_reason = reason
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

@@ -19,6 +19,21 @@ enum Phase { LOBBY, MENU, PUGAD, PLACE, PLAY, PAUSE, RESULTS }
 const ONE_SHOT_ACTIONS := [
 	"join", "ready", "claim", "confirm", "rotate", "jump", "back", "help", "cheer"
 ]
+const REMOTE_ACTIONS := [
+	"left",
+	"right",
+	"up",
+	"down",
+	"jump",
+	"confirm",
+	"back",
+	"rotate",
+	"pause",
+	"ready",
+	"claim",
+	"cheer",
+	"help"
+]
 ## The physical Rotate control (West / R / Right Shift) is context-sensitive: it opens the Library
 ## from the Lobby ("help") and cheers from the stands during Play ("cheer"). Rotation itself is
 ## only meaningful in Place, so neither alias takes anything from the placement rules.
@@ -31,6 +46,7 @@ const STICK_DIRECTIONS := {
 }
 
 var registry := PlayerSeatRegistry.new()
+var authority := SimulationAuthority.offline()
 var tuning: GameplayTuning
 var phase := Phase.LOBBY
 var shared_keyboard_enabled := false
@@ -44,6 +60,7 @@ var _active_navigation: Dictionary = {}
 var _stick_x: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
+var _remote_axis: Dictionary = {}
 var _system_paused := false
 
 
@@ -112,6 +129,73 @@ func set_shared_keyboard_enabled(enabled: bool) -> void:
 
 func set_rotation_supported(supported: bool) -> void:
 	rotation_supported = supported
+
+
+func set_authority(value: SimulationAuthority) -> bool:
+	if value == null or not value.configured:
+		return false
+	authority = value
+	registry.authority = value
+	return true
+
+
+## Shared logical input boundary used by transport-free remote fixtures and future transports.
+## The caller supplies a source identity and action only; ownership resolves the seat locally.
+func apply_remote_action(source_id: String, action_name: String, pressed: bool) -> bool:
+	if (
+		authority == null
+		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
+		or not authority.can_commit()
+	):
+		return false
+	var seat_index := registry.seat_for_remote_source(source_id)
+	if seat_index < 0 or action_name not in REMOTE_ACTIONS:
+		return false
+	var physical_key := "remote:%s:%s" % [source_id, action_name]
+	if pressed == _held.has(physical_key):
+		return true
+	_handle_action_edge(seat_index, action_name, physical_key, pressed)
+	return true
+
+
+func apply_remote_axis(source_id: String, value: float) -> bool:
+	if (
+		authority == null
+		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
+		or not authority.can_commit()
+	):
+		return false
+	var seat_index := registry.seat_for_remote_source(source_id)
+	if seat_index < 0 or not is_finite(value) or value < -1.0 or value > 1.0:
+		return false
+	var previous := float(_remote_axis.get(seat_index, 0.0))
+	_remote_axis[seat_index] = value
+	if is_zero_approx(previous) != is_zero_approx(value):
+		intentional_input_edge.emit(
+			seat_index,
+			"run_axis",
+			"remote:%s" % source_id,
+			not is_zero_approx(value),
+			Time.get_ticks_usec()
+		)
+	return true
+
+
+func clear_remote_source(source_id: String) -> void:
+	var seat_index := registry.seat_for_remote_source(source_id)
+	if seat_index < 0:
+		return
+	var prefix := "remote:%s:" % source_id
+	for key_variant in _held.keys():
+		var key := str(key_variant)
+		if key.begins_with(prefix):
+			_handle_action_edge(seat_index, str(_held[key_variant]), key, false)
+	var axis := float(_remote_axis.get(seat_index, 0.0))
+	if not is_zero_approx(axis):
+		intentional_input_edge.emit(
+			seat_index, "run_axis", "remote:%s" % source_id, false, Time.get_ticks_usec()
+		)
+	_remote_axis.erase(seat_index)
 
 
 func _input(event: InputEvent) -> void:
@@ -337,7 +421,7 @@ func intent_vector(seat_index: int) -> Vector2:
 	var x := _digital_axis(seat_index, "left", "right")
 	var y := _digital_axis(seat_index, "up", "down")
 	if x == 0.0 and not _has_active_gamepad_dpad(seat_index):
-		x = _stick_x.get(seat_index, 0.0)
+		x = float(_remote_axis.get(seat_index, _stick_x.get(seat_index, 0.0)))
 	return (
 		Vector2(x, y).normalized()
 		if phase in [Phase.MENU, Phase.PUGAD, Phase.PLACE]
@@ -350,12 +434,16 @@ func movement_axis(seat_index: int) -> float:
 	return (
 		dpad
 		if dpad != 0.0 or _has_active_gamepad_dpad(seat_index)
-		else _stick_x.get(seat_index, 0.0)
+		else float(_remote_axis.get(seat_index, _stick_x.get(seat_index, 0.0)))
 	)
 
 
 func has_direction_intent(seat_index: int) -> bool:
-	return _is_action_held(seat_index, "left") or _is_action_held(seat_index, "right")
+	return (
+		_is_action_held(seat_index, "left")
+		or _is_action_held(seat_index, "right")
+		or not is_zero_approx(float(_remote_axis.get(seat_index, 0.0)))
+	)
 
 
 ## Physical movement/jump sources are exposed so time-windowed event rules can distinguish a
@@ -370,6 +458,10 @@ func intentional_input_sources(seat_index: int) -> Array[String]:
 			result.append(str(physical_key))
 	if not is_zero_approx(float(_stick_x.get(seat_index, 0.0))):
 		result.append("stick")
+	for seat in registry.joined_seats():
+		if int(seat.seat) == seat_index and seat.device_kind == "remote":
+			if not is_zero_approx(float(_remote_axis.get(seat_index, 0.0))):
+				result.append("remote:%s" % str(seat.remote_source_id))
 	result.sort()
 	return result
 
@@ -447,11 +539,15 @@ func clear_input_state() -> void:
 	_repeat_elapsed.clear()
 	_active_navigation.clear()
 	_stick_x.clear()
+	_remote_axis.clear()
 	_stick_sign.clear()
 
 
 func _pause_system() -> void:
 	if _system_paused:
+		return
+	if authority != null and authority.is_client_presentation():
+		action_pressed.emit(-1, "client_pause_overlay")
 		return
 	_system_paused = true
 	get_tree().paused = true
@@ -530,6 +626,9 @@ func _physical_key_seat(key: String) -> int:
 	if key.begins_with("kbd:"):
 		var parts := key.split(":")
 		return registry.seat_for_keyboard(parts[1])
+	if key.begins_with("remote:"):
+		var parts := key.split(":")
+		return registry.seat_for_remote_source(parts[1])
 	return -1
 
 

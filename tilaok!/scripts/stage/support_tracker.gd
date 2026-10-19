@@ -6,6 +6,7 @@ var contacts_by_actor: Dictionary = {}
 var finalized_step := -1
 var validation_errors := PackedStringArray()
 var tuning: GameplayTuning
+var authority := SimulationAuthority.offline()
 
 
 func configure(source_tuning: GameplayTuning) -> void:
@@ -13,6 +14,8 @@ func configure(source_tuning: GameplayTuning) -> void:
 
 
 func register_surface(metadata: SupportSurfaceMetadata) -> bool:
+	if not _can_mutate():
+		return false
 	if metadata == null:
 		validation_errors.append("solid support surface is missing metadata")
 		return false
@@ -54,6 +57,8 @@ func validate_scene(root: Node) -> PackedStringArray:
 
 
 func record_actor_step(actor_id: String, actor: CharacterBody2D, physics_step: int) -> void:
+	if not _can_mutate():
+		return
 	var contacts: Array[SupportContact] = []
 	if actor != null and is_instance_valid(actor):
 		var feet_y: float = actor.global_position.y + actor.get_meta("support_half_height", 24.0)
@@ -91,14 +96,20 @@ func record_actor_step(actor_id: String, actor: CharacterBody2D, physics_step: i
 
 
 func finalize_physics_step(physics_step: int) -> void:
+	if not _can_mutate():
+		return
 	finalized_step = physics_step
 
 
 func invalidate_actor(actor_id: String) -> void:
+	if not _can_mutate():
+		return
 	contacts_by_actor.erase(actor_id)
 
 
 func invalidate_surface(surface_id: String) -> void:
+	if not _can_mutate():
+		return
 	surfaces.erase(surface_id)
 	for actor_id in contacts_by_actor.keys():
 		var kept: Array[SupportContact] = []
@@ -109,6 +120,8 @@ func invalidate_surface(surface_id: String) -> void:
 
 
 func clear() -> void:
+	if not _can_mutate():
+		return
 	surfaces.clear()
 	contacts_by_actor.clear()
 	validation_errors.clear()
@@ -138,3 +151,7 @@ func evaluate(actor_id: String, line_y: float, height_epsilon: float = 1.0) -> D
 	elif chosen.eligibility != SupportSurfaceMetadata.Eligibility.ELIGIBLE:
 		reason = "ineligible surface"
 	return {"qualifies": false, "reason": reason, "contact": chosen}
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

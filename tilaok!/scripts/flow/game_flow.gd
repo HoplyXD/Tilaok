@@ -39,10 +39,13 @@ const PLAYTEST_PROFILE := "karera_slice"
 const TUTORIAL_MAP_ID := TutorialCoordinator.TUTORIAL_LAYOUT_ID
 const TUTORIAL_SCRIPT_PATH := "res://data/ui/tutorial_script.tres"
 
+@export_enum("Offline Authority", "Host Authority", "Client Presentation")
+var simulation_role: int = SimulationAuthority.Role.OFFLINE_AUTHORITY
 var state := State.TITLE
 ## Set by the harness when it hosts this flow: Quit returns to the harness instead of exiting.
 var harness_mode := false
 var router: LocalInputRouter
+var simulation_authority := SimulationAuthority.offline()
 var bridge: UiInputBridge
 var room: P05MatchRoom
 var settings := PresentationSettings.new()
@@ -61,6 +64,9 @@ var _screen: UiScreen
 
 
 func _ready() -> void:
+	if not simulation_authority.configure(int(simulation_role)):
+		push_error("Invalid simulation role; gameplay authority is disabled.")
+		return
 	if not harness_mode and _harness_requested():
 		_open_harness.call_deferred()
 		return
@@ -79,6 +85,9 @@ func _ready() -> void:
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
 	add_child(router)
+	if not router.set_authority(simulation_authority):
+		push_error("Could not configure input authority; gameplay input is disabled.")
+		return
 	router.set_shared_keyboard_enabled(true)
 	bridge = UiInputBridge.new()
 	bridge.name = "FlowBridge"
@@ -100,7 +109,7 @@ func _exit_tree() -> void:
 		if router.action_pressed.is_connected(_on_action_pressed):
 			router.action_pressed.disconnect(_on_action_pressed)
 		router.clear_input_state()
-	if get_tree() != null:
+	if get_tree() != null and simulation_authority != null and simulation_authority.can_commit():
 		get_tree().paused = false
 	PresentationApplier.reset()
 
@@ -175,6 +184,7 @@ func _enter_match() -> void:
 	if requested_seed >= 0:
 		room.set_match_seed(requested_seed)
 	room.input_router = router
+	room.simulation_authority = simulation_authority
 	room.auto_start_on_ready = true
 	room.presentation_settings = settings
 	room.allow_harness_button = not harness_mode

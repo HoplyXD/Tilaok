@@ -9,6 +9,7 @@ const REGION_EFFECT := "effect"
 const REGION_BLOCKABLE := "blockable"
 
 var tuning: GameplayTuning
+var authority := SimulationAuthority.offline()
 var arena_bounds: Rect2
 var build_region: Rect2
 var protected_spawn: Rect2
@@ -149,13 +150,15 @@ func validate_region(
 
 
 func register_player_construction(construction_id: String) -> bool:
-	if construction_id.is_empty() or _construction_ids.has(construction_id):
+	if not _can_mutate() or construction_id.is_empty() or _construction_ids.has(construction_id):
 		return false
 	_construction_ids[construction_id] = true
 	return true
 
 
 func unregister_player_construction(construction_id: String) -> bool:
+	if not _can_mutate():
+		return false
 	return _construction_ids.erase(construction_id)
 
 
@@ -211,3 +214,7 @@ func _overlaps(left: Rect2, right: Rect2) -> bool:
 
 func _reject(reason: String) -> Dictionary:
 	return {"allowed": false, "reason": reason}
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

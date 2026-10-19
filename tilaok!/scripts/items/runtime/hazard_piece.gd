@@ -29,6 +29,8 @@ func attach_behavior(
 
 
 func reset_to_start() -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	if behavior != null:
 		behavior.reset_to_start()
 	queue_redraw()
@@ -36,7 +38,7 @@ func reset_to_start() -> void:
 
 func _process(delta: float) -> void:
 	visual_time += delta
-	if behavior != null:
+	if behavior != null and simulation_authority != null and simulation_authority.can_commit():
 		for slot_id in behavior.pending_sounds:
 			play_slot(slot_id)
 		behavior.pending_sounds.clear()
@@ -45,6 +47,8 @@ func _process(delta: float) -> void:
 
 
 func set_animating(value: bool) -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	animating = value
 	queue_redraw()
 

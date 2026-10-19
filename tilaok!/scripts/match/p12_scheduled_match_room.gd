@@ -47,6 +47,11 @@ func _ready() -> void:
 	kangaroo_round = KangarooMainRound.new()
 	add_child(kangaroo_round)
 	kangaroo_round.setup(self)
+	kangaroo_round.authority = simulation_authority
+	kangaroo_round.controller.authority = simulation_authority
+	schedule.authority = simulation_authority
+	bomb_taya.authority = simulation_authority
+	barya_objective.authority = simulation_authority
 	input_router.intentional_input_edge.connect(_on_intentional_input_edge)
 	pause_coordinator.pause_state_changed.connect(_on_schedule_pause_state_changed)
 	print(
@@ -78,7 +83,7 @@ func build_id() -> String:
 
 
 func start_match() -> bool:
-	if not super.start_match():
+	if not _simulation_can_commit() or not super.start_match():
 		return false
 	if schedule.error.is_empty():
 		return true
@@ -94,6 +99,8 @@ func current_entry() -> Dictionary:
 
 
 func _begin_pugad() -> void:
+	if not _simulation_can_commit():
+		return
 	barya_objective.cleanup()
 	barya_offer_egg_id = ""
 	barya_feedback = ""
@@ -390,6 +397,8 @@ func _twist_line(entry: Dictionary, none_text: String) -> String:
 
 
 func _enter_play() -> void:
+	if not _simulation_can_commit():
+		return
 	var entry := current_entry()
 	event_main = int(entry.get("main", EventSchedule.Challenge.KARERA))
 	if event_main == EventSchedule.Challenge.KARERA:
@@ -678,6 +687,8 @@ func _event_round_active() -> bool:
 
 
 func _physics_process(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	# The Twist reports a timeout before the race drains this step's candidates (P05 room).
 	_step_delta = delta
 	if not get_tree().paused and _bomb_taya_on_karera():
@@ -692,6 +703,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _process(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	super._process(delta)
 	if get_tree().paused:
 		return
@@ -746,12 +759,16 @@ func _apply_race_outcomes(outcomes: Array) -> void:
 
 
 func _finish_race(reason: String) -> void:
+	if not _simulation_can_commit():
+		return
 	if kangaroo_round != null and kangaroo_round.controller.twist_role:
 		kangaroo_round.clear_view()
 	super._finish_race(reason)
 
 
 func _advance_lagsanay_main(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	if not lagsanay_controller.active:
 		return
 	var result := lagsanay_controller.advance_step(
@@ -777,6 +794,8 @@ func _advance_lagsanay_main(delta: float) -> void:
 
 
 func _advance_kangaroo_main() -> void:
+	if not _simulation_can_commit():
+		return
 	var controller := kangaroo_round.controller
 	if not controller.active:
 		return
@@ -888,6 +907,8 @@ func _apply_event_outcomes(
 
 ## Commits the event's placement scores once, then ends the round through the lifecycle.
 func _finish_event_round() -> void:
+	if not _simulation_can_commit():
+		return
 	if not _event_round_active():
 		return
 	var active_round := items.round_number + 1
@@ -942,6 +963,8 @@ func _event_label(is_lagsanay: bool) -> String:
 
 
 func _start_sudden_death(decision: Dictionary) -> void:
+	if not _simulation_can_commit():
+		return
 	event_main = EventSchedule.Challenge.NONE
 	_end_event_view()
 	bomb_taya.reset()
@@ -1042,12 +1065,15 @@ func _update_diagnostics() -> void:
 
 
 func reset_room() -> void:
+	if not _simulation_can_commit():
+		return
 	barya_objective.cleanup()
 	barya_offer_egg_id = ""
 	barya_feedback = ""
 	event_main = EventSchedule.Challenge.NONE
 	_schedule_match_id = -1
 	schedule = EventSchedule.new()
+	schedule.authority = simulation_authority
 	if kangaroo_round != null:
 		kangaroo_round.reset()
 	super.reset_room()

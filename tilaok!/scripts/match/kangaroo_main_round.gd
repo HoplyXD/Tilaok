@@ -15,6 +15,7 @@ const REDUCED_SHAKE_PIXELS := 2.0
 const HUD_SCENE := preload("res://scenes/ui/components/kangaroo_hud.tscn")
 
 var controller := KangarooRoundController.new()
+var authority := SimulationAuthority.offline()
 
 var _room: P05MatchRoom
 var _overlay: CanvasLayer
@@ -29,6 +30,7 @@ var _last_simulation_wall_usec := 0
 
 func setup(room: P05MatchRoom) -> void:
 	_room = room
+	controller.authority = authority
 	name = "KangarooMainRound"
 	_overlay = CanvasLayer.new()
 	_overlay.name = "KangarooMainOverlay"
@@ -46,6 +48,8 @@ func setup(room: P05MatchRoom) -> void:
 
 
 func begin(round_id: String, seats: Array[int], score_units: Dictionary) -> bool:
+	if not _can_mutate():
+		return false
 	clear_view()
 	var initial_sources: Dictionary = {}
 	for seat_index in seats:
@@ -70,6 +74,8 @@ func begin(round_id: String, seats: Array[int], score_units: Dictionary) -> bool
 
 ## One physics step at the room's simulation time; returns the controller's step result.
 func advance(tick: int) -> Dictionary:
+	if not _can_mutate():
+		return {"new_outcomes": [], "ended": false}
 	var active_time := _room.items.director.simulation_time
 	var result := controller.advance_to(
 		active_time, tick, _room.actors, _room.support_tracker, _hug_contacts_snapshot()
@@ -83,6 +89,8 @@ func advance(tick: int) -> Dictionary:
 func record_input_edge(
 	seat_index: int, action_name: String, source_id: String, is_pressed: bool, event_usec: int
 ) -> void:
+	if not _can_mutate():
+		return
 	if action_name not in ["left", "right", "jump", "run_axis"] or not controller.active:
 		return
 	var paused := _room.get_tree().paused
@@ -146,6 +154,8 @@ func set_overlay_visible(value: bool) -> void:
 
 
 func reset() -> void:
+	if not _can_mutate():
+		return
 	controller.reset()
 	clear_view()
 
@@ -153,6 +163,10 @@ func reset() -> void:
 ## The prompt cards currently shown (for tests and captures).
 func hud() -> UiKangarooHud:
 	return _hud
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()
 
 
 func _hug_contacts_snapshot() -> Array[Dictionary]:

@@ -88,6 +88,9 @@ func set_match_seed(value: int) -> void:
 
 func _ready() -> void:
 	super._ready()
+	if simulation_authority == null or not simulation_authority.configured:
+		return
+	phase_controller.authority = simulation_authority
 	if arena == null or input_router == null or items == null or not definitions.is_valid():
 		return
 	if input_router.action_pressed.is_connected(_on_lab_action_pressed):
@@ -135,7 +138,7 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	if get_tree().paused:
+	if get_tree().paused or not _simulation_can_commit():
 		return
 	_update_identity_badges()
 	_update_camera_targets()
@@ -153,6 +156,8 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not _simulation_can_commit():
+		return
 	super._physics_process(delta)
 	if get_tree().paused:
 		return
@@ -340,7 +345,8 @@ func _augment_pugad_egg_pool(_seat_count: int) -> void:
 
 
 func _on_place_assignments_ready(_variants_by_seat: Dictionary) -> void:
-	pass
+	if not _simulation_can_commit():
+		return
 
 
 func _is_round_objective_variant(_variant_key: String) -> bool:
@@ -379,7 +385,7 @@ func _create_taya_marker(marker_name: String) -> Label:
 
 
 func start_match() -> bool:
-	if phase_controller.phase != MatchPhaseController.Phase.LOBBY:
+	if not _simulation_can_commit() or phase_controller.phase != MatchPhaseController.Phase.LOBBY:
 		return false
 	if not LobbyViewModel.can_start(input_router.registry):
 		last_message = "At least two connected seats must be joined and ready."
@@ -393,7 +399,7 @@ func start_match() -> bool:
 	_seed = match_seed
 	input_router.tuning = tuning
 	definitions = _load_definitions()
-	items.configure(tuning, arena, support_tracker, definitions, world_layer)
+	items.configure(tuning, arena, support_tracker, definitions, world_layer, simulation_authority)
 	items.director.elimination_sink = _on_item_elimination
 	# The race ledger only accepts a candidate from the tick it resolves, so the hazard director
 	# must report this tick's kills before this room drains them (still after the actors).
@@ -409,7 +415,45 @@ func start_match() -> bool:
 	return true
 
 
+func _simulation_can_commit() -> bool:
+	return simulation_authority != null and simulation_authority.can_commit()
+
+
+## Detached, presentation-only values. No authoritative Nodes, Resources, or mutable backing
+## collections escape this boundary.
+func presentation_snapshot() -> Dictionary:
+	var player_rows: Array[Dictionary] = []
+	for seat in input_router.registry.joined_seats() if input_router != null else []:
+		var seat_index := int(seat.seat)
+		var actor := actors.get(seat_index) as ChickenController
+		(
+			player_rows
+			. append(
+				{
+					"seat": seat_index,
+					"identity": int(seat.identity),
+					"shape": str(seat.shape),
+					"color": seat.color,
+					"position": actor.global_position if actor != null else Vector2.ZERO,
+					"status":
+					actor.lifecycle.status if actor != null else PlayerLifecycleState.Status.ACTIVE,
+				}
+			)
+		)
+	var snapshot := {
+		"phase": phase_controller.phase,
+		"remaining_seconds": phase_controller.remaining_seconds,
+		"players": player_rows,
+		"scores_units": cumulative_score_units.duplicate(true),
+		"construction": items.construction_signature() if items != null else "",
+		"round": items.round_number if items != null else 0,
+	}
+	return SimulationAuthority.offline().detached_snapshot(snapshot)
+
+
 func _begin_pugad() -> void:
+	if not _simulation_can_commit():
+		return
 	_reset_actors_for_round()
 	race_candidate_queue.reset()
 	_free_match_ghosts()
@@ -462,6 +506,8 @@ func _seat_has_pending_claim(seat_index: int) -> bool:
 
 
 func _queue_claim(seat_index: int, egg_id: String) -> void:
+	if not _simulation_can_commit():
+		return
 	if phase_controller.phase != MatchPhaseController.Phase.PUGAD or assignments.has(seat_index):
 		return
 	if _owner_for_egg(egg_id) >= 0:
@@ -489,6 +535,8 @@ func _queue_claim(seat_index: int, egg_id: String) -> void:
 
 
 func _flush_claims() -> void:
+	if not _simulation_can_commit():
+		return
 	if pending_claims.is_empty():
 		return
 	var seats: Array[int] = []
@@ -517,6 +565,8 @@ func _flush_claims() -> void:
 
 
 func _finish_pugad_timeout() -> void:
+	if not _simulation_can_commit():
+		return
 	# Flush the last input batch first: claims received on the timeout tick take precedence.
 	_flush_claims()
 	if phase_controller.phase != MatchPhaseController.Phase.PUGAD:
@@ -537,6 +587,8 @@ func _finish_pugad_timeout() -> void:
 
 
 func _enter_place() -> void:
+	if not _simulation_can_commit():
+		return
 	if phase_controller.phase != MatchPhaseController.Phase.PUGAD:
 		return
 	items.enter_place()
@@ -828,6 +880,8 @@ func _show_placement_locked(seat_index: int) -> void:
 
 
 func _finish_place_timeout() -> void:
+	if not _simulation_can_commit():
+		return
 	if phase_controller.phase != MatchPhaseController.Phase.PLACE:
 		return
 	var validity: Dictionary = {}
@@ -837,6 +891,8 @@ func _finish_place_timeout() -> void:
 
 
 func _resolve_place_edits(edits: Array[Dictionary]) -> void:
+	if not _simulation_can_commit():
+		return
 	if phase_controller.phase != MatchPhaseController.Phase.PLACE:
 		return
 	var construction_edits: Array[Dictionary] = []
@@ -910,6 +966,8 @@ func _show_blasts(one_shot_edits: Array) -> void:
 
 
 func _enter_play() -> void:
+	if not _simulation_can_commit():
+		return
 	_free_match_ghosts()
 	input_router.set_rotation_supported(false)
 	phase_controller.enter(MatchPhaseController.Phase.PLAY)
@@ -923,6 +981,7 @@ func _enter_play() -> void:
 		seats.append(int(seat.seat))
 	var round_id := "%d:%d" % [match_run_id, items.round_number + 1]
 	race_round_controller = RaceRoundController.new()
+	race_round_controller.authority = simulation_authority
 	race_round_controller.configure(
 		tuning.match_race_hard_cap_seconds, tuning.match_race_after_first_finish_seconds
 	)
@@ -938,6 +997,8 @@ func _enter_play() -> void:
 
 
 func _finish_race(reason: String) -> void:
+	if not _simulation_can_commit():
+		return
 	if (
 		phase_controller.phase != MatchPhaseController.Phase.PLAY
 		or race_round_controller == null
@@ -993,6 +1054,8 @@ func _on_actor_created(actor: ChickenController) -> void:
 
 
 func _on_actor_escaped(seat_index: int) -> void:
+	if not _simulation_can_commit():
+		return
 	if phase_controller.phase != MatchPhaseController.Phase.PLAY or race_round_controller == null:
 		return
 	var actor := actors.get(seat_index) as ChickenController
@@ -1012,6 +1075,8 @@ func _on_actor_escaped(seat_index: int) -> void:
 
 ## First-batch hazard eliminations go to the P06 ledger as candidates (see the bridge).
 func _on_item_elimination(record: AttributionRecord) -> bool:
+	if not _simulation_can_commit():
+		return false
 	var playing := phase_controller.phase == MatchPhaseController.Phase.PLAY
 	return ItemEliminationBridge.submit(
 		race_candidate_queue, race_round_controller, playing, record
@@ -1029,6 +1094,8 @@ func _collect_goal_overlaps() -> void:
 
 
 func _apply_race_outcomes(outcomes: Array) -> void:
+	if not _simulation_can_commit():
+		return
 	for outcome in outcomes:
 		var actor := actors.get(int(outcome.seat_index)) as ChickenController
 		if actor == null or not is_instance_valid(actor):
@@ -1042,6 +1109,8 @@ func _apply_race_outcomes(outcomes: Array) -> void:
 
 
 func _reset_actors_for_round() -> void:
+	if not _simulation_can_commit():
+		return
 	if arena == null:
 		return
 	var spawn := arena.controller_origin_from_feet(arena.spawn_feet)
@@ -1064,6 +1133,8 @@ func _all_results_ready() -> bool:
 
 
 func _start_next_round() -> void:
+	if not _simulation_can_commit():
+		return
 	if phase_controller.phase != MatchPhaseController.Phase.RESULTS:
 		return
 	if presenter != null and presenter.result_screen != null:
@@ -1072,6 +1143,8 @@ func _start_next_round() -> void:
 
 
 func reset_room() -> void:
+	if not _simulation_can_commit():
+		return
 	super.reset_room()
 	if items != null:
 		items.reset_match()

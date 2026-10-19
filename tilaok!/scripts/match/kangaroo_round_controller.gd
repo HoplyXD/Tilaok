@@ -12,6 +12,7 @@ const COMMAND_HISTORY_LIMIT := 128
 
 var active := false
 var ended := false
+var authority := SimulationAuthority.offline()
 var round_id := ""
 var seat_indices: Array[int] = []
 var live_seats: Array[int] = []
@@ -146,6 +147,8 @@ func begin(
 	start_time: float = 0.0,
 	initial_intent_sources: Dictionary = {}
 ) -> bool:
+	if not _can_mutate():
+		return false
 	reset()
 	if (
 		new_round_id.is_empty()
@@ -184,6 +187,8 @@ func begin(
 
 
 func reset() -> void:
+	if not _can_mutate():
+		return
 	active = false
 	ended = false
 	round_id = ""
@@ -230,6 +235,8 @@ func reset() -> void:
 func record_intent_edge(
 	seat: int, source_id: String, pressed: bool, simulation_time: float
 ) -> void:
+	if not _can_mutate():
+		return
 	if not active or ended or not seat_indices.has(seat) or source_id.is_empty():
 		return
 	if not is_finite(simulation_time):
@@ -250,6 +257,8 @@ func record_intent_edge(
 
 
 func sync_intent_sources(seat: int, sources: Array[String]) -> void:
+	if not _can_mutate():
+		return
 	if not seat_indices.has(seat):
 		return
 	var snapshot: Dictionary = {}
@@ -263,6 +272,8 @@ func active_time() -> float:
 
 
 func submit_hazard(record: AttributionRecord) -> bool:
+	if not _can_mutate():
+		return false
 	if (
 		not active
 		or ended
@@ -285,6 +296,8 @@ func submit_hazard(record: AttributionRecord) -> bool:
 func submit_external_elimination(
 	seat: int, event_time: float, event_id: String, cause: String
 ) -> bool:
+	if not _can_mutate():
+		return false
 	if not active or ended or not live_seats.has(seat) or event_id.is_empty():
 		return false
 	var record := AttributionRecord.new()
@@ -304,6 +317,8 @@ func submit_external_elimination(
 
 ## A finisher (Karera Main) leaves command, Hug and hazard eligibility without an elimination.
 func secure_seat(seat: int) -> void:
+	if not _can_mutate():
+		return
 	if not live_seats.has(seat):
 		return
 	live_seats.erase(seat)
@@ -313,6 +328,8 @@ func secure_seat(seat: int) -> void:
 
 ## A seat the Main Challenge eliminated outside this controller (bounds escape, deadline).
 func mark_externally_eliminated(seat: int) -> void:
+	if not _can_mutate():
+		return
 	if not live_seats.has(seat):
 		return
 	live_seats.erase(seat)
@@ -330,6 +347,8 @@ func advance_to(
 	support_tracker: SupportTracker,
 	hug_contacts: Array[Dictionary]
 ) -> Dictionary:
+	if not _can_mutate():
+		return {"new_outcomes": [], "ended": false}
 	if not active or ended or not is_finite(simulation_time) or simulation_time < _now:
 		return {"advanced": false, "new_outcomes": [], "completed_commands": 0}
 	_step_physics_tick = physics_tick
@@ -429,7 +448,7 @@ func score_result() -> Dictionary:
 
 
 func commit_score_once(result: Dictionary) -> bool:
-	if commit_done or not ended or not bool(result.get("valid", false)):
+	if not _can_mutate() or commit_done or not ended or not bool(result.get("valid", false)):
 		return false
 	commit_done = true
 	last_cluck = bool(result.get("last_cluck", false))
@@ -871,3 +890,7 @@ func _end_round() -> void:
 	)
 	last_cluck = bool(provisional.get("last_cluck", false))
 	last_cluck_seat = int(provisional.get("last_cluck_seat", -1))
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

@@ -113,10 +113,14 @@ func collapses() -> bool:
 
 ## ItemManager: true during Play, false during Place (the block then rests at its placed spot).
 func set_block_active(enabled: bool) -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	active = enabled
 
 
 func reset_to_start() -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	super.reset_to_start()
 	position = _start_position
 	velocity = Vector2.ZERO
@@ -140,6 +144,8 @@ func occlusion_rects() -> Array[Rect2]:
 
 ## Called by ChickenController when a grounded chicken walks into a side of the block.
 func push_from_chicken(_chicken: Node, direction: int) -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	if not active or direction == 0 or not is_pushable():
 		return
 	_push_dir = direction
@@ -148,6 +154,8 @@ func push_from_chicken(_chicken: Node, direction: int) -> void:
 
 ## Called by ChickenController for floor contact and wall-slide contact.
 func notify_chicken_contact(_chicken: Node) -> void:
+	if simulation_authority == null or not simulation_authority.can_commit():
+		return
 	if not active or not collapses() or collapse_state != CollapseState.SOLID:
 		return
 	collapse_state = CollapseState.CRUMBLING
@@ -170,7 +178,7 @@ func is_on_ground() -> bool:
 
 
 func _physics_process(delta: float) -> void:
-	if not active or get_tree().paused:
+	if not active or get_tree().paused or not simulation_authority.can_commit():
 		return
 	if is_dynamic():
 		_step_gravity(delta)

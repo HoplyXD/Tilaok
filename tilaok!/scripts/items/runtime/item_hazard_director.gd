@@ -58,6 +58,8 @@ func _exit_tree() -> void:
 
 
 func reset_for_play() -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	_jump_press_frame.clear()
 	play_time = 0.0
 	simulation_time = 0.0
@@ -69,7 +71,7 @@ func reset_for_play() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if items == null or not items.in_play:
+	if items == null or not items.in_play or not items.authority.can_commit():
 		return
 	simulation_time += delta
 	if not items.is_active():
@@ -82,6 +84,8 @@ func is_immune(seat: int) -> bool:
 
 
 func mark_immune(seat: int, from_time: float) -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	_immune_until[seat] = from_time + tuning.item_bubble_recapture_immunity_s
 
 
@@ -90,11 +94,13 @@ func spring_cooldown_remaining(seat: int) -> float:
 
 
 func budget_release(kind: TransientBudget.Kind, handle: int) -> void:
-	if handle >= 0:
+	if items != null and items.authority.can_commit() and handle >= 0:
 		budget.release(kind, handle)
 
 
 func budget_release_captive(player_id: String) -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	budget.release_captive(player_id)
 
 
@@ -103,15 +109,21 @@ func release_occluders(item_id: String) -> Array[Rect2]:
 
 
 func record_setup(behavior: ItemBehavior, seat: int, time: float, detail: String) -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	_emit(behavior.make_record(AttributionRecord.Kind.SETUP, seat, time, detail))
 
 
 func release_all_captives() -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	for behavior in _behaviors():
 		behavior.teardown(self)
 
 
 func on_item_removed(instance_id: String) -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	var piece := items.piece_for(instance_id) as HazardPiece
 	if piece != null and piece.behavior != null:
 		piece.behavior.teardown(self)
@@ -120,6 +132,8 @@ func on_item_removed(instance_id: String) -> void:
 
 ## One fixed-delta resolution step; `_physics_process` calls this.
 func step(delta: float) -> void:
+	if items == null or not items.authority.can_commit():
+		return
 	var started := Time.get_ticks_usec()
 	_step(delta)
 	var spent := Time.get_ticks_usec() - started
@@ -335,7 +349,7 @@ func _jump_timed(actor: ChickenController) -> bool:
 
 
 func _on_action_pressed(seat_index: int, action_name: String) -> void:
-	if action_name == "jump":
+	if items != null and items.authority.can_commit() and action_name == "jump":
 		_jump_press_frame[seat_index] = Engine.get_physics_frames()
 
 

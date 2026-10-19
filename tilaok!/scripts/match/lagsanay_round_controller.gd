@@ -13,6 +13,7 @@ var outcomes_by_seat: Dictionary = {}
 var seen_event_ids: Dictionary = {}
 var pending_hazards: Array[AttributionRecord] = []
 var rng: RandomNumberGenerator
+var authority := SimulationAuthority.offline()
 var taya_seat := -1
 var opening_taya_seat := -1
 var head_start_remaining := 0.0
@@ -41,6 +42,8 @@ func begin(
 	timeout_3p: float,
 	timeout_4p: float
 ) -> bool:
+	if not _can_mutate():
+		return false
 	if (
 		new_round_id.is_empty()
 		or seats.size() < 2
@@ -86,6 +89,8 @@ func begin(
 
 
 func reset() -> void:
+	if not _can_mutate():
+		return
 	active = false
 	ended = false
 	round_id = ""
@@ -112,6 +117,8 @@ func pass_back_remaining_seconds(seat: int) -> float:
 
 
 func submit_hazard(record: AttributionRecord) -> bool:
+	if not _can_mutate():
+		return false
 	if (
 		not active
 		or ended
@@ -135,6 +142,8 @@ func submit_hazard(record: AttributionRecord) -> bool:
 func advance_step(
 	delta: float, physics_tick: int, tag_contacts: Array[Dictionary], _actors: Dictionary
 ) -> Dictionary:
+	if not _can_mutate():
+		return {"new_outcomes": [], "ended": false}
 	var result := {
 		"active": active,
 		"ended": ended,
@@ -293,7 +302,7 @@ func sudden_death_winner() -> Dictionary:
 
 
 func commit_score_once(result: Dictionary) -> bool:
-	if score_committed or not ended or not bool(result.get("valid", false)):
+	if not _can_mutate() or score_committed or not ended or not bool(result.get("valid", false)):
 		return false
 	score_commit = result.duplicate(true)
 	score_committed = true
@@ -367,6 +376,10 @@ func _outcome_for_seat(rows: Array[Dictionary], seat: int) -> Dictionary:
 		if int(row.get("seat_index", -1)) == seat:
 			return row
 	return {}
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()
 
 
 func _hazard_less(left: AttributionRecord, right: AttributionRecord) -> bool:

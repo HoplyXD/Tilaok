@@ -1,6 +1,6 @@
 # PC Host, Android Clients, and Live Placement
 
-**Status:** Approved target architecture and gameplay direction; runtime implementation is future work. **Date:** 2026-10-19. **Release status:** separately gated development track; not required for the 2026-10-21 feature freeze or 2026-10-25 submission. **Current executable:** offline, local 2–4-seat game using Pugad → Place → Play. This document does not claim otherwise.
+**Status:** Approved target architecture and gameplay direction. The transport-free NLB-P01 local action/seat and simulation-authority foundation is implemented and verified; network transport, Android clients and live placement remain future work. **Date:** 2026-10-19. **Release status:** separately gated development track; not required for the 2026-10-21 feature freeze or 2026-10-25 submission. **Current executable:** offline, local 2–4-seat game using Pugad → Place → Play. See the [NLB-P01 verification record](evidence/nlb/p01/verification-2026-10-19.md).
 
 This specification is linked from [GDD](GDD.md), [PRD](PRD.md), [legacy tracker](PHASETASK.md), [new implementation tracker](PHASETASK_NETWORKED_LIVE_BUILD.md), and [documentation index](INDEX.md).
 

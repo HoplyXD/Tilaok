@@ -4,6 +4,7 @@ extends RefCounted
 enum State { REMOVED, OFFERED, ASSIGNED, PLACED, AVAILABLE, CARRIED, SECURED, DISCARDED }
 
 var match_id := -1
+var authority := SimulationAuthority.offline()
 var round_number := 0
 var attempt_id := 0
 var state := State.REMOVED
@@ -24,6 +25,8 @@ func identity() -> String:
 
 
 func begin_offer(new_match_id: int, new_round_number: int, egg_id: String) -> bool:
+	if not _can_mutate():
+		return false
 	remove_world_coin()
 	match_id = new_match_id
 	round_number = new_round_number
@@ -40,7 +43,7 @@ func begin_offer(new_match_id: int, new_round_number: int, egg_id: String) -> bo
 
 
 func assign(seat_index: int) -> bool:
-	if state != State.OFFERED or seat_index < 0:
+	if not _can_mutate() or state != State.OFFERED or seat_index < 0:
 		return false
 	assigned_seat = seat_index
 	state = State.ASSIGNED
@@ -48,7 +51,7 @@ func assign(seat_index: int) -> bool:
 
 
 func place(cell: Vector2i) -> bool:
-	if state != State.ASSIGNED:
+	if not _can_mutate() or state != State.ASSIGNED:
 		return false
 	placement_cell = cell
 	current_cell = cell
@@ -58,7 +61,8 @@ func place(cell: Vector2i) -> bool:
 
 func activate(coin_node: BaryaCoin) -> bool:
 	if (
-		state != State.PLACED
+		not _can_mutate()
+		or state != State.PLACED
 		or coin_node == null
 		or not is_instance_valid(coin_node)
 		or coin_node.identity != identity()
@@ -72,7 +76,7 @@ func activate(coin_node: BaryaCoin) -> bool:
 ## Returns the winning seat or -1. Candidate input is a physics-step snapshot; callback order is
 ## absent from this API. Exact-distance ties go to the lower stable seat index.
 func resolve_pickup(candidates: Array[Dictionary], physics_tick: int) -> int:
-	if state != State.AVAILABLE or physics_tick <= pickup_blocked_tick:
+	if not _can_mutate() or state != State.AVAILABLE or physics_tick <= pickup_blocked_tick:
 		return -1
 	var eligible: Array[Dictionary] = []
 	for candidate in candidates:
@@ -98,6 +102,8 @@ func resolve_pickup(candidates: Array[Dictionary], physics_tick: int) -> int:
 
 
 func commit_terminal(seat_index: int, outcome: String, physics_tick: int) -> String:
+	if not _can_mutate():
+		return ""
 	if state != State.CARRIED or carrier_seat != seat_index:
 		return ""
 	if outcome == "finished":
@@ -114,13 +120,15 @@ func commit_terminal(seat_index: int, outcome: String, physics_tick: int) -> Str
 
 
 func finish_drop(cell: Vector2i) -> void:
-	if state != State.PLACED:
+	if not _can_mutate() or state != State.PLACED:
 		return
 	current_cell = cell
 	state = State.AVAILABLE
 
 
 func discard() -> void:
+	if not _can_mutate():
+		return
 	remove_world_coin()
 	carrier_seat = -1
 	receipt_seat = -1
@@ -130,7 +138,7 @@ func discard() -> void:
 ## Retry keeps the same placed cell and offer; only attempt identity and temporary ownership are
 ## reset. Call activate() again after respawning at placement_cell.
 func retry_attempt() -> bool:
-	if state not in [State.PLACED, State.AVAILABLE, State.CARRIED]:
+	if not _can_mutate() or state not in [State.PLACED, State.AVAILABLE, State.CARRIED]:
 		return false
 	remove_world_coin()
 	attempt_id += 1
@@ -150,15 +158,23 @@ func scoring_seats() -> Array[int]:
 
 
 func remove_world_coin() -> void:
+	if not _can_mutate():
+		return
 	if coin != null and is_instance_valid(coin):
 		coin.queue_free()
 	coin = null
 
 
 func cleanup() -> void:
+	if not _can_mutate():
+		return
 	remove_world_coin()
 	carrier_seat = -1
 	receipt_seat = -1
 	assigned_seat = -1
 	offer_egg_id = ""
 	state = State.REMOVED
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

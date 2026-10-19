@@ -7,6 +7,7 @@ extends RefCounted
 
 enum Kind { PROJECTILE, BUBBLE, VFX }
 
+var authority := SimulationAuthority.offline()
 var _cap := {}
 var _ttl := {}
 var _per_emitter := {}
@@ -19,6 +20,8 @@ var _next_handle := 1
 
 
 func configure(tuning: GameplayTuning) -> void:
+	if not _can_mutate():
+		return
 	_cap = {
 		Kind.PROJECTILE: tuning.item_projectile_cap,
 		Kind.BUBBLE: tuning.item_bubble_cap,
@@ -46,6 +49,8 @@ func configure(tuning: GameplayTuning) -> void:
 ## Returns granted slots as {handle, emitter_id, kind}. Result order is the rotating order.
 func allocate(kind: Kind, requests: Array[Dictionary]) -> Array[Dictionary]:
 	var granted: Array[Dictionary] = []
+	if not _can_mutate():
+		return granted
 	var by_emitter := {}
 	for request in requests:
 		var emitter_id := str(request.get("emitter_id", ""))
@@ -90,7 +95,7 @@ func is_active(kind: Kind, handle: int) -> bool:
 
 ## Attaches a captive to an active bubble. A bubble holding a captive does not time out.
 func register_captive(handle: int, player_id: String) -> bool:
-	if player_id.is_empty() or _captives.has(player_id):
+	if not _can_mutate() or player_id.is_empty() or _captives.has(player_id):
 		return false
 	if not is_active(Kind.BUBBLE, handle):
 		return false
@@ -100,6 +105,8 @@ func register_captive(handle: int, player_id: String) -> bool:
 
 ## Releases a handle. Returns the captive player ID that was safely released, or "".
 func release(kind: Kind, handle: int) -> String:
+	if not _can_mutate():
+		return ""
 	var active: Dictionary = _active[kind]
 	if not active.has(handle):
 		return ""
@@ -112,11 +119,15 @@ func release(kind: Kind, handle: int) -> String:
 
 
 func release_captive(player_id: String) -> bool:
+	if not _can_mutate():
+		return false
 	return _captives.erase(player_id)
 
 
 ## Advances time and releases expired, non-captive handles. Returns the expired handles.
 func advance(delta: float) -> Array[Dictionary]:
+	if not _can_mutate():
+		return []
 	_now += delta
 	var expired: Array[Dictionary] = []
 	for kind in _active.keys():
@@ -134,6 +145,8 @@ func advance(delta: float) -> Array[Dictionary]:
 ## Round end, removal or restart: drops every transient and returns released captive IDs.
 func clear_all() -> PackedStringArray:
 	var released := PackedStringArray()
+	if not _can_mutate():
+		return released
 	for player_id in _captives.keys():
 		released.append(str(player_id))
 	released.sort()
@@ -146,6 +159,8 @@ func clear_all() -> PackedStringArray:
 ## Releases everything owned by an emitter (owner removal). Returns released captive IDs.
 func release_emitter(emitter_id: String) -> PackedStringArray:
 	var released := PackedStringArray()
+	if not _can_mutate():
+		return released
 	for kind in _active.keys():
 		var active: Dictionary = _active[kind]
 		for handle in active.keys():
@@ -193,3 +208,7 @@ func _handle_has_captive(handle: int) -> bool:
 		if int(captive_handle) == handle:
 			return true
 	return false
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

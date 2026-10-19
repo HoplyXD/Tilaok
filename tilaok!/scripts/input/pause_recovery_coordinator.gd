@@ -17,6 +17,7 @@ enum State { RUNNING, PAUSED, COUNTDOWN }
 ## readies the owner implicitly. Default false keeps the P02 behaviour exactly.
 @export var external_menu := false
 
+var authority := SimulationAuthority.offline()
 var state := State.RUNNING
 var pause_reason := ""
 var menu_owner := -1
@@ -68,7 +69,7 @@ func _notification(what: int) -> void:
 
 
 func _process(delta: float) -> void:
-	if state != State.COUNTDOWN:
+	if state != State.COUNTDOWN or not _can_global_pause():
 		return
 	countdown_remaining = maxf(0.0, countdown_remaining - delta)
 	countdown_changed.emit(countdown_remaining)
@@ -84,7 +85,7 @@ func _process(delta: float) -> void:
 
 
 func set_paused(reason: String, owner_seat: int) -> void:
-	if state != State.RUNNING:
+	if state != State.RUNNING or not _can_global_pause():
 		return
 	_phase_before_pause = (
 		input_router.phase if input_router != null else LocalInputRouter.Phase.PLAY
@@ -102,7 +103,7 @@ func set_paused(reason: String, owner_seat: int) -> void:
 
 
 func request_resume() -> bool:
-	if state != State.PAUSED or input_router == null:
+	if state != State.PAUSED or input_router == null or not _can_global_pause():
 		return false
 	if not input_router.registry.all_joined_ready_and_connected():
 		return false
@@ -158,6 +159,8 @@ func cancel_for_status_change(reason: String) -> void:
 
 
 func _on_pause_requested(seat_index: int) -> void:
+	if not _can_global_pause():
+		return
 	if state == State.RUNNING:
 		set_paused("participant requested pause", seat_index)
 	elif state == State.PAUSED and menu_owner < 0:
@@ -256,3 +259,7 @@ func _cancel_countdown(reason: String) -> void:
 		input_router.set_phase(LocalInputRouter.Phase.PAUSE)
 	countdown_changed.emit(0.0)
 	pause_state_changed.emit(true, reason)
+
+
+func _can_global_pause() -> bool:
+	return authority != null and authority.can_commit()

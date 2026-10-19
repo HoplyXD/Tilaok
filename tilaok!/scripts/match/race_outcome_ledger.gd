@@ -11,9 +11,12 @@ var seen_event_ids: Dictionary = {}
 var closed_physics_ticks: Dictionary = {}
 var score_commit: Dictionary = {}
 var score_committed := false
+var authority := SimulationAuthority.offline()
 
 
 func begin(new_round_id: String, seats: Array[int], score_snapshot: Dictionary) -> bool:
+	if not _can_mutate():
+		return false
 	if new_round_id.is_empty() or seats.size() < 2 or seats.size() > 4:
 		return false
 	var unique_seats: Dictionary = {}
@@ -37,6 +40,8 @@ func begin(new_round_id: String, seats: Array[int], score_snapshot: Dictionary) 
 ## a goal on that step; tied direct hazards use stable source IDs. A tied non-hazard
 ## elimination makes direct ownership ambiguous and earns no Patibong.
 func resolve_step(physics_tick: int, candidates: Array[Dictionary]) -> Array[Dictionary]:
+	if not _can_mutate():
+		return []
 	var resolved: Array[Dictionary] = []
 	if round_id.is_empty() or closed_physics_ticks.has(physics_tick):
 		return resolved
@@ -126,6 +131,8 @@ func resolve_step(physics_tick: int, candidates: Array[Dictionary]) -> Array[Dic
 
 
 func fail_remaining(physics_tick: int, reason: String) -> Array[Dictionary]:
+	if not _can_mutate():
+		return []
 	var resolved: Array[Dictionary] = []
 	var ordered := seat_indices.duplicate()
 	ordered.sort()
@@ -159,7 +166,12 @@ func outcomes() -> Array[Dictionary]:
 
 
 func commit_score_once(round_key: String, result: Dictionary) -> bool:
-	if score_committed or round_key != round_id or not bool(result.get("valid", false)):
+	if (
+		not _can_mutate()
+		or score_committed
+		or round_key != round_id
+		or not bool(result.get("valid", false))
+	):
 		return false
 	score_commit = result.duplicate(true)
 	score_committed = true
@@ -203,3 +215,7 @@ func _hazard_less(a: Dictionary, b: Dictionary) -> bool:
 	if a_id != b_id:
 		return a_id < b_id
 	return str(a.event_id) < str(b.event_id)
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()

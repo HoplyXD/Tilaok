@@ -32,6 +32,7 @@ var pairs: Array[Dictionary] = []
 var round_limit := 12
 var locked: Dictionary = {}
 var error := ""
+var authority := SimulationAuthority.offline()
 
 var _stream: RandomNumberGenerator
 
@@ -92,6 +93,8 @@ func begin(
 	limit: int,
 	compatible_pairs: Array[Dictionary] = enabled_pairs()
 ) -> String:
+	if not _can_mutate():
+		return "Event schedule is not authoritative."
 	_stream = stream
 	available = available_modes.duplicate()
 	pairs = compatible_pairs.duplicate(true)
@@ -123,7 +126,13 @@ func _validate() -> String:
 ## Locks (once) and returns a round's entry. Earlier rounds are locked first, so the result
 ## depends only on the seed and the pool, never on which round the caller asks about first.
 func lock_round(round_number: int) -> Dictionary:
-	if not error.is_empty() or _stream == null or round_number < 1 or round_number > round_limit:
+	if (
+		not _can_mutate()
+		or not error.is_empty()
+		or _stream == null
+		or round_number < 1
+		or round_number > round_limit
+	):
 		return {}
 	if locked.has(round_number):
 		return locked[round_number]
@@ -216,3 +225,7 @@ func _draw_main() -> int:
 		if pick < 0:
 			return challenge
 	return Challenge.KARERA
+
+
+func _can_mutate() -> bool:
+	return authority != null and authority.can_commit()
