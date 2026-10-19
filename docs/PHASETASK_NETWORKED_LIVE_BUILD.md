@@ -12,11 +12,11 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Baseline: **12 phases, 36 tasks; 0/36 checked; 36 TODO; 36 actual results NOT RUN.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 3/36 checked; 33 TODO; actual results PASSED 3, NOT RUN 33.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
-| NLB-P00 | Decisions, baseline, protocol requirements | 3 | Approved docs | TODO |
+| NLB-P00 | Decisions, baseline, protocol requirements | 3 | Approved docs | PASSED (3/3) |
 | NLB-P01 | Local action/seat abstraction and authority boundary | 3 | P00 | TODO |
 | NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | TODO |
 | NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | TODO |
@@ -29,66 +29,66 @@ Counts are derived from the task records in this document. Baseline: **12 phases
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 36 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 18 · VERIFY 18 · checked 0. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 33 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 3. Result totals: PASSED 3 · FAILED 0 · COULD-NOT-RUN 0 · NOT RUN 33. Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
 | ID | Requirement | Tasks |
 |---|---|---|
-| NLB-REQ-001 | Preserve offline fallback, four-player cap, scores and historical evidence | P00-T01, P01-T01, P11-T03 |
-| NLB-REQ-002 | PC hosts and owns authoritative match state; host may spectate | P01-T01, P02-T01, P04-T01 |
-| NLB-REQ-003 | Same shared rules/code serve PC and Android clients | P01-T01, P04-T01, P11-T03 |
-| NLB-REQ-004 | LAN discovery, QR/manual address, pairing, compatibility and lobby-only join | P02-T01, P02-T02, P03-T01, P11-T01 |
-| NLB-REQ-005 | Android installed client can connect to PC host | P03-T01, P03-T02, P03-T03, P11-T01 |
-| NLB-REQ-006 | Input and authoritative state replication/resync contract | P04-T01, P04-T02, P04-T03, P08-T02 |
-| NLB-REQ-007 | Pugad assignment, single item, GO countdown and active-round build | P05-T01, P05-T02, P05-T03 |
-| NLB-REQ-008 | Safe authoritative placement, deterministic conflicts and terrain replication | P05-T02, P06-T01, P06-T02, P06-T03 |
-| NLB-REQ-009 | Preserve item/mode/stack/Barya/event compatibility semantics | P07-T01, P07-T02, P07-T03 |
-| NLB-REQ-010 | Pause/background/disconnect/reclaim rules and neutral timeout | P08-T01, P08-T02, P08-T03 |
-| NLB-REQ-011 | Results, scores, sudden death, replay and clean session teardown | P09-T01, P09-T02, P09-T03 |
-| NLB-REQ-012 | Touch controls, shared phone view, onboarding and accessibility | P10-T01, P10-T02, P10-T03 |
-| NLB-REQ-013 | Fault, malformed/spoofed/rate-limited traffic is bounded and safe | P02-T03, P04-T03, P06-T03, P11-T02 |
-| NLB-REQ-014 | Measured host/phone performance, traffic, memory, battery and cleanup | P11-T01, P11-T02 |
-| NLB-REQ-015 | Physical device, mixed-seat, 2/3/4-phone, human and release evidence | P03-T03, P06-T03, P07-T03, P10-T03, P11-T01, P11-T03 |
-| NLB-REQ-016 | Preserve one host-owned RNG, timers, event outcomes and exact scores | P04-T01, P04-T02, P07-T02, P09-T01 |
-| NLB-REQ-017 | Compatibility checks reject stale/incompatible clients and content | P02-T02, P03-T02, P06-T02 |
-| NLB-REQ-018 | LAN Lobby ID is discovery lookup; QR/manual IP are explicit connection paths | P02-T01, P02-T02, P03-T01 |
-| NLB-REQ-019 | Live solid insertion/removal avoids trapping, crushing and unavoidable hits | P05-T02, P05-T03, P06-T01, P07-T02 |
-| NLB-REQ-020 | Early integrated PC + Android + local PC vertical slice | P06-T01, P06-T02, P06-T03 |
+| NLB-REQ-001 | Preserve offline fallback, four-player cap, scores and historical evidence | NLB-P00-T01, NLB-P01-T01, NLB-P11-T03 |
+| NLB-REQ-002 | PC hosts and owns authoritative match state; host may spectate | NLB-P01-T01, NLB-P02-T01, NLB-P04-T01 |
+| NLB-REQ-003 | Same shared rules/code serve PC and Android clients | NLB-P01-T01, NLB-P04-T01, NLB-P11-T03 |
+| NLB-REQ-004 | LAN discovery, QR/manual address, pairing, compatibility and lobby-only join | NLB-P02-T01, NLB-P02-T02, NLB-P03-T01, NLB-P11-T01 |
+| NLB-REQ-005 | Android installed client can connect to PC host | NLB-P03-T01, NLB-P03-T02, NLB-P03-T03, NLB-P11-T01 |
+| NLB-REQ-006 | Input and authoritative state replication/resync contract | NLB-P04-T01, NLB-P04-T02, NLB-P04-T03, NLB-P08-T02 |
+| NLB-REQ-007 | Pugad assignment, single item, GO countdown and active-round build | NLB-P05-T01, NLB-P05-T02, NLB-P05-T03 |
+| NLB-REQ-008 | Safe authoritative placement, deterministic conflicts and terrain replication | NLB-P05-T02, NLB-P06-T01, NLB-P06-T02, NLB-P06-T03 |
+| NLB-REQ-009 | Preserve item/mode/stack/Barya/event compatibility semantics | NLB-P07-T01, NLB-P07-T02, NLB-P07-T03 |
+| NLB-REQ-010 | Pause/background/disconnect/reclaim rules and neutral timeout | NLB-P08-T01, NLB-P08-T02, NLB-P08-T03 |
+| NLB-REQ-011 | Results, scores, sudden death, replay and clean session teardown | NLB-P09-T01, NLB-P09-T02, NLB-P09-T03 |
+| NLB-REQ-012 | Touch controls, shared phone view, onboarding and accessibility | NLB-P10-T01, NLB-P10-T02, NLB-P10-T03 |
+| NLB-REQ-013 | Fault, malformed/spoofed/rate-limited traffic is bounded and safe | NLB-P02-T03, NLB-P04-T03, NLB-P06-T03, NLB-P11-T02 |
+| NLB-REQ-014 | Measured host/phone performance, traffic, memory, battery and cleanup | NLB-P11-T01, NLB-P11-T02 |
+| NLB-REQ-015 | Physical device, mixed-seat, 2/3/4-phone, human and release evidence | NLB-P03-T03, NLB-P06-T03, NLB-P07-T03, NLB-P10-T03, NLB-P11-T01, NLB-P11-T03 |
+| NLB-REQ-016 | Preserve one host-owned RNG, timers, event outcomes and exact scores | NLB-P04-T01, NLB-P04-T02, NLB-P07-T02, NLB-P09-T01 |
+| NLB-REQ-017 | Compatibility checks reject stale/incompatible clients and content | NLB-P02-T02, NLB-P03-T02, NLB-P06-T02 |
+| NLB-REQ-018 | LAN Lobby ID is discovery lookup; QR/manual IP are explicit connection paths | NLB-P02-T01, NLB-P02-T02, NLB-P03-T01 |
+| NLB-REQ-019 | Live solid insertion/removal avoids trapping, crushing and unavoidable hits | NLB-P05-T02, NLB-P05-T03, NLB-P06-T01, NLB-P07-T02 |
+| NLB-REQ-020 | Early integrated PC + Android + local PC vertical slice | NLB-P06-T01, NLB-P06-T02, NLB-P06-T03 |
 
 ## NLB-P00 — Decisions, baseline, and protocol requirements
 
-**Phase goal:** capture verified offline baseline, approved target decisions, protocol requirements, and measurable provisional budgets before runtime changes. **Entry:** documentation plan approved. **Dependencies:** none beyond approved documentation. **Systems touched:** requirements/specification/tracker and baseline evidence only. **Decisions:** retain 2–4 seats, offline fallback, host spectator, target flow, discovery, pause, conflict, and disconnect policy. **Exit:** requirements are testable and traced; baseline and target are distinguishable; no runtime task is implied complete. **Evidence:** baseline inspection record, decision log, requirement coverage.
+**Phase goal:** capture verified offline baseline, approved target decisions, protocol requirements, and measurable provisional budgets before runtime changes. **Entry:** documentation plan approved. **Dependencies:** none beyond approved documentation. **Systems touched:** requirements/specification/tracker and baseline evidence only. **Decisions:** retain 2–4 seats, offline fallback, host spectator, target flow, discovery, pause, conflict, and disconnect policy. **Exit:** requirements are testable and traced; baseline and target are distinguishable; no runtime task is implied complete. **Status:** PASSED (3/3 documentation tasks; runtime remains future work). **Evidence:** [baseline and decisions](evidence/nlb/p00/baseline-2026-10-19.md), [protocol and measurement contract](evidence/nlb/p00/protocol-measurement-contract-v1.md), [review and traceability](evidence/nlb/p00/review-2026-10-19.md).
 
-### [ ] NLB-P00-T01 — IMPLEMENT — Capture baseline and decisions
+### [x] NLB-P00-T01 — IMPLEMENT — Capture baseline and decisions
 
 - **Owner role:** Producer / Gameplay.
 - **Requirements:** NLB-REQ-001, NLB-REQ-002, NLB-REQ-004, NLB-REQ-007.
 - **Dependencies:** none.
 - **Work:** record current phase/input/placement/session behavior, tools and known device limits; preserve the offline route, seat cap, score/event semantics, and unrelated work. Freeze remaining defaults from the approved spec.
 - **Acceptance:** baseline has path/revision/tool facts and distinguishes implemented behavior from target decisions; four-seat maximum and host spectator are explicit.
-- **Evidence:** dated baseline/decision record with source references and inspected environment.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [dated baseline/decision record](evidence/nlb/p00/baseline-2026-10-19.md).
+- **Status:** DONE · **Actual result:** PASSED — inspected code/config, verified tool/device facts, and recorded offline versus target behavior; focused offline regressions also passed. No Android/network test is implied.
 
-### [ ] NLB-P00-T02 — IMPLEMENT — Define protocol and measurement contract
+### [x] NLB-P00-T02 — IMPLEMENT — Define protocol and measurement contract
 
 - **Owner role:** Networking / Gameplay.
 - **Requirements:** NLB-REQ-006, NLB-REQ-013, NLB-REQ-014, NLB-REQ-017, NLB-REQ-018.
 - **Dependencies:** NLB-P00-T01.
 - **Work:** define versioned message families, sender permissions, field/range/size limits, IDs/sequences, channels/reliability, rate limits, duplicate/stale behavior, acknowledgments, resync, and provisional budgets.
 - **Acceptance:** every remote action has an explicit validator/response, and every required replicated state class has a recovery source; proposed targets remain labeled unmeasured.
-- **Evidence:** reviewed protocol table, payload-limit cases, and requirement map.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [protocol and measurement contract v1](evidence/nlb/p00/protocol-measurement-contract-v1.md), including bounded message families, example boundary cases, state recovery map, and metric definitions.
+- **Status:** DONE · **Actual result:** PASSED — contract/document review and numeric cross-checks passed. Network validators and benchmark targets remain future/unmeasured.
 
-### [ ] NLB-P00-T03 — VERIFY — Baseline and contract review
+### [x] NLB-P00-T03 — VERIFY — Baseline and contract review
 
 - **Owner role:** QA / Producer.
 - **Requirements:** NLB-REQ-001, NLB-REQ-003, NLB-REQ-016.
 - **Dependencies:** NLB-P00-T01, NLB-P00-T02.
 - **Work:** audit the contract against GDD, PRD, current code, P12 terminal order, score/Barya rules, and offline fallback.
 - **Acceptance:** no unstated score, event, content, seat-cap, or fallback change; all requirements trace to at least one task.
-- **Evidence:** dated review checklist, source references, requirement trace report.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [dated review and traceability report](evidence/nlb/p00/review-2026-10-19.md).
+- **Status:** DONE · **Actual result:** PASSED — engineering self-review by Codex; requirement/task coverage, dependencies, protocol/state coverage, canonical score/event rules, documentation checks, and focused offline regressions reviewed. No independent human or producer approval is claimed.
 
 ## NLB-P01 — Local action/seat abstraction and authority boundary
 
@@ -486,4 +486,4 @@ flowchart LR
 
 ## Completion and evidence rules
 
-No task in this tracker is checked by this documentation delivery. Future actual results must be `PASSED`, `FAILED`, or `COULD-NOT-RUN` with a reason and evidence location. Record actual hardware and humans. Preserve failed runs and fix/re-run affected checks. Promotion to a release profile needs a separately recorded team scope decision after all required gates; this tracker does not make the networked build part of the October 2026 submission.
+Only NLB-P00-T01 through NLB-P00-T03 are checked by this documentation delivery. P01–P11 remain unchecked and `NOT RUN`. Future actual results must be `PASSED`, `FAILED`, or `COULD-NOT-RUN` with a reason and evidence location. Record actual hardware and humans. Preserve failed runs and fix/re-run affected checks. Promotion to a release profile needs a separately recorded team scope decision after all required gates; this tracker does not make the networked build part of the October 2026 submission.

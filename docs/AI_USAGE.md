@@ -436,3 +436,9 @@ At the user's request, Codex reproduced the reported wall ascent in the current 
 ### Ledge-climb feature removal — October 19, 2026
 
 At the user's request, Codex removed the ledge-climb implementation, tuning fields and validation, and ledge-specific runtime/capture scripts. Codex added a no-upward-wall-pull regression for both wall sides and updated current gameplay documentation; earlier records are retained and labeled historical. AI-generated code and test; no human review or physical-device run is claimed. See [removal verification](PLAYTEST.md#wall-climb-removal--october-19-2026).
+
+### NLB-P00 baseline and protocol contract — October 19, 2026
+
+At the user's request, Codex inspected the approved PC-host/Android/live-placement track and generated the dated offline baseline, versioned protocol/measurement contract, traceability review, and related specification/tracker/index updates. The contract is documentation for future separately gated implementation; no transport, RPC, Android client, placement validator, export profile, or runtime networking was generated. The request and work record are in this task transcript; the evidence is indexed under [NLB-P00](evidence/nlb/p00/).
+
+Codex reran the existing P05, P12 schedule, P12 terminal-order/pair, and Barya suites with the user's Godot 4.7.2 executable. They reported respectively 137, 61, 285, and 72 checks with zero failures. The P12 schedule suite intentionally emits an error log for its negative test that refuses a schedule lacking Lagsanay; the runner completed with zero failures. These are offline tests using existing synthetic fixtures/physics, not network, Android, physical-device, battery, thermal, or latency evidence. Codex performed an engineering self-review; no independent human or producer review is claimed. No final art/audio or other production asset was created.

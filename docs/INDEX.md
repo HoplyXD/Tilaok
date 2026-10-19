@@ -8,14 +8,16 @@ Project documentation belongs in this directory. The repository root retains onl
 - `CLAUDE.md` — Claude Code guidance.
 - `AGENTS.md` — Codex and repository guidance.
 
+NLB-P00 evidence is indexed in [`evidence/nlb/p00/`](evidence/nlb/p00/): dated offline baseline and decisions, versioned protocol/measurement contract, and review/traceability results. These are documentation artifacts and do not indicate network, Android, or live-placement runtime readiness.
+
 ## Current source documents
 
 | Document | Purpose | Status |
 |---|---|---|
 | [PROMPT_RULES.md](PROMPT_RULES.md) | Standing prompt-writing workflow, context checks, phase checkboxes, delivery and safe Desktop synchronization. | Read before every implementation/phase prompt |
 | [PRD.md](PRD.md) | Consolidated product requirements, release/optional scope and acceptance, traceable to the GDD and specialized contracts. | P09 match-end/sudden-death and P11 standalone command requirements have development-route engineering evidence; Barya is implemented on the default P12 route with human/device/art review open; P07/P08 release gates and P09/P11 performance and human acceptance remain open |
-| [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) | Approved target architecture, multiplayer/session contract, shared phone view, live placement, migration and verification gates. | Future work; no runtime implementation or tests claimed |
-| [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md) | Separate ordered 12-phase implementation/verification tracker with requirement traceability. | 0/36 checked; 36 TODO; all actual results NOT RUN |
+| [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) | Approved target architecture, multiplayer/session contract, shared phone view, live placement, migration and verification gates. | NLB-P00 baseline and protocol/measurement contract documented; runtime remains future work |
+| [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md) | Separate ordered 12-phase implementation/verification tracker with requirement traceability. | NLB-P00 3/3 documentation tasks passed; P01–P11 unchecked; 3/36 checked |
 | [PHASETASK.md](PHASETASK.md) | Ordered implementation/non-code tasks, dependencies, verification, evidence and milestone status. | P00 0/6; P01 9/10; P02 25/35; P03 7/7; P04 20/22; P05 12/12; P06 8/8; P07 0/4; P08 6/6 technical; P09 4/4 technical; P10 48/54; P11 13/13 technical; P12 10/10 technical; P13 11/18 (T13/T14 scoreboard; T01, T03, T05, T06, T07, T09 technical; T15–T17 reference restyle technical; T02, T04, T08, T10, T11, T12, T18 open); P19 Barya 4/4 technical; 180/421 total. P07/P08 gates, P02 physical-device/human reviews, P09/P11 performance/human acceptance and P10 release enablement remain open (item event/stack integration passed 2026-10-16). |
 | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | P01–P13 project layout, responsibility map, programming provenance, run and test commands. | Dedicated P07, P08, P09 and P11 development routes; reusable results chart implemented; human/device, performance and release gates remain open |
 | [GDD.md](GDD.md) | Source of truth for the game loop, events, scoring, items, presentation, and approved design decisions. | Active; P04 implementation status per family/variant recorded (nothing release-enabled) |
