@@ -769,3 +769,18 @@ Needs the UI designer (Shanti) plus one other person, a 1080p screen viewed from
 | 7 | Confirm the font choices and the Mountains of Christmas licence note in ASSETS | Fonts approved or replacements named | |
 
 Record the date, devices, build, who observed and the result in the table; **never fill a result in by inference.**
+
+
+## NLB-P02 PC host lobby verification — 2026-10-20
+
+This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no-internet, Android, human-play, or network-gameplay acceptance. Godot 4.7.2 ran on Windows; only a WSL virtual IPv4 interface was available. No firewall/router settings were changed and no general LAN flood was run. Full report, captures, command logs and limitations are in [NLB-P02 evidence](evidence/nlb/p02/README.md).
+
+| Check | Expected | Actual | Result |
+|---|---|---|---|
+| Raw ENet admission and lobby ID discovery | Compatible client proves one-use invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | 52 focused checks passed; tests include invalid/expired proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
+| Host/client repeated lifecycle | Ten separate-process join/ready/leave/stop/rehost cycles; no stale seats, peers or candidate cache after shutdown | Ten cycles passed; final seats=0, peers=0, cache=0 | PASSED — local processes |
+| Rendered lobby and QR | Host and client screens show invitation/admission states; test QR decodes independently | Redacted host screens and safe client awaiting-approval screen saved; synthetic QR decoded with ZXing C++ 3.1.1 | PASSED — desktop engineering capture |
+| Import, lint and formatting | Godot project parses; P02 source checks clean | Import/parse exit 0, gdlint clean, gdformat 13 files unchanged | PASSED |
+| UI regression | LAN screen and existing UI remain usable | LAN screen audit passes; two existing P01 score-row type assertions remain (`%Outcome1`, `%Final1`) | PARTIAL — known P01 assertions |
+| Real Wi-Fi and no-internet LAN | Verify discovery/connectivity through actual Wi-Fi and internet disconnection | Only WSL virtual IPv4 was available; no Wi-Fi client test | COULD NOT RUN |
+| Abuse flood thresholds | Verify per-peer limits and aggregation under join flood | Not exercised; no general LAN flood run | COULD NOT RUN |

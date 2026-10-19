@@ -1,0 +1,68 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS offline role commits by default
+PASS host role can commit
+PASS client presentation has no commit authority
+PASS client role remains explicit
+PASS invalid role fails closed
+PASS K1 left reaches shared movement
+PASS K1 opposing directions retain intentional input
+PASS K1 down enters shared sneak action
+PASS K1 jump press/hold is shared and consumed exactly once
+PASS K2 left reaches shared movement
+PASS K2 opposing directions retain intentional input
+PASS K2 down enters shared sneak action
+PASS K2 jump press/hold is shared and consumed exactly once
+PASS K3 left reaches shared movement
+PASS K3 opposing directions retain intentional input
+PASS K3 down enters shared sneak action
+PASS K3 jump press/hold is shared and consumed exactly once
+PASS K4 left reaches shared movement
+PASS K4 opposing directions retain intentional input
+PASS K4 down enters shared sneak action
+PASS K4 jump press/hold is shared and consumed exactly once
+PASS host spectator occupies no player seat
+PASS gamepad d-pad, jump and contextual alias share seat actions
+PASS gamepad Start submits the shared pause request
+PASS host adapter binds to shared router
+PASS host assigns first remote source to first available seat
+PASS duplicate source ownership is rejected
+PASS remote right action enters the same movement query
+PASS opposing remote directions have zero axis but retain intent
+PASS opposing input sources remain individually observable
+PASS remote jump press is consumed exactly once
+PASS duplicate release is harmless
+PASS remote normalized axis reaches shared movement state
+PASS out-of-range, unknown and join-injection input is rejected
+PASS remote pause is an ordinary host-bound action request
+PASS revocation clears ownership and held/axis input
+PASS revoked source cannot submit actions
+PASS phase change clears edge but blocks held one-shot action
+PASS release then fresh press is accepted
+PASS host assigns another remote seat: peer-b
+PASS host assigns another remote seat: peer-c
+PASS host assigns another remote seat: peer-d
+PASS fifth seat is rejected
+PASS source identities reject invalid characters and cannot exceed seat cap
+PASS remote source identities reject slash and dot separators
+PASS source revoke succeeds
+PASS revoke removes source map
+PASS client cannot assign remote ownership
+PASS client cannot inject gameplay input
+PASS client cannot claim a local player seat
+PASS client cannot commit a ready state
+PASS client cannot clear host-owned seat assignments
+PASS client cannot change phase or advance its timer
+PASS client cannot begin authoritative match lifecycle
+PASS client cannot begin race
+PASS client schedule denial does not draw RNG or lock rounds
+PASS client item placement, removal and activation are side-effect free
+PASS client cannot allocate, advance, release or clear authoritative transient budget
+PASS client cannot edit construction ownership in stage
+PASS client cannot advance or clear support state
+PASS client cannot change actor velocity, lifecycle or transform
+PASS client cannot mutate Barya ownership or receipts
+PASS client cannot draw event taya or start event
+PASS nested presentation dictionaries are detached from authoritative state
+PASS ten reset/teardown cycles leave no stale source, seat or held movement
+NLB_P01_TESTS checks=65 failures=0

@@ -12,13 +12,13 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 6/36 checked; 30 TODO; actual results PASSED 6, NOT RUN 30.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 8/36 checked; 28 TODO; actual results PASSED 8, COULD-NOT-RUN 3, NOT RUN 25.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
 | NLB-P00 | Decisions, baseline, protocol requirements | 3 | Approved docs | PASSED (3/3) |
 | NLB-P01 | Local action/seat abstraction and authority boundary | 3 | P00 | PASSED (3/3) |
-| NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | TODO |
+| NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | PARTIAL (2/3) |
 | NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | TODO |
 | NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | TODO |
 | NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | TODO |
@@ -29,7 +29,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 30 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 22 · VERIFY 12 · checked 6. Result totals: PASSED 6 · FAILED 0 · COULD-NOT-RUN 0 · NOT RUN 30. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 28 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 8. Result totals: PASSED 8 · FAILED 0 · COULD-NOT-RUN 3 · NOT RUN 25. Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -126,27 +126,27 @@ Counts are derived from the task records in this document. Current: **12 phases,
 
 ## NLB-P02 — PC host session, LAN discovery, pairing, compatibility
 
-**Phase goal:** create a bounded host session and explicit LAN join path. **Entry:** P01 exit. **Dependencies:** P01. **Systems touched:** session lifecycle, LAN discovery, token pairing, lobby UI, compatibility. **Decisions:** host confirmation, Lobby ID lookup via local discovery, QR invitation, manual IP fallback; lobby-only new joins. **Exit:** incompatible/unapproved/over-capacity clients cannot obtain seats; teardown releases session. **Evidence:** host/client logs, discovery tests, approval/rejection cases.
+**Phase goal:** create a bounded host session and explicit LAN join path. **Entry:** P01 exit. **Dependencies:** P01. **Systems touched:** session lifecycle, LAN discovery, token pairing, lobby UI, compatibility. **Decisions:** host confirmation, Lobby ID lookup via local discovery, QR invitation, manual IP fallback; lobby-only new joins. **Exit:** incompatible/unapproved/over-capacity clients cannot obtain seats; teardown releases session. **Status:** PARTIAL (2/3); abuse-flood thresholds and real/no-internet LAN conditions remain unverified. **Evidence:** [P02 verification package](evidence/nlb/p02/README.md).
 
-### [ ] NLB-P02-T01 — IMPLEMENT — Create and close PC host session
+### [x] NLB-P02-T01 — IMPLEMENT — Create and close PC host session
 
 - **Owner role:** Networking.
 - **Requirements:** NLB-REQ-002, NLB-REQ-004, NLB-REQ-018.
 - **Dependencies:** NLB-P01-T03, NLB-P00-T02.
 - **Work:** implement explicit host start/stop, bind/port reporting, LAN address display, bounded local discovery beacon and short Lobby ID lookup; keep host spectator mode separate from local seat join.
 - **Acceptance:** host starts without a seat, host may add local devices, session stop closes peer and discovery; no external service is contacted.
-- **Evidence:** host start/stop log, beacon bounds/rate tests, firewall/manual fallback instructions.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [P02 verification package](evidence/nlb/p02/README.md), including host stop and immediate rebind cycles, actual ports, beacon/query frame bounds, interface status, and manual fallback.
+- **Status:** DONE · **Actual result:** PASSED — spectator host starts without taking a seat, binds configured ENet and UDP ports, discovers by Lobby ID query, and repeated teardown/rebind leaves zero seats, peers or cached candidates. Real Wi-Fi broadcast behavior remains unverified and is recorded as COULD-NOT-RUN.
 
-### [ ] NLB-P02-T02 — IMPLEMENT — Pair peers and validate lobby admission
+### [x] NLB-P02-T02 — IMPLEMENT — Pair peers and validate lobby admission
 
 - **Owner role:** Networking / UI.
 - **Requirements:** NLB-REQ-004, NLB-REQ-017, NLB-REQ-018.
 - **Dependencies:** NLB-P02-T01.
 - **Work:** implement QR token, Lobby ID discovery flow, manual IP:port fallback, host approve/reject, seat assignment, ready state, protocol/build/content/map compatibility and player-readable errors.
 - **Acceptance:** only host-approved compatible peers receive one of four seats before match start; late new join is rejected; tokens expire/rotate on teardown.
-- **Evidence:** join flow captures/logs for valid, expired, malformed, incompatible, rejected, full-lobby, and mid-match attempts.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Evidence:** [P02 verification package](evidence/nlb/p02/README.md), including invalid-invitation QR decoding and redacted host/client lobby captures.
+- **Status:** DONE · **Actual result:** PASSED — raw ENet tests cover compatibility, HMAC proof, pending host approval, rejection, seat assignment acknowledgment, ready state, incompatible digest, invalid/expired credentials, closed admission and four-seat capacity. No Android or network-gameplay claim is made.
 
 ### [ ] NLB-P02-T03 — VERIFY — Session abuse and lifecycle cases
 
@@ -156,7 +156,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** test duplicate/expired invitations, address failures, malformed handshake fields, join floods/rate limits, host shutdown, rehost and no-internet LAN behavior.
 - **Acceptance:** no unauthorized seat, stuck peer, stale token, crash, or background listener after teardown.
 - **Evidence:** test output, packet/session logs, before/after connection counts.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — local rehost and teardown cycles pass, but flood-abuse thresholds, real Wi-Fi and no-internet LAN behavior were not exercised on this machine. See [P02 verification package](evidence/nlb/p02/README.md).
 
 ## NLB-P03 — Android export/install and physical phone lobby join
 

@@ -44,6 +44,13 @@ func revoke_source(source_id: String) -> bool:
 	return router.registry.revoke_remote_source(source_id, authority)
 
 
+func release_source(source_id: String) -> bool:
+	if not _can_assign() or router.registry.seat_for_remote_source(source_id) < 0:
+		return false
+	router.clear_remote_source(source_id)
+	return router.registry.release_remote_source(source_id, authority)
+
+
 func submit_action(source_id: String, action_name: String, pressed: bool) -> bool:
 	if not _valid_submission(source_id) or action_name not in ACTIONS:
 		return false

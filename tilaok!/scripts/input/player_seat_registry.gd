@@ -120,6 +120,28 @@ func revoke_remote_source(source_id: String, authority: SimulationAuthority) -> 
 	return true
 
 
+## P02 transport loss releases the remote lobby seat completely; P08 reclaim will add reservation.
+func release_remote_source(source_id: String, authority: SimulationAuthority) -> bool:
+	if (
+		authority == null
+		or not authority.can_commit()
+		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
+	):
+		return false
+	var index := seat_for_remote_source(source_id)
+	if index < 0:
+		return false
+	var seat: Dictionary = _seats[index]
+	seat.joined = false
+	seat.connected = false
+	seat.ready = false
+	seat.device_kind = ""
+	seat.device_id = -1
+	seat.keyboard_layout = ""
+	seat.remote_source_id = ""
+	return true
+
+
 func seat_for_gamepad(device_id: int) -> int:
 	for seat in _seats:
 		if (

@@ -1,0 +1,331 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] _test_manifest_stability (res://tests/run_nlb_p02_tests.gd:51)
+       [6] _run (res://tests/run_nlb_p02_tests.gd:15)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] _test_manifest_stability (res://tests/run_nlb_p02_tests.gd:51)
+       [6] _run (res://tests/run_nlb_p02_tests.gd:15)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] _test_manifest_stability (res://tests/run_nlb_p02_tests.gd:51)
+       [4] _run (res://tests/run_nlb_p02_tests.gd:15)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] _test_manifest_stability (res://tests/run_nlb_p02_tests.gd:51)
+       [4] _run (res://tests/run_nlb_p02_tests.gd:15)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] _test_manifest_stability (res://tests/run_nlb_p02_tests.gd:52)
+       [4] _run (res://tests/run_nlb_p02_tests.gd:15)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] _test_manifest_stability (res://tests/run_nlb_p02_tests.gd:52)
+       [4] _run (res://tests/run_nlb_p02_tests.gd:15)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] start_host (res://scripts/network/network_session_manager.gd:117)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:105)
+       [7] _run (res://tests/run_nlb_p02_tests.gd:17)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] start_host (res://scripts/network/network_session_manager.gd:117)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:105)
+       [7] _run (res://tests/run_nlb_p02_tests.gd:17)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] start_host (res://scripts/network/network_session_manager.gd:117)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:105)
+       [5] _run (res://tests/run_nlb_p02_tests.gd:17)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] start_host (res://scripts/network/network_session_manager.gd:117)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:105)
+       [5] _run (res://tests/run_nlb_p02_tests.gd:17)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:131)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:131)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:131)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:131)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:150)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:150)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:150)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:150)
+NLB_P02_REJECT peer=2 reason=10
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:168)
+       [7] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:168)
+       [7] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:168)
+       [5] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:168)
+       [5] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+NLB_P02_REJECT peer=3 reason=4
+NLB_P02_REJECT peer=3 reason=10
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:188)
+       [7] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:188)
+       [7] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:188)
+       [5] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:188)
+       [5] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:210)
+       [7] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:210)
+       [7] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:210)
+       [5] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:210)
+       [5] _clean_client (res://tests/run_nlb_p02_tests.gd:285)
+P02_CLIENT_STATUS Waiting for host approval.
+P02_CLIENT_STATUS Assigned player 1. Choose Ready when set.
+P02_CLIENT_STATUS Ready.
+P02_TRACE host_state=[6] client_epoch_match=true assigned_seat=0
+P02_CLIENT_STATUS Host connection closed.
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:243)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:99)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [6] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:243)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:243)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:104)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] connect_client (res://scripts/network/network_session_manager.gd:173)
+       [4] _test_raw_enet_admission (res://tests/run_nlb_p02_tests.gd:243)
+NLB_P02_TESTS PASSED checks=52

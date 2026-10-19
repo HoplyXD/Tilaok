@@ -115,6 +115,13 @@ size_flags_horizontal = 4
 visible = false
 unique_name_in_owner = true
 
+[node name="LanLobbyButton" parent="Safe/Content" instance=ExtResource("6")]
+layout_mode = 2
+text = "LAN Lobby"
+custom_minimum_size = Vector2(388, 54)
+size_flags_horizontal = 4
+unique_name_in_owner = true
+
 [node name="BuildLabel" type="Label" parent="Safe/Content"]
 layout_mode = 2
 text = "build"
