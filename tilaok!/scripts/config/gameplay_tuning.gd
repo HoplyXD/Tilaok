@@ -23,9 +23,6 @@ const DISTANCE_FIELDS: PackedStringArray = [
 	"wall_jump_horizontal_wu_s",
 	"wall_jump_vertical_wu_s",
 	"wall_jump_recontact_separation_wu",
-	"ledge_reach_above_head_wu",
-	"ledge_reach_below_head_wu",
-	"ledge_climb_max_rise_wu_s",
 	"sneak_height_wu",
 	"glide_fall_cap_wu_s",
 	"block_box_push_speed_wu_s",
@@ -118,16 +115,6 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var wall_jump_recontact_separation_wu: float = 16.0
 @export var wall_contact_probe_wu: float = 1.0
 @export var wall_normal_tolerance_degrees: float = 10.0
-## Ledge climb (user request, 2026-10-16). PROTOTYPE — UNMEASURED. In the air, touching a
-## wall-slide-eligible wall and holding toward it: a ledge top within reach of the head (up to
-## `ledge_reach_above_head_wu` above it, `ledge_reach_below_head_wu` below it) is climbed in
-## `ledge_climb_seconds` when there is room to stand on top. Not while rising faster than
-## `ledge_climb_max_rise_wu_s`, so a full jump still reaches its apex.
-@export var ledge_climb_enabled: bool = true
-@export var ledge_reach_above_head_wu: float = 24.0
-@export var ledge_reach_below_head_wu: float = 64.0
-@export var ledge_climb_seconds: float = 0.22
-@export var ledge_climb_max_rise_wu_s: float = 240.0
 ## Sneak and glide (owner request 2026-10-14). PROTOTYPE — UNMEASURED.
 ## Sneak: hold down while grounded to shrink to a 1x1 cell body; no walking or jumping.
 @export var sneak_enabled: bool = true
@@ -471,14 +458,6 @@ func _validate_wall_movement() -> PackedStringArray:
 		errors.append("wall jump vertical speed must be upward and within the launch cap")
 	if wall_jump_contact_grace_s < 0.0 or wall_jump_contact_grace_s > 0.25:
 		errors.append("wall jump contact grace must be between 0 and 0.25 seconds")
-	if (
-		ledge_reach_above_head_wu < 0.0
-		or ledge_reach_below_head_wu <= 0.0
-		or ledge_climb_seconds <= 0.0
-		or ledge_climb_seconds > 1.0
-		or ledge_climb_max_rise_wu_s < 0.0
-	):
-		errors.append("ledge climb reach, duration (0-1 s) and rise limit must be valid")
 	if wall_contact_probe_wu <= 0.0 or wall_contact_probe_wu > 4.0:
 		errors.append("wall contact probe distance must be between 0 and 4 wu")
 	if wall_jump_recontact_separation_wu <= wall_contact_probe_wu:

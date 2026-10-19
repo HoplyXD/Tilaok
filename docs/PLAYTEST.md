@@ -239,6 +239,8 @@ The full command/evidence inventory is in [P03 verification](evidence/p03/2026-1
 
 ## Unintended upward wall movement regression — October 19, 2026
 
+Historical note: the ledge-climb feature described in this regression was subsequently removed at the user's request on October 19, 2026. The records below document the fix before removal; see [wall-climb removal](#wall-climb-removal--october-19-2026) for current behavior.
+
 **Build identity:** `main` working tree based on `e810b05`; Godot `4.7.2.stable.official.ed1daf0bf`; Item Lab (`karera_slice`), seed `12345`, 60 Hz; synthetic K1 keyboard input. Reviewer: Codex (AI, automated); no human feel or physical-device review is claimed. The report was reproduced with real CharacterBody2D physics before changing the controller.
 
 | Check | Status | Procedure and observed result | Evidence / limit |
@@ -251,6 +253,19 @@ The full command/evidence inventory is in [P03 verification](evidence/p03/2026-1
 | Rendered after-fix sequence | PASSED | Three 1280×720 Item Lab frames show the body beside the wall, near the jump apex, and after landing. The pre-fix defect was captured in real-physics measurements, but a pre-fix rendered frame was not saved. | [capture folder](evidence/fixes/2026-10-19-wall-ascent/); no human/art claim. |
 | Physical-device and human review | COULD-NOT-RUN | Synthetic K1 only; no human feel review or physical controller session. Existing P02 gates remain open. | See P02-T18/T22 and P02-T29. |
 | Windows export and startup smoke | PASSED | Exported with the installed 4.7.2 templates; `tilaok-p02.exe --headless --quit-after 90` exited 0. | [full command/result record](evidence/fixes/2026-10-19_wall_upward_slide_fix.txt). |
+
+## Wall-climb removal — October 19, 2026
+
+At the user's request, ledge climbing was removed from `ChickenController`, gameplay tuning, and the current design requirements. Wall slide and wall kick remain. The wall can slow descent but cannot lift the chicken; any ascent comes from a normal jump, wall kick or external launch.
+
+| Check | Status | Procedure and observed result | Evidence / limit |
+|---|---|---|---|
+| No upward wall pull, right and left | PASSED | Hold toward tall walls with unrelated eligible shelves while jumping. Peak feet remain at the normal jump apex, with no extra lift. | `run_wall_ascent_tests.gd`; Godot 4.7.2, Item Lab, synthetic K1, 60 Hz. |
+| Wall movement regression | PASSED | Existing wall slide/kick suite remains green after deleting the feature and its tuning. | `run_p02_wall_tests.gd`, 85 checks. |
+| Item Lab and tuning integration | PASSED | Item Lab catalog, wall tests, placements and stage checks pass with ledge-climb tuning removed. | `run_p04_tests.gd`, 270 checks. |
+| Human feel / physical controller | COULD-NOT-RUN | No physical-device or human session performed for this change. | Existing P02 gates remain open where applicable. |
+
+Full record: [wall-climb removal evidence](evidence/fixes/2026-10-19_wall_climb_removal.txt).
 
 ## 64 px grid, sneak/glide and stage blocks — October 14, 2026
 

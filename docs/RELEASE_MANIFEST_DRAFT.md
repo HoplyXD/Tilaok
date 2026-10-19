@@ -65,7 +65,6 @@ Each needs an include or defer decision:
 - wall slide and wall jump;
 - sneak and glide;
 - stun;
-- ledge climb (2026-10-16);
 - eliminated chickens falling.
 
 ### Controls

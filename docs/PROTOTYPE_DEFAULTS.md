@@ -90,8 +90,6 @@ New keys (UNMEASURED candidates): `sneak_enabled` true, `sneak_height_wu` 56 (1�
 
 **Promoted P19 obstacles (2026-10-16, user decision; PROVISIONAL, untuned):** egg weight 20 for Hagdan ng Bahay, Tinik-Tinik and Yelo. Ice: `ice_brake_scale` 0.12, `ice_accel_scale` 0.6, `ice_speed_scale` 1.25. Synthetic check in the Item Lab: after letting go at full speed, the chicken slides 323 wu on ice and stops at once on the floor; top speed is 700 vs 560 wu/s. The Tinik kill strip is 18 wu tall at the bottom of its cells. See [P19 promoted evidence](evidence/p19_promoted/README.md). Human feel review is needed.
 
-**Ledge climb (2026-10-16, requested by the user; UNMEASURED candidates):** `ledge_climb_enabled` true, `ledge_reach_above_head_wu` 24, `ledge_reach_below_head_wu` 64, `ledge_climb_seconds` 0.22, `ledge_climb_max_rise_wu_s` 240. Synthetic check (Item Lab, 60 Hz): a plain jump peaks with the feet at 768 wu and cannot reach the top of a 4-tile wall (704 wu); holding toward the wall, the chicken grabs it and stands at 704 wu. See [fix evidence](evidence/fixes/README.md). Human feel review is still needed.
-
 ### Block scenes, Spikes, Cannon and stun — October 14, 2026
 
 **PROTOTYPE VALUES — UNMEASURED by players.** Per-block values live in each scene's BlockData (`tilaok!/scenes/blocks/`); -1 means the global GameplayTuning value. New/changed numbers:

@@ -42,14 +42,8 @@ var sneaking := false
 var stun_remaining := 0.0
 var stun_immunity_remaining := 0.0
 var gliding := false
-## Ledge climb (2026-10-16): true while the chicken pulls itself up onto a ledge (input locked).
-var climbing := false
 ## True while standing on a slippery block (Yelo ice, 2026-10-16); refreshed every step.
 var on_ice := false
-var ledge_climb_count := 0
-var _climb_from := Vector2.ZERO
-var _climb_to := Vector2.ZERO
-var _climb_elapsed := 0.0
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
 var _jump_impulse := -600.0
@@ -114,7 +108,6 @@ func _physics_process(delta: float) -> void:
 	if not in_play:
 		jump_buffer_remaining = 0.0
 		_vertical_half_step = 0.0
-		cancel_ledge_climb()
 		reset_wall_state()
 		reset_sneak()
 		clear_stun()
@@ -137,8 +130,6 @@ func _physics_process(delta: float) -> void:
 		locomotion_velocity.x = 0.0
 		jump_buffer_remaining = 0.0
 	_update_wall_contact(delta)
-	if _try_start_ledge_climb(axis, stunned_now):
-		return
 	_update_horizontal(axis, delta)
 	_update_vertical(delta, jump_down)
 	var combined := locomotion_velocity + external_velocity
@@ -208,127 +199,7 @@ func _advance_locked_state(delta: float) -> bool:
 		jump_buffer_remaining = 0.0
 		coyote_remaining = 0.0
 		return true
-	if climbing:
-		_advance_ledge_climb(delta)
-		return true
 	return false
-
-
-## Starts a climb when airborne against an eligible wall, holding toward it, with a ledge top in
-## reach of the head and room to stand on it. Returns true when the climb started this step.
-func _try_start_ledge_climb(axis: float, stunned_now: bool) -> bool:
-	if (
-		not tuning.ledge_climb_enabled
-		or stunned_now
-		or sneaking
-		or wall_side == 0
-		or is_on_floor()
-		or external_velocity.length_squared() > 0.01
-		or signf(axis) != float(wall_side)
-		or locomotion_velocity.y < -tuning.ledge_climb_max_rise_wu_s
-	):
-		return false
-	var target := find_ledge_target(wall_side)
-	if target == Vector2.INF:
-		return false
-	climbing = true
-	ledge_climb_count += 1
-	_climb_from = global_position
-	_climb_to = target
-	_climb_elapsed = 0.0
-	_clear_support()
-	reset_wall_state()
-	locomotion_velocity = Vector2.ZERO
-	velocity = Vector2.ZERO
-	jump_buffer_remaining = 0.0
-	coyote_remaining = 0.0
-	return true
-
-
-# gdlint: disable=max-returns
-## Where the chicken would stand after climbing the ledge on `side`, or Vector2.INF when there is
-## no climbable ledge: the top face beside the head must belong to a wall-slide-eligible surface
-## (so wall-ineligible ledges, like the tutorial's flag ledge, stay unclimbable) and both the
-## lift straight up and the spot on top must be free.
-func find_ledge_target(side: int) -> Vector2:
-	_capture_body_shape()
-	if _body_shape == null or not is_inside_tree() or side == 0:
-		return Vector2.INF
-	var half := _standing_size * 0.5
-	var center_y := global_position.y + _standing_offset.y
-	var head_y := center_y - half.y
-	var feet_y := center_y + half.y
-	var probe_x := global_position.x + float(side) * (half.x + 4.0)
-	var query := PhysicsRayQueryParameters2D.create(
-		Vector2(probe_x, head_y - tuning.ledge_reach_above_head_wu),
-		Vector2(probe_x, head_y + tuning.ledge_reach_below_head_wu),
-		1,
-		[get_rid()]
-	)
-	var hit := get_world_2d().direct_space_state.intersect_ray(query)
-	if hit.is_empty() or (hit.normal as Vector2).y > -0.7:
-		return Vector2.INF
-	var ledge_collider := hit.collider as Node
-	if ledge_collider == null or ledge_collider.get_instance_id() != _wall_collider_id:
-		return Vector2.INF
-	var metadata := SupportSurfaceMetadata.for_collider(hit.collider as Node)
-	if (
-		metadata == null
-		or metadata.wall_movement_eligibility != SupportSurfaceMetadata.Eligibility.ELIGIBLE
-	):
-		return Vector2.INF
-	var ledge_y := float((hit.position as Vector2).y)
-	if ledge_y >= feet_y - 1.0:
-		return Vector2.INF
-	var lifted := Vector2(global_position.x, ledge_y - half.y - _standing_offset.y - 0.5)
-	var target := Vector2(probe_x + float(side) * half.x, lifted.y)
-	if (
-		not _body_fits(lifted)
-		or not _body_fits(target)
-		or test_move(global_transform, lifted - global_position, null, 0.0)
-		or test_move(Transform2D(global_rotation, lifted), target - lifted, null, 0.0)
-	):
-		return Vector2.INF
-	return target
-
-
-func _body_fits(origin: Vector2) -> bool:
-	var shape := RectangleShape2D.new()
-	shape.size = _standing_size - Vector2(4.0, 2.0)
-	var query := PhysicsShapeQueryParameters2D.new()
-	query.shape = shape
-	query.transform = Transform2D(0.0, origin + _standing_offset)
-	query.collision_mask = 1
-	query.exclude = [get_rid()]
-	return get_world_2d().direct_space_state.intersect_shape(query, 1).is_empty()
-
-
-## Rise clear of the ledge before moving over; each interpolation step is collision checked.
-func _advance_ledge_climb(delta: float) -> void:
-	_climb_elapsed += delta
-	var t := clampf(_climb_elapsed / tuning.ledge_climb_seconds, 0.0, 1.0)
-	var rise := clampf(t / 0.6, 0.0, 1.0)
-	var over := clampf((t - 0.65) / 0.35, 0.0, 1.0)
-	var next_position := Vector2(
-		lerpf(_climb_from.x, _climb_to.x, over), lerpf(_climb_from.y, _climb_to.y, rise)
-	)
-	if test_move(global_transform, next_position - global_position, null, 0.0):
-		_abort_ledge_climb()
-		return
-	global_position = next_position
-	velocity = Vector2.ZERO
-	if t >= 1.0:
-		cancel_ledge_climb()
-		coyote_remaining = tuning.coyote_seconds
-
-
-func cancel_ledge_climb() -> void:
-	climbing = false
-	_climb_elapsed = 0.0
-
-
-func _abort_ledge_climb() -> void:
-	cancel_ledge_climb()
 
 
 func set_snapshot(snapshot: ConfigurationSnapshot) -> void:
@@ -356,7 +227,6 @@ func launch(force: Vector2, max_horizontal: float = -1.0, max_upward: float = -1
 	_clear_support()
 	reset_wall_state()
 	reset_sneak()
-	cancel_ledge_climb()
 	external_velocity += force
 	external_velocity.x = clampf(external_velocity.x, -max_horizontal, max_horizontal)
 	external_velocity.y = maxf(external_velocity.y, -max_upward)
@@ -454,7 +324,6 @@ func reset_for_round(spawn_position: Vector2) -> void:
 	lifecycle.capture_source_id = ""
 	lifecycle.terminal_reason = ""
 	reset_wall_state()
-	cancel_ledge_climb()
 	clear_stun()
 
 
@@ -491,7 +360,6 @@ func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	_clear_support()
 	reset_wall_state()
 	reset_sneak()
-	cancel_ledge_climb()
 	clear_stun()
 	locomotion_velocity = Vector2.ZERO
 	external_velocity = Vector2.ZERO

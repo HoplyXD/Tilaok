@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=19 enabled_variants=31 profile=karera_slice
+PASS holding toward the right wall does not lift the chicken above its normal jump: rise=192.055 wu, peak feet=767.945
+WALL_ASCENT_METRIC side=1 peak_feet=767.945 jump_rise=192.055 wu
+PASS holding toward the left wall does not lift the chicken above its normal jump: rise=191.981 wu, peak feet=768.019
+WALL_ASCENT_METRIC side=-1 peak_feet=768.019 jump_rise=191.981 wu
+WALL_ASCENT_TESTS checks=2 failures=0

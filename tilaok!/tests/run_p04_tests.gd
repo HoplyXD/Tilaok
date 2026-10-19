@@ -1513,8 +1513,7 @@ func _test_wall_eligibility() -> void:
 	_arrange([{"variant": KAING_2X3, "cell": Vector2i(22, 10)}])
 	_put_actor_feet(Vector2(1408.0 - room.tuning.body_width_wu * 0.5 - 0.1, 728.0))
 	await _frames(1)
-	# Wall slide does not need input toward the wall. Holding toward it here would start a ledge
-	# climb (2026-10-16: the head starts above the Kaing top), which run_ledge_climb_tests covers.
+	# Wall slide does not need input toward the wall. Holding toward it must not pull the chicken up.
 	_stick(0.0)
 	var slid := false
 	var slide_speed := 0.0

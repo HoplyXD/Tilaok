@@ -51,3 +51,7 @@ Before-fix details and the failed assertion are retained in [the reproduction lo
 | Physical device / human feel review | COULD-NOT-RUN | Synthetic K1 only; no physical controller or human reviewer evidence. Existing P02 gates remain open. |
 
 Automated reports are stored beside this file using the `2026-10-19_run_*.log` prefix. Temporary diagnostic print statements were removed; the regression emits only its measured false-top summary.
+
+## Follow-up — feature removal
+
+On 2026-10-19, the user asked to remove ledge climbing completely. The controller implementation, tuning fields and validation, ledge-specific runtime tests, capture script, current GDD/PRD description and prototype defaults were removed. See [current removal verification](../../PLAYTEST.md#wall-climb-removal--october-19-2026). The measurements and logs above are retained as historical evidence for the earlier implementation and its false-climb defect.

@@ -1,0 +1,26 @@
+# Ledge-climb removal — 2026-10-19
+
+User request: remove ledge climbing completely because the chicken was climbing the wall.
+
+## Changes
+
+- Removed ledge-climb state, target search, interpolation, and all controller entry/cancel paths from `ChickenController`.
+- Removed ledge-climb tuning exports, distance scaling entries, and validation from `GameplayTuning`.
+- Deleted the ledge-climb integration runner and wall-ascent capture helper; added `run_wall_ascent_tests.gd` to keep a focused regression for ordinary jump height beside walls.
+- Removed ledge climbing from current GDD, PRD, prototype defaults and release planning. Historical implementation and defect records remain labeled as historical.
+- Wall slide and wall jump remain enabled. Wall contact only caps downward speed; ascent requires jump, wall kick, or an external launch.
+
+## Verification
+
+Engine: Godot `4.7.2.stable.official.ed1daf0bf`; Item Lab (`karera_slice`); 60 Hz; synthetic K1 keyboard; Windows.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Wall ascent regression | PASSED, 2 checks, 0 failures. Right wall peak feet 767.945 wu (rise 192.055 wu); left wall peak feet 768.019 wu (rise 191.981 wu). | [log](2026-10-19_run_wall_ascent_tests.log) |
+| Wall slide and kick regression | PASSED, 85 checks, 0 failures. | [log](2026-10-19_run_p02_wall_after_climb_removal.log) |
+| Item Lab and tuning integration | PASSED, 270 checks, 0 failures. | [log](2026-10-19_run_p04_tests_after_wall_climb_removal.log) |
+| Affected-file lint and format | PASSED after formatting the new regression runner. | `gdlint` and `gdformat --check` on controller, tuning, P04 runner and wall-ascent runner. |
+| Godot project scan | PASSED. | `--headless --editor --path 'tilaok!' --quit`. |
+| Physical controller / human feel | COULD-NOT-RUN. | Synthetic input only; human and device review remain open where applicable. |
+
+Earlier false-climb reproduction and fix logs remain in [the historical report](2026-10-19_wall_upward_slide_fix.txt).

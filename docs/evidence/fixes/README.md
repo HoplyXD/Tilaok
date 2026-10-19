@@ -2,6 +2,8 @@
 
 Bug-fix round and ledge climb requested by the user on 2026-10-16. All runs are headless Godot 4.7.stable.official.5b4e0cb0f on Windows 11, `--fixed-fps 60`, synthetic keyboard input, working tree on `fec0d3f` with uncommitted changes. Reviewer: Claude (AI, automated). No human or physical-device review is claimed.
 
+This is a historical record. The ledge-climb feature documented here was removed from the game at the user's request on 2026-10-19; see [the removal verification](../../PLAYTEST.md#wall-climb-removal--october-19-2026).
+
 ## What was fixed or added
 
 | Report / request | Cause or change | Check |
@@ -50,7 +52,9 @@ The windowed suites (`run_p05_interactive`, `run_match_ui_interactive`) were not
 - [tutorial gate](2026-10-16_tutorial_gate_tests.txt)
 - [P04 rows](2026-10-16_p04_wall_rows.txt)
 
-Human feel review of the ledge climb, and physical keyboard checks of E / F, remain open (PHASETASK P02-T29).
+Physical keyboard checks of E / F remain open (PHASETASK P02-T29). Ledge-climb feel review is no longer applicable because the feature was removed.
 ## Unintended upward wall movement regression — October 19, 2026
 
 - [Unintended upward wall movement regression — October 19, 2026](2026-10-19_wall_upward_slide_fix.txt): reproduced a false ledge climb above a tall wall, matched ledge top to the actual contacted collider, collision-checked the pull-up, and recorded synthetic physics/render/export evidence.
+- [Removal verification](../../PLAYTEST.md#wall-climb-removal--october-19-2026): ledge climbing and its tuning were removed; current wall-ascent regression checks the normal jump cap.
+- [Wall-climb removal report](2026-10-19_wall_climb_removal.txt): controller/tuning deletion and current regression results.
