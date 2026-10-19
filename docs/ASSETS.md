@@ -269,6 +269,14 @@ Cultural review: not required for the fonts themselves; Filipino/Hiligaynon copy
 
 **Placeholders written for the restyle (programming, not production art).** All are scene nodes or Theme StyleBoxes written by Claude (AI) from the user-supplied reference PNGs; the PNGs themselves are the team's design exports and are not shipped (only downscaled side-by-side evidence JPGs are kept in `docs/evidence/ui-reference/`).
 
+## NLB-P02 QR utility — 2026-10-20
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | Status |
+|---|---|---|---|---|---|---|
+| `utility.kenyoni_qr_code_v1_2_0` | `tilaok!/addons/qr_code/` | Godot code utility; renders short-lived lobby invitation QR in the PC LAN lobby | Kenyoni Software, Godot QR Code Generator v1.2.0; [documentation/source](https://kenyoni-software.github.io/godot-addons/addons/qr_code/) | MIT; retained at `tilaok!/addons/qr_code/LICENSE.md` | Vendor code copied as a functional utility; not production art | Engineering use; invitation output independently decoded with ZXing C++ 3.1.1 |
+
+The project uses only the v1.2.0 code utility because its documentation lists Godot 4.7 compatibility. The v2 listing is marked unstable. AI assistance wired the licensed utility into the lobby; no AI-generated production asset is included. The QR verification used a synthetic invalid address and dummy credential; no live invitation is stored in repository evidence.
+
 | Item | Where | Status | Human handoff |
 |---|---|---|---|
 | Plank button (flat fill, 2 px gradient outline ring, two rivet dots; Pressed inner frame and group shadow) | Theme `sb_plank*`, `PlankStroke*`, `PlankClip`, `PlankPressed*`, `RivetDisabled`, `plank_button.tscn` + `ui_plank_button.gd` | Since 2026-10-17 built from the exact values of Figma frame `16:434` "Button Variants" (Theme StyleBoxes and GradientTexture2D resources with the Figma stops, no image file; the frame's two rivet ellipse SVGs are reproduced as Theme circles of the same colours, not imported) | Shanti: wood-plank texture states via `ui.common.plank_button` if a textured look is wanted |

@@ -1,0 +1,14 @@
+run_nlb_p01_tests.gd: exit=0
+run_p02_tests.gd: exit=0
+run_p02_wall_tests.gd: exit=0
+run_controls_tests.gd: exit=0
+run_ui_tests.gd: exit=1
+run_match_ui_tests.gd: exit=0
+run_match_ui_mode_tests.gd: exit=0
+run_match_ui_binding_tests.gd: exit=0
+run_p05_tests.gd: exit=0
+run_p06_tests.gd: exit=0
+run_barya_tests.gd: exit=0
+run_p12_tests.gd: exit=0
+run_p12_stack_tests.gd: exit=0
+run_p12_pairs_tests.gd: exit=0

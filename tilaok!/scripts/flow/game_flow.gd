@@ -10,7 +10,7 @@ extends Control
 
 signal return_requested
 
-enum State { TITLE, LIBRARY, SETTINGS, IN_MATCH }
+enum State { TITLE, LIBRARY, SETTINGS, LAN_LOBBY, IN_MATCH }
 
 const BUILD_LABEL := "Tilaok! development build"
 ## The first-playable route (the P07 human-gate build): karera_slice, no match end. Kept behind
@@ -30,6 +30,7 @@ const SEED_PREFIX := "--match-seed="
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
 const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
 const SETTINGS_SCENE := preload("res://scenes/ui/screens/settings_screen.tscn")
+const LAN_LOBBY_SCENE := preload("res://scenes/ui/screens/lan_lobby_screen.tscn")
 const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
@@ -57,6 +58,7 @@ var library_text: UiLibraryText
 var tutorial_session := TutorialSession.new()
 var tutorial_script: TutorialScript
 var tutorial: TutorialCoordinator
+var network_session: NetworkSessionManager
 ## The map for the next match (MapCatalog id; "default" is the built-in stage). Session only.
 var selected_map_id := MapCatalog.DEFAULT_ID
 
@@ -89,6 +91,10 @@ func _ready() -> void:
 		push_error("Could not configure input authority; gameplay input is disabled.")
 		return
 	router.set_shared_keyboard_enabled(true)
+	network_session = NetworkSessionManager.new()
+	network_session.name = "NetworkSession"
+	add_child(network_session)
+	network_session.configure(router)
 	bridge = UiInputBridge.new()
 	bridge.name = "FlowBridge"
 	add_child(bridge)
@@ -101,6 +107,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if network_session != null and is_instance_valid(network_session):
+		network_session.stop_session()
 	if router != null and is_instance_valid(router):
 		if router.seat_joined.is_connected(_on_seat_joined):
 			router.seat_joined.disconnect(_on_seat_joined)
@@ -124,6 +132,7 @@ func show_title(clear_seats: bool = false) -> void:
 	var title := TITLE_SCENE.instantiate() as UiTitleScreen
 	add_child(title)
 	title.start_requested.connect(_enter_match)
+	title.lan_lobby_requested.connect(show_lan_lobby)
 	title.library_requested.connect(show_library)
 	title.settings_requested.connect(show_settings)
 	title.quit_requested.connect(_quit)
@@ -171,8 +180,25 @@ func show_settings() -> void:
 	_use_menu_screen(screen)
 
 
+func show_lan_lobby() -> void:
+	_free_screen()
+	state = State.LAN_LOBBY
+	bridge.screen = null
+	var screen := LAN_LOBBY_SCENE.instantiate() as UiLanLobbyScreen
+	screen.bind_session(network_session)
+	screen.back_requested.connect(show_title)
+	add_child(screen)
+	_screen = screen
+	_use_menu_screen(screen)
+
+
 ## Creates a fresh match room on the shared router; the room's own Lobby phase comes first.
 func _enter_match() -> void:
+	if (
+		network_session != null
+		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
+	):
+		network_session.stop_session()
 	_free_room()
 	_free_screen()
 	state = State.IN_MATCH

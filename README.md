@@ -1,6 +1,6 @@
 # Tilaok!
 
-**Current build:** offline, local 2–4 player baseline. The approved PC-host/Android/live-placement proposal is separately gated future work and is not an October submission obligation. See [networked live-build specification](docs/NETWORKED_LIVE_BUILD.md) and [separate tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md).
+**Current build:** offline, local 2–4 player baseline. NLB-P02 adds an opt-in PC LAN lobby and admission flow; network gameplay and Android clients remain future, separately gated work outside the October submission obligation. See [networked live-build specification](docs/NETWORKED_LIVE_BUILD.md) and [separate tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md).
 
 > A Filipino party platformer where chickens build the level, then try to survive it.
 
@@ -13,8 +13,8 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 
 ## Docs
 - [Product Requirements](docs/PRD.md): complete product scope, rules and acceptance; consolidates the GDD and specialized contracts
-- [Networked Live Build Specification](docs/NETWORKED_LIVE_BUILD.md): approved future PC-host/Android target, architecture, input and placement contracts
-- [Networked Live Build Tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md): separate 12-phase, 36-task implementation and verification track (0/36 checked)
+- [Networked Live Build Specification](docs/NETWORKED_LIVE_BUILD.md): PC lobby and approved later Android/gameplay target, architecture and placement contracts
+- [Networked Live Build Tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md): separate 12-phase, 36-task implementation and verification track (8/36 checked; P02 partial 2/3)
 - [Phased Implementation Tracker](docs/PHASETASK.md): 180/421 task records checked; P13 is 11/18 (scoreboard, the routes, HUD, Library, tutorial and accessibility on the scheduled default route, and the 2026-10-17 reference UI restyle; physical-device and human sessions, including the restyle design review, open); P12 is 10/10 technical (seeded schedule, announcements, the three verified Twist pairs and the owner-approved terminal-order table on the default scheduled route; human sessions open); P11 is 13/13 on standalone development-route engineering evidence (human/device/balance and performance gates remain); P09 is 4/4 and P08 is 6/6 technical; P07 is 0/4 with player/device gates open; P10 is 48/54 on placeholder art (event/stack integration passed 2026-10-16 and the six families are in the match pool; release enablement open); P05 is 12/12 and P06 is 8/8; P04 is 20/22, P03 is 7/7 (map scenes added) and P02 is 24/34 (physical-device and human-review tasks open; includes the 2026-10-14 sneak/glide/64 px grid/stage-blocks extension)
 - [Prototype Defaults](docs/PROTOTYPE_DEFAULTS.md): provisional controller/input values with measured P02/P03 graybox results and remaining limits
 - [Documentation Index](docs/INDEX.md): complete map and pre-development documentation order
@@ -45,6 +45,8 @@ Inspired by the build-then-run loop of party platformers, Tilaok! reimagines *sa
 ## Status
 P01 provides the foundation harness and typed provisional configuration. P02 adds local movement/input; P03 adds the protected graybox arena, bounded camera and support fixtures. P04 adds Kaing/Tulay construction seeds. P05 adds the local lobby → Pugad → atomic Place flow, and P06 adds live Karera goal contact, deadlines, exact race scoring, explained results and next-round reset with persistent construction. P07 adds a dedicated first-playable route limited to three verified Kaing/Tulay variants; its synthetic engineering checks pass, while player sessions, physical-device acceptance and human review remain open (0/4 tasks checked). P08 adds independent pass-through bomb-taya Lagsanay on the persistent stage and is 6/6 technically verified in development; its profile is not release-enabled and P07-T04 remains an open entry/release gate. P09 adds a development-only full-match route that ends at 80 eighth-point units or round 12, sends tied leaders to Lagsanay sudden death, and binds one winner and exact scores to the live result screen with Replay/Lobby/Quit. P09's four technical tasks pass, but its 1080p warmed p95 frame interval is above target; see [P09 evidence](docs/evidence/p09/README.md). P11 adds standalone `kangaroo_contract_lab` using the existing match lifecycle and persistent construction, with no race goal/deadline or Bomb-Taya controller; its 77 focused checks, 81 rendered synthetic 2/3/4-seat assertions and Windows startup smoke pass. P11's debug timing exceeds the provisional frame target, and human comprehension/device/balance/asset review remains open; see [P11 evidence](docs/evidence/p11/README.md). P10 hazard-family verification/release enablement, production review and release readiness remain open. P12 scheduling/stacks, tutorial and Library are implemented on the default scheduled route. Barya is enabled there after scoped P19 approval and technical verification; P07 remains disabled and P00-T04/full-manifest ratification stays open. P02 is 24/34 because physical controller, keyboard rollover/reconnect checks and wall-movement / sneak-glide human review remain open. Since 2026-10-14 the stage uses 64 px tiles (TileMapLayer), keyboard jump is W/Up (hold to glide), S/Down sneaks, and Solid Block, Wood Box and Collapsing Block scenes live in `tilaok!/scenes/blocks/`. Wall slide/jump is implemented; its human review and Should include/defer decision remain open. P03 is 7/7 (map scenes and Lobby map selection, 2026-10-16) and P04 is 18/22. AI-assisted programming is the standing development workflow; Francis and Carlos are the development leads. See [run instructions and responsibilities](docs/PROJECT_STRUCTURE.md), [tracker](docs/PHASETASK.md), [playtest evidence](docs/PLAYTEST.md), and [AI assistance disclosure](docs/AI_USAGE.md). Use the explicit Godot 4.7.2 executable; the PATH wrapper still launches 4.6.3.
 
+NLB-P02 adds a spectator PC host lobby with IPv4 discovery, manual address join, a short-lived access code, host approval and lobby readiness. Network start is disabled because gameplay transport belongs to a later phase. Real Wi-Fi/no-internet LAN and abuse-flood checks remain open; see [P02 evidence](docs/evidence/nlb/p02/README.md).
+
 ## Play the live match flow (P07 playtest build)
 
 The project now starts at the **Title**. From the repository root, with the explicit Godot 4.7.2 executable:
@@ -54,6 +56,16 @@ The project now starts at the **Title**. From the repository root, with the expl
 ```
 
 Press your ready key to join (WASD **E** or **F**, IJKL **O**, arrows **Enter**, numpad **Num 0**, gamepad **South**; any layout can be any player). In the Lobby, ◀ ▶ (keys or mouse) choose the map, choose **Start**, let the other players join in the Lobby and mark every seat ready: the match starts by itself. Then Pugad (**← / →** pick an egg, ready key claims), Place (move, **R** / **Right Shift** rotate, ready key confirms), Karera, Round result, next round. **Esc** or a pad **Start** pauses; the pause owner chooses Resume / Settings / Library / Leave. This default route is the Kaing/Tulay slice of the Karera loop with no match end. To play the same flow with the P09 match end (first to 10 points or round 12, Lagsanay sudden death on ties, final result with Replay / Return to Lobby / Quit), add `-- --match-route=lifecycle` to the command above. The facilitator sheet and launch steps for the exported build are in [docs/PLAYTEST.md](docs/PLAYTEST.md).
+
+## Try the PC LAN lobby (P02 engineering build)
+
+From the repository root, launch either desktop:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64.exe' --path 'tilaok!'
+```
+
+Select **LAN Lobby** from Title, choose one eligible IPv4 interface and start a spectator host. On a second PC running the same build, enter the host IPv4 and game port (default `27777`), then enter the displayed access code separately; alternatively search by Lobby ID and enter that code. The host approves the request, after which the client acknowledges its seat and can toggle Ready. Discovery uses UDP port `27778`. The trusted-LAN engineering feature does not encrypt traffic or start network gameplay. Offline Play remains available after leaving or stopping the session.
 
 ## Run the developer harness
 

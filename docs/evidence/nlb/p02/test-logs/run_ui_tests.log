@@ -1,0 +1,563 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS project Theme loads
+PASS Theme defines TilaokMenuButton
+PASS Theme defines MenuButtonSelected
+PASS Theme defines RowPanelSelected
+PASS Theme defines GhostValid
+PASS Theme defines GhostInvalid
+PASS Theme defines GhostProtected
+PASS Theme defines GhostRotationOff
+PASS Theme defines GhostConfirmed
+PASS Theme defines SafeAreaMargin
+PASS Theme defines HudBar
+PASS Theme defines HudLabel
+PASS Theme defines Backdrop
+PASS Theme defines RowPanelCompact
+PASS Theme policy: mid-round minimum font size is at least 16 px
+PASS resource loads: res://data/ui/prompt_map.tres
+PASS resource loads: res://data/ui/sample_match_4p.tres
+PASS resource loads: res://data/ui/sample_match_2p.tres
+PASS resource loads: res://data/ui/library_text.tres
+PASS scene loads: component_sheet.tscn
+PASS scene instantiates: component_sheet.tscn
+PASS scene loads: debug_overlay.tscn
+PASS scene instantiates: debug_overlay.tscn
+PASS scene loads: events_overlay.tscn
+PASS scene instantiates: events_overlay.tscn
+PASS scene loads: lan_lobby_screen.tscn
+PASS scene instantiates: lan_lobby_screen.tscn
+PASS scene loads: library_screen.tscn
+PASS scene instantiates: library_screen.tscn
+PASS scene loads: lobby_screen.tscn
+PASS scene instantiates: lobby_screen.tscn
+PASS scene loads: match_result_screen.tscn
+PASS scene instantiates: match_result_screen.tscn
+PASS scene loads: pause_screen.tscn
+PASS scene instantiates: pause_screen.tscn
+PASS scene loads: place_overlay.tscn
+PASS scene instantiates: place_overlay.tscn
+PASS scene loads: play_hud.tscn
+PASS scene instantiates: play_hud.tscn
+PASS scene loads: pugad_overlay.tscn
+PASS scene instantiates: pugad_overlay.tscn
+PASS scene loads: round_result_screen.tscn
+PASS scene instantiates: round_result_screen.tscn
+PASS scene loads: settings_screen.tscn
+PASS scene instantiates: settings_screen.tscn
+PASS scene loads: title_screen.tscn
+PASS scene instantiates: title_screen.tscn
+PASS scene loads: tutorial_prompt.tscn
+PASS scene instantiates: tutorial_prompt.tscn
+PASS scene loads: arrow_plank_button.tscn
+PASS scene instantiates: arrow_plank_button.tscn
+PASS scene loads: award_line.tscn
+PASS scene instantiates: award_line.tscn
+PASS scene loads: confirm_dialog.tscn
+PASS scene instantiates: confirm_dialog.tscn
+PASS scene loads: confirm_dialog_paper.tscn
+PASS scene instantiates: confirm_dialog_paper.tscn
+PASS scene loads: countdown_bar.tscn
+PASS scene instantiates: countdown_bar.tscn
+PASS scene loads: countdown_ring.tscn
+PASS scene instantiates: countdown_ring.tscn
+PASS scene loads: egg_slot.tscn
+PASS scene instantiates: egg_slot.tscn
+PASS scene loads: ghost_legend.tscn
+PASS scene instantiates: ghost_legend.tscn
+PASS scene loads: kangaroo_command_card.tscn
+PASS scene instantiates: kangaroo_command_card.tscn
+PASS scene loads: kangaroo_hud.tscn
+PASS scene instantiates: kangaroo_hud.tscn
+PASS scene loads: kangaroo_prompt.tscn
+PASS scene instantiates: kangaroo_prompt.tscn
+PASS scene loads: lobby_slot.tscn
+PASS scene instantiates: lobby_slot.tscn
+PASS scene loads: menu_action_button.tscn
+PASS scene instantiates: menu_action_button.tscn
+PASS scene loads: option_row.tscn
+PASS scene instantiates: option_row.tscn
+PASS scene loads: phase_banner.tscn
+PASS scene instantiates: phase_banner.tscn
+PASS scene loads: pill_badge.tscn
+PASS scene instantiates: pill_badge.tscn
+PASS scene loads: place_timer.tscn
+PASS scene instantiates: place_timer.tscn
+PASS scene loads: plank_button.tscn
+PASS scene instantiates: plank_button.tscn
+PASS scene loads: player_badge.tscn
+PASS scene instantiates: player_badge.tscn
+PASS scene loads: prompt_glyph.tscn
+PASS scene instantiates: prompt_glyph.tscn
+PASS scene loads: pugad_countdown.tscn
+PASS scene instantiates: pugad_countdown.tscn
+PASS scene loads: score_award_legend.tscn
+PASS scene instantiates: score_award_legend.tscn
+PASS scene loads: score_chip.tscn
+PASS scene instantiates: score_chip.tscn
+PASS scene loads: score_column.tscn
+PASS scene instantiates: score_column.tscn
+PASS scene loads: score_row.tscn
+PASS scene instantiates: score_row.tscn
+PASS scene loads: scoreboard_chart.tscn
+PASS scene instantiates: scoreboard_chart.tscn
+PASS scene loads: seat_pill.tscn
+PASS scene instantiates: seat_pill.tscn
+PASS scene loads: taya_marker.tscn
+PASS scene instantiates: taya_marker.tscn
+PASS scene loads: toast_line.tscn
+PASS scene instantiates: toast_line.tscn
+PASS scene loads: vine_divider.tscn
+PASS scene instantiates: vine_divider.tscn
+PASS score_award_legend.gd builds no layout and sets no theme overrides
+PASS score_column.gd builds no layout and sets no theme overrides
+PASS scoreboard_chart.gd builds no layout and sets no theme overrides
+PASS ui_award_line.gd builds no layout and sets no theme overrides
+PASS ui_component_sheet.gd builds no layout and sets no theme overrides
+PASS ui_confirm_dialog.gd builds no layout and sets no theme overrides
+PASS ui_context.gd builds no layout and sets no theme overrides
+PASS ui_countdown_ring.gd builds no layout and sets no theme overrides
+PASS ui_debug_overlay.gd builds no layout and sets no theme overrides
+PASS ui_egg_slot.gd builds no layout and sets no theme overrides
+PASS ui_events_overlay.gd builds no layout and sets no theme overrides
+PASS ui_gallery.gd builds no layout and sets no theme overrides
+PASS ui_input_bridge.gd builds no layout and sets no theme overrides
+PASS ui_kangaroo_command_card.gd builds no layout and sets no theme overrides
+PASS ui_kangaroo_hud.gd builds no layout and sets no theme overrides
+ERROR: ui_lan_lobby_screen.gd contains Label.new(
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: ui_lan_lobby_screen.gd contains Button.new(
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: ui_lan_lobby_screen.gd contains VBoxContainer.new(
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: ui_lan_lobby_screen.gd contains HBoxContainer.new(
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: ui_lan_lobby_screen.gd contains ColorRect.new(
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: ui_lan_lobby_screen.gd contains TextureRect.new(
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: ui_lan_lobby_screen.gd contains add_theme_
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _test_script_source_rules (res://tests/run_ui_tests.gd:222)
+       [1] _run (res://tests/run_ui_tests.gd:160)
+ERROR: FAIL ui_lan_lobby_screen.gd builds no layout and sets no theme overrides
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_ui_tests.gd:501)
+       [1] _test_script_source_rules (res://tests/run_ui_tests.gd:223)
+       [2] _run (res://tests/run_ui_tests.gd:160)
+PASS ui_library_page.gd builds no layout and sets no theme overrides
+PASS ui_library_screen.gd builds no layout and sets no theme overrides
+PASS ui_library_text.gd builds no layout and sets no theme overrides
+PASS ui_lobby_screen.gd builds no layout and sets no theme overrides
+PASS ui_lobby_slot.gd builds no layout and sets no theme overrides
+PASS ui_match_result_screen.gd builds no layout and sets no theme overrides
+PASS ui_menu_action_button.gd builds no layout and sets no theme overrides
+PASS ui_menu_list.gd builds no layout and sets no theme overrides
+PASS ui_option_row.gd builds no layout and sets no theme overrides
+PASS ui_pause_screen.gd builds no layout and sets no theme overrides
+PASS ui_phase_banner.gd builds no layout and sets no theme overrides
+PASS ui_place_overlay.gd builds no layout and sets no theme overrides
+PASS ui_plank_button.gd builds no layout and sets no theme overrides
+PASS ui_play_hud.gd builds no layout and sets no theme overrides
+PASS ui_player_badge.gd builds no layout and sets no theme overrides
+PASS ui_prompt_glyph.gd builds no layout and sets no theme overrides
+PASS ui_prompt_map.gd builds no layout and sets no theme overrides
+PASS ui_pugad_overlay.gd builds no layout and sets no theme overrides
+PASS ui_round_result_screen.gd builds no layout and sets no theme overrides
+PASS ui_sample_match.gd builds no layout and sets no theme overrides
+PASS ui_score_row.gd builds no layout and sets no theme overrides
+PASS ui_screen.gd builds no layout and sets no theme overrides
+PASS ui_settings_screen.gd builds no layout and sets no theme overrides
+PASS ui_title_screen.gd builds no layout and sets no theme overrides
+PASS ui_toast_line.gd builds no layout and sets no theme overrides
+PASS ui_tutorial_prompt.gd builds no layout and sets no theme overrides
+PASS title_screen: %TitleLabel is Label
+PASS title_screen: %MenuList is UiMenuList
+PASS title_screen: %StartButton is Button
+PASS title_screen: %LibraryButton is Button
+PASS title_screen: %SettingsButton is Button
+PASS title_screen: %QuitButton is Button
+PASS title_screen: %BuildLabel is Label
+PASS title_screen: %PressToJoinPrompt is UiPromptGlyph
+PASS title_screen: %QuitConfirm is UiConfirmDialog
+PASS title_screen: button StartButton has no Godot focus (no Enter double-activation)
+PASS title_screen: button LibraryButton has no Godot focus (no Enter double-activation)
+PASS title_screen: button SettingsButton has no Godot focus (no Enter double-activation)
+PASS title_screen: button QuitButton has no Godot focus (no Enter double-activation)
+ERROR: FAIL title_screen: button LanLobbyButton has no Godot focus (no Enter double-activation)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_ui_tests.gd:501)
+       [1] _check_buttons_unfocusable (res://tests/run_ui_tests.gd:428)
+       [2] _check_buttons_unfocusable (res://tests/run_ui_tests.gd:435)
+       [3] _check_buttons_unfocusable (res://tests/run_ui_tests.gd:435)
+       [4] _test_contract (res://tests/run_ui_tests.gd:240)
+PASS title_screen: button YesButton has no Godot focus (no Enter double-activation)
+PASS title_screen: button NoButton has no Godot focus (no Enter double-activation)
+PASS lobby_screen: %Slot1 is UiLobbySlot
+PASS lobby_screen: %Slot2 is UiLobbySlot
+PASS lobby_screen: %Slot3 is UiLobbySlot
+PASS lobby_screen: %Slot4 is UiLobbySlot
+PASS lobby_screen: %NeedPlayersLabel is Label
+PASS lobby_screen: %StartHint is UiPromptGlyph
+PASS lobby_screen: %BackHint is UiPromptGlyph
+PASS lobby_screen: button PrevMapButton has no Godot focus (no Enter double-activation)
+PASS lobby_screen: button NextMapButton has no Godot focus (no Enter double-activation)
+PASS tutorial_prompt: %StepLabel is Label
+PASS tutorial_prompt: %BodyLabel is Label
+PASS tutorial_prompt: %PromptGlyph is UiPromptGlyph
+PASS tutorial_prompt: %SkipHint is UiPromptGlyph
+PASS pugad_overlay: %PhaseBanner is UiPhaseBanner
+PASS pugad_overlay: %Countdown is UiCountdownRing
+PASS pugad_overlay: %AnnounceBanner is UiPhaseBanner
+PASS pugad_overlay: %LostClaimToast is UiToastLine
+PASS pugad_overlay: %EggRow is Control
+PASS pugad_overlay: %Egg1 is UiEggSlot
+PASS pugad_overlay: %Egg6 is UiEggSlot
+PASS place_overlay: %PhaseBanner is UiPhaseBanner
+PASS place_overlay: %Countdown is UiCountdownRing
+PASS place_overlay: %ReasonToast is UiToastLine
+PASS place_overlay: %GhostLegend is VBoxContainer
+PASS place_overlay: %GhostStatus is Label
+PASS place_overlay: %Pointer1 is UiPlayerBadge
+PASS place_overlay: %Pointer4 is UiPlayerBadge
+PASS place_overlay: %SeatStatus1 is UiScoreRow
+PASS place_overlay: %SeatStatus4 is UiScoreRow
+PASS play_hud: %HudBar is PanelContainer
+PASS play_hud: %RoundLabel is Label
+PASS play_hud: %TwistTag is Label
+PASS play_hud: %ScoreRow1 is UiScoreRow
+PASS play_hud: %ScoreRow4 is UiScoreRow
+PASS play_hud: %TimerLabel is Label
+PASS play_hud: %NextEventLabel is Label
+PASS play_hud: %NoticeToast is UiToastLine
+PASS round_result_screen: %RoundLabel is Label
+ERROR: FAIL round_result_screen: %Outcome1 is UiScoreRow
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_ui_tests.gd:501)
+       [1] _test_contract (res://tests/run_ui_tests.gd:239)
+PASS round_result_screen: %Award1 is UiAwardLine
+PASS round_result_screen: %Award10 is UiAwardLine
+PASS round_result_screen: %EndReasonLabel is Label
+PASS round_result_screen: %DeadlineLabel is Label
+PASS round_result_screen: %NoScoreReason is UiToastLine
+PASS round_result_screen: %ReadyHint is UiPromptGlyph
+PASS round_result_screen: %AdvanceCountdown is UiCountdownRing
+PASS match_result_screen: %WinnerBadge is UiPlayerBadge
+PASS match_result_screen: %WinnerLabel is Label
+ERROR: FAIL match_result_screen: %Final1 is UiScoreRow
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_ui_tests.gd:501)
+       [1] _test_contract (res://tests/run_ui_tests.gd:239)
+PASS match_result_screen: %LastCluckCallout is UiPhaseBanner
+PASS match_result_screen: %MenuList is UiMenuList
+PASS match_result_screen: %ReplayButton is Button
+PASS match_result_screen: %LobbyButton is Button
+PASS match_result_screen: button ReplayButton has no Godot focus (no Enter double-activation)
+PASS match_result_screen: button LobbyButton has no Godot focus (no Enter double-activation)
+PASS match_result_screen: button QuitButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: %OwnerBadge is UiPlayerBadge
+PASS pause_screen: %OwnerLabel is Label
+PASS pause_screen: %ReasonLabel is Label
+PASS pause_screen: %Roster1 is UiScoreRow
+PASS pause_screen: %CountdownLabel is Label
+PASS pause_screen: %MenuList is UiMenuList
+PASS pause_screen: %ResumeButton is Button
+PASS pause_screen: %ReclaimPanel is PanelContainer
+PASS pause_screen: %ReclaimLabel is Label
+PASS pause_screen: %LeaveConfirm is UiConfirmDialog
+PASS pause_screen: button ResumeButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: button SettingsButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: button LibraryButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: button LeaveButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: button SkipTutorialButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: button YesButton has no Godot focus (no Enter double-activation)
+PASS pause_screen: button NoButton has no Godot focus (no Enter double-activation)
+PASS settings_screen: %MenuList is UiMenuList
+PASS settings_screen: %ShakeRow is UiOptionRow
+PASS settings_screen: %MasterRow is UiOptionRow
+PASS settings_screen: %MusicRow is UiOptionRow
+PASS settings_screen: %EffectsRow is UiOptionRow
+PASS settings_screen: %CrowdRow is UiOptionRow
+PASS settings_screen: %BackButton is Button
+PASS settings_screen: button BackButton has no Godot focus (no Enter double-activation)
+PASS library_screen: %CategoryList is UiMenuList
+PASS library_screen: %EntryList is UiMenuList
+PASS library_screen: %EntryTitle is Label
+PASS library_screen: %EntryBody is Label
+PASS library_screen: %AnimationHost is Control
+PASS library_screen: %ReleaseFilterButton is Button
+PASS library_screen: button Cat1 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Cat2 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Cat3 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Cat4 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Cat5 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Cat6 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Cat7 has no Godot focus (no Enter double-activation)
+PASS library_screen: button ReleaseFilterButton has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry1 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry2 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry3 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry4 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry5 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry6 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry7 has no Godot focus (no Enter double-activation)
+PASS library_screen: button Entry8 has no Godot focus (no Enter double-activation)
+PASS library_screen: button BackButton has no Godot focus (no Enter double-activation)
+PASS events_overlay: %TayaMarker is PanelContainer
+PASS events_overlay: %KangarooPrompt is PanelContainer
+PASS gallery lists one scene per screen id
+PASS gallery has one button per screen id
+PASS title/1 players/state 0: controls inside 1280x720 []
+PASS title/1 players/state 0: text at least 12 px []
+PASS title/1 players/state 1: controls inside 1280x720 []
+PASS title/1 players/state 1: text at least 12 px []
+PASS title/1 players/state 2: controls inside 1280x720 []
+PASS title/1 players/state 2: text at least 12 px []
+PASS lobby/1 players/state 0: controls inside 1280x720 []
+PASS lobby/1 players/state 0: text at least 12 px []
+PASS lobby/1 players/state 1: controls inside 1280x720 []
+PASS lobby/1 players/state 1: text at least 12 px []
+PASS lobby/1 players/state 2: controls inside 1280x720 []
+PASS lobby/1 players/state 2: text at least 12 px []
+PASS lobby/1 players/state 3: controls inside 1280x720 []
+PASS lobby/1 players/state 3: text at least 12 px []
+PASS lobby/1 players/state 4: controls inside 1280x720 []
+PASS lobby/1 players/state 4: text at least 12 px []
+PASS tutorial/1 players/state 0: controls inside 1280x720 []
+PASS tutorial/1 players/state 0: text at least 12 px []
+PASS tutorial/1 players/state 1: controls inside 1280x720 []
+PASS tutorial/1 players/state 1: text at least 12 px []
+PASS tutorial/1 players/state 2: controls inside 1280x720 []
+PASS tutorial/1 players/state 2: text at least 12 px []
+PASS pugad/1 players/state 0: controls inside 1280x720 []
+PASS pugad/1 players/state 0: text at least 12 px []
+PASS pugad/1 players/state 1: controls inside 1280x720 []
+PASS pugad/1 players/state 1: text at least 12 px []
+PASS pugad/1 players/state 2: controls inside 1280x720 []
+PASS pugad/1 players/state 2: text at least 12 px []
+PASS pugad/1 players/state 3: controls inside 1280x720 []
+PASS pugad/1 players/state 3: text at least 12 px []
+PASS place/1 players/state 0: controls inside 1280x720 []
+PASS place/1 players/state 0: text at least 12 px []
+PASS place/1 players/state 1: controls inside 1280x720 []
+PASS place/1 players/state 1: text at least 12 px []
+PASS place/1 players/state 2: controls inside 1280x720 []
+PASS place/1 players/state 2: text at least 12 px []
+PASS place/1 players/state 3: controls inside 1280x720 []
+PASS place/1 players/state 3: text at least 12 px []
+PASS place/1 players/state 4: controls inside 1280x720 []
+PASS place/1 players/state 4: text at least 12 px []
+PASS play_hud/1 players/state 0: controls inside 1280x720 []
+PASS play_hud/1 players/state 0: text at least 12 px []
+PASS play_hud/1 players/state 1: controls inside 1280x720 []
+PASS play_hud/1 players/state 1: text at least 12 px []
+PASS play_hud/1 players/state 2: controls inside 1280x720 []
+PASS play_hud/1 players/state 2: text at least 12 px []
+PASS play_hud/1 players/state 3: controls inside 1280x720 []
+PASS play_hud/1 players/state 3: text at least 12 px []
+PASS play_hud/1 players/state 4: controls inside 1280x720 []
+PASS play_hud/1 players/state 4: text at least 12 px []
+PASS round_result/1 players/state 0: controls inside 1280x720 []
+PASS round_result/1 players/state 0: text at least 12 px []
+PASS round_result/1 players/state 1: controls inside 1280x720 []
+PASS round_result/1 players/state 1: text at least 12 px []
+PASS round_result/1 players/state 2: controls inside 1280x720 []
+PASS round_result/1 players/state 2: text at least 12 px []
+PASS round_result/1 players/state 3: controls inside 1280x720 []
+PASS round_result/1 players/state 3: text at least 12 px []
+PASS match_result/1 players/state 0: controls inside 1280x720 []
+PASS match_result/1 players/state 0: text at least 12 px []
+PASS match_result/1 players/state 1: controls inside 1280x720 []
+PASS match_result/1 players/state 1: text at least 12 px []
+PASS match_result/1 players/state 2: controls inside 1280x720 []
+PASS match_result/1 players/state 2: text at least 12 px []
+PASS pause/1 players/state 0: controls inside 1280x720 []
+PASS pause/1 players/state 0: text at least 12 px []
+PASS pause/1 players/state 1: controls inside 1280x720 []
+PASS pause/1 players/state 1: text at least 12 px []
+PASS pause/1 players/state 2: controls inside 1280x720 []
+PASS pause/1 players/state 2: text at least 12 px []
+PASS pause/1 players/state 3: controls inside 1280x720 []
+PASS pause/1 players/state 3: text at least 12 px []
+PASS pause/1 players/state 4: controls inside 1280x720 []
+PASS pause/1 players/state 4: text at least 12 px []
+PASS settings/1 players/state 0: controls inside 1280x720 []
+PASS settings/1 players/state 0: text at least 12 px []
+PASS settings/1 players/state 1: controls inside 1280x720 []
+PASS settings/1 players/state 1: text at least 12 px []
+PASS settings/1 players/state 2: controls inside 1280x720 []
+PASS settings/1 players/state 2: text at least 12 px []
+PASS library/1 players/state 0: controls inside 1280x720 []
+PASS library/1 players/state 0: text at least 12 px []
+PASS library/1 players/state 1: controls inside 1280x720 []
+PASS library/1 players/state 1: text at least 12 px []
+PASS library/1 players/state 2: controls inside 1280x720 []
+PASS library/1 players/state 2: text at least 12 px []
+PASS library/1 players/state 3: controls inside 1280x720 []
+PASS library/1 players/state 3: text at least 12 px []
+PASS library/1 players/state 4: controls inside 1280x720 []
+PASS library/1 players/state 4: text at least 12 px []
+PASS library/1 players/state 5: controls inside 1280x720 []
+PASS library/1 players/state 5: text at least 12 px []
+PASS library/1 players/state 6: controls inside 1280x720 []
+PASS library/1 players/state 6: text at least 12 px []
+PASS library/1 players/state 7: controls inside 1280x720 []
+PASS library/1 players/state 7: text at least 12 px []
+PASS events/1 players/state 0: controls inside 1280x720 []
+PASS events/1 players/state 0: text at least 12 px []
+PASS events/1 players/state 1: controls inside 1280x720 []
+PASS events/1 players/state 1: text at least 12 px []
+PASS components/1 players/state 0: controls inside 1280x720 []
+PASS components/1 players/state 0: text at least 12 px []
+PASS title/4 players/state 0: controls inside 1280x720 []
+PASS title/4 players/state 0: text at least 12 px []
+PASS title/4 players/state 1: controls inside 1280x720 []
+PASS title/4 players/state 1: text at least 12 px []
+PASS title/4 players/state 2: controls inside 1280x720 []
+PASS title/4 players/state 2: text at least 12 px []
+PASS lobby/4 players/state 0: controls inside 1280x720 []
+PASS lobby/4 players/state 0: text at least 12 px []
+PASS lobby/4 players/state 1: controls inside 1280x720 []
+PASS lobby/4 players/state 1: text at least 12 px []
+PASS lobby/4 players/state 2: controls inside 1280x720 []
+PASS lobby/4 players/state 2: text at least 12 px []
+PASS lobby/4 players/state 3: controls inside 1280x720 []
+PASS lobby/4 players/state 3: text at least 12 px []
+PASS lobby/4 players/state 4: controls inside 1280x720 []
+PASS lobby/4 players/state 4: text at least 12 px []
+PASS tutorial/4 players/state 0: controls inside 1280x720 []
+PASS tutorial/4 players/state 0: text at least 12 px []
+PASS tutorial/4 players/state 1: controls inside 1280x720 []
+PASS tutorial/4 players/state 1: text at least 12 px []
+PASS tutorial/4 players/state 2: controls inside 1280x720 []
+PASS tutorial/4 players/state 2: text at least 12 px []
+PASS pugad/4 players/state 0: controls inside 1280x720 []
+PASS pugad/4 players/state 0: text at least 12 px []
+PASS pugad/4 players/state 1: controls inside 1280x720 []
+PASS pugad/4 players/state 1: text at least 12 px []
+PASS pugad/4 players/state 2: controls inside 1280x720 []
+PASS pugad/4 players/state 2: text at least 12 px []
+PASS pugad/4 players/state 3: controls inside 1280x720 []
+PASS pugad/4 players/state 3: text at least 12 px []
+PASS place/4 players/state 0: controls inside 1280x720 []
+PASS place/4 players/state 0: text at least 12 px []
+PASS place/4 players/state 1: controls inside 1280x720 []
+PASS place/4 players/state 1: text at least 12 px []
+PASS place/4 players/state 2: controls inside 1280x720 []
+PASS place/4 players/state 2: text at least 12 px []
+PASS place/4 players/state 3: controls inside 1280x720 []
+PASS place/4 players/state 3: text at least 12 px []
+PASS place/4 players/state 4: controls inside 1280x720 []
+PASS place/4 players/state 4: text at least 12 px []
+PASS play_hud/4 players/state 0: controls inside 1280x720 []
+PASS play_hud/4 players/state 0: text at least 12 px []
+PASS play_hud/4 players/state 1: controls inside 1280x720 []
+PASS play_hud/4 players/state 1: text at least 12 px []
+PASS play_hud/4 players/state 2: controls inside 1280x720 []
+PASS play_hud/4 players/state 2: text at least 12 px []
+PASS play_hud/4 players/state 3: controls inside 1280x720 []
+PASS play_hud/4 players/state 3: text at least 12 px []
+PASS play_hud/4 players/state 4: controls inside 1280x720 []
+PASS play_hud/4 players/state 4: text at least 12 px []
+PASS round_result/4 players/state 0: controls inside 1280x720 []
+PASS round_result/4 players/state 0: text at least 12 px []
+PASS round_result/4 players/state 1: controls inside 1280x720 []
+PASS round_result/4 players/state 1: text at least 12 px []
+PASS round_result/4 players/state 2: controls inside 1280x720 []
+PASS round_result/4 players/state 2: text at least 12 px []
+PASS round_result/4 players/state 3: controls inside 1280x720 []
+PASS round_result/4 players/state 3: text at least 12 px []
+PASS match_result/4 players/state 0: controls inside 1280x720 []
+PASS match_result/4 players/state 0: text at least 12 px []
+PASS match_result/4 players/state 1: controls inside 1280x720 []
+PASS match_result/4 players/state 1: text at least 12 px []
+PASS match_result/4 players/state 2: controls inside 1280x720 []
+PASS match_result/4 players/state 2: text at least 12 px []
+PASS pause/4 players/state 0: controls inside 1280x720 []
+PASS pause/4 players/state 0: text at least 12 px []
+PASS pause/4 players/state 1: controls inside 1280x720 []
+PASS pause/4 players/state 1: text at least 12 px []
+PASS pause/4 players/state 2: controls inside 1280x720 []
+PASS pause/4 players/state 2: text at least 12 px []
+PASS pause/4 players/state 3: controls inside 1280x720 []
+PASS pause/4 players/state 3: text at least 12 px []
+PASS pause/4 players/state 4: controls inside 1280x720 []
+PASS pause/4 players/state 4: text at least 12 px []
+PASS settings/4 players/state 0: controls inside 1280x720 []
+PASS settings/4 players/state 0: text at least 12 px []
+PASS settings/4 players/state 1: controls inside 1280x720 []
+PASS settings/4 players/state 1: text at least 12 px []
+PASS settings/4 players/state 2: controls inside 1280x720 []
+PASS settings/4 players/state 2: text at least 12 px []
+PASS library/4 players/state 0: controls inside 1280x720 []
+PASS library/4 players/state 0: text at least 12 px []
+PASS library/4 players/state 1: controls inside 1280x720 []
+PASS library/4 players/state 1: text at least 12 px []
+PASS library/4 players/state 2: controls inside 1280x720 []
+PASS library/4 players/state 2: text at least 12 px []
+PASS library/4 players/state 3: controls inside 1280x720 []
+PASS library/4 players/state 3: text at least 12 px []
+PASS library/4 players/state 4: controls inside 1280x720 []
+PASS library/4 players/state 4: text at least 12 px []
+PASS library/4 players/state 5: controls inside 1280x720 []
+PASS library/4 players/state 5: text at least 12 px []
+PASS library/4 players/state 6: controls inside 1280x720 []
+PASS library/4 players/state 6: text at least 12 px []
+PASS library/4 players/state 7: controls inside 1280x720 []
+PASS library/4 players/state 7: text at least 12 px []
+PASS events/4 players/state 0: controls inside 1280x720 []
+PASS events/4 players/state 0: text at least 12 px []
+PASS events/4 players/state 1: controls inside 1280x720 []
+PASS events/4 players/state 1: text at least 12 px []
+PASS components/4 players/state 0: controls inside 1280x720 []
+PASS components/4 players/state 0: text at least 12 px []
+PASS Play HUD bar is exactly the HUD reservation tall (64.0 px)
+PASS Play HUD bar sits at the top of the canvas
+PASS HUD score row shows number and shape for seat 1
+PASS HUD score row shows number and shape for seat 2
+PASS HUD score row shows number and shape for seat 3
+PASS HUD score row shows number and shape for seat 4
+PASS lobby slot shows number and shape for seat 1
+PASS lobby slot shows number and shape for seat 2
+PASS lobby slot shows number and shape for seat 3
+PASS lobby slot shows number and shape for seat 4
+PASS title menu starts on the first item
+PASS K1 down moves the title selection
+PASS K1 up moves the title selection back
+PASS K2 cannot drive a menu owned by seat 1
+PASS K1 confirm activates Start exactly once (got 1)
+PASS Start opens the lobby
+PASS a held press is consumed by the screen transition
+PASS K1 right changes the shake choice
+PASS shake choice reaches Off through the screen
+PASS synthetic gamepad d-pad (seat 3) drives a menu it owns
+PASS assigning a texture to Art_Circle replaces the placeholder polygon with no code change
+PASS gallery hot-swaps to a second Theme
+PASS lobby with the swapped theme: controls inside 1280x720 []
+PASS gallery swaps back to the project Theme
+PASS 10 open/close cycles keep node count stable (145 -> 145)
+PASS 10 open/close cycles leave no new orphans (0 -> 0)
+UI_TESTS checks=505 failures=4

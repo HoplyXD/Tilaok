@@ -1,0 +1,15 @@
+NLB-P02 — final focused evidence run, 2026-10-20 (Asia/Manila date)
+Engine: Godot 4.7.2 stable, official build ed1daf0bf.
+Project: current main checkout; local Windows host and client processes.
+
+Results:
+- Godot editor import/parse: exit 0.
+- P02 focused runner: exit 0, 52 checks passed.
+- P02 separate-process runner: exit 0, 10 cycles passed; final seats=0, peers=0, cache=0.
+- gdlint: exit 0, no problems; 13 P02 scripts checked.
+- gdformat --check: exit 0, 13 files unchanged.
+- UI suite: 503/505 assertions; two known P01 failures remain at `%Outcome1` and `%Final1` type assertions. LAN screen theme/layout and Title focus assertions pass.
+- QR fixture was decoded independently with ZXing C++ 3.1.1 to its exact synthetic invalid test URI.
+- `git diff --check`: clean at the evidence preparation point.
+
+Limits: the only usable selected IPv4 interface was WSL virtual Ethernet. Real Wi-Fi, internet-disconnected LAN, Android device/camera and abuse-flood thresholds are COULD-NOT-RUN. No network gameplay is implemented or claimed. See README.md and linked raw logs for details.
