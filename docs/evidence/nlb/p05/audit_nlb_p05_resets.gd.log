@@ -1,14 +1,13 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-P04_ITEM_LAB_READY families=19 enabled_variants=31 profile=karera_slice
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
 P05_MATCH_READY build=P07-match-ui-dev seed=12345
-P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
 P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
 P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
-P12_BARYA_OFFER match=1 round=1 egg=egg_01
 P12_SCHEDULE round=1 now=KARERA next=KARERA
 PASS cycle 1 starts from Lobby
-NLB_P05_PUGAD seed=273353181 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273365526 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 1 resolves Pugad into GO
 PASS cycle 1 starts active Play
 PASS cycle 1 commits live construction
@@ -17,90 +16,91 @@ PASS cycle 1 clears pending/live state and returns to Lobby
 PASS cycle 1 retains both seats as active
 P12_SCHEDULE round=1 now=KARERA next=KARERA
 PASS cycle 2 starts from Lobby
-NLB_P05_PUGAD seed=273365526 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273377871 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 2 resolves Pugad into GO
 PASS cycle 2 starts active Play
 PASS cycle 2 commits live construction
 PASS cycle 2 queues a request before close
 PASS cycle 2 clears pending/live state and returns to Lobby
 PASS cycle 2 retains both seats as active
+P12_BARYA_OFFER match=4 round=1 egg=egg_01
 P12_SCHEDULE round=1 now=KARERA next=KARERA
 PASS cycle 3 starts from Lobby
-NLB_P05_PUGAD seed=273377871 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273390216 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 3 resolves Pugad into GO
 PASS cycle 3 starts active Play
 PASS cycle 3 commits live construction
 PASS cycle 3 queues a request before close
 PASS cycle 3 clears pending/live state and returns to Lobby
 PASS cycle 3 retains both seats as active
-P12_BARYA_OFFER match=4 round=1 egg=egg_01
-P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_BARYA_OFFER match=5 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
 PASS cycle 4 starts from Lobby
-NLB_P05_PUGAD seed=273390216 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273402561 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 4 resolves Pugad into GO
 PASS cycle 4 starts active Play
 PASS cycle 4 commits live construction
 PASS cycle 4 queues a request before close
 PASS cycle 4 clears pending/live state and returns to Lobby
 PASS cycle 4 retains both seats as active
-P12_BARYA_OFFER match=5 round=1 egg=egg_01
+P12_BARYA_OFFER match=6 round=1 egg=egg_01
 P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
 PASS cycle 5 starts from Lobby
-NLB_P05_PUGAD seed=273402561 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273414906 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 5 resolves Pugad into GO
 PASS cycle 5 starts active Play
 PASS cycle 5 commits live construction
 PASS cycle 5 queues a request before close
 PASS cycle 5 clears pending/live state and returns to Lobby
 PASS cycle 5 retains both seats as active
-P12_BARYA_OFFER match=6 round=1 egg=egg_01
-P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+P12_BARYA_OFFER match=7 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
 PASS cycle 6 starts from Lobby
-NLB_P05_PUGAD seed=273414906 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273427251 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 6 resolves Pugad into GO
 PASS cycle 6 starts active Play
 PASS cycle 6 commits live construction
 PASS cycle 6 queues a request before close
 PASS cycle 6 clears pending/live state and returns to Lobby
 PASS cycle 6 retains both seats as active
-P12_BARYA_OFFER match=7 round=1 egg=egg_01
-P12_SCHEDULE round=1 now=KARERA next=KARERA
+P12_BARYA_OFFER match=8 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
 PASS cycle 7 starts from Lobby
-NLB_P05_PUGAD seed=273427251 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273439596 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 7 resolves Pugad into GO
 PASS cycle 7 starts active Play
 PASS cycle 7 commits live construction
 PASS cycle 7 queues a request before close
 PASS cycle 7 clears pending/live state and returns to Lobby
 PASS cycle 7 retains both seats as active
-P12_BARYA_OFFER match=8 round=1 egg=egg_03
-P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+P12_SCHEDULE round=1 now=KARERA next=KANGAROO
 PASS cycle 8 starts from Lobby
-NLB_P05_PUGAD seed=273439596 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273451941 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 8 resolves Pugad into GO
 PASS cycle 8 starts active Play
 PASS cycle 8 commits live construction
 PASS cycle 8 queues a request before close
 PASS cycle 8 clears pending/live state and returns to Lobby
 PASS cycle 8 retains both seats as active
-P12_SCHEDULE round=1 now=KARERA next=KANGAROO
+P12_BARYA_OFFER match=10 round=1 egg=egg_02
+P12_SCHEDULE round=1 now=KARERA next=KARERA
 PASS cycle 9 starts from Lobby
-NLB_P05_PUGAD seed=273451941 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273464286 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 9 resolves Pugad into GO
 PASS cycle 9 starts active Play
 PASS cycle 9 commits live construction
 PASS cycle 9 queues a request before close
 PASS cycle 9 clears pending/live state and returns to Lobby
 PASS cycle 9 retains both seats as active
-P12_BARYA_OFFER match=10 round=1 egg=egg_02
+P12_BARYA_OFFER match=11 round=1 egg=egg_04
 P12_SCHEDULE round=1 now=KARERA next=KARERA
 PASS cycle 10 starts from Lobby
-NLB_P05_PUGAD seed=273464286 assignments={"0":"egg_01","1":"egg_02"}
+NLB_P05_PUGAD seed=273476631 assignments={"0":"egg_01","1":"egg_02"}
 PASS cycle 10 resolves Pugad into GO
 PASS cycle 10 starts active Play
 PASS cycle 10 commits live construction
 PASS cycle 10 queues a request before close
 PASS cycle 10 clears pending/live state and returns to Lobby
 PASS cycle 10 retains both seats as active
-NLB_P05_RESET_LEDGER [{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158814179.0,"static_memory_peak_bytes":158867195.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":5994.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":157164745.0,"static_memory_peak_bytes":157184996.0},"cycle":1,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158819687.0,"static_memory_peak_bytes":158902786.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158882535.0,"static_memory_peak_bytes":158902786.0},"cycle":2,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158825251.0,"static_memory_peak_bytes":158908282.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158888031.0,"static_memory_peak_bytes":158908282.0},"cycle":3,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158830703.0,"static_memory_peak_bytes":158913838.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158893587.0,"static_memory_peak_bytes":158913838.0},"cycle":4,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158836315.0,"static_memory_peak_bytes":158919446.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158899195.0,"static_memory_peak_bytes":158919446.0},"cycle":5,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158841743.0,"static_memory_peak_bytes":158924890.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158904639.0,"static_memory_peak_bytes":158924890.0},"cycle":6,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158847379.0,"static_memory_peak_bytes":158930526.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158910275.0,"static_memory_peak_bytes":158930526.0},"cycle":7,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158852807.0,"static_memory_peak_bytes":158935814.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158915563.0,"static_memory_peak_bytes":158935814.0},"cycle":8,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158858371.0,"static_memory_peak_bytes":158941442.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158921191.0,"static_memory_peak_bytes":158941442.0},"cycle":9,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158863895.0,"static_memory_peak_bytes":158947055.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158926791.0,"static_memory_peak_bytes":158947055.0},"cycle":10,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0}]
+NLB_P05_RESET_LEDGER [{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158673748.0,"static_memory_peak_bytes":158726764.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":5994.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":157024242.0,"static_memory_peak_bytes":157044493.0},"cycle":1,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158679256.0,"static_memory_peak_bytes":158762203.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158741952.0,"static_memory_peak_bytes":158762203.0},"cycle":2,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158684820.0,"static_memory_peak_bytes":158767983.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158747732.0,"static_memory_peak_bytes":158767983.0},"cycle":3,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158690272.0,"static_memory_peak_bytes":158773283.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158753032.0,"static_memory_peak_bytes":158773283.0},"cycle":4,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158695884.0,"static_memory_peak_bytes":158778895.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158758644.0,"static_memory_peak_bytes":158778895.0},"cycle":5,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158701312.0,"static_memory_peak_bytes":158784475.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158764224.0,"static_memory_peak_bytes":158784475.0},"cycle":6,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158706948.0,"static_memory_peak_bytes":158789959.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158769708.0,"static_memory_peak_bytes":158789959.0},"cycle":7,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158712376.0,"static_memory_peak_bytes":158795475.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158775224.0,"static_memory_peak_bytes":158795475.0},"cycle":8,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158717940.0,"static_memory_peak_bytes":158801115.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158780864.0,"static_memory_peak_bytes":158801115.0},"cycle":9,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0},{"after_reset":{"activation":0,"build_mode":{},"clock":0.0,"dedupe":0,"inventory_used":{},"item_ids":[],"items":0,"nodes":2181.0,"objects":5995.0,"pending":0,"phase":"LOBBY","round":0,"stage_version":0,"static_memory_bytes":158723464.0,"static_memory_peak_bytes":158806500.0},"before_reset":{"activation":1,"build_mode":{"0":true,"1":false},"clock":0.0,"dedupe":1,"inventory_used":{"0":true,"1":false},"item_ids":["build.hollow_blocks.cell_1x1#001"],"items":1,"nodes":2190.0,"objects":6014.0,"pending":1,"phase":"PLAY","round":0,"stage_version":1,"static_memory_bytes":158786236.0,"static_memory_peak_bytes":158806500.0},"cycle":10,"dedupe_records":0,"inventory":{},"live_activation":0,"pending_requests":0,"round":0}]
 NLB_P05_RESET_AUDIT cycles=10 failures=0 input=synthetic seats=2

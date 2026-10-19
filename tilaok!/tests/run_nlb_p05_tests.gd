@@ -23,6 +23,7 @@ func _run() -> void:
 	await _test_live_assignment_seat_layouts()
 	await _test_pugad_timeout_and_impossible_pool()
 	await _test_live_go_pause_and_commit()
+	await _test_live_barya_placement()
 	print("NLB_P05_TESTS checks=%d failures=%d" % [checks, failures])
 	await process_frame
 	quit(1 if failures > 0 else 0)
@@ -173,6 +174,15 @@ func _test_live_assignment_seat_layouts() -> void:
 			room.input_router.registry.set_ready(seat_index, true)
 		room.tuning.match_target_score_units = 100000
 		var started := room.start_match()
+		var unsupported_variant := ""
+		for egg in room.egg_pool:
+			var variant_key := str(egg.get("variant_key", ""))
+			if (
+				not BaryaObjectiveDefinition.is_variant(variant_key)
+				and not room.tuning.item_enabled_variants.has(variant_key)
+			):
+				unsupported_variant = variant_key
+		_check(unsupported_variant.is_empty(), "P05 live egg pool excludes unverified variants")
 		for seat_index in range(seat_count):
 			var egg: Dictionary = room.egg_pool[seat_index]
 			egg.variant_key = CELL_1X1
@@ -458,6 +468,87 @@ func _test_live_go_pause_and_commit() -> void:
 			_check(false, "live room has a safe open cell for the 1x1 construction")
 	else:
 		_check(false, "live route transitions from GO to active Play")
+	room.queue_free()
+	await process_frame
+
+
+func _test_live_barya_placement() -> void:
+	var room := LIVE_ROOM.instantiate() as NLBP05LiveBuildMatchRoom
+	root.add_child(room)
+	await process_frame
+	_join_two_ready(room)
+	room.set_match_seed(73)
+	room.tuning.match_target_score_units = 100000
+	room.tuning.barya_offer_probability = 1.0
+	_check(room.start_match(), "live route starts the P12 Barya fixture")
+	var barya_egg_id := ""
+	var ordinary_egg_id := ""
+	for egg in room.egg_pool:
+		if BaryaObjectiveDefinition.is_variant(str(egg.get("variant_key", ""))):
+			barya_egg_id = str(egg.get("egg_id", ""))
+		elif ordinary_egg_id.is_empty():
+			ordinary_egg_id = str(egg.get("egg_id", ""))
+	if not barya_egg_id.is_empty() and not ordinary_egg_id.is_empty():
+		room._queue_claim(0, barya_egg_id)
+		room._queue_claim(1, ordinary_egg_id)
+		room._flush_claims()
+		room.go_countdown_seconds = 0.1
+		room._go_remaining = 0.1
+		room.phase_controller.remaining_seconds = 0.1
+		room._process(0.2)
+		var cursor: Dictionary = room.placement_controller.cursors.get(0, {})
+		var persistent_before := room.items.persistent_count()
+		var safe_cell := Vector2i(-1, -1)
+		for y in range(room.tuning.arena_height_tiles):
+			for x in range(room.tuning.arena_width_tiles):
+				var cell := Vector2i(x, y)
+				var verdict := BaryaPlacementRules.validate_cell(
+					room.arena,
+					room.tuning,
+					cell,
+					room.items.pieces.values(),
+					room.items.owner_seat_clearance(room._live_actor_swept_rects())
+				)
+				if bool(verdict.get("allowed", false)):
+					safe_cell = cell
+					break
+			if safe_cell.x >= 0:
+				break
+		if not cursor.is_empty() and safe_cell.x >= 0:
+			cursor.cell = safe_cell
+			room.placement_controller.cursors[0] = cursor
+			room.build_mode[0] = true
+			room._submit_live_placement(0)
+			var request_ids: Array = room.request_pipeline.request_records.keys()
+			for _frame in range(4):
+				if request_ids.is_empty():
+					break
+				if (
+					room.request_pipeline.cached_result(str(request_ids[0])).get("status")
+					!= "pending"
+				):
+					break
+				await physics_frame
+				room._resolve_live_placement_boundary()
+			var result := (
+				room.request_pipeline.cached_result(str(request_ids[0]))
+				if not request_ids.is_empty()
+				else {}
+			)
+			_check(
+				(
+					bool(result.get("allowed", false))
+					and bool(result.get("objective", false))
+					and room.items.persistent_count() == persistent_before
+					and bool(room.inventory_used.get(0, false))
+					and room.barya_objective.state == BaryaRoundObjective.State.AVAILABLE
+				),
+				"Barya uses live active-round placement without entering construction counts"
+			)
+		else:
+			_check(false, "Barya cursor has a valid objective cell")
+	else:
+		_check(false, "P12 Barya offer is assigned with one ordinary construction egg")
 	room.queue_free()
 	await process_frame
 

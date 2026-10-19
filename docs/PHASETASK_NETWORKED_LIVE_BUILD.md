@@ -248,7 +248,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** submit bounded placement intents, queue to simulation boundary, order by receipt with rotating true-tie priority, revalidate against live stage/actors/movers and commit/reject once with item consumption only on acceptance.
 - **Acceptance:** duplicate confirmation cannot consume twice; invalid/rejected edits retain item; late tell/grace begins on commit; actor clearance prevents crush/trap/unavoidable immediate hit.
 - **Evidence:** collision and safe insertion/removal tests, arbitration permutations, accepted/rejected state captures.
-- **Status:** TODO · **Actual result:** COULD-NOT-RUN — bounded receipt/deduplication/order tests, atomic invalid/valid item commit, one stage-version increment, and one-second grace passed. Live mover sweep permutations, Walis/support removal, current explosive/effect paths, and Barya live pickup/drop/capture/score cleanup acceptance are not fully exercised; actor-entry grace hold/restart has a focused synthetic assertion. See [P05 evidence](evidence/nlb/p05/README.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — bounded receipt/deduplication/order tests, atomic invalid/valid item commit, one stage-version increment, one-second grace, actor hitbox and mover-sweep grace holds, P05 content allowlist, and nonpersistent live Barya placement passed. Live mover insertion permutations, Walis/support removal, current explosive/effect paths, and Barya pickup/drop/capture/receipt/scoring cleanup acceptance are not fully exercised. See the [P05 evidence and content manifest](evidence/nlb/p05/README.md).
 
 ### [ ] NLB-P05-T03 — VERIFY — Round, placement and event regression
 

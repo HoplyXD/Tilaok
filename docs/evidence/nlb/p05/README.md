@@ -1,19 +1,22 @@
 # NLB-P05 Offline Live-Build Evidence
 
-**Date:** 2026-10-20 final verification (implementation and initial captures began 2026-10-19) · **Base revision:** `808ababc3f2fe705351d6f91f27a8ac973b53884` plus the P05 changes recorded in this checkout · **Machine:** Windows 11 PC, 13th Gen Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU · **Engine:** Godot `4.7.2.stable.official.ed1daf0bf` · **Renderer:** Compatibility / OpenGL 3.3 · **Profile:** `karera_slice` · **Seed:** 73 in focused tests and route fixtures; the live Lagsanay capture log prints its resolved Pugad stream seed · **Input:** synthetic keyboard seats K1–K4 and scripted state changes · **Reviewer:** Codex engineering self-review; no independent human review.
+**Date:** 2026-10-20 final verification (implementation and initial captures began 2026-10-19) · **Base revision:** `808ababc3f2fe705351d6f91f27a8ac973b53884` plus the P05 changes recorded in this checkout · **Machine:** Windows 11 PC, 13th Gen Intel Core i5-13420H, NVIDIA GeForce RTX 4050 Laptop GPU · **Engine:** Godot `4.7.2.stable.official.ed1daf0bf` · **Renderer:** Compatibility / OpenGL 3.3 · **Profile:** `nlb_p05_live_build` · **Seed:** 73 in focused tests and route fixtures; the live Lagsanay capture log prints its resolved Pugad stream seed · **Input:** synthetic keyboard seats K1–K4 and scripted state changes · **Reviewer:** Codex engineering self-review; no independent human review.
 
 This record covers the offline opt-in `--match-route=offline_live_build` route. It does not claim network, Android, physical gamepad, human play, independent review, release readiness, or P07-wide content certification. No production art/audio was generated. The scheduled P12 route remains default and fallback.
+
+The route's current verified content allowlist and disabled-cell handling are recorded in the [P05 content manifest](content-manifest.md).
 
 ## Verification status
 
 | Check | Result | Evidence / limit |
 |---|---|---|
 | Godot editor import and script/class scan | PASSED | [`godot-import-final.log`](godot-import-final.log), project root `tilaok!` |
-| `gdlint` changed implementation and test scripts | PASSED | [`gdlint-final.log`](gdlint-final.log), 14 scripts |
-| `gdformat --check` changed implementation and test scripts | PASSED | [`gdformat-final.log`](gdformat-final.log), 14 scripts unchanged by formatter |
+| `gdlint` changed implementation and test scripts | PASSED | [`gdlint-final.log`](gdlint-final.log), 15 scripts |
+| `gdformat --check` changed implementation and test scripts | PASSED | [`gdformat-final.log`](gdformat-final.log), 15 scripts unchanged by formatter |
 | `git diff --check` | PASSED | [`git-diff-check-final.log`](git-diff-check-final.log); only Git line-ending normalization notices |
 | Desktop checkout startup smoke | PASSED | Both scheduled default and `offline_live_build` command lines started the Title scene and logged the expected `route=` identity; [default log](desktop-smoke-default.log), [live log](desktop-smoke-live.log). The run also logged existing map resource UID fallback warnings; text-path loading continued. |
-| Focused live-build P05 suite | PASSED | 44 checks, 0 failures; [`run_nlb_p05_tests.gd.log`](run_nlb_p05_tests.gd.log) |
+| Focused live-build P05 suite | PASSED | 49 checks, 0 failures; [`run_nlb_p05_tests.gd.log`](run_nlb_p05_tests.gd.log) |
+| P05 content allowlist and live Barya path | PASSED | The live room deals only the three allowlisted construction variants plus P12's conditional Barya objective; the focused suite checks egg-pool filtering and that live Barya does not count as construction. See [content manifest](content-manifest.md). |
 | Actor and mover hold with grace restart | PASSED | Actual chicken collision rectangles and a dynamic mover's live collision shape plus bounded sweep keep the new item inactive during overlap; after each path clears it restarts a full one-second grace. Covered in the focused suite. |
 | NLB-P01 suite | PASSED | 65 checks, 0 failures; [`run_nlb_p01_tests.gd.log`](run_nlb_p01_tests.gd.log) |
 | P05 / P06 / P08 / P09 / P11 / P12 suites | PASSED | 137 / 102 / 86 / 77 / 78 / 61 checks; raw logs below |
@@ -34,10 +37,12 @@ NLB-P05-T01 passed and is checked. T02 and T03 remain unchecked because their fu
 
 All Godot suites used the Windows Godot 4.7.2 executable, `--headless --fixed-fps 60`, project root `tilaok!`, and synthetic fixtures. Each raw stdout log is stored beside this report.
 
+The item/mode integration log has one trailing space removed from a printed empty mode-table row so the evidence patch passes `git diff --check`; its test output and result line are otherwise unchanged.
+
 | Suite | Checks | Raw log |
 |---|---:|---|
 | NLB-P01 | 65 | [`run_nlb_p01_tests.gd.log`](run_nlb_p01_tests.gd.log) |
-| NLB-P05 focused | 44 | [`run_nlb_p05_tests.gd.log`](run_nlb_p05_tests.gd.log) |
+| NLB-P05 focused | 49 | [`run_nlb_p05_tests.gd.log`](run_nlb_p05_tests.gd.log) |
 | Controls | 13 | [`run_controls_tests.gd.log`](run_controls_tests.gd.log) |
 | P05 | 137 | [`run_p05_tests.gd.log`](run_p05_tests.gd.log) |
 | P06 | 102 | [`run_p06_tests.gd.log`](run_p06_tests.gd.log) |

@@ -776,13 +776,15 @@ This is synthetic engineering evidence for the explicit offline live-build route
 
 | Check | Expected | Actual | Result |
 |---|---|---|---|
-| Focused live route and request pipeline | Explicit route selection; bounded stable requests; pause-safe GO/grace; actor and mover collision/sweep grace restart; rejected placement leaves inventory and terrain untouched; accepted placement commits once; 2/3/4 seat assignment and Pugad timeout/failure | 44 assertions passed, zero failures | PASSED — synthetic |
-| Related regression suites | Existing P05/P06/P08/P09/P11/P12 scores, events, controls, item/Barya/explosive lifecycles, and UI remain compatible | 17 named suites passed; individual counts and logs are in the evidence report | PASSED — synthetic |
+| Focused live route and request pipeline | Explicit route selection; verified P05 allowlist; Barya objective path; bounded stable requests; pause-safe GO/grace; actor and mover collision/sweep grace restart; atomic rejection/commit; 2/3/4 seat assignment and Pugad timeout/failure | 49 assertions passed, zero failures | PASSED — synthetic |
+| Related regression suites | Existing P05/P06/P08/P09/P11/P12 scores, events, controls, item/Barya/explosive lifecycles, and UI remain compatible | 16 related suites passed; individual counts and logs are in the evidence report | PASSED — synthetic |
 | Rendered route captures | Existing scheduled Pugad/Place/Play still renders; live Pugad/GO/build acceptance/rejection/round close and Lagsanay render | Ten 1920×1080 captures saved; capture runner reports zero errors | PASSED — synthetic |
 | 2/3/4-seat live layouts, assignment timeout/failure | One distinct item per seat and GO for each layout; timeout assigns remaining eggs; impossible pool returns to Lobby | Synthetic 2/3/4 setup, timeout and empty-pool scenarios passed; no rendered 3/4-seat captures | PASSED — synthetic |
 | Ten synthetic live start/play/reset cycles and cleanup ledger | Repeatable ownership/inventory/clocks/request/item/node/memory state across reset | 10 cycles passed with zero failures; every reset cleared live state and returned to 2,181 nodes / 5,995 objects. Static memory ranged 157.1–158.9 MiB (peak 158.9 MiB). Full Results/Replay cycles and OS process memory were not measured; see the raw ledger in the P05 evidence folder. | PASSED — synthetic reset audit |
 | Full results/replay cycles and baseline/live performance under recorded load | Replay semantics plus comparative frame/resource samples; 16.67 ms / 512 MiB / 0 B/s target record | Replay and comparative performance were not run; thresholds remain targets only | COULD NOT RUN |
 | Human/device review | Independent human session and physical gamepad evidence | No such session occurred | COULD NOT RUN |
+
+The opt-in content availability matrix and disabled-cell handling are in the [P05 content manifest](evidence/nlb/p05/content-manifest.md); this does not certify the full P07 catalog.
 
 ## NLB-P02 PC host lobby verification — 2026-10-20
 

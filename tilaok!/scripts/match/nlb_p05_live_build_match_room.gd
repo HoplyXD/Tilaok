@@ -6,6 +6,11 @@ extends P12ScheduledMatchRoom
 ## round opening and allowing one assigned item to be placed during Play.
 
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
+const LIVE_VARIANT_ALLOWLIST: PackedStringArray = [
+	"build.hollow_blocks.cell_1x1",
+	"build.hollow_blocks.stack_2x3",
+	"build.bamboo_bridge.span_4x1",
+]
 
 @export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
 @export_range(0.1, 5.0, 0.1) var live_item_grace_seconds := 1.0
@@ -24,6 +29,11 @@ var _edge_layer: CanvasLayer
 var _edge_root: Control
 var _edge_markers: Dictionary = {}
 var _activation_warning_cache := ""
+
+
+func _init() -> void:
+	profile_id = "nlb_p05_live_build"
+	tuning.item_enabled_variants = LIVE_VARIANT_ALLOWLIST
 
 
 func _ready() -> void:
