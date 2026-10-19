@@ -1,0 +1,5 @@
+SCRIPT ERROR: Invalid type in function '_resolve_place_edits' in base 'Control (P12ScheduledMatchRoom)'. The array of argument 1 (Array) does not have the same element type as the expected typed array argument.
+   at: _capture_fallback (res://tests/capture_nlb_p05_routes.gd:40)
+   GDScript backtrace (most recent call first):
+       [0] _capture_fallback (res://tests/capture_nlb_p05_routes.gd:40)
+       [1] _save (res://tests/capture_nlb_p05_routes.gd:171)

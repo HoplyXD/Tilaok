@@ -275,6 +275,8 @@ Gamepad labels are positions: South (Xbox A / PlayStation Cross), East (B / Circ
 
 **Four keyboard layouts (2026-10-16, user request):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard. In the table below K1 now confirms, readies and claims with **E** (was F). K3 and K4 follow the same pattern with the keys above.
 
+**Opt-in offline live-build route (2026-10-19):** `-- --match-route=offline_live_build` keeps those existing movement, jump/glide, sneak, cheer, pause and menu bindings. During Play, K1 toggles build with Q, aims Z/C/V/B, rotates T, confirms E/F and cancels X; K2 uses [, Y/H/N/M, ], Enter and backslash; K3 uses -, 7/4/8/6, =, O and apostrophe; K4 uses Num +, Num 7/1/3/9, Num *, Num 0 and Num -. Gamepad uses Y, right stick, right bumper, right trigger and B. K3 aim is on 7/4/8/6 because F/G are already assigned to K1 actions; this keeps cross-seat bindings distinct. Cursor repeat is 8 cells/s after a 0.25 s first delay. Default aim covers the full 32×16 stage; actor clearance is 32 wu and each newly committed item's configurable activation grace is 1 s. Keyboard/controller verification is synthetic only; physical-device testing remains open. See [P05 evidence](evidence/nlb/p05/README.md).
+
 | Phase/action | Gamepad | Keyboard seat K1 | Keyboard seat K2 |
 |---|---|---|---|
 | Join; ready toggle | South | F | Enter |

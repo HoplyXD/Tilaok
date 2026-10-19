@@ -21,10 +21,13 @@ const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
 ## and Kangaroo Main rounds announced a round ahead, Twist stacks). `-- --match-route=lifecycle`
 ## still selects it explicitly.
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
+## Explicit local-only live-build route; the default scheduled route remains reversible.
+const OFFLINE_LIVE_BUILD_SCENE := preload("res://scenes/match/nlb_p05_live_build_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const MAP_PREFIX := "--map="
 const ROUTE_LIFECYCLE := "lifecycle"
 const ROUTE_FIRST_PLAYABLE := "first_playable"
+const ROUTE_OFFLINE_LIVE_BUILD := "offline_live_build"
 ## `-- --match-seed=3` reproduces a match for a facilitator or a bug report (never shown in play).
 const SEED_PREFIX := "--match-seed="
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
@@ -83,6 +86,13 @@ func _ready() -> void:
 		match_scene = LIFECYCLE_SCENE
 	elif requested_route == ROUTE_FIRST_PLAYABLE:
 		match_scene = MATCH_SCENE
+	elif requested_route == ROUTE_OFFLINE_LIVE_BUILD:
+		if simulation_authority.role == SimulationAuthority.Role.OFFLINE_AUTHORITY:
+			match_scene = OFFLINE_LIVE_BUILD_SCENE
+		else:
+			push_warning(
+				"offline_live_build requires OFFLINE_AUTHORITY; keeping the scheduled route"
+			)
 	PresentationApplier.apply(settings)
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
@@ -315,6 +325,8 @@ func _refresh_title() -> void:
 	var label := "%s • %s" % [BUILD_LABEL, PLAYTEST_PROFILE]
 	if match_scene == MATCH_SCENE:
 		label += " • first playable"
+	elif match_scene == OFFLINE_LIVE_BUILD_SCENE:
+		label += " • offline live build"
 	title.bind_live(label, seats.size(), prompt_map, device)
 
 
@@ -362,7 +374,11 @@ func _quit() -> void:
 
 
 func _route_name() -> String:
-	return ROUTE_LIFECYCLE if match_scene == LIFECYCLE_SCENE else ROUTE_FIRST_PLAYABLE
+	if match_scene == MATCH_SCENE:
+		return ROUTE_FIRST_PLAYABLE
+	if match_scene == OFFLINE_LIVE_BUILD_SCENE:
+		return ROUTE_OFFLINE_LIVE_BUILD
+	return ROUTE_LIFECYCLE
 
 
 ## The seed asked for with --match-seed=<non-negative integer>, or -1 (use the build default).
@@ -400,7 +416,7 @@ static func route_from_args(arguments: PackedStringArray) -> String:
 		if not argument.begins_with(ROUTE_PREFIX):
 			continue
 		var value := argument.trim_prefix(ROUTE_PREFIX)
-		if value in [ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE]:
+		if value in [ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE, ROUTE_OFFLINE_LIVE_BUILD]:
 			result = value
 	return result
 

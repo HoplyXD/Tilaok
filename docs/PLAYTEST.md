@@ -770,6 +770,19 @@ Needs the UI designer (Shanti) plus one other person, a 1080p screen viewed from
 
 Record the date, devices, build, who observed and the result in the table; **never fill a result in by inference.**
 
+## NLB-P05 offline live-build engineering check — 2026-10-19
+
+This is synthetic engineering evidence for the explicit offline live-build route, not a human playtest, physical-controller session, network test, or release check. The default scheduled P12 route remains unchanged. Godot 4.7.2 `4.7.2.stable.official.ed1daf0bf`; profile `karera_slice`; the focused route fixture used two synthetic keyboard seats and seed 73. Full raw logs, captures, commands, and limitations are in [NLB-P05 evidence](evidence/nlb/p05/README.md).
+
+| Check | Expected | Actual | Result |
+|---|---|---|---|
+| Focused live route and request pipeline | Explicit route selection; bounded stable requests; pause-safe GO/grace; actor and mover collision/sweep grace restart; rejected placement leaves inventory and terrain untouched; accepted placement commits once; 2/3/4 seat assignment and Pugad timeout/failure | 44 assertions passed, zero failures | PASSED — synthetic |
+| Related regression suites | Existing P05/P06/P08/P09/P11/P12 scores, events, controls, item/Barya/explosive lifecycles, and UI remain compatible | 17 named suites passed; individual counts and logs are in the evidence report | PASSED — synthetic |
+| Rendered route captures | Existing scheduled Pugad/Place/Play still renders; live Pugad/GO/build acceptance/rejection/round close and Lagsanay render | Ten 1920×1080 captures saved; capture runner reports zero errors | PASSED — synthetic |
+| 2/3/4-seat live layouts, assignment timeout/failure | One distinct item per seat and GO for each layout; timeout assigns remaining eggs; impossible pool returns to Lobby | Synthetic 2/3/4 setup, timeout and empty-pool scenarios passed; no rendered 3/4-seat captures | PASSED — synthetic |
+| Ten synthetic live start/play/reset cycles and cleanup ledger | Repeatable ownership/inventory/clocks/request/item/node/memory state across reset | 10 cycles passed with zero failures; every reset cleared live state and returned to 2,181 nodes / 5,995 objects. Static memory ranged 157.1–158.9 MiB (peak 158.9 MiB). Full Results/Replay cycles and OS process memory were not measured; see the raw ledger in the P05 evidence folder. | PASSED — synthetic reset audit |
+| Full results/replay cycles and baseline/live performance under recorded load | Replay semantics plus comparative frame/resource samples; 16.67 ms / 512 MiB / 0 B/s target record | Replay and comparative performance were not run; thresholds remain targets only | COULD NOT RUN |
+| Human/device review | Independent human session and physical gamepad evidence | No such session occurred | COULD NOT RUN |
 
 ## NLB-P02 PC host lobby verification — 2026-10-20
 
@@ -784,3 +797,15 @@ This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no
 | UI regression | LAN screen and existing UI remain usable | LAN screen audit passes; two existing P01 score-row type assertions remain (`%Outcome1`, `%Final1`) | PARTIAL — known P01 assertions |
 | Real Wi-Fi and no-internet LAN | Verify discovery/connectivity through actual Wi-Fi and internet disconnection | Only WSL virtual IPv4 was available; no Wi-Fi client test | COULD NOT RUN |
 | Abuse flood thresholds | Verify per-peer limits and aggregation under join flood | Not exercised; no general LAN flood run | COULD NOT RUN |
+
+Default route:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'
+```
+
+Opt-in offline live-build route:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --match-route=offline_live_build
+```

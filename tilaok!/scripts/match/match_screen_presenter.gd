@@ -491,7 +491,14 @@ func _apply() -> void:
 	# Pugad draws its own HUD rail and chip column (Figma "Obstacle Pick").
 	play_hud.visible = (
 		not final_results
-		and phase in [MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.PLAY]
+		and (
+			phase
+			in [
+				MatchPhaseController.Phase.PLACE,
+				MatchPhaseController.Phase.PLAY,
+				MatchPhaseController.Phase.GO
+			]
+		)
 	)
 	match phase:
 		MatchPhaseController.Phase.LOBBY:
@@ -585,8 +592,8 @@ func _apply_place(seats: Array[Dictionary]) -> void:
 		if not text.is_empty():
 			reasons.append("%s: %s" % [_seat_tag(seats, seat_index), text])
 	# The Guide card writes the keys as the frame does ("W A S D/Arrow keys"), one action per line.
-	var hint := (
-		"\n".join([_hint("navigate"), _hint("rotate"), _hint("confirm")]).replace(" / ", "/")
+	var hint := "\n".join([_hint("navigate"), _hint("rotate"), _hint("confirm")]).replace(
+		" / ", "/"
 	)
 	place_overlay.bind_live(
 		seats,
@@ -608,6 +615,9 @@ func _apply_hud(seats: Array[Dictionary], phase: MatchPhaseController.Phase) -> 
 		notice = room.play_status_text()
 		if notice.is_empty():
 			notice = _notice_text
+	elif phase == MatchPhaseController.Phase.GO:
+		timer_text = _clock_text(_phase_seconds(phase))
+		notice = room.play_status_text()
 	var states := {}
 	for seat in seats:
 		if bool(seat.joined):

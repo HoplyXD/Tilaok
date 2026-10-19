@@ -169,6 +169,8 @@ func _behaviors() -> Array[ItemBehavior]:
 	var ids: Array = items.pieces.keys()
 	ids.sort()
 	for instance_id in ids:
+		if not items.item_activation_ready(str(instance_id)):
+			continue
 		var piece := items.piece_for(str(instance_id)) as HazardPiece
 		if piece != null and piece.behavior != null:
 			result.append(piece.behavior)

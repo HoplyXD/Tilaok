@@ -34,6 +34,7 @@ const PHASE_TO_INPUT := {
 	MatchPhaseController.Phase.PLACE: LocalInputRouter.Phase.PLACE,
 	MatchPhaseController.Phase.PLAY: LocalInputRouter.Phase.PLAY,
 	MatchPhaseController.Phase.RESULTS: LocalInputRouter.Phase.RESULTS,
+	MatchPhaseController.Phase.GO: LocalInputRouter.Phase.GO,
 }
 
 ## GameFlow sets this so a Lobby where every joined seat is ready starts without a mouse click.
@@ -400,6 +401,7 @@ func start_match() -> bool:
 	input_router.tuning = tuning
 	definitions = _load_definitions()
 	items.configure(tuning, arena, support_tracker, definitions, world_layer, simulation_authority)
+	items.actors_source = _actors_for_items
 	items.director.elimination_sink = _on_item_elimination
 	# The race ledger only accepts a candidate from the tick it resolves, so the hazard director
 	# must report this tick's kills before this room drains them (still after the actors).

@@ -1,4 +1,4 @@
-# gdlint: disable=max-returns
+# gdlint: disable=max-returns,max-public-methods,max-file-lines
 class_name LocalInputRouter
 extends Node
 
@@ -14,10 +14,21 @@ signal navigation_step(seat_index: int, direction: String)
 signal disabled_action_cue(seat_index: int, action_name: String)
 signal phase_changed(previous_phase: Phase, next_phase: Phase)
 
-enum Phase { LOBBY, MENU, PUGAD, PLACE, PLAY, PAUSE, RESULTS }
+enum Phase { LOBBY, MENU, PUGAD, PLACE, PLAY, PAUSE, RESULTS, GO }
 
 const ONE_SHOT_ACTIONS := [
-	"join", "ready", "claim", "confirm", "rotate", "jump", "back", "help", "cheer"
+	"join",
+	"ready",
+	"claim",
+	"confirm",
+	"rotate",
+	"jump",
+	"back",
+	"help",
+	"cheer",
+	"build_toggle",
+	"live_rotate",
+	"live_cancel"
 ]
 const REMOTE_ACTIONS := [
 	"left",
@@ -58,6 +69,8 @@ var _axis: Dictionary = {}
 var _repeat_elapsed: Dictionary = {}
 var _active_navigation: Dictionary = {}
 var _stick_x: Dictionary = {}
+var _aim_x: Dictionary = {}
+var _aim_y: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
 var _remote_axis: Dictionary = {}
@@ -120,6 +133,18 @@ func consume_held_presses() -> void:
 		var active: String = _active_navigation.get(seat_index, "")
 		if not active.is_empty() and _is_action_held(seat_index, active):
 			_repeat_elapsed[_edge_key(seat_index, active)] = {"elapsed": 0.0, "first": true}
+
+
+func consume_held_presses_for_seat(seat_index: int) -> void:
+	for key in _held.keys():
+		if _physical_key_seat(str(key)) == seat_index and ONE_SHOT_ACTIONS.has(str(_held[key])):
+			_blocked[key] = true
+	for edge in _pressed.keys():
+		if str(edge).begins_with("%d:" % seat_index):
+			_pressed[edge] = false
+	for edge in _repeat_elapsed.keys():
+		if str(edge).begins_with("%d:" % seat_index):
+			_repeat_elapsed.erase(edge)
 
 
 func set_shared_keyboard_enabled(enabled: bool) -> void:
@@ -234,6 +259,34 @@ func _handle_joy_button(event: InputEventJoypadButton) -> void:
 
 
 func _handle_joy_axis(event: InputEventJoypadMotion) -> void:
+	if event.axis in [JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y]:
+		var seat_index := registry.seat_for_gamepad(event.device)
+		if seat_index < 0:
+			return
+		var value := event.axis_value
+		if absf(value) < tuning_neutral_threshold():
+			value = 0.0
+		elif absf(value) < tuning_activation_threshold():
+			value = (
+				float(_aim_x.get(seat_index, 0.0))
+				if event.axis == JOY_AXIS_RIGHT_X
+				else float(_aim_y.get(seat_index, 0.0))
+			)
+		if event.axis == JOY_AXIS_RIGHT_X:
+			_aim_x[seat_index] = value
+		else:
+			_aim_y[seat_index] = value
+		return
+	if event.axis == JOY_AXIS_TRIGGER_RIGHT:
+		var trigger_seat := registry.seat_for_gamepad(event.device)
+		if trigger_seat >= 0:
+			_handle_action_edge(
+				trigger_seat,
+				"confirm",
+				"joy:%d:live_confirm" % event.device,
+				event.axis_value >= 0.55
+			)
+		return
 	if event.axis != JOY_AXIS_LEFT_X and event.axis != JOY_AXIS_LEFT_Y:
 		return
 	var seat_index := registry.seat_for_gamepad(event.device)
@@ -394,7 +447,22 @@ func _handle_action_edge(
 			_active_navigation[seat_index] = action_name
 			_repeat_elapsed[_edge_key(seat_index, action_name)] = {"elapsed": 0.0, "first": true}
 			navigation_step.emit(seat_index, action_name)
-	if action_name in ["claim", "confirm", "rotate", "jump", "back", "ready", "help", "cheer"]:
+	if (
+		action_name
+		in [
+			"claim",
+			"confirm",
+			"rotate",
+			"jump",
+			"back",
+			"ready",
+			"help",
+			"cheer",
+			"build_toggle",
+			"live_rotate",
+			"live_cancel"
+		]
+	):
 		action_pressed.emit(seat_index, action_name)
 
 
@@ -508,6 +576,26 @@ func is_action_held(seat_index: int, action_name: String) -> bool:
 	return _is_action_held(seat_index, action_name)
 
 
+func live_aim_vector(seat_index: int) -> Vector2:
+	var x := float(_aim_x.get(seat_index, 0.0))
+	var y := float(_aim_y.get(seat_index, 0.0))
+	if is_zero_approx(x):
+		x = (
+			float(_is_action_held(seat_index, "aim_right"))
+			- float(_is_action_held(seat_index, "aim_left"))
+		)
+	if is_zero_approx(y):
+		y = (
+			float(_is_action_held(seat_index, "aim_down"))
+			- float(_is_action_held(seat_index, "aim_up"))
+		)
+	return (
+		Vector2(x, y).normalized()
+		if not is_zero_approx(x) or not is_zero_approx(y)
+		else Vector2.ZERO
+	)
+
+
 func pause_system() -> void:
 	_pause_system()
 
@@ -539,6 +627,8 @@ func clear_input_state() -> void:
 	_repeat_elapsed.clear()
 	_active_navigation.clear()
 	_stick_x.clear()
+	_aim_x.clear()
+	_aim_y.clear()
 	_remote_axis.clear()
 	_stick_sign.clear()
 
@@ -652,6 +742,10 @@ func _joy_action(button: int) -> String:
 			return "back"
 		JOY_BUTTON_X:
 			return "rotate"
+		JOY_BUTTON_Y:
+			return "build_toggle"
+		JOY_BUTTON_RIGHT_SHOULDER:
+			return "live_rotate"
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -679,6 +773,10 @@ func _gamepad_phase_action(button: int) -> String:
 			return "back"
 		JOY_BUTTON_X:
 			return "rotate"
+		JOY_BUTTON_Y:
+			return "build_toggle" if phase == Phase.PLAY else ""
+		JOY_BUTTON_RIGHT_SHOULDER:
+			return "live_rotate" if phase == Phase.PLAY else ""
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -699,15 +797,86 @@ func tuning_neutral_threshold() -> float:
 ## K3 I J K L, O confirm, P rotate (U back)
 ## K4 Numpad 8 4 2 6, Numpad 0 confirm, Numpad 5 rotate (Numpad . back)
 func _keyboard_layout_for_key(key: int, location: int) -> String:
-	if key in [KEY_W, KEY_A, KEY_S, KEY_D, KEY_SPACE, KEY_E, KEY_F, KEY_G, KEY_R]:
+	if (
+		key
+		in [
+			KEY_W,
+			KEY_A,
+			KEY_S,
+			KEY_D,
+			KEY_SPACE,
+			KEY_E,
+			KEY_F,
+			KEY_G,
+			KEY_R,
+			KEY_Q,
+			KEY_Z,
+			KEY_C,
+			KEY_V,
+			KEY_B,
+			KEY_T,
+			KEY_X
+		]
+	):
 		return "K1"
-	if key in [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_ENTER, KEY_BACKSPACE]:
+	if (
+		key
+		in [
+			KEY_UP,
+			KEY_DOWN,
+			KEY_LEFT,
+			KEY_RIGHT,
+			KEY_ENTER,
+			KEY_BACKSPACE,
+			KEY_BRACKETLEFT,
+			KEY_BRACKETRIGHT,
+			KEY_Y,
+			KEY_H,
+			KEY_N,
+			KEY_M,
+			KEY_BACKSLASH
+		]
+	):
 		return "K2"
 	if key in [KEY_SHIFT, KEY_CTRL] and location == KEY_LOCATION_RIGHT:
 		return "K2"
-	if key in [KEY_I, KEY_J, KEY_K, KEY_L, KEY_O, KEY_P, KEY_U]:
+	if (
+		key
+		in [
+			KEY_I,
+			KEY_J,
+			KEY_K,
+			KEY_L,
+			KEY_O,
+			KEY_P,
+			KEY_U,
+			KEY_MINUS,
+			KEY_EQUAL,
+			KEY_SEMICOLON,
+			KEY_APOSTROPHE,
+			KEY_QUOTELEFT,
+			KEY_7,
+			KEY_4,
+			KEY_8,
+			KEY_6
+		]
+	):
 		return "K3"
-	if key in [KEY_KP_8, KEY_KP_4, KEY_KP_2, KEY_KP_6, KEY_KP_0, KEY_KP_5, KEY_KP_PERIOD]:
+	if (
+		key
+		in [
+			KEY_KP_8,
+			KEY_KP_4,
+			KEY_KP_2,
+			KEY_KP_6,
+			KEY_KP_0,
+			KEY_KP_5,
+			KEY_KP_PERIOD,
+			KEY_KP_ADD,
+			KEY_KP_SUBTRACT,
+			KEY_KP_MULTIPLY
+		]
+	):
 		return "K4"
 	return ""
 
@@ -715,6 +884,20 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 func _key_action(layout: String, key: int) -> String:
 	if layout == "K1":
 		match key:
+			KEY_Q:
+				return "build_toggle"
+			KEY_Z:
+				return "aim_up"
+			KEY_C:
+				return "aim_left"
+			KEY_V:
+				return "aim_down"
+			KEY_B:
+				return "aim_right"
+			KEY_T:
+				return "live_rotate"
+			KEY_X:
+				return "live_cancel"
 			KEY_A:
 				return "left"
 			KEY_D:
@@ -733,6 +916,20 @@ func _key_action(layout: String, key: int) -> String:
 				return "rotate"
 	elif layout == "K3":
 		match key:
+			KEY_MINUS:
+				return "build_toggle"
+			KEY_7:
+				return "aim_up"
+			KEY_4:
+				return "aim_left"
+			KEY_8:
+				return "aim_down"
+			KEY_6:
+				return "aim_right"
+			KEY_EQUAL:
+				return "live_rotate"
+			KEY_APOSTROPHE:
+				return "live_cancel"
 			KEY_J:
 				return "left"
 			KEY_L:
@@ -749,6 +946,20 @@ func _key_action(layout: String, key: int) -> String:
 				return "rotate"
 	elif layout == "K4":
 		match key:
+			KEY_KP_ADD:
+				return "build_toggle"
+			KEY_KP_7:
+				return "aim_up"
+			KEY_KP_1:
+				return "aim_left"
+			KEY_KP_3:
+				return "aim_down"
+			KEY_KP_9:
+				return "aim_right"
+			KEY_KP_MULTIPLY:
+				return "live_rotate"
+			KEY_KP_SUBTRACT:
+				return "live_cancel"
 			KEY_KP_4:
 				return "left"
 			KEY_KP_6:
@@ -765,6 +976,20 @@ func _key_action(layout: String, key: int) -> String:
 				return "rotate"
 	else:
 		match key:
+			KEY_BRACKETLEFT:
+				return "build_toggle"
+			KEY_Y:
+				return "aim_up"
+			KEY_H:
+				return "aim_left"
+			KEY_N:
+				return "aim_down"
+			KEY_M:
+				return "aim_right"
+			KEY_BRACKETRIGHT:
+				return "live_rotate"
+			KEY_BACKSLASH:
+				return "live_cancel"
 			KEY_LEFT:
 				return "left"
 			KEY_RIGHT:

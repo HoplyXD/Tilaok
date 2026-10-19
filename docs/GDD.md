@@ -1,6 +1,6 @@
 # Tilaok! — Game Design Document
 
-**Track status (2026-10-19):** the current executable and this core loop describe the offline baseline. The user-approved future PC-host/Android shared-arena, live-placement round flow is separately gated and not implemented. See [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md) for approved target rules and migration contracts; preserve the current rules and scoring unless that specification explicitly defines a transition.
+**Track status (2026-10-19):** the scheduled P12 offline route remains the default: Lobby → Pugad → Place → Play. An explicitly selected offline live-build route is now implemented for engineering evaluation: `-- --match-route=offline_live_build` uses Lobby → Pugad → GO → active Play/build → results → next round. Both routes use the existing scoring, event schedule, and item rules. Network transport and Android clients remain separately gated future work. See [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md) and [P05 evidence](evidence/nlb/p05/README.md).
 
 _Last updated: 2026-10-14 — guided first match uses a tutorial-only stage where building is required to reach the flag (§10); Place confirmation locks each edit with no undo during that round; also, block scenes with BlockData (kill/stun hitboxes, anchor/gravity, specials), Spikes, Cannon, stun and the death sprite (user request), 64 px tile grid, sneak and glide, W/Up jump, and the Solid Block, Wood Box and Collapsing Block (user request, 2026-10-14). Earlier: 2026-10-13 scope/wording reconciliation, P00 target-PC confirmation and wall-movement extension._
 
@@ -13,6 +13,8 @@ A 2–4 player competitive party platformer. Each round, players pick eggs from 
 All characters are chickens. Instead of the traditional sabong where roosters fight, Tilaok!'s chickens compete through platforming and Filipino games. It turns a gambling-associated tradition into a wholesome, skill-based competition.
 
 ## 3. Core Loop (every round)
+
+The default scheduled route retains the construction phase described below. The opt-in offline live-build route skips the separate Place phase: it assigns one egg item per seat in Pugad, runs a shared three-second GO countdown, then opens movement and safe live construction together. It does not add an item or change scores or event rules; sudden death reuses the existing stage without new Pugad. This route is an engineering profile, not a submission default.
 1. **Pugad:** a nest appears holding a random set of eggs (placeholder: players + 2); each player picks one and it hatches into an item.
    - Each egg is see-through with its **item visible inside**, so players pick on purpose. The item/size variant plays a short looping visual animation, but shows no name or description during the party flow. Grabbing an egg cracks it open and the item pops out into your pointer; names, descriptions, controls, and event rules belong in the Library.
    - Picking is **simultaneous**: first to grab an egg gets it. ~8s to pick; leftover eggs are assigned at random.

@@ -1,0 +1,81 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS 3-player seeded command selection remains near equal weight (counts { 0: 395, 1: 389, 2: 416 })
+PASS seeded Rising band selection remains near equal weight (counts [140, 124, 128])
+PASS two survivors reroll Hug before a command instance is created
+PASS a strictly earlier comparable hazard precedes command evaluation
+PASS hazard time ties and missing comparisons do not precede command evaluation
+PASS Kangaroo uses an independent reproducible seeded stream
+PASS Kangaroo controller begins cadence with 3 seats
+PASS base cadence schedules successive commands
+PASS reset cadence eases by 0.15 seconds every two no-elimination completions
+PASS response cadence eases by 0.5 seconds after two completed commands
+PASS each command row retains its immutable announced command instance
+PASS Kangaroo controller begins two-player-reroll with 2 seats
+PASS pre-telegraph Hug reroll consumes no command ID
+PASS Kangaroo controller begins sole-survivor-stop with 2 seats
+PASS one survivor ends the round and receives no later commands
+PASS Kangaroo controller begins freeze-tap with 3 seats
+PASS a run press and release between physics samples fails Freeze
+PASS Kangaroo controller begins freeze-held-released with 3 seats
+PASS input held at response start passes after releasing within the one 0.10-second grace
+PASS Kangaroo controller begins freeze-held-too-long with 3 seats
+PASS held-input grace expires once and cannot be renewed by a later release
+PASS Kangaroo controller begins freeze-fresh-jump with 3 seats
+PASS fresh jump press fails immediately even if released before the next physics sample
+PASS Kangaroo controller begins freeze-opposing-captured with 3 seats
+PASS opposing run presses and deliberate input while captured still fail Freeze
+PASS forced external motion without intentional input does not fail Freeze
+PASS Rising middle-low, middle and middle-high use the scaled 768/576/384 wu lines
+PASS Kangaroo controller begins rising-support with 4 seats
+PASS current player-built support qualifies at the line plus the one-wu numerical tolerance
+PASS base geometry, support below the line and stale prior-step support all fail Rising
+PASS player-built support with ineligible wave metadata fails Rising
+PASS the selected world-space line remains fixed instead of rerolling an impossible layout
+PASS Kangaroo controller begins rising-band-0 with 3 seats
+PASS Kangaroo controller begins rising-band-1 with 3 seats
+PASS Kangaroo controller begins rising-band-2 with 3 seats
+PASS all three selected bands accept current support after it moves above the line on evaluation
+PASS Kangaroo controller begins rising-removal with 3 seats
+PASS a support removed before evaluation is absent from the current support record
+PASS Kangaroo controller begins rising-drain with 3 seats
+PASS Rising exposes a drain presentation after evaluation and clears it when reset ends
+PASS equal-distance contact ties sort by stable seat IDs and greedily produce two pairs
+PASS nearest live contact wins and an unpaired third player fails Hug
+PASS removed players are filtered out of live Hug candidate contacts
+PASS Kangaroo controller begins hug-evaluation with 3 seats
+PASS Hug evaluates only the live contact snapshot supplied at evaluation
+PASS Kangaroo controller begins hug-two-player with 2 seats
+PASS exactly two survivors never receive a Hug telegraph
+PASS Kangaroo controller begins marker-progression with 3 seats
+PASS failed command 1 adds one KANG/GA/ROO marker without early elimination
+PASS failed command 2 adds one KANG/GA/ROO marker without early elimination
+PASS third failed command saturates markers at three and removes that seat from live play
+PASS an eliminated seat receives no fourth marker or duplicate terminal outcome
+PASS Kangaroo controller begins hazard-earlier with 3 seats
+PASS a strictly earlier direct trap wins and keeps eligible credit even 0.5 microseconds before eval
+PASS Kangaroo controller begins hazard-tie with 3 seats
+PASS an exact hazard-time tie resolves as command failure without Patibong credit
+PASS the exact-tie player receives one terminal outcome
+PASS Kangaroo controller begins hazard-unavailable with 3 seats
+PASS missing comparable hazard time also resolves the terminal tie as command failure
+PASS Kangaroo controller begins simultaneous-last-cluck with 3 seats
+PASS simultaneous third failures resolve in one batch with one outcome per player
+PASS Last Cluck exact-time placement tie uses stable lowest player slot
+PASS Kangaroo placement scoring reuses placement resolution with event-owned award provenance
+PASS placement awards commit once after terminal resolution
+PASS round teardown clears commands, outcomes, markers, actors and all live-seat state
+PASS Kangaroo controller begins storm-standard with 3 seats
+PASS eight no-elimination command completions enter the standard Slipper Storm
+PASS standard Storm uses 0.5-second landing cadence and one-second active windows
+PASS standard overlapping Slipper Storm never exceeds the two-command active cap
+PASS Kangaroo controller begins storm-delayed-cap with 3 seats
+PASS synthetic longer-window stress reaches the cap and defers the next landing
+PASS the deferred Storm landing waits until a command slot opens
+PASS Kangaroo controller begins storm-two-player with 2 seats
+PASS each two-survivor Storm pair contains seeded-order Freeze and Rising
+PASS two-survivor Storm never selects Hug
+PASS Kangaroo controller begins storm-elimination-reset with 3 seats
+PASS any elimination resets Storm pressure and no-elimination cadence
+PASS the first post-elimination base command uses the unaccelerated response duration
+P11_TEST_SUMMARY checks=78 failures=0

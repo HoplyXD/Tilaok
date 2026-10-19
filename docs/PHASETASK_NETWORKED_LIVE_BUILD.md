@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status:** NLB-P00 documentation and the NLB-P01 local action/authority foundation are implemented and verified. Transport, Android, and live-placement work remain future, separately gated tasks. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status (2026-10-20):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, and the P05 offline opt-in live-build implementation have engineering evidence. P02 is partial: local process admission passes, while abuse-flood, real Wi-Fi and no-internet LAN acceptance remain open. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Android, network gameplay and P06–P11 remain separately gated tasks. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,7 +12,7 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 8/36 checked; 28 TODO; actual results PASSED 8, COULD-NOT-RUN 3, NOT RUN 25.** Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 9/36 checked; 27 TODO; actual results PASSED 9, COULD-NOT-RUN 3, NOT RUN 24.** NLB-P02 and P05 are partial; P05-T01 passed its own offline opt-in flow acceptance, while P05-T02/T03 evidence remains incomplete. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
@@ -21,7 +21,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | PARTIAL (2/3) |
 | NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | TODO |
 | NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | TODO |
-| NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | TODO |
+| NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | PARTIAL (1/3) |
 | NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | TODO |
 | NLB-P07 | All current content/modes/stacks compatibility | 3 | P06 | TODO |
 | NLB-P08 | Pause, background, disconnect/reclaim, resync | 3 | P06 | TODO |
@@ -29,7 +29,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 28 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 8. Result totals: PASSED 8 · FAILED 0 · COULD-NOT-RUN 3 · NOT RUN 25. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 27 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 9. Result totals: PASSED 9 · FAILED 0 · COULD-NOT-RUN 3 · NOT RUN 24. Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -230,7 +230,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 
 **Phase goal:** implement and verify live placement as an offline host simulation first. **Entry:** P01 exit; specification approved. **Dependencies:** P01. **Systems touched:** phase controller, Pugad, movement gating, placement controller/validator, item manager, active hazards, results. **Decisions:** one selected item; host receipt order with round-rotated true ties; no auto-placement; late activation tell/grace. **Exit:** offline round uses Pugad → GO → active round with movement/build concurrent; existing Place route remains fallback until gated. **Evidence:** focused state/placement tests, hazard/actor safety cases, rendered captures.
 
-### [ ] NLB-P05-T01 — IMPLEMENT — Replace runtime round flow behind opt-in route
+### [x] NLB-P05-T01 — IMPLEMENT — Replace runtime round flow behind opt-in route
 
 - **Owner role:** Gameplay / UI.
 - **Requirements:** NLB-REQ-001, NLB-REQ-007.
@@ -238,7 +238,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** add opt-in live-build profile, Pugad early-complete/timeout assignment behavior and host-style synchronized three-second GO; unlock movement, objectives and existing items at GO.
 - **Acceptance:** one selected item per player; no separate timed Place phase or extra item/shop; current offline route remains runnable and default until gate approval.
 - **Evidence:** phase-transition logs, selection timeout cases, fallback route capture and regression results.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** DONE · **Actual result:** PASSED — explicit opt-in and default route smoke passed; synthetic 2/3/4-seat setup assigns exactly one distinct item per seat and starts a shared three-second GO; timeout assigns distinct remaining eggs and impossible assignment returns to Lobby without GO; rendered fallback Pugad/Place/Play remains available. See [P05 evidence](evidence/nlb/p05/README.md).
 
 ### [ ] NLB-P05-T02 — IMPLEMENT — Add active placement commit pipeline
 
@@ -248,7 +248,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** submit bounded placement intents, queue to simulation boundary, order by receipt with rotating true-tie priority, revalidate against live stage/actors/movers and commit/reject once with item consumption only on acceptance.
 - **Acceptance:** duplicate confirmation cannot consume twice; invalid/rejected edits retain item; late tell/grace begins on commit; actor clearance prevents crush/trap/unavoidable immediate hit.
 - **Evidence:** collision and safe insertion/removal tests, arbitration permutations, accepted/rejected state captures.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — bounded receipt/deduplication/order tests, atomic invalid/valid item commit, one stage-version increment, and one-second grace passed. Live mover sweep permutations, Walis/support removal, current explosive/effect paths, and Barya live pickup/drop/capture/score cleanup acceptance are not fully exercised; actor-entry grace hold/restart has a focused synthetic assertion. See [P05 evidence](evidence/nlb/p05/README.md).
 
 ### [ ] NLB-P05-T03 — VERIFY — Round, placement and event regression
 
@@ -258,7 +258,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** cover early/timeout Pugad, GO timestamps, Lagsanay extra taya freeze, moving-body conflict, stage version, round-end pending requests, scoring and current event terminal order.
 - **Acceptance:** existing score/terminal semantics are unchanged; one host commit per item; no request accepted after round close.
 - **Evidence:** scenario matrix, focused/rendered logs, outcome ledger comparison.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — requested P05/P06/P08/P09/P11/P12, controls, item, explosives, Barya, UI and P12 pair/stack regression suites passed; captures cover fallback/live/event paths. Ten synthetic two-seat live start/play/reset cycles passed with cleanup/state/memory ledger, but full 2/3/4-seat round plays, Results/Replay cycles, comparable baseline performance, and full terminal/support/Barya scenario matrix remain unrun. See [P05 evidence](evidence/nlb/p05/README.md).
 
 ## NLB-P06 — Network placement, terrain replication, vertical slice
 

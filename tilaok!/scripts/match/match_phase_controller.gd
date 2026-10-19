@@ -3,7 +3,7 @@ extends RefCounted
 
 signal phase_changed(previous_phase: Phase, next_phase: Phase)
 
-enum Phase { LOBBY, PUGAD, PLACE, PLAY, RESULTS }
+enum Phase { LOBBY, PUGAD, PLACE, PLAY, RESULTS, GO }
 
 var phase := Phase.LOBBY
 var authority := SimulationAuthority.offline()

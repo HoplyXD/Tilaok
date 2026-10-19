@@ -1,6 +1,6 @@
 # Tilaok! — Product Requirements Document
 
-**Track status (2026-10-19):** existing release requirements and evidence describe the offline submission baseline. The approved PC-host/Android/live-placement work is a separate future track, not an October submission obligation; its requirements and acceptance tracker are in [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md) and [PHASETASK_NETWORKED_LIVE_BUILD](PHASETASK_NETWORKED_LIVE_BUILD.md). Older local-only and zero-traffic requirements apply to the offline route only.
+**Track status (2026-10-19):** the scheduled P12 offline route remains default and submission baseline. The opt-in offline live-build engineering route `-- --match-route=offline_live_build` is implemented as Lobby → Pugad → GO → active Play/build → results → next round; the scheduled route remains the fallback. Network transport and Android client requirements remain separately gated and are tracked in [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md) and [PHASETASK_NETWORKED_LIVE_BUILD](PHASETASK_NETWORKED_LIVE_BUILD.md). Older local-only and zero-traffic requirements apply to the offline routes.
 
 **Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
@@ -110,7 +110,7 @@ Non-goals: networking, online accounts, servers/RPCs, paid gameplay licence, clo
 
 ## 4. Complete player journey
 
-Launch → title → join/ready lobby → guided first Karera → Pugad → Place → Play → round results → next round; threshold/round limit → tied-player sudden death when needed → match results → replay or lobby. Title/lobby/pause provide Library/help access. Settings/pause/back/quit paths remain operable with supported inputs.
+Launch → title → join/ready lobby → guided first Karera → Pugad → Place → Play → round results → next round is the default scheduled flow. The opt-in offline live-build route keeps Pugad assignment, then uses shared GO before opening movement and construction in Play. Both preserve current event/scoring outcomes and round lifecycle; network transport is not part of the offline engineering route. Threshold/round limit → tied-player sudden death when needed → match results → replay or lobby. Title/lobby/pause provide Library/help access. Settings/pause/back/quit paths remain operable with supported inputs.
 
 | State | Player-visible information/actions |
 |---|---|

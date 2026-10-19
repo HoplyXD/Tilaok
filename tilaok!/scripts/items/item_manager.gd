@@ -1,4 +1,4 @@
-# gdlint: disable=max-returns
+# gdlint: disable=max-returns,max-public-methods
 class_name ItemManager
 extends Node
 
@@ -26,8 +26,15 @@ var world_parent: Node
 var pieces: Dictionary = {}
 var in_play := false
 var grace_remaining := 0.0
+## Advances only when persistent terrain changes; objectives and rejected previews do not count.
+var stage_version := 0
+## instance_id -> {remaining, held}; newly placed live items activate independently.
+var live_activation: Dictionary = {}
+var live_activation_grace_seconds := 1.0
+var live_actor_clearance_wu := 32.0
 var round_number := 0
 var _serial := 1
+var _defer_stage_version := false
 
 
 func configure(
@@ -65,6 +72,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if grace_remaining > 0.0:
 		grace_remaining = maxf(0.0, grace_remaining - delta)
+	_advance_live_activation(delta)
 	budget.advance(delta)
 
 
@@ -111,7 +119,119 @@ func place(
 		return result
 	if bool(result.get("one_shot", false)):
 		return _apply_one_shot(result, owner_seat)
-	return _materialize_placement(variant_key, origin_cell, quarter_turns, owner_seat, result)
+	var placed := _materialize_placement(
+		variant_key, origin_cell, quarter_turns, owner_seat, result
+	)
+	if bool(placed.get("allowed", false)) and not _defer_stage_version:
+		stage_version += 1
+	return placed
+
+
+## Live route entry: reuses catalog validation, but materializes without resetting any existing
+## items. The caller has already verified attempt, ownership and current phase.
+func place_live(
+	variant_key: String,
+	origin_cell: Vector2i,
+	quarter_turns: int,
+	owner_seat: int,
+	actor_rects: Array[Rect2] = [],
+	advance_version: bool = true
+) -> Dictionary:
+	if not _can_mutate():
+		return {"allowed": false, "code": "authority_denied", "reason": "Not authoritative."}
+	if not in_play:
+		return {"allowed": false, "code": "wrong_phase", "reason": "Live placement is closed."}
+	var result := validate_placement(
+		variant_key, origin_cell, quarter_turns, owner_seat_clearance(actor_rects)
+	)
+	if not bool(result.allowed):
+		return result
+	if bool(result.get("one_shot", false)):
+		return {
+			"allowed": false,
+			"code": "one_shot_unsupported",
+			"reason": "This item uses a round objective path."
+		}
+	var committed := _materialize_placement(
+		variant_key, origin_cell, quarter_turns, owner_seat, result
+	)
+	if not bool(committed.get("allowed", false)):
+		return committed
+	var instance_id := str(committed.instance_id)
+	var piece := piece_for(instance_id)
+	if piece != null and piece.has_method("set_block_active"):
+		piece.call("set_block_active", false)
+	live_activation[instance_id] = {"remaining": live_activation_grace_seconds, "held": false}
+	if advance_version:
+		stage_version += 1
+	committed["stage_version"] = stage_version
+	committed["activation_after_seconds"] = live_activation_grace_seconds
+	return committed
+
+
+## Live Walis commit derives its target set again from the current world. Every surface is
+## preflighted before support invalidation/removal, so a stale preview cannot remove new pieces.
+func apply_live_one_shot(
+	verdict: Dictionary, owner_seat: int, advance_version: bool = false
+) -> Dictionary:
+	if not _can_mutate() or not in_play:
+		return {"allowed": false, "code": "wrong_phase", "reason": "Live cleanup is closed."}
+	if not bool(verdict.get("allowed", false)) or not bool(verdict.get("one_shot", false)):
+		return {
+			"allowed": false, "code": "invalid_cleanup", "reason": "Cleanup preview is invalid."
+		}
+	var target_info := CleanupTargetResolver.resolve(
+		verdict.footprint, pieces.values(), arena, round_number
+	)
+	if bool(target_info.get("protected", false)):
+		return {
+			"allowed": false,
+			"code": "protected_target",
+			"reason": "Protected construction cannot be removed."
+		}
+	var target_ids: Array[String] = []
+	for target_variant in target_info.get("ids", []):
+		var target_id := str(target_variant)
+		if not pieces.has(target_id):
+			return {
+				"allowed": false,
+				"code": "stale_target",
+				"reason": "A cleanup target changed before commit."
+			}
+		var removal := arena.can_remove_surface(target_id)
+		if not bool(removal.get("allowed", false)):
+			return {
+				"allowed": false,
+				"code": "unsafe_support",
+				"reason": str(removal.get("reason", "Removing that support is unsafe."))
+			}
+		target_ids.append(target_id)
+	target_ids.sort()
+	var removed: Array[String] = []
+	_defer_stage_version = true
+	for target_id in target_ids:
+		if bool(remove(target_id, "live_walis_cleanup", true).get("allowed", false)):
+			removed.append(target_id)
+	_defer_stage_version = false
+	if not removed.is_empty() and advance_version:
+		stage_version += 1
+	return {
+		"allowed": true,
+		"code": "one_shot",
+		"reason": "Cleanup removed %d piece(s)." % removed.size(),
+		"one_shot": true,
+		"owner_seat": owner_seat,
+		"removed": removed,
+		"edit_id":
+		"walis:%d:%d" % [round_number, stage_version + (1 if not removed.is_empty() else 0)],
+	}
+
+
+func owner_seat_clearance(actor_rects: Array[Rect2]) -> Array[Rect2]:
+	var safe_rects: Array[Rect2] = []
+	for rect in actor_rects:
+		safe_rects.append(rect.grow(live_actor_clearance_wu))
+	return safe_rects
 
 
 ## Applies one already-resolved P05 batch. All removals and additions are preflighted before
@@ -172,9 +292,11 @@ func commit_batch(resolution: Dictionary, actor_rects: Array[Rect2] = []) -> Dic
 		placeholder.occupied_rects = verdict.occupied
 		preflight_existing.append(placeholder)
 		checked_commits.append(edit)
+	_defer_stage_version = true
 	for target_id in removal_ids:
 		var removed := remove(target_id, "p05_atomic_cleanup")
 		if not bool(removed.allowed):
+			_defer_stage_version = false
 			return {
 				"allowed": false, "reason": "Cleanup failed after preflight: %s" % removed.reason
 			}
@@ -198,11 +320,15 @@ func commit_batch(resolution: Dictionary, actor_rects: Array[Rect2] = []) -> Dic
 			verdict
 		)
 		if not bool(result.get("allowed", false)):
+			_defer_stage_version = false
 			push_error(
 				"P05 batch materialization failed after preflight: %s" % result.get("reason", "")
 			)
 			return {"allowed": false, "reason": "Batch materialization failed; see engine output."}
 		materialized.append(result)
+	_defer_stage_version = false
+	if not removal_ids.is_empty() or not materialized.is_empty():
+		stage_version += 1
 	return {
 		"allowed": true,
 		"removals": removal_ids,
@@ -217,9 +343,13 @@ func _apply_one_shot(verdict: Dictionary, owner_seat: int) -> Dictionary:
 		verdict.footprint, pieces.values(), arena, round_number
 	)
 	var removed: Array[String] = []
+	_defer_stage_version = true
 	for target_id in target_info.ids:
 		if bool(remove(str(target_id), "walis_cleanup").allowed):
 			removed.append(str(target_id))
+	_defer_stage_version = false
+	if not removed.is_empty():
+		stage_version += 1
 	return {
 		"allowed": true,
 		"code": "one_shot",
@@ -339,6 +469,7 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 	support_tracker.invalidate_surface(instance_id)
 	arena.unregister_player_construction(instance_id)
 	pieces.erase(instance_id)
+	live_activation.erase(instance_id)
 	budget.release_emitter(instance_id)
 	var node := record.node
 	record.node = null
@@ -348,6 +479,8 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 			parent.remove_child(node)
 		node.queue_free()
 	item_removed.emit(instance_id, reason)
+	if not _defer_stage_version:
+		stage_version += 1
 	return {"allowed": true, "code": "removed", "reason": "Removed."}
 
 
@@ -356,6 +489,7 @@ func enter_place() -> void:
 		return
 	in_play = false
 	grace_remaining = 0.0
+	live_activation.clear()
 	_set_blocks_active(false)
 
 
@@ -365,6 +499,7 @@ func begin_play() -> PackedStringArray:
 		return PackedStringArray()
 	in_play = true
 	grace_remaining = tuning.item_activation_grace_s
+	live_activation.clear()
 	director.release_all_captives()
 	var released := budget.clear_all()
 	director.reset_for_play()
@@ -393,6 +528,7 @@ func end_play_attempt() -> PackedStringArray:
 		return PackedStringArray()
 	in_play = false
 	grace_remaining = 0.0
+	live_activation.clear()
 	director.release_all_captives()
 	for instance_id in _sorted_ids():
 		var piece := (pieces[instance_id] as PlacedItem).node as HazardPiece
@@ -414,6 +550,8 @@ func reset_match() -> PackedStringArray:
 	in_play = false
 	grace_remaining = 0.0
 	round_number = 0
+	stage_version = 0
+	live_activation.clear()
 	_serial = 1
 	return released
 
@@ -453,6 +591,93 @@ func _set_blocks_active(enabled: bool) -> void:
 		if not enabled and piece.has_method("reset_to_start"):
 			piece.call("reset_to_start")
 		piece.call("set_block_active", enabled)
+
+
+func item_activation_ready(instance_id: String) -> bool:
+	return not live_activation.has(instance_id)
+
+
+func live_activation_warning_text() -> String:
+	for state_variant in live_activation.values():
+		if bool((state_variant as Dictionary).get("held", false)):
+			return "Placement warning • area occupied; item remains inactive."
+	return ""
+
+
+func _advance_live_activation(delta: float) -> void:
+	if live_activation.is_empty():
+		return
+	var actors: Dictionary = actors_source.call() if actors_source.is_valid() else {}
+	for instance_id_variant in live_activation.keys():
+		var instance_id := str(instance_id_variant)
+		if not pieces.has(instance_id):
+			live_activation.erase(instance_id)
+			continue
+		var record := pieces[instance_id] as PlacedItem
+		var danger := record.footprint_rect.grow(live_actor_clearance_wu)
+		var found := definitions.find_variant(record.variant_key)
+		if not found.is_empty():
+			var variant := found.variant as ItemVariantDefinition
+			var regions := ItemGeometry.clip_to_stage(
+				ItemGeometry.resolve_regions(variant, record.quarter_turns, tuning),
+				record.footprint_rect,
+				arena
+			)
+			for region in regions:
+				var effect_rect: Rect2 = region.rect
+				effect_rect.position += record.footprint_rect.position
+				danger = danger.merge(effect_rect.grow(live_actor_clearance_wu))
+		var occupied := false
+		for actor_variant in actors.values():
+			var actor := actor_variant as ChickenController
+			if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+				continue
+			if danger.intersects(actor.hit_rect(), false):
+				occupied = true
+				break
+		if not occupied:
+			occupied = _live_mover_occupies_danger(instance_id, danger)
+		var state: Dictionary = live_activation[instance_id]
+		if occupied:
+			state.remaining = live_activation_grace_seconds
+			state.held = true
+		else:
+			if bool(state.held):
+				state.held = false
+				state.remaining = live_activation_grace_seconds
+			state.remaining = maxf(0.0, float(state.remaining) - delta)
+			if float(state.remaining) <= 0.0:
+				var piece := record.node
+				if piece != null and piece.has_method("set_block_active"):
+					piece.call("set_block_active", true)
+				live_activation.erase(instance_id)
+				continue
+		live_activation[instance_id] = state
+
+
+func _live_mover_occupies_danger(activating_id: String, danger: Rect2) -> bool:
+	for other_id_variant in pieces.keys():
+		var other_id := str(other_id_variant)
+		if other_id == activating_id:
+			continue
+		var other_record := pieces[other_id] as PlacedItem
+		var mover := other_record.node as StageBlock if other_record.node is StageBlock else null
+		if mover == null or (not mover.is_dynamic() and not mover.is_pushable()):
+			continue
+		var colliders := mover.find_children("*", "CollisionShape2D", true, false)
+		if colliders.is_empty():
+			# Fail closed while a mover's live collision geometry cannot be inspected.
+			return true
+		for collider_variant in colliders:
+			var collider := collider_variant as CollisionShape2D
+			if collider.disabled or collider.shape == null:
+				continue
+			var live_rect: Rect2 = collider.global_transform * collider.shape.get_rect()
+			var swept_rect := live_rect
+			swept_rect.position += mover.velocity * 0.5
+			if danger.intersects(live_rect.merge(swept_rect), false):
+				return true
+	return false
 
 
 func _sorted_ids() -> Array:
