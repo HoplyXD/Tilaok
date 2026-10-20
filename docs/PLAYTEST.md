@@ -818,7 +818,7 @@ The invitation URI parser and client-only lobby have PC-side focused checks. The
 
 | Check | Result | Evidence / limit |
 |---|---|---|
-| Invitation parser and phone UI/authority checks | PASSED — 18 checks | [`p03-focused-tests.log`](evidence/nlb/p03/p03-focused-tests.log); synthetic PC tests only. |
+| Invitation parser, client authority and host/join UI checks | PASSED — 35 checks | [`p03-focused-tests.log`](evidence/nlb/p03/p03-focused-tests.log); synthetic PC tests only. |
 | Export candidate / APK manifest | PASSED as candidate only | [`P03 evidence`](evidence/nlb/p03/README.md); scanner integration and install acceptance remain open. |
 | Physical camera permission, QR scan, phone install/join/leave/rejoin | COULD-NOT-RUN | No physical Android device is available. |
 | Real Wi-Fi and no-internet host/client | COULD-NOT-RUN | No real Wi-Fi interface/device available; P02 exit is still required. |

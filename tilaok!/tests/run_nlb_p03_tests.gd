@@ -14,6 +14,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_invitation_parser()
+	await _test_desktop_lobby_roles()
 	await _test_phone_client_ui_and_authority()
 	if failures.is_empty():
 		print("NLB_P03_TESTS PASSED checks=%d" % checks)
@@ -96,6 +97,47 @@ func _test_invitation_parser() -> void:
 		not INVITATION_URI_SCRIPT.parse("tilaok://join?" + "x".repeat(513)).ok,
 		"oversized QR payload is rejected"
 	)
+
+
+func _test_desktop_lobby_roles() -> void:
+	var router := LocalInputRouter.new()
+	root.add_child(router)
+	var manager := NetworkSessionManager.new()
+	manager.configure(router)
+	root.add_child(manager)
+	var screen := LOBBY_SCREEN.instantiate() as UiLanLobbyScreen
+	screen.bind_session(manager)
+	root.add_child(screen)
+	await process_frame
+	_check(screen._role_picker.visible, "desktop lobby starts with host or join choice")
+	var host_controls_hidden := true
+	for control in screen._host_only_controls:
+		host_controls_hidden = host_controls_hidden and not control.visible
+	_check(host_controls_hidden, "role chooser hides host setup controls")
+	var join_controls_hidden := true
+	for control in screen._client_only_controls:
+		join_controls_hidden = join_controls_hidden and not control.visible
+	_check(join_controls_hidden, "role chooser hides join controls")
+	screen._select_role("host")
+	_check(screen._interfaces.is_visible_in_tree(), "host choice shows interface selection")
+	_check(screen._game_port.is_visible_in_tree(), "host choice shows host port settings")
+	var join_controls_hidden_in_host := true
+	for control in screen._client_only_controls:
+		join_controls_hidden_in_host = join_controls_hidden_in_host and not control.visible
+	_check(join_controls_hidden_in_host, "host choice hides join controls")
+	screen._select_role("join")
+	var host_controls_hidden_in_join := true
+	for control in screen._host_only_controls:
+		host_controls_hidden_in_join = host_controls_hidden_in_join and not control.visible
+	_check(host_controls_hidden_in_join, "join choice hides host controls")
+	_check(screen._lobby_id.is_visible_in_tree(), "Lobby ID is the primary join field")
+	_check(screen._code.is_visible_in_tree(), "join still asks for the separate access code")
+	_check(not screen._address.is_visible_in_tree(), "manual host address stays hidden by default")
+	_check(not screen._scan_button.visible, "desktop join does not show the unavailable QR scanner")
+	screen.queue_free()
+	manager.free()
+	router.free()
+	await process_frame
 
 
 func _test_phone_client_ui_and_authority() -> void:

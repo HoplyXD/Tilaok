@@ -34,7 +34,7 @@ Checks:
 | Check | Result | Evidence |
 |---|---|---|
 | Godot import/script parse | PASSED | [`import-parse.log`](import-parse.log) |
-| New invitation/mobile UI/client authority checks | PASSED — 24 checks | [`p03-focused-tests.log`](p03-focused-tests.log) |
+| Invitation, client authority, and host/join UI checks | PASSED — 35 checks | [`p03-focused-tests.log`](p03-focused-tests.log) |
 | Existing P02 raw ENet/admission tests, including owned 120-frame malformed flood | PASSED — 69 checks | [`p02-focused-tests.log`](p02-focused-tests.log) |
 | P02 separate-process leave/rehost regression | PASSED — 10 cycles; zero seats, peers, candidate cache | [`p02-multi-process-regression.log`](p02-multi-process-regression.log) |
 | P01 authority/input regression | PASSED | [`p01-focused-regression.log`](p01-focused-regression.log) |
