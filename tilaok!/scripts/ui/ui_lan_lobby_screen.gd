@@ -26,7 +26,6 @@ var _invite_label: Label
 var _invite_actions: HBoxContainer
 var _copy_code_button: Button
 var _copy_lobby_id_button: Button
-var _new_invitation_button: Button
 var _scan_button: Button
 var _manual_join_toggle: Button
 var _manual_join_section: VBoxContainer
@@ -207,9 +206,6 @@ func _build_ui() -> void:
 				DisplayServer.clipboard_set(manager.invitation_code)
 	)
 	_invite_actions.add_child(_copy_code_button)
-	_new_invitation_button = _button("Create fresh access code")
-	_new_invitation_button.pressed.connect(_create_fresh_invitation)
-	_invite_actions.add_child(_new_invitation_button)
 	_root.add_child(_invite_actions)
 	_host_only_controls.append(_invite_actions)
 	var join_label := _label(
@@ -228,7 +224,7 @@ func _build_ui() -> void:
 	var id_section := VBoxContainer.new()
 	id_section.add_child(_label("Enter Lobby ID"))
 	_lobby_id = LineEdit.new()
-	_lobby_id.placeholder_text = "13-character Lobby ID"
+	_lobby_id.placeholder_text = "13-character ID from host"
 	_lobby_id.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_lobby_id.text_changed.connect(
 		func(_text: String) -> void:
@@ -519,14 +515,6 @@ func _on_scan_failed(message: String) -> void:
 	_refresh()
 
 
-func _create_fresh_invitation() -> void:
-	if manager == null or not manager.create_invitation():
-		_host_notice = "Could not create an access code. Check that the room is open."
-	else:
-		_host_notice = "Fresh one-use code created. Share it only with the next player."
-	_refresh()
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		_cancel_scanner()
@@ -545,7 +533,10 @@ func _query_lobby() -> void:
 	_client_notice = ""
 	var target_text := _lobby_id.text.strip_edges().to_upper()
 	if target_text.length() != 13 or _decode_lobby_id(target_text) <= 0:
-		_client_notice = "Enter a valid 13-character Lobby ID."
+		_client_notice = (
+			"Lobby IDs have 13 characters. You entered %d; copy all 13 from the host."
+			% target_text.length()
+		)
 		_refresh()
 		return
 	if _code.text.strip_edges().is_empty():
@@ -631,18 +622,14 @@ func _refresh() -> void:
 	var has_invitation := not manager.invitation_code.is_empty()
 	if has_invitation:
 		_invite_label.text = (
-			"One-use access code: %s · valid for 5 minutes or until its first valid proof"
-			% manager.invitation_code
+			"Room access code: %s · reusable until this room stops" % manager.invitation_code
 		)
 	elif manager.state == NetworkSessionManager.SessionState.OFFLINE:
 		_invite_label.text = "Start a room to create an access code."
 	elif manager.state == NetworkSessionManager.SessionState.STARTING:
 		_invite_label.text = "Creating access code…"
 	else:
-		_invite_label.text = (
-			"Previous access code expired or was used. "
-			+ "Create a fresh code for the next player."
-		)
+		_invite_label.text = "The room is closed. Start a room to create a new access code."
 	_invite_actions.visible = (
 		host_view and manager.state == NetworkSessionManager.SessionState.LOBBY_OPEN
 	)
@@ -720,7 +707,7 @@ func _update_qr() -> void:
 			_last_qr_value = ""
 		return
 	var invite := (
-		"tilaok://join?lobby=%s&host=%s&port=%d&protocol=%d.%d&digest=%s&code=%s&epoch=%d&expires=%d"
+		"tilaok://join?lobby=%s&host=%s&port=%d&protocol=%d.%d&digest=%s&code=%s&epoch=%d&expires=0"
 		% [
 			_encode_lobby_id(manager.lobby_id),
 			manager.selected_address,
@@ -730,7 +717,6 @@ func _update_qr() -> void:
 			manager.manifest_digest.hex_encode(),
 			manager.invitation_code,
 			manager.session_epoch,
-			manager.invitation_expires_unix,
 		]
 	)
 	if invite == _last_qr_value:

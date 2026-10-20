@@ -63,7 +63,7 @@ static func parse(uri: String) -> Dictionary:
 	if not expires_text.is_valid_int() or expires_text.length() > 20:
 		return {"ok": false, "error": "The invitation expiry is invalid."}
 	var expires := int(expires_text)
-	if expires <= 0 or str(expires) != expires_text:
+	if expires < 0 or str(expires) != expires_text:
 		return {"ok": false, "error": "The invitation expiry is invalid."}
 	var digest := PackedByteArray()
 	digest.append_array(digest_text.hex_decode())

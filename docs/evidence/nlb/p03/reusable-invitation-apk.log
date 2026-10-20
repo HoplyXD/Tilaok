@@ -1,0 +1,13 @@
+NLB-P03 reusable invitation Android package verification — 2026-10-20
+Revision under test: working tree based on 5737b3f (room-lifetime invitation and manual Lobby ID feedback changes)
+Engine: Godot v4.7.2.stable.official.ed1daf0bf
+Export command (run from tilaok!):
+D:\Downloads\Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
+Export result: PASSED — Godot completed Android export.
+Package: build/tilaok-android-debug.apk
+Size: 171959664 bytes
+SHA-256: 90EB22C1B9484E024876CEC0B1EE6A169C59E47DACBA2005F47AA33BB2B18C9B
+Package identity: org.hoplyxd.tilaok.debug / Tilaok! LAN Client / versionCode 2 / versionName 0.3.1-debug
+Package inspection: aapt reports targetSdkVersion 36, CAMERA and INTERNET permissions, arm64-v8a and armeabi-v7a.
+Signature: apksigner verify --verbose PASSED; APK Signature Scheme v2 true; one signer.
+Physical install: COULD-NOT-RUN — adb devices -l returned no connected devices.

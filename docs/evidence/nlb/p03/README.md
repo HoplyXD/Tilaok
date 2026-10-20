@@ -1,14 +1,14 @@
 # NLB-P03 Android client — engineering evidence, 2026-10-20
 
-**Acceptance: 1/3 tasks. Phase: PARTIAL and held at the P02 exit gate.** T01's reproducible Android debug package passes export/package inspection. T02 has a client-only lobby and local scanner implementation, but its actual Windows-host/Android compatibility, permission UX, invitation-path and failure-state acceptance has not been exercised on Android. T03 is not run: no physical phone is connected. P02-T03 is not complete because real Wi-Fi/no-internet LAN evidence is missing. Nothing here claims networked gameplay.
+**Acceptance: 1/3 tasks. Phase: PARTIAL and held at the P02 exit gate.** This follow-up corrects the manual Lobby ID length feedback and changes the room QR/access code to one reusable credential for the active room lifetime. Desktop/session tests cover repeated joins with that code, but actual Windows-host/Android compatibility, permission UX, invitation paths and failure-state acceptance remain unverified on Android. T03 is not run: no physical phone is connected. P02-T03 is not complete because real Wi-Fi/no-internet LAN evidence is missing. Nothing here claims networked gameplay.
 
 ## Build and package
 
-- Revision under test: Android scanner bridge fix layered on `e58f9f2`.
+- Revision under test: `5737b3f` plus the current room-lifetime invitation follow-up.
 - Engine: Godot 4.7.2 `4.7.2.stable.official.ed1daf0bf`.
 - Java: Temurin OpenJDK 17.0.18. Android SDK platform 36, build-tools 36.1.0, NDK 29.0.14206865. The exact NDK package was installed after explicit user approval. The initial Gradle resolution temporarily selected Build Tools 34; that package was removed and the final preset pins 36.1.0.
-- APK: `build/tilaok-android-debug.apk`, 171,961,440 bytes, SHA-256 `DDCEB4D39B95FEDE63491CB8FECD9D0D057A93381AD25265857E7ACC91DFC766`.
-- Identity: `org.hoplyxd.tilaok.debug`, `Tilaok! LAN Client`, version code 1 / `0.3.0-debug`; min API 24, target/compile API 36, landscape; `arm64-v8a` and `armeabi-v7a`.
+- APK: `build/tilaok-android-debug.apk`, 171,959,664 bytes, SHA-256 `90EB22C1B9484E024876CEC0B1EE6A169C59E47DACBA2005F47AA33BB2B18C9B`.
+- Identity: `org.hoplyxd.tilaok.debug`, `Tilaok! LAN Client`, version code 2 / `0.3.1-debug`; min API 24, target/compile API 36, landscape; `arm64-v8a` and `armeabi-v7a`.
 - Signing: Godot debug signing; no keystore or password is in source control. The APK contains the Godot asset pack and scanner plugin and does not require editor streaming. Build artifacts are ignored.
 - Reproducible build from repo root (first creates ignored scanner AARs, then exports):
 
@@ -20,7 +20,7 @@ try { .\gradlew.bat :plugin:testDebugUnitTest :plugin:assemble --console=plain }
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
 ```
 
-The export exited successfully. `apksigner verify` reports v2 signature valid; `aapt` reports CAMERA and INTERNET; the merged APK manifest registers the Godot v2 scanner plugin; APK contents include plugin/decoder classes and Godot arm64/armv7 libraries. Full logs: [export](android-export-final.log), [merged manifest](apk-manifest-final.txt), [package inspection](apk-inspection-final.txt), [SDK packages](android-sdk-packages-final.log), [Java](java-toolchain-final.log), [Gradle build/unit tests](scanner-gradle-final.log), [hash and size](apk-hash-final.log).
+The export exited successfully. `apksigner verify` reports v2 signature valid; `aapt` reports CAMERA and INTERNET; the merged APK manifest registers the Godot v2 scanner plugin; APK contents include plugin/decoder classes and Godot arm64/armv7 libraries. Full initial logs: [export](android-export-final.log), [merged manifest](apk-manifest-final.txt), [package inspection](apk-inspection-final.txt), [SDK packages](android-sdk-packages-final.log), [Java](java-toolchain-final.log), [Gradle build/unit tests](scanner-gradle-final.log), [initial hash and size](apk-hash-final.log). The latest `0.3.1-debug` export, hash, manifest permissions, signature and physical-install blocker are in [follow-up APK verification](reusable-invitation-apk.log).
 
 ## Scanner provenance and behavior
 
@@ -32,7 +32,7 @@ Godot 4.7 Android v2 plugin integration requires the Gradle export path. Runtime
 
 - Android startup chooses explicit `CLIENT_PRESENTATION`, routes to a landscape client lobby and never creates a local chicken/offline authority.
 - Entry UI supports camera QR, bounded Lobby ID lookup and manual IP:port with a separate access code. All paths use the existing raw ENet protocol 1.1 challenge/proof, compatibility check, host approval, host assignment and host-confirmed readiness.
-- Invitation parsing accepts only bounded `tilaok://join` fields, including canonical expiry, and rejects duplicate/unsupported/malformed values. A code expires after 300 seconds or one valid proof, whichever comes first; proof consumes it before approval. A QR only proposes an endpoint and credential; it does not authorize a seat. The host can issue a fresh access code for another join or rejoin.
+- Invitation parsing accepts only bounded `tilaok://join` fields, including canonical expiry marker `expires=0`, and rejects duplicate/unsupported/malformed values. One 128-bit access code and QR stay active for every player until the host stops or rehosts. Each connection performs a fresh one-use HMAC challenge; the code is not consumed by joins, leave/rejoin, rejection or full capacity. Host approval, compatibility, seat capacity and server assignment remain mandatory. Manual Lobby ID lookup requires all 13 host-displayed Base32 characters; a failed length check now reports the number entered.
 - Client state is stored for presentation and cleared on leave/retry. Existing host join UI and Windows offline route remain unchanged.
 - The exported Windows host reports canonical digest `876982d7f38bc5b5ed80749e643f68dbeb28d231bae64ab0b2530fe301937ba6` for `karera_slice` / engine `4.7.2-stable (official)` ([log](windows-exported-compatibility-final.log)). The Android export uses a sparse resource pack that cannot be mounted as a standalone Windows PCK; Android packaged-resource digest equality and deliberate incompatibility rejection are not verified and must be tested on the installed Android client before T02 passes.
 
@@ -41,10 +41,10 @@ Godot 4.7 Android v2 plugin integration requires the Gradle export path. Runtime
 | Check | Result | Evidence / limit |
 |---|---|---|
 | Android Gradle plugin build and decoder unit tests | PASSED — two tests | [`scanner-unit-test-summary.txt`](scanner-unit-test-summary.txt); generated QR frame decode and invalid luma dimensions. |
-| Godot P03 focused parser/client/UI/package source checks | PASSED — 51 assertions | [P03 focused log](p03-focused-tests-final.log); these are source/desktop checks, not Android runtime proof. |
+| Godot P03 focused parser/client/UI/package source checks | PASSED — 55 assertions | [Reusable invitation follow-up](reusable-invitation-p03-tests.log); these are source/desktop checks, not Android runtime proof. |
 | P01 focused regression | PASSED | [P01 regression](p01-focused-regression-final.log). |
-| P02 focused suite | PASSED — 87 checks | [P02 suite](p02-focused-tests-final.log), including single-use/expiry/rejoin behavior; synthetic/local processes only. |
-| P02 ten-process lifecycle regression | PASSED — 10 cycles | [P02 multi-process log](p02-multi-process-regression-final.log); real Wi-Fi/no-internet acceptance remains open. |
+| P02 focused suite | PASSED — 74 checks | [Reusable invitation follow-up](reusable-invitation-p02-tests.log), including two approved joins using one code, leave/rejoin, malformed-frame cleanup and capacity; synthetic/local processes only. |
+| P02 ten-process lifecycle regression | PASSED — 10 cycles | [Reusable invitation follow-up](reusable-invitation-p02-multiprocess.log); real Wi-Fi/no-internet acceptance remains open. |
 | P05 offline route regression | PASSED — 49 checks | [P05 regression](p05-offline-regression-final.log). |
 | Windows host export/startup and digest | PASSED as a Windows artifact | [host export](windows-host-export-final.log), [host startup](windows-host-startup-final.log), [exported digest](windows-exported-compatibility-final.log); the Android resource digest comparison is not passed. |
 | Camera permission UI, actual camera scan, all three joins and Android error/retry states | COULD-NOT-RUN | No connected Android device; desktop checks do not substitute. |
@@ -56,7 +56,7 @@ No physical model, OS/API, ABI, renderer, screen, reviewer, phone capture or suc
 ## Remaining gates
 
 1. Close P02-T03 using its real Wi-Fi/no-internet and abuse acceptance; do not bypass the P03 phase dependency.
-2. On an authorized physical phone, verify permission grant/deny/permanent deny, QR scan/cancel, all three join paths, compatibility rejection, approval/decline/full/unreachable/shutdown, host-confirmed seat/readiness, and repeated leave/rejoin cleanup using fresh invitations.
+2. On an authorized physical phone, install APK version `0.3.1-debug`; verify permission grant/deny/permanent deny, QR scan/cancel, all three join paths, compatibility rejection, approval/decline/full/unreachable/shutdown, host-confirmed seat/readiness, and repeated leave/rejoin cleanup using the same room invitation.
 3. Verify the digest produced from actual packaged Android resources matches the exported Windows host for identical content, and rejects a deliberately incompatible build.
 4. Preserve P03-T02 and T03 checkboxes as open until their complete acceptance evidence exists.
 

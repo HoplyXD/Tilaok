@@ -104,9 +104,15 @@ func _test_invitation_parser() -> void:
 		not INVITATION_URI_SCRIPT.parse(uri.replace("expires=2000000000", "expires=01")).ok,
 		"noncanonical invitation expiry is rejected"
 	)
+	var permanent_invite: Dictionary = INVITATION_URI_SCRIPT.parse(
+		uri.replace("expires=2000000000", "expires=0")
+	)
 	_check(
-		not INVITATION_URI_SCRIPT.parse(uri.replace("expires=2000000000", "expires=0")).ok,
-		"invalid invitation expiry is rejected"
+		(
+			bool(permanent_invite.get("ok", false))
+			and int(permanent_invite.get("expires_unix", -1)) == 0
+		),
+		"room-lifetime invitation marker is accepted"
 	)
 	_check(not INVITATION_URI_SCRIPT.parse(uri + "%20").ok, "encoded fields are rejected")
 	_check(
@@ -159,6 +165,7 @@ func _test_desktop_lobby_roles() -> void:
 	manager.selected_address = "192.168.1.22"
 	manager.game_port = 27777
 	manager.manifest_digest.resize(32)
+	manager.invitation_expires_unix = 0
 	var invitation_token := PackedByteArray()
 	invitation_token.resize(16)
 	manager.invitation_code = InvitationCode.encode(invitation_token)
@@ -168,6 +175,10 @@ func _test_desktop_lobby_roles() -> void:
 	_check(
 		bool(host_qr_invitation.get("ok", false)),
 		"the host-generated QR payload round-trips through the client invitation parser"
+	)
+	_check(
+		int(host_qr_invitation.get("expires_unix", -1)) == 0,
+		"host QR represents a room-lifetime invitation"
 	)
 	screen.queue_free()
 	manager.free()
@@ -198,6 +209,15 @@ func _test_phone_client_ui_and_authority() -> void:
 	_check(
 		screen._client_only_controls.size() >= 4,
 		"phone lobby exposes QR, lookup and manual join controls"
+	)
+	screen._lobby_id.text = "AAAAAAAAAAAA"
+	screen._query_lobby()
+	_check(
+		(
+			screen._client_notice.contains("You entered 12")
+			and screen._client_notice.contains("copy all 13")
+		),
+		"manual Lobby ID error explains the required full 13 characters"
 	)
 	manager.state = NetworkSessionManager.SessionState.STARTING
 	var duplicate_join_started := manager.connect_client(
@@ -306,15 +326,19 @@ func _test_android_scanner_export_contract() -> void:
 		"res://scripts/network/network_session_manager.gd"
 	)
 	_check(
-		lobby_ui.contains("expires=%d") and lobby_ui.contains("Create fresh access code"),
-		"host QR publishes expiry and offers fresh one-use invitation creation"
+		(
+			lobby_ui.contains("expires=0")
+			and lobby_ui.contains("reusable until this room stops")
+			and not lobby_ui.contains("Create fresh access code")
+		),
+		"host QR publishes the reusable room invitation"
 	)
 	_check(
 		(
-			session_source.contains("INVITATION_LIFETIME_SECONDS := 300")
-			and session_source.contains("# One credential admits one proof")
+			session_source.contains("# The room credential is reusable")
+			and not session_source.contains("INVITATION_LIFETIME_SECONDS")
 		),
-		"host enforces five-minute single-use invitation credentials"
+		"host keeps one invitation credential active for the room lifetime"
 	)
 	_check(
 		(

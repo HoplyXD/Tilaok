@@ -275,7 +275,7 @@ func _test_raw_enet_admission() -> void:
 	var invalid_seen := [false]
 	invalid_client.client_message.connect(
 		func(message: String) -> void:
-			if message.contains("invalid") or message.contains("expired"):
+			if message.contains("match this room"):
 				invalid_seen[0] = true
 	)
 	var invalid_started := invalid_client.connect_client(host_address, port, "A".repeat(26))
@@ -321,14 +321,13 @@ func _test_raw_enet_admission() -> void:
 		await process_frame
 	_check(rejected_seen[0], "rejected join receives readable feedback")
 	_check(host.router.registry.joined_seats().is_empty(), "rejected candidate receives no seat")
-	_check(host.invitation_code.is_empty(), "valid proof consumes its invitation before approval")
+	_check(host.invitation_code == rejected_code, "rejection keeps the room access code active")
 	await _clean_client(rejected_client, rejected_router)
 	auto_approve[0] = true
-	_check(host.create_invitation(), "host can issue a fresh code without restarting the room")
 	var room_code := host.invitation_code
 	_check(
-		room_code.length() == 26 and room_code != rejected_code,
-		"rejoining after a rejected request requires a new one-use code"
+		room_code.length() == 26 and room_code == rejected_code,
+		"one room access code is shared by every player"
 	)
 	var connected := client.connect_client(host_address, port, room_code)
 	_check(connected, "production raw ENet client connects")
@@ -360,7 +359,7 @@ func _test_raw_enet_admission() -> void:
 		host.router.registry.joined_seats().size() == 1, "host registry assigns exactly one seat"
 	)
 	_check(bool(host.router.registry.get_seat(0).ready), "ready updates assigned host seat")
-	_check(host.invitation_code.is_empty(), "successful proof revokes the one-use access code")
+	_check(host.invitation_code == room_code, "successful proof leaves the room code reusable")
 	client.stop_session()
 	var cleanup_deadline := Time.get_ticks_msec() + 2000
 	while (
@@ -375,46 +374,17 @@ func _test_raw_enet_admission() -> void:
 	repeat_client.configure(repeat_router)
 	root.add_child(repeat_client)
 	var repeat_assigned := [false]
-	var old_code_rejected := [false]
-	var old_code_message := [""]
 	repeat_client.client_assigned.connect(func(_seat: int) -> void: repeat_assigned[0] = true)
-	repeat_client.client_message.connect(
-		func(message: String) -> void:
-			old_code_message[0] = message
-			if message.contains("expired") or message.contains("used"):
-				old_code_rejected[0] = true
-	)
 	_check(
 		repeat_client.connect_client(host_address, port, room_code),
-		"client may attempt a previously consumed code"
+		"another player may use the same room access code"
 	)
-	for _frame in 180:
-		if old_code_rejected[0]:
-			break
-		await process_frame
-	_check(old_code_rejected[0], "consumed code is rejected with readable fresh-code guidance")
-	_check(not repeat_assigned[0], "a consumed code cannot receive a second seat")
-	_check(
-		old_code_message[0].contains("fresh code"),
-		"host disconnect does not overwrite the consumed-code guidance"
-	)
-	await _clean_client(repeat_client, repeat_router)
-	_check(host.create_invitation(), "host can issue another invitation for rejoin")
-	var rejoin_code := host.invitation_code
-	_check(rejoin_code != room_code, "rejoin uses a fresh credential")
-	repeat_client = NetworkSessionManager.new()
-	repeat_router = LocalInputRouter.new()
-	root.add_child(repeat_router)
-	repeat_client.configure(repeat_router)
-	root.add_child(repeat_client)
-	repeat_client.client_assigned.connect(func(_seat: int) -> void: repeat_assigned[0] = true)
-	_check(repeat_client.connect_client(host_address, port, rejoin_code), "fresh rejoin connects")
 	for _frame in 180:
 		if repeat_assigned[0]:
 			break
 		await process_frame
-	_check(repeat_assigned[0], "fresh invitation completes another approved assignment")
-	_check(host.invitation_code.is_empty(), "fresh rejoin proof also consumes its code")
+	_check(repeat_assigned[0], "shared code completes another approved seat assignment")
+	_check(host.invitation_code == room_code, "shared code remains active after another proof")
 	await _clean_client(repeat_client, repeat_router)
 	for layout in PlayerSeatRegistry.KEYBOARD_LAYOUTS:
 		_check(
@@ -425,7 +395,6 @@ func _test_raw_enet_admission() -> void:
 		host.router.registry.joined_seats().size() == PlayerSeatRegistry.MAX_SEATS,
 		"local and remote seats share a four-player cap"
 	)
-	_check(host.create_invitation(), "host issues a one-use code before full-lobby test")
 	var full_code := host.invitation_code
 	var full_client := NetworkSessionManager.new()
 	var full_router := LocalInputRouter.new()
@@ -450,38 +419,10 @@ func _test_raw_enet_admission() -> void:
 		"full-lobby candidate cannot exceed the shared seat cap"
 	)
 	await _clean_client(full_client, full_router)
-	_check(host.create_invitation(), "host can issue an invitation for expiry test")
-	var expired_code := host.invitation_code
-	host.invitation_expires_unix = int(Time.get_unix_time_from_system()) - 1
-	var expired_client := NetworkSessionManager.new()
-	var expired_router := LocalInputRouter.new()
-	root.add_child(expired_router)
-	expired_client.configure(expired_router)
-	root.add_child(expired_client)
-	var expired_seen := [false]
-	var expired_message := [""]
-	expired_client.client_message.connect(
-		func(message: String) -> void:
-			expired_message[0] = message
-			if message.contains("expired"):
-				expired_seen[0] = true
-	)
 	_check(
-		expired_client.connect_client(host_address, port, expired_code),
-		"expired-invitation candidate reaches bounded proof handling"
+		host.invitation_expires_unix == 0 and host.invitation_code == room_code,
+		"room access code has no timeout and remains active after successful joins"
 	)
-	for _frame in 180:
-		if expired_seen[0]:
-			break
-		await process_frame
-	_check(expired_seen[0], "expired invitation receives readable rejection feedback")
-	_check(host.invitation_code.is_empty(), "expired invitation is revoked")
-	_check(
-		expired_message[0].contains("fresh code"),
-		"host disconnect preserves the expired-invitation guidance"
-	)
-	await _clean_client(expired_client, expired_router)
-	_check(host.create_invitation(), "host creates a fresh invite for URI validation")
 	await _test_owned_malformed_flood(host, host_address, port)
 	host.stop_session()
 	for _frame in 60:

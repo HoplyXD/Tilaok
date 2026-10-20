@@ -19,7 +19,6 @@ const DEFAULT_DISCOVERY_PORT := 27778
 const MAX_PENDING_APPROVALS := 4
 const MAX_FRAME_EVENTS := 32
 const CHALLENGE_TIMEOUT_SECONDS := 30
-const INVITATION_LIFETIME_SECONDS := 300
 
 var state := SessionState.OFFLINE
 var admission_open := false
@@ -79,9 +78,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if transport.is_open:
 		transport.poll()
-	if not client_mode and _invitation_expired():
-		_revoke_invitation()
-		lobby_changed.emit()
 	if (
 		client_mode
 		and _client_connect_deadline > 0
@@ -186,22 +182,6 @@ func start_host(
 	client_mode = false
 	state = SessionState.LOBBY_OPEN
 	state_changed.emit("LOBBY_OPEN")
-	lobby_changed.emit()
-	return true
-
-
-func create_invitation() -> bool:
-	if (
-		client_mode
-		or state != SessionState.LOBBY_OPEN
-		or not admission_open
-		or not transport.is_host
-	):
-		return false
-	var random := InvitationCode.generate()
-	if random.size() != 16:
-		return false
-	_set_invitation(random)
 	lobby_changed.emit()
 	return true
 
@@ -554,11 +534,6 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			if client_nonce != candidate.nonce or payload.slice(16, 32) != candidate.server_nonce:
 				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
 				return
-			if _invitation_expired():
-				_revoke_invitation()
-				lobby_changed.emit()
-				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
-				return
 			if not _invitation_valid():
 				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
 				return
@@ -568,9 +543,7 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			if not Crypto.new().constant_time_compare(expected, proof_value):
 				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
 				return
-			# One credential admits one proof, regardless of the later host decision.
-			_revoke_invitation()
-			lobby_changed.emit()
+			# The room credential is reusable; this peer's challenge remains single-use.
 			if _pending_count() >= MAX_PENDING_APPROVALS:
 				_send(
 					peer_id,
@@ -993,15 +966,7 @@ func _poll_manifest_sources() -> bool:
 
 
 func _invitation_valid() -> bool:
-	return not _invitation_token.is_empty() and not _invitation_expired()
-
-
-func _invitation_expired() -> bool:
-	return (
-		not _invitation_token.is_empty()
-		and invitation_expires_unix > 0
-		and Time.get_unix_time_from_system() >= invitation_expires_unix
-	)
+	return not _invitation_token.is_empty()
 
 
 func _set_invitation(token: PackedByteArray) -> void:
@@ -1009,7 +974,7 @@ func _set_invitation(token: PackedByteArray) -> void:
 	_invitation_token = token.duplicate()
 	_invitation_code = InvitationCode.encode(token)
 	invitation_code = _invitation_code
-	invitation_expires_unix = int(Time.get_unix_time_from_system()) + INVITATION_LIFETIME_SECONDS
+	invitation_expires_unix = 0
 
 
 func _revoke_invitation() -> void:
@@ -1109,9 +1074,9 @@ func _read_u16(bytes: PackedByteArray) -> int:
 func _reason_message(reason: int) -> String:
 	match reason:
 		NetworkFrame.Reason.TOKEN_INVALID:
-			return "Access code is invalid, expired or used. Ask the host for a fresh code."
+			return "Access code does not match this room. Check the code shown by the host."
 		NetworkFrame.Reason.TOKEN_EXPIRED:
-			return "Access code expired or was used. Ask the host for a fresh code."
+			return "This room invitation is no longer active. Ask the host to reopen the room."
 		NetworkFrame.Reason.INCOMPATIBLE:
 			return "This client does not match the host build."
 		NetworkFrame.Reason.LOBBY_FULL:
