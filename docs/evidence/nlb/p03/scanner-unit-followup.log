@@ -1,0 +1,27 @@
+Revision: c4640a457e7124072d092b2434afe1e73e52c560
+Command: gradlew.bat :plugin:testDebugUnitTest --console=plain
+
+> Task :plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :plugin:preBuild UP-TO-DATE
+> Task :plugin:preDebugBuild UP-TO-DATE
+> Task :plugin:generateDebugResValues UP-TO-DATE
+> Task :plugin:generateDebugResources UP-TO-DATE
+> Task :plugin:packageDebugResources UP-TO-DATE
+> Task :plugin:parseDebugLocalResources UP-TO-DATE
+> Task :plugin:generateDebugRFile UP-TO-DATE
+> Task :plugin:compileDebugKotlin UP-TO-DATE
+> Task :plugin:javaPreCompileDebug UP-TO-DATE
+> Task :plugin:compileDebugJavaWithJavac NO-SOURCE
+> Task :plugin:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :plugin:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :plugin:preDebugUnitTestBuild UP-TO-DATE
+> Task :plugin:generateDebugUnitTestStubRFile UP-TO-DATE
+> Task :plugin:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :plugin:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :plugin:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :plugin:processDebugJavaRes UP-TO-DATE
+> Task :plugin:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :plugin:testDebugUnitTest UP-TO-DATE
+
+BUILD SUCCESSFUL in 1s
+15 actionable tasks: 15 up-to-date
