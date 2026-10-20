@@ -1,6 +1,6 @@
 # NLB-P03 Android client — engineering evidence, 2026-10-20
 
-**Acceptance: 1/3 tasks. Phase: PARTIAL and held at the P02 exit gate.** Follow-ups corrected the 13-character Lobby ID high-digit range (`A`–`H`) and changed the room QR/access code to one reusable credential for the active room lifetime. Desktop/session tests cover the screenshot's E-prefixed ID, boundary values and repeated joins with one code, but actual Windows-host/Android compatibility, permission UX, invitation paths and failure-state acceptance remain unverified on Android. T03 is not run: no physical phone is connected. P02-T03 is not complete because real Wi-Fi/no-internet LAN evidence is missing. Nothing here claims networked gameplay.
+**Acceptance: 1/3 tasks formally evidenced. Phase: PARTIAL; P02 entry gate passes.** Follow-ups corrected the 13-character Lobby ID high-digit range (`A`–`H`) and changed the room QR/access code to one reusable credential for the active room lifetime. On 2026-10-20, the user reported completing a physical-phone join test and confirmed that ready/unready toggles were visible in the host view. They identified the phone as a Tecno Spark 20 Pro running Android 14, then confirmed the PC host connected to the phone's hotspot with mobile data off and the same phone joined that host. This user report closes the P02 no-internet entry gate. No post-fix screenshots, sanitized device/host logs, exact hardware variant, ABI, renderer, screen details, or full T02/T03 test-case record were supplied, so P03 formal task acceptance remains incomplete. Nothing here claims networked gameplay.
 
 ## Build and package
 
@@ -44,21 +44,21 @@ Godot 4.7 Android v2 plugin integration requires the Gradle export path. Runtime
 | Godot P03 focused parser/client/UI/package source checks | PASSED — 61 assertions | [Lobby ID range follow-up](lobby-id-range-followup-p03-tests.log); tests the reported E-prefixed ID and A/H/I/7 boundary, but these are source/desktop checks, not Android runtime proof. |
 | P01 focused regression | PASSED | [P01 regression](p01-focused-regression-final.log). |
 | P02 focused suite | PASSED — 74 checks | [Reusable invitation follow-up](reusable-invitation-p02-tests.log), including two approved joins using one code, leave/rejoin, malformed-frame cleanup and capacity; synthetic/local processes only. |
-| P02 ten-process lifecycle regression | PASSED — 10 cycles | [Reusable invitation follow-up](reusable-invitation-p02-multiprocess.log); real Wi-Fi/no-internet acceptance remains open. |
+| P02 ten-process lifecycle regression | PASSED — 10 cycles | [Reusable invitation follow-up](reusable-invitation-p02-multiprocess.log); combined with the user's physical hotspot report, P02's exit gate passes. |
 | P05 offline route regression | PASSED — 49 checks | [P05 regression](p05-offline-regression-final.log). |
 | Windows host export/startup and digest | PASSED as a Windows artifact | [host export](windows-host-export-final.log), [host startup](windows-host-startup-final.log), [exported digest](windows-exported-compatibility-final.log); the Android resource digest comparison is not passed. |
-| Camera permission UI, actual camera scan, all three joins and Android error/retry states | COULD-NOT-RUN | No connected Android device; desktop checks do not substitute. |
-| Exact APK install and physical same-Wi-Fi lobby join/leave/fresh-invite rejoin | COULD-NOT-RUN | `adb devices -l` returned no devices. No emulator or forwarding used. |
-| P02 real Wi-Fi/no-internet prerequisite | COULD-NOT-RUN | Only WSL virtual networking was available for local processes; no real reachable Wi-Fi/no-internet test occurred. |
+| Camera permission UI, actual camera scan, all three joins and Android error/retry states | USER-REPORTED PASS; evidence incomplete | User reports successful physical-phone testing after the Lobby ID correction and confirms host-visible ready/unready. No post-fix capture/log or per-case matrix was supplied; permission-denial and failure cases remain unsubstantiated in retained evidence. |
+| Exact APK install and physical same-Wi-Fi lobby join/leave/fresh-invite rejoin | USER-REPORTED PASS; evidence incomplete | User reports all tested flows working on a Tecno Spark 20 Pro running Android 14, including a PC host on that phone's hotspot and the same phone joining as client. Mobile-data state, exact device variant, ABI, APK/build identity, Android API, renderer, screen configuration, install output and sanitized captures/logs are not retained. `adb devices -l` was empty on the development PC, so this was not independently captured locally. |
+| P02 real Wi-Fi/no-internet prerequisite | USER-REPORTED PASS | User confirms the same Tecno phone provided the hotspot and joined the Windows host while mobile data was off. |
 
-No physical model, OS/API, ABI, renderer, screen, reviewer, phone capture or successful install is recorded because none was observed. The proposed phone memory/FPS/touch targets are not measured by this lobby package. API 36 target retains LAN access through INTERNET; re-evaluate Android's local-network runtime permission before moving to target API 37 or later.
+Physical details currently reported by the user: Tecno Spark 20 Pro; Android 14 (API 34); phone hotspot with the Windows host connected as a hotspot client and the phone app joining that host. Exact model variant (the user's message included the ambiguous suffix “56”), mobile-data state, ABI, renderer, screen configuration, and retained capture/log evidence remain unknown. The proposed phone memory/FPS/touch targets are not measured by this lobby package. API 36 target retains LAN access through INTERNET; re-evaluate Android's local-network runtime permission before moving to target API 37 or later.
 
 ## Remaining gates
 
-1. Close P02-T03 using its real Wi-Fi/no-internet and abuse acceptance; do not bypass the P03 phase dependency.
-2. On an authorized physical phone, install APK version `0.3.2-debug`; verify permission grant/deny/permanent deny, QR scan/cancel, all three join paths, compatibility rejection, approval/decline/full/unreachable/shutdown, host-confirmed seat/readiness, and repeated leave/rejoin cleanup using the same room invitation.
+1. On an authorized physical phone, record the installed APK/build identity and device ABI, renderer, screen configuration and topology; retain sanitized phone/host captures/logs.
+2. Verify permission grant/deny/permanent deny, QR scan/cancel, all three join paths, compatibility rejection, approval/decline/full/unreachable/shutdown, host-confirmed seat/readiness, and repeated leave/rejoin cleanup using the same room invitation.
 3. Verify the digest produced from actual packaged Android resources matches the exported Windows host for identical content, and rejects a deliberately incompatible build.
-4. Preserve P03-T02 and T03 checkboxes as open until their complete acceptance evidence exists.
+4. Check P03-T02/T03 only after their remaining acceptance evidence is captured and reviewed.
 
 ## Official references
 
