@@ -1,0 +1,31 @@
+Revision: c4640a457e7124072d092b2434afe1e73e52c560
+Package: C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-debug.apk
+
+
+FullName : C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-debug.apk
+Length   : 171961120
+
+
+
+Algorithm : SHA256
+Hash      : 228DCDF3EDB92F0C7798C422FA668D53859B1AC7C25D324683BD5CBBE03483A5
+Path      : C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-debug.apk
+
+
+package: name='org.hoplyxd.tilaok.debug' versionCode='3' versionName='0.3.2-debug' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+install-location:'auto'
+sdkVersion:'24'
+targetSdkVersion:'36'
+package: org.hoplyxd.tilaok.debug
+uses-permission: name='android.permission.CAMERA'
+uses-permission: name='android.permission.INTERNET'
+permission: org.hoplyxd.tilaok.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='org.hoplyxd.tilaok.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1

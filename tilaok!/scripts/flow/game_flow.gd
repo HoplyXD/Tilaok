@@ -69,10 +69,14 @@ var _screen: UiScreen
 
 
 func _ready() -> void:
+	var android_client := OS.has_feature("android")
+	if android_client:
+		# Android is always a lobby client; never fall through the offline-authority default.
+		simulation_role = SimulationAuthority.Role.CLIENT_PRESENTATION
 	if not simulation_authority.configure(int(simulation_role)):
 		push_error("Invalid simulation role; gameplay authority is disabled.")
 		return
-	if not harness_mode and _harness_requested():
+	if not android_client and not harness_mode and _harness_requested():
 		_open_harness.call_deferred()
 		return
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
@@ -100,7 +104,7 @@ func _ready() -> void:
 	if not router.set_authority(simulation_authority):
 		push_error("Could not configure input authority; gameplay input is disabled.")
 		return
-	router.set_shared_keyboard_enabled(true)
+	router.set_shared_keyboard_enabled(not android_client)
 	network_session = NetworkSessionManager.new()
 	network_session.name = "NetworkSession"
 	add_child(network_session)
@@ -112,8 +116,14 @@ func _ready() -> void:
 	router.seat_joined.connect(_on_seat_joined)
 	router.seat_disconnected.connect(_on_seat_disconnected)
 	router.action_pressed.connect(_on_action_pressed)
-	show_title()
-	print("TILAOK_FLOW_READY state=title profile=%s route=%s" % [PLAYTEST_PROFILE, _route_name()])
+	if android_client:
+		show_lan_lobby()
+		print("TILAOK_FLOW_READY state=android_client_lobby profile=%s" % PLAYTEST_PROFILE)
+	else:
+		show_title()
+		print(
+			"TILAOK_FLOW_READY state=title profile=%s route=%s" % [PLAYTEST_PROFILE, _route_name()]
+		)
 
 
 func _exit_tree() -> void:
@@ -195,6 +205,7 @@ func show_lan_lobby() -> void:
 	state = State.LAN_LOBBY
 	bridge.screen = null
 	var screen := LAN_LOBBY_SCENE.instantiate() as UiLanLobbyScreen
+	screen.client_only_mode = OS.has_feature("android")
 	screen.bind_session(network_session)
 	screen.back_requested.connect(show_title)
 	add_child(screen)
@@ -204,6 +215,8 @@ func show_lan_lobby() -> void:
 
 ## Creates a fresh match room on the shared router; the room's own Lobby phase comes first.
 func _enter_match() -> void:
+	if OS.has_feature("android") or not simulation_authority.can_commit():
+		return
 	if (
 		network_session != null
 		and network_session.state != NetworkSessionManager.SessionState.OFFLINE

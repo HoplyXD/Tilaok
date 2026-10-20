@@ -1,0 +1,8 @@
+NLB task heading count: 36
+Checked task records: 10
+Unchecked TODO task records: 26
+Actual results: PASSED 10; FAILED 0; COULD-NOT-RUN 5; NOT RUN 21
+P02: PARTIAL 2/3; real Wi-Fi/no-internet host-client acceptance remains open.
+P03: PARTIAL 1/3; T01 export/package passes, T02 Android runtime acceptance is COULD-NOT-RUN, T03 physical-device acceptance is COULD-NOT-RUN.
+P05: PARTIAL 1/3; broader safety/compatibility evidence remains open.
+P03 phase entry/exit is not passed. No Android physical device, phone screenshots, real Wi-Fi join, network gameplay, or human review is claimed.

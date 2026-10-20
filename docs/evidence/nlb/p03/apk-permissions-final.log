@@ -1,0 +1,5 @@
+package: org.hoplyxd.tilaok.debug
+uses-permission: name='android.permission.CAMERA'
+uses-permission: name='android.permission.INTERNET'
+permission: org.hoplyxd.tilaok.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='org.hoplyxd.tilaok.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'

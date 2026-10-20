@@ -1,0 +1,29 @@
+APK=%USERPROFILE%\Desktop\Vscode Projects\Tilaok\build\tilaok-android-debug.apk
+SIZE=63976988
+SHA256=E7A7D73E81DAAA1DB2D34471CABE0140BC71E11CEE64B5911D98AF822348D838
+APP_ID=org.hoplyxd.tilaok.debug
+VERSION_CODE=1
+VERSION_NAME=0.3.0-debug
+MIN_SDK=24
+TARGET_SDK=36
+PERMISSIONS:
+android.permission.INTERNET
+android.permission.CAMERA
+MANIFEST DETAILS:
+    android:versionCode="1"
+    android:versionName="0.3.0-debug"
+    android:compileSdkVersionCodename="16"
+    package="org.hoplyxd.tilaok.debug"
+    platformBuildVersionCode="36"
+    platformBuildVersionName="16">
+        android:debuggable="true"
+            android:screenOrientation="0"
+SIGNATURE:
+Signer #1 certificate DN: CN=Godot, OU=Godot Engine, O=Stichting Godot, C=NL
+Signer #1 certificate SHA-256 digest: 3da8a182e8189d5c5b7bb77bb9126bd16423f121cc40ac6badb70757c8b40cf1
+Signer #1 certificate SHA-1 digest: 6828c631d8e8c176b89e46f9dbd22b437f5df9f7
+Signer #1 certificate MD5 digest: 9d3242c4303fe71c78886e9e023c5817
+PACKAGED ABI/PCK FILES:
+/assets/assets.sparsepck
+/lib/armeabi-v7a/libgodot_android.so
+/lib/arm64-v8a/libgodot_android.so

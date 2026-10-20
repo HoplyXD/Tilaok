@@ -1,4 +1,4 @@
-# gdlint: disable=class-definitions-order,max-returns
+# gdlint: disable=class-definitions-order,max-returns,max-file-lines
 class_name NetworkSessionManager
 extends Node
 
@@ -16,7 +16,6 @@ enum CandidateState {
 
 const DEFAULT_GAME_PORT := 27777
 const DEFAULT_DISCOVERY_PORT := 27778
-const INVITE_LIFETIME_SECONDS := 300
 const MAX_PENDING_APPROVALS := 4
 const MAX_FRAME_EVENTS := 32
 const CHALLENGE_TIMEOUT_SECONDS := 30
@@ -29,8 +28,9 @@ var discovery_port := DEFAULT_DISCOVERY_PORT
 var lobby_id := 0
 var session_epoch := 0
 var invitation_code := ""
-var invitation_expires_at := 0
+var invitation_expires_unix := 0
 var host_authority := SimulationAuthority.offline()
+var local_authority := SimulationAuthority.offline()
 var router: LocalInputRouter
 var transport := RawEnetTransport.new()
 var discovery := LanDiscovery.new()
@@ -39,9 +39,12 @@ var candidates: Dictionary = {}
 var client_mode := false
 var client_assigned_seat := -1
 var client_ready := false
+var client_lobby_seats: Array[Dictionary] = []
+var client_admission_open := false
 var client_invite_token := PackedByteArray()
 var client_manifest_digest := PackedByteArray()
 var _client_expected_host_digest := PackedByteArray()
+var _client_expected_host_epoch := 0
 var manifest_digest := PackedByteArray()
 var _manifest_revision := 0
 var _cached_compatibility: Dictionary = {}
@@ -53,6 +56,9 @@ var _peer_abuse: Dictionary = {}
 var _peer_family_times: Dictionary = {}
 var _candidate_timer := 0.0
 var _client_sequence := 0
+var _client_connect_deadline := 0
+var _client_transport_connected := false
+var _client_disconnect_notice_set := false
 var _pending_stop := false
 var _stop_deadline := 0
 var _manifest_source_stamp := ""
@@ -72,6 +78,19 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if transport.is_open:
 		transport.poll()
+	if (
+		client_mode
+		and _client_connect_deadline > 0
+		and Time.get_ticks_msec() >= _client_connect_deadline
+	):
+		_client_connect_deadline = 0
+		(
+			client_message
+			. emit(
+				"Could not reach the host. Check that both devices share a reachable Wi-Fi network, then retry."
+			)
+		)
+		stop_session()
 	if discovery.listening:
 		if state == SessionState.LOBBY_OPEN and not client_mode:
 			discovery.occupancy = router.registry.joined_seats().size() if router != null else 0
@@ -94,7 +113,6 @@ func _process(delta: float) -> void:
 			_manifest_poll_clock = 0.0
 			_poll_manifest_sources()
 		_expire_candidates(delta)
-		_expire_invitation()
 	elif state == SessionState.STOPPING and _pending_stop:
 		if transport.peer_count() == 0 or Time.get_ticks_msec() >= _stop_deadline:
 			_finish_stop()
@@ -104,7 +122,7 @@ func configure(input_router: LocalInputRouter) -> bool:
 	if input_router == null:
 		return false
 	router = input_router
-	remote_adapter.configure(router, host_authority)
+	local_authority = input_router.authority
 	return true
 
 
@@ -143,10 +161,7 @@ func start_host(
 		lobby_id = 1
 	if session_epoch == 0:
 		session_epoch = 1
-	_invitation_token = random
-	_invitation_code = InvitationCode.encode(random)
-	invitation_code = _invitation_code
-	invitation_expires_at = Time.get_ticks_msec() + INVITE_LIFETIME_SECONDS * 1000
+	_set_invitation(random)
 	selected_address = address
 	selected_interface_usable = true
 	_interface_poll_clock = 0.0
@@ -172,9 +187,21 @@ func start_host(
 
 
 func connect_client(
-	address: String, port: int, code: String, digest: PackedByteArray = PackedByteArray()
+	address: String,
+	port: int,
+	code: String,
+	digest: PackedByteArray = PackedByteArray(),
+	expected_epoch: int = 0
 ) -> bool:
-	if state != SessionState.OFFLINE or port < 1024 or port > 65535:
+	if (
+		state != SessionState.OFFLINE
+		or port < 1024
+		or port > 65535
+		or not address.is_valid_ip_address()
+		or address == "0.0.0.0"
+		or address == "255.255.255.255"
+	):
+		client_message.emit("Enter a valid host IP address and port.")
 		return false
 	var token := InvitationCode.decode(code)
 	if token.size() != 16:
@@ -182,15 +209,19 @@ func connect_client(
 		return false
 	state = SessionState.STARTING
 	state_changed.emit("STARTING")
+	_client_disconnect_notice_set = false
 	client_invite_token = token
 	CompatibilityManifest.reload_sources()
 	var manifest := CompatibilityManifest.build()
 	client_manifest_digest = manifest.digest
 	_client_expected_host_digest = digest.duplicate()
+	_client_expected_host_epoch = expected_epoch
 	var error := transport.open_client(address, port)
 	if error != OK:
 		return _rollback_start("Could not connect to the host (%d)." % error)
 	client_mode = true
+	_client_connect_deadline = Time.get_ticks_msec() + 8000
+	_client_transport_connected = false
 	selected_address = address
 	game_port = port
 	manifest_digest = client_manifest_digest
@@ -247,38 +278,26 @@ func _finish_stop() -> void:
 	selected_address = ""
 	client_assigned_seat = -1
 	client_ready = false
+	client_lobby_seats.clear()
+	client_admission_open = false
 	client_invite_token.clear()
 	_client_expected_host_digest.clear()
+	_client_expected_host_epoch = 0
 	client_mode = false
+	_client_connect_deadline = 0
+	_client_transport_connected = false
+	_client_disconnect_notice_set = false
 	manifest_digest.clear()
 	_cached_compatibility.clear()
 	if router != null:
-		router.set_authority(SimulationAuthority.offline())
+		router.set_authority(local_authority)
 	host_authority = SimulationAuthority.offline()
 	remote_adapter.configure(router, host_authority)
+	if router != null:
+		router.set_authority(local_authority)
 	state = SessionState.OFFLINE
 	state_changed.emit("OFFLINE")
 	lobby_changed.emit()
-
-
-func refresh_invitation() -> String:
-	if state != SessionState.LOBBY_OPEN or client_mode:
-		return ""
-	for peer_id in candidates.keys():
-		if int(candidates[peer_id].state) < CandidateState.ASSIGNED:
-			_send(
-				int(peer_id),
-				NetworkFrame.Family.ADMISSION_DECISION,
-				_u16(NetworkFrame.Reason.TOKEN_EXPIRED)
-			)
-			transport.close_peer(int(peer_id))
-			candidates.erase(peer_id)
-	_revoke_invitation()
-	_invitation_token = InvitationCode.generate()
-	_invitation_code = InvitationCode.encode(_invitation_token)
-	invitation_code = _invitation_code
-	invitation_expires_at = Time.get_ticks_msec() + INVITE_LIFETIME_SECONDS * 1000
-	return invitation_code
 
 
 func approve_peer(peer_id: int) -> bool:
@@ -394,6 +413,8 @@ func interface_options() -> Array[Dictionary]:
 
 func _on_peer_connected(peer_id: int) -> void:
 	if client_mode:
+		_client_transport_connected = true
+		_client_connect_deadline = 0
 		_local_nonce = InvitationCode.generate()
 		return
 	if not admission_open or transport.peer_count() > RawEnetTransport.MAX_PEERS:
@@ -415,7 +436,10 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if client_mode:
 		client_assigned_seat = -1
 		client_ready = false
-		client_message.emit("Host connection closed.")
+		if state != SessionState.STOPPING:
+			if not _client_disconnect_notice_set:
+				client_message.emit("Host connection closed.")
+			stop_session()
 		return
 	if candidates.has(peer_id):
 		var candidate: Dictionary = candidates[peer_id]
@@ -441,6 +465,10 @@ func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) ->
 		_reject(peer_id, NetworkFrame.Reason.RATE_LIMIT)
 		return
 	if client_mode:
+		if _client_expected_host_epoch > 0 and int(decoded.epoch) != _client_expected_host_epoch:
+			client_message.emit("This invitation belongs to an older host session.")
+			stop_session()
+			return
 		if session_epoch == 0:
 			session_epoch = int(decoded.epoch)
 		elif int(decoded.epoch) != session_epoch:
@@ -503,12 +531,11 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				return
 			var client_nonce := payload.slice(0, 16)
 			var proof_value := payload.slice(32, 64)
-			if (
-				client_nonce != candidate.nonce
-				or payload.slice(16, 32) != candidate.server_nonce
-				or not _invitation_valid()
-			):
-				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
+			if client_nonce != candidate.nonce or payload.slice(16, 32) != candidate.server_nonce:
+				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+				return
+			if not _invitation_valid():
+				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
 				return
 			var expected := InvitationCode.proof(
 				_invitation_token, session_epoch, candidate.nonce, candidate.server_nonce
@@ -516,6 +543,7 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			if not Crypto.new().constant_time_compare(expected, proof_value):
 				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
 				return
+			# The room credential is reusable; this peer's challenge remains single-use.
 			if _pending_count() >= MAX_PENDING_APPROVALS:
 				_send(
 					peer_id,
@@ -531,7 +559,6 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				"protocol": "%d.%d" % [NetworkFrame.MAJOR, NetworkFrame.MINOR]
 			}
 			candidates[peer_id] = candidate
-			_revoke_invitation()
 			var decision := _u16(NetworkFrame.Reason.APPROVAL_REQUIRED)
 			decision.append(0)
 			_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, decision)
@@ -610,6 +637,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 					)
 				):
 					client_message.emit("This client does not match the host build.")
+					_client_disconnect_notice_set = true
 					return
 				var hello := PackedByteArray()
 				hello.append_array(client_manifest_digest)
@@ -621,6 +649,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				return
 			if payload.size() != 2 or _read_u16(payload) != NetworkFrame.Reason.OK:
 				client_message.emit("This client is not compatible with the host.")
+				_client_disconnect_notice_set = true
 				return
 			var join := _local_nonce.duplicate()
 			_send(peer_id, NetworkFrame.Family.JOIN_BEGIN, join)
@@ -659,6 +688,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				)
 			elif reason != NetworkFrame.Reason.OK:
 				client_message.emit(_reason_message(reason))
+				_client_disconnect_notice_set = true
 		NetworkFrame.Family.SEAT_ASSIGNMENT:
 			if payload.size() != 2 or int(payload[0]) >= 4:
 				client_message.emit("The host sent an invalid seat assignment.")
@@ -675,9 +705,60 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				client_ready = int(payload[2]) == 1
 				client_message.emit("Ready." if client_ready else "Not ready.")
 		NetworkFrame.Family.LOBBY_STATE:
+			if payload.size() < 2:
+				client_message.emit("The host sent an incomplete lobby update.")
+				return
+			var count := int(payload[0])
+			if count > PlayerSeatRegistry.MAX_SEATS or payload.size() != 2 + count * 3:
+				client_message.emit("The host sent an invalid lobby update.")
+				return
+			var received_seats: Array[Dictionary] = []
+			var seen := {}
+			for index in count:
+				var offset := 2 + index * 3
+				var seat_index := int(payload[offset])
+				var ready_value := int(payload[offset + 1])
+				var connected_value := int(payload[offset + 2])
+				if (
+					seat_index >= PlayerSeatRegistry.MAX_SEATS
+					or ready_value > 1
+					or connected_value > 1
+					or seen.has(seat_index)
+				):
+					client_message.emit("The host sent an invalid lobby update.")
+					return
+				seen[seat_index] = true
+				(
+					received_seats
+					. append(
+						{
+							"seat": seat_index,
+							"identity": seat_index + 1,
+							"shape": PlayerSeatRegistry.SHAPES[seat_index],
+							"color": PlayerSeatRegistry.COLORS[seat_index],
+							"ready": ready_value == 1,
+							"connected": connected_value == 1,
+						}
+					)
+				)
+			client_lobby_seats = received_seats
+			client_admission_open = int(payload[1]) == 1
+			if int(payload[1]) > 1:
+				client_message.emit("The host sent an invalid lobby update.")
+				return
+			var assigned := -1
+			for seat_state in client_lobby_seats:
+				if int(seat_state.seat) == client_assigned_seat:
+					assigned = int(seat_state.seat)
+					client_ready = bool(seat_state.ready)
+					break
+			if client_assigned_seat >= 0 and assigned < 0:
+				client_assigned_seat = -1
+				client_ready = false
 			lobby_changed.emit()
 		NetworkFrame.Family.SESSION_CLOSE:
 			client_message.emit("The host closed the session.")
+			_client_disconnect_notice_set = true
 			stop_session()
 		_:
 			client_message.emit("The host sent an unsupported lobby message.")
@@ -778,6 +859,13 @@ func _reject(peer_id: int, reason: int) -> void:
 	_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(reason))
 	if int(abuse.auth_failures) >= 3 or int(abuse.format_failures) >= 120:
 		transport.close_peer(peer_id)
+		candidates.erase(peer_id)
+		_sequences.erase(peer_id)
+		_incoming_sequences.erase(peer_id)
+		for key in _peer_family_times.keys():
+			if str(key).begins_with("%d:" % peer_id):
+				_peer_family_times.erase(key)
+		lobby_changed.emit()
 
 
 func _accept_rate(peer_id: int, family: int) -> bool:
@@ -859,7 +947,6 @@ func _poll_manifest_sources() -> bool:
 	manifest_digest = current.digest
 	_cached_compatibility = current
 	_manifest_revision += 1
-	_revoke_invitation()
 	for peer_id in candidates.keys():
 		var candidate: Dictionary = candidates[peer_id]
 		_send(
@@ -879,13 +966,15 @@ func _poll_manifest_sources() -> bool:
 
 
 func _invitation_valid() -> bool:
-	return not _invitation_token.is_empty() and Time.get_ticks_msec() < invitation_expires_at
+	return not _invitation_token.is_empty()
 
 
-func _expire_invitation() -> void:
-	if not _invitation_token.is_empty() and Time.get_ticks_msec() >= invitation_expires_at:
-		_revoke_invitation()
-		lobby_changed.emit()
+func _set_invitation(token: PackedByteArray) -> void:
+	_revoke_invitation()
+	_invitation_token = token.duplicate()
+	_invitation_code = InvitationCode.encode(token)
+	invitation_code = _invitation_code
+	invitation_expires_unix = 0
 
 
 func _revoke_invitation() -> void:
@@ -893,7 +982,7 @@ func _revoke_invitation() -> void:
 	_invitation_token.clear()
 	_invitation_code = ""
 	invitation_code = ""
-	invitation_expires_at = 0
+	invitation_expires_unix = 0
 
 
 func _rollback_start(message: String) -> bool:
@@ -905,9 +994,11 @@ func _rollback_start(message: String) -> bool:
 	selected_address = ""
 	admission_open = false
 	if router != null:
-		router.set_authority(SimulationAuthority.offline())
+		router.set_authority(local_authority)
 	host_authority = SimulationAuthority.offline()
 	remote_adapter.configure(router, host_authority)
+	if router != null:
+		router.set_authority(local_authority)
 	state = SessionState.OFFLINE
 	state_changed.emit("OFFLINE")
 	session_error.emit(message)
@@ -983,7 +1074,9 @@ func _read_u16(bytes: PackedByteArray) -> int:
 func _reason_message(reason: int) -> String:
 	match reason:
 		NetworkFrame.Reason.TOKEN_INVALID:
-			return "Access code is invalid or expired."
+			return "Access code does not match this room. Check the code shown by the host."
+		NetworkFrame.Reason.TOKEN_EXPIRED:
+			return "This room invitation is no longer active. Ask the host to reopen the room."
 		NetworkFrame.Reason.INCOMPATIBLE:
 			return "This client does not match the host build."
 		NetworkFrame.Reason.LOBBY_FULL:

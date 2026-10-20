@@ -792,7 +792,7 @@ This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no
 
 | Check | Expected | Actual | Result |
 |---|---|---|---|
-| Raw ENet admission and lobby ID discovery | Compatible client proves one-use invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | 52 focused checks passed; tests include invalid/expired proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
+| Raw ENet admission and lobby ID discovery | Compatible client proves a one-use 300-second invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | Updated 85-check P02 suite covers proof consumption before approval, fresh-code rejoin, expired/used codes, invalid proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
 | Host/client repeated lifecycle | Ten separate-process join/ready/leave/stop/rehost cycles; no stale seats, peers or candidate cache after shutdown | Ten cycles passed; final seats=0, peers=0, cache=0 | PASSED — local processes |
 | Rendered lobby and QR | Host and client screens show invitation/admission states; test QR decodes independently | Redacted host screens and safe client awaiting-approval screen saved; synthetic QR decoded with ZXing C++ 3.1.1 | PASSED — desktop engineering capture |
 | Import, lint and formatting | Godot project parses; P02 source checks clean | Import/parse exit 0, gdlint clean, gdformat 13 files unchanged | PASSED |
@@ -811,3 +811,16 @@ Opt-in offline live-build route:
 ```powershell
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --match-route=offline_live_build
 ```
+
+## NLB-P03 Android phone lobby — engineering status, 2026-10-20
+
+T01's debug APK exports and passes merged-manifest, plugin, ABI and signature inspection. The APK includes the locally decoding CameraX/ZXing scanner. Desktop and decoder unit tests pass, but they do not establish Android permission UI, phone rendering, end-to-end join or cross-export digest acceptance. No physical device is connected. P02-T03 remains open because a real Wi-Fi/no-internet LAN run has not occurred. See [P03 evidence](evidence/nlb/p03/README.md).
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Parser, client authority, lobby UI and scanner package source checks | PASSED — 44 checks | [`p03-focused-tests-final.log`](evidence/nlb/p03/p03-focused-tests-final.log); Godot desktop/source tests only. |
+| ZXing local QR frame decoder | PASSED — 2 unit tests | [`scanner-gradle-final.log`](evidence/nlb/p03/scanner-gradle-final.log); no camera hardware or Android UI exercised. |
+| Android APK export / manifest / signature / ABI / plugin contents | PASSED — T01 | [`P03 evidence`](evidence/nlb/p03/README.md), final export and package inspection logs. |
+| Android runtime permission, actual camera scan, joins and host/client content compatibility | COULD-NOT-RUN | No connected phone; Android sparse resource digest is not compared against the Windows host. |
+| Physical install, real Wi-Fi join/leave/rejoin and failure cases | COULD-NOT-RUN | ADB reports no devices. No emulator or port forwarding used. |
+| Real Wi-Fi and no-internet host/client prerequisite | COULD-NOT-RUN | No real Wi-Fi/no-internet test occurred; P02 exit remains required. |

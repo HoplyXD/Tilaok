@@ -1,0 +1,17 @@
+Android package inspection (aapt / apksigner / apkanalyzer)
+APK: C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-debug.apk
+Bytes: 171961440
+SHA-256: DDCEB4D39B95FEDE63491CB8FECD9D0D057A93381AD25265857E7ACC91DFC766
+
+Application: org.hoplyxd.tilaok.debug — Tilaok! LAN Client
+Version: 1 / 0.3.0-debug
+SDK: min 24, target/compile 36; landscape (screenOrientation=0)
+Permissions: CAMERA, INTERNET (plus AndroidX dynamic receiver internal permission)
+Scanner registration: org.godotengine.plugin.v2.TilaokQrScanner → org.hoplyxd.tilaok.scanner.TilaokQrScannerPlugin
+Packaged resources: Godot assets.sparsepck; ZXing and scanner plugin classes
+ABIs: arm64-v8a, armeabi-v7a
+Signature: debug signing, APK v2 valid; no release keys included
+
+Decoder package summary:
+P d 2031	2230	347848	com.google.zxing
+P d 56	59	5533	org.hoplyxd.tilaok.scanner

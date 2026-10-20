@@ -1,0 +1,16 @@
+NLB-P03 Lobby ID range fix — 2026-10-20
+Revision under test: working tree based on 34a5012 (latest validator range fix)
+Finding: user screenshots show 13-character host Lobby ID beginning E. Host creates a positive 63-bit value; 13-character Base32 uses 3 high bits in the first character, so A through H are valid. Both QR parser and manual lookup had incorrectly limited this to A/B.
+Changed: InvitationUri and UI decoder now accept A-H and reject I-Z/2-7 in the first position; manual validation distinguishes length errors from invalid IDs.
+Test: Godot 4.7.2 run_nlb_p03_tests.gd PASSED checks=61; cases include EWWOOJYIFD46L, H777777777777, out-of-range I000000000000, and digit prefix 7.
+Engine: 4.7.2.stable.official.ed1daf0bf
+Export command (run from tilaok!):
+D:\Downloads\Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
+Export: PASSED.
+Package: build/tilaok-android-debug.apk
+Size: 171961120 bytes
+SHA-256: 228DCDF3EDB92F0C7798C422FA668D53859B1AC7C25D324683BD5CBBE03483A5
+Identity: org.hoplyxd.tilaok.debug / Tilaok! LAN Client / versionCode 3 / versionName 0.3.2-debug
+Merged manifest: target SDK 36; CAMERA and INTERNET permissions present.
+Signature: apksigner v2 verification PASSED; one signer.
+Physical device: COULD-NOT-RUN — adb devices -l returned no connected devices.
