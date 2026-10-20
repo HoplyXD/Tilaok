@@ -417,7 +417,7 @@ func approve_peer(peer_id: int) -> bool:
 	candidate.peer_generation = _generation_counter
 	candidate.deadline = Time.get_ticks_msec() + CHALLENGE_TIMEOUT_SECONDS * 1000
 	candidates[peer_id] = candidate
-	var payload := PackedByteArray([seat_index, seat_index])
+	var payload := PackedByteArray([seat_index, seat_index + 1])
 	var generation_writer := StreamPeerBuffer.new()
 	generation_writer.big_endian = false
 	generation_writer.put_u32(_generation_counter)
@@ -1539,7 +1539,10 @@ func _accept_action_request(peer_id: int, payload: PackedByteArray, candidate: D
 	var cache: Dictionary = _action_request_cache.get(peer_id, {})
 	_prune_action_cache(cache)
 	var request_key := str(request.request_id)
-	var payload_hash := payload.sha256_text()
+	var payload_hasher := HashingContext.new()
+	payload_hasher.start(HashingContext.HASH_SHA256)
+	payload_hasher.update(payload)
+	var payload_hash := payload_hasher.finish().hex_encode()
 	if cache.has(request_key):
 		var cached: Dictionary = cache[request_key]
 		if str(cached.hash) != payload_hash:
@@ -1551,7 +1554,7 @@ func _accept_action_request(peer_id: int, payload: PackedByteArray, candidate: D
 		_send_action_result(peer_id, int(request.request_id), NetworkFrame.Reason.REQUEST_CAPACITY)
 		return
 	if not _action_phase_allowed(int(request.action)):
-	_cache_action_result(cache, peer_id, request, payload_hash, NetworkFrame.Reason.WRONG_PHASE)
+		_cache_action_result(cache, peer_id, request, payload_hash, NetworkFrame.Reason.WRONG_PHASE)
 		return
 	var per_action_key := "%d:action:%d" % [peer_id, int(request.action)]
 	var now := Time.get_ticks_msec()
@@ -1665,7 +1668,10 @@ func _expire_input_sources() -> void:
 			_pending_continuous.erase(peer_id)
 			_pending_actions[peer_id] = []
 			input.timed_out = true
-			input.await_neutral = true
+			# The first valid post-timeout sequence is fresh input from the still-bound peer.
+			# Only initial assignment and snapshot resync require an explicit neutral sample;
+			# requiring one after a transient packet gap can otherwise lock controls forever.
+			input.await_neutral = false
 			_host_input_state[peer_id] = input
 
 

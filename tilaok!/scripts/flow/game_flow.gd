@@ -231,7 +231,21 @@ func _enter_match() -> void:
 func _enter_network_match() -> void:
 	if OS.has_feature("android") or not simulation_authority.can_commit() or network_session.client_mode:
 		return
+	if (
+		network_session.host_authority == null
+		or network_session.host_authority.role != SimulationAuthority.Role.HOST_AUTHORITY
+		or not router.set_authority(network_session.host_authority)
+	):
+		push_error("The network session could not transfer simulation ownership to the host.")
+		network_session.stop_session()
+		return
+	simulation_authority = network_session.host_authority
 	_create_authoritative_match(true)
+	# Lobby readiness admits the network match; the host then starts the scheduled room
+	# directly. Clients remain presentation-only and never run this gameplay transition.
+	if room != null and not room.start_match():
+		push_error("The host could not start the scheduled network match.")
+		network_session.stop_session()
 
 
 func _create_authoritative_match(network_match: bool) -> void:

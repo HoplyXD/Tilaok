@@ -171,6 +171,7 @@ static func encode_metadata(state: Dictionary) -> PackedByteArray:
 		or int(state.get("event_main", 255)) not in [255, 0, 1, 2]
 		or int(state.get("event_twist", 255)) not in [255, 0, 1, 2]
 		or int(state.get("barya_state", 0)) > 7
+		or float(state.get("camera_zoom", 1.0)) < 0.25 or float(state.get("camera_zoom", 1.0)) > 2.0
 		or int(state.get("carrier_seat", -1)) < -1 or int(state.get("carrier_seat", -1)) >= MAX_SEATS
 		or int(state.get("receipt_seat", -1)) < -1 or int(state.get("receipt_seat", -1)) >= MAX_SEATS
 	):
@@ -192,6 +193,7 @@ static func encode_metadata(state: Dictionary) -> PackedByteArray:
 	var camera: Vector2 = state.get("camera_position", Vector2.ZERO)
 	stream.put_32(roundi(camera.x * WORLD_SCALE))
 	stream.put_32(roundi(camera.y * WORLD_SCALE))
+	stream.put_u16(roundi(float(state.get("camera_zoom", 1.0)) * 256.0))
 	stream.put_u8(int(state.get("event_main", 255)) & 0xff)
 	stream.put_u8(int(state.get("event_twist", 255)) & 0xff)
 	stream.put_u8(int(state.get("barya_state", 0)) & 0xff)
@@ -204,7 +206,7 @@ static func encode_metadata(state: Dictionary) -> PackedByteArray:
 
 
 static func decode_metadata(payload: PackedByteArray) -> Dictionary:
-	if payload.size() < 59 or payload.size() > 91:
+	if payload.size() < 61 or payload.size() > 93:
 		return {"ok": false}
 	var stream := _reader(payload)
 	if stream.get_u8() != META_SCHEMA:
@@ -222,6 +224,7 @@ static func decode_metadata(payload: PackedByteArray) -> Dictionary:
 		"paused": stream.get_u8(),
 		"remaining_ms": stream.get_u32(),
 		"camera_position": Vector2(stream.get_32(), stream.get_32()) / WORLD_SCALE,
+		"camera_zoom": float(stream.get_u16()) / 256.0,
 		"event_main": stream.get_u8(),
 		"event_twist": stream.get_u8(),
 		"barya_state": stream.get_u8(),
@@ -230,7 +233,7 @@ static func decode_metadata(payload: PackedByteArray) -> Dictionary:
 		"rng_decision_id": stream.get_u32(),
 	}
 	var id_length := int(stream.get_u8())
-	if id_length > 32 or payload.size() != 59 + id_length:
+	if id_length > 32 or payload.size() != 61 + id_length:
 		return {"ok": false}
 	var id_bytes := stream.get_data(id_length)
 	if int(id_bytes[0]) != OK:
@@ -239,6 +242,7 @@ static func decode_metadata(payload: PackedByteArray) -> Dictionary:
 	state.ok = (
 		int(state.paused) <= 1
 		and int(state.phase) <= 5
+		and float(state.camera_zoom) >= 0.25 and float(state.camera_zoom) <= 2.0
 		and int(state.event_main) in [255, 0, 1, 2]
 		and int(state.event_twist) in [255, 0, 1, 2]
 		and int(state.barya_state) <= 7
@@ -435,7 +439,7 @@ static func decode_state_update(payload: PackedByteArray) -> Dictionary:
 		return {"ok": false}
 	var stream := _reader(payload)
 	var metadata_length := int(stream.get_u8())
-	if metadata_length < 59 or metadata_length > 91 or stream.get_position() + metadata_length + 10 > payload.size():
+	if metadata_length < 61 or metadata_length > 93 or stream.get_position() + metadata_length + 10 > payload.size():
 		return {"ok": false}
 	var metadata_bytes := stream.get_data(metadata_length)
 	if int(metadata_bytes[0]) != OK:

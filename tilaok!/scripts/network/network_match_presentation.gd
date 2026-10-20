@@ -108,7 +108,7 @@ func _draw() -> void:
 	var seats: Dictionary = _state.get("seats", {})
 	var metadata: Dictionary = _state.get("metadata", {})
 	var center: Vector2 = metadata.get("camera_position", Vector2(1024, 540))
-	var scale_factor := minf(size.x / 1152.0, size.y / 648.0)
+	var scale_factor := minf(size.x / 1152.0, size.y / 648.0) * float(metadata.get("camera_zoom", 1.0))
 	var origin := size * 0.5 - center * scale_factor
 	# Static map geometry comes from the compatible local map catalog; it is draw-only on clients.
 	if _layout != null:

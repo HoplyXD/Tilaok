@@ -62,14 +62,14 @@ func _test_typed_state_records_and_snapshots() -> void:
 		"stage_version": 4, "snapshot_id": 5, "event_revision": 6,
 		"host_time_ms": 7, "phase": MatchPhaseController.Phase.PLAY,
 		"paused": false, "remaining_ms": 9000, "map_id": "default",
-		"camera_position": Vector2(40.25, 80.5), "event_main": 0,
+		"camera_position": Vector2(40.25, 80.5), "camera_zoom": 0.625, "event_main": 0,
 		"event_twist": 255, "barya_state": BaryaRoundObjective.State.AVAILABLE,
 		"carrier_seat": -1, "receipt_seat": -1, "rng_decision_id": 99,
 	}
 	var metadata_bytes := NetworkMatchCodec.encode_metadata(metadata)
 	var metadata_decoded := NetworkMatchCodec.decode_metadata(metadata_bytes)
 	_check(bool(metadata_decoded.get("ok", false)), "metadata schema round trip")
-	_check(metadata_decoded.camera_position == metadata.camera_position and int(metadata_decoded.rng_decision_id) == 99, "camera and event identity fixed point")
+	_check(metadata_decoded.camera_position == metadata.camera_position and is_equal_approx(metadata_decoded.camera_zoom, metadata.camera_zoom) and int(metadata_decoded.rng_decision_id) == 99, "camera framing and event identity fixed point")
 	var seat := NetworkMatchCodec.encode_seat_record({"seat": 0, "identity": 1, "shape_id": 0, "status": 0, "position": Vector2(10, 20), "velocity": Vector2.ZERO}, 125)
 	var entity := NetworkMatchCodec.encode_stage_record({"entity_id": 22, "variant_key": "build.hollow_blocks.cell_1x1", "position": Vector2(100, 120), "velocity": Vector2(0, 4), "rotation": 1, "state_flags": 3, "timer_ms": 400, "revision": 4})
 	var objective := NetworkMatchCodec.encode_objective_record({"kind": 1, "state": BaryaRoundObjective.State.AVAILABLE, "carrier_seat": -1, "receipt_seat": -1, "position": Vector2(240, 320), "round_id": 2, "attempt_id": 3})

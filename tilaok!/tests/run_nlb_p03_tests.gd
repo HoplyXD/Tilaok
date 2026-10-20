@@ -29,7 +29,7 @@ func _run() -> void:
 
 func _test_invitation_parser() -> void:
 	var uri := (
-		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.1&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
+		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.2&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
 		% "a".repeat(64)
 	)
 	var invite: Dictionary = INVITATION_URI_SCRIPT.parse(uri)
@@ -114,7 +114,7 @@ func _test_invitation_parser() -> void:
 		"noncanonical credential is rejected"
 	)
 	_check(
-		not INVITATION_URI_SCRIPT.parse(uri.replace("protocol=1.1", "protocol=1.2")).ok,
+		not INVITATION_URI_SCRIPT.parse(uri.replace("protocol=1.2", "protocol=9.0")).ok,
 		"unsupported protocol is rejected"
 	)
 	_check(

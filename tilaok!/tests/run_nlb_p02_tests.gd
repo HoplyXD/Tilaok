@@ -90,7 +90,7 @@ func _test_manifest_stability() -> void:
 
 func _test_qr_invite_code() -> void:
 	var test_invite := (
-		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.0.2.1&port=27777&protocol=1.1&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
+		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.0.2.1&port=27777&protocol=1.2&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
 		% "0".repeat(64)
 	)
 	var qr = QR_CODE_SCRIPT.new()
@@ -108,7 +108,7 @@ func _test_qr_invite_code() -> void:
 
 func _test_invitation_uri_parser() -> void:
 	var valid := (
-		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.1&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
+		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.2&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
 		% "a".repeat(64)
 	)
 	var parsed: Dictionary = INVITATION_URI_SCRIPT.parse(valid)
@@ -127,7 +127,7 @@ func _test_invitation_uri_parser() -> void:
 		"duplicate invitation field rejected"
 	)
 	_check(
-		not INVITATION_URI_SCRIPT.parse(valid.replace("protocol=1.1", "protocol=9.0")).ok,
+		not INVITATION_URI_SCRIPT.parse(valid.replace("protocol=1.2", "protocol=9.0")).ok,
 		"unsupported invitation protocol rejected"
 	)
 	_check(

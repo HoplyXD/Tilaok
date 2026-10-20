@@ -1104,6 +1104,7 @@ func network_replication_snapshot(match_id: int, snapshot_id: int, tick: int) ->
 		"remaining_ms": roundi(maxf(0.0, phase_controller.remaining_seconds) * 1000.0),
 		"map_id": network_map_id,
 		"camera_position": camera_rig.global_position if camera_rig != null else Vector2.ZERO,
+		"camera_zoom": camera_rig.zoom.x if camera_rig != null else 1.0,
 		"event_main": int(event_main) & 0xff,
 		"event_twist": int(current_entry().get("twist", EventSchedule.Challenge.NONE)) & 0xff,
 		"barya_state": int(barya_objective.state),

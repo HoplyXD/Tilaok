@@ -889,7 +889,7 @@ func _client_status_text() -> String:
 		return ""
 	if manager.client_mode and manager.client_assigned_seat >= 0:
 		return (
-			"Connected as Player %d · %s. Network gameplay is not available yet."
+			"Connected as Player %d · %s. Network match starts when all players are ready."
 			% [manager.client_assigned_seat + 1, "Ready" if manager.client_ready else "Not ready"]
 		)
 	if manager.client_mode:
