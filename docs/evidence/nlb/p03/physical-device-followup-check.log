@@ -2,4 +2,3 @@ Revision: c4640a457e7124072d092b2434afe1e73e52c560
 Command: adb devices -l
 
 List of devices attached
-
