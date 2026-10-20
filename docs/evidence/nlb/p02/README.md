@@ -5,7 +5,7 @@ This is local engineering evidence for the opt-in PC lobby. It does not establis
 | Check | Result | Evidence / limit |
 |---|---|---|
 | Godot import and script parse | PASSED | [`import-parse-final.log`](test-logs/import-parse-final.log); existing invalid resource UID warnings remain from the preserved P01 UID deletion. |
-| Raw ENet and discovery/admission | PASSED — 52 checks | [`p02-focused-tests-final.log`](test-logs/p02-focused-tests-final.log): Lobby ID lookup, compatibility, invalid proof, expired invitation, approval/rejection, assignment acknowledgment, readiness, capacity, closure and cleanup. |
+| Raw ENet and discovery/admission | PASSED — 72 focused checks on Godot 4.6.3 | [`invite-lifetime-followup-godot-4.6.3.log`](test-logs/invite-lifetime-followup-godot-4.6.3.log): Lobby ID lookup, compatibility, invalid proof, repeat use of the room invitation, approval/rejection, assignment acknowledgment, readiness, capacity, closure and cleanup. Earlier baseline checks on Godot 4.7.2 remain recorded in [`p02-focused-tests-final.log`](test-logs/p02-focused-tests-final.log). |
 | Separate process host/client lifecycle | PASSED — 10 cycles | [`p02-multi-process-final.log`](test-logs/p02-multi-process-final.log): each cycle starts host/client processes, joins, readies, leaves, stops and rebinds; final seats, peers and cache are zero. |
 | QR utility | PASSED | Synthetic invalid test URI independently decoded with ZXing C++ 3.1.1. No live credential was placed in the QR capture or logs. |
 | Static formatting/lint | PASSED | [`gdlint-final.log`](test-logs/gdlint-final.log), [`gdformat-final.log`](test-logs/gdformat-final.log), and `git diff --check`. |
@@ -18,7 +18,7 @@ This is local engineering evidence for the opt-in PC lobby. It does not establis
 
 The PC host may spectate without occupying a seat. Only the host's approval followed by client assignment acknowledgment creates a remote lobby seat. The existing `PlayerSeatRegistry` remains the single four-seat authority. Readiness is attributed to the assigned peer. P02 does not bind remote gameplay input or enable gameplay message families. The UI reports that network gameplay is unavailable until a later phase, and the normal offline route remains available after teardown.
 
-The implementation uses raw `ENetConnection`/`ENetPacketPeer`, reliable channel 0 control packets, bounded IPv4 UDP discovery, a 128-bit one-use invitation credential expiring after 300 seconds, HMAC-SHA-256 proof, a canonical SHA-256 compatibility manifest, host approval, and idempotent stop/rehost cleanup. Trusted-LAN packets are not encrypted.
+The implementation uses raw `ENetConnection`/`ENetPacketPeer`, reliable channel 0 control packets, bounded IPv4 UDP discovery, a 128-bit room-lifetime invitation credential that remains valid across joins, HMAC-SHA-256 proof, a canonical SHA-256 compatibility manifest, host approval, and idempotent stop/rehost cleanup. The same access code and QR stay available until the host stops the room. Trusted-LAN packets are not encrypted.
 
 ## Evidence files
 

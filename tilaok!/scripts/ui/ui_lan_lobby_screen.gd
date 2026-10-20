@@ -24,7 +24,6 @@ var _seats: VBoxContainer
 var _discovered: VBoxContainer
 var _invite_label: Label
 var _invite_actions: HBoxContainer
-var _refresh_code_button: Button
 var _copy_code_button: Button
 var _copy_lobby_id_button: Button
 var _scan_button: Button
@@ -193,9 +192,6 @@ func _build_ui() -> void:
 	_root.add_child(_qr)
 	_host_only_controls.append(_qr)
 	_invite_actions = HBoxContainer.new()
-	_refresh_code_button = _button("Create / refresh access code")
-	_refresh_code_button.pressed.connect(func() -> void: manager.refresh_invitation())
-	_invite_actions.add_child(_refresh_code_button)
 	_copy_lobby_id_button = _button("Copy Lobby ID")
 	_copy_lobby_id_button.pressed.connect(
 		func() -> void:
@@ -615,18 +611,17 @@ func _refresh() -> void:
 			_mobile_status.text += "\n" + _client_notice
 	var has_invitation := not manager.invitation_code.is_empty()
 	if has_invitation:
-		var seconds_left := maxi(
-			0, int((manager.invitation_expires_at - Time.get_ticks_msec()) / 1000)
-		)
 		_invite_label.text = (
-			"Access code: %s · expires in %d seconds" % [manager.invitation_code, seconds_left]
+			"Room access code: %s · stays active until you stop the room" % manager.invitation_code
 		)
 	elif manager.state == NetworkSessionManager.SessionState.OFFLINE:
 		_invite_label.text = "Start a room to create an access code."
 	elif manager.state == NetworkSessionManager.SessionState.STARTING:
 		_invite_label.text = "Creating access code…"
 	else:
-		_invite_label.text = "Access code expired. Refresh it to let someone join."
+		_invite_label.text = (
+			"Room is open, but its access code is unavailable. " + "Stop and restart the room."
+		)
 	_invite_actions.visible = (
 		host_view and manager.state != NetworkSessionManager.SessionState.OFFLINE
 	)

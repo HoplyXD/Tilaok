@@ -322,16 +322,9 @@ func _test_raw_enet_admission() -> void:
 	_check(host.router.registry.joined_seats().is_empty(), "rejected candidate receives no seat")
 	await _clean_client(rejected_client, rejected_router)
 	auto_approve[0] = true
-	_check(
-		host.refresh_invitation().length() == 26,
-		"host refreshes the one-use credential after rejection"
-	)
-	host.invitation_expires_at = Time.get_ticks_msec() - 1
-	host._expire_invitation()
-	_check(host.invitation_code.is_empty(), "expired invitation is revoked")
-	var refreshed_code := host.refresh_invitation()
-	_check(refreshed_code.length() == 26, "host refresh produces a new invitation")
-	var connected := client.connect_client(host_address, port, host.invitation_code)
+	var room_code := host.invitation_code
+	_check(room_code.length() == 26, "room invitation remains available after a rejected request")
+	var connected := client.connect_client(host_address, port, room_code)
 	_check(connected, "production raw ENet client connects")
 	if not connected:
 		client.stop_session()
@@ -361,6 +354,9 @@ func _test_raw_enet_admission() -> void:
 		host.router.registry.joined_seats().size() == 1, "host registry assigns exactly one seat"
 	)
 	_check(bool(host.router.registry.get_seat(0).ready), "ready updates assigned host seat")
+	_check(
+		host.invitation_code == room_code, "successful join keeps the same room access code active"
+	)
 	client.stop_session()
 	var cleanup_deadline := Time.get_ticks_msec() + 2000
 	while (
@@ -369,6 +365,24 @@ func _test_raw_enet_admission() -> void:
 	):
 		await process_frame
 	_check(host.router.registry.joined_seats().is_empty(), "disconnect releases remote seat")
+	var repeat_client := NetworkSessionManager.new()
+	var repeat_router := LocalInputRouter.new()
+	root.add_child(repeat_router)
+	repeat_client.configure(repeat_router)
+	root.add_child(repeat_client)
+	var repeat_assigned := [false]
+	repeat_client.client_assigned.connect(func(_seat: int) -> void: repeat_assigned[0] = true)
+	_check(
+		repeat_client.connect_client(host_address, port, room_code),
+		"same room access code can start another join"
+	)
+	for _frame in 150:
+		if repeat_assigned[0]:
+			break
+		await process_frame
+	_check(repeat_assigned[0], "same room access code completes another approved assignment")
+	_check(host.invitation_code == room_code, "later join leaves the room code unchanged")
+	await _clean_client(repeat_client, repeat_router)
 	for layout in PlayerSeatRegistry.KEYBOARD_LAYOUTS:
 		_check(
 			host.router.registry.join_keyboard(layout) >= 0,
@@ -378,7 +392,7 @@ func _test_raw_enet_admission() -> void:
 		host.router.registry.joined_seats().size() == PlayerSeatRegistry.MAX_SEATS,
 		"local and remote seats share a four-player cap"
 	)
-	var full_code := host.refresh_invitation()
+	var full_code := host.invitation_code
 	var full_client := NetworkSessionManager.new()
 	var full_router := LocalInputRouter.new()
 	root.add_child(full_router)
@@ -416,6 +430,7 @@ func _test_raw_enet_admission() -> void:
 		),
 		"idempotent session teardown closes transport"
 	)
+	_check(host.invitation_code.is_empty(), "stopping the room revokes its invitation")
 	host.stop_session()
 	_check(
 		host.state == NetworkSessionManager.SessionState.OFFLINE, "repeated stop remains harmless"

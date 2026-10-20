@@ -792,7 +792,7 @@ This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no
 
 | Check | Expected | Actual | Result |
 |---|---|---|---|
-| Raw ENet admission and lobby ID discovery | Compatible client proves one-use invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | 52 focused checks passed; tests include invalid/expired proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
+| Raw ENet admission and lobby ID discovery | Compatible client proves the reusable room invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | Focused checks cover repeat invitation use, invalid proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
 | Host/client repeated lifecycle | Ten separate-process join/ready/leave/stop/rehost cycles; no stale seats, peers or candidate cache after shutdown | Ten cycles passed; final seats=0, peers=0, cache=0 | PASSED — local processes |
 | Rendered lobby and QR | Host and client screens show invitation/admission states; test QR decodes independently | Redacted host screens and safe client awaiting-approval screen saved; synthetic QR decoded with ZXing C++ 3.1.1 | PASSED — desktop engineering capture |
 | Import, lint and formatting | Godot project parses; P02 source checks clean | Import/parse exit 0, gdlint clean, gdformat 13 files unchanged | PASSED |

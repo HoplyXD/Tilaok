@@ -2,6 +2,8 @@
 
 **Contract version:** wire major 1, minor 1. **Date:** 2026-10-19. **Status:** scoped P02 clarification, implemented with NLB-P02. This record supplements [the reviewed v1 contract](protocol-measurement-contract-v1.md); the original P00 evidence remains preserved.
 
+**Invitation lifecycle amendment (2026-10-20):** the room invitation is reusable for the entire active room lifetime. It is revoked at room stop/rehost only. This corrects the original P02 one-use/300-second behavior; wire framing and family IDs do not change.
+
 ## Transport and envelope
 
 P02 uses Godot 4.7.2 `ENetConnection` and `ENetPacketPeer` directly. Each application message is one raw packed-byte packet with the exact 22-byte `TILK` envelope from v1. SceneMultiplayer RPCs, object decoding, peer relay and gameplay families are disabled. P02 allocates one ENet channel and uses channel 0 with `FLAG_RELIABLE` for all control messages. Runtime tests record that packets arrive on channel 0 and complete the production handshake. Additional channels are not used or claimed verified.
@@ -33,7 +35,7 @@ P03 and later families retain their v1 reservations. No P02 family carries gamep
 
 Discovery query payload is `requested_lobby_id:uint64_le` followed by `discovery_port:uint16_le`. Lobby ID zero requests all active beacons; a nonzero ID requests only the matching active lobby. It remains a public lookup key and grants no authority. A beacon includes Lobby ID, session epoch, selected IPv4 address bytes, ENet and discovery ports, 32-byte compatibility digest, occupancy, open/closed state, beacon counter and expiry (1–3 seconds). Each source may query once per second; scheduled beacons are sent once per second, with a global beacon-send ceiling of two per second including query responses. Clients keep at most 64 entries and expire each after three seconds. Manual IPv4/IPv6 address entry remains available when UDP discovery cannot reach the host.
 
-One 128-bit invitation credential is active per host session. It is represented by 26 unambiguous uppercase Base32 characters and expires 300 seconds after issue. QR data includes a `tilaok://join` locator with Lobby ID, host address, ENet port, protocol, manifest digest and access code. A Lobby ID query and a manual address only locate the host; the client enters the access code separately. The access token is never included in the join packet or written to disk. The host revokes the active code on refresh, expiry, first successful proof, stop or rehost.
+One 128-bit invitation credential is active per host session. It is represented by 26 unambiguous uppercase Base32 characters and stays valid for the lifetime of that room, including after successful joins and content-manifest changes. QR data includes a `tilaok://join` locator with Lobby ID, host address, ENet port, protocol, manifest digest and access code. A Lobby ID query and a manual address only locate the host; the client enters the access code separately. The access token is never included in a join packet or written to disk. The host revokes the active code when the room stops or is rehosted. Every join still requires a fresh proof, compatibility validation, host approval, and an available seat.
 
 ## Admission, assignment and IPv4 interface behavior
 

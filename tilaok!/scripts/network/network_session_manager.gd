@@ -16,7 +16,6 @@ enum CandidateState {
 
 const DEFAULT_GAME_PORT := 27777
 const DEFAULT_DISCOVERY_PORT := 27778
-const INVITE_LIFETIME_SECONDS := 300
 const MAX_PENDING_APPROVALS := 4
 const MAX_FRAME_EVENTS := 32
 const CHALLENGE_TIMEOUT_SECONDS := 30
@@ -29,7 +28,6 @@ var discovery_port := DEFAULT_DISCOVERY_PORT
 var lobby_id := 0
 var session_epoch := 0
 var invitation_code := ""
-var invitation_expires_at := 0
 var host_authority := SimulationAuthority.offline()
 var local_authority := SimulationAuthority.offline()
 var router: LocalInputRouter
@@ -113,7 +111,6 @@ func _process(delta: float) -> void:
 			_manifest_poll_clock = 0.0
 			_poll_manifest_sources()
 		_expire_candidates(delta)
-		_expire_invitation()
 	elif state == SessionState.STOPPING and _pending_stop:
 		if transport.peer_count() == 0 or Time.get_ticks_msec() >= _stop_deadline:
 			_finish_stop()
@@ -165,7 +162,6 @@ func start_host(
 	_invitation_token = random
 	_invitation_code = InvitationCode.encode(random)
 	invitation_code = _invitation_code
-	invitation_expires_at = Time.get_ticks_msec() + INVITE_LIFETIME_SECONDS * 1000
 	selected_address = address
 	selected_interface_usable = true
 	_interface_poll_clock = 0.0
@@ -300,26 +296,6 @@ func _finish_stop() -> void:
 	state = SessionState.OFFLINE
 	state_changed.emit("OFFLINE")
 	lobby_changed.emit()
-
-
-func refresh_invitation() -> String:
-	if state != SessionState.LOBBY_OPEN or client_mode:
-		return ""
-	for peer_id in candidates.keys():
-		if int(candidates[peer_id].state) < CandidateState.ASSIGNED:
-			_send(
-				int(peer_id),
-				NetworkFrame.Family.ADMISSION_DECISION,
-				_u16(NetworkFrame.Reason.TOKEN_EXPIRED)
-			)
-			transport.close_peer(int(peer_id))
-			candidates.erase(peer_id)
-	_revoke_invitation()
-	_invitation_token = InvitationCode.generate()
-	_invitation_code = InvitationCode.encode(_invitation_token)
-	invitation_code = _invitation_code
-	invitation_expires_at = Time.get_ticks_msec() + INVITE_LIFETIME_SECONDS * 1000
-	return invitation_code
 
 
 func approve_peer(peer_id: int) -> bool:
@@ -580,7 +556,6 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				"protocol": "%d.%d" % [NetworkFrame.MAJOR, NetworkFrame.MINOR]
 			}
 			candidates[peer_id] = candidate
-			_revoke_invitation()
 			var decision := _u16(NetworkFrame.Reason.APPROVAL_REQUIRED)
 			decision.append(0)
 			_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, decision)
@@ -965,7 +940,6 @@ func _poll_manifest_sources() -> bool:
 	manifest_digest = current.digest
 	_cached_compatibility = current
 	_manifest_revision += 1
-	_revoke_invitation()
 	for peer_id in candidates.keys():
 		var candidate: Dictionary = candidates[peer_id]
 		_send(
@@ -985,13 +959,7 @@ func _poll_manifest_sources() -> bool:
 
 
 func _invitation_valid() -> bool:
-	return not _invitation_token.is_empty() and Time.get_ticks_msec() < invitation_expires_at
-
-
-func _expire_invitation() -> void:
-	if not _invitation_token.is_empty() and Time.get_ticks_msec() >= invitation_expires_at:
-		_revoke_invitation()
-		lobby_changed.emit()
+	return not _invitation_token.is_empty()
 
 
 func _revoke_invitation() -> void:
@@ -999,7 +967,6 @@ func _revoke_invitation() -> void:
 	_invitation_token.clear()
 	_invitation_code = ""
 	invitation_code = ""
-	invitation_expires_at = 0
 
 
 func _rollback_start(message: String) -> bool:
