@@ -532,11 +532,15 @@ func _query_lobby() -> void:
 		return
 	_client_notice = ""
 	var target_text := _lobby_id.text.strip_edges().to_upper()
-	if target_text.length() != 13 or _decode_lobby_id(target_text) <= 0:
+	if target_text.length() != 13:
 		_client_notice = (
 			"Lobby IDs have 13 characters. You entered %d; copy all 13 from the host."
 			% target_text.length()
 		)
+		_refresh()
+		return
+	if _decode_lobby_id(target_text) <= 0:
+		_client_notice = "That Lobby ID is invalid. Copy its letters and numbers exactly from the host."
 		_refresh()
 		return
 	if _code.text.strip_edges().is_empty():
@@ -850,11 +854,15 @@ func _encode_lobby_id(value: int) -> String:
 
 
 func _decode_lobby_id(value: String) -> int:
-	if value.length() != 13 or value[0] > "B":
+	if value.length() != 13:
 		return 0
 	const ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+	var normalized := value.to_upper()
+	var first_digit := ALPHABET.find(normalized[0])
+	if first_digit < 0 or first_digit > 7:
+		return 0
 	var result := 0
-	for character in value.to_upper():
+	for character in normalized:
 		var digit := ALPHABET.find(character)
 		if digit < 0:
 			return 0

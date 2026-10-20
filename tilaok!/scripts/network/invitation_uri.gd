@@ -31,10 +31,10 @@ static func parse(uri: String) -> Dictionary:
 			"ok": false,
 			"error": "Scanned Lobby ID '%s' is invalid; expected 13 Base32 characters." % lobby,
 		}
-	if lobby[0] > "B":
+	if LOBBY_ALPHABET.find(lobby[0]) > 7:
 		return {
 			"ok": false,
-			"error": "Scanned Lobby ID '%s' is outside the supported range." % lobby,
+			"error": "Scanned Lobby ID '%s' is outside the supported range (A–H)." % lobby,
 		}
 	var host := str(fields.host)
 	if not _valid_ipv4(host):

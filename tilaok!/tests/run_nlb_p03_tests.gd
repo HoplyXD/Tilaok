@@ -34,6 +34,43 @@ func _test_invitation_parser() -> void:
 	)
 	var invite: Dictionary = INVITATION_URI_SCRIPT.parse(uri)
 	_check(bool(invite.ok), "approved URI schema parses")
+	var shown_host_id := "EWWOOJYIFD46L"
+	_check(
+		bool(
+			(
+				INVITATION_URI_SCRIPT
+				. parse(uri.replace("lobby=AAAAAAAAAAAAA", "lobby=" + shown_host_id))
+				. ok
+			)
+		),
+		"13-character Lobby IDs beginning E are valid 63-bit values"
+	)
+	_check(
+		bool(
+			(
+				INVITATION_URI_SCRIPT
+				. parse(uri.replace("lobby=AAAAAAAAAAAAA", "lobby=H777777777777"))
+				. ok
+			)
+		),
+		"maximum positive 63-bit Lobby ID beginning H is accepted"
+	)
+	_check(
+		not (
+			INVITATION_URI_SCRIPT
+			. parse(uri.replace("lobby=AAAAAAAAAAAAA", "lobby=I000000000000"))
+			. ok
+		),
+		"Lobby ID beyond the 63-bit range is rejected"
+	)
+	_check(
+		not (
+			INVITATION_URI_SCRIPT
+			. parse(uri.replace("lobby=AAAAAAAAAAAAA", "lobby=7000000000000"))
+			. ok
+		),
+		"out-of-range Base32 digit prefix is rejected"
+	)
 	_check(invite.get("address", "") == "192.168.1.22", "parsed host address is retained")
 	_check(
 		invite.get("port", 0) == 27777 and invite.get("epoch", 0) == 7,
@@ -218,6 +255,19 @@ func _test_phone_client_ui_and_authority() -> void:
 			and screen._client_notice.contains("copy all 13")
 		),
 		"manual Lobby ID error explains the required full 13 characters"
+	)
+	screen._lobby_id.text = "EWWOOJYIFD46L"
+	screen._query_lobby()
+	_check(
+		(
+			screen._client_notice.contains("access code")
+			and screen._decode_lobby_id("EWWOOJYIFD46L") > 0
+		),
+		"manual lookup accepts the host's shown E-prefixed Lobby ID"
+	)
+	_check(
+		screen._decode_lobby_id("7000000000000") == 0,
+		"manual lookup rejects out-of-range Base32 digit prefix"
 	)
 	manager.state = NetworkSessionManager.SessionState.STARTING
 	var duplicate_join_started := manager.connect_client(

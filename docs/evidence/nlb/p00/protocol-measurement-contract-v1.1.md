@@ -8,6 +8,8 @@
 
 The local `tilaok://join` URI has a required canonical decimal `expires` Unix-seconds query field, validated with the existing 512-byte and duplicate-field limits. `expires=0` denotes the room-lifetime invitation; nonzero canonical values remain parseable for compatibility but the current room-lifetime host does not consume or expire the code by timestamp. The field is a local locator/schema detail, not a wire framing change. Lobby ID/manual IP entry still requires the active room code separately. Invitation credentials remain memory-only and are revoked on room stop/rehost.
 
+A 63-bit Lobby ID is encoded as 13 Base32 characters; its first character may be any of `A` through `H` (the first digit carries the remaining three high bits). Values beginning `I` or later are outside the supported positive 63-bit range. Both invitation parsing and manual discovery must apply the same bound.
+
 ## Transport and envelope
 
 P02 uses Godot 4.7.2 `ENetConnection` and `ENetPacketPeer` directly. Each application message is one raw packed-byte packet with the exact 22-byte `TILK` envelope from v1. SceneMultiplayer RPCs, object decoding, peer relay and gameplay families are disabled. P02 allocates one ENet channel and uses channel 0 with `FLAG_RELIABLE` for all control messages. Runtime tests record that packets arrive on channel 0 and complete the production handshake. Additional channels are not used or claimed verified.
