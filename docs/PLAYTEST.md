@@ -1,6 +1,6 @@
 # Tilaok! Verification and Playtest Plan
 
-**Networked verification status (2026-10-19):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. The approved PC-host/Android track has no gameplay, network, export or physical-device verification from this documentation task. Future required cases are tracked in [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), with proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
+**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 transport/input/replica source and a focused test runner are authored, but no P04 runtime, channel, loss/recovery, multi-process, rendered, export or physical-device verification has run. Testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
 
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 

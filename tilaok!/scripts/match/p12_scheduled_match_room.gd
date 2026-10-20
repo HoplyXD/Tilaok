@@ -24,6 +24,10 @@ var kangaroo_round: KangarooMainRound
 ## Lagsanay as a Twist on a Karera Main (P12-T05).
 var bomb_taya := BombTayaTwist.new()
 var barya_objective := BaryaRoundObjective.new()
+var network_map_id := MapCatalog.DEFAULT_ID
+var _network_entity_ids: Dictionary = {}
+var _network_entity_serial := 1
+var _network_event_revision := 0
 var barya_offer_egg_id := ""
 var barya_feedback := ""
 ## The Main Challenge of the round in Play (NONE outside Play and during sudden death).
@@ -1077,6 +1081,142 @@ func reset_room() -> void:
 	if kangaroo_round != null:
 		kangaroo_round.reset()
 	super.reset_room()
+	_network_entity_ids.clear()
+	_network_entity_serial = 1
+	_network_event_revision = 0
+
+
+## Detached values for the raw-ENet replica. Only stable seat identities and catalog variant keys
+## cross the wire; no Node, Resource, scene path, or authoritative collection is exposed.
+func network_replication_snapshot(match_id: int, snapshot_id: int, tick: int) -> Dictionary:
+	var network_round_id := network_current_round_id()
+	var metadata := {
+		"match_id": match_id,
+		"round_id": network_round_id,
+		"attempt_id": int(match_run_id) & 0xffff,
+		"tick": tick & 0xffffffff,
+		"stage_version": items.stage_version if items != null else 0,
+		"snapshot_id": snapshot_id,
+		"event_revision": _network_event_revision,
+		"host_time_ms": Time.get_ticks_msec() & 0xffffffff,
+		"phase": int(phase_controller.phase),
+		"paused": get_tree().paused if get_tree() != null else false,
+		"remaining_ms": roundi(maxf(0.0, phase_controller.remaining_seconds) * 1000.0),
+		"map_id": network_map_id,
+		"camera_position": camera_rig.global_position if camera_rig != null else Vector2.ZERO,
+		"event_main": int(event_main) & 0xff,
+		"event_twist": int(current_entry().get("twist", EventSchedule.Challenge.NONE)) & 0xff,
+		"barya_state": int(barya_objective.state),
+		"carrier_seat": barya_objective.carrier_seat,
+		"receipt_seat": barya_objective.receipt_seat,
+		"rng_decision_id": ((int(match_run_id) << 16) | (network_round_id & 0xffff)) & 0xffffffff,
+	}
+	var records: Array[PackedByteArray] = []
+	for seat_data in input_router.registry.joined_seats():
+		var seat_index := int(seat_data.seat)
+		var actor := actors.get(seat_index) as ChickenController
+		var position := actor.global_position if actor != null and is_instance_valid(actor) else Vector2.ZERO
+		var velocity := actor.velocity if actor != null and is_instance_valid(actor) else Vector2.ZERO
+		var flags := 0
+		if actor != null and is_instance_valid(actor):
+			flags |= 1 if actor.sneaking else 0
+			flags |= 2 if actor.gliding else 0
+			flags |= 4 if actor.is_on_floor() else 0
+		var seat_record := NetworkMatchCodec.encode_seat_record(
+			{
+				"seat": seat_index,
+				"identity": int(seat_data.identity),
+				"shape_id": seat_index,
+				"status": int(actor.lifecycle.status) if actor != null else 0,
+				"flags": flags,
+				"position": position,
+				"velocity": velocity,
+			},
+			int(cumulative_score_units.get(seat_index, 0))
+		)
+		if not seat_record.is_empty():
+			records.append(seat_record)
+	if items != null:
+		for instance_id in items.pieces.keys():
+			var piece := items.pieces[instance_id] as PlacedItem
+			if piece == null or piece.node == null or not is_instance_valid(piece.node):
+				continue
+			var node := piece.node as Node2D
+			var velocity := Vector2.ZERO
+			var state_flags := 0
+			var timer_ms := 0
+			if piece.node is StageBlock:
+				var replicated_block := (piece.node as StageBlock).network_replication_state()
+				velocity = replicated_block.velocity
+				state_flags = (1 if replicated_block.active else 0) | ((int(replicated_block.collapse_state) & 3) << 1) | (8 if replicated_block.grounded else 0)
+				timer_ms = mini(int(replicated_block.collapse_remaining_ms), 65535)
+			var stage_record := NetworkMatchCodec.encode_stage_record(
+				{
+					"entity_id": _network_id_for(str(instance_id)),
+					"variant_key": piece.variant_key,
+					"position": node.global_position,
+					"velocity": velocity,
+					"rotation": piece.quarter_turns,
+					"lifecycle": 0,
+					"state_flags": state_flags,
+					"timer_ms": timer_ms,
+					"revision": items.stage_version,
+				}
+			)
+			if not stage_record.is_empty():
+				records.append(stage_record)
+	var coin_position := Vector2.ZERO
+	if barya_objective.coin != null and is_instance_valid(barya_objective.coin):
+		coin_position = barya_objective.coin.global_position
+	records.append(
+		NetworkMatchCodec.encode_objective_record(
+			{
+				"kind": 1,
+				"state": int(barya_objective.state),
+				"carrier_seat": barya_objective.carrier_seat,
+				"receipt_seat": barya_objective.receipt_seat,
+				"position": coin_position,
+				"round_id": network_round_id,
+				"attempt_id": int(match_run_id) & 0xffff,
+			}
+		)
+	)
+	var upcoming := schedule.entry_for((items.round_number + 1) if items != null else 1)
+	var markers: Dictionary = kangaroo_round.controller.marker_counts if kangaroo_round != null else {}
+	var taya := -1
+	if event_main == EventSchedule.Challenge.LAGSANAY and lagsanay_controller.active:
+		taya = lagsanay_controller.taya_seat
+	elif bomb_taya.active:
+		taya = bomb_taya.taya_seat
+	records.append(
+		NetworkMatchCodec.encode_event_context_record(
+			{
+				"event_main": int(event_main) & 0xff,
+				"event_twist": int(current_entry().get("twist", EventSchedule.Challenge.NONE)) & 0xff,
+				"next_main": int(upcoming.get("main", 255)) & 0xff,
+				"next_twist": int(upcoming.get("twist", 255)) & 0xff,
+				"taya_seat": taya,
+				"event_clock_ms": roundi(maxf(0.0, play_clock_seconds()) * 1000.0),
+				"event_revision": _network_event_revision,
+				"rng_decision_id": int(metadata.rng_decision_id),
+				"markers": markers,
+			}
+		)
+	)
+	return {"metadata": metadata, "records": records}
+
+
+func network_current_round_id() -> int:
+	if items == null:
+		return 1
+	return items.round_number if phase_controller.phase == MatchPhaseController.Phase.RESULTS else items.round_number + 1
+
+
+func _network_id_for(instance_id: String) -> int:
+	if not _network_entity_ids.has(instance_id):
+		_network_entity_ids[instance_id] = _network_entity_serial
+		_network_entity_serial += 1
+	return int(_network_entity_ids[instance_id])
 
 
 # --- Presentation hooks -----------------------------------------------------------------------

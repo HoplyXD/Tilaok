@@ -107,6 +107,17 @@ func is_pushable() -> bool:
 	return data != null and data.anchor == BlockData.Anchor.LIGHT
 
 
+## Typed detached fields for a presentation replica; collision shapes and object references stay local.
+func network_replication_state() -> Dictionary:
+	return {
+		"active": active,
+		"collapse_state": int(collapse_state),
+		"collapse_remaining_ms": roundi(maxf(0.0, _collapse_timer) * 1000.0),
+		"grounded": is_on_floor(),
+		"velocity": velocity,
+	}
+
+
 func collapses() -> bool:
 	return data != null and data.special == BlockData.Special.COLLAPSE
 

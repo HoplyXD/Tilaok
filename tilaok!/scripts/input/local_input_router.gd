@@ -74,6 +74,7 @@ var _aim_y: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
 var _remote_axis: Dictionary = {}
+var _remote_build_mode: Dictionary = {}
 var _system_paused := false
 
 
@@ -206,6 +207,59 @@ func apply_remote_axis(source_id: String, value: float) -> bool:
 	return true
 
 
+## Applies one complete, validated logical sample at the host simulation boundary. The seat is
+## resolved from the host's source binding; callers cannot select or mutate another seat.
+func apply_remote_sample(
+	source_id: String, axes: Array, aim: Array, held_mask: int, build_mode: bool
+) -> bool:
+	if (
+		axes.size() != 2
+		or aim.size() != 2
+		or held_mask < 0
+		or (held_mask & ~0x3f) != 0
+	):
+		return false
+	var seat_index := registry.seat_for_remote_source(source_id)
+	if seat_index < 0:
+		return false
+	for value in axes + aim:
+		if int(value) < -1000 or int(value) > 1000:
+			return false
+	if not apply_remote_axis(source_id, float(axes[0]) / 1000.0):
+		return false
+	if phase in [Phase.MENU, Phase.PUGAD, Phase.PLACE, Phase.PAUSE, Phase.RESULTS]:
+		var directions := {
+			"left": int(axes[0]) <= -500,
+			"right": int(axes[0]) >= 500,
+			"up": int(axes[1]) <= -500,
+			"down": int(axes[1]) >= 500,
+		}
+		for direction in directions:
+			if not apply_remote_action(source_id, str(direction), bool(directions[direction])):
+				return false
+	_aim_x[seat_index] = float(aim[0]) / 1000.0
+	_aim_y[seat_index] = float(aim[1]) / 1000.0
+	_remote_build_mode[seat_index] = build_mode
+	var held_actions := {
+		NetworkMatchCodec.HELD_LEFT: "left",
+		NetworkMatchCodec.HELD_RIGHT: "right",
+		NetworkMatchCodec.HELD_UP: "up",
+		NetworkMatchCodec.HELD_DOWN: "down",
+		NetworkMatchCodec.HELD_JUMP: "jump",
+		NetworkMatchCodec.HELD_SNEAK: "down",
+	}
+	for bit in held_actions:
+		if bit == NetworkMatchCodec.HELD_SNEAK and (held_mask & NetworkMatchCodec.HELD_DOWN) != 0:
+			continue
+		if not apply_remote_action(source_id, str(held_actions[bit]), (held_mask & int(bit)) != 0):
+			return false
+	return true
+
+
+func remote_build_mode(seat_index: int) -> bool:
+	return bool(_remote_build_mode.get(seat_index, false))
+
+
 func clear_remote_source(source_id: String) -> void:
 	var seat_index := registry.seat_for_remote_source(source_id)
 	if seat_index < 0:
@@ -221,6 +275,9 @@ func clear_remote_source(source_id: String) -> void:
 			seat_index, "run_axis", "remote:%s" % source_id, false, Time.get_ticks_usec()
 		)
 	_remote_axis.erase(seat_index)
+	_remote_build_mode.erase(seat_index)
+	_aim_x.erase(seat_index)
+	_aim_y.erase(seat_index)
 
 
 func _input(event: InputEvent) -> void:

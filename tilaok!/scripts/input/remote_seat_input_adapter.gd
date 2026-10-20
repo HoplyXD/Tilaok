@@ -63,6 +63,14 @@ func submit_movement_axis(source_id: String, value: float) -> bool:
 	return router.apply_remote_axis(source_id, value)
 
 
+func submit_sample(
+	source_id: String, axes: Array, aim: Array, held_mask: int, build_mode: bool
+) -> bool:
+	if not _valid_submission(source_id):
+		return false
+	return router.apply_remote_sample(source_id, axes, aim, held_mask, build_mode)
+
+
 func _can_assign() -> bool:
 	return (
 		router != null

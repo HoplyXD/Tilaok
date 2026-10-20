@@ -62,6 +62,7 @@ var tutorial_session := TutorialSession.new()
 var tutorial_script: TutorialScript
 var tutorial: TutorialCoordinator
 var network_session: NetworkSessionManager
+var network_presentation: NetworkMatchPresentation
 ## The map for the next match (MapCatalog id; "default" is the built-in stage). Session only.
 var selected_map_id := MapCatalog.DEFAULT_ID
 
@@ -109,6 +110,8 @@ func _ready() -> void:
 	network_session.name = "NetworkSession"
 	add_child(network_session)
 	network_session.configure(router)
+	network_session.network_match_start_requested.connect(_enter_network_match)
+	network_session.network_match_start_received.connect(_enter_client_network_match)
 	bridge = UiInputBridge.new()
 	bridge.name = "FlowBridge"
 	add_child(bridge)
@@ -222,13 +225,26 @@ func _enter_match() -> void:
 		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
 	):
 		network_session.stop_session()
+	_create_authoritative_match(false)
+
+
+func _enter_network_match() -> void:
+	if OS.has_feature("android") or not simulation_authority.can_commit() or network_session.client_mode:
+		return
+	_create_authoritative_match(true)
+
+
+func _create_authoritative_match(network_match: bool) -> void:
 	_free_room()
 	_free_screen()
+	_free_network_presentation()
 	state = State.IN_MATCH
 	bridge.screen = null
-	for seat in router.registry.joined_seats():
-		router.registry.set_ready(int(seat.seat), false)
-	room = match_scene.instantiate() as P05MatchRoom
+	if not network_match:
+		for seat in router.registry.joined_seats():
+			router.registry.set_ready(int(seat.seat), false)
+	var selected_scene := LIFECYCLE_SCENE if network_match else match_scene
+	room = selected_scene.instantiate() as P05MatchRoom
 	var requested_seed := seed_from_args(OS.get_cmdline_user_args())
 	if requested_seed >= 0:
 		room.set_match_seed(requested_seed)
@@ -247,12 +263,38 @@ func _enter_match() -> void:
 	elif selected_map_id == TUTORIAL_MAP_ID:
 		selected_map_id = MapCatalog.DEFAULT_ID
 	room.arena_layout = MapCatalog.layout_for(selected_map_id)
+	if room is P12ScheduledMatchRoom:
+		(room as P12ScheduledMatchRoom).network_map_id = selected_map_id
 	room.map_choice_label = map_label(selected_map_id)
 	room.map_selection_enabled = MapCatalog.ids().size() > 1
 	room.flow_requested.connect(_on_flow_requested)
 	room.return_requested.connect(_on_room_return)
 	add_child(room)
 	_attach_tutorial()
+	if network_match:
+		network_session.bind_match_room(room as P12ScheduledMatchRoom)
+
+
+func _enter_client_network_match(match_id: int) -> void:
+	if not network_session.client_mode:
+		return
+	_free_room()
+	_free_screen()
+	_free_network_presentation()
+	state = State.IN_MATCH
+	bridge.screen = null
+	network_presentation = NetworkMatchPresentation.new()
+	network_presentation.name = "NetworkMatchPresentation"
+	add_child(network_presentation)
+	network_presentation.bind_session(network_session)
+	if network_session.active_match_id != match_id:
+		return
+
+
+func _free_network_presentation() -> void:
+	if network_presentation != null and is_instance_valid(network_presentation):
+		network_presentation.queue_free()
+	network_presentation = null
 
 
 ## Lobby map choice. The Tutorial map is the guided match: picking it (re)starts the tutorial for

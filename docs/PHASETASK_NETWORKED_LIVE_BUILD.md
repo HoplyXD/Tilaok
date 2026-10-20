@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status (2026-10-20):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3): local process admission, malformed-frame abuse thresholds, lifecycle checks, and the user-confirmed physical no-internet phone-hotspot join. P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Network gameplay and P04/P06–P11 remain separately gated tasks. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,7 +12,7 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 4, NOT RUN 21.** NLB-P03 and P05 are partial; P02 passes 3/3, including the user-confirmed physical no-internet hotspot join. P03 T01 export/package acceptance passed, while T02 Android runtime/compatibility and T03 retained physical-device evidence remain open. P03 entry is no longer held by P02. P05-T01 passed its own offline opt-in flow acceptance, while P05-T02/T03 evidence remains incomplete. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 5, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 18.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), and P05 is PARTIAL (1/3); P02 passes 3/3. P04's P03-T03 prerequisite and all P04 verification remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
@@ -20,7 +20,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P01 | Local action/seat abstraction and authority boundary | 3 | P00 | PASSED (3/3) |
 | NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | PASSED (3/3) |
 | NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | PARTIAL (1/3) |
-| NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | TODO |
+| NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | PARTIAL (0/3 checked; source verification open) |
 | NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | PARTIAL (1/3) |
 | NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | TODO |
 | NLB-P07 | All current content/modes/stacks compatibility | 3 | P06 | TODO |
@@ -29,7 +29,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 26 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 10. Result totals: PASSED 10 · FAILED 0 · COULD-NOT-RUN 5 · NOT RUN 21. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 26 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 5 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 18. Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -194,37 +194,37 @@ Counts are derived from the task records in this document. Current: **12 phases,
 
 ## NLB-P04 — Input transport, authoritative simulation, synchronized view
 
-**Phase goal:** drive one host simulation from local and phone actions and replicate authoritative state. **Entry:** P03 exit. **Dependencies:** P03. **Systems touched:** input packet, RPC validation, simulation tick, snapshots, camera/state rendering. **Decisions:** 30 Hz input and 20 Hz state are proposed targets; local prediction is presentation-only. **Exit:** phone sees and controls an assigned chicken without owning game state. **Evidence:** protocol logs, deterministic authority checks, rendered host/client captures, latency metrics.
+**Phase goal:** drive one host simulation from local and phone actions and replicate authoritative state. **Entry:** P03 exit. **Dependencies:** P03. **Systems touched:** raw ENet input packet validation, simulation tick, snapshots, camera/state rendering. **Decisions:** 30 Hz input and 20 Hz state are proposed targets; local prediction is presentation-only; SceneMultiplayer RPC/object decoding is excluded by P00. **Exit:** phone sees and controls an assigned chicken without owning game state. **Evidence:** protocol logs, deterministic authority checks, rendered host/client captures, latency metrics.
 
 ### [ ] NLB-P04-T01 — IMPLEMENT — Receive and validate logical input
 
 - **Owner role:** Networking / Gameplay.
 - **Requirements:** NLB-REQ-002, NLB-REQ-003, NLB-REQ-006, NLB-REQ-016.
 - **Dependencies:** NLB-P03-T03, NLB-P01-T02, NLB-P00-T02.
-- **Work:** send continuous axes/held state separately from reliable one-shot actions; derive seat from transport peer, validate sequence/phase/rates, and neutralize input after 150 ms without valid updates.
+- **Work:** source implementation is in `raw_enet_transport.gd`, `network_frame.gd`, `network_match_codec.gd`, `network_session_manager.gd`, `local_input_router.gd`, and `remote_seat_input_adapter.gd`: three raw-ENet channels; schema/feature negotiation; authenticated host peer-to-seat/generation binding; continuous samples; bounded reliable action queue/cache; host-boundary application; phase/session/match/round/attempt/generation/sequence/channel/range/rate checks; cross-channel edge watermark; and receipt-based neutral timeout with neutral-before-rearm after timeout or resync. Existing PC input still feeds the shared router.
 - **Acceptance:** stale/duplicate/out-of-range/unowned input cannot move a different seat or mutate match state; loss cannot leave movement/jump held.
 - **Evidence:** packet cases, host decisions, neutral timeout timing, input response measurements.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — source implementation is present; focused protocol/router tests are authored but deliberately unrun during the shared-laptop quiet period. P03-T03 remains formally open; this preparatory implementation does not clear the dependency. Raw ENet flag/order behavior, loss/reordering, rate boundaries, request reuse, measured 150 ms timeout, and physical responsiveness are unverified. See [P04 evidence](evidence/nlb/p04/README.md).
 
 ### [ ] NLB-P04-T02 — IMPLEMENT — Replicate and render authoritative match state
 
 - **Owner role:** Gameplay / Networking.
 - **Requirements:** NLB-REQ-003, NLB-REQ-006, NLB-REQ-016.
 - **Dependencies:** NLB-P04-T01.
-- **Work:** replicate actor transforms/lifecycle, match phase, clocks, scores, event state and relevant item/mover state; add presentation interpolation/reconciliation and host-generated initial snapshot.
+- **Work:** source implementation is in `p12_scheduled_match_room.gd`, `network_match_codec.gd`, `network_session_manager.gd`, `network_match_presentation.gd`, `game_flow.gd`, `stage_block.gd`, and `ui_lan_lobby_screen.gd`: host starts the scheduled P12 route without stopping its admitted session; typed Q8 seat/stage/Barya/event records; collapse/mover fields for stage blocks; host camera framing; complete 20 Hz entity records; checksummed bounded snapshot/chunk/ack/sync-ready path; stage commits and reliable metadata/score events; detached draw-only client canvas; and minimum landscape touch navigation, movement, jump/hold, sneak, Pugad claim, confirm and back controls. Full terminal-ledger history, all transient/projectile visuals, detailed P12 HUD parity, and rendered convergence remain unverified or incomplete.
 - **Acceptance:** client renders shared arena and follows host outcomes; local visual prediction never writes authoritative position/outcome; phase/score state converges after packet loss.
 - **Evidence:** host/client state comparison, packet-loss resync output, captures and latency breakdown.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — codec/state tests are authored but unrun. No host/client match, rendered walkthrough, snapshot acknowledgment, packet-loss recovery, score/event convergence, export, or physical-phone test was run. Snapshot boundary scheduling and typed atomic validation are source-level only until verified. See [P04 evidence](evidence/nlb/p04/README.md).
 
 ### [ ] NLB-P04-T03 — VERIFY — Authority, stale packet and resync cases
 
 - **Owner role:** QA / Networking.
 - **Requirements:** NLB-REQ-006, NLB-REQ-013, NLB-REQ-017.
 - **Dependencies:** NLB-P04-T01, NLB-P04-T02.
-- **Work:** inject loss, jitter, duplicate, stale, reordered, malformed and over-rate inputs/snapshots; request full resync after version gap.
+- **Work:** authored bounded codec/router checks cover schema/channel gates, malformed lengths, invalid axes, typed records, snapshot corruption, source ownership, neutralization, and ten local manager/router teardown cycles. Deterministic production transport fault injection, spoofed-state cases, measured rate/timeout boundaries, replica convergence at a shared tick, and ten network teardown cycles remain required.
 - **Acceptance:** all clients converge on host state; no spoofed position/score/outcome accepted; input timeout and rate limits are measured.
 - **Evidence:** fault configuration, packet traces/logs, convergence assertions and report.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — no P04 suite or runtime fault test was run. No seed, device/topology record, host/client revision comparison, sanitized logs or rendered captures exist. The required safe testing window is still pending. See [P04 evidence](evidence/nlb/p04/README.md).
 
 ## NLB-P05 — Offline live placement and revised round flow
 

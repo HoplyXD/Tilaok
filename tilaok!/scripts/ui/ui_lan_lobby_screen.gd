@@ -32,6 +32,7 @@ var _manual_join_section: VBoxContainer
 var _manual_join_expanded := false
 var _qr: TextureRect
 var _start_gate: Label
+var _start_match_button: Button
 var _refresh_time := 0.0
 var _last_qr_value := ""
 var _client_notice := ""
@@ -63,7 +64,11 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_cancel_scanner()
-	if manager != null and manager.state != NetworkSessionManager.SessionState.OFFLINE:
+	if (
+		manager != null
+		and manager.state != NetworkSessionManager.SessionState.OFFLINE
+		and not manager.match_active
+	):
 		manager.stop_session()
 
 
@@ -306,6 +311,10 @@ func _build_ui() -> void:
 	admission_row.add_child(open_admission_button)
 	_root.add_child(admission_row)
 	_host_only_controls.append(admission_row)
+	_start_match_button = _button("Start network match")
+	_start_match_button.pressed.connect(func() -> void: manager.start_network_match())
+	_root.add_child(_start_match_button)
+	_host_only_controls.append(_start_match_button)
 	_start_gate = _label("Network gameplay unavailable until a later phase.")
 	_root.add_child(_start_gate)
 	_host_only_controls.append(_start_gate)
@@ -642,9 +651,14 @@ func _refresh() -> void:
 	_qr.visible = host_view and has_invitation and not manager.selected_address.is_empty()
 	_update_qr()
 	_start_gate.text = (
-		"Network matches are not available yet."
+		"Network matches require the scheduled P12 route and compatible P04 clients."
 		if manager.state != NetworkSessionManager.SessionState.LOBBY_OPEN
-		else "Network matches are disabled. Lobby check: " + manager.start_gate_status()
+		else manager.start_gate_status()
+	)
+	_start_match_button.disabled = (
+		manager.client_mode
+		or manager.match_active
+		or manager.start_gate_status() != "Ready to start the scheduled network match."
 	)
 	_refresh_seats()
 	_refresh_pending()

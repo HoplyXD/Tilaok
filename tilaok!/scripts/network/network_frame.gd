@@ -5,12 +5,20 @@ extends RefCounted
 ## Exact TILK v1 envelope. Application payloads are raw ENet bytes; no Variant/RPC framing.
 const MAGIC := "TILK"
 const MAJOR := 1
-const MINOR := 1
+const MINOR := 2
+const SCHEMA := 2
+const FEATURE_BASE_MASK := 0x000f
+const FEATURE_LOGICAL_INPUT := 0x0010
+const FEATURE_AUTHORITATIVE_VIEW := 0x0020
+const FEATURE_SNAPSHOT_RECOVERY := 0x0040
+const FEATURE_P04_MASK := 0x007f
 const HEADER_BYTES := 22
 const MAX_FRAME_BYTES := 900
 const MAX_DISCOVERY_BYTES := 256
 const DISCOVERY_FAMILIES := [1, 2]
-const FAMILIES := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+const FAMILIES := [
+	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26
+]
 
 enum Family {
 	DISCOVERY_QUERY = 0x01,
@@ -27,7 +35,33 @@ enum Family {
 	READY_REQUEST = 0x0C,
 	READY_RESULT = 0x0D,
 	SESSION_CLOSE = 0x0E,
+	MATCH_LIFECYCLE = 0x0F,
+	CONTINUOUS_INPUT = 0x10,
+	ACTION_REQUEST = 0x11,
+	ACTION_RESULT = 0x12,
+	STATE_UPDATE = 0x13,
+	SNAPSHOT_REQUEST = 0x14,
+	SNAPSHOT_CHUNK = 0x15,
+	SNAPSHOT_END = 0x16,
+	SNAPSHOT_ACK = 0x17,
+	SYNC_READY = 0x18,
+	AUTHORITATIVE_EVENT = 0x19,
+	TERRAIN_COMMIT = 0x1A,
 }
+
+
+static func channel_for_family(family: int) -> int:
+	match family:
+		Family.CONTINUOUS_INPUT:
+			return RawEnetTransport.INPUT_CHANNEL
+		Family.STATE_UPDATE:
+			return RawEnetTransport.STATE_CHANNEL
+		_:
+			return RawEnetTransport.CONTROL_CHANNEL
+
+
+static func family_allowed_on_channel(family: int, channel: int) -> bool:
+	return family in FAMILIES and channel_for_family(family) == channel
 
 enum Reason {
 	OK = 0,
