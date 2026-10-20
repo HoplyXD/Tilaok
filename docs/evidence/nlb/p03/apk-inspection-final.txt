@@ -1,7 +1,7 @@
 Android package inspection (aapt / apksigner / apkanalyzer)
 APK: C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-debug.apk
-Bytes: 171961340
-SHA-256: 07219C71CC88F726150136F2833954543CD98BAFA619A06BB78E58E1A505A282
+Bytes: 171961440
+SHA-256: DDCEB4D39B95FEDE63491CB8FECD9D0D057A93381AD25265857E7ACC91DFC766
 
 Application: org.hoplyxd.tilaok.debug — Tilaok! LAN Client
 Version: 1 / 0.3.0-debug

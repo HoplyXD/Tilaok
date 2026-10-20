@@ -209,6 +209,7 @@ func _test_phone_client_ui_and_authority() -> void:
 
 
 func _test_android_scanner_export_contract() -> void:
+	var lobby_ui := FileAccess.get_file_as_string("res://scripts/ui/ui_lan_lobby_screen.gd")
 	var editor_plugin := FileAccess.get_file_as_string(
 		"res://addons/tilaok_qr_scanner/export_plugin.gd"
 	)
@@ -250,6 +251,14 @@ func _test_android_scanner_export_contract() -> void:
 	)
 	_check(
 		(
+			lobby_ui.contains('scanner.call("has_java_method", "startScan")')
+			and not lobby_ui.contains('scanner.has_method("startScan")')
+			and lobby_ui.contains("Opening the camera. Allow camera access when Android asks.")
+		),
+		"scanner checks the Android Java bridge and prompts for access before opening its preview"
+	)
+	_check(
+		(
 			android_plugin.contains("onMainRequestPermissionsResult")
 			and android_plugin.contains("camera_permission_permanently_denied")
 		),
@@ -271,7 +280,6 @@ func _test_android_scanner_export_contract() -> void:
 		),
 		"a visible QR produces one result and camera/listener resources are stopped"
 	)
-	var lobby_ui := FileAccess.get_file_as_string("res://scripts/ui/ui_lan_lobby_screen.gd")
 	var session_source := FileAccess.get_file_as_string(
 		"res://scripts/network/network_session_manager.gd"
 	)

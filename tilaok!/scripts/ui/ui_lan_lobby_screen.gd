@@ -421,24 +421,19 @@ func _scan_qr() -> void:
 		_refresh()
 		return
 	var scanner: Object = Engine.get_singleton("TilaokQrScanner")
-	if scanner.has_method("startScan"):
-		scanner.startScan()
-		_client_notice = "Point the camera at the host's Tilaok! QR code."
-	else:
-		_client_notice = "QR scanner could not start. Use Lobby ID or manual address."
+	_bind_scanner()
+	# Android plugin functions are exposed by JNISingleton, not Object.has_method().
+	# Query the Java bridge API before calling the exact annotated Kotlin method name.
+	if not bool(scanner.call("has_java_method", "startScan")):
+		_client_notice = (
+			"QR scanning isn't available in this Android build. "
+			+ "Use Lobby ID or manual address."
+		)
+		_refresh()
+		return
+	_client_notice = "Opening the camera. Allow camera access when Android asks."
 	_refresh()
-	if scanner.has_signal("qr_scanned") and not scanner.is_connected("qr_scanned", _on_qr_scanned):
-		scanner.connect("qr_scanned", _on_qr_scanned)
-	if (
-		scanner.has_signal("scan_cancelled")
-		and not scanner.is_connected("scan_cancelled", _on_scan_cancelled)
-	):
-		scanner.connect("scan_cancelled", _on_scan_cancelled)
-	if (
-		scanner.has_signal("scan_failed")
-		and not scanner.is_connected("scan_failed", _on_scan_failed)
-	):
-		scanner.connect("scan_failed", _on_scan_failed)
+	scanner.call("startScan")
 
 
 func _leave_lobby() -> void:

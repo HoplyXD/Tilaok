@@ -4,10 +4,10 @@
 
 ## Build and package
 
-- Revision under test: working `main` checkout, with task changes not yet committed.
+- Revision under test: Android scanner bridge fix layered on `e58f9f2`.
 - Engine: Godot 4.7.2 `4.7.2.stable.official.ed1daf0bf`.
 - Java: Temurin OpenJDK 17.0.18. Android SDK platform 36, build-tools 36.1.0, NDK 29.0.14206865. The exact NDK package was installed after explicit user approval. The initial Gradle resolution temporarily selected Build Tools 34; that package was removed and the final preset pins 36.1.0.
-- APK: `build/tilaok-android-debug.apk`, 171,961,340 bytes, SHA-256 `07219C71CC88F726150136F2833954543CD98BAFA619A06BB78E58E1A505A282`.
+- APK: `build/tilaok-android-debug.apk`, 171,961,440 bytes, SHA-256 `DDCEB4D39B95FEDE63491CB8FECD9D0D057A93381AD25265857E7ACC91DFC766`.
 - Identity: `org.hoplyxd.tilaok.debug`, `Tilaok! LAN Client`, version code 1 / `0.3.0-debug`; min API 24, target/compile API 36, landscape; `arm64-v8a` and `armeabi-v7a`.
 - Signing: Godot debug signing; no keystore or password is in source control. The APK contains the Godot asset pack and scanner plugin and does not require editor streaming. Build artifacts are ignored.
 - Reproducible build from repo root (first creates ignored scanner AARs, then exports):
@@ -24,7 +24,7 @@ The export exited successfully. `apksigner verify` reports v2 signature valid; `
 
 ## Scanner provenance and behavior
 
-The in-app scanner is a Godot Android v2 plugin at `tilaok!/addons/tilaok_qr_scanner/`. It uses CameraX 1.5.1 (camera, camera2, lifecycle, view) and ZXing core 3.5.3. ZXing decodes locally from copied Y-luma frames; no image, token or QR content is uploaded or persisted. Camera permission is requested only when scanning starts. The overlay provides cancel/back, denial/permanent-denial/unavailable errors, lifecycle cancellation, serialized analysis and one-success-per-visible-scan guarding. The plugin has no native `.so` dependency and is not ABI-specific; the packaged Godot engine supports arm64-v8a and armeabi-v7a. See [asset provenance](../../../ASSETS.md#android-scanner-provenance--nlb-p03-2026-10-20) and the [plugin source README](../../../tilaok!/addons/tilaok_qr_scanner/README.md) for sources and licenses. Google ML Kit was deliberately not selected because its terms describe service metrics; the chosen decoder is local-only.
+The in-app scanner is a Godot Android v2 plugin at `tilaok!/addons/tilaok_qr_scanner/`. It uses CameraX 1.5.1 (camera, camera2, lifecycle, view) and ZXing core 3.5.3. ZXing decodes locally from copied Y-luma frames; no image, token or QR content is uploaded or persisted. Camera permission is requested only when scanning starts. The lobby probes the bridge with Godot Android's `JNISingleton.has_java_method("startScan")` API, binds scanner signals first, then starts the permission/camera flow; generic `Object.has_method()` does not detect Java plugin methods and caused the earlier immediate “QR scanner could not start” message. The overlay provides cancel/back, denial/permanent-denial/unavailable errors, lifecycle cancellation, serialized analysis and one-success-per-visible-scan guarding. The plugin has no native `.so` dependency and is not ABI-specific; the packaged Godot engine supports arm64-v8a and armeabi-v7a. See [asset provenance](../../../ASSETS.md#android-scanner-provenance--nlb-p03-2026-10-20) and the [plugin source README](../../../tilaok!/addons/tilaok_qr_scanner/README.md) for sources and licenses. Google ML Kit was deliberately not selected because its terms describe service metrics; the chosen decoder is local-only.
 
 Godot 4.7 Android v2 plugin integration requires the Gradle export path. Runtime dependency resolution is from Maven Central and Google Maven during build; the installed APK scanner does not require network access. The plugin does not request camera permission at app launch and releases the camera analyzer on cancel, success, pause and teardown.
 
@@ -41,7 +41,7 @@ Godot 4.7 Android v2 plugin integration requires the Gradle export path. Runtime
 | Check | Result | Evidence / limit |
 |---|---|---|
 | Android Gradle plugin build and decoder unit tests | PASSED — two tests | [`scanner-unit-test-summary.txt`](scanner-unit-test-summary.txt); generated QR frame decode and invalid luma dimensions. |
-| Godot P03 focused parser/client/UI/package source checks | PASSED — 50 assertions | [P03 focused log](p03-focused-tests-final.log); these are source/desktop checks, not Android runtime proof. |
+| Godot P03 focused parser/client/UI/package source checks | PASSED — 51 assertions | [P03 focused log](p03-focused-tests-final.log); these are source/desktop checks, not Android runtime proof. |
 | P01 focused regression | PASSED | [P01 regression](p01-focused-regression-final.log). |
 | P02 focused suite | PASSED — 87 checks | [P02 suite](p02-focused-tests-final.log), including single-use/expiry/rejoin behavior; synthetic/local processes only. |
 | P02 ten-process lifecycle regression | PASSED — 10 cycles | [P02 multi-process log](p02-multi-process-regression-final.log); real Wi-Fi/no-internet acceptance remains open. |
