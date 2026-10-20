@@ -277,4 +277,10 @@ The Android preset is `Android LAN Client (Debug)` in `tilaok!/export_presets.cf
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
 ```
 
-The candidate manifest declares INTERNET and CAMERA and is landscape, but no scanner plugin/runtime camera permission integration is packaged. Do not represent the candidate as an accepted phone client or use its QR button as a working scanner. For verified preset, APK hash, environment, limitations and remaining device prerequisites, see [NLB-P03 evidence](evidence/nlb/p03/README.md). Android build and run instructions become user-facing only after the scanner plugin is integrated and the exported APK is physically verified. The Windows offline default remains unchanged.
+The candidate manifest declares INTERNET and CAMERA and is landscape, but no scanner plugin/runtime camera permission integration is packaged. Do not represent the candidate as an accepted phone client or use its QR button as a working scanner. For a manual-path smoke on an available test phone only, install without forwarding ports and keep the existing debug app data:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r 'build/tilaok-android-debug.apk'
+```
+
+Launch Tilaok! from the phone's app launcher, then use **Manual IP:port** with the Windows host's reachable Wi-Fi IPv4 address, port `27777` (or the host's configured port), and the separate access code. The host still approves the join; choose the phone's Ready control only after seat assignment. **Scan host QR is unavailable in this candidate.** Do not use this procedure as P03 physical acceptance: there is no scanner integration, and phone/lobby behavior remains unverified. For the verified preset, APK hash, environment and blockers, see [NLB-P03 evidence](evidence/nlb/p03/README.md). The Windows offline default remains unchanged.
