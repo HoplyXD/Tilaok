@@ -116,6 +116,7 @@ func _run() -> void:
 	await _test_pugad_frame()
 	await _test_tutorial_card()
 	await _test_final_result_frame()
+	await _test_title_card()
 	print("UI_THEME_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -1088,6 +1089,259 @@ func _test_final_result_frame() -> void:
 			< 1.0
 		),
 		"Last Cluck line shows under the winner without moving the plank row"
+	)
+	holder.queue_free()
+	await process_frame
+
+
+## Figma "Parchment main menu" (103:553), from its design context and the team's 2x PNG export
+## (2026-10-20) at 1 Figma px = 1 canvas px. The frame's title has two 92 px lines; "Tilaok!" is one,
+## so the card is 652 px tall (744 in the frame) and everything under the title sits 92 px higher.
+func _test_title_card() -> void:
+	var holder := Control.new()
+	holder.size = Vector2(1280, 720)
+	root.add_child(holder)
+	var title := (
+		(load("res://scenes/ui/screens/title_screen.tscn") as PackedScene).instantiate()
+		as UiTitleScreen
+	)
+	holder.add_child(title)
+	title.show_state(0, UiContext.make(2, "k1"))
+	for i in 3:
+		await process_frame
+	var card := title.get_node("Card") as Control
+	var card_rect := card.get_global_rect()
+	_check(
+		card_rect.is_equal_approx(Rect2(368, 34, 544, 652)),
+		"title card is 544 x 652, centred on the canvas (%s)" % card_rect
+	)
+	var paper := card.get_node("Paper") as Control
+	var paper_box := paper.get_theme_stylebox("panel") as StyleBoxFlat
+	_check(
+		(
+			paper.theme_type_variation == &"TitleCardPaper"
+			and paper_box != null
+			and _near(paper_box.bg_color, Color.html("#f6e7cd"))
+			and _near(paper_box.border_color, Color.html("#d6ba87"))
+			and paper_box.border_width_top == 1
+			and paper_box.border_width_left == 1
+		),
+		"paper is #f6e7cd with the frame's 1 px #d6ba87 outline"
+	)
+	var backing := card.get_node("Backing") as Control
+	var backing_box := backing.get_theme_stylebox("panel") as StyleBoxFlat
+	var backing_xf := backing.get_global_transform()
+	var backing_tl := backing_xf * Vector2.ZERO
+	var backing_br := backing_xf * backing.size
+	_check(
+		(
+			backing_box != null
+			and _near(backing_box.bg_color, Color.html("#b77748"))
+			and is_equal_approx(backing.rotation_degrees, -1.5)
+			and backing.size.is_equal_approx(Vector2(544, 636))
+		),
+		"backing page is #b77748, the card's width, 16 px shorter and turned 1.5 degrees"
+	)
+	_check(
+		(
+			backing_tl.x < card_rect.position.x - 6.0
+			and backing_tl.y > card_rect.position.y
+			and backing_br.x > card_rect.end.x + 6.0
+			and backing_br.y < card_rect.end.y
+		),
+		"backing peeks out top-left and bottom-right like the frame (%s, %s)" % [backing_tl, backing_br]
+	)
+	var backing_centre := backing_xf * (backing.size / 2.0)
+	_check(
+		backing_centre.is_equal_approx(card_rect.get_center() + Vector2(0.435, -5.245)),
+		"backing centre sits 0.435 px right of and 5.245 px above the card's (%s)" % backing_centre
+	)
+	# Drop shadows: [node, theme type, alpha, fade px, inset px, screen offset].
+	var shadow_specs := [
+		[backing.get_node("Shadow"), &"TitleCardBackingShadow", 0.19, 34, 17.0, Vector2(3, 10)],
+		[paper.get_node("Shadow"), &"TitleCardPaperShadow", 0.17, 28, 14.0, Vector2(0, 10)],
+	]
+	for spec in shadow_specs:
+		var shadow := spec[0] as Control
+		var owner_box := shadow.get_parent() as Control
+		var box := shadow.get_theme_stylebox("panel") as StyleBoxFlat
+		var xf := shadow.get_global_transform()
+		var shift: Vector2 = (
+			xf * (shadow.size / 2.0)
+			- owner_box.get_global_transform() * (owner_box.size / 2.0)
+		)
+		var inset: float = spec[4]
+		_check(
+			(
+				shadow.theme_type_variation == spec[1]
+				and shadow.show_behind_parent
+				and box != null
+				and not box.draw_center
+				and _near(Color(box.shadow_color, 1.0), Color.html("#59391f"))
+				and is_equal_approx(box.shadow_color.a, spec[2])
+				and box.shadow_size == spec[3]
+				and shadow.size.is_equal_approx(owner_box.size - Vector2(inset, inset) * 2.0)
+				and shift.distance_to(spec[5]) < 0.01
+			),
+			(
+				"%s shadow: #59391f at %.2f, %d px fade centred on the edge, shifted %s (%s)"
+				% [owner_box.name, spec[2], spec[3], spec[5], shift]
+			)
+		)
+	_check(
+		(
+			(paper.get_theme_stylebox("panel") as StyleBoxFlat).shadow_size == 0
+			and backing_box.shadow_size == 0
+		),
+		"paper and backing draw no shadow of their own (the Shadow children do)"
+	)
+	var patch := card.get_node("Grain/GrainPatch") as Control
+	_check(
+		(
+			patch.theme_type_variation == &"TitleCardGrain"
+			and patch.get_global_rect().is_equal_approx(card_rect)
+			and (card.get_node("Grain") as Control).clip_contents
+		),
+		"paper grain covers exactly the card at 1.5x density"
+	)
+	var dash_box := theme.get_stylebox("panel", "TitleCardDashH") as StyleBoxTexture
+	var dash_tex := dash_box.texture as GradientTexture2D if dash_box != null else null
+	var dash_grad := dash_tex.gradient if dash_tex != null else null
+	_check(
+		(
+			dash_grad != null
+			and dash_tex.width == 8
+			and dash_tex.height == 1
+			and dash_grad.interpolation_mode == Gradient.GRADIENT_INTERPOLATE_CONSTANT
+			and is_equal_approx(dash_grad.get_offset(1), 0.375)
+			and _near(dash_grad.get_color(0), Color.html("#d0b38d"))
+			and dash_grad.get_color(1).a == 0.0
+			and dash_box.axis_stretch_horizontal == StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+		),
+		"dashes are #d0b38d, 3 px on and 5 px off, tiled"
+	)
+	var dashes := {
+		"DashTop": Rect2(14.5, 13, 514, 1),
+		"DashBottom": Rect2(14.5, 638, 514, 1),
+		"DashLeft": Rect2(13, 14, 1, 623),
+		"DashRight": Rect2(530, 14, 1, 623),
+		"DotLeft": Rect2(24, 25, 5, 5),
+		"DotRight": Rect2(515, 25, 5, 5),
+	}
+	for node_name in dashes:
+		var rect := (card.get_node(node_name) as Control).get_rect()
+		_check(
+			rect.is_equal_approx(dashes[node_name]),
+			"%s sits 13 px inside the card edge as in the frame (%s)" % [node_name, rect]
+		)
+	var dot_box := theme.get_stylebox("panel", "TitleCardDot") as StyleBoxFlat
+	_check(
+		dot_box != null and _near(dot_box.bg_color, Color.html("#d6ba87")),
+		"corner dots are the outline colour #d6ba87"
+	)
+	var label_specs := {
+		"%TitleLabel": ["TitleCardTitle", "MountainsofChristmas", 100, "#684127", 56.0],
+		"Card/Subtitle": ["TitleCardSubtitle", "Margarine", 17, "#94734f", 188.85],
+		"%BuildLabel": ["TitleCardFooter", "Margarine", 14, "#94734f", 592.1],
+	}
+	for path in label_specs:
+		var label := title.get_node(path) as Label
+		var spec: Array = label_specs[path]
+		var font := label.get_theme_font("font")
+		_check(
+			(
+				label.theme_type_variation == StringName(spec[0])
+				and font != null
+				and font.resource_path.contains(str(spec[1]))
+				and label.get_theme_font_size("font_size") == int(spec[2])
+				and _near(label.get_theme_color("font_color"), Color.html(str(spec[3])))
+				and label.get_theme_color("font_shadow_color").a == 0.0
+				and is_equal_approx(label.get_rect().position.y, float(spec[4]))
+				and label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER
+			),
+			"%s is %s %d %s, %.1f px below the card top" % [path, spec[1], spec[2], spec[3], spec[4]]
+		)
+	_check(
+		(title.get_node("%TitleLabel") as Label).text == "Tilaok!",
+		"the card keeps the game title (the frame's 'Bramble & Post' is sample text)"
+	)
+	var build_rect := (title.get_node("%BuildLabel") as Control).get_rect()
+	_check(
+		build_rect.position.x >= 14.0 and build_rect.end.x <= 530.0,
+		"the build label stays inside the dashed frame (%s)" % build_rect
+	)
+	var menu := title.get_node("%MenuList") as Control
+	_check(
+		menu.get_global_rect().position.is_equal_approx(Vector2(446, 316)),
+		"menu starts 282 px below the card top, centred (%s)" % menu.get_global_rect()
+	)
+	# Figma vectors at the frame's boxes: the emblem's 52 x 35 box at (246, 30) draws its SVG
+	# inset to (257, 31.73) 29 x 33.27; the ornament is 332 x 27 at (106, 320), 228 here.
+	var slots := {
+		"Card/Art_Emblem": ["ui.title.emblem", Rect2(257, 31.73, 29, 33.27)],
+		"Card/Art_Ornament": ["ui.title.ornament", Rect2(106, 228, 332, 27)],
+	}
+	for path in slots:
+		var slot := title.get_node(path) as TextureRect
+		var spec: Array = slots[path]
+		var tex := slot.texture
+		var box_rect: Rect2 = spec[1]
+		_check(
+			(
+				str(slot.get_meta("asset_id", "")) == spec[0]
+				and tex != null
+				and tex.resource_path == "res://assets/ui/title/%s.svg" % spec[0]
+				and slot.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				and slot.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+				and slot.get_rect().is_equal_approx(box_rect)
+				and absf(float(tex.get_width()) / tex.get_height() - box_rect.size.aspect()) < 0.01
+			),
+			"%s shows %s.svg undistorted at the frame's box %s" % [path.get_file(), spec[0], box_rect]
+		)
+	_check(
+		card.find_child("Ornaments", false, false) == null,
+		"the three empty ornament placeholders are gone"
+	)
+	var start := title.get_node("%StartButton") as UiMenuActionButton
+	var pointer := start.get_node("Pointer") as TextureRect
+	var pointer_shadow := pointer.get_node("Shadow") as TextureRect
+	_check(
+		(
+			pointer.is_visible_in_tree()
+			and pointer_shadow.show_behind_parent
+			and pointer_shadow.texture == pointer.texture
+			and pointer_shadow.get_rect().is_equal_approx(Rect2(0, 4, 15, 22))
+			and _near(Color.html("#86502f") * pointer_shadow.self_modulate, Color.html("#754526"))
+		),
+		"the selected button's 0 4 0 #754526 shadow falls on its pointer too, as in the frame"
+	)
+	var lan := title.get_node("%LanLobbyButton") as Control
+	var lan_rect := lan.get_global_rect()
+	_check(
+		(
+			lan is UiMenuActionButton
+			and (lan as Button).text == "LAN Lobby"
+			and not lan_rect.intersects(card_rect)
+			and lan_rect.end.x <= 1216.0
+			and lan_rect.end.y <= 684.0
+		),
+		"LAN Lobby (not in the frame) stays off the card, inside the safe area (%s)" % lan_rect
+	)
+	_check(title.find_child("Tag", true, false) == null, "no PLACEHOLDER tag on the title")
+	title.show_state(1, UiContext.make(2, "k1"))
+	for i in 2:
+		await process_frame
+	var join := title.get_node("%PressToJoinPrompt") as Control
+	var join_label := join.get_node("%ActionLabel") as Label
+	_check(
+		(
+			join.visible
+			and not menu.visible
+			and join_label.theme_type_variation == &"TitleCardPromptAction"
+			and _near(join_label.get_theme_color("font_color"), Color.html("#684127"))
+			and card_rect.encloses(join.get_global_rect())
+		),
+		"nobody joined: a brown join prompt replaces the menu on the card"
 	)
 	holder.queue_free()
 	await process_frame

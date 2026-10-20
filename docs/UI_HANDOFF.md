@@ -534,3 +534,35 @@ Source: frame `103:562` "Menu actions" of the team Figma file "UI-Tilaok-", read
 - While the menu is inactive (quit dialog open) no entry is selected, so all four are cream and the column is 18 px shorter behind the scrim.
 
 **Checked (synthetic, 2026-10-18):** the frame's layout rendered at 1x beside the Figma screenshot: button rects 388 × 72 / 54 at y 0, 88, 158, 228, exactly as the frame; edge, inset, fastening and shadow rows and colours match the pixel scan; icon ink centroid within 0.03 px; text ink centroids within 0.66 px across and 0.51 px down (Godot puts text on whole pixels). 1080p renders of the Title (Play selected, Settings selected, quit dialog) and of Library selected. run_ui_theme_tests 197 checks pass (new: exact colours, shadow reach, text styles, 388 × 54 / 72 sizes, pointer, fastening and inset positions, pointer and icon only while selected, Title selection moving). run_ui_tests 501 keep only the two older `%Outcome1` / `%Final1` failures. p13_navigation 205, match_ui 196, p13_accessibility 65, fix_regression 9, match_ui_binding 177, match_ui_mode 62, p13_library 422, p13_tutorial 58 and tutorial_gate (`--fixed-fps 60 --quick`) 46 pass. gdformat / gdlint could not run (not installed on this PC). Not a human design review or physical-device test.
+
+## Title screen (main menu) from the Figma frame — 2026-10-20
+
+Source: frame `103:553` "Parchment main menu" of the team Figma file "UI-Tilaok-" (one `get_design_context` call plus the team's 2x PNG export). Like the Menu actions frame inside it, it is drawn at game scale: 1 Figma px = 1 px on the 1280 × 720 canvas. The frame's 744 px card would not fit 720 px, but its title has two 92 px lines and "Tilaok!" needs one, so the card is 652 px tall and everything below the title sits 92 px higher than in the frame.
+
+| Piece | Figma | In Godot (`scenes/ui/screens/title_screen.tscn`) |
+|---|---|---|
+| Card | 544 × 744 paper `#f6e7cd`, 1 px inside edge `#d6ba87`, radius 3 | `Card` 544 × 652, centred at (368, 34); `Paper` (`TitleCardPaper`) |
+| Backing page | `#b77748`, 544 × 728, turned −1.5°, drop shadow 3 10 22 `#59391f` 19 % | `Backing` 544 × 636, same turn and centre offset (0.435, −5.245); `Backing/Shadow` (`TitleCardBackingShadow`) |
+| Paper shadow | Not in the design context; fitted to the PNG export: about 0 10 18 `#59391f` 17 % | `Paper/Shadow` (`TitleCardPaperShadow`), drawn over the backing page as in the frame |
+| Grain | Figma noise effect | `Grain/GrainPatch` (`TitleCardGrain`, generated noise, one texel per 1080p pixel) |
+| Stitched border | 1 px dashed `#bc976a` at 65 %, 13 px in, radius 3 | `DashTop` / `DashBottom` / `DashLeft` / `DashRight` (`#d0b38d`, 3 px on, 5 px off) |
+| Paper pins | 5 px `#d6ba87` at (24, 25) and (515, 25) | `DotLeft` / `DotRight` (Theme circles) |
+| Emblem | "Postal emblem", 29 × 33.27 at (257, 31.73) | `Art_Emblem`, `ui.title.emblem.svg` |
+| Title | "Bramble & Post", Mountains of Christmas Bold 100 `#684127`, 92 px lines from y 80 | `%TitleLabel` "Tilaok!" (`TitleCardTitle`); label top 56 because Godot's line box is 140 px, which keeps Figma's baseline at 161 |
+| Subtitle | "Little letters. Grand adventures.", Margarine 17 `#94734f`, top 282 | `Subtitle` "Pugad. Place. Play." (PLACEHOLDER copy), top 188.85: 190 less the 1.15 px Godot draws this line lower |
+| Ornament | "Botanical ornament", 332 × 27 at (106, 320) | `Art_Ornament` at (106, 228), `ui.title.ornament.svg` |
+| Menu | Menu actions, 388 wide at (78, 374), 16 px gap | `%MenuList` at (78, 282); the buttons from "Menu action buttons" above |
+| Footer | "A little kindness goes a long way.", Margarine 14 `#94734f`, top 685 | `%BuildLabel` (the build text), top 592.1 (593 less 0.9 px) |
+
+**Pointer shadow (menu button component):** in the frame the pointer is part of the selected button, so the button's solid 0 4 0 `#754526` drop shadow shows under the pointer too. `menu_action_button.tscn` now has `Pointer/Shadow`: the same picture 4 px lower, tinted to `#754526`.
+
+**Shadows:** a Godot StyleBox shadow fades in a straight line from the panel edge outward, while Figma's is a blur centred on the edge. Each `Shadow` panel therefore sits inside its page by half its fade, so the fade is centred on the page edge, and the fade is 3.09 × the blur's sigma (sigma = Figma blur ÷ 2): 34 px inset 17 for the backing, 28 px inset 14 for the paper. To change a shadow, edit `sb_title_card_backing_shadow` / `sb_title_card_paper_shadow` (colour, alpha, size) and keep the panel's inset at half the size.
+
+**Not in the frame (Claude's choices, for Shanti to confirm or design):**
+- One-line title and the shorter card (above). A picture logo can go in `Art_Logo` (hide `TitleLabel` if used).
+- Subtitle copy "Pugad. Place. Play." and the build label in the footer line; the frame's lines are sample text.
+- LAN Lobby: a normal menu button outside the card, bottom-right inside the safe area (mouse only, as before).
+- Nobody joined: a brown join prompt (`TitleCardPromptAction`, Road Rage 34 `#684127`) replaces the menu on the card.
+- Background: the frame has none, so the existing dark `Backdrop` and the empty `Art_Background` slot stay.
+
+**Checked (synthetic, 2026-10-20):** 2x renders with the frame's sample text swapped in, compared with the PNG export (its second title line cut out). Ink centroids: title 0.3 / 0.2 px, emblem 0.2 / 0.5 px, subtitle 0.0 / 0.1 px, ornament 0.8 / 0.0 px (identical bounding box), footer 0.2 / 0.1 px, pointer 0.1 / 0.0 px; button edges fall on the same pixel rows; menu label glyphs within 0.4 px. Shadow darkness profiles below, left, right and above the card agree within 1–3 % (they were up to 13 % darker before). Grain: mean luminance 0.895 against 0.895, spread 0.013 against 0.015. 1080p renders of Play selected, Settings selected and nobody joined. run_ui_theme_tests 227 checks pass (new: art slots, exact positions, both shadows, pointer shadow); run_ui_tests 505 keep only the two older `%Outcome1` / `%Final1` failures; p13_navigation 205, match_ui 196, fix_regression 9 and p13_accessibility 65 pass. gdformat / gdlint could not run (not installed on this PC). Not a human design review or physical-device test.
