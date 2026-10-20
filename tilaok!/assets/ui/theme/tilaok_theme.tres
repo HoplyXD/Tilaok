@@ -309,6 +309,111 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_edge"]
+content_margin_left = 24.5
+content_margin_top = 11.5
+content_margin_right = 24.5
+content_margin_bottom = 11.5
+bg_color = Color(0.72549, 0.588235, 0.411765, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxEmpty" id="sb_empty"]
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_face"]
+bg_color = Color(0.917647, 0.835294, 0.686275, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_face_pressed"]
+bg_color = Color(0.533333, 0.352941, 0.223529, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_face_selected"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_fastening"]
+bg_color = Color(0.682353, 0.52549, 0.34902, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_fastening_selected"]
+bg_color = Color(0.52549, 0.313725, 0.184314, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_inset"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.972549, 0.913725, 0.796078, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_inset_selected"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.901961, 0.705882, 0.517647, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_edge_selected"]
+content_margin_left = 24.5
+content_margin_top = 14.5
+content_margin_right = 24.5
+content_margin_bottom = 14.5
+bg_color = Color(0.52549, 0.313725, 0.184314, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_shadow"]
+bg_color = Color(0.686275, 0.537255, 0.364706, 0.4)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="sb_menu_action_shadow_selected"]
+bg_color = Color(0.458824, 0.270588, 0.14902, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+expand_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxEmpty" id="sb_menu_action_text"]
+content_margin_top = 2.0
+
+[sub_resource type="StyleBoxEmpty" id="sb_menu_action_text_selected"]
+content_margin_top = 3.0
+
 [sub_resource type="StyleBoxFlat" id="sb_plank_disabled"]
 content_margin_left = 40.0
 content_margin_top = 4.0
@@ -324,8 +429,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxEmpty" id="sb_empty"]
 
 [sub_resource type="StyleBoxFlat" id="sb_plank_hover"]
 content_margin_left = 40.0
@@ -848,6 +951,96 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="sb_title_card_backing"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_backing_shadow"]
+draw_center = false
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.34902, 0.223529, 0.121569, 0.19)
+shadow_size = 34
+
+[sub_resource type="Gradient" id="grad_title_card_dash"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.375)
+colors = PackedColorArray(0.815686, 0.701961, 0.552941, 1, 0.815686, 0.701961, 0.552941, 0)
+
+[sub_resource type="GradientTexture2D" id="tex_title_card_dash_h"]
+gradient = SubResource("grad_title_card_dash")
+width = 8
+height = 1
+
+[sub_resource type="StyleBoxTexture" id="sb_title_card_dash_h"]
+texture = SubResource("tex_title_card_dash_h")
+axis_stretch_horizontal = 1
+
+[sub_resource type="GradientTexture2D" id="tex_title_card_dash_v"]
+gradient = SubResource("grad_title_card_dash")
+width = 1
+height = 8
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="sb_title_card_dash_v"]
+texture = SubResource("tex_title_card_dash_v")
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_dot"]
+bg_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Gradient" id="grad_title_card_grain"]
+offsets = PackedFloat32Array(0, 0.15, 0.74)
+colors = PackedColorArray(0.341176, 0.211765, 0.105882, 0.13, 0.341176, 0.211765, 0.105882, 0.045, 0.341176, 0.211765, 0.105882, 0)
+
+[sub_resource type="FastNoiseLite" id="noise_title_card_grain"]
+noise_type = 5
+seed = 7666
+frequency = 1.0
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="tex_title_card_grain"]
+width = 256
+height = 256
+noise = SubResource("noise_title_card_grain")
+color_ramp = SubResource("grad_title_card_grain")
+seamless = true
+
+[sub_resource type="StyleBoxTexture" id="sb_title_card_grain"]
+texture = SubResource("tex_title_card_grain")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_paper"]
+bg_color = Color(0.96471, 0.90588, 0.80392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_paper_shadow"]
+draw_center = false
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.34902, 0.223529, 0.121569, 0.17)
+shadow_size = 28
+
 [sub_resource type="StyleBoxFlat" id="sb_toast"]
 content_margin_left = 14.0
 content_margin_top = 6.0
@@ -882,199 +1075,6 @@ corner_radius_bottom_left = 3
 shadow_color = Color(0, 0, 0, 0.25)
 shadow_size = 4
 shadow_offset = Vector2(0, 4.5)
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_edge"]
-content_margin_left = 24.5
-content_margin_top = 11.5
-content_margin_right = 24.5
-content_margin_bottom = 11.5
-bg_color = Color(0.72549, 0.588235, 0.411765, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_edge_selected"]
-content_margin_left = 24.5
-content_margin_top = 14.5
-content_margin_right = 24.5
-content_margin_bottom = 14.5
-bg_color = Color(0.52549, 0.313725, 0.184314, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_face"]
-bg_color = Color(0.917647, 0.835294, 0.686275, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_face_selected"]
-bg_color = Color(0.717647, 0.466667, 0.282353, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_face_pressed"]
-bg_color = Color(0.533333, 0.352941, 0.223529, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_inset"]
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.972549, 0.913725, 0.796078, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_inset_selected"]
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.901961, 0.705882, 0.517647, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_fastening"]
-bg_color = Color(0.682353, 0.52549, 0.34902, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_fastening_selected"]
-bg_color = Color(0.52549, 0.313725, 0.184314, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_shadow"]
-bg_color = Color(0.686275, 0.537255, 0.364706, 0.4)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-expand_margin_bottom = 3.0
-
-[sub_resource type="StyleBoxFlat" id="sb_menu_action_shadow_selected"]
-bg_color = Color(0.458824, 0.270588, 0.14902, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-expand_margin_bottom = 4.0
-
-[sub_resource type="StyleBoxEmpty" id="sb_menu_action_text"]
-content_margin_top = 2.0
-
-[sub_resource type="StyleBoxEmpty" id="sb_menu_action_text_selected"]
-content_margin_top = 3.0
-
-[sub_resource type="StyleBoxFlat" id="sb_title_card_paper"]
-bg_color = Color(0.96471, 0.90588, 0.80392, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.83922, 0.72941, 0.52941, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="sb_title_card_backing"]
-bg_color = Color(0.717647, 0.466667, 0.282353, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="sb_title_card_backing_shadow"]
-draw_center = false
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-shadow_color = Color(0.34902, 0.223529, 0.121569, 0.19)
-shadow_size = 34
-
-[sub_resource type="StyleBoxFlat" id="sb_title_card_paper_shadow"]
-draw_center = false
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-shadow_color = Color(0.34902, 0.223529, 0.121569, 0.17)
-shadow_size = 28
-
-[sub_resource type="Gradient" id="grad_title_card_grain"]
-offsets = PackedFloat32Array(0, 0.15, 0.74)
-colors = PackedColorArray(0.341176, 0.211765, 0.105882, 0.13, 0.341176, 0.211765, 0.105882, 0.045, 0.341176, 0.211765, 0.105882, 0)
-
-[sub_resource type="FastNoiseLite" id="noise_title_card_grain"]
-noise_type = 5
-seed = 7666
-frequency = 1.0
-fractal_type = 0
-
-[sub_resource type="NoiseTexture2D" id="tex_title_card_grain"]
-width = 256
-height = 256
-noise = SubResource("noise_title_card_grain")
-color_ramp = SubResource("grad_title_card_grain")
-seamless = true
-
-[sub_resource type="StyleBoxTexture" id="sb_title_card_grain"]
-texture = SubResource("tex_title_card_grain")
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-
-[sub_resource type="Gradient" id="grad_title_card_dash"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.375)
-colors = PackedColorArray(0.815686, 0.701961, 0.552941, 1, 0.815686, 0.701961, 0.552941, 0)
-
-[sub_resource type="GradientTexture2D" id="tex_title_card_dash_h"]
-gradient = SubResource("grad_title_card_dash")
-width = 8
-height = 1
-
-[sub_resource type="GradientTexture2D" id="tex_title_card_dash_v"]
-gradient = SubResource("grad_title_card_dash")
-width = 1
-height = 8
-fill_to = Vector2(0, 1)
-
-[sub_resource type="StyleBoxTexture" id="sb_title_card_dash_h"]
-texture = SubResource("tex_title_card_dash_h")
-axis_stretch_horizontal = 1
-
-[sub_resource type="StyleBoxTexture" id="sb_title_card_dash_v"]
-texture = SubResource("tex_title_card_dash_v")
-axis_stretch_vertical = 1
-
-[sub_resource type="StyleBoxFlat" id="sb_title_card_dot"]
-bg_color = Color(0.83922, 0.72941, 0.52941, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
 
 [resource]
 default_font = ExtResource("font_handlee")
