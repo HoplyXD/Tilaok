@@ -26,8 +26,16 @@ static func parse(uri: String) -> Dictionary:
 		if not fields.has(field) or str(fields[field]).is_empty():
 			return {"ok": false, "error": "The invitation is missing required fields."}
 	var lobby := str(fields.lobby)
-	if not _valid_lobby_id(lobby) or lobby[0] > "B":
-		return {"ok": false, "error": "The Lobby ID is invalid."}
+	if not _valid_lobby_id(lobby):
+		return {
+			"ok": false,
+			"error": "Scanned Lobby ID '%s' is invalid; expected 13 Base32 characters." % lobby,
+		}
+	if lobby[0] > "B":
+		return {
+			"ok": false,
+			"error": "Scanned Lobby ID '%s' is outside the supported range." % lobby,
+		}
 	var host := str(fields.host)
 	if not _valid_ipv4(host):
 		return {"ok": false, "error": "The host address is invalid."}

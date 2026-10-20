@@ -59,6 +59,13 @@ func _test_invitation_parser() -> void:
 		),
 		"overflowing Lobby ID is rejected"
 	)
+	var bad_lobby: Dictionary = INVITATION_URI_SCRIPT.parse(
+		uri.replace("lobby=AAAAAAAAAAAAA", "lobby=ZZZZZZZZZZZZZ")
+	)
+	_check(
+		str(bad_lobby.get("error", "")).contains("ZZZZZZZZZZZZZ"),
+		"invalid scanned Lobby ID is shown for host comparison without exposing access code"
+	)
 	_check(
 		not (
 			INVITATION_URI_SCRIPT
@@ -147,6 +154,21 @@ func _test_desktop_lobby_roles() -> void:
 	_check(screen._code.is_visible_in_tree(), "join still asks for the separate access code")
 	_check(not screen._address.is_visible_in_tree(), "manual host address stays hidden by default")
 	_check(not screen._scan_button.visible, "desktop join does not show the unavailable QR scanner")
+	manager.lobby_id = 1
+	manager.session_epoch = 7
+	manager.selected_address = "192.168.1.22"
+	manager.game_port = 27777
+	manager.manifest_digest.resize(32)
+	var invitation_token := PackedByteArray()
+	invitation_token.resize(16)
+	manager.invitation_code = InvitationCode.encode(invitation_token)
+	manager.invitation_expires_unix = 2000000000
+	screen._update_qr()
+	var host_qr_invitation: Dictionary = INVITATION_URI_SCRIPT.parse(screen._last_qr_value)
+	_check(
+		bool(host_qr_invitation.get("ok", false)),
+		"the host-generated QR payload round-trips through the client invitation parser"
+	)
 	screen.queue_free()
 	manager.free()
 	router.free()
