@@ -34,6 +34,10 @@ Flag=""
 
 theme/custom="res://assets/ui/theme/tilaok_theme.tres"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/tilaok_qr_scanner/plugin.cfg")
+
 [input]
 
 player1left={

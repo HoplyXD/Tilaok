@@ -3,7 +3,7 @@ extends RefCounted
 
 const SCHEME_PREFIX := "tilaok://join?"
 const MAX_URI_BYTES := 512
-const REQUIRED_FIELDS := ["lobby", "host", "port", "protocol", "digest", "code", "epoch"]
+const REQUIRED_FIELDS := ["lobby", "host", "port", "protocol", "digest", "code", "epoch", "expires"]
 const LOBBY_ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
 
@@ -51,6 +51,12 @@ static func parse(uri: String) -> Dictionary:
 	var epoch := int(epoch_text)
 	if epoch <= 0 or str(epoch) != epoch_text:
 		return {"ok": false, "error": "The host session identifier is invalid."}
+	var expires_text := str(fields.expires)
+	if not expires_text.is_valid_int() or expires_text.length() > 20:
+		return {"ok": false, "error": "The invitation expiry is invalid."}
+	var expires := int(expires_text)
+	if expires <= 0 or str(expires) != expires_text:
+		return {"ok": false, "error": "The invitation expiry is invalid."}
 	var digest := PackedByteArray()
 	digest.append_array(digest_text.hex_decode())
 	return {
@@ -62,6 +68,7 @@ static func parse(uri: String) -> Dictionary:
 		"digest": digest,
 		"code": code,
 		"epoch": epoch,
+		"expires_unix": expires,
 	}
 
 

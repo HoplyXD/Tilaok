@@ -4,7 +4,7 @@
 
 **NLB-P00/P01/P02/P05 evidence:** offline baseline and tool/device facts are in [the P00 baseline](evidence/nlb/p00/baseline-2026-10-19.md); local action/seat and authority is [P01](evidence/nlb/p01/verification-2026-10-19.md); P02 host, discovery, admission and teardown are in [P02 evidence](evidence/nlb/p02/README.md); offline live-build implementation and synthetic test results are in [P05 evidence](evidence/nlb/p05/README.md). P02 and P05 acceptance remain partial/open; later gameplay transport and Android work remain future.
 
-P01 foundation plus P02 input/movement, P03 graybox stage/camera/support, P04 item infrastructure, P05 scheduled Place and the opt-in offline live-build route, P06 Karera with explained race results, scoped P07 First Playable, standalone P08 Lagsanay Lab, P09 full-match lifecycle, and P11 independent Kangaroo route run on Godot 4.7. The configured main scene opens the player-facing Title flow; pass `-- --harness` to open the local development harness. The player-facing default selects `P12ScheduledMatchRoom`; `-- --match-route=offline_live_build` selects `NLBP05LiveBuildMatchRoom`, while `-- --match-route=first_playable` remains available. Exact commands and controls are in the [README run instructions](../README.md#play-the-live-match-flow-p07-playtest-build). P02 host lobby and P05 broad safety/compatibility acceptance remain partial/open; no network gameplay, Android client, or human/device acceptance is implied.
+P01 foundation plus P02 input/movement, P03 graybox stage/camera/support, P04 item infrastructure, P05 scheduled Place and the opt-in offline live-build route, P06 Karera with explained race results, scoped P07 First Playable, standalone P08 Lagsanay Lab, P09 full-match lifecycle, and P11 independent Kangaroo route run on Godot 4.7. The configured main scene opens the player-facing Title flow; pass `-- --harness` to open the local development harness. The player-facing default selects `P12ScheduledMatchRoom`; `-- --match-route=offline_live_build` selects `NLBP05LiveBuildMatchRoom`, while `-- --match-route=first_playable` remains available. Exact commands and controls are in the [README run instructions](../README.md#play-the-live-match-flow-p07-playtest-build). P02 host lobby and P05 broad safety/compatibility acceptance remain partial/open; P03 has a verified debug package but awaits Android runtime and physical-device acceptance. No network gameplay or human/device acceptance is implied.
 
 | Area | P01 path | Responsibility and current state |
 |---|---|---|
@@ -269,18 +269,22 @@ The chart is shared by live round and final match results. Scores and winner rul
 & 'C:\Godot\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_ui_reference_evidence.gd'   # windowed; optional -- --reference-dir=<PNG folder> --out-dir=<folder>
 ```
 
-## NLB-P03 Android client status and candidate export — 2026-10-20
+## NLB-P03 Android client and debug export — 2026-10-20
 
-The Android preset is `Android LAN Client (Debug)` in `tilaok!/export_presets.cfg`; its ignored candidate output is `build/tilaok-android-debug.apk`. Export from the repository root with:
+The preset is `Android LAN Client (Debug)` in `tilaok!/export_presets.cfg`; ignored APK output is `build/tilaok-android-debug.apk`. The `tilaok!/addons/tilaok_qr_scanner/` Godot v2 plugin uses CameraX and ZXing to scan locally. Export from the repository root with:
 
 ```powershell
+$env:ANDROID_HOME = Join-Path $env:LOCALAPPDATA 'Android\Sdk'
+$env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+Push-Location 'tilaok!\addons\tilaok_qr_scanner\android'
+try { .\gradlew.bat :plugin:testDebugUnitTest :plugin:assemble --console=plain } finally { Pop-Location }
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
 ```
 
-The candidate manifest declares INTERNET and CAMERA and is landscape, but no scanner plugin/runtime camera permission integration is packaged. Do not represent the candidate as an accepted phone client or use its QR button as a working scanner. For a manual-path smoke on an available test phone only, install without forwarding ports and keep the existing debug app data:
+The debug APK is self-contained and includes Godot resources, the scanner plugin and decoder, INTERNET/CAMERA permissions, landscape orientation and `arm64-v8a` / `armeabi-v7a` engine libraries. It uses Godot's debug signing; do not add signing secrets. CAMERA is requested when Scan QR is selected. No phone/runtime acceptance is yet recorded, and the phase remains gated by P02's real Wi-Fi/no-internet test. Install/update only on an authorized test device, without port forwarding and without clearing app data:
 
 ```powershell
 & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r 'build/tilaok-android-debug.apk'
 ```
 
-Launch Tilaok! from the phone's app launcher, then use **Manual IP:port** with the Windows host's reachable Wi-Fi IPv4 address, port `27777` (or the host's configured port), and the separate access code. The host still approves the join; choose the phone's Ready control only after seat assignment. **Scan host QR is unavailable in this candidate.** Do not use this procedure as P03 physical acceptance: there is no scanner integration, and phone/lobby behavior remains unverified. For the verified preset, APK hash, environment and blockers, see [NLB-P03 evidence](evidence/nlb/p03/README.md). The Windows offline default remains unchanged.
+Launch Tilaok! from the phone app launcher. Join using Scan QR, Lobby ID plus separate access code, or Manual IP:port plus separate access code. For manual entry, use the host's reachable Wi-Fi IPv4 address and configured ENet port. The host must approve before a seat is assigned; readiness is shown from host state. Leave closes the session before another attempt. These instructions are not physical acceptance evidence until the exact APK has passed the documented host/phone test matrix. For the exact package hash, SDK, evidence and open gates, see [NLB-P03 evidence](evidence/nlb/p03/README.md). The Windows offline default remains unchanged.

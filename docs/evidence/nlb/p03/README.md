@@ -1,64 +1,69 @@
-# NLB-P03 partial engineering evidence — 2026-10-20
+# NLB-P03 Android client — engineering evidence, 2026-10-20
 
-**Result: 0/3 tasks accepted. P03 is PARTIAL and its prerequisite gate remains open.** This package records implemented code and PC-only checks without claiming camera scanning, physical Android installation, a real Wi-Fi join, or completion of NLB-P02.
+**Acceptance: 1/3 tasks. Phase: PARTIAL and held at the P02 exit gate.** T01's reproducible Android debug package passes export/package inspection. T02 has a client-only lobby and local scanner implementation, but its actual Windows-host/Android compatibility, permission UX, invitation-path and failure-state acceptance has not been exercised on Android. T03 is not run: no physical phone is connected. P02-T03 is not complete because real Wi-Fi/no-internet LAN evidence is missing. Nothing here claims networked gameplay.
 
-## Environment
+## Build and package
 
-- Repository: `main` at the user's current working revision; exact delivered revision is recorded in Git when it is shipped.
-- Engine: Godot 4.7.2 stable, `4.7.2.stable.official.ed1daf0bf`.
-- Windows export: Android SDK `%LOCALAPPDATA%\Android\Sdk`, platform 36, build-tools 36.1.0, OpenJDK Temurin 17.0.18. NDK 28.2 is installed; the Godot Gradle template specifies NDK 29.0.14206865, which is not installed. No SDK package was installed or replaced. See [`android-sdk-packages.log`](android-sdk-packages.log) and [`java-toolchain.log`](java-toolchain.log).
-- `adb devices -l`: no connected physical device. An emulator image is installed but was not used as physical acceptance evidence. No physical Android model, Android version, ABI, screen, renderer, installation, or phone capture is claimed. See [`adb-device-check.log`](adb-device-check.log).
-- Available host address for local multiprocess tests was WSL virtual IPv4 `172.28.192.1`, not a phone-reachable Wi-Fi LAN.
-
-## Candidate Android export (not P03-T01 acceptance)
-
-Reproducible command from the repository root:
+- Revision under test: working `main` checkout, with task changes not yet committed.
+- Engine: Godot 4.7.2 `4.7.2.stable.official.ed1daf0bf`.
+- Java: Temurin OpenJDK 17.0.18. Android SDK platform 36, build-tools 36.1.0, NDK 29.0.14206865. The exact NDK package was installed after explicit user approval. The initial Gradle resolution temporarily selected Build Tools 34; that package was removed and the final preset pins 36.1.0.
+- APK: `build/tilaok-android-debug.apk`, 171,961,340 bytes, SHA-256 `07219C71CC88F726150136F2833954543CD98BAFA619A06BB78E58E1A505A282`.
+- Identity: `org.hoplyxd.tilaok.debug`, `Tilaok! LAN Client`, version code 1 / `0.3.0-debug`; min API 24, target/compile API 36, landscape; `arm64-v8a` and `armeabi-v7a`.
+- Signing: Godot debug signing; no keystore or password is in source control. The APK contains the Godot asset pack and scanner plugin and does not require editor streaming. Build artifacts are ignored.
+- Reproducible build from repo root (first creates ignored scanner AARs, then exports):
 
 ```powershell
+$env:ANDROID_HOME = Join-Path $env:LOCALAPPDATA 'Android\Sdk'
+$env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+Push-Location 'tilaok!\addons\tilaok_qr_scanner\android'
+try { .\gradlew.bat :plugin:testDebugUnitTest :plugin:assemble --console=plain } finally { Pop-Location }
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
 ```
 
-Export completed successfully with Godot's prebuilt Android template. The ignored, self-contained APK is `build/tilaok-android-debug.apk` (63,976,988 bytes; SHA-256 `E7A7D73E81DAAA1DB2D34471CABE0140BC71E11CEE64B5911D98AF822348D838`). `apkanalyzer` reports application ID `org.hoplyxd.tilaok.debug`, version code 1, version `0.3.0-debug`, min SDK 24, target SDK 36, landscape (`screenOrientation=0`), and manifest permissions `android.permission.INTERNET` and `android.permission.CAMERA`. `apksigner verify` passes; it is signed using Godot's machine-local debug key (no signing key or password is in the repository). Packaged engine ABIs are `arm64-v8a` and `armeabi-v7a`; `assets.sparsepck` is inside the APK. Full export output and manifest/signature inspection are in [`android-export.log`](android-export.log) and [`apk-inspection.txt`](apk-inspection.txt).
+The export exited successfully. `apksigner verify` reports v2 signature valid; `aapt` reports CAMERA and INTERNET; the merged APK manifest registers the Godot v2 scanner plugin; APK contents include plugin/decoder classes and Godot arm64/armv7 libraries. Full logs: [export](android-export-final.log), [merged manifest](apk-manifest-final.txt), [package inspection](apk-inspection-final.txt), [SDK packages](android-sdk-packages-final.log), [Java](java-toolchain-final.log), [Gradle build/unit tests](scanner-gradle-final.log), [hash and size](apk-hash-final.log).
 
-This candidate does **not** package a camera/decoder plugin. The camera permission is present in the manifest but there is no runtime scanner permission flow or scanner singleton in the APK. The UI explicitly falls back to Lobby ID/manual entry when `TilaokQrScanner` is unavailable. Therefore it is not the completed Android client requested by T01/T02 and has not been installed on a phone.
+## Scanner provenance and behavior
 
-## Implemented and verified locally
+The in-app scanner is a Godot Android v2 plugin at `tilaok!/addons/tilaok_qr_scanner/`. It uses CameraX 1.5.1 (camera, camera2, lifecycle, view) and ZXing core 3.5.3. ZXing decodes locally from copied Y-luma frames; no image, token or QR content is uploaded or persisted. Camera permission is requested only when scanning starts. The overlay provides cancel/back, denial/permanent-denial/unavailable errors, lifecycle cancellation, serialized analysis and one-success-per-visible-scan guarding. The plugin has no native `.so` dependency and is not ABI-specific; the packaged Godot engine supports arm64-v8a and armeabi-v7a. See [asset provenance](../../../ASSETS.md#android-scanner-provenance--nlb-p03-2026-10-20) and the [plugin source README](../../../tilaok!/addons/tilaok_qr_scanner/README.md) for sources and licenses. Google ML Kit was deliberately not selected because its terms describe service metrics; the chosen decoder is local-only.
 
-- Android launch selects `CLIENT_PRESENTATION`, skips local game/harness setup and routes to a client-only lobby. Session teardown restores that client role and does not create an offline local seat.
-- The phone layout removes the desktop 900-pixel minimum and hides host controls. It includes QR scanner integration hooks, bounded Lobby ID lookup with validation/no-result timeout, manual address/port plus a separate credential, connection status, host-provided identity/readiness, leave and retry.
-- `InvitationUri` accepts only the bounded `tilaok://join` schema and validates unique fields, Lobby ID, IPv4, port, wire version, digest, credential and session epoch. QR content only supplies a candidate endpoint and proof credential; host compatibility, proof, approval and assignment remain in the existing raw ENet manager.
-- The manager synchronizes validated client seat/readiness state, checks the invitation's host session epoch, times out unreachable connections, and cleans up abusive-peer bookkeeping after a malformed-frame flood.
+Godot 4.7 Android v2 plugin integration requires the Gradle export path. Runtime dependency resolution is from Maven Central and Google Maven during build; the installed APK scanner does not require network access. The plugin does not request camera permission at app launch and releases the camera analyzer on cancel, success, pause and teardown.
 
-Checks:
+## Implemented but not fully accepted
 
-| Check | Result | Evidence |
+- Android startup chooses explicit `CLIENT_PRESENTATION`, routes to a landscape client lobby and never creates a local chicken/offline authority.
+- Entry UI supports camera QR, bounded Lobby ID lookup and manual IP:port with a separate access code. All paths use the existing raw ENet protocol 1.1 challenge/proof, compatibility check, host approval, host assignment and host-confirmed readiness.
+- Invitation parsing accepts only bounded `tilaok://join` fields, including canonical expiry, and rejects duplicate/unsupported/malformed values. A code expires after 300 seconds or one valid proof, whichever comes first; proof consumes it before approval. A QR only proposes an endpoint and credential; it does not authorize a seat. The host can issue a fresh access code for another join or rejoin.
+- Client state is stored for presentation and cleared on leave/retry. Existing host join UI and Windows offline route remain unchanged.
+- The exported Windows host reports canonical digest `876982d7f38bc5b5ed80749e643f68dbeb28d231bae64ab0b2530fe301937ba6` for `karera_slice` / engine `4.7.2-stable (official)` ([log](windows-exported-compatibility-final.log)). The Android export uses a sparse resource pack that cannot be mounted as a standalone Windows PCK; Android packaged-resource digest equality and deliberate incompatibility rejection are not verified and must be tested on the installed Android client before T02 passes.
+
+## Checks
+
+| Check | Result | Evidence / limit |
 |---|---|---|
-| Godot import/script parse | PASSED | [`import-parse.log`](import-parse.log) |
-| Invitation, client authority, and host/join UI checks | PASSED — 35 checks | [`p03-focused-tests.log`](p03-focused-tests.log) |
-| Existing P02 raw ENet/admission tests, including owned 120-frame malformed flood | PASSED — 69 checks | [`p02-focused-tests.log`](p02-focused-tests.log) |
-| P02 separate-process leave/rehost regression | PASSED — 10 cycles; zero seats, peers, candidate cache | [`p02-multi-process-regression.log`](p02-multi-process-regression.log) |
-| P01 authority/input regression | PASSED | [`p01-focused-regression.log`](p01-focused-regression.log) |
-| P05 offline live-build regression | PASSED — 49 checks | [`windows-offline-route-regression.log`](windows-offline-route-regression.log) |
-| Existing Windows controls regression | PASSED — 13 checks | [`windows-controls-regression.log`](windows-controls-regression.log) |
-| Default Windows route launch smoke | PASSED — opens Title, route `lifecycle` | [`windows-default-launch-smoke.log`](windows-default-launch-smoke.log) |
-| gdlint and gdformat check | PASSED | [`gdlint.log`](gdlint.log), [`gdformat.log`](gdformat.log) |
-| `git diff --check` | PASSED | [`git-diff-check.log`](git-diff-check.log) |
-| APK export, signature and manifest | PASSED as a candidate export | [`android-export.log`](android-export.log), [`apk-inspection.txt`](apk-inspection.txt); missing scanner integration prevents T01 acceptance. |
-| Physical install, permission behavior, same-Wi-Fi join, QR/Lobby ID/manual phone flows | COULD-NOT-RUN | No physical Android device is available; no synthetic/emulator evidence substitutes for this gate. |
-| Real Wi-Fi/no-internet P02 prerequisite | COULD-NOT-RUN | Only WSL virtual IPv4 was available; P02-T03 remains unchecked. |
+| Android Gradle plugin build and decoder unit tests | PASSED — two tests | [`scanner-unit-test-summary.txt`](scanner-unit-test-summary.txt); generated QR frame decode and invalid luma dimensions. |
+| Godot P03 focused parser/client/UI/package source checks | PASSED — 50 assertions | [P03 focused log](p03-focused-tests-final.log); these are source/desktop checks, not Android runtime proof. |
+| P01 focused regression | PASSED | [P01 regression](p01-focused-regression-final.log). |
+| P02 focused suite | PASSED — 87 checks | [P02 suite](p02-focused-tests-final.log), including single-use/expiry/rejoin behavior; synthetic/local processes only. |
+| P02 ten-process lifecycle regression | PASSED — 10 cycles | [P02 multi-process log](p02-multi-process-regression-final.log); real Wi-Fi/no-internet acceptance remains open. |
+| P05 offline route regression | PASSED — 49 checks | [P05 regression](p05-offline-regression-final.log). |
+| Windows host export/startup and digest | PASSED as a Windows artifact | [host export](windows-host-export-final.log), [host startup](windows-host-startup-final.log), [exported digest](windows-exported-compatibility-final.log); the Android resource digest comparison is not passed. |
+| Camera permission UI, actual camera scan, all three joins and Android error/retry states | COULD-NOT-RUN | No connected Android device; desktop checks do not substitute. |
+| Exact APK install and physical same-Wi-Fi lobby join/leave/fresh-invite rejoin | COULD-NOT-RUN | `adb devices -l` returned no devices. No emulator or forwarding used. |
+| P02 real Wi-Fi/no-internet prerequisite | COULD-NOT-RUN | Only WSL virtual networking was available for local processes; no real reachable Wi-Fi/no-internet test occurred. |
 
-Known invalid resource UID warnings in the P02 test logs are due to the pre-existing unrelated deleted `tilaok!/tests/run_ledge_climb_tests.gd.uid`; the working-tree deletion is preserved.
+No physical model, OS/API, ABI, renderer, screen, reviewer, phone capture or successful install is recorded because none was observed. The proposed phone memory/FPS/touch targets are not measured by this lobby package. API 36 target retains LAN access through INTERNET; re-evaluate Android's local-network runtime permission before moving to target API 37 or later.
 
 ## Remaining gates
 
-1. The stage-A prerequisite check cannot close P02-T03 without a real reachable Wi-Fi/no-internet LAN run. P02 remains 2/3 and P03's phase entry gate remains unsatisfied.
-2. The required camera scanner is not packaged. A Godot v2 Android plugin requires a Gradle export and needs dependency/source/license/ABI/offline provenance. The installed SDK lacks NDK 29.0.14206865 specified by the Godot template; that package was not installed pending the user's explicit approval.
-3. No authorized physical Android phone is connected. T03 cannot be completed without installing the final exact APK and performing the same-Wi-Fi join/leave/rejoin and fallback/error cases on that phone.
+1. Close P02-T03 using its real Wi-Fi/no-internet and abuse acceptance; do not bypass the P03 phase dependency.
+2. On an authorized physical phone, verify permission grant/deny/permanent deny, QR scan/cancel, all three join paths, compatibility rejection, approval/decline/full/unreachable/shutdown, host-confirmed seat/readiness, and repeated leave/rejoin cleanup using fresh invitations.
+3. Verify the digest produced from actual packaged Android resources matches the exported Windows host for identical content, and rejects a deliberately incompatible build.
+4. Preserve P03-T02 and T03 checkboxes as open until their complete acceptance evidence exists.
 
-Android 17 / API 37 requires `ACCESS_LOCAL_NETWORK` at runtime for apps targeting API 37+. This candidate targets API 36, for which Android documentation says `INTERNET` retains implicit LAN access. Revisit the permission before raising target SDK; do not add/request it prematurely.
+## Official references
 
-## Sources
-
-- [Godot 4.7 Android plugin guide](https://docs.godotengine.org/en/4.7/tutorials/platform/android/android_plugin.html) — v2 plugin packaging uses the Gradle build.
-- [Godot 4.7 Gradle build guide](https://docs.godotengine.org/en/4.7/tutorials/export/android_gradle_build.html) — template/plugin integration workflow.
-- [Android local network permission](https://developer.android.com/privacy-and-security/local-network-permission) — API 37 target requirement and API 36 behavior.
+- [Godot 4.7 Android plugin guide](https://docs.godotengine.org/en/4.7/tutorials/platform/android/android_plugin.html)
+- [Godot 4.7 Gradle export guide](https://docs.godotengine.org/en/4.7/tutorials/export/android_gradle_build.html)
+- [AndroidX CameraX releases](https://developer.android.com/jetpack/androidx/releases/camera)
+- [ZXing source and Apache-2.0 license](https://github.com/zxing/zxing)
+- [Android local network permission](https://developer.android.com/privacy-and-security/local-network-permission)

@@ -26,6 +26,7 @@ var _invite_label: Label
 var _invite_actions: HBoxContainer
 var _copy_code_button: Button
 var _copy_lobby_id_button: Button
+var _new_invitation_button: Button
 var _scan_button: Button
 var _manual_join_toggle: Button
 var _manual_join_section: VBoxContainer
@@ -206,6 +207,9 @@ func _build_ui() -> void:
 				DisplayServer.clipboard_set(manager.invitation_code)
 	)
 	_invite_actions.add_child(_copy_code_button)
+	_new_invitation_button = _button("Create fresh access code")
+	_new_invitation_button.pressed.connect(_create_fresh_invitation)
+	_invite_actions.add_child(_new_invitation_button)
 	_root.add_child(_invite_actions)
 	_host_only_controls.append(_invite_actions)
 	var join_label := _label(
@@ -502,9 +506,29 @@ func _on_scan_cancelled() -> void:
 
 
 func _on_scan_failed(message: String) -> void:
-	_client_notice = (
-		message if not message.is_empty() else "Camera unavailable. Use Lobby ID or manual IP:port."
-	)
+	match message:
+		"camera_permission_denied":
+			_client_notice = (
+				"Camera permission was denied.\nAllow it when asked, "
+				+ "or use Lobby ID/manual address."
+			)
+		"camera_permission_permanently_denied":
+			_client_notice = (
+				"Camera permission is off in Android Settings. Allow Camera for Tilaok!, "
+				+ "or use Lobby ID/manual address."
+			)
+		"camera_unavailable", "camera_ui_unavailable":
+			_client_notice = "Camera is unavailable right now. Use Lobby ID or manual IP:port."
+		_:
+			_client_notice = "Camera unavailable. Use Lobby ID or manual IP:port."
+	_refresh()
+
+
+func _create_fresh_invitation() -> void:
+	if manager == null or not manager.create_invitation():
+		_host_notice = "Could not create an access code. Check that the room is open."
+	else:
+		_host_notice = "Fresh one-use code created. Share it only with the next player."
 	_refresh()
 
 
@@ -612,7 +636,8 @@ func _refresh() -> void:
 	var has_invitation := not manager.invitation_code.is_empty()
 	if has_invitation:
 		_invite_label.text = (
-			"Room access code: %s · stays active until you stop the room" % manager.invitation_code
+			"One-use access code: %s · valid for 5 minutes or until its first valid proof"
+			% manager.invitation_code
 		)
 	elif manager.state == NetworkSessionManager.SessionState.OFFLINE:
 		_invite_label.text = "Start a room to create an access code."
@@ -620,10 +645,11 @@ func _refresh() -> void:
 		_invite_label.text = "Creating access code…"
 	else:
 		_invite_label.text = (
-			"Room is open, but its access code is unavailable. " + "Stop and restart the room."
+			"Previous access code expired or was used. "
+			+ "Create a fresh code for the next player."
 		)
 	_invite_actions.visible = (
-		host_view and manager.state != NetworkSessionManager.SessionState.OFFLINE
+		host_view and manager.state == NetworkSessionManager.SessionState.LOBBY_OPEN
 	)
 	_copy_code_button.disabled = not has_invitation
 	_copy_lobby_id_button.disabled = manager.lobby_id <= 0
@@ -699,7 +725,7 @@ func _update_qr() -> void:
 			_last_qr_value = ""
 		return
 	var invite := (
-		"tilaok://join?lobby=%s&host=%s&port=%d&protocol=%d.%d&digest=%s&code=%s&epoch=%d"
+		"tilaok://join?lobby=%s&host=%s&port=%d&protocol=%d.%d&digest=%s&code=%s&epoch=%d&expires=%d"
 		% [
 			_encode_lobby_id(manager.lobby_id),
 			manager.selected_address,
@@ -709,6 +735,7 @@ func _update_qr() -> void:
 			manager.manifest_digest.hex_encode(),
 			manager.invitation_code,
 			manager.session_epoch,
+			manager.invitation_expires_unix,
 		]
 	)
 	if invite == _last_qr_value:

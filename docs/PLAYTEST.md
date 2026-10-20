@@ -792,7 +792,7 @@ This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no
 
 | Check | Expected | Actual | Result |
 |---|---|---|---|
-| Raw ENet admission and lobby ID discovery | Compatible client proves the reusable room invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | Focused checks cover repeat invitation use, invalid proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
+| Raw ENet admission and lobby ID discovery | Compatible client proves a one-use 300-second invitation, waits for host approval, acknowledges assigned seat and updates readiness only for that seat | Updated 85-check P02 suite covers proof consumption before approval, fresh-code rejoin, expired/used codes, invalid proof, incompatible digest, closed admission, rejection and full capacity | PASSED — local synthetic/process evidence |
 | Host/client repeated lifecycle | Ten separate-process join/ready/leave/stop/rehost cycles; no stale seats, peers or candidate cache after shutdown | Ten cycles passed; final seats=0, peers=0, cache=0 | PASSED — local processes |
 | Rendered lobby and QR | Host and client screens show invitation/admission states; test QR decodes independently | Redacted host screens and safe client awaiting-approval screen saved; synthetic QR decoded with ZXing C++ 3.1.1 | PASSED — desktop engineering capture |
 | Import, lint and formatting | Godot project parses; P02 source checks clean | Import/parse exit 0, gdlint clean, gdformat 13 files unchanged | PASSED |
@@ -814,11 +814,13 @@ Opt-in offline live-build route:
 
 ## NLB-P03 Android phone lobby — engineering status, 2026-10-20
 
-The invitation URI parser and client-only lobby have PC-side focused checks. The exported debug candidate is not a complete client: the camera scanner plugin is absent, no Android device is connected, and no phone or Wi-Fi join is represented by this synthetic evidence. P02-T03 remains open because only a WSL virtual address is available; local malformed-frame and ten-cycle process tests do not close the real Wi-Fi/no-internet prerequisite. See [P03 evidence](evidence/nlb/p03/README.md).
+T01's debug APK exports and passes merged-manifest, plugin, ABI and signature inspection. The APK includes the locally decoding CameraX/ZXing scanner. Desktop and decoder unit tests pass, but they do not establish Android permission UI, phone rendering, end-to-end join or cross-export digest acceptance. No physical device is connected. P02-T03 remains open because a real Wi-Fi/no-internet LAN run has not occurred. See [P03 evidence](evidence/nlb/p03/README.md).
 
 | Check | Result | Evidence / limit |
 |---|---|---|
-| Invitation parser, client authority and host/join UI checks | PASSED — 35 checks | [`p03-focused-tests.log`](evidence/nlb/p03/p03-focused-tests.log); synthetic PC tests only. |
-| Export candidate / APK manifest | PASSED as candidate only | [`P03 evidence`](evidence/nlb/p03/README.md); scanner integration and install acceptance remain open. |
-| Physical camera permission, QR scan, phone install/join/leave/rejoin | COULD-NOT-RUN | No physical Android device is available. |
-| Real Wi-Fi and no-internet host/client | COULD-NOT-RUN | No real Wi-Fi interface/device available; P02 exit is still required. |
+| Parser, client authority, lobby UI and scanner package source checks | PASSED — 44 checks | [`p03-focused-tests-final.log`](evidence/nlb/p03/p03-focused-tests-final.log); Godot desktop/source tests only. |
+| ZXing local QR frame decoder | PASSED — 2 unit tests | [`scanner-gradle-final.log`](evidence/nlb/p03/scanner-gradle-final.log); no camera hardware or Android UI exercised. |
+| Android APK export / manifest / signature / ABI / plugin contents | PASSED — T01 | [`P03 evidence`](evidence/nlb/p03/README.md), final export and package inspection logs. |
+| Android runtime permission, actual camera scan, joins and host/client content compatibility | COULD-NOT-RUN | No connected phone; Android sparse resource digest is not compared against the Windows host. |
+| Physical install, real Wi-Fi join/leave/rejoin and failure cases | COULD-NOT-RUN | ADB reports no devices. No emulator or port forwarding used. |
+| Real Wi-Fi and no-internet host/client prerequisite | COULD-NOT-RUN | No real Wi-Fi/no-internet test occurred; P02 exit remains required. |

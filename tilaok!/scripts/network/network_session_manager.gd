@@ -19,6 +19,7 @@ const DEFAULT_DISCOVERY_PORT := 27778
 const MAX_PENDING_APPROVALS := 4
 const MAX_FRAME_EVENTS := 32
 const CHALLENGE_TIMEOUT_SECONDS := 30
+const INVITATION_LIFETIME_SECONDS := 300
 
 var state := SessionState.OFFLINE
 var admission_open := false
@@ -28,6 +29,7 @@ var discovery_port := DEFAULT_DISCOVERY_PORT
 var lobby_id := 0
 var session_epoch := 0
 var invitation_code := ""
+var invitation_expires_unix := 0
 var host_authority := SimulationAuthority.offline()
 var local_authority := SimulationAuthority.offline()
 var router: LocalInputRouter
@@ -57,6 +59,7 @@ var _candidate_timer := 0.0
 var _client_sequence := 0
 var _client_connect_deadline := 0
 var _client_transport_connected := false
+var _client_disconnect_notice_set := false
 var _pending_stop := false
 var _stop_deadline := 0
 var _manifest_source_stamp := ""
@@ -76,6 +79,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if transport.is_open:
 		transport.poll()
+	if not client_mode and _invitation_expired():
+		_revoke_invitation()
+		lobby_changed.emit()
 	if (
 		client_mode
 		and _client_connect_deadline > 0
@@ -159,9 +165,7 @@ func start_host(
 		lobby_id = 1
 	if session_epoch == 0:
 		session_epoch = 1
-	_invitation_token = random
-	_invitation_code = InvitationCode.encode(random)
-	invitation_code = _invitation_code
+	_set_invitation(random)
 	selected_address = address
 	selected_interface_usable = true
 	_interface_poll_clock = 0.0
@@ -182,6 +186,22 @@ func start_host(
 	client_mode = false
 	state = SessionState.LOBBY_OPEN
 	state_changed.emit("LOBBY_OPEN")
+	lobby_changed.emit()
+	return true
+
+
+func create_invitation() -> bool:
+	if (
+		client_mode
+		or state != SessionState.LOBBY_OPEN
+		or not admission_open
+		or not transport.is_host
+	):
+		return false
+	var random := InvitationCode.generate()
+	if random.size() != 16:
+		return false
+	_set_invitation(random)
 	lobby_changed.emit()
 	return true
 
@@ -209,6 +229,7 @@ func connect_client(
 		return false
 	state = SessionState.STARTING
 	state_changed.emit("STARTING")
+	_client_disconnect_notice_set = false
 	client_invite_token = token
 	CompatibilityManifest.reload_sources()
 	var manifest := CompatibilityManifest.build()
@@ -285,6 +306,7 @@ func _finish_stop() -> void:
 	client_mode = false
 	_client_connect_deadline = 0
 	_client_transport_connected = false
+	_client_disconnect_notice_set = false
 	manifest_digest.clear()
 	_cached_compatibility.clear()
 	if router != null:
@@ -435,7 +457,8 @@ func _on_peer_disconnected(peer_id: int) -> void:
 		client_assigned_seat = -1
 		client_ready = false
 		if state != SessionState.STOPPING:
-			client_message.emit("Host connection closed.")
+			if not _client_disconnect_notice_set:
+				client_message.emit("Host connection closed.")
 			stop_session()
 		return
 	if candidates.has(peer_id):
@@ -528,12 +551,16 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				return
 			var client_nonce := payload.slice(0, 16)
 			var proof_value := payload.slice(32, 64)
-			if (
-				client_nonce != candidate.nonce
-				or payload.slice(16, 32) != candidate.server_nonce
-				or not _invitation_valid()
-			):
-				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
+			if client_nonce != candidate.nonce or payload.slice(16, 32) != candidate.server_nonce:
+				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+				return
+			if _invitation_expired():
+				_revoke_invitation()
+				lobby_changed.emit()
+				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
+				return
+			if not _invitation_valid():
+				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
 				return
 			var expected := InvitationCode.proof(
 				_invitation_token, session_epoch, candidate.nonce, candidate.server_nonce
@@ -541,6 +568,9 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			if not Crypto.new().constant_time_compare(expected, proof_value):
 				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
 				return
+			# One credential admits one proof, regardless of the later host decision.
+			_revoke_invitation()
+			lobby_changed.emit()
 			if _pending_count() >= MAX_PENDING_APPROVALS:
 				_send(
 					peer_id,
@@ -634,6 +664,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 					)
 				):
 					client_message.emit("This client does not match the host build.")
+					_client_disconnect_notice_set = true
 					return
 				var hello := PackedByteArray()
 				hello.append_array(client_manifest_digest)
@@ -645,6 +676,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				return
 			if payload.size() != 2 or _read_u16(payload) != NetworkFrame.Reason.OK:
 				client_message.emit("This client is not compatible with the host.")
+				_client_disconnect_notice_set = true
 				return
 			var join := _local_nonce.duplicate()
 			_send(peer_id, NetworkFrame.Family.JOIN_BEGIN, join)
@@ -683,6 +715,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				)
 			elif reason != NetworkFrame.Reason.OK:
 				client_message.emit(_reason_message(reason))
+				_client_disconnect_notice_set = true
 		NetworkFrame.Family.SEAT_ASSIGNMENT:
 			if payload.size() != 2 or int(payload[0]) >= 4:
 				client_message.emit("The host sent an invalid seat assignment.")
@@ -752,6 +785,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			lobby_changed.emit()
 		NetworkFrame.Family.SESSION_CLOSE:
 			client_message.emit("The host closed the session.")
+			_client_disconnect_notice_set = true
 			stop_session()
 		_:
 			client_message.emit("The host sent an unsupported lobby message.")
@@ -959,7 +993,23 @@ func _poll_manifest_sources() -> bool:
 
 
 func _invitation_valid() -> bool:
-	return not _invitation_token.is_empty()
+	return not _invitation_token.is_empty() and not _invitation_expired()
+
+
+func _invitation_expired() -> bool:
+	return (
+		not _invitation_token.is_empty()
+		and invitation_expires_unix > 0
+		and Time.get_unix_time_from_system() >= invitation_expires_unix
+	)
+
+
+func _set_invitation(token: PackedByteArray) -> void:
+	_revoke_invitation()
+	_invitation_token = token.duplicate()
+	_invitation_code = InvitationCode.encode(token)
+	invitation_code = _invitation_code
+	invitation_expires_unix = int(Time.get_unix_time_from_system()) + INVITATION_LIFETIME_SECONDS
 
 
 func _revoke_invitation() -> void:
@@ -967,6 +1017,7 @@ func _revoke_invitation() -> void:
 	_invitation_token.clear()
 	_invitation_code = ""
 	invitation_code = ""
+	invitation_expires_unix = 0
 
 
 func _rollback_start(message: String) -> bool:
@@ -1058,7 +1109,9 @@ func _read_u16(bytes: PackedByteArray) -> int:
 func _reason_message(reason: int) -> String:
 	match reason:
 		NetworkFrame.Reason.TOKEN_INVALID:
-			return "Access code is invalid or expired."
+			return "Access code is invalid, expired or used. Ask the host for a fresh code."
+		NetworkFrame.Reason.TOKEN_EXPIRED:
+			return "Access code expired or was used. Ask the host for a fresh code."
 		NetworkFrame.Reason.INCOMPATIBLE:
 			return "This client does not match the host build."
 		NetworkFrame.Reason.LOBBY_FULL:

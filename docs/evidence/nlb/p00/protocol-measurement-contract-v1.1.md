@@ -4,6 +4,10 @@
 
 **Invitation lifecycle amendment (2026-10-20):** the room invitation is reusable for the entire active room lifetime. It is revoked at room stop/rehost only. This corrects the original P02 one-use/300-second behavior; wire framing and family IDs do not change.
 
+**P03 invitation lifecycle amendment (2026-10-20):** the explicit approved P03 production requirement supersedes the earlier P02 reuse decision above. The host now maintains at most one active 128-bit credential; it expires 300 seconds after creation and is consumed immediately after one valid HMAC proof, before host approval or seat assignment. A declined/full pending join still consumes the credential. While the room remains open, the host can issue a fresh code without rehosting; players must use a fresh code after leaving. Expired/consumed codes return `TOKEN_EXPIRED`. Tokens remain ephemeral and are never sent in packets or persisted. Raw ENet framing, message families and version 1.1 do not change.
+
+The local `tilaok://join` URI now has a required canonical decimal `expires` Unix-seconds query field, validated with the existing 512-byte and duplicate-field limits. It is a locator/schema change only; expiry is enforced by the host clock. Lobby ID/manual IP entry has no embedded expiry and still requires the live code separately. P03 checks cover the field's strict shape and the host's 300-second one-use behavior.
+
 ## Transport and envelope
 
 P02 uses Godot 4.7.2 `ENetConnection` and `ENetPacketPeer` directly. Each application message is one raw packed-byte packet with the exact 22-byte `TILK` envelope from v1. SceneMultiplayer RPCs, object decoding, peer relay and gameplay families are disabled. P02 allocates one ENet channel and uses channel 0 with `FLAG_RELIABLE` for all control messages. Runtime tests record that packets arrive on channel 0 and complete the production handshake. Additional channels are not used or claimed verified.

@@ -16,6 +16,7 @@ func _run() -> void:
 	_test_invitation_parser()
 	await _test_desktop_lobby_roles()
 	await _test_phone_client_ui_and_authority()
+	_test_android_scanner_export_contract()
 	if failures.is_empty():
 		print("NLB_P03_TESTS PASSED checks=%d" % checks)
 		quit(0)
@@ -28,7 +29,7 @@ func _run() -> void:
 
 func _test_invitation_parser() -> void:
 	var uri := (
-		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.1&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7"
+		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.1&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7&expires=2000000000"
 		% "a".repeat(64)
 	)
 	var invite: Dictionary = INVITATION_URI_SCRIPT.parse(uri)
@@ -37,6 +38,10 @@ func _test_invitation_parser() -> void:
 	_check(
 		invite.get("port", 0) == 27777 and invite.get("epoch", 0) == 7,
 		"parsed endpoint and session epoch are retained"
+	)
+	_check(
+		invite.get("expires_unix", 0) == 2000000000,
+		"parsed invitation includes a bounded canonical expiry"
 	)
 	_check(
 		invite.get("digest", PackedByteArray()).size() == 32,
@@ -87,6 +92,14 @@ func _test_invitation_parser() -> void:
 	_check(
 		not INVITATION_URI_SCRIPT.parse(uri.replace("epoch=7", "epoch=07")).ok,
 		"noncanonical session epoch is rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(uri.replace("expires=2000000000", "expires=01")).ok,
+		"noncanonical invitation expiry is rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(uri.replace("expires=2000000000", "expires=0")).ok,
+		"invalid invitation expiry is rejected"
 	)
 	_check(not INVITATION_URI_SCRIPT.parse(uri + "%20").ok, "encoded fields are rejected")
 	_check(
@@ -193,6 +206,103 @@ func _test_phone_client_ui_and_authority() -> void:
 	manager.free()
 	router.free()
 	await process_frame
+
+
+func _test_android_scanner_export_contract() -> void:
+	var editor_plugin := FileAccess.get_file_as_string(
+		"res://addons/tilaok_qr_scanner/export_plugin.gd"
+	)
+	var android_plugin := (
+		FileAccess
+		. get_file_as_string(
+			"res://addons/tilaok_qr_scanner/android/plugin/src/main/java/org/hoplyxd/tilaok/scanner/TilaokQrScannerPlugin.kt"
+		)
+	)
+	var export_settings := FileAccess.get_file_as_string("res://export_presets.cfg")
+	var enabled_plugins: PackedStringArray = ProjectSettings.get_setting(
+		"editor_plugins/enabled", PackedStringArray()
+	)
+	_check(
+		"res://addons/tilaok_qr_scanner/plugin.cfg" in enabled_plugins,
+		"Android scanner export plugin is enabled in the project"
+	)
+	_check(
+		export_settings.contains("gradle_build/use_gradle_build=true"),
+		"Android scanner export selects the supported Gradle build"
+	)
+	_check(
+		(
+			editor_plugin.contains("com.google.zxing:core:3.5.3")
+			and editor_plugin.contains("androidx.camera:camera-camera2:1.5.1")
+		),
+		"camera and offline ZXing dependencies are included in Android export"
+	)
+	_check(
+		not editor_plugin.contains("mlkit") and not editor_plugin.contains("play-services"),
+		"scanner export has no remote barcode model or metrics SDK"
+	)
+	_check(
+		(
+			android_plugin.contains("Manifest.permission.CAMERA")
+			and android_plugin.contains("requestPermissions")
+		),
+		"camera permission is requested at scan time"
+	)
+	_check(
+		(
+			android_plugin.contains("onMainRequestPermissionsResult")
+			and android_plugin.contains("camera_permission_permanently_denied")
+		),
+		"permission grant, denial and permanent-denial results are surfaced"
+	)
+	_check(
+		(
+			android_plugin.contains("onMainPause")
+			and android_plugin.contains("onBackPressedDispatcher")
+			and android_plugin.contains("finishScan(cancelled = true)")
+		),
+		"pause and Android Back cancel scanning and release the camera"
+	)
+	_check(
+		(
+			android_plugin.contains("compareAndSet(false, true)")
+			and android_plugin.contains("provider.unbindAll()")
+			and android_plugin.contains("shutdownNow()")
+		),
+		"a visible QR produces one result and camera/listener resources are stopped"
+	)
+	var lobby_ui := FileAccess.get_file_as_string("res://scripts/ui/ui_lan_lobby_screen.gd")
+	var session_source := FileAccess.get_file_as_string(
+		"res://scripts/network/network_session_manager.gd"
+	)
+	_check(
+		lobby_ui.contains("expires=%d") and lobby_ui.contains("Create fresh access code"),
+		"host QR publishes expiry and offers fresh one-use invitation creation"
+	)
+	_check(
+		(
+			session_source.contains("INVITATION_LIFETIME_SECONDS := 300")
+			and session_source.contains("# One credential admits one proof")
+		),
+		"host enforces five-minute single-use invitation credentials"
+	)
+	_check(
+		(
+			session_source.contains("_client_disconnect_notice_set")
+			and session_source.contains("if not _client_disconnect_notice_set")
+		),
+		"specific rejection feedback survives the host closing its peer"
+	)
+	var gradle_module := FileAccess.get_file_as_string(
+		"res://addons/tilaok_qr_scanner/android/plugin/build.gradle.kts"
+	)
+	_check(
+		(
+			gradle_module.contains("copyDebugAarToGodot")
+			and gradle_module.contains("TilaokQrScanner-debug.aar")
+		),
+		"Gradle reproducibly builds the scanner library required for packaging"
+	)
 
 
 func _check(condition: bool, description: String) -> void:

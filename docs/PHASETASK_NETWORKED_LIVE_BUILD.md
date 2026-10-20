@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status (2026-10-20):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 is partial: local process admission, malformed-frame abuse thresholds and lifecycle checks pass, while real Wi-Fi/no-internet LAN acceptance remains open. P03 remains 0/3 accepted because its scanner integration and physical-device checks are incomplete. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Network gameplay and P06–P11 remain separately gated tasks. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status (2026-10-20):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 is partial: local process admission, malformed-frame abuse thresholds and lifecycle checks pass, while real Wi-Fi/no-internet LAN acceptance remains open. P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and T03 physical-device acceptance remain open. P03 phase entry is held by the P02 exit gate. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Network gameplay and P04/P06–P11 remain separately gated tasks. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,14 +12,14 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 9/36 checked; 27 TODO; actual results PASSED 9, COULD-NOT-RUN 6, NOT RUN 21.** NLB-P02, P03 and P05 are partial; P03 export/client work is incomplete and physical-device acceptance is unavailable. P05-T01 passed its own offline opt-in flow acceptance, while P05-T02/T03 evidence remains incomplete. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 10/36 checked; 26 TODO; actual results PASSED 10, COULD-NOT-RUN 5, NOT RUN 21.** NLB-P02, P03 and P05 are partial; P03 T01 export/package acceptance passed, while Android runtime/compatibility and physical-device acceptance remain open. P03 phase entry is held by P02's missing real Wi-Fi/no-internet exit evidence. P05-T01 passed its own offline opt-in flow acceptance, while P05-T02/T03 evidence remains incomplete. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
 | NLB-P00 | Decisions, baseline, protocol requirements | 3 | Approved docs | PASSED (3/3) |
 | NLB-P01 | Local action/seat abstraction and authority boundary | 3 | P00 | PASSED (3/3) |
 | NLB-P02 | PC host session, discovery, pairing, compatibility | 3 | P01 | PARTIAL (2/3) |
-| NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | PARTIAL (0/3) |
+| NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | PARTIAL (1/3) |
 | NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | TODO |
 | NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | PARTIAL (1/3) |
 | NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | TODO |
@@ -29,7 +29,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 27 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 9. Result totals: PASSED 9 · FAILED 0 · COULD-NOT-RUN 6 · NOT RUN 21. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 26 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 10. Result totals: PASSED 10 · FAILED 0 · COULD-NOT-RUN 5 · NOT RUN 21. Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -144,9 +144,9 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Requirements:** NLB-REQ-004, NLB-REQ-017, NLB-REQ-018.
 - **Dependencies:** NLB-P02-T01.
 - **Work:** implement QR token, Lobby ID discovery flow, manual IP:port fallback, host approve/reject, seat assignment, ready state, protocol/build/content/map compatibility and player-readable errors.
-- **Acceptance:** only host-approved compatible peers receive one of four seats before match start; late new join is rejected; the invitation remains reusable while the room is open and is revoked on teardown.
+- **Acceptance:** only host-approved compatible peers receive one of four seats before match start; late new join is rejected; each 128-bit code expires after 300 seconds or one valid proof, whichever comes first; the host can issue a fresh code without restarting the room.
 - **Evidence:** [P02 verification package](evidence/nlb/p02/README.md), including invalid-invitation QR decoding and redacted host/client lobby captures.
-- **Status:** DONE · **Actual result:** PASSED — raw ENet tests cover compatibility, reusable HMAC proof, pending host approval, rejection, seat assignment acknowledgment, ready state, incompatible digest, invalid credentials, closed admission and four-seat capacity. No Android or network-gameplay claim is made.
+- **Status:** DONE · **Actual result:** PASSED — raw ENet tests cover compatibility, one-use 300-second HMAC proof, proof consumption before host approval, fresh-code rejoin, expired/used-code rejection, assignment acknowledgment, ready state, incompatible digest, invalid credentials, closed admission and four-seat capacity. No Android or network-gameplay claim is made.
 
 ### [ ] NLB-P02-T03 — VERIFY — Session abuse and lifecycle cases
 
@@ -156,13 +156,13 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** test repeated use of the same room invitation, address failures, malformed handshake fields, join floods/rate limits, host shutdown, rehost and no-internet LAN behavior.
 - **Acceptance:** no unauthorized seat, stuck peer, stale token, crash, or background listener after teardown.
 - **Evidence:** test output, packet/session logs, before/after connection counts.
-- **Status:** TODO · **Actual result:** COULD-NOT-RUN — the focused suite passes 72 checks, including repeated use of one invitation, 120 malformed frames from an owned local test client and threshold cleanup; ten separate-process join/ready/leave/rehost cycles pass. Real Wi-Fi and no-internet LAN behavior cannot be exercised using the available WSL-only interface, so P02 exit remains open. See [P02 verification package](evidence/nlb/p02/README.md) and [P03 regression evidence](evidence/nlb/p03/).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — the updated focused suite passes 87 checks, including one-use/expiry proof cases, 120 malformed frames from an owned local test client and threshold cleanup; ten separate-process join/ready/leave/rehost cycles pass. Real Wi-Fi and no-internet LAN behavior cannot be exercised using the available WSL-only interface, so P02 exit remains open. See [P02 verification package](evidence/nlb/p02/README.md) and [P03 regression evidence](evidence/nlb/p03/).
 
 ## NLB-P03 — Android export/install and physical phone lobby join
 
-**Phase goal:** produce an installed Android client and prove a real phone can join the host lobby. **Entry:** P02 exit. **Dependencies:** P02. **Systems touched:** Android preset, permissions, orientation, packaging, pairing UI. **Decisions:** installed Android app; landscape; physical hardware identity recorded. **Exit:** one actual Android device joins, receives one seat, disconnects, and can leave cleanly. **Status:** PARTIAL (0/3 accepted); P02's real Wi-Fi/no-internet exit gate remains open, the current candidate APK has no camera scanner integration, and no physical Android device is connected. **Evidence:** [P03 verification package and blockers](evidence/nlb/p03/README.md).
+**Phase goal:** produce an installed Android client and prove a real phone can join the host lobby. **Entry:** P02 exit. **Dependencies:** P02. **Systems touched:** Android preset, permissions, orientation, packaging, pairing UI. **Decisions:** installed Android app; landscape; physical hardware identity recorded. **Exit:** one actual Android device joins, receives one seat, disconnects, and can leave cleanly. **Status:** PARTIAL (1/3 tasks accepted); P02's real Wi-Fi/no-internet exit gate remains open, and no physical Android device is connected. **Evidence:** [P03 verification package and blockers](evidence/nlb/p03/README.md).
 
-### [ ] NLB-P03-T01 — IMPLEMENT — Configure Android client export
+### [x] NLB-P03-T01 — IMPLEMENT — Configure Android client export
 
 - **Owner role:** Build / Integration.
 - **Requirements:** NLB-REQ-005, NLB-REQ-018.
@@ -170,7 +170,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** add a reproducible CLIENT-only Android debug export, app identity/version, landscape behavior, supported ARM ABI and required network/camera permissions without changing engine version, Windows settings or the offline default.
 - **Acceptance:** export a self-contained signed debug APK with no release secrets; inspect merged manifest, packaged resources/plugins, permission list and ABI; record command, engine/toolchain, output, SHA-256 and size. Camera scanner integration is part of the accepted package.
 - **Evidence:** [P03 evidence](evidence/nlb/p03/README.md), preset, export log, APK inspection and hash.
-- **Status:** TODO · **Actual result:** COULD-NOT-RUN — a candidate debug APK exports with the configured app identity, landscape orientation, API 24–36, and both ARM ABIs; manifest inspection confirms INTERNET and CAMERA and Godot debug signing. It has no working scanner integration, so acceptance remains incomplete. NDK 29.0.14206865 is missing for Godot's Gradle plugin template; no SDK package was installed. See [P03 evidence](evidence/nlb/p03/README.md).
+- **Status:** DONE · **Actual result:** PASSED — Godot 4.7.2 Gradle debug export produced a self-contained APK with app ID `org.hoplyxd.tilaok.debug`, version `0.3.0-debug`, landscape, API 24–36, `arm64-v8a` and `armeabi-v7a`, Godot debug signature, merged CAMERA/INTERNET permissions, and packaged Godot resources plus the v2 CameraX/ZXing scanner plugin. Export command, exact package size/hash and inspection logs are recorded in [P03 evidence](evidence/nlb/p03/README.md). The approved NDK 29.0.14206865 and pinned Build Tools 36.1.0 build succeeded. This passes T01 package acceptance, not phone installation or Android runtime acceptance.
 
 ### [ ] NLB-P03-T02 — IMPLEMENT — Build phone lobby and invitation entry
 
@@ -178,9 +178,9 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Requirements:** NLB-REQ-004, NLB-REQ-005, NLB-REQ-017, NLB-REQ-018.
 - **Dependencies:** NLB-P03-T01, NLB-P02-T02.
 - **Work:** implement local camera QR decoding with usable grant/deny/unavailable/cancel paths; bounded Lobby ID lookup; manual IP:port; strict invitation parsing; compatibility/proof/host approval/host-assigned seat/readiness presentation; leave, timeout, background and retry cleanup.
-- **Acceptance:** exercise all three paths with the actual exported Windows host/client resources; matching content digest succeeds, incompatible content is rejected; invalid credentials, full/declined/unreachable/shutdown states are readable and recoverable. The active room code may be reused for separate host-approved joins; a visible QR must not trigger duplicate join attempts. Phone controls meet landscape/safe-area/touch/keyboard/back requirements and never gain authority or enter gameplay.
+- **Acceptance:** exercise all three paths with the actual exported Windows host/client resources; matching content digest succeeds, incompatible content is rejected; invalid/expired/used credentials, full/declined/unreachable/shutdown states are readable and recoverable. One invitation code admits one valid proof, expires within 300 seconds and is consumed before host approval; host can create a fresh code for the next player or rejoin. A visible QR must not trigger duplicate join attempts. Phone controls meet landscape/safe-area/touch/keyboard/back requirements and never gain authority or enter gameplay.
 - **Evidence:** [P03 evidence](evidence/nlb/p03/README.md), physical phone captures and host/client logs. Current PC-only checks do not satisfy camera or phone acceptance.
-- **Status:** TODO · **Actual result:** COULD-NOT-RUN — the client-only landscape lobby, Lobby ID lookup, optional manual-address fallback, strict invitation parser, and separated PC host/join screens are covered by 35 focused checks. Scan QR has no packaged camera/decoder plugin; end-to-end invitation, permission and phone rendering acceptance remains unverified. See [P03 evidence](evidence/nlb/p03/README.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — implementation includes camera QR scanning, bounded Lobby ID lookup, manual IP:port with separate credential, strict `tilaok://join` validation including expiry, client-only authority, host approval/assignment/readiness state and leave/retry cleanup. Godot focused tests pass 50 checks and local Android decoder tests pass two cases. Acceptance remains unverified for Android permission/camera lifecycle and rendering, all three joins through the exported Windows host, actual exported-resource digest equality and deliberate mismatch rejection, plus the requested full error/retry matrix. No Android device was connected. See [P03 evidence](evidence/nlb/p03/README.md).
 
 ### [ ] NLB-P03-T03 — VERIFY — Install and join with a real phone
 
@@ -190,7 +190,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** install the exact exported APK on a physical device; join a Windows host over real same Wi-Fi by QR, Lobby ID and manual fallback; test discovery unavailable and camera denial/cancel, invalid invitation, rejection, mismatch, full, unreachable and host shutdown.
 - **Acceptance:** prove local/no-internet LAN join, host approval, one host-assigned seat and matching host/phone readiness; leave frees the seat and fresh-invitation rejoin has no stale sockets/seats/listeners/callbacks. Record device model/OS/API/ABI/build/revision/renderer/screen and topology, captures and sanitized logs. Synthetic input/emulator/ADB forwarding does not satisfy T03.
 - **Evidence:** [P03 evidence](evidence/nlb/p03/README.md), exact APK/install output, sanitized device/host logs and physical screenshots/clip.
-- **Status:** TODO · **Actual result:** COULD-NOT-RUN — no physical Android device is available or connected. No install, real Wi-Fi join, phone screenshot or host/phone readiness agreement is claimed; P02 real-LAN acceptance is also open. See [P03 evidence](evidence/nlb/p03/README.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — no physical Android device is available or connected. No APK install, real Wi-Fi join, phone capture, host/phone readiness agreement, leave/rejoin cycle, or physical failure-case run is claimed; P02 real-LAN acceptance is also open. See [P03 evidence](evidence/nlb/p03/README.md).
 
 ## NLB-P04 — Input transport, authoritative simulation, synchronized view
 
