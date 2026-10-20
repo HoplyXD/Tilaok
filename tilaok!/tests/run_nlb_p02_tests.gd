@@ -2,6 +2,7 @@
 extends SceneTree
 
 const QR_CODE_SCRIPT := preload("res://addons/qr_code/qr_code.gd")
+const INVITATION_URI_SCRIPT := preload("res://scripts/network/invitation_uri.gd")
 
 var failures: Array[String] = []
 var checks := 0
@@ -15,6 +16,7 @@ func _run() -> void:
 	_test_wire_and_credentials()
 	_test_manifest_stability()
 	_test_qr_invite_code()
+	_test_invitation_uri_parser()
 	await _test_raw_enet_admission()
 	if failures.is_empty():
 		print("NLB_P02_TESTS PASSED checks=%d" % checks)
@@ -102,6 +104,53 @@ func _test_qr_invite_code() -> void:
 	DirAccess.make_dir_recursive_absolute(directory)
 	var save_error := image.save_png(directory.path_join("invitation-test-invalid.png"))
 	_check(save_error == OK, "synthetic invalid invitation QR saved for independent decoding")
+
+
+func _test_invitation_uri_parser() -> void:
+	var valid := (
+		"tilaok://join?lobby=AAAAAAAAAAAAA&host=192.168.1.22&port=27777&protocol=1.1&digest=%s&code=AAAAAAAAAAAAAAAAAAAAAAAAAA&epoch=7"
+		% "a".repeat(64)
+	)
+	var parsed: Dictionary = INVITATION_URI_SCRIPT.parse(valid)
+	_check(bool(parsed.ok), "approved invitation URI parses")
+	_check(parsed.get("address", "") == "192.168.1.22", "invitation URI returns validated host")
+	_check(
+		parsed.get("port", 0) == 27777 and parsed.get("epoch", 0) == 7,
+		"invitation URI returns bounded endpoint and epoch"
+	)
+	_check(
+		parsed.get("digest", PackedByteArray()).size() == 32,
+		"invitation URI decodes canonical digest"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(valid + "&host=10.0.0.1").ok,
+		"duplicate invitation field rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(valid.replace("protocol=1.1", "protocol=9.0")).ok,
+		"unsupported invitation protocol rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(valid.replace("host=192.168.1.22", "host=0.0.0.0")).ok,
+		"unspecified invitation address rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(valid.replace("port=27777", "port=99999")).ok,
+		"out-of-range invitation port rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(valid.replace("digest=" + "a".repeat(64), "digest=abc")).ok,
+		"short invitation digest rejected"
+	)
+	_check(
+		not INVITATION_URI_SCRIPT.parse(valid.replace("epoch=7", "epoch=0")).ok,
+		"zero invitation epoch rejected"
+	)
+	_check(not INVITATION_URI_SCRIPT.parse(valid + "%20").ok, "encoded invitation fields rejected")
+	_check(
+		not INVITATION_URI_SCRIPT.parse("https://example.invalid/?host=192.168.1.22").ok,
+		"arbitrary URL scheme rejected"
+	)
 
 
 func _test_raw_enet_admission() -> void:
@@ -353,6 +402,7 @@ func _test_raw_enet_admission() -> void:
 		"full-lobby candidate cannot exceed the shared seat cap"
 	)
 	await _clean_client(full_client, full_router)
+	await _test_owned_malformed_flood(host, host_address, port)
 	host.stop_session()
 	for _frame in 60:
 		if host.state == NetworkSessionManager.SessionState.OFFLINE:
@@ -374,6 +424,55 @@ func _test_raw_enet_admission() -> void:
 	client.free()
 	host_router.free()
 	client_router.free()
+
+
+func _test_owned_malformed_flood(
+	host: NetworkSessionManager, host_address: String, port: int
+) -> void:
+	var flood := RawEnetTransport.new()
+	var local_peer := [0]
+	flood.connected.connect(func(peer_id: int) -> void: local_peer[0] = peer_id)
+	var opened := flood.open_client(host_address, port) == OK
+	_check(opened, "owned malformed-flood client opens raw ENet session")
+	if not opened:
+		return
+	var sent := 0
+	var host_peer := -1
+	var deadline := Time.get_ticks_msec() + 5000
+	while Time.get_ticks_msec() < deadline:
+		flood.poll()
+		for candidate_peer in host.candidates.keys():
+			if host._peer_abuse.has(candidate_peer) or host_peer < 0:
+				host_peer = int(candidate_peer)
+		var current_abuse: Dictionary = host._peer_abuse.get(host_peer, {})
+		if int(current_abuse.get("format_failures", 0)) >= 120:
+			break
+		if local_peer[0] > 0:
+			for _packet in 8:
+				if flood.send(local_peer[0], PackedByteArray([0])) != OK:
+					break
+				sent += 1
+		await process_frame
+	_check(sent >= 120, "owned process sends at least 120 bounded malformed frames")
+	for _frame in 90:
+		if host_peer > 0 and not host.transport._peers.has(host_peer):
+			break
+		flood.poll()
+		await process_frame
+	var abuse: Dictionary = host._peer_abuse.get(host_peer, {})
+	_check(
+		int(abuse.get("format_failures", 0)) >= 120,
+		"host counts 120 malformed frames against the test peer"
+	)
+	_check(
+		int(abuse.get("logged", 0)) == 10 and int(abuse.get("suppressed", 0)) >= 110,
+		"host suppresses detailed rejection logs after ten entries"
+	)
+	_check(
+		not host.transport._peers.has(host_peer) and not host.candidates.has(host_peer),
+		"host closes malformed flood peer and clears its pending candidate"
+	)
+	flood.close()
 
 
 func _interface_options() -> Array[Dictionary]:

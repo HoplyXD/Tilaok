@@ -1,6 +1,6 @@
 # Tilaok!
 
-**Current build:** offline, local 2–4 player baseline. The scheduled P12 `Pugad → Place → Play` route remains default. An engineering-only offline live-build route is available by explicit opt-in; it is separately gated and is not an October submission obligation. NLB-P02 adds an opt-in PC LAN lobby and admission flow; network gameplay and Android clients are not implemented. See [networked live-build specification](docs/NETWORKED_LIVE_BUILD.md) and [separate tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md).
+**Current build:** offline, local 2–4 player baseline. The scheduled P12 `Pugad → Place → Play` route remains default. An engineering-only offline live-build route is available by explicit opt-in; it is separately gated and is not an October submission obligation. NLB-P02 adds an opt-in PC LAN lobby and admission flow. Android client implementation is partial: a candidate debug APK and client lobby code exist, but the camera scanner is not packaged, no phone is verified, and P02 real-LAN acceptance remains open. Network gameplay is not implemented. See [networked live-build specification](docs/NETWORKED_LIVE_BUILD.md), [separate tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md), and [P03 evidence](docs/evidence/nlb/p03/README.md).
 
 > A Filipino party platformer where chickens build the level, then try to survive it.
 
@@ -47,7 +47,7 @@ P01 provides the foundation harness and typed provisional configuration. P02 add
 
 NLB-P05 adds an explicitly selected offline live-build route while preserving the scheduled P12 route as the default. Its focused synthetic regression suite and rendered captures pass, but broad live safety/content acceptance is still open; see [P05 evidence](docs/evidence/nlb/p05/README.md).
 
-NLB-P02 adds a spectator PC host lobby with IPv4 discovery, manual address join, short-lived access code, host approval and lobby readiness. Network start is disabled because gameplay transport belongs to a later phase. The track remains separately gated, and Wi-Fi/no-internet LAN and flood-abuse checks remain open; see [P02 evidence](docs/evidence/nlb/p02/README.md).
+NLB-P02 adds a spectator PC host lobby with IPv4 discovery, manual address join, short-lived access code, host approval and lobby readiness. Network start is disabled because gameplay transport belongs to a later phase. The track remains separately gated: local abuse-threshold tests now pass, while real Wi-Fi/no-internet LAN and Android camera/device checks remain open; see [P02 evidence](docs/evidence/nlb/p02/README.md) and [P03 evidence](docs/evidence/nlb/p03/README.md).
 
 ## Play the live match flow (P07 playtest build)
 

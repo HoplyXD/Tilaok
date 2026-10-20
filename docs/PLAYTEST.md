@@ -811,3 +811,14 @@ Opt-in offline live-build route:
 ```powershell
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' -- --match-route=offline_live_build
 ```
+
+## NLB-P03 Android phone lobby — engineering status, 2026-10-20
+
+The invitation URI parser and client-only lobby have PC-side focused checks. The exported debug candidate is not a complete client: the camera scanner plugin is absent, no Android device is connected, and no phone or Wi-Fi join is represented by this synthetic evidence. P02-T03 remains open because only a WSL virtual address is available; local malformed-frame and ten-cycle process tests do not close the real Wi-Fi/no-internet prerequisite. See [P03 evidence](evidence/nlb/p03/README.md).
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Invitation parser and phone UI/authority checks | PASSED — 18 checks | [`p03-focused-tests.log`](evidence/nlb/p03/p03-focused-tests.log); synthetic PC tests only. |
+| Export candidate / APK manifest | PASSED as candidate only | [`P03 evidence`](evidence/nlb/p03/README.md); scanner integration and install acceptance remain open. |
+| Physical camera permission, QR scan, phone install/join/leave/rejoin | COULD-NOT-RUN | No physical Android device is available. |
+| Real Wi-Fi and no-internet host/client | COULD-NOT-RUN | No real Wi-Fi interface/device available; P02 exit is still required. |

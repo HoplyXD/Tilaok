@@ -268,3 +268,13 @@ The chart is shared by live round and final match results. Scores and winner rul
 & 'C:\Godot\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --script 'res://tests/run_ui_theme_tests.gd'
 & 'C:\Godot\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!' --script 'res://tests/capture_ui_reference_evidence.gd'   # windowed; optional -- --reference-dir=<PNG folder> --out-dir=<folder>
 ```
+
+## NLB-P03 Android client status and candidate export — 2026-10-20
+
+The Android preset is `Android LAN Client (Debug)` in `tilaok!/export_presets.cfg`; its ignored candidate output is `build/tilaok-android-debug.apk`. Export from the repository root with:
+
+```powershell
+& 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --headless --path 'tilaok!' --export-debug 'Android LAN Client (Debug)' '../build/tilaok-android-debug.apk'
+```
+
+The candidate manifest declares INTERNET and CAMERA and is landscape, but no scanner plugin/runtime camera permission integration is packaged. Do not represent the candidate as an accepted phone client or use its QR button as a working scanner. For verified preset, APK hash, environment, limitations and remaining device prerequisites, see [NLB-P03 evidence](evidence/nlb/p03/README.md). Android build and run instructions become user-facing only after the scanner plugin is integrated and the exported APK is physically verified. The Windows offline default remains unchanged.
