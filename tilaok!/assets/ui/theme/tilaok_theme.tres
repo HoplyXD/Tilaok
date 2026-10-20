@@ -951,6 +951,96 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="sb_title_card_backing"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_backing_shadow"]
+draw_center = false
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.34902, 0.223529, 0.121569, 0.19)
+shadow_size = 34
+
+[sub_resource type="Gradient" id="grad_title_card_dash"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.375)
+colors = PackedColorArray(0.815686, 0.701961, 0.552941, 1, 0.815686, 0.701961, 0.552941, 0)
+
+[sub_resource type="GradientTexture2D" id="tex_title_card_dash_h"]
+gradient = SubResource("grad_title_card_dash")
+width = 8
+height = 1
+
+[sub_resource type="StyleBoxTexture" id="sb_title_card_dash_h"]
+texture = SubResource("tex_title_card_dash_h")
+axis_stretch_horizontal = 1
+
+[sub_resource type="GradientTexture2D" id="tex_title_card_dash_v"]
+gradient = SubResource("grad_title_card_dash")
+width = 1
+height = 8
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="sb_title_card_dash_v"]
+texture = SubResource("tex_title_card_dash_v")
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_dot"]
+bg_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Gradient" id="grad_title_card_grain"]
+offsets = PackedFloat32Array(0, 0.15, 0.74)
+colors = PackedColorArray(0.341176, 0.211765, 0.105882, 0.13, 0.341176, 0.211765, 0.105882, 0.045, 0.341176, 0.211765, 0.105882, 0)
+
+[sub_resource type="FastNoiseLite" id="noise_title_card_grain"]
+noise_type = 5
+seed = 7666
+frequency = 1.0
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="tex_title_card_grain"]
+width = 256
+height = 256
+noise = SubResource("noise_title_card_grain")
+color_ramp = SubResource("grad_title_card_grain")
+seamless = true
+
+[sub_resource type="StyleBoxTexture" id="sb_title_card_grain"]
+texture = SubResource("tex_title_card_grain")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_paper"]
+bg_color = Color(0.96471, 0.90588, 0.80392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.83922, 0.72941, 0.52941, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_title_card_paper_shadow"]
+draw_center = false
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.34902, 0.223529, 0.121569, 0.17)
+shadow_size = 28
+
 [sub_resource type="StyleBoxFlat" id="sb_toast"]
 content_margin_left = 14.0
 content_margin_top = 6.0
@@ -1533,6 +1623,42 @@ TilaokMenuButton/styles/pressed = SubResource("sb_plank_pressed")
 TilaokPolicy/constants/hud_reservation_px = 64
 TilaokPolicy/constants/min_label_font_px = 12
 TilaokPolicy/constants/min_midround_font_px = 16
+TitleCardBacking/base_type = &"Panel"
+TitleCardBacking/styles/panel = SubResource("sb_title_card_backing")
+TitleCardBackingShadow/base_type = &"Panel"
+TitleCardBackingShadow/styles/panel = SubResource("sb_title_card_backing_shadow")
+TitleCardDashH/base_type = &"Panel"
+TitleCardDashH/styles/panel = SubResource("sb_title_card_dash_h")
+TitleCardDashV/base_type = &"Panel"
+TitleCardDashV/styles/panel = SubResource("sb_title_card_dash_v")
+TitleCardDot/base_type = &"Panel"
+TitleCardDot/styles/panel = SubResource("sb_title_card_dot")
+TitleCardFooter/base_type = &"Label"
+TitleCardFooter/colors/font_color = Color(0.580392, 0.45098, 0.309804, 1)
+TitleCardFooter/colors/font_shadow_color = Color(0, 0, 0, 0)
+TitleCardFooter/font_sizes/font_size = 14
+TitleCardFooter/fonts/font = ExtResource("font_margarine")
+TitleCardGrain/base_type = &"Panel"
+TitleCardGrain/styles/panel = SubResource("sb_title_card_grain")
+TitleCardPaper/base_type = &"Panel"
+TitleCardPaper/styles/panel = SubResource("sb_title_card_paper")
+TitleCardPaperShadow/base_type = &"Panel"
+TitleCardPaperShadow/styles/panel = SubResource("sb_title_card_paper_shadow")
+TitleCardPromptAction/base_type = &"Label"
+TitleCardPromptAction/colors/font_color = Color(0.407843, 0.254902, 0.152941, 1)
+TitleCardPromptAction/colors/font_shadow_color = Color(0, 0, 0, 0)
+TitleCardPromptAction/font_sizes/font_size = 34
+TitleCardPromptAction/fonts/font = ExtResource("font_road_rage")
+TitleCardSubtitle/base_type = &"Label"
+TitleCardSubtitle/colors/font_color = Color(0.580392, 0.45098, 0.309804, 1)
+TitleCardSubtitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+TitleCardSubtitle/font_sizes/font_size = 17
+TitleCardSubtitle/fonts/font = ExtResource("font_margarine")
+TitleCardTitle/base_type = &"Label"
+TitleCardTitle/colors/font_color = Color(0.407843, 0.254902, 0.152941, 1)
+TitleCardTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+TitleCardTitle/font_sizes/font_size = 100
+TitleCardTitle/fonts/font = ExtResource("font_mountains")
 TitleLabel/base_type = &"Label"
 TitleLabel/font_sizes/font_size = 64
 TitleLabel/fonts/font = ExtResource("font_mountains")

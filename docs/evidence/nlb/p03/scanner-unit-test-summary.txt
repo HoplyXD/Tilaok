@@ -1,0 +1,6 @@
+Command: .\gradlew.bat :plugin:testDebugUnitTest :plugin:assemble --console=plain
+Engine/plugin: Godot Android plugin source for Godot 4.7.2 stable
+Result: PASSED — 2 unit tests, 0 skipped, 0 failures, 0 errors.
+Cases: locally generated QR frame decodes to its payload; invalid luma dimensions are rejected.
+Input: synthetic in-process JVM unit tests; no camera, emulator, or phone.
+Detailed Gradle task output: scanner-gradle-final.log

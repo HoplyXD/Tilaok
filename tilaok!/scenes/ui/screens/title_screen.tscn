@@ -1,135 +1,378 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://dkl7vunygnlur"]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
-[ext_resource type="Script" path="res://scripts/ui/ui_title_screen.gd" id="2"]
-[ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="3"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" uid="uid://bclft5ju38erl" path="res://scripts/ui/ui_title_screen.gd" id="2"]
+[ext_resource type="Script" uid="uid://df5wjjgm7jhcf" path="res://scripts/ui/ui_menu_list.gd" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog_paper.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://ld1es1fq5wgo" path="res://scenes/ui/components/confirm_dialog_paper.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/menu_action_button.tscn" id="6"]
 [ext_resource type="Texture2D" uid="uid://pkpif3rw7i75" path="res://assets/ui/common/ui.common.icon_play.svg" id="7"]
+[ext_resource type="Texture2D" uid="uid://bvwkm5lt0vxa" path="res://assets/ui/title/ui.title.ornament.svg" id="9"]
 
-[node name="TitleScreen" type="Control"]
+[node name="TitleScreen" type="Control" unique_id=1623043607]
 layout_mode = 3
-script = ExtResource("2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("2")
 standalone_theme = ExtResource("1")
 
-[node name="Backdrop" type="PanelContainer" parent="."]
+[node name="Backdrop" type="PanelContainer" parent="." unique_id=1683584227]
 layout_mode = 1
-theme_type_variation = &"Backdrop"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"Backdrop"
 
-[node name="Art_Background" type="TextureRect" parent="."]
+[node name="Art_Background" type="TextureRect" parent="." unique_id=576695466]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
+metadata/asset_id = "ui.title.background"
+
+[node name="Card" type="Control" parent="." unique_id=1338016722]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -272.0
+offset_top = -326.0
+offset_right = 272.0
+offset_bottom = 326.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/figma = "Parchment main menu (103:553). 1 Figma px = 1 px on the 1280 x 720 canvas. The frame's title has two 92 px lines; \"Tilaok!\" is one, so the card is 652 px tall instead of 744 and everything below the title sits 92 px higher than in the frame."
+
+[node name="Backing" type="Panel" parent="Card" unique_id=1339623122]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 0.435
+offset_top = 2.755
+offset_right = 0.435
+offset_bottom = -13.245
 grow_horizontal = 2
 grow_vertical = 2
-metadata/asset_id = "ui.title.background"
+rotation = -0.0261799
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+theme_type_variation = &"TitleCardBacking"
+metadata/note = "Figma \"Backing paper\" (103:554): the card's width, 16 px shorter, turned 1.5 degrees counter-clockwise about its centre, which sits 0.435 px right of and 5.245 px above the card's."
 
-[node name="Safe" type="MarginContainer" parent="."]
+[node name="Shadow" type="Panel" parent="Card/Backing" unique_id=303572734]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 19.737
+offset_top = 27.075
+offset_right = -14.263
+offset_bottom = -6.925
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"TitleCardBackingShadow"
+metadata/note = "Figma drop shadow 3 10 22 #59391f 19 %. Godot's shadow fades linearly from the panel edge, so this panel sits 17 px inside the page and its 34 px fade (3.09 x the blur's sigma of 11) is centred on the page edge, like a blur. Shifted by (3, 10) on screen, counter-rotated here."
+
+[node name="Paper" type="Panel" parent="Card" unique_id=1670838082]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"SafeAreaMargin"
+mouse_filter = 2
+theme_type_variation = &"TitleCardPaper"
 
-[node name="Content" type="VBoxContainer" parent="Safe"]
-layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
+[node name="Shadow" type="Panel" parent="Card/Paper" unique_id=1417019986]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 24.0
+offset_right = -14.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"TitleCardPaperShadow"
+metadata/note = "The paper's drop shadow, about 0 10 18 #59391f 17 % (fitted to the frame's PNG export; Figma's code output leaves it out). 14 px inside the paper with a 28 px fade centred on its edge, shifted 10 px down. Drawn over the backing page, as in the frame."
 
-[node name="Art_Logo" type="TextureRect" parent="Safe/Content"]
-layout_mode = 2
+[node name="Grain" type="Control" parent="Card" unique_id=2062805645]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="GrainPatch" type="Panel" parent="Card/Grain" unique_id=647359835]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.5
+anchor_bottom = 1.5
+scale = Vector2(0.666667, 0.666667)
+mouse_filter = 2
+theme_type_variation = &"TitleCardGrain"
+metadata/note = "Paper grain (Figma noise effect), drawn at 1.5x density so one grain texel is one 1080p pixel."
+
+[node name="DashTop" type="Panel" parent="Card" unique_id=2060330476]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 14.5
+offset_top = 13.0
+offset_right = -15.5
+offset_bottom = 14.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"TitleCardDashH"
+metadata/note = "Dashed frame: 1 px, 13 px in from the card edge, 3 px dashes every 8 px."
+
+[node name="DashBottom" type="Panel" parent="Card" unique_id=218389321]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.5
+offset_top = -14.0
+offset_right = -15.5
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"TitleCardDashH"
+
+[node name="DashLeft" type="Panel" parent="Card" unique_id=1629479940]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 14.0
+offset_right = 14.0
+offset_bottom = -15.0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"TitleCardDashV"
+
+[node name="DashRight" type="Panel" parent="Card" unique_id=633314764]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -14.0
+offset_top = 14.0
+offset_right = -13.0
+offset_bottom = -15.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"TitleCardDashV"
+
+[node name="DotLeft" type="Panel" parent="Card" unique_id=255084514]
+layout_mode = 1
+offset_left = 24.0
+offset_top = 25.0
+offset_right = 29.0
+offset_bottom = 30.0
+mouse_filter = 2
+theme_type_variation = &"TitleCardDot"
+
+[node name="DotRight" type="Panel" parent="Card" unique_id=633004360]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -29.0
+offset_top = 25.0
+offset_right = -24.0
+offset_bottom = 30.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_type_variation = &"TitleCardDot"
+
+[node name="Art_Logo" type="TextureRect" parent="Card" unique_id=1313621923]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 30.0
+offset_top = 56.0
+offset_right = -30.0
+offset_bottom = 196.0
+grow_horizontal = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 metadata/asset_id = "ui.title.logo"
+metadata/note = "Optional logo picture in the title's box; hide TitleLabel if one is used."
 
-[node name="TitleLabel" type="Label" parent="Safe/Content"]
-layout_mode = 2
+[node name="TitleLabel" type="Label" parent="Card" unique_id=1413672930]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 30.0
+offset_top = 56.0
+offset_right = -30.0
+offset_bottom = 196.0
+grow_horizontal = 2
+theme_type_variation = &"TitleCardTitle"
 text = "Tilaok!"
-theme_type_variation = &"TitleLabel"
 horizontal_alignment = 1
+metadata/note = "Figma 103:558: Mountains of Christmas Bold 100, #684127, a 484 px box at the top 80 with 92 px lines. Godot's line box is 140 px (ascent 105), so the label sits 24 px higher to keep Figma's baseline, 161 px below the card top."
+
+[node name="Subtitle" type="Label" parent="Card" unique_id=871039053]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 42.0
+offset_top = 188.85
+offset_right = -42.0
+offset_bottom = 212.85
+grow_horizontal = 2
+theme_type_variation = &"TitleCardSubtitle"
+text = "Pugad. Place. Play."
+horizontal_alignment = 1
+metadata/note = "Figma 103:559: Margarine 17, #94734f, a 460 px box at the top 282 (190 here). Godot draws this line about 1.15 px lower than Figma (measured against the frame's PNG), so the label starts at 188.85."
+metadata/copy = "PLACEHOLDER copy: the frame's line ('Little letters. Grand adventures.') is sample text from another game."
+
+[node name="Art_Ornament" type="TextureRect" parent="Card" unique_id=395138664]
+texture_filter = 4
+layout_mode = 1
+offset_left = 106.0
+offset_top = 228.0
+offset_right = 438.0
+offset_bottom = 255.0
+mouse_filter = 2
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 5
+metadata/asset_id = "ui.title.ornament"
+metadata/note = "Figma \"Botanical ornament\" (103:560): leaves and a diamond, 332 x 27 at (106, 320) in the frame (228 here). The right-hand leaf is clipped by the layer's own bounds in the frame too."
+
+[node name="MenuArea" type="Control" parent="Card" unique_id=1905607776]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -194.0
+offset_top = 282.0
+offset_right = 194.0
+offset_bottom = 567.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="MenuList" type="VBoxContainer" parent="Card/MenuArea" unique_id=1026213984]
 unique_name_in_owner = true
-
-[node name="Tag" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "PLACEHOLDER title screen"
-theme_type_variation = &"PlaceholderTag"
-horizontal_alignment = 1
-
-[node name="Spacer" type="Control" parent="Safe/Content"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 24)
-
-[node name="MenuList" type="VBoxContainer" parent="Safe/Content"]
-layout_mode = 2
-script = ExtResource("3")
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 theme_override_constants/separation = 16
-size_flags_horizontal = 4
-unique_name_in_owner = true
+script = ExtResource("3")
 
-[node name="StartButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
+[node name="StartButton" parent="Card/MenuArea/MenuList" unique_id=2009095508 instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MenuActionSelected"
 text = "Play"
-unique_name_in_owner = true
 selected = true
 action_icon = ExtResource("7")
 metadata/icon_asset_id = "ui.common.icon_play"
 
-[node name="LibraryButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
+[node name="LibraryButton" parent="Card/MenuArea/MenuList" unique_id=1817934877 instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Library"
-unique_name_in_owner = true
 
-[node name="SettingsButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
+[node name="SettingsButton" parent="Card/MenuArea/MenuList" unique_id=195843228 instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Settings"
-unique_name_in_owner = true
 
-[node name="QuitButton" parent="Safe/Content/MenuList" instance=ExtResource("6")]
+[node name="QuitButton" parent="Card/MenuArea/MenuList" unique_id=449340535 instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Quit"
-unique_name_in_owner = true
 
-[node name="PressToJoinPrompt" parent="Safe/Content" instance=ExtResource("4")]
-layout_mode = 2
-size_flags_horizontal = 4
+[node name="PressToJoinPrompt" parent="Card/MenuArea" unique_id=415385695 instance=ExtResource("4")]
+unique_name_in_owner = true
 visible = false
-unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -194.0
+offset_top = -28.0
+offset_right = 194.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
 
-[node name="LanLobbyButton" parent="Safe/Content" instance=ExtResource("6")]
-layout_mode = 2
-text = "LAN Lobby"
-custom_minimum_size = Vector2(388, 54)
-size_flags_horizontal = 4
-unique_name_in_owner = true
+[node name="ActionLabel" parent="Card/MenuArea/PressToJoinPrompt" index="0"]
+theme_type_variation = &"TitleCardPromptAction"
 
-[node name="BuildLabel" type="Label" parent="Safe/Content"]
-layout_mode = 2
+[node name="BuildLabel" type="Label" parent="Card" unique_id=574187507]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 52.0
+offset_top = 592.1
+offset_right = -52.0
+offset_bottom = 612.1
+grow_horizontal = 2
+theme_type_variation = &"TitleCardFooter"
 text = "build"
-theme_type_variation = &"CaptionLabel"
 horizontal_alignment = 1
-unique_name_in_owner = true
+text_overrun_behavior = 3
+metadata/note = "Sits in the frame's footer line (103:589: Margarine 14, #94734f, a 440 px box at the top 685, 593 here; 592.1 because Godot draws the line about 0.9 px lower than Figma). The frame's line ('A little kindness goes a long way.') is sample text; the build label takes its place."
 
-[node name="QuitScrim" type="PanelContainer" parent="."]
+[node name="LanLobbyButton" parent="." unique_id=1137404617 instance=ExtResource("6")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 54)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -304.0
+offset_top = -90.0
+offset_right = -64.0
+offset_bottom = -36.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "LAN Lobby"
+metadata/note = "Not in the Figma frame (networked live-build track). Kept outside the card, bottom-right inside the safe area; still mouse-only as before."
+
+[node name="QuitScrim" type="PanelContainer" parent="." unique_id=319018032]
+unique_name_in_owner = true
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -138,9 +381,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"Scrim"
-unique_name_in_owner = true
 
-[node name="QuitConfirm" parent="." instance=ExtResource("5")]
+[node name="QuitConfirm" parent="." unique_id=1302646110 instance=ExtResource("5")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -153,5 +397,5 @@ offset_right = 210.0
 offset_bottom = 70.0
 grow_horizontal = 2
 grow_vertical = 2
-unique_name_in_owner = true
 
+[editable path="Card/MenuArea/PressToJoinPrompt"]

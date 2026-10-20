@@ -8,6 +8,10 @@ signal approval_requested(peer_id: int, compatibility: Dictionary)
 signal client_message(message: String)
 signal client_assigned(seat_index: int)
 signal session_error(message: String)
+signal network_match_start_requested
+signal network_match_started(match_id: int)
+signal network_match_start_received(match_id: int)
+signal match_state_received(state: Dictionary)
 
 enum SessionState { OFFLINE, STARTING, LOBBY_OPEN, STOPPING }
 enum CandidateState {
@@ -16,10 +20,15 @@ enum CandidateState {
 
 const DEFAULT_GAME_PORT := 27777
 const DEFAULT_DISCOVERY_PORT := 27778
-const INVITE_LIFETIME_SECONDS := 300
 const MAX_PENDING_APPROVALS := 4
 const MAX_FRAME_EVENTS := 32
 const CHALLENGE_TIMEOUT_SECONDS := 30
+const INPUT_TIMEOUT_MS := 150
+const INPUT_MAX_PER_SECOND := 60
+const ACTION_MAX_PER_SECOND := 10
+const ACTION_PER_KIND_PER_SECOND := 2
+const ACTION_QUEUE_CAP := 32
+const STATE_SEND_INTERVAL_TICKS := 3
 
 var state := SessionState.OFFLINE
 var admission_open := false
@@ -29,7 +38,7 @@ var discovery_port := DEFAULT_DISCOVERY_PORT
 var lobby_id := 0
 var session_epoch := 0
 var invitation_code := ""
-var invitation_expires_at := 0
+var invitation_expires_unix := 0
 var host_authority := SimulationAuthority.offline()
 var local_authority := SimulationAuthority.offline()
 var router: LocalInputRouter
@@ -59,12 +68,51 @@ var _candidate_timer := 0.0
 var _client_sequence := 0
 var _client_connect_deadline := 0
 var _client_transport_connected := false
+var _client_disconnect_notice_set := false
 var _pending_stop := false
 var _stop_deadline := 0
 var _manifest_source_stamp := ""
 var _manifest_poll_clock := 0.0
 var _interface_poll_clock := 0.0
 var selected_interface_usable := true
+var match_active := false
+var sync_ready := false
+var assigned_peer_generation := 0
+var active_match_id := 0
+var match_room: P12ScheduledMatchRoom
+var _generation_counter := 0
+var _pending_continuous: Dictionary = {}
+var _pending_actions: Dictionary = {}
+var _host_input_state: Dictionary = {}
+var _action_edge_watermarks: Dictionary = {}
+var _reliable_edge_watermarks: Dictionary = {}
+var _action_request_cache: Dictionary = {}
+var _client_input_sequence := 0
+var _client_action_sequence := 0
+var _client_request_id := 0
+var _last_state_send_tick := -1
+var _snapshot_counter := 0
+var _initial_snapshots_started := false
+var _snapshot_receivers: Dictionary = {}
+var _snapshot_sender: Dictionary = {}
+var _pending_snapshot_peers: Dictionary = {}
+var _snapshot_retry_counts: Dictionary = {}
+var _snapshot_request_count := 0
+var _snapshot_request_last_ms := 0
+var _last_event_signature := ""
+var _last_stage_version_sent := -1
+var _known_stage_entity_ids: Dictionary = {}
+var client_replica_state: Dictionary = {}
+var _client_axes := [0, 0]
+var _client_aim := [0, 0]
+var _client_held_mask := 0
+var _client_build_mode := false
+var _client_edge_watermark := 0
+var _client_input_elapsed := 0.0
+
+
+func _init() -> void:
+	process_physics_priority = -100
 
 
 func _ready() -> void:
@@ -113,10 +161,19 @@ func _process(delta: float) -> void:
 			_manifest_poll_clock = 0.0
 			_poll_manifest_sources()
 		_expire_candidates(delta)
-		_expire_invitation()
 	elif state == SessionState.STOPPING and _pending_stop:
 		if transport.peer_count() == 0 or Time.get_ticks_msec() >= _stop_deadline:
 			_finish_stop()
+	if match_active and not client_mode:
+		if match_room != null and not _initial_snapshots_started and match_room.phase_controller.phase != MatchPhaseController.Phase.LOBBY:
+			_initial_snapshots_started = true
+			_send_initial_snapshots()
+	if client_mode and match_active and sync_ready:
+		_client_input_elapsed += delta
+		if _client_input_elapsed >= (1.0 / 30.0):
+			_client_input_elapsed = fmod(_client_input_elapsed, 1.0 / 30.0)
+			_send_client_continuous_input()
+	_maintain_snapshot_transfers()
 
 
 func configure(input_router: LocalInputRouter) -> bool:
@@ -162,10 +219,7 @@ func start_host(
 		lobby_id = 1
 	if session_epoch == 0:
 		session_epoch = 1
-	_invitation_token = random
-	_invitation_code = InvitationCode.encode(random)
-	invitation_code = _invitation_code
-	invitation_expires_at = Time.get_ticks_msec() + INVITE_LIFETIME_SECONDS * 1000
+	_set_invitation(random)
 	selected_address = address
 	selected_interface_usable = true
 	_interface_poll_clock = 0.0
@@ -213,6 +267,7 @@ func connect_client(
 		return false
 	state = SessionState.STARTING
 	state_changed.emit("STARTING")
+	_client_disconnect_notice_set = false
 	client_invite_token = token
 	CompatibilityManifest.reload_sources()
 	var manifest := CompatibilityManifest.build()
@@ -240,6 +295,8 @@ func stop_session() -> void:
 	if state == SessionState.STOPPING:
 		return
 	state = SessionState.STOPPING
+	match_active = false
+	sync_ready = false
 	state_changed.emit("STOPPING")
 	admission_open = false
 	if transport.is_open:
@@ -266,6 +323,15 @@ func stop_session() -> void:
 	lobby_changed.emit()
 
 
+func _physics_process(_delta: float) -> void:
+	if not match_active or client_mode or not host_authority.can_commit():
+		return
+	_expire_input_sources()
+	_apply_queued_gameplay_input()
+	_send_queued_snapshots()
+	_send_periodic_state()
+
+
 func _finish_stop() -> void:
 	_pending_stop = false
 	transport.close()
@@ -275,6 +341,22 @@ func _finish_stop() -> void:
 	_idempotent_requests.clear()
 	_peer_abuse.clear()
 	_peer_family_times.clear()
+	_pending_continuous.clear()
+	_pending_actions.clear()
+	_host_input_state.clear()
+	_action_edge_watermarks.clear()
+	_reliable_edge_watermarks.clear()
+	_action_request_cache.clear()
+	_snapshot_receivers.clear()
+	_snapshot_sender.clear()
+	_pending_snapshot_peers.clear()
+	_snapshot_retry_counts.clear()
+	match_room = null
+	match_active = false
+	sync_ready = false
+	active_match_id = 0
+	assigned_peer_generation = 0
+	client_replica_state.clear()
 	_revoke_invitation()
 	lobby_id = 0
 	session_epoch = 0
@@ -289,6 +371,7 @@ func _finish_stop() -> void:
 	client_mode = false
 	_client_connect_deadline = 0
 	_client_transport_connected = false
+	_client_disconnect_notice_set = false
 	manifest_digest.clear()
 	_cached_compatibility.clear()
 	if router != null:
@@ -300,26 +383,6 @@ func _finish_stop() -> void:
 	state = SessionState.OFFLINE
 	state_changed.emit("OFFLINE")
 	lobby_changed.emit()
-
-
-func refresh_invitation() -> String:
-	if state != SessionState.LOBBY_OPEN or client_mode:
-		return ""
-	for peer_id in candidates.keys():
-		if int(candidates[peer_id].state) < CandidateState.ASSIGNED:
-			_send(
-				int(peer_id),
-				NetworkFrame.Family.ADMISSION_DECISION,
-				_u16(NetworkFrame.Reason.TOKEN_EXPIRED)
-			)
-			transport.close_peer(int(peer_id))
-			candidates.erase(peer_id)
-	_revoke_invitation()
-	_invitation_token = InvitationCode.generate()
-	_invitation_code = InvitationCode.encode(_invitation_token)
-	invitation_code = _invitation_code
-	invitation_expires_at = Time.get_ticks_msec() + INVITE_LIFETIME_SECONDS * 1000
-	return invitation_code
 
 
 func approve_peer(peer_id: int) -> bool:
@@ -348,9 +411,17 @@ func approve_peer(peer_id: int) -> bool:
 		return false
 	candidate.state = CandidateState.ASSIGNED
 	candidate.seat = seat_index
+	_generation_counter = (_generation_counter + 1) & 0xffffffff
+	if _generation_counter == 0:
+		_generation_counter = 1
+	candidate.peer_generation = _generation_counter
 	candidate.deadline = Time.get_ticks_msec() + CHALLENGE_TIMEOUT_SECONDS * 1000
 	candidates[peer_id] = candidate
-	var payload := PackedByteArray([seat_index, seat_index])
+	var payload := PackedByteArray([seat_index, seat_index + 1])
+	var generation_writer := StreamPeerBuffer.new()
+	generation_writer.big_endian = false
+	generation_writer.put_u32(_generation_counter)
+	payload.append_array(generation_writer.data_array)
 	_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.OK))
 	_send(peer_id, NetworkFrame.Family.SEAT_ASSIGNMENT, payload)
 	_broadcast_lobby_state()
@@ -402,13 +473,485 @@ func start_gate_status() -> String:
 		return "Content changed; invitations and readiness need refreshing."
 	if not selected_interface_usable:
 		return "Selected interface is unavailable. Stop the session and choose a current interface."
-	if not admission_open:
-		return "Admission is closed."
+	if match_active:
+		return "A network match is already running."
 	if router.registry.joined_seats().size() < 2:
 		return "At least two players are required."
 	if not router.registry.all_joined_ready_and_connected():
 		return "Every assigned player must be connected and ready."
-	return "Network gameplay unavailable until a later phase."
+	return "Ready to start the scheduled network match."
+
+
+func start_network_match() -> bool:
+	if client_mode or match_active or start_gate_status() != "Ready to start the scheduled network match.":
+		return false
+	active_match_id = 1
+	if active_match_id <= 0:
+		return false
+	match_active = true
+	sync_ready = true
+	close_admission()
+	var payload := _u8_u64(1, active_match_id)
+	for peer_id in candidates.keys():
+		var candidate: Dictionary = candidates[peer_id]
+		if int(candidate.get("seat", -1)) >= 0 and candidate.state >= CandidateState.ACKNOWLEDGED:
+			_send(int(peer_id), NetworkFrame.Family.MATCH_LIFECYCLE, payload)
+			candidate.match_sync_ready = false
+			candidates[peer_id] = candidate
+	network_match_start_requested.emit()
+	network_match_started.emit(active_match_id)
+	return true
+
+
+func bind_match_room(room: P12ScheduledMatchRoom) -> void:
+	if client_mode or not match_active:
+		return
+	match_room = room
+	if not match_room.presentation_changed.is_connected(_on_match_presentation_changed):
+		match_room.presentation_changed.connect(_on_match_presentation_changed)
+	_last_state_send_tick = -1
+	_last_stage_version_sent = -1
+	_known_stage_entity_ids.clear()
+	_initial_snapshots_started = false
+
+
+func _send_initial_snapshots() -> void:
+	for peer_id in candidates.keys():
+		var candidate: Dictionary = candidates[peer_id]
+		if int(candidate.get("seat", -1)) >= 0 and candidate.state >= CandidateState.ACKNOWLEDGED:
+			_pending_snapshot_peers[int(peer_id)] = true
+
+
+func _send_queued_snapshots() -> void:
+	for peer_id in _pending_snapshot_peers.keys():
+		_pending_snapshot_peers.erase(peer_id)
+		_send_initial_snapshot(int(peer_id))
+
+
+func _send_initial_snapshot(peer_id: int) -> void:
+	if match_room == null or not candidates.has(peer_id):
+		return
+	_snapshot_counter = (_snapshot_counter + 1) & 0xffffffff
+	if _snapshot_counter == 0:
+		_snapshot_counter = 1
+	var snapshot := match_room.network_replication_snapshot(
+		active_match_id, _snapshot_counter, Engine.get_physics_frames()
+	)
+	var metadata := NetworkMatchCodec.encode_metadata(snapshot.metadata)
+	var body := NetworkMatchCodec.pack_snapshot(snapshot.records)
+	if metadata.is_empty() or body.is_empty() or metadata.size() > 255:
+		_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.SNAPSHOT_LIMIT))
+		transport.close_peer(peer_id)
+		return
+	var content := PackedByteArray([metadata.size()])
+	content.append_array(metadata)
+	content.append_array(body)
+	if content.size() > NetworkMatchCodec.SNAPSHOT_CAP:
+		_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.SNAPSHOT_LIMIT))
+		transport.close_peer(peer_id)
+		return
+	var checksum := NetworkMatchCodec.crc32(content)
+	var chunk_count := ceili(float(content.size()) / NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES)
+	if chunk_count < 1 or chunk_count > NetworkMatchCodec.MAX_SNAPSHOT_CHUNKS:
+		_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.SNAPSHOT_LIMIT))
+		return
+	_snapshot_sender[peer_id] = {
+		"snapshot_id": _snapshot_counter,
+		"checksum": checksum,
+		"total": content.size(),
+		"sent_ms": Time.get_ticks_msec(),
+		"retries": int(_snapshot_retry_counts.get(peer_id, 0)),
+	}
+	for index in chunk_count:
+		var offset := index * NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES
+		var chunk := content.slice(offset, mini(offset + NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES, content.size()))
+		var payload := StreamPeerBuffer.new()
+		payload.big_endian = false
+		payload.put_u32(_snapshot_counter)
+		payload.put_u16(index)
+		payload.put_u16(chunk_count)
+		payload.put_u32(checksum)
+		payload.put_u32(content.size())
+		payload.put_u16(chunk.size())
+		payload.put_u16(0)
+		payload.put_data(chunk)
+		_send(peer_id, NetworkFrame.Family.SNAPSHOT_CHUNK, payload.data_array)
+	var end := StreamPeerBuffer.new()
+	end.big_endian = false
+	end.put_u32(_snapshot_counter)
+	end.put_u16(chunk_count)
+	end.put_u32(checksum)
+	end.put_u32(content.size())
+	_send(peer_id, NetworkFrame.Family.SNAPSHOT_END, end.data_array)
+
+
+func _receive_snapshot_chunk(payload: PackedByteArray) -> void:
+	if payload.size() < NetworkMatchCodec.SNAPSHOT_CHUNK_HEADER_BYTES or payload.size() > NetworkFrame.MAX_FRAME_BYTES - NetworkFrame.HEADER_BYTES:
+		return
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.data_array = payload
+	var snapshot_id := stream.get_u32()
+	var index := int(stream.get_u16())
+	var count := int(stream.get_u16())
+	var checksum := stream.get_u32()
+	var total := int(stream.get_u32())
+	var chunk_length := int(stream.get_u16())
+	var reserved := stream.get_u16()
+	if (
+		snapshot_id == 0 or count < 1 or count > NetworkMatchCodec.MAX_SNAPSHOT_CHUNKS
+		or index >= count or total < 1 or total > NetworkMatchCodec.SNAPSHOT_CAP
+		or count != ceili(float(total) / NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES)
+		or chunk_length < 1 or chunk_length > NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES
+		or payload.size() != NetworkMatchCodec.SNAPSHOT_CHUNK_HEADER_BYTES + chunk_length
+		or reserved != 0
+		or (index < count - 1 and chunk_length != NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES)
+		or (index == count - 1 and chunk_length != total - index * NetworkMatchCodec.SNAPSHOT_CHUNK_BYTES)
+	):
+		client_message.emit("The host sent an invalid snapshot chunk.")
+		return
+	var receiver: Dictionary = _snapshot_receivers.get(snapshot_id, {
+		"checksum": checksum, "total": total, "count": count, "chunks": {}, "ended": false,
+		"started_ms": Time.get_ticks_msec(),
+	})
+	if int(receiver.checksum) != checksum or int(receiver.total) != total or int(receiver.count) != count:
+		_snapshot_receivers.erase(snapshot_id)
+		client_message.emit("The host sent conflicting snapshot chunks.")
+		return
+	var chunk_data := stream.get_data(chunk_length)
+	if int(chunk_data[0]) != OK:
+		return
+	var chunks: Dictionary = receiver.chunks
+	if chunks.has(index) and chunks[index] != chunk_data[1]:
+		_snapshot_receivers.erase(snapshot_id)
+		client_message.emit("The host repeated a conflicting snapshot chunk.")
+		return
+	chunks[index] = chunk_data[1]
+	receiver.chunks = chunks
+	_snapshot_receivers[snapshot_id] = receiver
+
+
+func _receive_snapshot_end(payload: PackedByteArray, peer_id: int) -> void:
+	if payload.size() != 14:
+		return
+	var snapshot_id := _read_u32(payload, 0)
+	var count := _read_u16(payload, 4)
+	var checksum := _read_u32(payload, 6)
+	var total := _read_u32(payload, 10)
+	if not _snapshot_receivers.has(snapshot_id):
+		_request_snapshot_recovery()
+		return
+	var receiver: Dictionary = _snapshot_receivers[snapshot_id]
+	if int(receiver.count) != count or int(receiver.checksum) != checksum or int(receiver.total) != total or receiver.chunks.size() != count:
+		_request_snapshot_recovery()
+		return
+	var content := PackedByteArray()
+	for index in count:
+		if not receiver.chunks.has(index):
+			_request_snapshot_recovery()
+			return
+		content.append_array(receiver.chunks[index])
+	if content.size() != total or NetworkMatchCodec.crc32(content) != checksum or content.is_empty():
+		_request_snapshot_recovery()
+		return
+	var metadata_length := int(content[0])
+	if metadata_length < 59 or content.size() <= 1 + metadata_length:
+		_request_snapshot_recovery()
+		return
+	var metadata := NetworkMatchCodec.decode_metadata(content.slice(1, 1 + metadata_length))
+	var unpacked := NetworkMatchCodec.unpack_snapshot(content.slice(1 + metadata_length))
+	if not bool(metadata.get("ok", false)) or not bool(unpacked.get("ok", false)):
+		_request_snapshot_recovery()
+		return
+	if int(metadata.match_id) != active_match_id or int(metadata.snapshot_id) != snapshot_id:
+		_request_snapshot_recovery()
+		return
+	var installed := _replica_from_records(metadata, unpacked.records, snapshot_id)
+	client_replica_state = installed
+	_snapshot_receivers.clear()
+	match_state_received.emit(client_replica_state.duplicate(true))
+	var ack := _u32(snapshot_id)
+	ack.append_array(_u32(checksum))
+	ack.append_array(_u32(total))
+	_send(peer_id, NetworkFrame.Family.SNAPSHOT_ACK, ack)
+
+
+func _accept_snapshot_ack(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	if payload.size() != 12 or not _snapshot_sender.has(peer_id):
+		_reject(peer_id, NetworkFrame.Reason.SNAPSHOT_INVALID)
+		return
+	var sent: Dictionary = _snapshot_sender[peer_id]
+	if (
+		_read_u32(payload, 0) != int(sent.snapshot_id)
+		or _read_u32(payload, 4) != int(sent.checksum)
+		or _read_u32(payload, 8) != int(sent.total)
+	):
+		_reject(peer_id, NetworkFrame.Reason.SNAPSHOT_INVALID)
+		return
+	candidate.match_sync_ready = true
+	candidates[peer_id] = candidate
+	var ready_payload := _u32(int(sent.snapshot_id))
+	_send(peer_id, NetworkFrame.Family.SYNC_READY, ready_payload)
+	_snapshot_sender.erase(peer_id)
+	_snapshot_retry_counts.erase(peer_id)
+
+
+func _request_snapshot_recovery() -> void:
+	sync_ready = false
+	var now := Time.get_ticks_msec()
+	if not client_mode or not transport.is_open or _snapshot_request_count >= 3:
+		return
+	if now - _snapshot_request_last_ms < 1000:
+		return
+	_snapshot_request_count += 1
+	_snapshot_request_last_ms = now
+	_send_to_host(NetworkFrame.Family.SNAPSHOT_REQUEST, PackedByteArray([1]))
+
+
+func _replica_from_records(metadata: Dictionary, records: Array[Dictionary], snapshot_id: int) -> Dictionary:
+	var seats := {}
+	var entities := {}
+	var objective := {}
+	var event_context := {}
+	for record in records:
+		if record.has("seat"):
+			seats[int(record.seat)] = record.duplicate(true)
+		elif record.has("entity_id") and not bool(record.get("removed", false)):
+			entities[int(record.entity_id)] = record.duplicate(true)
+		elif record.has("kind"):
+			objective = record.duplicate(true)
+		elif record.has("event_main"):
+			event_context = record.duplicate(true)
+	return {
+		"metadata": metadata.duplicate(true),
+		"match_id": int(metadata.match_id),
+		"round_id": int(metadata.round_id),
+		"attempt_id": int(metadata.attempt_id),
+		"snapshot_id": snapshot_id,
+		"tick": int(metadata.tick),
+		"stage_version": int(metadata.stage_version),
+		"seats": seats,
+		"entities": entities,
+		"objective": objective,
+		"event_context": event_context,
+		"event_revision": int(metadata.event_revision),
+	}
+
+
+func _send_periodic_state() -> void:
+	if match_room == null:
+		return
+	var tick := Engine.get_physics_frames()
+	if tick == _last_state_send_tick or tick % STATE_SEND_INTERVAL_TICKS != 0:
+		return
+	_last_state_send_tick = tick
+	var frame := match_room.network_replication_snapshot(active_match_id, _snapshot_counter, tick)
+	var stage_version := int(frame.metadata.stage_version)
+	var seen: Dictionary = {}
+	for record in frame.records:
+		var raw: PackedByteArray = record
+		if raw.is_empty():
+			continue
+		if int(raw[0]) == NetworkMatchCodec.RECORD_STAGE_ENTITY:
+			var entity := NetworkMatchCodec.decode_stage_record(raw)
+			if bool(entity.get("ok", false)):
+				seen[int(entity.entity_id)] = true
+		var state_payload := NetworkMatchCodec.encode_state_update(
+			frame.metadata, tick, stage_version, raw
+		)
+		if state_payload.is_empty():
+			continue
+		for peer_id in candidates.keys():
+			if bool(candidates[peer_id].get("match_sync_ready", false)):
+				_send(int(peer_id), NetworkFrame.Family.STATE_UPDATE, state_payload)
+	for entity_id in _known_stage_entity_ids.keys():
+		if seen.has(entity_id):
+			continue
+		var tombstone := NetworkMatchCodec.encode_state_update(
+			frame.metadata, tick, stage_version, NetworkMatchCodec.encode_tombstone(int(entity_id))
+		)
+		for peer_id in candidates.keys():
+			if bool(candidates[peer_id].get("match_sync_ready", false)):
+				_send(int(peer_id), NetworkFrame.Family.STATE_UPDATE, tombstone)
+	_known_stage_entity_ids = seen
+	if stage_version != _last_stage_version_sent:
+		_send_terrain_commit(frame)
+		_last_stage_version_sent = stage_version
+
+
+func _send_terrain_commit(frame: Dictionary) -> void:
+	var version := int(frame.metadata.stage_version)
+	for record in frame.records:
+		var raw: PackedByteArray = record
+		if raw.is_empty() or int(raw[0]) != NetworkMatchCodec.RECORD_STAGE_ENTITY:
+			continue
+		var payload := _u32(version)
+		payload.append_array(_u16(raw.size()))
+		payload.append_array(raw)
+		for peer_id in candidates.keys():
+			if bool(candidates[peer_id].get("match_sync_ready", false)):
+				_send(int(peer_id), NetworkFrame.Family.TERRAIN_COMMIT, payload)
+
+
+func _on_match_presentation_changed(_reason: StringName) -> void:
+	if client_mode or not match_active or match_room == null:
+		return
+	var tick := Engine.get_physics_frames()
+	var frame := match_room.network_replication_snapshot(active_match_id, _snapshot_counter, tick)
+	var signature := "%d:%d:%d:%d" % [
+		int(frame.metadata.phase),
+		int(frame.metadata.round_id),
+		int(frame.metadata.stage_version),
+		int(frame.metadata.remaining_ms) / 1000,
+	]
+	if signature == _last_event_signature:
+		return
+	_last_event_signature = signature
+	match_room._network_event_revision += 1
+	frame.metadata.event_revision = match_room._network_event_revision
+	var metadata := NetworkMatchCodec.encode_metadata(frame.metadata)
+	if metadata.is_empty():
+		return
+	var payload := _u32(match_room._network_event_revision)
+	payload.append(metadata.size())
+	payload.append_array(metadata)
+	var seat_records: Array[PackedByteArray] = []
+	for record in frame.records:
+		var raw: PackedByteArray = record
+		if not raw.is_empty() and int(raw[0]) == NetworkMatchCodec.RECORD_SEAT:
+			seat_records.append(raw)
+	payload.append(seat_records.size())
+	for record in seat_records:
+		payload.append_array(_u16(record.size()))
+		payload.append_array(record)
+	for peer_id in candidates.keys():
+		if bool(candidates[peer_id].get("match_sync_ready", false)):
+			_send(int(peer_id), NetworkFrame.Family.AUTHORITATIVE_EVENT, payload)
+
+
+func _receive_state_update(payload: PackedByteArray) -> void:
+	var update := NetworkMatchCodec.decode_state_update(payload)
+	if not bool(update.get("ok", false)):
+		return
+	var metadata: Dictionary = update.metadata
+	if int(metadata.match_id) != active_match_id or int(metadata.attempt_id) < int(client_replica_state.get("attempt_id", 0)):
+		return
+	var current_tick := int(client_replica_state.get("tick", -1))
+	if int(update.tick) < current_tick:
+		return
+	var current_stage := int(client_replica_state.get("stage_version", -1))
+	if current_stage >= 0 and int(update.stage_version) > current_stage + 1:
+		_request_snapshot_recovery()
+		return
+	if current_stage >= 0 and int(update.stage_version) < current_stage:
+		return
+	if client_replica_state.is_empty():
+		return
+	var record: Dictionary = update.record
+	if record.has("seat"):
+		var seats: Dictionary = client_replica_state.seats
+		seats[int(record.seat)] = record.duplicate(true)
+		client_replica_state.seats = seats
+	elif record.has("entity_id"):
+		var entities: Dictionary = client_replica_state.entities
+		if bool(record.get("removed", false)):
+			entities.erase(int(record.entity_id))
+		else:
+			entities[int(record.entity_id)] = record.duplicate(true)
+		client_replica_state.entities = entities
+	elif record.has("kind"):
+		client_replica_state.objective = record.duplicate(true)
+	elif record.has("event_main"):
+		client_replica_state.event_context = record.duplicate(true)
+	client_replica_state.metadata = metadata.duplicate(true)
+	client_replica_state.round_id = int(metadata.round_id)
+	client_replica_state.attempt_id = int(metadata.attempt_id)
+	client_replica_state.tick = int(update.tick)
+	client_replica_state.stage_version = int(update.stage_version)
+	match_state_received.emit(client_replica_state.duplicate(true))
+
+
+func _receive_authoritative_event(payload: PackedByteArray) -> void:
+	if payload.size() < 48 or client_replica_state.is_empty():
+		return
+	var revision := _read_u32(payload, 0)
+	if revision <= int(client_replica_state.get("event_revision", 0)):
+		return
+	var metadata_length := int(payload[4])
+	if metadata_length < 59 or payload.size() < 6 + metadata_length:
+		return
+	var metadata := NetworkMatchCodec.decode_metadata(payload.slice(5, 5 + metadata_length))
+	if not bool(metadata.get("ok", false)) or int(metadata.match_id) != active_match_id:
+		return
+	var offset := 5 + metadata_length
+	var count := int(payload[offset])
+	offset += 1
+	if count > NetworkMatchCodec.MAX_SEATS:
+		return
+	var seats: Dictionary = client_replica_state.seats.duplicate(true)
+	for _index in count:
+		if offset + 2 > payload.size():
+			return
+		var length := _read_u16(payload, offset)
+		offset += 2
+		if length != 26 or offset + length > payload.size():
+			return
+		var record := NetworkMatchCodec.decode_seat_record(payload.slice(offset, offset + length))
+		if not bool(record.get("ok", false)):
+			return
+		seats[int(record.seat)] = record
+		offset += length
+	if offset != payload.size():
+		return
+	client_replica_state.seats = seats
+	client_replica_state.metadata = metadata
+	client_replica_state.event_revision = revision
+	client_replica_state.round_id = int(metadata.round_id)
+	client_replica_state.tick = int(metadata.tick)
+	match_state_received.emit(client_replica_state.duplicate(true))
+
+
+func _receive_terrain_commit(payload: PackedByteArray) -> void:
+	if payload.size() < 8 or client_replica_state.is_empty():
+		return
+	var version := _read_u32(payload, 0)
+	var length := _read_u16(payload, 4)
+	if length != payload.size() - 6 or version < int(client_replica_state.get("stage_version", 0)):
+		return
+	var entity := NetworkMatchCodec.decode_stage_record(payload.slice(6))
+	if not bool(entity.get("ok", false)):
+		return
+	if version > int(client_replica_state.stage_version) + 1:
+		_request_snapshot_recovery()
+		return
+	var entities: Dictionary = client_replica_state.entities.duplicate(true)
+	entities[int(entity.entity_id)] = entity
+	client_replica_state.entities = entities
+	client_replica_state.stage_version = version
+	match_state_received.emit(client_replica_state.duplicate(true))
+
+
+func _maintain_snapshot_transfers() -> void:
+	var now := Time.get_ticks_msec()
+	for peer_id in _snapshot_sender.keys():
+		var sent: Dictionary = _snapshot_sender[peer_id]
+		if now - int(sent.sent_ms) < 2000:
+			continue
+		var retries := int(sent.retries) + 1
+		if retries > 3:
+			transport.close_peer(int(peer_id))
+			_snapshot_sender.erase(peer_id)
+			continue
+		_snapshot_retry_counts[int(peer_id)] = retries
+		sent.retries = retries
+		sent.sent_ms = now
+		_snapshot_sender[peer_id] = sent
+		_pending_snapshot_peers[int(peer_id)] = true
+	for snapshot_id in _snapshot_receivers.keys():
+		var receiver: Dictionary = _snapshot_receivers[snapshot_id]
+		if now - int(receiver.started_ms) > 10000:
+			_snapshot_receivers.erase(snapshot_id)
+			_request_snapshot_recovery()
 
 
 func interface_options() -> Array[Dictionary]:
@@ -459,25 +1002,33 @@ func _on_peer_disconnected(peer_id: int) -> void:
 		client_assigned_seat = -1
 		client_ready = false
 		if state != SessionState.STOPPING:
-			client_message.emit("Host connection closed.")
+			if not _client_disconnect_notice_set:
+				client_message.emit("Host connection closed.")
 			stop_session()
 		return
 	if candidates.has(peer_id):
 		var candidate: Dictionary = candidates[peer_id]
 		if int(candidate.seat) >= 0:
 			remote_adapter.release_source("peer_%d" % peer_id)
+		_pending_continuous.erase(peer_id)
+		_pending_actions.erase(peer_id)
+		_host_input_state.erase(peer_id)
+		_action_edge_watermarks.erase(peer_id)
+		_reliable_edge_watermarks.erase(peer_id)
+		_action_request_cache.erase(peer_id)
+		_snapshot_sender.erase(peer_id)
 		candidates.erase(peer_id)
 		_broadcast_lobby_state()
 		lobby_changed.emit()
 
 
 func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) -> void:
-	if channel != RawEnetTransport.CONTROL_CHANNEL:
-		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
-		return
 	var decoded := NetworkFrame.decode(packet, -1 if client_mode else session_epoch, false)
 	if not bool(decoded.ok):
 		_reject(peer_id, int(decoded.reason))
+		return
+	if not NetworkFrame.family_allowed_on_channel(int(decoded.family), channel):
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
 		return
 	if not _accept_incoming_sequence(peer_id, int(decoded.family), int(decoded.sequence)):
 		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
@@ -519,10 +1070,10 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				payload.slice(0, 32) != manifest_digest
 				or int(payload[32]) != NetworkFrame.MAJOR
 				or int(payload[33]) > NetworkFrame.MINOR
-				or int(payload[34]) != 1
+				or int(payload[34]) != NetworkFrame.SCHEMA
 				or int(payload[35]) != 0
-				or int(payload[36]) != 15
-				or int(payload[37]) != 0
+				or int(payload[36]) != (NetworkFrame.FEATURE_P04_MASK & 0xff)
+				or int(payload[37]) != ((NetworkFrame.FEATURE_P04_MASK >> 8) & 0xff)
 			):
 				_send(
 					peer_id,
@@ -552,12 +1103,11 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				return
 			var client_nonce := payload.slice(0, 16)
 			var proof_value := payload.slice(32, 64)
-			if (
-				client_nonce != candidate.nonce
-				or payload.slice(16, 32) != candidate.server_nonce
-				or not _invitation_valid()
-			):
-				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
+			if client_nonce != candidate.nonce or payload.slice(16, 32) != candidate.server_nonce:
+				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+				return
+			if not _invitation_valid():
+				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
 				return
 			var expected := InvitationCode.proof(
 				_invitation_token, session_epoch, candidate.nonce, candidate.server_nonce
@@ -565,6 +1115,7 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			if not Crypto.new().constant_time_compare(expected, proof_value):
 				_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
 				return
+			# The room credential is reusable; this peer's challenge remains single-use.
 			if _pending_count() >= MAX_PENDING_APPROVALS:
 				_send(
 					peer_id,
@@ -580,7 +1131,6 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				"protocol": "%d.%d" % [NetworkFrame.MAJOR, NetworkFrame.MINOR]
 			}
 			candidates[peer_id] = candidate
-			_revoke_invitation()
 			var decision := _u16(NetworkFrame.Reason.APPROVAL_REQUIRED)
 			decision.append(0)
 			_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, decision)
@@ -589,14 +1139,24 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 		NetworkFrame.Family.ASSIGNMENT_ACK:
 			if (
 				candidate.state != CandidateState.ASSIGNED
-				or payload.size() != 1
+				or payload.size() != 5
 				or int(payload[0]) != int(candidate.seat)
+				or _read_u32(payload, 1) != int(candidate.peer_generation)
 			):
 				_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
 				return
 			candidate.state = CandidateState.ACKNOWLEDGED
 			candidate.deadline = 0
 			candidates[peer_id] = candidate
+			_host_input_state[peer_id] = {
+				"generation": int(candidate.peer_generation),
+				"last_valid_ms": Time.get_ticks_msec(),
+				"last_sequence": -1,
+				"timed_out": true,
+				"await_neutral": true,
+			}
+			_action_edge_watermarks[peer_id] = 0
+			_reliable_edge_watermarks[peer_id] = 0
 			_send_lobby_state(peer_id)
 			lobby_changed.emit()
 		NetworkFrame.Family.READY_REQUEST:
@@ -642,6 +1202,25 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			transport.close_peer(peer_id)
 			_broadcast_lobby_state()
 			lobby_changed.emit()
+		NetworkFrame.Family.CONTINUOUS_INPUT:
+			_accept_continuous_input(peer_id, payload, candidate)
+		NetworkFrame.Family.ACTION_REQUEST:
+			_accept_action_request(peer_id, payload, candidate)
+		NetworkFrame.Family.SNAPSHOT_ACK:
+			_accept_snapshot_ack(peer_id, payload, candidate)
+		NetworkFrame.Family.SNAPSHOT_REQUEST:
+			if payload.size() == 1 and int(payload[0]) == 1:
+				candidate.match_sync_ready = false
+				candidates[peer_id] = candidate
+				router.clear_remote_source("peer_%d" % peer_id)
+				_pending_continuous.erase(peer_id)
+				_pending_actions[peer_id] = []
+				if _host_input_state.has(peer_id):
+					_host_input_state[peer_id].timed_out = true
+					_host_input_state[peer_id].await_neutral = true
+				_pending_snapshot_peers[peer_id] = true
+			else:
+				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
 		_:
 			_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
 
@@ -659,17 +1238,19 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 					)
 				):
 					client_message.emit("This client does not match the host build.")
+					_client_disconnect_notice_set = true
 					return
 				var hello := PackedByteArray()
 				hello.append_array(client_manifest_digest)
 				hello.append(NetworkFrame.MAJOR)
 				hello.append(NetworkFrame.MINOR)
-				hello.append_array(_u16(1))
-				hello.append_array(_u16(15))
+				hello.append_array(_u16(NetworkFrame.SCHEMA))
+				hello.append_array(_u16(NetworkFrame.FEATURE_P04_MASK))
 				_send(peer_id, NetworkFrame.Family.COMPATIBILITY_HELLO, hello)
 				return
 			if payload.size() != 2 or _read_u16(payload) != NetworkFrame.Reason.OK:
 				client_message.emit("This client is not compatible with the host.")
+				_client_disconnect_notice_set = true
 				return
 			var join := _local_nonce.duplicate()
 			_send(peer_id, NetworkFrame.Family.JOIN_BEGIN, join)
@@ -708,12 +1289,18 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				)
 			elif reason != NetworkFrame.Reason.OK:
 				client_message.emit(_reason_message(reason))
+				_client_disconnect_notice_set = true
 		NetworkFrame.Family.SEAT_ASSIGNMENT:
-			if payload.size() != 2 or int(payload[0]) >= 4:
+			if payload.size() != 6 or int(payload[0]) >= 4 or int(payload[1]) != int(payload[0]) + 1:
 				client_message.emit("The host sent an invalid seat assignment.")
 				return
 			client_assigned_seat = int(payload[0])
+			assigned_peer_generation = _read_u32(payload, 2)
+			if assigned_peer_generation == 0:
+				client_message.emit("The host sent an invalid seat generation.")
+				return
 			var ack := PackedByteArray([client_assigned_seat])
+			ack.append_array(_u32(assigned_peer_generation))
 			_send(peer_id, NetworkFrame.Family.ASSIGNMENT_ACK, ack)
 			client_assigned.emit(client_assigned_seat)
 			client_message.emit(
@@ -775,8 +1362,45 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				client_assigned_seat = -1
 				client_ready = false
 			lobby_changed.emit()
+		NetworkFrame.Family.MATCH_LIFECYCLE:
+			if payload.size() != 9 or int(payload[0]) != 1 or _read_u64(payload, 1) == 0:
+				client_message.emit("The host sent an invalid match start.")
+				return
+			active_match_id = _read_u64(payload, 1)
+			match_active = true
+			sync_ready = false
+			network_match_start_received.emit(active_match_id)
+		NetworkFrame.Family.SNAPSHOT_CHUNK:
+			_receive_snapshot_chunk(payload)
+		NetworkFrame.Family.SNAPSHOT_END:
+			_receive_snapshot_end(payload, peer_id)
+		NetworkFrame.Family.SYNC_READY:
+			if payload.size() != 4 or _read_u32(payload, 0) != int(client_replica_state.get("snapshot_id", -1)):
+				client_message.emit("The host sent an invalid synchronization notice.")
+				return
+			sync_ready = true
+			_snapshot_request_count = 0
+			_client_axes = [0, 0]
+			_client_aim = [0, 0]
+			_client_held_mask = 0
+			_client_build_mode = false
+			_client_edge_watermark = _client_action_sequence
+			client_message.emit("Connected to the shared match.")
+		NetworkFrame.Family.STATE_UPDATE:
+			_receive_state_update(payload)
+		NetworkFrame.Family.AUTHORITATIVE_EVENT, NetworkFrame.Family.TERRAIN_COMMIT:
+			if family == NetworkFrame.Family.AUTHORITATIVE_EVENT:
+				_receive_authoritative_event(payload)
+			else:
+				_receive_terrain_commit(payload)
+		NetworkFrame.Family.ACTION_RESULT:
+			if payload.size() == 10:
+				var reason := _read_u16(payload, 8)
+				if reason != NetworkFrame.Reason.OK:
+					client_message.emit("An action was not accepted by the host (%d)." % reason)
 		NetworkFrame.Family.SESSION_CLOSE:
 			client_message.emit("The host closed the session.")
+			_client_disconnect_notice_set = true
 			stop_session()
 		_:
 			client_message.emit("The host sent an unsupported lobby message.")
@@ -793,12 +1417,321 @@ func _send(peer_id: int, family: int, payload: PackedByteArray) -> bool:
 	var frame := NetworkFrame.encode(family, session_epoch, sequence, payload)
 	if frame.is_empty():
 		return false
-	return transport.send(peer_id, frame) == OK
+	return transport.send(peer_id, frame, NetworkFrame.channel_for_family(family)) == OK
 
 
 func _send_to_host(family: int, payload: PackedByteArray) -> bool:
 	var peers := _connected_peer_ids()
 	return false if peers.is_empty() else _send(int(peers[0]), family, payload)
+
+
+func client_set_continuous_input(axes: Array, aim: Array = [0, 0], build_mode: bool = false) -> bool:
+	if not client_mode or axes.size() != 2 or aim.size() != 2:
+		return false
+	for value in axes + aim:
+		if int(value) < -1000 or int(value) > 1000:
+			return false
+	_client_axes = [int(axes[0]), int(axes[1])]
+	_client_aim = [int(aim[0]), int(aim[1])]
+	_client_build_mode = build_mode
+	return true
+
+
+func client_set_action(action_id: int, pressed: bool) -> bool:
+	if not client_mode or not sync_ready or client_assigned_seat < 0:
+		return false
+	var held_bit := _held_bit_for_action(action_id)
+	if held_bit != 0:
+		var was_held := (_client_held_mask & held_bit) != 0
+		if was_held == pressed:
+			return true
+		_client_held_mask = (_client_held_mask | held_bit) if pressed else (_client_held_mask & ~held_bit)
+	_client_action_sequence = (_client_action_sequence + 1) & 0xffffffff
+	if _client_action_sequence == 0:
+		_client_action_sequence = 1
+	_client_edge_watermark = _client_action_sequence
+	var request_id := (int(Time.get_ticks_msec()) << 20) | (_client_action_sequence & 0xfffff)
+	var request := {
+		"request_id": request_id,
+		"match_id": active_match_id,
+		"round_id": int(client_replica_state.get("round_id", 0)),
+		"attempt_id": int(client_replica_state.get("attempt_id", 0)),
+		"peer_generation": assigned_peer_generation,
+		"edge_sequence": _client_action_sequence,
+		"action": action_id,
+		"target_id": 0,
+		"cell": Vector2i.ZERO,
+		"rotation": 0,
+		"pressed": pressed,
+		"client_tick": Engine.get_physics_frames() & 0xffffffff,
+	}
+	var payload := NetworkMatchCodec.encode_action_request(request)
+	return not payload.is_empty() and _send_to_host(NetworkFrame.Family.ACTION_REQUEST, payload)
+
+
+func _send_client_continuous_input() -> void:
+	if not sync_ready or client_assigned_seat < 0 or assigned_peer_generation == 0:
+		return
+	_client_input_sequence = (_client_input_sequence + 1) & 0xffffffff
+	var sample := {
+		"match_id": active_match_id,
+		"round_id": int(client_replica_state.get("round_id", 0)),
+		"attempt_id": int(client_replica_state.get("attempt_id", 0)),
+		"peer_generation": assigned_peer_generation,
+		"sequence": _client_input_sequence,
+		"client_tick": Engine.get_physics_frames() & 0xffffffff,
+		"axes": _client_axes,
+		"aim": _client_aim,
+		"held": _client_held_mask,
+		"build_mode": _client_build_mode,
+		"edge_watermark": _client_edge_watermark,
+	}
+	var payload := NetworkMatchCodec.encode_input(sample)
+	if not payload.is_empty():
+		_send_to_host(NetworkFrame.Family.CONTINUOUS_INPUT, payload)
+
+
+func _accept_continuous_input(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	if (
+		not match_active or match_room == null or not bool(candidate.get("match_sync_ready", false))
+		or not _input_phase_eligible()
+	):
+		_reject(peer_id, NetworkFrame.Reason.WRONG_PHASE)
+		return
+	var sample := NetworkMatchCodec.decode_input(payload)
+	if not bool(sample.get("ok", false)):
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+		return
+	if not _input_identity_matches(peer_id, sample, candidate):
+		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		return
+	var prior: Dictionary = _host_input_state.get(peer_id, {})
+	if bool(prior.get("await_neutral", true)) and not _sample_is_neutral(sample):
+		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		return
+	var sequence := int(sample.sequence)
+	if int(prior.get("last_sequence", -1)) >= 0 and not _sequence_is_newer(sequence, int(prior.last_sequence)):
+		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		return
+	if int(sample.edge_watermark) != 0 and not _watermark_not_older(peer_id, int(sample.edge_watermark)):
+		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		return
+	prior.last_sequence = sequence
+	prior.last_valid_ms = Time.get_ticks_msec()
+	prior.timed_out = false
+	prior.await_neutral = false
+	prior.generation = int(candidate.peer_generation)
+	_host_input_state[peer_id] = prior
+	_pending_continuous[peer_id] = sample
+
+
+func _accept_action_request(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	if not match_active or match_room == null or not bool(candidate.get("match_sync_ready", false)):
+		_reject(peer_id, NetworkFrame.Reason.WRONG_PHASE)
+		return
+	var request := NetworkMatchCodec.decode_action_request(payload)
+	if not bool(request.get("ok", false)):
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+		return
+	if not _input_identity_matches(peer_id, request, candidate):
+		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		return
+	var cache: Dictionary = _action_request_cache.get(peer_id, {})
+	_prune_action_cache(cache)
+	var request_key := str(request.request_id)
+	var payload_hasher := HashingContext.new()
+	payload_hasher.start(HashingContext.HASH_SHA256)
+	payload_hasher.update(payload)
+	var payload_hash := payload_hasher.finish().hex_encode()
+	if cache.has(request_key):
+		var cached: Dictionary = cache[request_key]
+		if str(cached.hash) != payload_hash:
+			_send_action_result(peer_id, int(request.request_id), NetworkFrame.Reason.REQUEST_ID_REUSE)
+			return
+		_send(peer_id, NetworkFrame.Family.ACTION_RESULT, cached.response)
+		return
+	if cache.size() >= 32:
+		_send_action_result(peer_id, int(request.request_id), NetworkFrame.Reason.REQUEST_CAPACITY)
+		return
+	if not _action_phase_allowed(int(request.action)):
+		_cache_action_result(cache, peer_id, request, payload_hash, NetworkFrame.Reason.WRONG_PHASE)
+		return
+	var per_action_key := "%d:action:%d" % [peer_id, int(request.action)]
+	var now := Time.get_ticks_msec()
+	var rate: Dictionary = _peer_family_times.get(per_action_key, {"window": now, "count": 0})
+	if now - int(rate.window) >= 1000:
+		rate = {"window": now, "count": 0}
+	if int(rate.count) >= ACTION_PER_KIND_PER_SECOND:
+		_cache_action_result(cache, peer_id, request, payload_hash, NetworkFrame.Reason.RATE_LIMIT)
+		return
+	rate.count = int(rate.count) + 1
+	_peer_family_times[per_action_key] = rate
+	var edge_sequence := int(request.edge_sequence)
+	var previous_edge := int(_reliable_edge_watermarks.get(peer_id, 0))
+	if previous_edge != 0 and not _sequence_is_newer(edge_sequence, previous_edge):
+		_cache_action_result(cache, peer_id, request, payload_hash, NetworkFrame.Reason.STALE_STATE)
+		return
+	if _pending_actions.get(peer_id, []).size() >= ACTION_QUEUE_CAP:
+		_send_action_result(peer_id, int(request.request_id), NetworkFrame.Reason.REQUEST_CAPACITY)
+		return
+	request.source_id = "peer_%d" % peer_id
+	var queue: Array = _pending_actions.get(peer_id, [])
+	queue.append(request)
+	_pending_actions[peer_id] = queue
+	_reliable_edge_watermarks[peer_id] = edge_sequence
+	_cache_action_result(cache, peer_id, request, payload_hash, NetworkFrame.Reason.OK)
+
+
+func _input_identity_matches(peer_id: int, record: Dictionary, candidate: Dictionary) -> bool:
+	return (
+		int(record.get("match_id", -1)) == active_match_id
+		and int(record.get("round_id", -1)) == match_room.network_current_round_id()
+		and int(record.get("attempt_id", -1)) == (int(match_room.match_run_id) & 0xffff)
+		and int(record.get("peer_generation", -1)) == int(candidate.get("peer_generation", 0))
+		and router.registry.seat_for_remote_source("peer_%d" % peer_id) == int(candidate.seat)
+	)
+
+
+func _input_phase_eligible() -> bool:
+	return match_room != null and match_room.phase_controller.phase in [
+		MatchPhaseController.Phase.PUGAD,
+		MatchPhaseController.Phase.PLACE,
+		MatchPhaseController.Phase.PLAY,
+		MatchPhaseController.Phase.RESULTS,
+	]
+
+
+func _action_phase_allowed(action_id: int) -> bool:
+	if not _input_phase_eligible():
+		return false
+	var phase := match_room.phase_controller.phase
+	match action_id:
+		0, 11:
+			return phase == MatchPhaseController.Phase.PLAY
+		1, 2:
+			return phase in [MatchPhaseController.Phase.PUGAD, MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.RESULTS]
+		3:
+			return phase == MatchPhaseController.Phase.PLACE
+		4:
+			return phase == MatchPhaseController.Phase.PUGAD
+		5:
+			return false
+		6:
+			return phase in [MatchPhaseController.Phase.PLAY, MatchPhaseController.Phase.RESULTS]
+		7, 8, 9, 10:
+			return phase in [MatchPhaseController.Phase.PUGAD, MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.RESULTS]
+	return false
+
+
+func _apply_queued_gameplay_input() -> void:
+	for peer_id in candidates.keys():
+		var candidate: Dictionary = candidates[peer_id]
+		if not bool(candidate.get("match_sync_ready", false)):
+			continue
+		var source_id := "peer_%d" % int(peer_id)
+		if _pending_continuous.has(peer_id):
+			var sample: Dictionary = _pending_continuous[peer_id]
+			var mask := int(sample.held)
+			if not remote_adapter.submit_sample(source_id, sample.axes, sample.aim, mask, bool(sample.build_mode)):
+				continue
+			_action_edge_watermarks[peer_id] = int(sample.edge_watermark)
+			_pending_continuous.erase(peer_id)
+		var queue: Array = _pending_actions.get(peer_id, [])
+		for request in queue:
+			var edge := int(request.edge_sequence)
+			var watermark := int(_action_edge_watermarks.get(peer_id, 0))
+			var held_action := int(request.action) in [0, 7, 8, 9, 10, 11]
+			if held_action and watermark != 0 and not _sequence_is_newer(edge, watermark):
+				continue
+			if not _apply_action_request(source_id, request):
+				continue
+			_action_edge_watermarks[peer_id] = edge
+		_pending_actions[peer_id] = []
+
+
+func _apply_action_request(source_id: String, request: Dictionary) -> bool:
+	var action_names := ["jump", "confirm", "back", "rotate", "claim", "ready", "cheer", "left", "right", "up", "down", "down"]
+	var action_id := int(request.action)
+	if action_id < 0 or action_id >= action_names.size():
+		return false
+	return remote_adapter.submit_action(
+		source_id, str(action_names[action_id]), bool(request.pressed)
+	)
+
+
+func _expire_input_sources() -> void:
+	var now := Time.get_ticks_msec()
+	for peer_id in _host_input_state.keys():
+		var input: Dictionary = _host_input_state[peer_id]
+		if not bool(input.get("timed_out", true)) and now - int(input.last_valid_ms) >= INPUT_TIMEOUT_MS:
+			router.clear_remote_source("peer_%d" % int(peer_id))
+			_pending_continuous.erase(peer_id)
+			_pending_actions[peer_id] = []
+			input.timed_out = true
+			# The first valid post-timeout sequence is fresh input from the still-bound peer.
+			# Only initial assignment and snapshot resync require an explicit neutral sample;
+			# requiring one after a transient packet gap can otherwise lock controls forever.
+			input.await_neutral = false
+			_host_input_state[peer_id] = input
+
+
+func _watermark_not_older(peer_id: int, watermark: int) -> bool:
+	var previous := int(_action_edge_watermarks.get(peer_id, 0))
+	return previous == 0 or watermark == previous or _sequence_is_newer(watermark, previous)
+
+
+func _sample_is_neutral(sample: Dictionary) -> bool:
+	return (
+		int(sample.axes[0]) == 0 and int(sample.axes[1]) == 0
+		and int(sample.aim[0]) == 0 and int(sample.aim[1]) == 0
+		and int(sample.held) == 0 and not bool(sample.build_mode)
+	)
+
+
+func _sequence_is_newer(current: int, previous: int) -> bool:
+	var difference := (current - previous) & 0xffffffff
+	return difference > 0 and difference < 0x80000000
+
+
+func _held_bit_for_action(action_id: int) -> int:
+	match action_id:
+		0: return NetworkMatchCodec.HELD_JUMP
+		7: return NetworkMatchCodec.HELD_LEFT
+		8: return NetworkMatchCodec.HELD_RIGHT
+		9: return NetworkMatchCodec.HELD_UP
+		10: return NetworkMatchCodec.HELD_DOWN
+		11: return NetworkMatchCodec.HELD_SNEAK
+	return 0
+
+
+func _action_result_payload(request_id: int, reason: int) -> PackedByteArray:
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.put_u64(request_id)
+	stream.put_u16(reason)
+	return stream.data_array
+
+
+func _send_action_result(peer_id: int, request_id: int, reason: int) -> void:
+	_send(peer_id, NetworkFrame.Family.ACTION_RESULT, _action_result_payload(request_id, reason))
+
+
+func _cache_action_result(cache: Dictionary, peer_id: int, request: Dictionary, payload_hash: String, reason: int) -> void:
+	var response := _action_result_payload(int(request.request_id), reason)
+	cache[str(request.request_id)] = {
+		"hash": payload_hash,
+		"response": response,
+		"time": Time.get_ticks_msec(),
+	}
+	_action_request_cache[peer_id] = cache
+	_send(peer_id, NetworkFrame.Family.ACTION_RESULT, response)
+
+
+func _prune_action_cache(cache: Dictionary) -> void:
+	var now := Time.get_ticks_msec()
+	for request_id in cache.keys():
+		if now - int(cache[request_id].time) > 120000:
+			cache.erase(request_id)
 
 
 func _send_lobby_state(peer_id: int) -> void:
@@ -820,6 +1753,9 @@ func _broadcast_lobby_state() -> void:
 
 
 func _reject(peer_id: int, reason: int) -> void:
+	if client_mode:
+		client_message.emit("The host sent an invalid or out-of-order message (%d)." % reason)
+		return
 	var now := Time.get_ticks_msec()
 	var abuse: Dictionary = (
 		_peer_abuse
@@ -880,6 +1816,11 @@ func _reject(peer_id: int, reason: int) -> void:
 		candidates.erase(peer_id)
 		_sequences.erase(peer_id)
 		_incoming_sequences.erase(peer_id)
+		_pending_continuous.erase(peer_id)
+		_pending_actions.erase(peer_id)
+		_host_input_state.erase(peer_id)
+		_action_edge_watermarks.erase(peer_id)
+		_reliable_edge_watermarks.erase(peer_id)
 		for key in _peer_family_times.keys():
 			if str(key).begins_with("%d:" % peer_id):
 				_peer_family_times.erase(key)
@@ -887,13 +1828,25 @@ func _reject(peer_id: int, reason: int) -> void:
 
 
 func _accept_rate(peer_id: int, family: int) -> bool:
-	var interval := 100 if family == NetworkFrame.Family.READY_REQUEST else 0
 	var key := "%d:%d" % [peer_id, family]
 	var now := Time.get_ticks_msec()
-	var previous := int(_peer_family_times.get(key, 0))
-	if interval > 0 and previous > 0 and now - previous < interval:
+	var state: Dictionary = _peer_family_times.get(key, {"window": now, "count": 0, "last": -1000})
+	if now - int(state.window) >= 1000:
+		state = {"window": now, "count": 0, "last": -1000}
+	var limit := 0
+	match family:
+		NetworkFrame.Family.CONTINUOUS_INPUT:
+			limit = INPUT_MAX_PER_SECOND
+		NetworkFrame.Family.ACTION_REQUEST:
+			limit = ACTION_MAX_PER_SECOND
+		NetworkFrame.Family.READY_REQUEST:
+			if now - int(state.last) < 100:
+				return false
+	if limit > 0 and int(state.count) >= limit:
 		return false
-	_peer_family_times[key] = now
+	state.count = int(state.count) + 1
+	state.last = now
+	_peer_family_times[key] = state
 	return true
 
 
@@ -965,7 +1918,6 @@ func _poll_manifest_sources() -> bool:
 	manifest_digest = current.digest
 	_cached_compatibility = current
 	_manifest_revision += 1
-	_revoke_invitation()
 	for peer_id in candidates.keys():
 		var candidate: Dictionary = candidates[peer_id]
 		_send(
@@ -985,13 +1937,15 @@ func _poll_manifest_sources() -> bool:
 
 
 func _invitation_valid() -> bool:
-	return not _invitation_token.is_empty() and Time.get_ticks_msec() < invitation_expires_at
+	return not _invitation_token.is_empty()
 
 
-func _expire_invitation() -> void:
-	if not _invitation_token.is_empty() and Time.get_ticks_msec() >= invitation_expires_at:
-		_revoke_invitation()
-		lobby_changed.emit()
+func _set_invitation(token: PackedByteArray) -> void:
+	_revoke_invitation()
+	_invitation_token = token.duplicate()
+	_invitation_code = InvitationCode.encode(token)
+	invitation_code = _invitation_code
+	invitation_expires_unix = 0
 
 
 func _revoke_invitation() -> void:
@@ -999,7 +1953,7 @@ func _revoke_invitation() -> void:
 	_invitation_token.clear()
 	_invitation_code = ""
 	invitation_code = ""
-	invitation_expires_at = 0
+	invitation_expires_unix = 0
 
 
 func _rollback_start(message: String) -> bool:
@@ -1081,17 +2035,59 @@ func _accept_incoming_sequence(peer_id: int, family: int, sequence: int) -> bool
 	return true
 
 
-func _read_u16(bytes: PackedByteArray) -> int:
+func _read_u16(bytes: PackedByteArray, offset: int = 0) -> int:
+	if offset == 0:
+		var stream := StreamPeerBuffer.new()
+		stream.big_endian = false
+		stream.data_array = bytes
+		return stream.get_u16()
+	if offset < 0 or bytes.size() < offset + 2:
+		return -1
 	var stream := StreamPeerBuffer.new()
 	stream.big_endian = false
-	stream.data_array = bytes
+	stream.data_array = bytes.slice(offset, offset + 2)
 	return stream.get_u16()
+
+
+func _read_u32(bytes: PackedByteArray, offset: int = 0) -> int:
+	if offset < 0 or bytes.size() < offset + 4:
+		return -1
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.data_array = bytes.slice(offset, offset + 4)
+	return stream.get_u32()
+
+
+func _read_u64(bytes: PackedByteArray, offset: int = 0) -> int:
+	if offset < 0 or bytes.size() < offset + 8:
+		return -1
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.data_array = bytes.slice(offset, offset + 8)
+	return stream.get_u64()
+
+
+func _u32(value: int) -> PackedByteArray:
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.put_u32(value)
+	return stream.data_array
+
+
+func _u8_u64(first: int, second: int) -> PackedByteArray:
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.put_u8(first)
+	stream.put_u64(second)
+	return stream.data_array
 
 
 func _reason_message(reason: int) -> String:
 	match reason:
 		NetworkFrame.Reason.TOKEN_INVALID:
-			return "Access code is invalid or expired."
+			return "Access code does not match this room. Check the code shown by the host."
+		NetworkFrame.Reason.TOKEN_EXPIRED:
+			return "This room invitation is no longer active. Ask the host to reopen the room."
 		NetworkFrame.Reason.INCOMPATIBLE:
 			return "This client does not match the host build."
 		NetworkFrame.Reason.LOBBY_FULL:

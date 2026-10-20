@@ -129,3 +129,19 @@ texture = ExtResource("2")
 expand_mode = 1
 metadata/asset_id = "ui.common.menu_pointer"
 metadata/note = "Figma \"Selection pointer\": 15 x 22, 14 px left of the button, shown only while selected."
+
+[node name="Shadow" type="TextureRect" parent="Pointer"]
+show_behind_parent = true
+self_modulate = Color(0.873134, 0.8625, 0.808511, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+metadata/note = "The selected button's solid drop shadow (Figma 0 4 0 #754526) falls on the pointer too, because the pointer is part of the button in the frame. Same picture 4 px lower, tinted from #86502f to #754526."

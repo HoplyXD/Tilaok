@@ -1,0 +1,138 @@
+ERROR: Can't open pack-referenced file "res://project.binary" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Corrupted header in binary project.binary (not ECFG).
+   at: _load_settings_binary (core/config/project_settings.cpp:918)
+ERROR: Couldn't load file 'res://project.binary', error code 16.
+   at: _load_settings_text_or_binary (core/config/project_settings.cpp:1004)
+ERROR: Can't open pack-referenced file "res://.godot/uid_cache.bin" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Can't open pack-referenced file "res://.godot/global_script_class_cache.cfg" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Can't open pack-referenced file "res://assets/ui/theme/tilaok_theme.tres.remap" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:3 - ext_resource, invalid UID: uid://b23oml2kuo4j4 - using text path instead: res://assets/fonts/handlee/Handlee-Regular.ttf
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/fonts/handlee/Handlee-Regular.ttf.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/fonts/handlee/Handlee-Regular.ttf.
+   at: _load (core/io/resource_loader.cpp:317)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:4 - ext_resource, invalid UID: uid://biifg2yse7lhm - using text path instead: res://assets/fonts/mansalva/Mansalva-Regular.ttf
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/fonts/mansalva/Mansalva-Regular.ttf.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/fonts/mansalva/Mansalva-Regular.ttf.
+   at: _load (core/io/resource_loader.cpp:317)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:5 - ext_resource, invalid UID: uid://fhspmnhmi187 - using text path instead: res://assets/fonts/margarine/Margarine-Regular.ttf
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/fonts/margarine/Margarine-Regular.ttf.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/fonts/margarine/Margarine-Regular.ttf.
+   at: _load (core/io/resource_loader.cpp:317)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:6 - ext_resource, invalid UID: uid://dm41mxkfcm4la - using text path instead: res://assets/fonts/mountains_of_christmas/MountainsofChristmas-Bold.ttf
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/fonts/mountains_of_christmas/MountainsofChristmas-Bold.ttf.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/fonts/mountains_of_christmas/MountainsofChristmas-Bold.ttf.
+   at: _load (core/io/resource_loader.cpp:317)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:7 - ext_resource, invalid UID: uid://2i1hklmi0b4g - using text path instead: res://assets/fonts/road_rage/RoadRage-Regular.ttf
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/fonts/road_rage/RoadRage-Regular.ttf.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/fonts/road_rage/RoadRage-Regular.ttf.
+   at: _load (core/io/resource_loader.cpp:317)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:8 - ext_resource, invalid UID: uid://bgoragjwm3ayw - using text path instead: res://assets/ui/round_result/ui.round_result.countdown_fill.svg
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/ui/round_result/ui.round_result.countdown_fill.svg.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/ui/round_result/ui.round_result.countdown_fill.svg.
+   at: _load (core/io/resource_loader.cpp:317)
+WARNING: res://assets/ui/theme/tilaok_theme.tres:9 - ext_resource, invalid UID: uid://bmhbqf2jj4xi8 - using text path instead: res://assets/ui/place/ui.place.timer_fill.svg
+   at: load (scene/resources/resource_format_text.cpp:501)
+ERROR: Can't open pack-referenced file "res://assets/ui/place/ui.place.timer_fill.svg.import" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Resource file not found:  (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+ERROR: Failed loading resource: res://assets/ui/place/ui.place.timer_fill.svg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: res://assets/ui/theme/tilaok_theme.tres:113 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/ui/round_result/ui.round_result.countdown_fill.svg.
+   at: _printerr (scene/resources/resource_format_text.cpp:41)
+ERROR: res://assets/ui/theme/tilaok_theme.tres:113 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/ui/round_result/ui.round_result.countdown_fill.svg.
+   at: _printerr (scene/resources/resource_format_text.cpp:41)
+ERROR: Failed loading resource: res://assets/ui/theme/tilaok_theme.tres.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Error loading custom project theme 'res://assets/ui/theme/tilaok_theme.tres'
+   at: initialize_theme (scene/theme/theme_db.cpp:74)
+ERROR: Can't open pack-referenced file "res://default_bus_layout.tres.remap" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+ERROR: Can't open pack-referenced file "res://default_bus_layout.tres.remap" from sparse pack "C:\Users\roman\Desktop\Vscode Projects\Tilaok\build\tilaok-android-exported-assets.pck" due to error "File not found".
+   at: FileAccessPack (core/io/file_access_pack.cpp:545)
+ERROR: File must be opened before use.
+   at: get_buffer (core/io/file_access_pack.cpp:473)
+ERROR: Condition "num_read == 0xffffffffffffffffULL" is true. Returning: 0
+   at: _read_buffer (core/variant/variant_parser.cpp:80)
+SCRIPT ERROR: Parse Error: Identifier "CompatibilityManifest" not declared in the current scope.
+   at: GDScript::reload (res://tests/print_nlb_compatibility_digest.gd:9)
+SCRIPT ERROR: Parse Error: Identifier "CompatibilityManifest" not declared in the current scope.
+   at: GDScript::reload (res://tests/print_nlb_compatibility_digest.gd:10)
+SCRIPT ERROR: Parse Error: Identifier "CompatibilityManifest" not declared in the current scope.
+   at: GDScript::reload (res://tests/print_nlb_compatibility_digest.gd:14)
+ERROR: Failed to load script "res://tests/print_nlb_compatibility_digest.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

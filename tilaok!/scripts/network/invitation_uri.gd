@@ -3,7 +3,7 @@ extends RefCounted
 
 const SCHEME_PREFIX := "tilaok://join?"
 const MAX_URI_BYTES := 512
-const REQUIRED_FIELDS := ["lobby", "host", "port", "protocol", "digest", "code", "epoch"]
+const REQUIRED_FIELDS := ["lobby", "host", "port", "protocol", "digest", "code", "epoch", "expires"]
 const LOBBY_ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
 
@@ -26,8 +26,16 @@ static func parse(uri: String) -> Dictionary:
 		if not fields.has(field) or str(fields[field]).is_empty():
 			return {"ok": false, "error": "The invitation is missing required fields."}
 	var lobby := str(fields.lobby)
-	if not _valid_lobby_id(lobby) or lobby[0] > "B":
-		return {"ok": false, "error": "The Lobby ID is invalid."}
+	if not _valid_lobby_id(lobby):
+		return {
+			"ok": false,
+			"error": "Scanned Lobby ID '%s' is invalid; expected 13 Base32 characters." % lobby,
+		}
+	if LOBBY_ALPHABET.find(lobby[0]) > 7:
+		return {
+			"ok": false,
+			"error": "Scanned Lobby ID '%s' is outside the supported range (A–H)." % lobby,
+		}
 	var host := str(fields.host)
 	if not _valid_ipv4(host):
 		return {"ok": false, "error": "The host address is invalid."}
@@ -51,6 +59,12 @@ static func parse(uri: String) -> Dictionary:
 	var epoch := int(epoch_text)
 	if epoch <= 0 or str(epoch) != epoch_text:
 		return {"ok": false, "error": "The host session identifier is invalid."}
+	var expires_text := str(fields.expires)
+	if not expires_text.is_valid_int() or expires_text.length() > 20:
+		return {"ok": false, "error": "The invitation expiry is invalid."}
+	var expires := int(expires_text)
+	if expires < 0 or str(expires) != expires_text:
+		return {"ok": false, "error": "The invitation expiry is invalid."}
 	var digest := PackedByteArray()
 	digest.append_array(digest_text.hex_decode())
 	return {
@@ -62,6 +76,7 @@ static func parse(uri: String) -> Dictionary:
 		"digest": digest,
 		"code": code,
 		"epoch": epoch,
+		"expires_unix": expires,
 	}
 
 

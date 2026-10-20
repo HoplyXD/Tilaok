@@ -1,0 +1,102 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS empty route keeps scheduled default
+PASS first playable route remains selectable
+PASS offline live-build route is explicit
+PASS identical retry returns the original pending result
+PASS changed payload under a reused ID is rejected
+PASS distinct host receipt times preserve receipt ordering
+PASS only equal receipt times use round-rotated occupied-seat priority
+PASS attempt cache retains the stable resolved result
+PASS retry after resolution returns the same result
+PASS one boundary accepts at most four queued requests
+PASS each seat can hold only one pending request
+PASS a seat is limited to eight unique request IDs per attempt
+PASS authority derives ownership from the registered seat
+PASS K1 Q toggles live build mode
+PASS K1 aim is separate from movement
+PASS K1 live rotate is separate from cheer
+PASS K2 bracket toggles live build mode
+PASS K3 minus toggles live build mode
+PASS K3 number-row aim stays independent
+PASS K4 numpad plus toggles live build mode
+PASS gamepad right bumper rotates the live preview
+PASS gamepad cheer remains on X during Play
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS P05 live egg pool excludes unverified variants
+NLB_P05_PUGAD seed=273365526 assignments={"0":"egg_01","1":"egg_02"}
+PASS 2-seat live layout assigns one distinct item per player and enters GO
+PASS 2-seat GO begins at the shared three-second default
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS P05 live egg pool excludes unverified variants
+NLB_P05_PUGAD seed=273365526 assignments={"0":"egg_01","1":"egg_02","2":"egg_03"}
+PASS 3-seat live layout assigns one distinct item per player and enters GO
+PASS 3-seat GO begins at the shared three-second default
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS P05 live egg pool excludes unverified variants
+NLB_P05_PUGAD seed=273365526 assignments={"0":"egg_01","1":"egg_02","2":"egg_03","3":"egg_04"}
+PASS 4-seat live layout assigns one distinct item per player and enters GO
+PASS 4-seat GO begins at the shared three-second default
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+NLB_P05_PUGAD seed=2113646822 assignments={"0":"egg_01","1":"egg_02"}
+PASS Pugad timeout resolves remaining seats to distinct eggs before GO
+NLB_P05_ASSIGNMENT_TIMEOUT seed=2113646822 assignments={"0":"egg_01","1":"egg_02"}
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS Impossible egg assignment explains failure and returns to Lobby without GO
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS live route starts through the existing two-seat Lobby gate
+NLB_P05_PUGAD seed=2113646822 assignments={"0":"egg_01","1":"egg_02"}
+PASS every seat assignment enters the shared GO countdown without Place
+PASS pause freezes the GO phase and preserves its countdown
+PASS GO releases movement and item lifecycle together
+PASS rejected placement leaves inventory, terrain and stage version unchanged
+PASS safe live placement commits once and advances stage version once
+PASS new item receives an independent activation grace entry
+PASS actor entering the new item's danger area holds its activation grace
+PASS clearing the danger area restarts a full one-second activation grace
+PASS a live mover sweep holds activation while crossing the danger area
+PASS clearing the mover path restarts its full activation grace
+PASS pause freezes the live item grace clock
+PASS live item activates after a clear one-second grace
+PASS closing the attempt clears pending requests and dedupe results
+P04_ITEM_LAB_READY families=19 enabled_variants=3 profile=nlb_p05_live_build
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=nlb_p05_live_build seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS live route starts the P12 Barya fixture
+NLB_P05_PUGAD seed=2113646822 assignments={"0":"egg_04","1":"egg_01"}
+PASS Barya uses live active-round placement without entering construction counts
+NLB_P05_TESTS checks=49 failures=0

@@ -1,5 +1,7 @@
 # Four keyboard layouts, clickable map row, Place block preview, Library Back — evidence (2026-10-16)
 
+NLB-P04 adds a separate landscape phone touch overlay for network clients (movement, jump/hold, sneak, claim/confirm, and back actions). This overlay has source-level implementation only; it has not been runtime-checked on a phone. Existing PC bindings and the 2026-10-16 synthetic keyboard evidence below are unchanged. See [P04 deferred evidence](../nlb/p04/README.md).
+
 Build: HEAD `fec0d3f` plus uncommitted work; Godot 4.7.stable.official.5b4e0cb0f; Windows 11; headless `--fixed-fps 60` for tests and a 1920×1080 window for captures; synthetic keys and mouse events. Reviewer: Claude (AI, automated). No physical keyboard rollover test and no human review.
 
 | File | What it shows | Result |

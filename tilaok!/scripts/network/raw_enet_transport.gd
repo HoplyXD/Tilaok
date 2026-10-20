@@ -9,6 +9,9 @@ signal transport_error(message: String)
 const MAX_PEERS := 8
 const MAX_EVENTS_PER_FRAME := 16
 const CONTROL_CHANNEL := 0
+const INPUT_CHANNEL := 1
+const STATE_CHANNEL := 2
+const CHANNEL_COUNT := 3
 
 var connection := ENetConnection.new()
 var is_host := false
@@ -22,7 +25,7 @@ var _next_peer_id := 1
 func open_host(address: String, port: int) -> Error:
 	if is_open:
 		close()
-	var error := connection.create_host_bound(address, port, MAX_PEERS, 1)
+	var error := connection.create_host_bound(address, port, MAX_PEERS, CHANNEL_COUNT)
 	if error != OK:
 		return error
 	is_host = true
@@ -33,10 +36,10 @@ func open_host(address: String, port: int) -> Error:
 func open_client(address: String, port: int) -> Error:
 	if is_open:
 		close()
-	var error := connection.create_host(1, 1)
+	var error := connection.create_host(1, CHANNEL_COUNT)
 	if error != OK:
 		return error
-	var peer := connection.connect_to_host(address, port, 1)
+	var peer := connection.connect_to_host(address, port, CHANNEL_COUNT)
 	if peer == null:
 		close()
 		return ERR_CANT_CREATE
@@ -93,13 +96,28 @@ func _endpoint_key(peer: ENetPacketPeer) -> String:
 	return "%s:%d" % [peer.get_remote_address(), peer.get_remote_port()]
 
 
-func send(peer_id: int, packet: PackedByteArray) -> Error:
+func send(peer_id: int, packet: PackedByteArray, channel: int = CONTROL_CHANNEL) -> Error:
 	if not is_open or packet.is_empty() or packet.size() > NetworkFrame.MAX_FRAME_BYTES:
+		return ERR_INVALID_PARAMETER
+	if channel < CONTROL_CHANNEL or channel >= CHANNEL_COUNT:
 		return ERR_INVALID_PARAMETER
 	var peer: ENetPacketPeer = _peers.get(peer_id)
 	if peer == null or peer.get_state() != ENetPacketPeer.STATE_CONNECTED:
 		return ERR_DOES_NOT_EXIST
-	return peer.send(CONTROL_CHANNEL, packet, ENetPacketPeer.FLAG_RELIABLE)
+	# ENet's default packet mode is unreliable-sequenced. In particular, do not set
+	# FLAG_UNSEQUENCED for superseding input or state records.
+	var flags := ENetPacketPeer.FLAG_RELIABLE if channel == CONTROL_CHANNEL else 0
+	return peer.send(channel, packet, flags)
+
+
+func send_to_all(packet: PackedByteArray, channel: int = CONTROL_CHANNEL) -> Error:
+	if not is_host or not is_open or packet.is_empty() or packet.size() > NetworkFrame.MAX_FRAME_BYTES:
+		return ERR_INVALID_PARAMETER
+	if channel < CONTROL_CHANNEL or channel >= CHANNEL_COUNT:
+		return ERR_INVALID_PARAMETER
+	var flags := ENetPacketPeer.FLAG_RELIABLE if channel == CONTROL_CHANNEL else 0
+	connection.broadcast(channel, packet, flags)
+	return OK
 
 
 func close_peer(peer_id: int, after_queued_packets: bool = false) -> void:

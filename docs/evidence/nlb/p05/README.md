@@ -31,7 +31,7 @@ The route's current verified content allowlist and disabled-cell handling are re
 | Baseline versus opt-in performance under a recorded live load | COULD-NOT-RUN | No comparable frame/memory sample was run. 16.67 ms frame interval, 512 MiB process memory, and 0 B/s offline gameplay traffic remain targets, not passes. |
 | Physical gamepad, human play, and independent review | COULD-NOT-RUN | No such session occurred; no claims are made. |
 
-NLB-P05-T01 passed and is checked. T02 and T03 remain unchecked because their full safety, compatibility, replay, and performance evidence is incomplete. The tracker counts 9/36 checked overall; two P05 task results are COULD-NOT-RUN (plus one partial P02 result).
+NLB-P05-T01 passed and is checked. T02 and T03 remain unchecked because their full safety, compatibility, replay, and performance evidence is incomplete. The tracker counts 10/36 checked overall; two P05 task results are COULD-NOT-RUN (plus one partial P02 result).
 
 ## Regression commands and results
 
