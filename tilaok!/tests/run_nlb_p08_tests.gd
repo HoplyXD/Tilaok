@@ -57,16 +57,17 @@ func _run() -> void:
 
 func _test_wire_constants() -> void:
 	_check(NetworkFrame.MAJOR == 1 and NetworkFrame.MINOR == 2, "envelope stays 1.2 so older binaries read the welcome")
-	_check(NetworkFrame.SCHEMA == 5 and NetworkFrame.FEATURE_LIFECYCLE == 0x0200, "schema 5 adds the lifecycle feature bit 9")
-	_check(NetworkFrame.FEATURE_P08_MASK == 0x03ff and NetworkFrame.FEATURE_REQUIRED_MASK == NetworkFrame.FEATURE_P08_MASK, "the P08 mask is exactly required")
+	# Schema 5 added the lifecycle bit; NLB-P09 (v1.6) raised the schema to 6 and the mask to 0x07FF.
+	_check(NetworkFrame.SCHEMA == 6 and NetworkFrame.FEATURE_LIFECYCLE == 0x0200, "the lifecycle feature bit 9 (schema 5) is still required")
+	_check(NetworkFrame.FEATURE_P08_MASK == 0x03ff and (NetworkFrame.FEATURE_REQUIRED_MASK & NetworkFrame.FEATURE_P08_MASK) == NetworkFrame.FEATURE_P08_MASK, "the P08 mask is a subset of the required mask")
 	_check(NetworkFrame.FEATURE_P07_MASK != NetworkFrame.FEATURE_REQUIRED_MASK, "a P07 peer (0x01FF) is refused at hello")
 	for family in [NetworkFrame.Family.PAUSE_STATE, NetworkFrame.Family.LIFECYCLE_HINT, NetworkFrame.Family.RECLAIM_BEGIN, NetworkFrame.Family.RECLAIM_RESULT]:
 		_check(family in NetworkFrame.FAMILIES, "family 0x%02X is allowlisted" % family)
 		_check(NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.CONTROL_CHANNEL), "family 0x%02X uses reliable channel 0" % family)
 		_check(not NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.INPUT_CHANNEL), "family 0x%02X rejected on the input channel" % family)
 		_check(not NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.STATE_CHANNEL), "family 0x%02X rejected on the state channel" % family)
-	_check(NetworkFrame.FAMILIES.size() == 33 and NetworkFrame.FAMILIES.max() == 0x21, "the allowlist ends at 0x21")
-	_check(str(CompatibilityManifest.build().manifest.build) == "tilaok-nlb-p08-2026-10-21", "the manifest build ID is the P08 build")
+	_check(NetworkFrame.FAMILIES.size() == 38 and NetworkFrame.FAMILIES.max() == 0x26, "the allowlist ends at 0x26 after NLB-P09")
+	_check(str(CompatibilityManifest.build().manifest.build) == "tilaok-nlb-p09-2026-10-21", "the manifest build ID is the P09 build")
 
 
 func _test_codecs() -> void:

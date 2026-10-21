@@ -54,7 +54,8 @@ func _run() -> void:
 func _test_wire_constants() -> void:
 	_check(NetworkFrame.MAJOR == 1 and NetworkFrame.MINOR == 2, "envelope stays 1.2 so older binaries read the welcome")
 	# NLB-P07 (contract v1.4) raised the schema to 4 and requires the live-transient bit as well.
-	_check(NetworkFrame.SCHEMA == 5 and NetworkFrame.FEATURE_P06_MASK == 0x00ff and NetworkFrame.FEATURE_P07_MASK == 0x01ff and NetworkFrame.FEATURE_REQUIRED_MASK == 0x03ff, "schema 5 requires the live-placement, live-transient and lifecycle features")
+	# NLB-P08 raised it to 5 (0x03FF) and NLB-P09 (contract v1.6) to 6 (0x07FF, results).
+	_check(NetworkFrame.SCHEMA == 6 and NetworkFrame.FEATURE_P06_MASK == 0x00ff and NetworkFrame.FEATURE_P07_MASK == 0x01ff and NetworkFrame.FEATURE_P08_MASK == 0x03ff and NetworkFrame.FEATURE_REQUIRED_MASK == 0x07ff, "schema 6 requires the live-placement, live-transient, lifecycle and results features")
 	_check((NetworkFrame.FEATURE_P06_MASK & NetworkFrame.FEATURE_LIVE_PLACEMENT) != 0 and (NetworkFrame.FEATURE_P04_MASK & NetworkFrame.FEATURE_LIVE_PLACEMENT) == 0, "P04 mask lacks the live-placement bit")
 	for family in [NetworkFrame.Family.PLACEMENT_INTENT, NetworkFrame.Family.PLACEMENT_RESULT, NetworkFrame.Family.LIVE_SEAT_STATE, NetworkFrame.Family.TERRAIN_COMMIT]:
 		_check(family in NetworkFrame.FAMILIES, "family 0x%02X is allowlisted" % family)
@@ -213,7 +214,8 @@ func _test_routes_and_local_confirm_flag() -> void:
 
 
 func _test_p04_hello_rejected() -> void:
-	for case in [[2, NetworkFrame.FEATURE_P04_MASK, false], [3, NetworkFrame.FEATURE_P06_MASK, false], [4, NetworkFrame.FEATURE_REQUIRED_MASK, true]]:
+	# Only the current schema with exactly the required mask is admitted; every older binary is refused.
+	for case in [[2, NetworkFrame.FEATURE_P04_MASK, false], [3, NetworkFrame.FEATURE_P06_MASK, false], [4, NetworkFrame.FEATURE_P07_MASK, false], [5, NetworkFrame.FEATURE_P08_MASK, false], [NetworkFrame.SCHEMA, NetworkFrame.FEATURE_REQUIRED_MASK, true]]:
 		var manager := CaptureManager.new()
 		root.add_child(manager)
 		var compatibility := CompatibilityManifest.build()
@@ -231,7 +233,7 @@ func _test_p04_hello_rejected() -> void:
 		var reply: Dictionary = manager.sent.back() if not manager.sent.is_empty() else {}
 		var reason := int(reply.payload.decode_u16(0)) if not reply.is_empty() else -1
 		if bool(case[2]):
-			_check(reason == NetworkFrame.Reason.OK and int(manager.candidates[3].state) == NetworkSessionManager.CandidateState.CHALLENGE, "schema-4 P07 hello is admitted to the challenge")
+			_check(reason == NetworkFrame.Reason.OK and int(manager.candidates[3].state) == NetworkSessionManager.CandidateState.CHALLENGE, "the current-schema hello is admitted to the challenge")
 		else:
 			_check(reason == NetworkFrame.Reason.INCOMPATIBLE, "schema-%d hello is refused as INCOMPATIBLE, never half-admitted" % int(case[0]))
 		manager.queue_free()

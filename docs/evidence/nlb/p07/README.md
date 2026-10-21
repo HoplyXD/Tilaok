@@ -21,8 +21,8 @@ That authorization clears none of the open dependencies:
 
 ## What the matrix does
 
-The matrix has 94 cells (91 at P07; NLB-P08 added three lifecycle cells):
-- 9 lifecycle cells;
+The matrix has 97 cells (91 at P07; NLB-P08 added three lifecycle cells and NLB-P09 three more):
+- 12 lifecycle cells;
 - 4 map cells;
 - 10 round cells (Mains, stacks, sudden death and the Kangaroo commands);
 - 70 variant × allowed-mode cells, plus Barya.

@@ -37,7 +37,13 @@ const TRANSIENT_CAPS := {
 	TRANSIENT_MOVER: 48,
 }
 const MAX_TRANSIENTS := 100
-const MAX_SNAPSHOT_RECORDS := MAX_SEATS + MAX_STAGE_ENTITIES + 8 + MAX_TRANSIENTS
+## Contract v1.6 (NLB-P09): one snapshot record per committed ledger entry (type byte + the
+## RESULT_EVENT payload), at most NetworkResultsCodec.MAX_ENTRIES per match.
+const RECORD_LEDGER := 8
+const MAX_LEDGER_RECORDS := NetworkResultsCodec.MAX_ENTRIES
+const MAX_SNAPSHOT_RECORDS := (
+	MAX_SEATS + MAX_STAGE_ENTITIES + 8 + MAX_TRANSIENTS + MAX_LEDGER_RECORDS
+)
 const HELD_LEFT := 1 << 0
 const HELD_RIGHT := 1 << 1
 const HELD_UP := 1 << 2
@@ -563,7 +569,22 @@ static func decode_record(raw: PackedByteArray) -> Dictionary:
 			return decode_transient_record(raw)
 		RECORD_TRANSIENT_END:
 			return decode_transient_end(raw)
+		RECORD_LEDGER:
+			var entry := NetworkResultsCodec.decode_event(raw.slice(1))
+			if not bool(entry.get("ok", false)):
+				return {"ok": false}
+			return {"ok": true, "ledger": true, "entry": entry}
 	return {"ok": false}
+
+
+## Type byte plus the event payload; empty when the entry is invalid.
+static func encode_ledger_record(entry: Dictionary) -> PackedByteArray:
+	var body := NetworkResultsCodec.encode_event(entry)
+	if body.is_empty():
+		return PackedByteArray()
+	var record := PackedByteArray([RECORD_LEDGER])
+	record.append_array(body)
+	return record
 
 
 ## A superseding state frame carries host tick, stage version and one complete typed entity record.

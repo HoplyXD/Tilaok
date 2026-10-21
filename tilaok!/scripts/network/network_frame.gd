@@ -9,10 +9,12 @@ extends RefCounted
 ## 11-byte match lifecycle on schema 4 and required feature bit 8.
 ## Contract v1.5 (NLB-P08) keeps minor 2 and gates host pause, client lifecycle hints, seat
 ## reservation/reclaim and the extended seat assignment on schema 5 and required feature bit 9.
+## Contract v1.6 (NLB-P09) keeps minor 2 and gates replicated results, the result vote, the
+## in-place replay re-key and the 11-byte host SESSION_CLOSE on schema 6 and required feature bit 10.
 const MAGIC := "TILK"
 const MAJOR := 1
 const MINOR := 2
-const SCHEMA := 5
+const SCHEMA := 6
 const FEATURE_BASE_MASK := 0x000f
 const FEATURE_LOGICAL_INPUT := 0x0010
 const FEATURE_AUTHORITATIVE_VIEW := 0x0020
@@ -24,8 +26,10 @@ const FEATURE_LIVE_TRANSIENTS := 0x0100
 const FEATURE_P07_MASK := 0x01ff
 const FEATURE_LIFECYCLE := 0x0200
 const FEATURE_P08_MASK := 0x03ff
-## The exact mask a peer of this build must advertise (contract v1.5).
-const FEATURE_REQUIRED_MASK := FEATURE_P08_MASK
+const FEATURE_RESULTS := 0x0400
+const FEATURE_P09_MASK := 0x07ff
+## The exact mask a peer of this build must advertise (contract v1.6).
+const FEATURE_REQUIRED_MASK := FEATURE_P09_MASK
 const HEADER_BYTES := 22
 const MAX_FRAME_BYTES := 900
 const MAX_PAYLOAD_BYTES := MAX_FRAME_BYTES - HEADER_BYTES
@@ -33,7 +37,7 @@ const MAX_DISCOVERY_BYTES := 256
 const DISCOVERY_FAMILIES := [1, 2]
 const FAMILIES := [
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-	27, 28, 29, 30, 31, 32, 33
+	27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38
 ]
 
 enum Family {
@@ -70,6 +74,11 @@ enum Family {
 	LIFECYCLE_HINT = 0x1F,
 	RECLAIM_BEGIN = 0x20,
 	RECLAIM_RESULT = 0x21,
+	RESULT_EVENT = 0x22,
+	RESULT_ACTION = 0x23,
+	RESULT_VOTE = 0x24,
+	REKEY = 0x25,
+	REKEY_ACK = 0x26,
 }
 
 
@@ -135,6 +144,16 @@ static func encode(
 	stream.put_u16(payload.size())
 	stream.put_data(payload)
 	return stream.data_array
+
+
+## Reads only the envelope epoch of a well-formed-looking frame, or -1. Used to drop packets that
+## belong to a just-retired epoch after a replay re-key without treating them as a violation.
+static func peek_epoch(frame: PackedByteArray) -> int:
+	if frame.size() < HEADER_BYTES or frame.size() > MAX_FRAME_BYTES:
+		return -1
+	if frame.slice(0, 4) != MAGIC.to_ascii_buffer():
+		return -1
+	return frame.decode_u64(8)
 
 
 static func decode(

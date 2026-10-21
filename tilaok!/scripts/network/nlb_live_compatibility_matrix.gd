@@ -22,9 +22,9 @@ extends RefCounted
 ## until its own P07-T03 evidence passes.
 
 const MATRIX_VERSION := 1
-## Minimum wire/content identity of every cell in this table (contract v1.5).
-const MIN_PROTOCOL := "1.2/schema5/0x03FF"
-const MIN_CONTENT := "tilaok-nlb-p08-2026-10-21"
+## Minimum wire/content identity of every cell in this table (contract v1.6).
+const MIN_PROTOCOL := "1.2/schema6/0x07FF"
+const MIN_CONTENT := "tilaok-nlb-p09-2026-10-21"
 ## Host-only development switch. Ignored on Android and on release export templates.
 const OVERRIDE_FLAG := "--nlb-unverified-content"
 const MATRIX_DOC := "docs/evidence/nlb/p07/compatibility-matrix.md"
@@ -81,6 +81,14 @@ const LIFE_RULES := {
 		"status": STATUS_ENGINEERING,
 		"requires": ["life:client_lifecycle", "life:host_pause", "life:snapshot_recovery"]
 	},
+	# NLB-P09 (contract v1.6): replicated results, in-place replay re-key, host loss.
+	"results_replication": {"status": STATUS_ENGINEERING, "requires": ["life:snapshot_recovery"]},
+	"replay_rekey":
+	{
+		"status": STATUS_ENGINEERING,
+		"requires": ["life:results_replication", "life:seat_reclaim"]
+	},
+	"host_loss": {"status": STATUS_ENGINEERING, "requires": ["life:results_replication"]},
 }
 
 ## The tutorial is the guided offline onboarding; it has no networked live rule.
@@ -116,7 +124,10 @@ const ROUND_RULES := {
 	"stack_kangaroo_lagsanay":
 	{"status": STATUS_ENGINEERING, "requires": ["round:kangaroo", "round:lagsanay"]},
 	"sudden_death_lagsanay":
-	{"status": STATUS_ENGINEERING, "requires": ["round:lagsanay", "life:persistent_terrain"]},
+	{
+		"status": STATUS_ENGINEERING,
+		"requires": ["round:lagsanay", "life:persistent_terrain", "life:results_replication"]
+	},
 }
 
 ## One rule per catalog family; every allowed mode of every variant becomes a cell with it.
