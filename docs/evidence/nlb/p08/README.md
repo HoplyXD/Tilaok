@@ -43,7 +43,7 @@ This is authored source and tests only. Nothing ran while the shared laptop was 
 
 - **Android process kill:** the reclaim token is memory only. If Android kills the app the token is lost and that player cannot reclaim. This is by design (no persistence) and the user confirmed it on 2026-10-21. The seat runs out its grace and the player is eliminated for the round.
 - **Wi-Fi loss:** a reclaim is possible only after the host's transport notices the loss and reserves the seat; until then the host refuses the attempt and the client retries.
-- **No reconnect or pause UI:** the client exposes `client_reclaim_available()` / `connect_reclaim()` but no button (touch HUD is P10). A host without a local seat has no in-game resume control (P09/P10).
+- **No reconnect or pause UI:** the client exposes `client_reclaim_available()` / `connect_reclaim()` but no button (touch HUD is P10). A host without a local seat has no in-game resume control (P10 host/touch HUD; P09 added only the PC result-plank controls).
 - **Kangaroo main rounds are not wired** to the disconnect elimination; a neutral seat fails its own commands. Karera, Bomb-Taya, Lagsanay and Sudden Death are wired.
 - **The token travels once in the assignment and once in the rotation result,** on a trusted LAN with no encryption.
 - **No `.gd.uid` files** were created for the new scripts; the editor creates them on first import.

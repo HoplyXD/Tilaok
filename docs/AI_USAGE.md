@@ -104,6 +104,20 @@ While the user's game was running on the shared laptop, nothing was launched or 
 
 All three P08 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P06-T03 and the upstream dependencies remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; the pause banner is a text label. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P08 evidence and exact deferred commands](evidence/nlb/p08/README.md).
 
+### NLB-P09 preparatory results, replay and teardown — October 21, 2026
+
+At the user's explicit authorization of NLB-P09 as preparatory implementation, the AI coding agent Claude Code (Claude Sonnet 5.5, model `claude-sonnet-5-5`) authored the following. The user decided that Replay is an in-place re-key (a full match-session teardown, then a new epoch and match ID over the open connections, with Return to Lobby as a full session stop), that a deliberate client Leave forfeits the seat at once, and that the work ships as several commits with no co-author trailer.
+
+- the P00 contract v1.6 amendment and its source: schema 6, required mask `0x07FF`, the result-event, result-action, result-vote, re-key and re-key-ack families, the 11-byte host `SESSION_CLOSE` with a session-end reason, and the snapshot ledger record;
+- the host result ledger (append-only, integer eighth-point units, committed once per entry) and its hooks for round results, the sudden-death entry and result and the final result; the match ID as a host-lineage counter instead of the constant 1;
+- the client result model (dedupe, stale/gap/invalid handling, no round after a winner, no score in sudden death), the phone result vote and action, and the phone round, match and session-ended screens; the phone score display now derives from units, fixing a `/100` error;
+- the replay re-key, retired-epoch quiet drop, deliberate-Leave forfeit, host Return to Lobby / title / Quit routes, client host-loss handling, teardown fixes and a `teardown_counts()` helper;
+- the authored `run_nlb_p09_tests.gd`, `audit_nlb_p09_cycles.gd` and `run_nlb_p09_multi_process.gd`, schema/build/cell-count updates to the P04, P06, P07 and P08 tests (including a stale P06 hello check), and the P09 evidence, tracker and status documentation.
+
+While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, multi-process or phone session, ADB, network listener, capture, lint or performance measurement. Only `git diff --check`, git status, grep audits and manual source review were performed. The code has therefore never been parsed by Godot.
+
+All three P09 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P07-T03, P08-T03 and the upstream dependencies remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; the phone screens are code-drawn text panels. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P09 evidence and exact deferred commands](evidence/nlb/p09/README.md).
+
 ## Form 03 preparation
 
 The team must choose the official extent category (Minimal / Moderate / Heavy) based on all project-wide AI work and obtain required signatures. Do not claim the project is unaided. Keep this record aligned with actual assistance, asset records, prompts/history and repository history. Review factual claims, cultural names, gameplay rules and citations before submission. Do not invent missing prompts or review evidence.

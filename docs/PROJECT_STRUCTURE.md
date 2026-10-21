@@ -1,6 +1,6 @@
 # Project structure and responsibility map
 
-**Networked target status (2026-10-21):** the opt-in P02 PC lobby uses raw ENet and UDP discovery for host approval and seat readiness. P04 adds the scheduled network match and the Android client view. Preparatory P06 source adds an opt-in network live-build route (`-- --match-route=network_live_build`), which is unrun. The offline live-build route is a separate opt-in on the P12 room, with scheduled play remaining default and fallback. See [spec](NETWORKED_LIVE_BUILD.md), [tracker](PHASETASK_NETWORKED_LIVE_BUILD.md), [P02 evidence](evidence/nlb/p02/README.md), and [P05 engineering evidence](evidence/nlb/p05/README.md).
+**Networked target status (2026-10-21):** the opt-in P02 PC lobby uses raw ENet and UDP discovery for host approval and seat readiness. P04 adds the scheduled network match and the Android client view. Preparatory P06 source adds an opt-in network live-build route (`-- --match-route=network_live_build`), which is unrun. Preparatory P07 (content matrix), P08 (pause, reservation, reclaim) and P09 (replicated results, in-place replay re-key, session-end reasons) source is also authored and unrun. The offline live-build route is a separate opt-in on the P12 room, with scheduled play remaining default and fallback. See [spec](NETWORKED_LIVE_BUILD.md), [tracker](PHASETASK_NETWORKED_LIVE_BUILD.md), [P02 evidence](evidence/nlb/p02/README.md), and [P05 engineering evidence](evidence/nlb/p05/README.md).
 
 **NLB-P00/P01/P02/P05 evidence:** offline baseline and tool/device facts are in [the P00 baseline](evidence/nlb/p00/baseline-2026-10-19.md); local action/seat and authority is [P01](evidence/nlb/p01/verification-2026-10-19.md); P02 host, discovery, admission and teardown are in [P02 evidence](evidence/nlb/p02/README.md); offline live-build implementation and synthetic test results are in [P05 evidence](evidence/nlb/p05/README.md). P02 passes; P05 acceptance remains partial/open. P03/P04 Android and transport work and the preparatory P06 and P07 source are recorded in their own evidence folders, with acceptance open.
 
@@ -337,3 +337,16 @@ The P04 runners are `tilaok!/tests/run_nlb_p04_tests.gd` and `run_nlb_p04_multi_
 - **Reservation and reclaim:** `seat_reservation_book.gd` (new, memory-only identities and 60 s reservations), `player_seat_registry.gd` / `remote_seat_input_adapter.gd` (`reclaim_remote_source`), `network_session_manager.gd` (reserve on disconnect, proof, rotation, snapshot-gated rebind, client `connect_reclaim()`).
 - **Elimination and results:** `race_outcome_ledger.gd`, `lagsanay_round_controller.gd`, `p12_scheduled_match_room.gd`, `match_room.gd`, `p09_match_lifecycle_room.gd`.
 - **Tests:** `tests/run_nlb_p08_tests.gd` and `tests/run_nlb_p08_multi_process.gd` (`-- phone`) are authored and have not run. P08 is 0/3 checked. See [P08 evidence and deferred commands](evidence/nlb/p08/README.md) and [contract v1.5](evidence/nlb/p00/protocol-measurement-contract-v1.5.md).
+
+## NLB-P09 results, replay and teardown — 2026-10-21 (preparatory, unrun)
+
+- **Wire, contract v1.6:**
+  - `network_frame.gd`: schema 6, mask `0x07FF`, families `0x22` result event, `0x23` result action, `0x24` result vote, `0x25` re-key, `0x26` re-key ack.
+  - `network_results_codec.gd` (new): the result event, action and vote layouts, the cause/award enums and the structural invariants.
+  - `network_lifecycle_codec.gd`: the re-key and ack layouts and the 11-byte host `SESSION_CLOSE` with a session-end reason.
+  - `network_match_codec.gd`: the snapshot `RECORD_LEDGER` and the 288-record cap.
+  - `compatibility_manifest.gd` and `nlb_live_compatibility_matrix.gd`: build `tilaok-nlb-p09-2026-10-21` and three `life` cells.
+- **Host ledger and vote:** `result_ledger.gd` (new, append-only integer-unit ledger), `p09_match_lifecycle_room.gd` and `p12_scheduled_match_room.gd` (ledger commits, vote, replay roster and handler, host-authority plank commands), `player_seat_registry.gd`, `seat_reservation_book.gd` (`rekey`, `retain_only`, `forfeit`).
+- **Session:** `network_session_manager.gd` (result send/dedupe/snapshot, result action, replay re-key, retired epochs, `_clear_match_scope`, match-ID lineage, session-end reasons, forfeit, `teardown_counts()`).
+- **Client and flow:** `network_results_model.gd` (new), `network_results_overlay.gd` (new), `network_match_presentation.gd`, `game_flow.gd` (host Return to Lobby / title / Quit end the session; client session-ended handling).
+- **Tests:** `tests/run_nlb_p09_tests.gd`, `tests/audit_nlb_p09_cycles.gd` and `tests/run_nlb_p09_multi_process.gd` (`-- phone`) are authored and have not run. P09 is 0/3 checked. See [P09 evidence and deferred commands](evidence/nlb/p09/README.md) and [contract v1.6](evidence/nlb/p00/protocol-measurement-contract-v1.6.md).

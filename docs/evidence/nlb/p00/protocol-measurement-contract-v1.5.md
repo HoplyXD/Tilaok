@@ -42,7 +42,7 @@
 - The host's tree pause (set only by host-local input; remote "pause" is not reachable and a `PAUSE_STATE` from a client is `HOST_ONLY`) is the authoritative state. A change advances a monotonic wrap-aware epoch (≤2 requests/s) and is sent to every synchronized peer.
 - Simulation, physics, event clock, item grace, transient timers and phase timers already freeze with the tree. The input timeout also freezes: a peer is not timed out because of a pause. The 60 s reservation clock does **not** freeze.
 - Network resume follows the host's own seats only (`PauseRecoveryCoordinator.remote_ready_exempt`). Remote seats cannot set ready, so the offline "every seat ready" rule would deadlock. Offline play keeps the offline rule.
-- A host without a local seat has no in-game resume control; that needs host UI (P09/P10) and is not claimed here.
+- A host without a local seat has no in-game resume control; that needs host/touch UI (P10; P09 added only the PC result-plank controls) and is not claimed here.
 
 **Reservation:**
 - In a match, a transport loss, session close or rejected frame reserves the seat instead of releasing it: seat, Player ID and score are kept, input is neutral, and a 60 s host monotonic timer starts. At most four seats. Cleared when the session stops. In the lobby a loss still releases the seat.
@@ -80,4 +80,6 @@ No new reason codes. Used: `HOST_ONLY` 23 (client pause frame), `OWNERSHIP` 10 (
 - **Matrix:** three ENGINEERING `life` cells are added (`life:host_pause`, `life:client_lifecycle`, `life:seat_reclaim`), default-deny, no VERIFIED cell. `MIN_PROTOCOL` becomes `1.2/schema5/0x03FF`.
 - **Rejected in `await_neutral`:** a non-neutral sample while the host waits for a neutral one is now **dropped silently** instead of rejected (a rejection released the seat). No test depended on the old rejection.
 - **Not claimed:** no pause, reclaim, loss/reorder, phone, rendered or performance result. The v1 provisional targets (≤5 s reclaim) are unmeasured. Reconnect after a Wi-Fi drop depends on the host noticing the transport loss; until it does the seat is not reserved and a reclaim attempt is refused, so the client retries.
-- **Not in scope:** host migration, persistence to disk, internet/relay, encryption, replay/new match epoch and host-loss screens (P09), touch HUD (P10), performance (P11).
+- **Not in scope:** host migration, persistence to disk, internet/relay, encryption, replay/new match epoch and host-loss screens (P09, now in [v1.6](protocol-measurement-contract-v1.6.md)), touch HUD (P10), performance (P11).
+
+> **Forward link:** NLB-P09 supersedes parts of this contract in [v1.6](protocol-measurement-contract-v1.6.md): schema 6 and mask `0x07FF`, replicated results, the replay re-key (`REKEY` / `REKEY_ACK`), the 11-byte host `SESSION_CLOSE`, and the match-ID lineage. The §3 reservation and reclaim rules stay in force; a replay clears every reservation and token.

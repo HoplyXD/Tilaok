@@ -1,6 +1,6 @@
 # Tilaok! Verification and Playtest Plan
 
-**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 has bounded runtime evidence: the focused 35-check suite and a separate-process host/client run passed, and a physical phone was admitted with snapshot readiness and remote movement. ENet channel, loss/recovery, rendered and full acceptance checks remain open. Preparatory NLB-P06 live-placement source and NLB-P07 content-matrix/special-case source and their runners are authored; none has run (see the NLB-P06 and NLB-P07 sections below). New testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
+**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 has bounded runtime evidence: the focused 35-check suite and a separate-process host/client run passed, and a physical phone was admitted with snapshot readiness and remote movement. ENet channel, loss/recovery, rendered and full acceptance checks remain open. Preparatory NLB-P06 live-placement source, NLB-P07 content-matrix/special-case source, NLB-P08 pause/reclaim source and NLB-P09 results/replay/teardown source and their runners are authored; none has run (see the NLB-P06 to NLB-P09 sections below). New testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
 
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
@@ -884,3 +884,24 @@ This section records authored source and runners only. It is not a human playtes
 | Physical background / screen lock / Wi-Fi off-on / 60 s expiry / host pause / app kill | COULD-NOT-RUN | Needs a real phone, an APK from this revision (a P07 APK is refused at hello) and a named reviewer |
 | Android export/install | COULD-NOT-RUN | Deferred while the shared laptop is in use |
 | Performance and reclaim latency (≤5 s target) | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |
+
+## NLB-P09 results, replay and teardown — preparatory status, 2026-10-21
+
+This section records authored source, an audit and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use.
+
+- **Behavior authored:** the host's committed result ledger (round results, sudden-death entry/result, match winner, exact eighth-point totals) replicates once to every phone and rides every snapshot; phones show the round results with Continue, the match result with Replay / Return to Lobby / Leave, and a session-ended screen; Replay re-keys the session in place (new epoch and match ID, every container, reservation and token cleared); Return to Lobby and host Quit stop the session with a bounded reason; a deliberate Leave forfeits the seat; an abrupt host loss ends every client cleanly.
+- **Contract:** [v1.6](evidence/nlb/p00/protocol-measurement-contract-v1.6.md).
+- **Deferred commands, ten-cycle ledger template and physical session sheet:** in [P09 evidence](evidence/nlb/p09/README.md).
+- **Open dependencies:** P07-T03 and P08-T03, and the upstream P03-T03, P04-T03, P05-T02/T03 and P06-T03.
+
+| Check | Result | Reason / limit |
+|---|---|---|
+| Godot import/parse of the new and changed scripts | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| gdlint / gdformat | COULD-NOT-RUN | Tools absent; deferred |
+| `run_nlb_p09_tests.gd` (wire and codec bounds, exact units through calculators/ledger/wire/client, ledger and client rules, sudden death adds no score and no round 13, host-only refusals, vote and action, re-key, session-end reasons, forfeit, teardown) | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| `audit_nlb_p09_cycles.gd` (ten Replay / Lobby cycles with per-cycle counts) | COULD-NOT-RUN | Deferred; synthetic only |
+| `run_nlb_p09_multi_process.gd` (target score, round limit, tied Sudden Death; Replay, lobby, host quit, abrupt kill, client leave) | COULD-NOT-RUN | Deferred; synthetic only, never physical evidence |
+| Regressions: NLB P01–P08, P09 interactive/audit, P12, Barya, match UI, P13 navigation | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Physical mixed-device ending sessions | COULD-NOT-RUN | Needs a real phone, an APK from this revision (a P08 APK is refused at hello) and a named reviewer |
+| Android export/install | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Performance and replay latency | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |
