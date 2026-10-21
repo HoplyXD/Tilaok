@@ -73,6 +73,7 @@ var selected_map_id := MapCatalog.DEFAULT_ID
 var network_live_build_requested := false
 
 var _screen: UiScreen
+var _close_requested := false
 
 
 func _ready() -> void:
@@ -89,10 +90,13 @@ func _ready() -> void:
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	library_text = load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 	tutorial_script = load(TUTORIAL_SCRIPT_PATH) as TutorialScript
-	var requested_map := map_from_args(OS.get_cmdline_user_args())
+	var requested_map := map_from_args(NlbBuildFlags.dev_user_args())
 	if MapCatalog.ids().has(requested_map):
 		selected_map_id = requested_map
 	var requested_route := route_from_args(OS.get_cmdline_user_args())
+	# P11: a release or Android client build honours only the network opt-in route flag.
+	if not NlbBuildFlags.dev_flags_allowed() and requested_route != ROUTE_NETWORK_LIVE_BUILD:
+		requested_route = ""
 	if requested_route == ROUTE_LIFECYCLE:
 		match_scene = LIFECYCLE_SCENE
 	elif requested_route == ROUTE_FIRST_PLAYABLE:
@@ -148,6 +152,9 @@ func _ready() -> void:
 	router.seat_joined.connect(_on_seat_joined)
 	router.seat_disconnected.connect(_on_seat_disconnected)
 	router.action_pressed.connect(_on_action_pressed)
+	if not harness_mode:
+		# The close button is handled by _notification so SESSION_CLOSE can be attempted first.
+		get_tree().set_auto_accept_quit(false)
 	if android_client:
 		show_lan_lobby()
 		print("TILAOK_FLOW_READY state=android_client_lobby profile=%s" % PLAYTEST_PROFILE)
@@ -159,6 +166,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if get_tree() != null:
+		get_tree().set_auto_accept_quit(true)
 	if network_session != null and is_instance_valid(network_session):
 		network_session.stop_session()
 	if router != null and is_instance_valid(router):
@@ -301,7 +310,7 @@ func _create_authoritative_match(network_match: bool) -> void:
 			else LIFECYCLE_SCENE
 		)
 	room = selected_scene.instantiate() as P05MatchRoom
-	var requested_seed := seed_from_args(OS.get_cmdline_user_args())
+	var requested_seed := seed_from_args(NlbBuildFlags.dev_user_args())
 	if requested_seed >= 0:
 		room.set_match_seed(requested_seed)
 	room.input_router = router
@@ -549,6 +558,14 @@ func _free_room() -> void:
 	router.resume_system()
 
 
+## P11: the window's close button takes the same path as the in-game Quit, so the host attempts
+## SESSION_CLOSE (HOST_QUIT) and releases its listeners instead of vanishing mid-session.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and not harness_mode and not _close_requested:
+		_close_requested = true
+		_quit()
+
+
 func _quit() -> void:
 	if harness_mode:
 		return_requested.emit()
@@ -621,7 +638,7 @@ static func route_from_args(arguments: PackedStringArray) -> String:
 
 
 func _harness_requested() -> bool:
-	for argument in OS.get_cmdline_user_args():
+	for argument in NlbBuildFlags.dev_user_args():
 		if argument == HARNESS_FLAG or argument.begins_with(OPEN_ROOM_PREFIX):
 			return true
 	return false

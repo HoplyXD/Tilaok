@@ -196,7 +196,7 @@ static func reload() -> void:
 
 ## Host-only, never default, never on Android or a release export template.
 static func override_requested(arguments: PackedStringArray) -> bool:
-	if OS.has_feature("android") or OS.has_feature("release"):
+	if OS.has_feature("android") or not NlbBuildFlags.dev_flags_allowed():
 		return false
 	return arguments.has(OVERRIDE_FLAG)
 

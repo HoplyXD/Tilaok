@@ -47,7 +47,7 @@ func _ready() -> void:
 	# Barya is enabled on the scheduled default route. `--barya-disabled` is the rollback switch;
 	# first_playable uses P07 and never enters this room.
 	if tuning != null:
-		tuning.barya_enabled = not OS.get_cmdline_user_args().has("--barya-disabled")
+		tuning.barya_enabled = not NlbBuildFlags.dev_flag_present("--barya-disabled")
 	kangaroo_round = KangarooMainRound.new()
 	add_child(kangaroo_round)
 	kangaroo_round.setup(self)
