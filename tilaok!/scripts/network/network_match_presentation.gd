@@ -137,6 +137,8 @@ func _host_status_text() -> String:
 		event_text += "  ·  %.1fs" % (float(event_clock_ms) / 1000.0)
 	var phase_name: String = PHASE_NAMES[clampi(phase, 0, PHASE_NAMES.size() - 1)]
 	var text := "Tilaok!  ·  %s%s  ·  Round %d  ·  %.1fs" % [phase_name, event_text, round_number, remaining]
+	if network_session != null and network_session.client_unverified_content:
+		text += "\nUNVERIFIED CONTENT — development host; results are not evidence."
 	if network_session != null and network_session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD:
 		if network_session.terrain_gap:
 			text += "\nResyncing the stage…"
@@ -166,6 +168,7 @@ func _draw() -> void:
 		if not entity.has("variant_key"):
 			continue
 		_draw_entity(entity, origin, scale_factor)
+	_draw_transients(origin, scale_factor)
 	if live_client.ghost_visible():
 		_draw_ghost(origin, scale_factor)
 	for seat_id in seats.keys():
@@ -219,6 +222,33 @@ func _draw_entity(entity: Dictionary, origin: Vector2, scale_factor: float) -> v
 		return
 	draw_rect(rect, tint, true)
 	draw_rect(rect, outline, false, 2.0)
+
+
+## Contract v1.4 host transients, draw-only. Each kind has its own shape and glyph so it never
+## depends on colour alone; a captured chicken's seat number is drawn inside its bubble.
+func _draw_transients(origin: Vector2, scale_factor: float) -> void:
+	var transients: Dictionary = _state.get("transients", {})
+	for transient in transients.values():
+		var point: Vector2 = origin + (transient.position as Vector2) * scale_factor
+		var extent: Vector2 = (transient.get("extent", Vector2.ONE * 16.0) as Vector2) * scale_factor
+		match int(transient.get("transient_kind", 0)):
+			NetworkMatchCodec.TRANSIENT_PROJECTILE:
+				draw_rect(Rect2(point - extent * 0.5, extent), Color("#e9e2d0"), true)
+				draw_string(ThemeDB.fallback_font, point + Vector2(-4, 5), "»", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("#16232a"))
+			NetworkMatchCodec.TRANSIENT_BUBBLE:
+				var radius := maxf(extent.x, extent.y) * 0.5
+				draw_arc(point, radius, 0.0, TAU, 28, Color("#bfe8ff"), 3.0 * scale_factor)
+				var captive := int(transient.get("captive_seat", -1))
+				if captive >= 0:
+					draw_string(ThemeDB.fallback_font, point + Vector2(-5, 6), "P%d" % (captive + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
+			NetworkMatchCodec.TRANSIENT_BLAST:
+				var area := Rect2(point - extent * 0.5, extent)
+				draw_rect(area, Color(1.0, 0.85, 0.45, 0.35), true)
+				_draw_dashed_rect(area, Color("#fff4b8"), 3.0)
+				draw_string(ThemeDB.fallback_font, area.get_center() + Vector2(-14, 6), "POP", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
+			NetworkMatchCodec.TRANSIENT_MOVER:
+				draw_rect(Rect2(point - extent * 0.5, extent), Color("#c4553f"), true)
+				draw_string(ThemeDB.fallback_font, point + Vector2(-5, 6), "◆", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
 
 
 ## The local tentative ghost: dashed outline, no fill, and a text state. It is never drawn as

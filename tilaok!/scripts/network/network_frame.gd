@@ -5,10 +5,12 @@ extends RefCounted
 ## Exact TILK v1 envelope. Application payloads are raw ENet bytes; no Variant/RPC framing.
 ## Contract v1.3 keeps envelope minor 2 so older binaries can still read the host welcome and show
 ## the readable build-mismatch notice; live placement is gated by schema 3 and a required feature.
+## Contract v1.4 (NLB-P07) keeps minor 2 for the same reason and gates live transients and the
+## 11-byte match lifecycle on schema 4 and required feature bit 8.
 const MAGIC := "TILK"
 const MAJOR := 1
 const MINOR := 2
-const SCHEMA := 3
+const SCHEMA := 4
 const FEATURE_BASE_MASK := 0x000f
 const FEATURE_LOGICAL_INPUT := 0x0010
 const FEATURE_AUTHORITATIVE_VIEW := 0x0020
@@ -16,6 +18,10 @@ const FEATURE_SNAPSHOT_RECOVERY := 0x0040
 const FEATURE_P04_MASK := 0x007f
 const FEATURE_LIVE_PLACEMENT := 0x0080
 const FEATURE_P06_MASK := 0x00ff
+const FEATURE_LIVE_TRANSIENTS := 0x0100
+const FEATURE_P07_MASK := 0x01ff
+## The exact mask a peer of this build must advertise (contract v1.4).
+const FEATURE_REQUIRED_MASK := FEATURE_P07_MASK
 const HEADER_BYTES := 22
 const MAX_FRAME_BYTES := 900
 const MAX_PAYLOAD_BYTES := MAX_FRAME_BYTES - HEADER_BYTES

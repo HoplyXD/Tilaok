@@ -1,5 +1,7 @@
 # NLB-P00 contract amendment — schema 3 / live placement
 
+> **Forward link (2026-10-21):** [v1.4](protocol-measurement-contract-v1.4.md) amends this contract for NLB-P07 (schema 4, required mask `0x01FF`, live transients, 11-byte match lifecycle, live compatibility matrix in the manifest). The P05 allowlist named below is replaced by that matrix.
+
 **Contract version:** wire major 1, minor 2; schema 3; required feature mask `0x00FF`. **Date:** 2026-10-21. **Status:** NLB-P06 preparatory source design. The source is authored. No Godot parse, test, multi-process, loss/reorder, phone or rendered run has executed (`COULD-NOT-RUN — deferred while the shared laptop is in use`). This amendment supplements [v1](protocol-measurement-contract-v1.md), [v1.1](protocol-measurement-contract-v1.1.md) and [v1.2](protocol-measurement-contract-v1.2.md). It changes only the items listed here; P02 lobby rules and the P04 input, state and snapshot rules stay in force.
 
 The opt-in network live-build route (`-- --match-route=network_live_build` on the PC host) runs the P05 round over the P04 session: Pugad, then one shared 3 s GO, then active movement with live placement, then results, then the next Pugad. Live placement remains limited to the P05 allowlist: `build.hollow_blocks.cell_1x1`, `build.hollow_blocks.stack_2x3`, `build.bamboo_bridge.span_4x1`, plus P12's Barya objective. The scheduled P12 network route stays the default. The offline routes are unchanged.

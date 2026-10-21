@@ -53,7 +53,8 @@ func _run() -> void:
 
 func _test_wire_constants() -> void:
 	_check(NetworkFrame.MAJOR == 1 and NetworkFrame.MINOR == 2, "envelope stays 1.2 so older binaries read the welcome")
-	_check(NetworkFrame.SCHEMA == 3 and NetworkFrame.FEATURE_P06_MASK == 0x00ff, "schema 3 with required live-placement feature")
+	# NLB-P07 (contract v1.4) raised the schema to 4 and requires the live-transient bit as well.
+	_check(NetworkFrame.SCHEMA == 4 and NetworkFrame.FEATURE_P06_MASK == 0x00ff and NetworkFrame.FEATURE_REQUIRED_MASK == 0x01ff, "schema 4 requires the live-placement and live-transient features")
 	_check((NetworkFrame.FEATURE_P06_MASK & NetworkFrame.FEATURE_LIVE_PLACEMENT) != 0 and (NetworkFrame.FEATURE_P04_MASK & NetworkFrame.FEATURE_LIVE_PLACEMENT) == 0, "P04 mask lacks the live-placement bit")
 	for family in [NetworkFrame.Family.PLACEMENT_INTENT, NetworkFrame.Family.PLACEMENT_RESULT, NetworkFrame.Family.LIVE_SEAT_STATE, NetworkFrame.Family.TERRAIN_COMMIT]:
 		_check(family in NetworkFrame.FAMILIES, "family 0x%02X is allowlisted" % family)
@@ -212,7 +213,7 @@ func _test_routes_and_local_confirm_flag() -> void:
 
 
 func _test_p04_hello_rejected() -> void:
-	for case in [[2, NetworkFrame.FEATURE_P04_MASK, false], [3, NetworkFrame.FEATURE_P06_MASK, true]]:
+	for case in [[2, NetworkFrame.FEATURE_P04_MASK, false], [3, NetworkFrame.FEATURE_P06_MASK, false], [4, NetworkFrame.FEATURE_REQUIRED_MASK, true]]:
 		var manager := CaptureManager.new()
 		root.add_child(manager)
 		var compatibility := CompatibilityManifest.build()
@@ -230,9 +231,9 @@ func _test_p04_hello_rejected() -> void:
 		var reply: Dictionary = manager.sent.back() if not manager.sent.is_empty() else {}
 		var reason := int(reply.payload.decode_u16(0)) if not reply.is_empty() else -1
 		if bool(case[2]):
-			_check(reason == NetworkFrame.Reason.OK and int(manager.candidates[3].state) == NetworkSessionManager.CandidateState.CHALLENGE, "schema-3 P06 hello is admitted to the challenge")
+			_check(reason == NetworkFrame.Reason.OK and int(manager.candidates[3].state) == NetworkSessionManager.CandidateState.CHALLENGE, "schema-4 P07 hello is admitted to the challenge")
 		else:
-			_check(reason == NetworkFrame.Reason.INCOMPATIBLE, "schema-2 P04-only hello is refused as INCOMPATIBLE, never half-admitted")
+			_check(reason == NetworkFrame.Reason.INCOMPATIBLE, "schema-%d hello is refused as INCOMPATIBLE, never half-admitted" % int(case[0]))
 		manager.queue_free()
 
 
@@ -242,10 +243,13 @@ func _test_match_lifecycle_route_byte() -> void:
 	client.match_active = false
 	client._handle_client_packet(1, NetworkFrame.Family.MATCH_LIFECYCLE, p04_start)
 	_check(not client.match_active, "9-byte P04 match start is rejected")
-	var bad_route := PackedByteArray([1, 1, 0, 0, 0, 0, 0, 0, 0, 2])
+	var p06_start := PackedByteArray([1, 1, 0, 0, 0, 0, 0, 0, 0, NetworkSessionManager.ROUTE_LIVE_BUILD])
+	client._handle_client_packet(1, NetworkFrame.Family.MATCH_LIFECYCLE, p06_start)
+	_check(not client.match_active, "10-byte P06 match start is rejected under contract v1.4")
+	var bad_route := PackedByteArray([1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0])
 	client._handle_client_packet(1, NetworkFrame.Family.MATCH_LIFECYCLE, bad_route)
 	_check(not client.match_active, "unknown route byte is rejected")
-	var live := PackedByteArray([1, 1, 0, 0, 0, 0, 0, 0, 0, NetworkSessionManager.ROUTE_LIVE_BUILD])
+	var live := PackedByteArray([1, 1, 0, 0, 0, 0, 0, 0, 0, NetworkSessionManager.ROUTE_LIVE_BUILD, 0])
 	client._handle_client_packet(1, NetworkFrame.Family.MATCH_LIFECYCLE, live)
 	_check(client.match_active and client.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD, "live route byte enables the client live path")
 	client.free()

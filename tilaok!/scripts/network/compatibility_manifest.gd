@@ -1,9 +1,10 @@
 class_name CompatibilityManifest
 extends RefCounted
 
-## NLB-P06 changed the gameplay wire (schema 3, live placement), so the build identity changed too:
-## an older binary's digest differs and it shows the readable build-mismatch notice.
-const BUILD_ID := "tilaok-nlb-p06-2026-10-21"
+## NLB-P06 changed the gameplay wire (schema 3, live placement) and NLB-P07 changed it again
+## (schema 4, live transients, live content matrix), so the build identity changed too: an older
+## binary's digest differs and it shows the readable build-mismatch notice.
+const BUILD_ID := "tilaok-nlb-p07-2026-10-21"
 const PROFILE_ID := "karera_slice"
 ## Network routes this binary can host or join; the host picks one per match (MATCH_LIFECYCLE).
 const NETWORK_ROUTES := ["network_live_build", "scheduled"]

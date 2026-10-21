@@ -8,6 +8,8 @@ extends NLBP05LiveBuildMatchRoom
 ## order and authority boundary as local keyboard/gamepad seats. Only the host commits terrain.
 
 const NETWORK_PROFILE_ID := "nlb_p06_network_live_build"
+## Matches the offline ExplosionFlash lifetime.
+const LIVE_BLAST_SECONDS := 0.7
 
 ## NLB-P07 development override (`--nlb-unverified-content`), set by GameFlow before _ready.
 ## Off by default: only VERIFIED matrix cells are selectable, so a strict host deals nothing yet.
@@ -16,6 +18,11 @@ var unverified_content := false
 ## unique for the match so a stale or foreign ID can never match another seat's item.
 var _inventory_ids: Dictionary = {}
 var _inventory_serial := 0
+## Contract v1.4 transient bookkeeping: wire IDs per live key and host blast flashes.
+var _transient_ids: Dictionary = {}
+var _transient_serial := 0
+var _live_blasts: Dictionary = {}
+var _blast_serial := 0
 
 
 func _init() -> void:
@@ -249,6 +256,127 @@ func network_cancel_seat(seat_index: int) -> Array:
 	return results
 
 
+## Contract v1.4: every host-owned transient the clients must draw this tick. Projectiles,
+## bubbles (with the captive seat) and mover positions are read from the shared item runtime;
+## blast flashes come from live one-shot commits. Nothing here changes simulation state.
+func network_transient_states() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var live_keys := {}
+	if items != null:
+		var ids: Array = items.pieces.keys()
+		ids.sort()
+		for instance_variant in ids:
+			var instance_id := str(instance_variant)
+			var piece := items.piece_for(instance_id) as HazardPiece
+			if piece == null or piece.behavior == null:
+				continue
+			var owner_entity := network_entity_id_for(instance_id)
+			var behavior := piece.behavior
+			if behavior is LauncherBehavior:
+				var launcher := behavior as LauncherBehavior
+				var size := Vector2.ONE * tuning.item_launcher_projectile_size_wu
+				for projectile in launcher.projectiles:
+					var key := "p:%s:%d" % [instance_id, int(projectile.get("handle", -1))]
+					live_keys[key] = true
+					result.append(
+						{
+							"transient_kind": NetworkMatchCodec.TRANSIENT_PROJECTILE,
+							"transient_id": _transient_id_for(key),
+							"owner_entity": owner_entity,
+							"position": projectile.center,
+							"velocity": launcher.lane_dir * tuning.item_launcher_projectile_speed_wu_s,
+							"extent": size,
+							"owner_seat": launcher.owner_seat,
+						}
+					)
+			elif behavior is BubbleBehavior and (behavior as BubbleBehavior).has_bubble():
+				var bubble := behavior as BubbleBehavior
+				var key := "b:%s" % instance_id
+				live_keys[key] = true
+				var captive_seat := -1
+				if bubble.captive != null and is_instance_valid(bubble.captive):
+					captive_seat = bubble.captive.seat_index
+				result.append(
+					{
+						"transient_kind": NetworkMatchCodec.TRANSIENT_BUBBLE,
+						"transient_id": _transient_id_for(key),
+						"owner_entity": owner_entity,
+						"position": bubble.bubble_center,
+						"extent": Vector2.ONE * tuning.item_bubble_radius_wu * 2.0,
+						"phase": int(bubble.state),
+						"timer_ms": roundi(maxf(0.0, bubble.capture_left) * 1000.0),
+						"owner_seat": bubble.owner_seat,
+						"captive_seat": captive_seat,
+					}
+				)
+			elif behavior is TrumpoBehavior:
+				var trumpo := behavior as TrumpoBehavior
+				var key := "m:%s" % instance_id
+				live_keys[key] = true
+				result.append(
+					{
+						"transient_kind": NetworkMatchCodec.TRANSIENT_MOVER,
+						"transient_id": _transient_id_for(key),
+						"owner_entity": owner_entity,
+						"position": trumpo.top_center(),
+						"extent": trumpo.current_rect.size,
+						"phase": 1 if trumpo.paused_at_end else 0,
+						"owner_seat": trumpo.owner_seat,
+					}
+				)
+	var blast_ids: Array = _live_blasts.keys()
+	blast_ids.sort()
+	for blast_key in blast_ids:
+		var blast: Dictionary = _live_blasts[blast_key]
+		live_keys[blast_key] = true
+		var area: Rect2 = blast.area
+		result.append(
+			{
+				"transient_kind": NetworkMatchCodec.TRANSIENT_BLAST,
+				"transient_id": _transient_id_for(str(blast_key)),
+				"owner_entity": 0,
+				"position": area.get_center(),
+				"extent": area.size,
+				"timer_ms": roundi(maxf(0.0, float(blast.remaining)) * 1000.0),
+				"owner_seat": int(blast.owner_seat),
+			}
+		)
+	for key in _transient_ids.keys():
+		if not live_keys.has(key):
+			_transient_ids.erase(key)
+	return result
+
+
+## Stable u16 wire ID per live transient key, released when the transient ends.
+func _transient_id_for(key: String) -> int:
+	if not _transient_ids.has(key):
+		var in_use: Array = _transient_ids.values()
+		_transient_serial = (_transient_serial % 0xffff) + 1
+		while in_use.has(_transient_serial):
+			_transient_serial = (_transient_serial % 0xffff) + 1
+		_transient_ids[key] = _transient_serial
+	return int(_transient_ids[key])
+
+
+## Records a host blast flash for clients (live explosives and Walis), bounded by the VFX cap.
+func _register_live_blast(area: Rect2, owner_seat: int) -> void:
+	_blast_serial += 1
+	_live_blasts["x:%d" % _blast_serial] = {
+		"area": area, "remaining": LIVE_BLAST_SECONDS, "owner_seat": owner_seat
+	}
+
+
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if get_tree().paused or _live_blasts.is_empty():
+		return
+	for blast_key in _live_blasts.keys():
+		var blast: Dictionary = _live_blasts[blast_key]
+		blast.remaining = float(blast.remaining) - delta
+		if float(blast.remaining) <= 0.0:
+			_live_blasts.erase(blast_key)
+
+
 func _network_rejection(code: String) -> Dictionary:
 	return {"status": "rejected", "code": code, "reason": code}
 
@@ -256,4 +384,6 @@ func _network_rejection(code: String) -> Dictionary:
 func reset_room() -> void:
 	_inventory_ids.clear()
 	_inventory_serial = 0
+	_transient_ids.clear()
+	_live_blasts.clear()
 	super.reset_room()

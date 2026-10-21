@@ -1217,7 +1217,29 @@ func network_replication_snapshot(match_id: int, snapshot_id: int, tick: int) ->
 			}
 		)
 	)
-	return {"metadata": metadata, "records": records}
+	# Contract v1.4 live transients. Over a wire cap nothing is truncated: the frame is flagged and
+	# the session refuses or resyncs (CONTENT_LIMIT_EXCEEDED / SNAPSHOT_LIMIT).
+	var transients := network_transient_states()
+	var overflow := (
+		NetworkMatchCodec.transient_cap_status(transients) != NetworkFrame.Reason.OK
+	)
+	var transient_records: Array[PackedByteArray] = []
+	if not overflow:
+		for transient in transients:
+			var transient_record := NetworkMatchCodec.encode_transient_record(transient)
+			if transient_record.is_empty():
+				overflow = true
+				break
+			transient_records.append(transient_record)
+	if not overflow:
+		records.append_array(transient_records)
+	return {"metadata": metadata, "records": records, "transient_overflow": overflow}
+
+
+## Host-owned live transients for contract v1.4 (projectiles, bubbles, blasts, movers). The
+## scheduled route sends none, so its wire stays as it was; the live network route overrides it.
+func network_transient_states() -> Array[Dictionary]:
+	return []
 
 
 func network_current_round_id() -> int:

@@ -43,6 +43,8 @@ const PLACEMENT_CACHE_CAP := 32
 const PLACEMENT_CACHE_MS := 120000
 const LIVE_SEAT_STATE_INTERVAL_MS := 100
 const TOMBSTONE_REPEATS := 3
+## A client drops a live transient the host has not refreshed for this long (contract v1.4).
+const TRANSIENT_STALE_MS := 500
 const TERRAIN_BEHIND_RESYNC_MS := 2000
 const LIVE_ACTION_FIRST := 12
 const ACTION_NAMES := [
@@ -121,6 +123,11 @@ var _snapshot_request_count := 0
 var _snapshot_request_last_ms := 0
 var _last_event_signature := ""
 var _known_stage_entity_ids: Dictionary = {}
+## Contract v1.4 live transients seen in the last periodic send ("kind:id" -> [kind, id]) and the
+## bounded end notices still to repeat for those that vanished.
+var _known_transient_keys: Dictionary = {}
+var _transient_end_repeats: Dictionary = {}
+var _transient_overflow_reported := false
 var client_replica_state: Dictionary = {}
 var _client_axes := [0, 0]
 var _client_aim := [0, 0]
@@ -135,6 +142,8 @@ var client_route := ROUTE_SCHEDULED
 ## (`--nlb-unverified-content`). Clients never decide content availability.
 var live_map_id := MapCatalog.DEFAULT_ID
 var live_unverified_content := false
+## Client copy of the host's MATCH_LIFECYCLE flag; drives the "UNVERIFIED CONTENT" banner only.
+var client_unverified_content := false
 var client_live_seat_state: Dictionary = {}
 var terrain_gap := false
 ## Host receipt time of the packet being handled; placement order uses only this clock.
@@ -404,6 +413,9 @@ func _finish_stop() -> void:
 	_client_placement_request_id = 0
 	client_live_seat_state.clear()
 	client_route = ROUTE_SCHEDULED
+	client_unverified_content = false
+	_known_transient_keys.clear()
+	_transient_end_repeats.clear()
 	terrain_gap = false
 	match_room = null
 	match_active = false
@@ -558,9 +570,13 @@ func start_network_match() -> bool:
 	match_active = true
 	sync_ready = true
 	close_admission()
-	# Contract v1.3: u8 1, u64 match ID, u8 route (0 scheduled, 1 live build).
+	# Contract v1.4: u8 1, u64 match ID, u8 route (0 scheduled, 1 live build), u8 flags
+	# (bit 0: the host runs unverified NLB-P07 content under the development override).
 	var payload := _u8_u64(1, active_match_id)
 	payload.append(ROUTE_LIVE_BUILD if network_route == ROUTE_LIVE_BUILD else ROUTE_SCHEDULED)
+	payload.append(
+		1 if network_route == ROUTE_LIVE_BUILD and live_unverified_content else 0
+	)
 	for peer_id in candidates.keys():
 		var candidate: Dictionary = candidates[peer_id]
 		if int(candidate.get("seat", -1)) >= 0 and candidate.state >= CandidateState.ACKNOWLEDGED:
@@ -590,6 +606,9 @@ func bind_match_room(room: P12ScheduledMatchRoom) -> void:
 	_last_state_send_tick = -1
 	_known_stage_entity_ids.clear()
 	_tombstone_repeats.clear()
+	_known_transient_keys.clear()
+	_transient_end_repeats.clear()
+	_transient_overflow_reported = false
 	_terrain_shadow.clear()
 	_terrain_shadow_version = -1
 	_placement_inflight.clear()
@@ -621,7 +640,10 @@ func _send_initial_snapshot(peer_id: int) -> void:
 	)
 	var metadata := NetworkMatchCodec.encode_metadata(snapshot.metadata)
 	var body := NetworkMatchCodec.pack_snapshot(snapshot.records)
-	if metadata.is_empty() or body.is_empty() or metadata.size() > 255:
+	if (
+		metadata.is_empty() or body.is_empty() or metadata.size() > 255
+		or bool(snapshot.get("transient_overflow", false))
+	):
 		_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.SNAPSHOT_LIMIT))
 		transport.close_peer(peer_id)
 		return
@@ -801,8 +823,14 @@ func _replica_from_records(metadata: Dictionary, records: Array[Dictionary], sna
 	var entities := {}
 	var objective := {}
 	var event_context := {}
+	var transients := {}
 	for record in records:
-		if record.has("seat"):
+		if bool(record.get("transient", false)):
+			if not bool(record.get("ended", false)):
+				var installed := record.duplicate(true)
+				installed["received_ms"] = Time.get_ticks_msec()
+				transients[_transient_key(record)] = installed
+		elif record.has("seat"):
 			seats[int(record.seat)] = record.duplicate(true)
 		elif record.has("entity_id") and not bool(record.get("removed", false)):
 			entities[int(record.entity_id)] = record.duplicate(true)
@@ -823,7 +851,29 @@ func _replica_from_records(metadata: Dictionary, records: Array[Dictionary], sna
 		"objective": objective,
 		"event_context": event_context,
 		"event_revision": int(metadata.event_revision),
+		"transients": transients,
 	}
+
+
+static func _transient_key(record: Dictionary) -> String:
+	return "%d:%d" % [int(record.get("transient_kind", 0)), int(record.get("transient_id", 0))]
+
+
+## Client: install or end one host transient, and drop any that stopped being refreshed. The
+## client never creates, moves or resolves a transient on its own.
+func _apply_client_transient(record: Dictionary) -> void:
+	var transients: Dictionary = client_replica_state.get("transients", {})
+	var now := Time.get_ticks_msec()
+	if bool(record.get("ended", false)):
+		transients.erase(_transient_key(record))
+	else:
+		var installed := record.duplicate(true)
+		installed["received_ms"] = now
+		transients[_transient_key(record)] = installed
+	for key in transients.keys():
+		if now - int((transients[key] as Dictionary).get("received_ms", now)) > TRANSIENT_STALE_MS:
+			transients.erase(key)
+	client_replica_state.transients = transients
 
 
 func _send_periodic_state() -> void:
@@ -837,7 +887,16 @@ func _send_periodic_state() -> void:
 	_send_terrain_commit_if_changed()
 	var frame := match_room.network_replication_snapshot(active_match_id, _snapshot_counter, tick)
 	var stage_version := int(frame.metadata.stage_version)
+	if bool(frame.get("transient_overflow", false)):
+		# Never truncate: report once, then recover every peer through a snapshot, which refuses
+		# with SNAPSHOT_LIMIT while the overflow lasts.
+		if not _transient_overflow_reported:
+			_transient_overflow_reported = true
+			_force_terrain_snapshots("CONTENT_LIMIT_EXCEEDED live transients")
+	else:
+		_transient_overflow_reported = false
 	var seen: Dictionary = {}
+	var seen_transients: Dictionary = {}
 	for record in frame.records:
 		var raw: PackedByteArray = record
 		if raw.is_empty():
@@ -846,6 +905,12 @@ func _send_periodic_state() -> void:
 			var entity := NetworkMatchCodec.decode_stage_record(raw)
 			if bool(entity.get("ok", false)):
 				seen[int(entity.entity_id)] = true
+		elif int(raw[0]) == NetworkMatchCodec.RECORD_TRANSIENT:
+			var transient := NetworkMatchCodec.decode_transient_record(raw)
+			if bool(transient.get("ok", false)):
+				seen_transients[
+					"%d:%d" % [int(transient.transient_kind), int(transient.transient_id)]
+				] = [int(transient.transient_kind), int(transient.transient_id)]
 		var state_payload := NetworkMatchCodec.encode_state_update(
 			frame.metadata, tick, stage_version, raw
 		)
@@ -875,6 +940,39 @@ func _send_periodic_state() -> void:
 		else:
 			_tombstone_repeats[entity_id] = remaining
 	_known_stage_entity_ids = seen
+	_send_transient_ends(frame.metadata, tick, stage_version, seen_transients)
+
+
+## Unreliable end notices for transients that vanished, repeated a bounded number of times.
+## Clients also drop a transient that stops being refreshed (TRANSIENT_STALE_MS).
+func _send_transient_ends(
+	metadata: Dictionary, tick: int, stage_version: int, seen_transients: Dictionary
+) -> void:
+	for key in _known_transient_keys.keys():
+		if not seen_transients.has(key):
+			_transient_end_repeats[key] = [_known_transient_keys[key], TOMBSTONE_REPEATS]
+	for key in _transient_end_repeats.keys():
+		if seen_transients.has(key):
+			_transient_end_repeats.erase(key)
+			continue
+		var pending: Array = _transient_end_repeats[key]
+		var identity: Array = pending[0]
+		var ended := NetworkMatchCodec.encode_state_update(
+			metadata,
+			tick,
+			stage_version,
+			NetworkMatchCodec.encode_transient_end(int(identity[0]), int(identity[1]))
+		)
+		if not ended.is_empty():
+			for peer_id in candidates.keys():
+				if bool(candidates[peer_id].get("match_sync_ready", false)):
+					_send(int(peer_id), NetworkFrame.Family.STATE_UPDATE, ended)
+		var remaining := int(pending[1]) - 1
+		if remaining <= 0:
+			_transient_end_repeats.erase(key)
+		else:
+			_transient_end_repeats[key] = [identity, remaining]
+	_known_transient_keys = seen_transients
 
 
 ## Sends only what changed since the last committed stage version: add, update and remove ops
@@ -1029,7 +1127,9 @@ func _receive_state_update(payload: PackedByteArray) -> void:
 	else:
 		_terrain_behind_since_ms = 0
 	var record: Dictionary = update.record
-	if record.has("seat"):
+	if bool(record.get("transient", false)):
+		_apply_client_transient(record)
+	elif record.has("seat"):
 		var seats: Dictionary = client_replica_state.seats
 		seats[int(record.seat)] = record.duplicate(true)
 		client_replica_state.seats = seats
@@ -1296,8 +1396,8 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				or int(payload[33]) > NetworkFrame.MINOR
 				or int(payload[34]) != NetworkFrame.SCHEMA
 				or int(payload[35]) != 0
-				or int(payload[36]) != (NetworkFrame.FEATURE_P06_MASK & 0xff)
-				or int(payload[37]) != ((NetworkFrame.FEATURE_P06_MASK >> 8) & 0xff)
+				or int(payload[36]) != (NetworkFrame.FEATURE_REQUIRED_MASK & 0xff)
+				or int(payload[37]) != ((NetworkFrame.FEATURE_REQUIRED_MASK >> 8) & 0xff)
 			):
 				# Schema-2 / mask-0x007F (P04-only) binaries are refused here, never half-admitted.
 				_send(
@@ -1473,7 +1573,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				hello.append(NetworkFrame.MAJOR)
 				hello.append(NetworkFrame.MINOR)
 				hello.append_array(_u16(NetworkFrame.SCHEMA))
-				hello.append_array(_u16(NetworkFrame.FEATURE_P06_MASK))
+				hello.append_array(_u16(NetworkFrame.FEATURE_REQUIRED_MASK))
 				_send(peer_id, NetworkFrame.Family.COMPATIBILITY_HELLO, hello)
 				return
 			if payload.size() != 2 or _read_u16(payload) != NetworkFrame.Reason.OK:
@@ -1592,13 +1692,15 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			lobby_changed.emit()
 		NetworkFrame.Family.MATCH_LIFECYCLE:
 			if (
-				payload.size() != 10 or int(payload[0]) != 1 or _read_u64(payload, 1) <= 0
+				payload.size() != 11 or int(payload[0]) != 1 or _read_u64(payload, 1) <= 0
 				or int(payload[9]) > ROUTE_LIVE_BUILD
+				or int(payload[10]) > 1
 			):
 				client_message.emit("The host sent an invalid match start.")
 				return
 			active_match_id = _read_u64(payload, 1)
 			client_route = int(payload[9])
+			client_unverified_content = int(payload[10]) == 1 and client_route == ROUTE_LIVE_BUILD
 			client_live_seat_state.clear()
 			_terrain_parts.clear()
 			_terrain_behind_since_ms = 0

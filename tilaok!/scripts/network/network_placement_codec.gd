@@ -2,7 +2,7 @@
 class_name NetworkPlacementCodec
 extends RefCounted
 
-## Contract v1.3 live-placement payloads. Every field is a bounded little-endian integer or a
+## Contract v1.3 live-placement payloads (details 41-49 added by contract v1.4, NLB-P07). Every field is a bounded little-endian integer or a
 ## catalog key; no seat, world transform, Variant, Object or free text crosses the wire. Rejection
 ## text is chosen locally from the reason/detail enums.
 
@@ -64,6 +64,15 @@ enum Detail {
 	WRONG_ROUTE = 38,
 	RATE_LIMIT = 39,
 	CELL_RANGE = 40,
+	CLEANUP_DONE = 41,
+	CLEANUP_PROTECTED = 42,
+	CLEANUP_STALE = 43,
+	UNSAFE_SUPPORT = 44,
+	CLEANUP_INVALID = 45,
+	LETHAL_CLEARANCE = 46,
+	CRUSH_RISK = 47,
+	PROJECTILE_LANE = 48,
+	EFFECT_UNSUPPORTED = 49,
 	UNKNOWN = 63,
 }
 
@@ -111,6 +120,17 @@ const CODE_TABLE := {
 	"seat_disconnected": [NetworkFrame.Reason.ROUND_ENDED, Detail.SEAT_DISCONNECTED],
 	"wrong_route": [NetworkFrame.Reason.WRONG_PHASE, Detail.WRONG_ROUTE],
 	"commit_failed": [NetworkFrame.Reason.INTERNAL_RETRY, Detail.COMMIT_FAILED],
+	# Contract v1.4 (NLB-P07) one-shot edits and live hazard/support checks.
+	"one_shot": [NetworkFrame.Reason.OK, Detail.CLEANUP_DONE],
+	"protected_target": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.CLEANUP_PROTECTED],
+	"stale_target": [NetworkFrame.Reason.STALE_STATE, Detail.CLEANUP_STALE],
+	"unsafe_support": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.UNSAFE_SUPPORT],
+	"invalid_cleanup": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.CLEANUP_INVALID],
+	"cleanup_rejected": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.CLEANUP_INVALID],
+	"one_shot_unsupported": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.EFFECT_UNSUPPORTED],
+	"lethal_clearance": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.LETHAL_CLEARANCE],
+	"crush_risk": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.CRUSH_RISK],
+	"projectile_lane": [NetworkFrame.Reason.PLACEMENT_BLOCKED, Detail.PROJECTILE_LANE],
 	"invalid_request_id": [NetworkFrame.Reason.MALFORMED, Detail.INVALID_REQUEST_ID],
 }
 
@@ -156,6 +176,15 @@ const DETAIL_TEXT := {
 	Detail.WRONG_ROUTE: "Live building is not enabled in this match.",
 	Detail.RATE_LIMIT: "Placing too quickly. Wait a moment.",
 	Detail.CELL_RANGE: "That spot is out of range.",
+	Detail.CLEANUP_DONE: "Cleared.",
+	Detail.CLEANUP_PROTECTED: "That area includes protected stage parts.",
+	Detail.CLEANUP_STALE: "The stage changed under that area. Try again.",
+	Detail.UNSAFE_SUPPORT: "Removing that would drop a chicken. Try elsewhere.",
+	Detail.CLEANUP_INVALID: "That area cannot be cleared.",
+	Detail.LETHAL_CLEARANCE: "A chicken is in that hazard's reach.",
+	Detail.CRUSH_RISK: "A chicken would be trapped there.",
+	Detail.PROJECTILE_LANE: "A chicken or another shot is in that lane.",
+	Detail.EFFECT_UNSUPPORTED: "That item cannot be used during live play.",
 	Detail.UNKNOWN: "The placement was not accepted.",
 }
 

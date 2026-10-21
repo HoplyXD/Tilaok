@@ -20,6 +20,24 @@ const RECORD_STAGE_ENTITY := 2
 const RECORD_TOMBSTONE := 3
 const RECORD_OBJECTIVE := 4
 const RECORD_EVENT_CONTEXT := 5
+## Contract v1.4 (NLB-P07): host-owned live transients and their bounded end notice.
+const RECORD_TRANSIENT := 6
+const RECORD_TRANSIENT_END := 7
+const TRANSIENT_BYTES := 37
+const TRANSIENT_END_BYTES := 4
+const TRANSIENT_PROJECTILE := 1
+const TRANSIENT_BUBBLE := 2
+const TRANSIENT_BLAST := 3
+const TRANSIENT_MOVER := 4
+## Per-kind wire caps (contract v1 §1 offline tuning caps; movers inherit the persistent cap).
+const TRANSIENT_CAPS := {
+	TRANSIENT_PROJECTILE: 16,
+	TRANSIENT_BUBBLE: 4,
+	TRANSIENT_BLAST: 32,
+	TRANSIENT_MOVER: 48,
+}
+const MAX_TRANSIENTS := 100
+const MAX_SNAPSHOT_RECORDS := MAX_SEATS + MAX_STAGE_ENTITIES + 8 + MAX_TRANSIENTS
 const HELD_LEFT := 1 << 0
 const HELD_RIGHT := 1 << 1
 const HELD_UP := 1 << 2
@@ -415,6 +433,139 @@ static func decode_event_context_record(payload: PackedByteArray) -> Dictionary:
 	return context
 
 
+## One host-owned live transient (projectile, bubble, blast flash or mover position). Fields:
+## transient_kind, transient_id (u16, nonzero, unique per kind), owner_entity (wire entity ID of
+## the placed item, 0 when it no longer exists), position, velocity, extent (world units),
+## phase (0..7), timer_ms, owner_seat and captive_seat (-1..3). Clients only draw it.
+static func encode_transient_record(transient: Dictionary) -> PackedByteArray:
+	var kind := int(transient.get("transient_kind", 0))
+	var transient_id := int(transient.get("transient_id", 0))
+	var extent: Vector2 = transient.get("extent", Vector2.ZERO)
+	if (
+		not TRANSIENT_CAPS.has(kind)
+		or transient_id <= 0 or transient_id > 0xffff
+		or int(transient.get("owner_entity", 0)) < 0
+		or int(transient.get("phase", 0)) < 0 or int(transient.get("phase", 0)) > 7
+		or int(transient.get("owner_seat", -1)) < -1
+		or int(transient.get("owner_seat", -1)) >= MAX_SEATS
+		or int(transient.get("captive_seat", -1)) < -1
+		or int(transient.get("captive_seat", -1)) >= MAX_SEATS
+		or extent.x < 0.0 or extent.y < 0.0 or extent.x > 65535.0 or extent.y > 65535.0
+	):
+		return PackedByteArray()
+	var position: Vector2 = transient.get("position", Vector2.ZERO)
+	var velocity: Vector2 = transient.get("velocity", Vector2.ZERO)
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.put_u8(RECORD_TRANSIENT)
+	stream.put_u8(kind)
+	stream.put_u16(transient_id)
+	stream.put_u64(int(transient.get("owner_entity", 0)))
+	for value in [position.x, position.y, velocity.x, velocity.y]:
+		stream.put_32(roundi(float(value) * WORLD_SCALE))
+	stream.put_u8(int(transient.get("phase", 0)))
+	stream.put_u16(clampi(int(transient.get("timer_ms", 0)), 0, 0xffff))
+	stream.put_8(int(transient.get("owner_seat", -1)))
+	stream.put_8(int(transient.get("captive_seat", -1)))
+	stream.put_u16(roundi(extent.x))
+	stream.put_u16(roundi(extent.y))
+	return stream.data_array if stream.data_array.size() == TRANSIENT_BYTES else PackedByteArray()
+
+
+static func decode_transient_record(payload: PackedByteArray) -> Dictionary:
+	if payload.size() != TRANSIENT_BYTES or int(payload[0]) != RECORD_TRANSIENT:
+		return {"ok": false}
+	var stream := _reader(payload)
+	stream.get_u8()
+	var transient := {
+		"transient": true,
+		"transient_kind": stream.get_u8(),
+		"transient_id": stream.get_u16(),
+		"owner_entity": stream.get_u64(),
+		"position": Vector2(stream.get_32(), stream.get_32()) / WORLD_SCALE,
+		"velocity": Vector2(stream.get_32(), stream.get_32()) / WORLD_SCALE,
+		"phase": stream.get_u8(),
+		"timer_ms": stream.get_u16(),
+		"owner_seat": stream.get_8(),
+		"captive_seat": stream.get_8(),
+		"extent": Vector2(stream.get_u16(), stream.get_u16()),
+	}
+	transient.ok = (
+		TRANSIENT_CAPS.has(int(transient.transient_kind))
+		and int(transient.transient_id) > 0
+		and int(transient.phase) <= 7
+		and int(transient.owner_seat) >= -1 and int(transient.owner_seat) < MAX_SEATS
+		and int(transient.captive_seat) >= -1 and int(transient.captive_seat) < MAX_SEATS
+	)
+	return transient
+
+
+static func encode_transient_end(kind: int, transient_id: int) -> PackedByteArray:
+	if not TRANSIENT_CAPS.has(kind) or transient_id <= 0 or transient_id > 0xffff:
+		return PackedByteArray()
+	var stream := StreamPeerBuffer.new()
+	stream.big_endian = false
+	stream.put_u8(RECORD_TRANSIENT_END)
+	stream.put_u8(kind)
+	stream.put_u16(transient_id)
+	return stream.data_array
+
+
+static func decode_transient_end(payload: PackedByteArray) -> Dictionary:
+	if payload.size() != TRANSIENT_END_BYTES or int(payload[0]) != RECORD_TRANSIENT_END:
+		return {"ok": false}
+	var stream := _reader(payload)
+	stream.get_u8()
+	var ended := {
+		"transient": true,
+		"ended": true,
+		"transient_kind": stream.get_u8(),
+		"transient_id": stream.get_u16(),
+	}
+	ended.ok = TRANSIENT_CAPS.has(int(ended.transient_kind)) and int(ended.transient_id) > 0
+	return ended
+
+
+## OK, or CONTENT_LIMIT_EXCEEDED when any kind exceeds its wire cap. The host must then refuse or
+## resync; it never truncates the list.
+static func transient_cap_status(transients: Array) -> int:
+	if transients.size() > MAX_TRANSIENTS:
+		return NetworkFrame.Reason.CONTENT_LIMIT_EXCEEDED
+	var counts := {}
+	for transient_variant in transients:
+		var kind := int((transient_variant as Dictionary).get("transient_kind", 0))
+		counts[kind] = int(counts.get(kind, 0)) + 1
+		if not TRANSIENT_CAPS.has(kind) or int(counts[kind]) > int(TRANSIENT_CAPS[kind]):
+			return NetworkFrame.Reason.CONTENT_LIMIT_EXCEEDED
+	return NetworkFrame.Reason.OK
+
+
+## Typed record by its leading type byte, or {"ok": false}.
+static func decode_record(raw: PackedByteArray) -> Dictionary:
+	if raw.is_empty():
+		return {"ok": false}
+	match int(raw[0]):
+		RECORD_SEAT:
+			return decode_seat_record(raw)
+		RECORD_STAGE_ENTITY:
+			return decode_stage_record(raw)
+		RECORD_TOMBSTONE:
+			if raw.size() != 9:
+				return {"ok": false}
+			var tombstone_reader := _reader(raw)
+			tombstone_reader.get_u8()
+			return {"ok": true, "entity_id": tombstone_reader.get_u64(), "removed": true}
+		RECORD_OBJECTIVE:
+			return decode_objective_record(raw)
+		RECORD_EVENT_CONTEXT:
+			return decode_event_context_record(raw)
+		RECORD_TRANSIENT:
+			return decode_transient_record(raw)
+		RECORD_TRANSIENT_END:
+			return decode_transient_end(raw)
+	return {"ok": false}
+
+
 ## A superseding state frame carries host tick, stage version and one complete typed entity record.
 static func encode_state_update(state: Dictionary, tick: int, stage_version: int, record: PackedByteArray) -> PackedByteArray:
 	if tick < 0 or tick > 0xffffffff or stage_version < 0 or stage_version > 0xffffffff:
@@ -456,24 +607,7 @@ static func decode_state_update(payload: PackedByteArray) -> Dictionary:
 	var record_data := stream.get_data(record_length)
 	if int(record_data[0]) != OK or record_data[1].is_empty():
 		return {"ok": false}
-	var record: Dictionary
-	match int(record_data[1][0]):
-		RECORD_SEAT:
-			record = decode_seat_record(record_data[1])
-		RECORD_STAGE_ENTITY:
-			record = decode_stage_record(record_data[1])
-		RECORD_TOMBSTONE:
-			if record_data[1].size() != 9:
-				return {"ok": false}
-			var tombstone_reader := _reader(record_data[1])
-			tombstone_reader.get_u8()
-			record = {"ok": true, "entity_id": tombstone_reader.get_u64(), "removed": true}
-		RECORD_OBJECTIVE:
-			record = decode_objective_record(record_data[1])
-		RECORD_EVENT_CONTEXT:
-			record = decode_event_context_record(record_data[1])
-		_:
-			return {"ok": false}
+	var record := decode_record(record_data[1])
 	if not bool(record.get("ok", false)):
 		return {"ok": false}
 	return {"ok": true, "metadata": metadata, "tick": tick, "stage_version": stage_version, "record": record}
@@ -497,7 +631,7 @@ static func unpack_snapshot(snapshot: PackedByteArray) -> Dictionary:
 	if stream.get_u16() != 1:
 		return {"ok": false}
 	var count := int(stream.get_u16())
-	if count > MAX_SEATS + MAX_STAGE_ENTITIES + 8:
+	if count > MAX_SNAPSHOT_RECORDS:
 		return {"ok": false}
 	var records: Array[Dictionary] = []
 	for _index in count:
@@ -511,34 +645,23 @@ static func unpack_snapshot(snapshot: PackedByteArray) -> Dictionary:
 		var raw := stream.get_data(length)
 		if int(raw[0]) != OK:
 			return {"ok": false}
-		var decoded: Dictionary
-		match int(raw[1][0]):
-			RECORD_SEAT:
-				decoded = decode_seat_record(raw[1])
-			RECORD_STAGE_ENTITY:
-				decoded = decode_stage_record(raw[1])
-			RECORD_TOMBSTONE:
-				if raw[1].size() != 9:
-					return {"ok": false}
-				var tombstone_reader := _reader(raw[1])
-				tombstone_reader.get_u8()
-				decoded = {"ok": true, "entity_id": tombstone_reader.get_u64(), "removed": true}
-			RECORD_OBJECTIVE:
-				decoded = decode_objective_record(raw[1])
-			RECORD_EVENT_CONTEXT:
-				decoded = decode_event_context_record(raw[1])
-			_:
-				return {"ok": false}
+		var decoded := decode_record(raw[1])
 		if not bool(decoded.get("ok", false)):
 			return {"ok": false}
 		records.append(decoded)
 	if stream.get_position() != snapshot.size():
 		return {"ok": false}
+	var transients: Array = []
+	for record in records:
+		if bool(record.get("transient", false)) and not bool(record.get("ended", false)):
+			transients.append(record)
+	if transient_cap_status(transients) != NetworkFrame.Reason.OK:
+		return {"ok": false, "reason": NetworkFrame.Reason.SNAPSHOT_LIMIT}
 	return {"ok": true, "records": records}
 
 
 static func pack_snapshot(records: Array[PackedByteArray]) -> PackedByteArray:
-	if records.size() > MAX_SEATS + MAX_STAGE_ENTITIES + 8:
+	if records.size() > MAX_SNAPSHOT_RECORDS:
 		return PackedByteArray()
 	var stream := StreamPeerBuffer.new()
 	stream.big_endian = false
