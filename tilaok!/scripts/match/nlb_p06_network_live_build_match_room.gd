@@ -358,6 +358,11 @@ func _transient_id_for(key: String) -> int:
 	return int(_transient_ids[key])
 
 
+func _on_live_one_shot_committed(area: Rect2, seat_index: int) -> void:
+	super._on_live_one_shot_committed(area, seat_index)
+	_register_live_blast(area, seat_index)
+
+
 ## Records a host blast flash for clients (live explosives and Walis), bounded by the VFX cap.
 func _register_live_blast(area: Rect2, owner_seat: int) -> void:
 	_blast_serial += 1

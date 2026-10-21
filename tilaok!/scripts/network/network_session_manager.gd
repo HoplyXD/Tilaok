@@ -2265,18 +2265,20 @@ func _placement_response(request_id: int, result: Dictionary) -> PackedByteArray
 	var stage_version := int(result.get("stage_version", match_room.items.stage_version))
 	var accepted := bool(result.get("allowed", false)) or str(result.get("status", "")) == "accepted"
 	if accepted:
+		# Objectives and one-shot edits (Walis, explosives) create no entity (contract v1.4).
+		var creates_entity := code not in ["objective", "one_shot"]
 		var entity_id := 0
-		if code != "objective":
+		if creates_entity:
 			entity_id = match_room.network_entity_id_for(str(result.get("entity_id", "")))
-		if entity_id <= 0 and code != "objective":
+		if entity_id <= 0 and creates_entity:
 			push_warning("NLB-P06 accepted placement without an entity: %s" % code)
 		var grace_ticks := ceili(
 			float(result.get("activation_after_seconds", 0.0)) * Engine.physics_ticks_per_second
 		)
 		var detail := (
-			NetworkPlacementCodec.Detail.OBJECTIVE
-			if code == "objective"
-			else NetworkPlacementCodec.Detail.COMMITTED
+			NetworkPlacementCodec.Detail.COMMITTED
+			if creates_entity
+			else NetworkPlacementCodec.detail_for_code(code)
 		)
 		return NetworkPlacementCodec.encode_result(
 			{

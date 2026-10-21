@@ -32,6 +32,11 @@ var stage_version := 0
 var live_activation: Dictionary = {}
 var live_activation_grace_seconds := 1.0
 var live_actor_clearance_wu := 32.0
+## Live route entity age (NLB-P07, NETWORKED_LIVE_BUILD.md §6.2): the authority boundary being
+## resolved, and the boundary each live piece was committed at. A one-shot edit only affects
+## pieces committed at an earlier boundary; pieces with no entry are older (Place or earlier round).
+var live_boundary := -1
+var live_commit_boundary: Dictionary = {}
 var round_number := 0
 var _serial := 1
 var _defer_stage_version := false
@@ -162,6 +167,7 @@ func place_live(
 	if piece != null and piece.has_method("set_block_active"):
 		piece.call("set_block_active", false)
 	live_activation[instance_id] = {"remaining": live_activation_grace_seconds, "held": false}
+	live_commit_boundary[instance_id] = live_boundary
 	if advance_version:
 		stage_version += 1
 	committed["stage_version"] = stage_version
@@ -169,8 +175,13 @@ func place_live(
 	return committed
 
 
-## Live Walis commit derives its target set again from the current world. Every surface is
-## preflighted before support invalidation/removal, so a stale preview cannot remove new pieces.
+## Live one-shot commit (Walis Cleanup and, since NLB-P07, Bomb/Dynamite/Nuke) derives its target
+## set again from the current world. Every surface is preflighted before support invalidation or
+## removal, so a stale preview cannot remove new pieces. There is no shared Place batch on the live
+## route, so the offline same-Place blast rule does not apply: a piece committed at an earlier
+## authority boundary (this round or before) is eligible if removable; edits of this same boundary
+## and requests still pending are never touched. Protected base/spawn/goal geometry is never a
+## target; as offline, it is excluded from the edit rather than refusing it.
 func apply_live_one_shot(
 	verdict: Dictionary, owner_seat: int, advance_version: bool = false
 ) -> Dictionary:
@@ -183,14 +194,18 @@ func apply_live_one_shot(
 	var target_info := CleanupTargetResolver.resolve(
 		verdict.footprint, pieces.values(), arena, round_number
 	)
-	if bool(target_info.get("protected", false)):
-		return {
-			"allowed": false,
-			"code": "protected_target",
-			"reason": "Protected construction cannot be removed."
-		}
+	var candidates: Array = []
+	candidates.append_array(target_info.get("ids", []))
+	for same_variant in target_info.get("same_phase", []):
+		var same_id := str(same_variant)
+		if (
+			int(live_commit_boundary.get(same_id, live_boundary)) < live_boundary
+			and bool(arena.can_remove_surface(same_id).get("allowed", false))
+		):
+			candidates.append(same_id)
+	var protected_rects: Array = target_info.get("protected", [])
 	var target_ids: Array[String] = []
-	for target_variant in target_info.get("ids", []):
+	for target_variant in candidates:
 		var target_id := str(target_variant)
 		if not pieces.has(target_id):
 			return {
@@ -222,6 +237,7 @@ func apply_live_one_shot(
 		"one_shot": true,
 		"owner_seat": owner_seat,
 		"removed": removed,
+		"protected_excluded": protected_rects.size(),
 		"edit_id":
 		"walis:%d:%d" % [round_number, stage_version + (1 if not removed.is_empty() else 0)],
 	}
@@ -470,6 +486,7 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 	arena.unregister_player_construction(instance_id)
 	pieces.erase(instance_id)
 	live_activation.erase(instance_id)
+	live_commit_boundary.erase(instance_id)
 	budget.release_emitter(instance_id)
 	var node := record.node
 	record.node = null
@@ -552,6 +569,8 @@ func reset_match() -> PackedStringArray:
 	round_number = 0
 	stage_version = 0
 	live_activation.clear()
+	live_commit_boundary.clear()
+	live_boundary = -1
 	_serial = 1
 	return released
 

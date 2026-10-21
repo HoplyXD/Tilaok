@@ -17,6 +17,11 @@ const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.g
 @export_range(1.0, 32.0, 1.0) var live_cursor_cells_per_second := 8.0
 @export_range(0.0, 1.0, 0.05) var live_cursor_initial_delay := 0.25
 @export_range(0.0, 64.0, 1.0) var live_actor_clearance_wu := 32.0
+## NLB-P07 (§6.2): extra reach kept clear around live chickens for lethal hazards, projectile
+## lanes and capture paths, so a live insertion never creates an unavoidable immediate hit.
+@export_range(0.0, 256.0, 1.0) var live_lethal_clearance_wu := 64.0
+## Rows of cells below a movable block that must be free of chickens (fall path; never crush).
+@export_range(0, 8, 1) var live_fall_check_cells := 2
 
 var request_pipeline := REQUEST_PIPELINE.new()
 var build_mode: Dictionary = {}
@@ -331,6 +336,8 @@ func _resolve_live_placement_boundary() -> void:
 	var requests := request_pipeline.drain_boundary(boundary, items.round_number + 1)
 	if requests.is_empty():
 		return
+	# Entity age for live one-shot edits: pieces committed at this boundary are never targets.
+	items.live_boundary = boundary
 	var terrain_changed := false
 	var resolved: Array[Dictionary] = []
 	for receipt in requests:
@@ -407,16 +414,6 @@ func _commit_live_intent(seat_index: int, intent: Dictionary, boundary: int) -> 
 		return _live_result(base, false, "inventory_missing", "This seat has no assigned item.")
 	if bool(inventory_used.get(seat_index, false)):
 		return _live_result(base, false, "inventory_used", "The assigned item was already used.")
-	if (
-		items.budget.count(TransientBudget.Kind.PROJECTILE) > 0
-		or items.budget.count(TransientBudget.Kind.BUBBLE) > 0
-	):
-		return _live_result(
-			base,
-			false,
-			"live_effect_path",
-			"Wait for active projectiles and bubble effects to clear before placing."
-		)
 	var cursor: Dictionary = placement_controller.cursors[seat_index]
 	if str(cursor.variant_key) != str(intent.get("variant_key", "")):
 		return _live_result(
@@ -482,15 +479,24 @@ func _commit_live_intent(seat_index: int, intent: Dictionary, boundary: int) -> 
 			str(cleanup.get("code", "cleanup_rejected")),
 			str(cleanup.get("reason", "Cleanup was rejected."))
 		)
-		cleanup_result["entity_id"] = str(cleanup.get("edit_id", ""))
+		# A one-shot edit creates no entity: the wire result names none (contract v1.4); the
+		# removals travel as versioned terrain REMOVE ops.
+		cleanup_result["edit_id"] = str(cleanup.get("edit_id", ""))
 		cleanup_result["removed"] = cleanup.get("removed", [])
 		var removed: Array = cleanup.get("removed", [])
 		cleanup_result["terrain_mutated"] = not removed.is_empty()
+		if bool(cleanup.get("allowed", false)):
+			_on_live_one_shot_committed(verdict.footprint, seat_index)
 		return cleanup_result
 	if _live_mover_sweep_intersects(verdict.footprint):
 		return _live_result(
 			base, false, "mover_sweep", "A moving piece can cross that placement area."
 		)
+	var effect_check := _live_effect_check(
+		str(cursor.variant_key), turns, verdict, actor_rects
+	)
+	if not effect_check.is_empty():
+		return _live_result(base, false, str(effect_check.code), str(effect_check.reason))
 	items.live_activation_grace_seconds = live_item_grace_seconds
 	var committed := items.place_live(
 		str(cursor.variant_key), cell, turns, seat_index, actor_rects, false
@@ -544,6 +550,83 @@ func _live_mover_sweep_intersects(footprint: Rect2) -> bool:
 			if protected_rect.intersects(live_rect.merge(sweep_end), false):
 				return true
 	return false
+
+
+## A host blast flash over a committed live one-shot edit (Walis, Bomb, Dynamite, Nuke), as the
+## offline Place resolution shows. The network room also replicates it as a transient.
+func _on_live_one_shot_committed(area: Rect2, _seat_index: int) -> void:
+	_show_blasts([{"area": area}])
+
+
+## NLB-P07 §6.2 live checks after the shared validator accepted a persistent placement. Returns
+## {} or {code, reason}. All inputs are host state; nothing here mutates the stage.
+## - lethal hazards, projectile lanes and capture paths: no live chicken within the extra lethal
+##   clearance of the footprint or any effect region (no unavoidable immediate hit);
+## - every persistent item: no in-flight projectile or bubble inside its footprint or regions;
+## - movable blocks: no chicken in the fall path below (a live solid never crushes or pins).
+func _live_effect_check(
+	variant_key: String, turns: int, verdict: Dictionary, actor_rects: Array[Rect2]
+) -> Dictionary:
+	var found := definitions.find_variant(variant_key)
+	if found.is_empty():
+		return {}
+	var family := found.family as ItemFamilyDefinition
+	var footprint: Rect2 = verdict.footprint
+	var effect_rects: Array[Rect2] = [footprint]
+	var variant := found.variant as ItemVariantDefinition
+	var regions := ItemGeometry.clip_to_stage(
+		ItemGeometry.resolve_regions(variant, ItemGeometry.normalized_turns(turns), tuning),
+		footprint,
+		arena
+	)
+	for region in regions:
+		var world_rect: Rect2 = region.rect
+		world_rect.position += footprint.position
+		effect_rects.append(world_rect)
+	var kind := str(family.behavior_kind)
+	if kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"]:
+		for actor_rect in actor_rects:
+			var reach := actor_rect.grow(live_actor_clearance_wu + live_lethal_clearance_wu)
+			for effect_rect in effect_rects:
+				if reach.intersects(effect_rect, false):
+					return {
+						"code": "lethal_clearance",
+						"reason": "A chicken is too close to that hazard's reach."
+					}
+	for transient_rect in _live_effect_rects_in_flight():
+		for effect_rect in effect_rects:
+			if transient_rect.intersects(effect_rect, false):
+				return {
+					"code":
+					"projectile_lane" if kind in ["launcher", "bubble"] else "live_effect_path",
+					"reason": "A shot or bubble is crossing that spot."
+				}
+	if family.safe_start == ItemFamilyDefinition.SAFE_START_RESET_TO_PLACED:
+		var fall := footprint
+		fall.size.y += float(live_fall_check_cells) * tuning.grid_cell_wu
+		for actor_rect in actor_rects:
+			if actor_rect.grow(live_actor_clearance_wu).intersects(fall, false):
+				return {"code": "crush_risk", "reason": "A chicken is below that spot."}
+	return {}
+
+
+## Host rects of every in-flight projectile and live bubble (shared item runtime).
+func _live_effect_rects_in_flight() -> Array[Rect2]:
+	var result: Array[Rect2] = []
+	for instance_id in items.pieces.keys():
+		var piece := items.piece_for(str(instance_id)) as HazardPiece
+		if piece == null or piece.behavior == null:
+			continue
+		if piece.behavior is LauncherBehavior:
+			var size := Vector2.ONE * tuning.item_launcher_projectile_size_wu
+			for projectile in (piece.behavior as LauncherBehavior).projectiles:
+				var center: Vector2 = projectile.center
+				result.append(Rect2(center - size * 0.5, size).grow(live_actor_clearance_wu))
+		elif piece.behavior is BubbleBehavior and (piece.behavior as BubbleBehavior).has_bubble():
+			var radius := tuning.item_bubble_radius_wu
+			var bubble_center := (piece.behavior as BubbleBehavior).bubble_center
+			result.append(Rect2(bubble_center - Vector2.ONE * radius, Vector2.ONE * radius * 2.0))
+	return result
 
 
 func _live_result(base: Dictionary, allowed: bool, code: String, reason: String) -> Dictionary:
