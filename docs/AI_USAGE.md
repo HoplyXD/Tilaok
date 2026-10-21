@@ -2,7 +2,7 @@
 
 **NLB-P01 update (2026-10-19):** after the approved P00 documentation track, Codex implemented the separately gated P01 local action/seat and simulation-authority foundation and its focused tests, capture runner, verification evidence, and tracker/status updates. No transport, Android export/client, or live-placement work was performed. Verification used synthetic input; no physical-device session or independent human review is claimed. The original P00-only record remains in the dated history below.
 
-_Current policy and cumulative disclosure record. Updated 2026-10-20. This file prepares evidence for DOST Form 03; it is not the signed form._
+_Current policy and cumulative disclosure record. Updated 2026-10-21. This file prepares evidence for DOST Form 03; it is not the signed form._
 
 ## Current standing programming policy
 
@@ -37,6 +37,34 @@ At the user's approved implementation direction, OpenAI Codex updated the NLB-P0
 ### NLB-P04 preparatory network match implementation — October 21, 2026
 
 At the user's direction to implement the P04 plan, OpenAI Codex authored the P00 wire/schema amendment, raw ENet channel routing, bounded match codecs, peer-generation-bound logical input, host input queue and neutral timeout, P12 host match-start integration, snapshot/state synchronization, detached draw-only client presentation, and minimum phone touch controls. It also authored focused P04 codec/router checks and updated the P04 tracker, evidence index and project documentation. The P03-T03 dependency remains open; this implementation does not claim prerequisite clearance. No Godot parser/import, P04 test, raw ENet experiment, multi-process session, rendered walkthrough, export, performance measurement, physical-phone test, or human review was run. The work is source-level and all P04 tracker boxes remain unchecked. The separate P04 multi-process runner and broader production-path fault coverage remain outstanding. No production art, audio or other non-code asset was generated. See [P04 evidence and exact deferred commands](evidence/nlb/p04/README.md).
+
+_Correction (2026-10-21):_ the paragraph above describes the state when the P04 source was first delivered. The [P04 evidence](evidence/nlb/p04/README.md) records later runs:
+
+- the focused 35-check suite passed;
+- a separate-process host/client run passed;
+- the multi-process runner was added and ran;
+- a physical phone was admitted with snapshot readiness and remote movement;
+- an updated-APK phone check was partial.
+
+That record is authoritative for what ran and who ran it. No independent human review is claimed for those runs.
+
+### NLB-P06 preparatory network live placement — October 21, 2026
+
+At the user's explicit authorization of NLB-P06 as preparatory implementation, the AI coding agent Claude Code (Claude Opus 5.5, model `claude-opus-5-5`) authored the following:
+
+- the P00 contract v1.3 amendment (schema 3, required live-placement feature `0x0080`, placement intent/result and live seat state families, revised versioned terrain commit, 10-byte route-bearing match lifecycle);
+- the bounded `NetworkPlacementCodec` with its P05 code → reason/detail map;
+- host session integration in `network_session_manager.gd`: host receipt stamping, intent validation, request-ID cache, per-requester results, ROUND_ENDED fan-out, add/update/remove terrain diffs with gap → snapshot recovery, the host-owned build-mode echo, neutral GO input on the live route, and per-peer cleanup;
+- the opt-in `network_live_build` route with its `NLBP06NetworkLiveBuildMatchRoom` and scene;
+- small additive hooks in the P05 room, placement pipeline and P12 replication record;
+- remote live build actions and a live-room keyboard confirm flag;
+- the client-side tentative ghost state machine;
+- footprint/rotation drawing and minimum phone build controls in the client presentation;
+- the focused `run_nlb_p06_tests.gd` and the `run_nlb_p06_multi_process.gd` slice/phone runner;
+- a one-line P04 test update for the schema change;
+- the P06 evidence, tracker and status documentation.
+
+While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, multi-process or phone session, ADB, network listener, capture, lint or performance measurement. Only `git diff --check`, git status and manual source review were performed. All three P06 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. Dependencies P03-T03, P04-T03 and P05-T03 remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; the client visuals are code-drawn placeholders. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P06 evidence and exact deferred commands](evidence/nlb/p06/README.md).
 
 ## Form 03 preparation
 

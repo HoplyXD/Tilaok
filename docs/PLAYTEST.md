@@ -1,6 +1,6 @@
 # Tilaok! Verification and Playtest Plan
 
-**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 transport/input/replica source and a focused test runner are authored, but no P04 runtime, channel, loss/recovery, multi-process, rendered, export or physical-device verification has run. Testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
+**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 has bounded runtime evidence: the focused 35-check suite and a separate-process host/client run passed, and a physical phone was admitted with snapshot readiness and remote movement. ENet channel, loss/recovery, rendered and full acceptance checks remain open. Preparatory NLB-P06 live-placement source and its runners are authored; none has run (see the NLB-P06 section below). New testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
 
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
@@ -824,3 +824,19 @@ T01's debug APK exports and passes merged-manifest, plugin, ABI and signature in
 | Android runtime permission, actual camera scan, joins and host/client content compatibility | COULD-NOT-RUN | No connected phone; Android sparse resource digest is not compared against the Windows host. |
 | Physical install, real Wi-Fi join/leave/rejoin and failure cases | COULD-NOT-RUN | ADB reports no devices. No emulator or port forwarding used. |
 | Real Wi-Fi and no-internet host/client prerequisite | COULD-NOT-RUN | No real Wi-Fi/no-internet test occurred; P02 exit remains required. |
+
+## NLB-P06 network live placement — preparatory status, 2026-10-21
+
+This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use. The opt-in route is `-- --match-route=network_live_build` on the PC host; the scheduled network route and both offline routes are unchanged. The contract is [v1.3](evidence/nlb/p00/protocol-measurement-contract-v1.3.md); exact deferred commands and the physical session sheet are in [P06 evidence](evidence/nlb/p06/README.md). Dependencies P03-T03, P04-T03 and P05-T03 remain open.
+
+| Check | Result | Reason / limit |
+|---|---|---|
+| Godot import/parse of the new and changed scripts | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| gdlint / gdformat | COULD-NOT-RUN | Tool absent (not installed by request); deferred |
+| `run_nlb_p06_tests.gd` (codecs, reason map, dedupe/reuse/capacity, ownership, tie order, ROUND_ENDED, disconnect, terrain replay, ghost, P04-only rejection, route parity) | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Regressions: NLB P01–P05, P12, P12 pairs/stack, Barya, controls, match UI, P13 navigation | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Multi-process live slice (host + headless client + synthetic K1) ×2 | COULD-NOT-RUN | Deferred; synthetic seats would not count as phone or physical-controller evidence |
+| Physical Android + local PC keyboard/gamepad slice ×2 | COULD-NOT-RUN | Deferred; needs an APK from this revision and a real reviewer |
+| Loss/reorder/duplicate replay and terrain diff audit | COULD-NOT-RUN | Authored as in-process cases; deferred |
+| Android export/install, rendered host/client captures | COULD-NOT-RUN | Deferred; no network-client capture runner exists yet |
+| Performance (host 60 Hz / 16.67 ms; phone ≥30 FPS, p95 ≤33.3 ms; 512 MiB) | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |

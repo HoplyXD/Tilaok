@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Preparatory P06 source (contract v1.3 live placement, versioned terrain commits, opt-in network live route, minimum phone build controls) was authored 2026-10-21 under the same authorization; nothing in it has run and P06 remains 0/3 checked. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,7 +12,7 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current: **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 5, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 18.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), and P05 is PARTIAL (1/3); P02 passes 3/3. P04's P03-T03 prerequisite and all P04 verification remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current (recounted from the task records, 2026-10-21): **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 8, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 15.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), P05 is PARTIAL (1/3), and P06 is PARTIAL (0/3 checked; preparatory source); P02 passes 3/3. P04's P03-T03 prerequisite, all P04 verification, and P06's P03-T03/P04-T03/P05-T03 dependencies remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
@@ -22,14 +22,14 @@ Counts are derived from the task records in this document. Current: **12 phases,
 | NLB-P03 | Android export/install and physical phone lobby join | 3 | P02 | PARTIAL (1/3) |
 | NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | PARTIAL (0/3 checked; source verification open) |
 | NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | PARTIAL (1/3) |
-| NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | TODO |
+| NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | PARTIAL (0/3 checked; preparatory source) |
 | NLB-P07 | All current content/modes/stacks compatibility | 3 | P06 | TODO |
 | NLB-P08 | Pause, background, disconnect/reclaim, resync | 3 | P06 | TODO |
 | NLB-P09 | Results, sudden death, replay and teardown | 3 | P07, P08 | TODO |
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 26 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 5 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 18. Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 25 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 8 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 15. (2026-10-21 recount: the earlier "TODO 26" did not match the 25 unchecked TODO records.) Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -262,7 +262,7 @@ Counts are derived from the task records in this document. Current: **12 phases,
 
 ## NLB-P06 — Network placement, terrain replication, vertical slice
 
-**Phase goal:** deliver the first complete three-seat mixed-device round using host-confirmed live placement. **Entry:** P04 and P05 exits. **Dependencies:** P04, P05. **Systems touched:** placement transport, stage versioning, ghost acknowledgment, actor/item replication, results/next round. **Decisions:** one Android, one local PC participant, host may spectate or play, three total seats in minimum slice. **Exit:** selection → countdown → active placement/race → results → next round works across devices. **Evidence:** actual Windows host/Android APK/PC local input record and captures.
+**Phase goal:** deliver the first complete three-seat mixed-device round using host-confirmed live placement. **Entry:** P04 and P05 exits. **Dependencies:** P04, P05. **Systems touched:** placement transport, stage versioning, ghost acknowledgment, actor/item replication, results/next round. **Decisions:** one Android, one local PC participant, host may spectate or play, three total seats in minimum slice. **Exit:** selection → countdown → active placement/race → results → next round works across devices. **Evidence:** actual Windows host/Android APK/PC local input record and captures. **Status:** PARTIAL (0/3 checked; preparatory source). The user authorized preparatory implementation while the entry dependencies remain open; that authorization clears no dependency. Contract: [v1.3](evidence/nlb/p00/protocol-measurement-contract-v1.3.md). Evidence and deferred commands: [P06 evidence](evidence/nlb/p06/README.md).
 
 ### [ ] NLB-P06-T01 — IMPLEMENT — Replicate authoritative terrain edits
 
@@ -272,7 +272,17 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** transmit host acceptance/rejection and versioned terrain additions/removals, mover state and activation tells; client previews remain tentative until acknowledgment.
 - **Acceptance:** stage version and entity IDs converge on host/clients; rejected ghost disappears with reason; duplicate/stale result cannot double-commit.
 - **Evidence:** terrain diff audit, acknowledgement logs, loss/reorder replay.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):**
+  - `tilaok!/scripts/network/network_placement_codec.gd` (new 48 B intent / 38 B result / live seat state / revised terrain commit, reason and detail map);
+  - `network_frame.gd` (schema 3, feature `0x0080`, families `0x1B`–`0x1D`);
+  - `network_match_codec.gd` (lifecycle ≤2);
+  - `network_session_manager.gd` (receipt stamp, intent validation, request-ID cache, per-requester results, ROUND_ENDED fan-out, host terrain diff with add/update/remove, gap → snapshot, reliable removals, live seat state, cleanup);
+  - `network_live_placement_client.gd` (tentative ghost state machine);
+  - `scripts/match/nlb_p05_live_build_match_room.gd` (boundary signal, ROUND_ENDED flush);
+  - `live_placement_pipeline.gd` (`pending_requests`, `cancel_seat`);
+  - `p12_scheduled_match_room.gd` (grace lifecycle tell, `network_entity_id_for`).
+  - Authored checks: `tilaok!/tests/run_nlb_p06_tests.gd`.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; dependencies P03-T03, P04-T03, P05-T03 open.
 
 ### [ ] NLB-P06-T02 — IMPLEMENT — Complete the mixed-device vertical slice
 
@@ -282,7 +292,17 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** integrate Windows PC host, one real Android player, and one local PC keyboard/gamepad player through item selection, GO, movement, live placement, race, results, and next-round Pugad.
 - **Acceptance:** full vertical slice runs twice with stable identity, one score commit per seat, persistent accepted construction, and no network authority errors.
 - **Evidence:** exact build/revision/device/Wi-Fi/input/seed record, host/client logs, captures/video, actual reviewer.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):**
+  - opt-in `-- --match-route=network_live_build` in `tilaok!/scripts/flow/game_flow.gd`;
+  - `scenes/match/nlb_p06_network_live_build_room.tscn` and `scripts/match/nlb_p06_network_live_build_match_room.gd` (host inventory IDs, network submit, seat-state view, disconnect cancel);
+  - `compatibility_manifest.gd` (P06 build ID, routes);
+  - 10 B route-bearing match lifecycle;
+  - remote `build_toggle`/`live_rotate`/`live_cancel` in `local_input_router.gd`, `remote_seat_input_adapter.gd` and session action IDs 12–14;
+  - neutral GO input on the live route;
+  - `live_build_confirm_enabled` so K1–K4 south keys confirm in live rooms;
+  - `network_match_presentation.gd` (footprint/rotation draw, grace tell, ghost, phase names, minimum phone Build/aim/Rotate/Place/Cancel cluster).
+  - Authored runner: `tilaok!/tests/run_nlb_p06_multi_process.gd` (`-- client`, `-- phone`).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; dependencies P03-T03, P04-T03, P05-T03 open.
 
 ### [ ] NLB-P06-T03 — VERIFY — Conflict, safety and resync slice
 
@@ -292,7 +312,8 @@ Counts are derived from the task records in this document. Current: **12 phases,
 - **Work:** exercise near-simultaneous edits, true ties, occupied/protected regions, moving players, lost acknowledgments, resync and host/client stage-version mismatch.
 - **Acceptance:** server receipt/tie rule is observable and stable; no crushing/trapping; selected item consumption and rollback are correct.
 - **Evidence:** scenario logs, state hashes/terrain diffs, physical-device session sheet.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):** authored verification cases in `tilaok!/tests/run_nlb_p06_tests.gd`: equal-receipt tie order, dedupe and reuse, capacity, ownership, rate limit, ROUND_ENDED once, disconnect cancel, loss/reorder/duplicate terrain replay, gap → resync, P04-only rejection. The physical session sheet template is in [P06 evidence](evidence/nlb/p06/README.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; dependencies P03-T03, P04-T03, P05-T03 open (and P06-T01/T02 unverified).
 
 ## NLB-P07 — All existing content, modes, items, Barya, commands and stacks
 
@@ -486,4 +507,4 @@ flowchart LR
 
 ## Completion and evidence rules
 
-Only NLB-P00-T01 through NLB-P00-T03 are checked by this documentation delivery. P01–P11 remain unchecked and `NOT RUN`. Future actual results must be `PASSED`, `FAILED`, or `COULD-NOT-RUN` with a reason and evidence location. Record actual hardware and humans. Preserve failed runs and fix/re-run affected checks. Promotion to a release profile needs a separately recorded team scope decision after all required gates; this tracker does not make the networked build part of the October 2026 submission.
+The original documentation delivery checked only NLB-P00-T01 through NLB-P00-T03. As of 2026-10-21, 11/36 tasks are checked: P00–P02 (all), P03-T01 and P05-T01. Every other task is unchecked with the actual result recorded on its own record. Future actual results must be `PASSED`, `FAILED`, or `COULD-NOT-RUN` with a reason and evidence location. Record actual hardware and humans. Preserve failed runs and fix/re-run affected checks. Promotion to a release profile needs a separately recorded team scope decision after all required gates; this tracker does not make the networked build part of the October 2026 submission.

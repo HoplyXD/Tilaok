@@ -2,6 +2,8 @@
 
 **Contract version:** wire major 1, minor 2; schema 2. **Date:** 2026-10-21. **Status:** approved P04 protocol design; source implementation and bounded host/client checks exist, while raw ENet ordering, fault recovery and full acceptance remain unverified. This amendment supplements [v1](protocol-measurement-contract-v1.md) and [the implemented P02 v1.1 clarification](protocol-measurement-contract-v1.1.md). It does not replace P02 framing, invitation, discovery, lobby, approval, or seat-capacity rules.
 
+> **Forward link (2026-10-21):** [v1.3](protocol-measurement-contract-v1.3.md) amends this contract for NLB-P06 live placement (schema 3, required mask `0x00FF`, families `0x1B`–`0x1D`, revised `0x1A`, 10-byte match lifecycle). The text below records the P04 design as approved.
+
 P04 targets the existing P12 scheduled `karera_slice` route (`Pugad → Place → Play`). The offline route remains the default. NLB-P05 live-build and P06 placement requests are not enabled. Old lobby-only binaries with schema 1 / feature mask `0x000F` cannot start or enter a P04 match. A P04 peer must negotiate schema 2 and every required feature bit; there is no gameplay downgrade.
 
 ## 1. Transport and families
