@@ -22,9 +22,9 @@ extends RefCounted
 ## until its own P07-T03 evidence passes.
 
 const MATRIX_VERSION := 1
-## Minimum wire/content identity of every cell in this table (contract v1.4).
-const MIN_PROTOCOL := "1.2/schema4/0x01FF"
-const MIN_CONTENT := "tilaok-nlb-p07-2026-10-21"
+## Minimum wire/content identity of every cell in this table (contract v1.5).
+const MIN_PROTOCOL := "1.2/schema5/0x03FF"
+const MIN_CONTENT := "tilaok-nlb-p08-2026-10-21"
 ## Host-only development switch. Ignored on Android and on release export templates.
 const OVERRIDE_FLAG := "--nlb-unverified-content"
 const MATRIX_DOC := "docs/evidence/nlb/p07/compatibility-matrix.md"
@@ -72,6 +72,14 @@ const LIFE_RULES := {
 	{
 		"status": STATUS_ENGINEERING,
 		"requires": ["life:round_end_pending_edits", "life:snapshot_recovery"]
+	},
+	# NLB-P08 (contract v1.5): host pause, phone lifecycle and seat reservation/reclaim.
+	"host_pause": {"status": STATUS_ENGINEERING, "requires": ["life:snapshot_recovery"]},
+	"client_lifecycle": {"status": STATUS_ENGINEERING, "requires": ["life:snapshot_recovery"]},
+	"seat_reclaim":
+	{
+		"status": STATUS_ENGINEERING,
+		"requires": ["life:client_lifecycle", "life:host_pause", "life:snapshot_recovery"]
 	},
 }
 

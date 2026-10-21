@@ -2,6 +2,9 @@ class_name InvitationCode
 extends RefCounted
 
 const ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+## v1 §2 `auth_context`: invitation join (0) or seat reclaim (1, keyed by the reclaim token).
+const CONTEXT_JOIN := 0
+const CONTEXT_RECLAIM := 1
 
 
 static func generate() -> PackedByteArray:
@@ -47,9 +50,18 @@ static func decode(code: String) -> PackedByteArray:
 
 
 static func proof(
-	token: PackedByteArray, epoch: int, client_nonce: PackedByteArray, server_nonce: PackedByteArray
+	token: PackedByteArray,
+	epoch: int,
+	client_nonce: PackedByteArray,
+	server_nonce: PackedByteArray,
+	auth_context: int = CONTEXT_JOIN
 ) -> PackedByteArray:
-	if token.size() != 16 or client_nonce.size() != 16 or server_nonce.size() != 16:
+	if (
+		token.size() != 16
+		or client_nonce.size() != 16
+		or server_nonce.size() != 16
+		or auth_context not in [CONTEXT_JOIN, CONTEXT_RECLAIM]
+	):
 		return PackedByteArray()
 	var transcript := "TILK-AUTH-v1".to_utf8_buffer()
 	var stream := StreamPeerBuffer.new()
@@ -57,7 +69,7 @@ static func proof(
 	stream.put_u64(epoch)
 	stream.put_data(client_nonce)
 	stream.put_data(server_nonce)
-	stream.put_u8(0)  # invitation join context
+	stream.put_u8(auth_context)
 	stream.put_u8(NetworkFrame.MAJOR)
 	stream.put_u8(NetworkFrame.MINOR)
 	transcript.append_array(stream.data_array)

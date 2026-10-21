@@ -7,10 +7,12 @@ extends RefCounted
 ## the readable build-mismatch notice; live placement is gated by schema 3 and a required feature.
 ## Contract v1.4 (NLB-P07) keeps minor 2 for the same reason and gates live transients and the
 ## 11-byte match lifecycle on schema 4 and required feature bit 8.
+## Contract v1.5 (NLB-P08) keeps minor 2 and gates host pause, client lifecycle hints, seat
+## reservation/reclaim and the extended seat assignment on schema 5 and required feature bit 9.
 const MAGIC := "TILK"
 const MAJOR := 1
 const MINOR := 2
-const SCHEMA := 4
+const SCHEMA := 5
 const FEATURE_BASE_MASK := 0x000f
 const FEATURE_LOGICAL_INPUT := 0x0010
 const FEATURE_AUTHORITATIVE_VIEW := 0x0020
@@ -20,8 +22,10 @@ const FEATURE_LIVE_PLACEMENT := 0x0080
 const FEATURE_P06_MASK := 0x00ff
 const FEATURE_LIVE_TRANSIENTS := 0x0100
 const FEATURE_P07_MASK := 0x01ff
-## The exact mask a peer of this build must advertise (contract v1.4).
-const FEATURE_REQUIRED_MASK := FEATURE_P07_MASK
+const FEATURE_LIFECYCLE := 0x0200
+const FEATURE_P08_MASK := 0x03ff
+## The exact mask a peer of this build must advertise (contract v1.5).
+const FEATURE_REQUIRED_MASK := FEATURE_P08_MASK
 const HEADER_BYTES := 22
 const MAX_FRAME_BYTES := 900
 const MAX_PAYLOAD_BYTES := MAX_FRAME_BYTES - HEADER_BYTES
@@ -29,7 +33,7 @@ const MAX_DISCOVERY_BYTES := 256
 const DISCOVERY_FAMILIES := [1, 2]
 const FAMILIES := [
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-	27, 28, 29
+	27, 28, 29, 30, 31, 32, 33
 ]
 
 enum Family {
@@ -62,6 +66,10 @@ enum Family {
 	PLACEMENT_INTENT = 0x1B,
 	PLACEMENT_RESULT = 0x1C,
 	LIVE_SEAT_STATE = 0x1D,
+	PAUSE_STATE = 0x1E,
+	LIFECYCLE_HINT = 0x1F,
+	RECLAIM_BEGIN = 0x20,
+	RECLAIM_RESULT = 0x21,
 }
 
 
