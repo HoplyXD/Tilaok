@@ -86,6 +86,9 @@ func _start_host() -> void:
 	# Same effect as `-- --match-route=network_live_build`; this runner's user args select its mode.
 	flow.network_live_build_requested = true
 	manager.network_route = NetworkSessionManager.ROUTE_LIVE_BUILD
+	# NLB-P07: no live cell is VERIFIED yet, so this engineering slice runs under the logged
+	# development override (same effect as `-- --nlb-unverified-content`). Not release evidence.
+	manager.live_unverified_content = true
 	manager.approval_requested.connect(
 		func(peer_id: int, _compatibility: Dictionary) -> void:
 			_log("APPROVAL_RESULT peer=%d approved=%s" % [peer_id, str(manager.approve_peer(peer_id))])

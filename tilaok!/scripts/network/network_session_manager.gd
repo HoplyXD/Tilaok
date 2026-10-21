@@ -131,6 +131,10 @@ var _client_input_elapsed := 0.0
 ## Host route chosen by the flow before the match starts; clients learn it from MATCH_LIFECYCLE.
 var network_route := ROUTE_SCHEDULED
 var client_route := ROUTE_SCHEDULED
+## NLB-P07 host policy for the live route: the selected map and the development override
+## (`--nlb-unverified-content`). Clients never decide content availability.
+var live_map_id := MapCatalog.DEFAULT_ID
+var live_unverified_content := false
 var client_live_seat_state: Dictionary = {}
 var terrain_gap := false
 ## Host receipt time of the packet being handled; placement order uses only this clock.
@@ -529,7 +533,20 @@ func start_gate_status() -> String:
 		return "At least two players are required."
 	if not router.registry.all_joined_ready_and_connected():
 		return "Every assigned player must be connected and ready."
+	if network_route == ROUTE_LIVE_BUILD:
+		var live_refusal := NLBLiveCompatibilityMatrix.start_gate(
+			live_map_id, live_unverified_content
+		)
+		if not live_refusal.is_empty():
+			return live_refusal
 	return "Ready to start the scheduled network match."
+
+
+## Host lobby lines for the live route's content matrix (empty on the scheduled route).
+func live_content_summary() -> PackedStringArray:
+	if client_mode or network_route != ROUTE_LIVE_BUILD:
+		return PackedStringArray()
+	return NLBLiveCompatibilityMatrix.lobby_summary(live_unverified_content)
 
 
 func start_network_match() -> bool:

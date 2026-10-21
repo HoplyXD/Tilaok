@@ -24,6 +24,8 @@ static func build(profile_id: String = PROFILE_ID) -> Dictionary:
 		"routes": NETWORK_ROUTES.duplicate(),
 		"maps": _map_records(),
 		"items": _item_records(definitions),
+		# NLB-P07: the live-route compatibility matrix is part of the content identity.
+		"live_matrix": NLBLiveCompatibilityMatrix.manifest_record(),
 	}
 	return {"manifest": manifest, "bytes": canonical_bytes(manifest), "digest": sha256(manifest)}
 
@@ -31,6 +33,7 @@ static func build(profile_id: String = PROFILE_ID) -> Dictionary:
 static func reload_sources() -> void:
 	MapCatalog.reload()
 	BlockCatalog.reload()
+	NLBLiveCompatibilityMatrix.reload()
 
 
 ## A local invalidation hint only; paths/times never enter the compatibility manifest.

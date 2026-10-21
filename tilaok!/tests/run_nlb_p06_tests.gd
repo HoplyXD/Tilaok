@@ -519,6 +519,8 @@ func _live_fixture(seed_value: int) -> Dictionary:
 	room.input_router = router
 	room.simulation_authority = host
 	room.go_countdown_seconds = 0.1
+	# NLB-P07: the P06 slice cells are ENGINEERING; the fixture runs under the development override.
+	room.unverified_content = true
 	root.add_child(room)
 	await process_frame
 	room.set_match_seed(seed_value)

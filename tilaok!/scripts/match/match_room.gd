@@ -339,6 +339,12 @@ func pugad_mode_ids() -> PackedStringArray:
 	return PackedStringArray()
 
 
+## Called with this round's modes just before the egg pool is generated. Only the networked
+## live route uses it (NLB-P07 compatibility matrix); other routes keep their pool unchanged.
+func _prepare_pugad_pool(_mode_ids: PackedStringArray) -> void:
+	pass
+
+
 ## P12 can replace one Pugad egg with a round-scoped objective without changing the ordinary
 ## generator or its random stream. Other routes keep the generated pool unchanged.
 func _augment_pugad_egg_pool(_seat_count: int) -> void:
@@ -469,12 +475,14 @@ func _begin_pugad() -> void:
 	var seat_indices: Array[int] = []
 	for seat in joined:
 		seat_indices.append(int(seat.seat))
+	var mode_ids := pugad_mode_ids()
+	_prepare_pugad_pool(mode_ids)
 	egg_pool = PugadEggPoolGenerator.generate(
 		definitions,
 		tuning,
 		match_streams,
 		seat_indices.size() + tuning.match_pugad_extra_eggs,
-		pugad_mode_ids()
+		mode_ids
 	)
 	_augment_pugad_egg_pool(seat_indices.size())
 	for seat_index in seat_indices:

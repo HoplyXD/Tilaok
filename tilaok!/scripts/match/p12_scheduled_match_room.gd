@@ -118,7 +118,7 @@ func _begin_pugad() -> void:
 	if _schedule_match_id != match_run_id:
 		_schedule_match_id = match_run_id
 		var refusal := schedule.begin(
-			match_streams.event, available_modes, tuning.match_round_limit
+			match_streams.event, available_modes, tuning.match_round_limit, schedule_pairs()
 		)
 		if not refusal.is_empty():
 			_refuse_schedule(refusal)
@@ -143,6 +143,12 @@ func _begin_pugad() -> void:
 		)
 	)
 	_notify_presentation(&"eggs")
+
+
+## Stack rows this room may roll. The networked live route filters them by its compatibility
+## matrix; every other route uses the enabled EventSchedule rows unchanged.
+func schedule_pairs() -> Array[Dictionary]:
+	return EventSchedule.enabled_pairs()
 
 
 ## Eggs follow the item catalog's mode flags: a Lagsanay round deals only Lagsanay-approved

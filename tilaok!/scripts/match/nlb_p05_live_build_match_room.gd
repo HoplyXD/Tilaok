@@ -11,11 +11,6 @@ extends P12ScheduledMatchRoom
 signal live_placement_boundary_resolved(results: Array)
 
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
-const LIVE_VARIANT_ALLOWLIST: PackedStringArray = [
-	"build.hollow_blocks.cell_1x1",
-	"build.hollow_blocks.stack_2x3",
-	"build.bamboo_bridge.span_4x1",
-]
 
 @export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
 @export_range(0.1, 5.0, 0.1) var live_item_grace_seconds := 1.0
@@ -38,7 +33,8 @@ var _activation_warning_cache := ""
 
 func _init() -> void:
 	profile_id = "nlb_p05_live_build"
-	tuning.item_enabled_variants = LIVE_VARIANT_ALLOWLIST
+	# The offline live pool is the P05 slice, read from the NLB-P07 matrix's offline_live cells.
+	tuning.item_enabled_variants = NLBLiveCompatibilityMatrix.offline_live_variants()
 
 
 func _ready() -> void:

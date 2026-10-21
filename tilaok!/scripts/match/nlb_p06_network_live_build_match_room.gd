@@ -9,6 +9,9 @@ extends NLBP05LiveBuildMatchRoom
 
 const NETWORK_PROFILE_ID := "nlb_p06_network_live_build"
 
+## NLB-P07 development override (`--nlb-unverified-content`), set by GameFlow before _ready.
+## Off by default: only VERIFIED matrix cells are selectable, so a strict host deals nothing yet.
+var unverified_content := false
 ## Host-issued inventory IDs for this round's assigned items (seat -> int, 0 = none). They are
 ## unique for the match so a stale or foreign ID can never match another seat's item.
 var _inventory_ids: Dictionary = {}
@@ -17,7 +20,94 @@ var _inventory_serial := 0
 
 func _init() -> void:
 	profile_id = NETWORK_PROFILE_ID
-	tuning.item_enabled_variants = LIVE_VARIANT_ALLOWLIST
+	# Dealt per round from the NLB-P07 matrix (_prepare_pugad_pool); nothing before that.
+	tuning.item_enabled_variants = PackedStringArray()
+
+
+func _ready() -> void:
+	available_modes = NLBLiveCompatibilityMatrix.available_modes(unverified_content)
+	super._ready()
+
+
+## The host refuses a networked live match whose map, required rounds or items are not
+## selectable in the NLB-P07 matrix; the reason is readable in the lobby and the log.
+func start_match() -> bool:
+	var refusal := NLBLiveCompatibilityMatrix.start_gate(network_map_id, unverified_content)
+	if not refusal.is_empty():
+		push_warning(refusal)
+		last_message = refusal
+		_refresh_match_ui()
+		return false
+	print(
+		(
+			"NLB_P07_LIVE_MATRIX version=%d override=%s map=%s modes=%s"
+			% [
+				NLBLiveCompatibilityMatrix.MATRIX_VERSION,
+				str(unverified_content),
+				network_map_id,
+				str(available_modes),
+			]
+		)
+	)
+	return super.start_match()
+
+
+func schedule_pairs() -> Array[Dictionary]:
+	return NLBLiveCompatibilityMatrix.schedule_pairs(unverified_content)
+
+
+func _prepare_pugad_pool(mode_ids: PackedStringArray) -> void:
+	var round_cell := NLBLiveCompatibilityMatrix.round_cell_id(current_entry())
+	if not NLBLiveCompatibilityMatrix.selectable(round_cell, unverified_content):
+		# The schedule only draws selectable rows; this is a defensive fail-closed path.
+		tuning.item_enabled_variants = PackedStringArray()
+		push_warning("NLB-P07: round cell %s is not selectable; no eggs dealt." % round_cell)
+		return
+	tuning.item_enabled_variants = NLBLiveCompatibilityMatrix.live_variants(
+		mode_ids, unverified_content
+	)
+
+
+func _augment_pugad_egg_pool(seat_count: int) -> void:
+	if NLBLiveCompatibilityMatrix.selectable(
+		NLBLiveCompatibilityMatrix.BARYA_CELL, unverified_content
+	):
+		super._augment_pugad_egg_pool(seat_count)
+
+
+## True when the assigned variant's matrix cell is selectable for every mode of this round.
+func live_variant_allowed(variant_key: String) -> bool:
+	if BaryaObjectiveDefinition.is_variant(variant_key):
+		return NLBLiveCompatibilityMatrix.selectable(
+			NLBLiveCompatibilityMatrix.BARYA_CELL, unverified_content
+		)
+	var mode_ids := pugad_mode_ids()
+	if mode_ids.is_empty():
+		return false
+	for mode_id in mode_ids:
+		var cell_id := NLBLiveCompatibilityMatrix.item_cell_id(variant_key, mode_id)
+		if not NLBLiveCompatibilityMatrix.selectable(cell_id, unverified_content):
+			return false
+	return true
+
+
+## Commit-time recheck for local and remote seats alike: a cell turned off since dealing (or a
+## spoofed inventory) never reaches the shared validator.
+func _commit_live_intent(seat_index: int, intent: Dictionary, boundary: int) -> Dictionary:
+	var variant_key := str(intent.get("variant_key", ""))
+	if not variant_key.is_empty() and not live_variant_allowed(variant_key):
+		return _live_result(
+			{
+				"request_id": str(intent.get("request_id", "")),
+				"seat_index": seat_index,
+				"commit_boundary": boundary,
+				"stage_version": items.stage_version,
+			},
+			false,
+			"variant_disabled",
+			"This item is turned off for networked live play."
+		)
+	return super._commit_live_intent(seat_index, intent, boundary)
 
 
 func _enter_place() -> void:
@@ -74,6 +164,8 @@ func network_submit_placement(
 		return _network_rejection("inventory_used")
 	var cursor: Dictionary = placement_controller.cursors[seat_index]
 	var variant_key := str(cursor.variant_key)
+	if not live_variant_allowed(variant_key):
+		return _network_rejection("variant_disabled")
 	var request_key := network_request_key(
 		int(request.get("peer_generation", 0)), seat_index, int(request.get("request_id", 0))
 	)

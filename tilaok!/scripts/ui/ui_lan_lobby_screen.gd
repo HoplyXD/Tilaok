@@ -32,6 +32,8 @@ var _manual_join_section: VBoxContainer
 var _manual_join_expanded := false
 var _qr: TextureRect
 var _start_gate: Label
+## NLB-P07 live content matrix summary (host, live route only).
+var _live_content: Label
 var _start_match_button: Button
 var _refresh_time := 0.0
 var _last_qr_value := ""
@@ -318,6 +320,9 @@ func _build_ui() -> void:
 	_start_gate = _label("Network gameplay unavailable until a later phase.")
 	_root.add_child(_start_gate)
 	_host_only_controls.append(_start_gate)
+	_live_content = _label("")
+	_root.add_child(_live_content)
+	_host_only_controls.append(_live_content)
 	_role_back = _button("Back to Host / Join")
 	_role_back.pressed.connect(_show_role_choices)
 	_root.add_child(_role_back)
@@ -655,6 +660,9 @@ func _refresh() -> void:
 		if manager.state != NetworkSessionManager.SessionState.LOBBY_OPEN
 		else manager.start_gate_status()
 	)
+	var live_lines := manager.live_content_summary()
+	_live_content.text = "\n".join(live_lines)
+	_live_content.visible = not live_lines.is_empty() and not manager.client_mode
 	_start_match_button.disabled = (
 		manager.client_mode
 		or manager.match_active

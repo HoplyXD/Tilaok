@@ -126,6 +126,18 @@ func _ready() -> void:
 		if network_live_build_requested
 		else NetworkSessionManager.ROUTE_SCHEDULED
 	)
+	_sync_live_map()
+	tutorial_session.changed.connect(_sync_live_map)
+	# NLB-P07 development override: host live route only; ignored on Android and release exports.
+	network_session.live_unverified_content = (
+		network_live_build_requested
+		and NLBLiveCompatibilityMatrix.override_requested(OS.get_cmdline_user_args())
+	)
+	if network_session.live_unverified_content:
+		push_warning(
+			"UNVERIFIED CONTENT: %s is on; networked live results are not evidence."
+			% NLBLiveCompatibilityMatrix.OVERRIDE_FLAG
+		)
 	network_session.network_match_start_requested.connect(_enter_network_match)
 	network_session.network_match_start_received.connect(_enter_client_network_match)
 	bridge = UiInputBridge.new()
@@ -294,13 +306,14 @@ func _create_authoritative_match(network_match: bool) -> void:
 	# One map per match: the layout is chosen here, once, before the room builds its arena.
 	# While the guided tutorial is pending the match is on the Tutorial map; once it is done or
 	# skipped, a left-over Tutorial selection falls back to the default stage.
-	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
-		selected_map_id = TUTORIAL_MAP_ID
-	elif selected_map_id == TUTORIAL_MAP_ID:
-		selected_map_id = MapCatalog.DEFAULT_ID
+	selected_map_id = _match_map_id()
 	room.arena_layout = MapCatalog.layout_for(selected_map_id)
 	if room is P12ScheduledMatchRoom:
 		(room as P12ScheduledMatchRoom).network_map_id = selected_map_id
+	if room is NLBP06NetworkLiveBuildMatchRoom:
+		(room as NLBP06NetworkLiveBuildMatchRoom).unverified_content = (
+			network_session.live_unverified_content
+		)
 	room.map_choice_label = map_label(selected_map_id)
 	room.map_selection_enabled = MapCatalog.ids().size() > 1
 	room.flow_requested.connect(_on_flow_requested)
@@ -343,7 +356,24 @@ func _choose_map(map_id: String) -> void:
 	elif tutorial_session.is_active():
 		tutorial_session.skip()
 	selected_map_id = map_id
+	_sync_live_map()
 	_enter_match()
+
+
+## The map the next match will use: the Tutorial map while the guided tutorial is pending; a
+## left-over Tutorial selection falls back to the default stage once it is done or skipped.
+func _match_map_id() -> String:
+	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
+		return TUTORIAL_MAP_ID
+	if selected_map_id == TUTORIAL_MAP_ID:
+		return MapCatalog.DEFAULT_ID
+	return selected_map_id
+
+
+## Keeps the host's NLB-P07 live start gate on the map the match will actually load.
+func _sync_live_map() -> void:
+	if network_session != null:
+		network_session.live_map_id = _match_map_id()
 
 
 func _start_replay() -> void:
