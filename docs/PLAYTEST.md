@@ -905,3 +905,20 @@ This section records authored source, an audit and runners only. It is not a hum
 | Physical mixed-device ending sessions | COULD-NOT-RUN | Needs a real phone, an APK from this revision (a P08 APK is refused at hello) and a named reviewer |
 | Android export/install | COULD-NOT-RUN | Deferred while the shared laptop is in use |
 | Performance and replay latency | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |
+
+## NLB-P10 touch controls, mapping and help cards — preparatory status, 2026-10-21
+
+This section records authored source and runners only. It is not a human playtest, a physical-device session or a rendered review. Nothing was launched while the shared laptop was in use, and synthetic touch events are never physical or human evidence.
+
+- **Behavior authored:** an index-owning phone touch layer (left Move zone and right Aim zone are independent; Jump, Sneak, Cheer, Claim/OK, Back, Menu, Build, Rotate, Place and Cancel are distinct controls; Ready and Results stay on the P09 overlay), a phone HUD with a "You are P#" badge (number + shape + colour), objective line and a placement chip (shape + text), the K4 aim detection fix, a Left-bumper gamepad `live_cancel`, build glyphs and a `touch` device, an action table, and eight client-local help cards. A hosted live-build match no longer selects the tutorial stage.
+- **Deferred commands, action table, layout math, T03 session protocol and Shanti review list:** in [P10 evidence](evidence/nlb/p10/README.md).
+- **Open dependencies:** P06-T02 and everything upstream.
+
+| Check | Result | Reason / limit |
+|---|---|---|
+| Godot import/parse of the new and changed scripts | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| gdlint / gdformat | COULD-NOT-RUN | Tools absent; deferred |
+| `run_nlb_p10_tests.gd` (layout per aspect and dpi, touch ownership, router/table/glyph/tutorial checks) | COULD-NOT-RUN | Deferred; synthetic only |
+| `capture_nlb_p10_layouts.gd` (rendered aspect captures) | COULD-NOT-RUN | Needs a non-headless run; deferred |
+| Regressions: controls, tutorial, P13 tutorial/navigation, match UI, NLB P01–P09 | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Touch-only, mixed-device and novice sessions (NLB-P10-T03) | COULD-NOT-RUN | Needs real participants, target Android hardware and an actual reviewer; never simulated |

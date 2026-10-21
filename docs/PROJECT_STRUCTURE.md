@@ -350,3 +350,10 @@ The P04 runners are `tilaok!/tests/run_nlb_p04_tests.gd` and `run_nlb_p04_multi_
 - **Session:** `network_session_manager.gd` (result send/dedupe/snapshot, result action, replay re-key, retired epochs, `_clear_match_scope`, match-ID lineage, session-end reasons, forfeit, `teardown_counts()`).
 - **Client and flow:** `network_results_model.gd` (new), `network_results_overlay.gd` (new), `network_match_presentation.gd`, `game_flow.gd` (host Return to Lobby / title / Quit end the session; client session-ended handling).
 - **Tests:** `tests/run_nlb_p09_tests.gd`, `tests/audit_nlb_p09_cycles.gd` and `tests/run_nlb_p09_multi_process.gd` (`-- phone`) are authored and have not run. P09 is 0/3 checked. See [P09 evidence and deferred commands](evidence/nlb/p09/README.md) and [contract v1.6](evidence/nlb/p00/protocol-measurement-contract-v1.6.md).
+
+## NLB-P10 touch controls, mapping and help cards — 2026-10-21 (preparatory, unrun)
+
+- **Touch and HUD:** `scripts/network/network_touch_layer.gd` (new, index-owning zones and buttons), `scripts/ui/touch_layout.gd` (new, pure safe-area/dp layout), `scripts/network/network_phone_hud.gd` (new, identity badge and placement chip), `network_match_presentation.gd` (the old Button rows are replaced; claim/rotate enablement per phase).
+- **Input and glyphs:** `scripts/input/local_input_router.gd` (K4 aim detection fix, gamepad Left-bumper `live_cancel`), `scripts/input/input_context_table.gd` (new, device × context table with an audit), `data/ui/prompt_map.tres` and `scripts/ui/ui_prompt_map.gd` (build glyphs and a `touch` device).
+- **Tutorial:** `data/ui/tutorial_script.tres` and `scripts/tutorial/tutorial_script.gd` (eight `net_*` steps), `scripts/network/network_help_cards.gd` (new, client-local cards with session-only skip/replay), `scripts/flow/game_flow.gd` (a hosted live-build match skips the tutorial map and coach).
+- **Tests:** `tests/run_nlb_p10_tests.gd` and `tests/capture_nlb_p10_layouts.gd` are authored and have not run (Godot `.uid` files for the new scripts are created on first import). P10 is 0/3 checked. See [P10 evidence and deferred commands](evidence/nlb/p10/README.md).

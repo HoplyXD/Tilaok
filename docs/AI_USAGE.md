@@ -118,6 +118,19 @@ While the user's game was running on the shared laptop, nothing was launched or 
 
 All three P09 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P07-T03, P08-T03 and the upstream dependencies remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; the phone screens are code-drawn text panels. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P09 evidence and exact deferred commands](evidence/nlb/p09/README.md).
 
+### NLB-P10 preparatory touch controls, mapping and help cards — October 21, 2026
+
+At the user's explicit authorization of NLB-P10 as preparatory implementation, the AI coding agent Claude Code (Claude Sonnet 5.5, model `claude-sonnet-5-5`) authored the following. The user decided that the gamepad `live_cancel` is the Left bumper, that keyboards change only by the K4 aim detection fix, and that the work ships as several commits with no co-author trailer.
+
+- the index-owning phone touch layer and its pure safe-area/dp layout (independent Move and Aim zones, distinct control buttons, release on focus loss), the phone HUD identity badge and placement chip, and the presentation wiring that replaces the old Button rows;
+- the K4 aim detection fix, the gamepad `live_cancel` binding, the device × context action table with an audit, and the build glyphs plus a `touch` device in the prompt map;
+- eight `net_*` tutorial steps as data, client-local help cards with session-only skip/replay, and the guard that keeps a hosted live-build match off the tutorial map and coach;
+- the authored `run_nlb_p10_tests.gd` and `capture_nlb_p10_layouts.gd`, and the P10 evidence (including the T03 observation protocol and session sheet templates), tracker and status documentation.
+
+While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, capture, ADB, phone session, network listener, lint or performance measurement. Only `git diff --check`, git status, grep audits and manual source review were performed. The code has therefore never been parsed by Godot.
+
+All three P10 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P06-T02 and the upstream dependencies remain open, and this authorization does not clear them; T03 requires human sessions on real Android hardware and cannot be completed by an agent. No human review is claimed. No art, audio or other production asset was generated; the touch controls, badge and help cards are code-drawn placeholders awaiting Shanti's UI design pass. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P10 evidence](evidence/nlb/p10/README.md).
+
 ## Form 03 preparation
 
 The team must choose the official extent category (Minimal / Moderate / Heavy) based on all project-wide AI work and obtain required signatures. Do not claim the project is unaided. Keep this record aligned with actual assistance, asset records, prompts/history and repository history. Review factual claims, cultural names, gameplay rules and citations before submission. Do not invent missing prompts or review evidence.

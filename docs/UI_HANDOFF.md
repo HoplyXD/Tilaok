@@ -79,6 +79,11 @@ Prompts must show the correct glyph for the device that seat uses. Gamepad label
 | Results: ready | South | E or F | O | Enter | Num 0 |
 | Pause / request resume | Start / Options | Escape (shared) | Escape (shared) | Escape (shared) | Escape (shared) |
 | Spectator cheer | West | R | P | Right Shift | Num 5 |
+| Build mode toggle (NLB live build) | North | Q | - | [ | Num + |
+| Aim the live ghost (never moves the chicken) | Right stick | Z C V B | 7 4 8 6 | Y H N M | Num 7 1 3 9 |
+| Rotate the live piece | Right bumper | T | = | ] | Num * |
+| Place the live piece | Right trigger | E or F | O | Enter | Num 0 |
+| Cancel the live placement (keeps the item) | Left bumper | X | ' | \ | Num - |
 
 **Four keyboard layouts (2026-10-16, user request):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard. The Lobby map row's ◀ ▶ arrows and the Library's Back button also take mouse clicks.
 
@@ -87,6 +92,8 @@ Prompts must show the correct glyph for the device that seat uses. Gamepad label
 Placement movement is cell steps (first press = one cell; repeat after 0.25 s at 8 cells/s). Rotation is a fresh press only; an unsupported orientation must show a **disabled cue**, not silence.
 
 Prompts should name the **action**, not only the button (for example "Rotate" with the glyph).
+
+**NLB-P10 phone touch (PLACEHOLDER, unreviewed, unrun):** the prompt map gains a `touch` device and the build rows above; touch glyphs are text labels (Move zone, Aim zone, Jump, Build, Rotate, Place, Cancel, Menu) that Shanti may replace with art in each glyph's Art_Glyph slot. Touch layout is code-drawn: two drag zones (Move left, Aim right) flank a button block that wraps above the thumbs. The 5 % theme margin inside the OS safe area, the 44 dp touch floor (computed from screen dpi and the stretch scale, minimum 44 viewport px), the 16 px mid-round text floor and the dead zone (14 dp) are PROPOSALS, unmeasured until NLB-P10-T03. Shanti review list: control shapes and spacing, button and zone art, the "You are P#" badge and seat shapes, the placement chip, help-card styling and copy, and colour use (state is always text plus shape or outline, never colour alone, and nothing flashes). See [P10 evidence](evidence/nlb/p10/README.md).
 
 ## 6. Screen inventory
 

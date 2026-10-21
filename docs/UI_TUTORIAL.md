@@ -2,6 +2,8 @@
 
 **Future networked extension (approved 2026-10-19):** this document currently specifies offline onboarding. A separately gated tutorial update must teach shared-arena phone play, active build mode, accepted/rejected placement, LAN joining and host pause while preserving the offline tutorial. See [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) and [NLB-P10](PHASETASK_NETWORKED_LIVE_BUILD.md#nlb-p10--touch-ux-tutorial-accessibility-mixed-device-parity).
 
+**NLB-P10 preparatory status (2026-10-21, unrun):** eight `net_*` steps (`net_phone_controls`, `net_pugad`, `net_go`, `net_build_mode`, `net_rejected`, `net_cancel`, `net_lan_join`, `net_host_pause`) now exist as data in `data/ui/tutorial_script.tres` and are shown to phone clients as **client-local help cards** (`network_help_cards.gd`): no host authority and no new wire family. The cards open once per session on the first match state and again from the local Menu; Back only steps to the previous card, Skip is session-only and Replay restores the cards (nothing is saved). The offline steps and coach are unchanged. A hosted live-build match no longer selects the tutorial stage or attaches the coach, which matches the live matrix disabling `tutorial`. The copy is PLACEHOLDER English and needs the same Filipino/Hiligaynon and cultural review as the offline copy. Rendered and human checks remain open (NLB-P10-T02/T03).
+
 
 ## Experience goals
 
@@ -186,7 +188,7 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 - exact lobby navigation and keyboard-sharing constraints;
 - pause behavior in local multiplayer;
 - final settings list and audio-control granularity;
-- exact minimum zoom, safe-area dimensions, and device-resolution targets.
+- exact minimum zoom, safe-area dimensions, and device-resolution targets (STILL OPEN: NLB-P10 implements the 5 % inset, 44 dp floor and 16 px text as PROPOSALS only; they stay unmeasured until the T03 sessions on real Android hardware).
 
 ## Verification links
 
