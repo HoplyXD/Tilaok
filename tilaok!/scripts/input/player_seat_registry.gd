@@ -143,6 +143,29 @@ func release_remote_source(source_id: String, authority: SimulationAuthority) ->
 	return true
 
 
+## NLB-P09 replay: frees a reserved or lost remote seat by index once the roster is rebuilt for the
+## next match. Only a disconnected remote seat qualifies; a connected or local seat is never touched.
+func release_unconnected_remote_seat(seat_index: int, authority: SimulationAuthority) -> bool:
+	if (
+		authority == null
+		or not authority.can_commit()
+		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
+		or seat_index < 0
+		or seat_index >= _seats.size()
+	):
+		return false
+	var seat: Dictionary = _seats[seat_index]
+	if not seat.joined or seat.connected or seat.device_kind != "remote":
+		return false
+	seat.joined = false
+	seat.ready = false
+	seat.device_kind = ""
+	seat.device_id = -1
+	seat.keyboard_layout = ""
+	seat.remote_source_id = ""
+	return true
+
+
 ## Host-only. Rebinds a reserved remote seat (joined, disconnected, device "remote") to a new
 ## source after the reclaim proof, snapshot ack and neutral sample. The seat is never chosen by the
 ## remote peer and a seat that is not reserved cannot be taken by this path.

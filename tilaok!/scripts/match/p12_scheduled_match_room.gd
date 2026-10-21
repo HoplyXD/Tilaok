@@ -935,6 +935,15 @@ func _finish_event_round() -> void:
 		outcome_rows = kangaroo_round.controller.outcomes()
 		if not kangaroo_round.controller.commit_score_once(score_result):
 			return
+	_stage_round_record(
+		(
+			NetworkResultsCodec.ScoringFamily.LAGSANAY
+			if is_lagsanay
+			else NetworkResultsCodec.ScoringFamily.KANGAROO
+		),
+		score_result,
+		outcome_rows
+	)
 	_record_score_presentation(active_round, score_result)
 	last_resolution = score_result.duplicate(true)
 	for seat_index in score_result.totals_units:
