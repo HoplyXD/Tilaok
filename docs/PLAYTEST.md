@@ -922,3 +922,22 @@ This section records authored source and runners only. It is not a human playtes
 | `capture_nlb_p10_layouts.gd` (rendered aspect captures) | COULD-NOT-RUN | Needs a non-headless run; deferred |
 | Regressions: controls, tutorial, P13 tutorial/navigation, match UI, NLB P01–P09 | COULD-NOT-RUN | Deferred while the shared laptop is in use |
 | Touch-only, mixed-device and novice sessions (NLB-P10-T03) | COULD-NOT-RUN | Needs real participants, target Android hardware and an actual reviewer; never simulated |
+
+## NLB-P11 telemetry, hardening, release profiles and matrix — preparatory status, 2026-10-21
+
+This section records authored source, config and tests only. It is not a playtest, a measurement, an export or a physical-device session. Nothing was launched while the shared laptop was in use, and synthetic clients are never phones or participants.
+
+- **Behavior authored:** opt-in bounded telemetry and a production-path fault injector (development builds only), a crowded-stage fixture, 2/3/4-seat synthetic scale and fault runners, a metrics report generator (PASS / FAIL / COULD-NOT-RUN against a hardware record), per-family rate limits and saturating counters, a close-request shutdown, release-gated development flags, one build identity shown in both lobbies, the title and settings, and Windows host / Android client release presets.
+- **Deferred commands, field dictionary, release preset review, hash template and the consolidated T03 matrix with session sheets:** in [P11 evidence](evidence/nlb/p11/README.md) and [release-matrix.md](evidence/nlb/p11/release-matrix.md).
+- **Open dependencies:** P09-T03, P10-T03 and everything upstream. The networked build stays opt-in; promotion needs a separate recorded team scope decision.
+
+| Check | Result | Reason / limit |
+|---|---|---|
+| Godot import/parse of the new and changed scripts | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| gdlint / gdformat | COULD-NOT-RUN | Tools absent; deferred |
+| `run_nlb_p11_tests.gd` | COULD-NOT-RUN | Deferred; synthetic only |
+| Scale runner 2/3/4 seats, fault runner, ten-cycle audit, report generator | COULD-NOT-RUN | Deferred; synthetic evidence only |
+| Regressions: every `run_nlb_p01`–`p10` suite and runner, offline suites | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Windows / Android release export, hashes, install | COULD-NOT-RUN | Deferred; signing material and a human required |
+| 10-minute host/phone profiles, 30-minute thermal sample | COULD-NOT-RUN | Deferred; phone profiles need physical devices |
+| Physical/human release matrix (NLB-P11-T03) | COULD-NOT-RUN | Needs real phones, participants and an actual reviewer; never simulated |

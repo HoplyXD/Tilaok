@@ -131,6 +131,19 @@ While the user's game was running on the shared laptop, nothing was launched or 
 
 All three P10 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P06-T02 and the upstream dependencies remain open, and this authorization does not clear them; T03 requires human sessions on real Android hardware and cannot be completed by an agent. No human review is claimed. No art, audio or other production asset was generated; the touch controls, badge and help cards are code-drawn placeholders awaiting Shanti's UI design pass. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P10 evidence](evidence/nlb/p10/README.md).
 
+### NLB-P11 preparatory telemetry, hardening, release profiles and matrix — October 21, 2026
+
+At the user's explicit authorization of NLB-P11 as preparatory implementation, the AI coding agent Claude Code (Claude Sonnet 5.5, model `claude-sonnet-5-5`) authored the following. The user approved the plan and its defaults: the carry-over P08-P10 gaps are recorded as promotion blockers and not fixed, the Android release package is `org.hoplyxd.tilaok` v0.4.0 (code 4) with the keystore held by a human, battery/thermal is sampled by a PC-side adb script, telemetry and fault injection are development-only, and every development flag is release-gated except the explicit network route opt-in.
+
+- hardening in `network_session_manager.gd`, `raw_enet_transport.gd` and `lan_discovery.gd` (per-family rate limits, saturating counters, STALE_STATE counted toward the kick threshold, a shared per-peer erase for disconnect and kick, bounded discovery and snapshot tables) and a window close-request shutdown in `game_flow.gd`;
+- the `NlbBuildFlags` release gate applied to every development flag, `BuildIdentity` and its display in the lobbies, title and settings, the manifest build-id bump, and two release export presets with empty signing fields;
+- opt-in bounded telemetry, a production-path fault injector, the crowded-stage fixture, the 2/3/4-seat scale runner, the fault runner, the metrics report generator and the adb thermal sampler script, plus `run_nlb_p11_tests.gd`;
+- the P11 evidence, the consolidated release matrix and session sheets, tracker and status documentation.
+
+While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, capture, ADB, phone session, network listener, lint or performance measurement. Only `git diff --check`, git status, grep audits, official-documentation reads and manual source review were performed. The code has therefore never been parsed by Godot, and no measurement or export exists.
+
+All three P11 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P09-T03, P10-T03 and the upstream dependencies remain open, and this authorization does not clear them; T03 requires physical phones, human participants and an actual reviewer and cannot be completed by an agent. No matrix cell is marked VERIFIED, no keystore, key or password was created or committed, and no art, audio or other production asset was generated. No human review is claimed. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P11 evidence](evidence/nlb/p11/README.md).
+
 ## Form 03 preparation
 
 The team must choose the official extent category (Minimal / Moderate / Heavy) based on all project-wide AI work and obtain required signatures. Do not claim the project is unaided. Keep this record aligned with actual assistance, asset records, prompts/history and repository history. Review factual claims, cultural names, gameplay rules and citations before submission. Do not invent missing prompts or review evidence.

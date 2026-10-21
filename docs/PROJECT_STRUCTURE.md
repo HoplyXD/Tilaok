@@ -345,7 +345,7 @@ The P04 runners are `tilaok!/tests/run_nlb_p04_tests.gd` and `run_nlb_p04_multi_
   - `network_results_codec.gd` (new): the result event, action and vote layouts, the cause/award enums and the structural invariants.
   - `network_lifecycle_codec.gd`: the re-key and ack layouts and the 11-byte host `SESSION_CLOSE` with a session-end reason.
   - `network_match_codec.gd`: the snapshot `RECORD_LEDGER` and the 288-record cap.
-  - `compatibility_manifest.gd` and `nlb_live_compatibility_matrix.gd`: build `tilaok-nlb-p09-2026-10-21` and three `life` cells.
+  - `compatibility_manifest.gd` and `nlb_live_compatibility_matrix.gd`: build `tilaok-nlb-p09-2026-10-21` (bumped to `tilaok-nlb-p11-2026-10-21` in P11; `MIN_CONTENT` stays at the P09 content id) and three `life` cells.
 - **Host ledger and vote:** `result_ledger.gd` (new, append-only integer-unit ledger), `p09_match_lifecycle_room.gd` and `p12_scheduled_match_room.gd` (ledger commits, vote, replay roster and handler, host-authority plank commands), `player_seat_registry.gd`, `seat_reservation_book.gd` (`rekey`, `retain_only`, `forfeit`).
 - **Session:** `network_session_manager.gd` (result send/dedupe/snapshot, result action, replay re-key, retired epochs, `_clear_match_scope`, match-ID lineage, session-end reasons, forfeit, `teardown_counts()`).
 - **Client and flow:** `network_results_model.gd` (new), `network_results_overlay.gd` (new), `network_match_presentation.gd`, `game_flow.gd` (host Return to Lobby / title / Quit end the session; client session-ended handling).
@@ -357,3 +357,11 @@ The P04 runners are `tilaok!/tests/run_nlb_p04_tests.gd` and `run_nlb_p04_multi_
 - **Input and glyphs:** `scripts/input/local_input_router.gd` (K4 aim detection fix, gamepad Left-bumper `live_cancel`), `scripts/input/input_context_table.gd` (new, device × context table with an audit), `data/ui/prompt_map.tres` and `scripts/ui/ui_prompt_map.gd` (build glyphs and a `touch` device).
 - **Tutorial:** `data/ui/tutorial_script.tres` and `scripts/tutorial/tutorial_script.gd` (eight `net_*` steps), `scripts/network/network_help_cards.gd` (new, client-local cards with session-only skip/replay), `scripts/flow/game_flow.gd` (a hosted live-build match skips the tutorial map and coach).
 - **Tests:** `tests/run_nlb_p10_tests.gd` and `tests/capture_nlb_p10_layouts.gd` are authored and have not run (Godot `.uid` files for the new scripts are created on first import). P10 is 0/3 checked. See [P10 evidence and deferred commands](evidence/nlb/p10/README.md).
+
+## NLB-P11 telemetry, hardening, release profiles and matrix — 2026-10-21 (preparatory, unrun)
+
+- **Telemetry and fault injection:** `scripts/network/nlb_telemetry.gd` (bounded, opt-in), `scripts/network/nlb_fault_injector.gd` (owned by `RawEnetTransport.fault`), metric hooks in `network_session_manager.gd`, counters and ENet statistics in `raw_enet_transport.gd`. No wire change; contract v1.6 stays current.
+- **Release gate and identity:** `scripts/diagnostics/nlb_build_flags.gd` (every development flag), `scripts/network/build_identity.gd` (single build id/version/label; manifest build `tilaok-nlb-p11-2026-10-21`), `project.godot` `config/version`.
+- **Export presets:** `export_presets.cfg` preset.2 Windows Host (Release) and preset.3 Android LAN Client (Release) (empty signing fields; signing from `GODOT_ANDROID_KEYSTORE_RELEASE_*`); the debug presets are unchanged.
+- **Hardening:** per-family limits, saturating counters, shared per-peer erase, bounded discovery and snapshot tables, close-request shutdown (`scripts/flow/game_flow.gd`).
+- **Tests and tools:** `tests/run_nlb_p11_tests.gd`, `tests/run_nlb_p11_scale_runner.gd`, `tests/run_nlb_p11_fault_runner.gd`, `tests/fixtures/nlb_p11_crowded_stage.gd`, `tests/tools/nlb_p11_report_core.gd`, `nlb_p11_report.gd`, `nlb_p11_thermal_sampler.ps1`; evidence in `docs/evidence/nlb/p11/` (README, release-matrix). Authored and unrun; P11 is 0/3 checked.
