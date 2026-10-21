@@ -101,6 +101,8 @@ var host_authority := SimulationAuthority.offline()
 var local_authority := SimulationAuthority.offline()
 var router: LocalInputRouter
 var transport := RawEnetTransport.new()
+## NLB-P11: null unless a development build passed --nlb-telemetry=<path> (never in release).
+var telemetry: NlbTelemetry = null
 var discovery := LanDiscovery.new()
 var remote_adapter := RemoteSeatInputAdapter.new()
 var candidates: Dictionary = {}
@@ -226,6 +228,16 @@ var _pending_end_reason := 0
 var _retired_epochs: Dictionary = {}
 var _client_retired_epochs: Dictionary = {}
 var _rekey_pending: Dictionary = {}
+# NLB-P11 telemetry scratch state (constant size; only touched when `telemetry` is not null).
+var _telemetry_input_receipts: Dictionary = {}
+var _telemetry_join_start_ms := 0
+var _telemetry_reclaim_start_ms := 0
+var _telemetry_render_pending_usec := 0
+var _telemetry_last_state_rx_usec := 0
+var _telemetry_seen_tx_bytes := 0
+var _telemetry_seen_rx_bytes := 0
+var _telemetry_seen_tx_packets := 0
+var _telemetry_seen_rx_packets := 0
 
 
 func _init() -> void:
@@ -238,11 +250,26 @@ func _ready() -> void:
 	transport.disconnected.connect(_on_peer_disconnected)
 	transport.packet_received.connect(_on_packet_received)
 	transport.transport_error.connect(_on_transport_error)
+	# NLB-P11 development tools: both are null in release and Android client builds.
+	transport.fault = NlbFaultInjector.from_cmdline()
+	if transport.fault != null:
+		transport.fault.announce(Time.get_ticks_msec(), true)
+	telemetry = NlbTelemetry.from_cmdline()
+	if telemetry != null:
+		telemetry.role = "client" if OS.has_feature("android") else "host"
+		telemetry.write_header()
+
+
+func _exit_tree() -> void:
+	if telemetry != null:
+		telemetry.finish()
 
 
 func _process(delta: float) -> void:
 	if transport.is_open:
 		transport.poll()
+	if telemetry != null:
+		_telemetry_frame()
 	if (
 		client_mode
 		and _client_connect_deadline > 0
@@ -406,6 +433,7 @@ func connect_client(
 	state_changed.emit("STARTING")
 	_client_disconnect_notice_set = false
 	client_invite_token = token
+	_telemetry_join_start_ms = Time.get_ticks_msec()
 	CompatibilityManifest.reload_sources()
 	var manifest := CompatibilityManifest.build()
 	client_manifest_digest = manifest.digest
@@ -1009,6 +1037,7 @@ func _receive_snapshot_end(payload: PackedByteArray, peer_id: int) -> void:
 	ack.append_array(_u32(checksum))
 	ack.append_array(_u32(total))
 	_send(peer_id, NetworkFrame.Family.SNAPSHOT_ACK, ack)
+	_telemetry_snapshot_acked(total)
 
 
 func _accept_snapshot_ack(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
@@ -1160,6 +1189,8 @@ func _send_periodic_state() -> void:
 		for peer_id in candidates.keys():
 			if bool(candidates[peer_id].get("match_sync_ready", false)):
 				_send(int(peer_id), NetworkFrame.Family.STATE_UPDATE, state_payload)
+				if telemetry != null:
+					_telemetry_state_sent(int(peer_id))
 	# Versioned removals are reliable TERRAIN_COMMIT ops. These unreliable tombstones only cover
 	# unversioned disappearances and repeat a bounded number of times instead of once.
 	for entity_id in _known_stage_entity_ids.keys():
@@ -1848,6 +1879,10 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 		NetworkFrame.Family.RESULT_ACTION:
 			_accept_result_action(peer_id, payload, candidate)
 		NetworkFrame.Family.CONTINUOUS_INPUT:
+			if telemetry != null:
+				telemetry.count("input_rx")
+				if not _telemetry_input_receipts.has(peer_id):
+					_telemetry_input_receipts[peer_id] = _receipt_usec
 			_accept_continuous_input(peer_id, payload, candidate)
 		NetworkFrame.Family.ACTION_REQUEST:
 			_accept_action_request(peer_id, payload, candidate)
@@ -1977,6 +2012,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			ack.append_array(_u32(assigned_peer_generation))
 			_send(peer_id, NetworkFrame.Family.ASSIGNMENT_ACK, ack)
 			client_assigned.emit(client_assigned_seat)
+			_telemetry_join_done()
 			client_message.emit(
 				"Assigned player %d. Choose Ready when set." % (client_assigned_seat + 1)
 			)
@@ -2075,6 +2111,8 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			_client_edge_watermark = _client_action_sequence
 			client_message.emit("Connected to the shared match.")
 		NetworkFrame.Family.STATE_UPDATE:
+			if telemetry != null:
+				_telemetry_state_received()
 			_receive_state_update(payload)
 		NetworkFrame.Family.AUTHORITATIVE_EVENT, NetworkFrame.Family.TERRAIN_COMMIT:
 			if family == NetworkFrame.Family.AUTHORITATIVE_EVENT:
@@ -2579,6 +2617,7 @@ func _accept_placement_intent(peer_id: int, payload: PackedByteArray, candidate:
 		)
 		_placement_inflight[pipeline_key] = {
 			"peer_id": peer_id, "cache_key": cache_key, "request_id": request_id,
+			"receipt_usec": _receipt_usec,
 		}
 		var queued := NetworkPlacementCodec.encode_result(
 			{
@@ -2615,6 +2654,11 @@ func _on_live_placement_boundary_resolved(results: Array) -> void:
 			continue
 		var inflight: Dictionary = _placement_inflight[key]
 		_placement_inflight.erase(key)
+		if telemetry != null and inflight.has("receipt_usec"):
+			telemetry.record(
+				"placement_receipt_to_response_ms",
+				float(Time.get_ticks_usec() - int(inflight.receipt_usec)) / 1000.0
+			)
 		var peer_id := int(inflight.peer_id)
 		var response := _placement_response(int(inflight.request_id), result)
 		print(
@@ -2962,6 +3006,7 @@ func _drop_peer_tables(peer_id: int) -> void:
 	_reliable_edge_watermarks.erase(peer_id)
 	_action_request_cache.erase(peer_id)
 	_snapshot_sender.erase(peer_id)
+	_telemetry_input_receipts.erase(peer_id)
 	_erase_peer_state(peer_id)
 
 
@@ -3642,6 +3687,7 @@ func connect_reclaim() -> bool:
 	if not client_reclaim_available():
 		client_message.emit("There is no seat to reconnect to.")
 		return false
+	_telemetry_reclaim_start_ms = Time.get_ticks_msec()
 	var address := str(_reclaim_credential.address)
 	var port := int(_reclaim_credential.port)
 	if not address.is_valid_ip_address() or port < 1024 or port > 65535:
@@ -4143,6 +4189,115 @@ func _receive_rekey(peer_id: int, payload: PackedByteArray) -> void:
 
 ## Every match- and peer-scoped container and counter, for the ten-cycle teardown audit. A stopped
 ## session reports zero everywhere; after a re-key only the connection-scoped tables remain.
+## ---- NLB-P11 telemetry glue (only reached when `telemetry` is not null) ----
+
+
+func _telemetry_frame() -> void:
+	var now := Time.get_ticks_usec()
+	if _telemetry_render_pending_usec > 0:
+		telemetry.record(
+			"recv_to_next_frame_ms", float(now - _telemetry_render_pending_usec) / 1000.0
+		)
+		_telemetry_render_pending_usec = 0
+	if not telemetry.frame(now):
+		return
+	telemetry.role = "client" if client_mode else "host"
+	var tx_bytes := transport.app_tx_bytes - _telemetry_seen_tx_bytes
+	var rx_bytes := transport.app_rx_bytes - _telemetry_seen_rx_bytes
+	var tx_packets := transport.app_tx_packets - _telemetry_seen_tx_packets
+	var rx_packets := transport.app_rx_packets - _telemetry_seen_rx_packets
+	_telemetry_seen_tx_bytes = transport.app_tx_bytes
+	_telemetry_seen_rx_bytes = transport.app_rx_bytes
+	_telemetry_seen_tx_packets = transport.app_tx_packets
+	_telemetry_seen_rx_packets = transport.app_rx_packets
+	telemetry.record("app_tx_bytes_per_s", tx_bytes)
+	telemetry.record("app_rx_bytes_per_s", rx_bytes)
+	telemetry.record("app_tx_packets_per_s", tx_packets)
+	telemetry.record("app_rx_packets_per_s", rx_packets)
+	telemetry.count("app_tx_bytes", tx_bytes)
+	telemetry.count("app_rx_bytes", rx_bytes)
+	telemetry.count("app_tx_packets", tx_packets)
+	telemetry.count("app_rx_packets", rx_packets)
+	var host_stats := transport.pop_host_statistics()
+	if not host_stats.is_empty():
+		telemetry.record("net_tx_bytes_per_s", float(host_stats.net_tx_bytes))
+		telemetry.record("net_rx_bytes_per_s", float(host_stats.net_rx_bytes))
+		telemetry.count("net_tx_bytes", int(host_stats.net_tx_bytes))
+		telemetry.count("net_rx_bytes", int(host_stats.net_rx_bytes))
+	var peer_stats := transport.peer_statistics()
+	var worst_loss := 0.0
+	for peer_id in peer_stats:
+		telemetry.record("rtt_ms", float(peer_stats[peer_id].rtt_ms))
+		worst_loss = maxf(worst_loss, float(peer_stats[peer_id].loss_ratio))
+	if not peer_stats.is_empty():
+		telemetry.gauge("loss_ratio", worst_loss)
+	# One 1 Hz sample of the engine's physics-frame time (seconds -> ms); per-step maxima and late
+	# steps are not captured here and are reported as unavailable.
+	telemetry.record("sim_step_ms", Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0)
+	telemetry.gauge("peer_count", float(transport.peer_count()))
+	telemetry.gauge("godot_static_bytes", float(OS.get_static_memory_usage()))
+	telemetry.gauge("fps_monitor", Performance.get_monitor(Performance.TIME_FPS))
+	telemetry.gauge("object_count", Performance.get_monitor(Performance.OBJECT_COUNT))
+	telemetry.gauge("node_count", Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+	telemetry.gauge(
+		"orphan_node_count", Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	)
+	telemetry.flush_second(now)
+
+
+func _telemetry_state_sent(peer_id: int) -> void:
+	telemetry.count("state_tx")
+	if _telemetry_input_receipts.has(peer_id):
+		telemetry.record(
+			"input_receipt_to_state_ms",
+			float(Time.get_ticks_usec() - int(_telemetry_input_receipts[peer_id])) / 1000.0
+		)
+		_telemetry_input_receipts.erase(peer_id)
+
+
+func _telemetry_state_received() -> void:
+	var now := Time.get_ticks_usec()
+	telemetry.count("state_rx")
+	if _telemetry_last_state_rx_usec > 0:
+		telemetry.record("state_rx_interval_ms", float(now - _telemetry_last_state_rx_usec) / 1000.0)
+	_telemetry_last_state_rx_usec = now
+	_telemetry_render_pending_usec = now
+
+
+func _telemetry_join_done() -> void:
+	if telemetry == null or _telemetry_join_start_ms <= 0:
+		return
+	var elapsed := Time.get_ticks_msec() - _telemetry_join_start_ms
+	telemetry.record("join_to_seat_ms", float(elapsed))
+	telemetry.event("join", {"elapsed_ms": elapsed})
+	_telemetry_join_start_ms = 0
+
+
+func _telemetry_snapshot_acked(total_bytes: int) -> void:
+	if telemetry == null:
+		return
+	telemetry.record("snapshot_bytes", float(total_bytes))
+	if _telemetry_reclaim_start_ms > 0:
+		var elapsed := Time.get_ticks_msec() - _telemetry_reclaim_start_ms
+		telemetry.record("reclaim_to_ack_ms", float(elapsed))
+		telemetry.event("reclaim", {"elapsed_ms": elapsed})
+		_telemetry_reclaim_start_ms = 0
+
+
+## One cleanup record for the ten-cycle audit: the container sizes teardown_counts() reports
+## (integers only, no peer data), written by a runner at each cycle boundary.
+func telemetry_cycle_record(cycle: int) -> void:
+	if telemetry == null:
+		return
+	var fields := {"cycle": cycle}
+	var counts := teardown_counts()
+	for key in counts:
+		var value: Variant = counts[key]
+		if value is int:
+			fields[str(key)] = value
+	telemetry.event("cycle", fields)
+
+
 func teardown_counts() -> Dictionary:
 	return {
 		"peers": transport.peer_count(),
