@@ -808,6 +808,8 @@ func _joy_action(button: int) -> String:
 			return "build_toggle"
 		JOY_BUTTON_RIGHT_SHOULDER:
 			return "live_rotate"
+		JOY_BUTTON_LEFT_SHOULDER:
+			return "live_cancel"
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -839,6 +841,8 @@ func _gamepad_phase_action(button: int) -> String:
 			return "build_toggle" if phase == Phase.PLAY else ""
 		JOY_BUTTON_RIGHT_SHOULDER:
 			return "live_rotate" if phase == Phase.PLAY else ""
+		JOY_BUTTON_LEFT_SHOULDER:
+			return "live_cancel" if phase == Phase.PLAY else ""
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -931,6 +935,10 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 			KEY_KP_4,
 			KEY_KP_2,
 			KEY_KP_6,
+			KEY_KP_7,
+			KEY_KP_1,
+			KEY_KP_3,
+			KEY_KP_9,
 			KEY_KP_0,
 			KEY_KP_5,
 			KEY_KP_PERIOD,
