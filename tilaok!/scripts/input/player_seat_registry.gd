@@ -120,7 +120,8 @@ func revoke_remote_source(source_id: String, authority: SimulationAuthority) -> 
 	return true
 
 
-## P02 transport loss releases the remote lobby seat completely; P08 reclaim will add reservation.
+## Lobby transport loss releases the remote seat completely. During a network match the host
+## reserves it instead (`revoke_remote_source`, then `reclaim_remote_source`; NLB-P08).
 func release_remote_source(source_id: String, authority: SimulationAuthority) -> bool:
 	if (
 		authority == null
@@ -139,6 +140,31 @@ func release_remote_source(source_id: String, authority: SimulationAuthority) ->
 	seat.device_id = -1
 	seat.keyboard_layout = ""
 	seat.remote_source_id = ""
+	return true
+
+
+## Host-only. Rebinds a reserved remote seat (joined, disconnected, device "remote") to a new
+## source after the reclaim proof, snapshot ack and neutral sample. The seat is never chosen by the
+## remote peer and a seat that is not reserved cannot be taken by this path.
+func reclaim_remote_source(
+	source_id: String, seat_index: int, authority: SimulationAuthority
+) -> bool:
+	if (
+		authority == null
+		or not authority.can_commit()
+		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
+		or not _valid_remote_source_id(source_id)
+		or seat_for_remote_source(source_id) >= 0
+		or seat_index < 0
+		or seat_index >= _seats.size()
+	):
+		return false
+	var seat: Dictionary = _seats[seat_index]
+	if not seat.joined or seat.connected or seat.device_kind != "remote":
+		return false
+	seat.connected = true
+	seat.ready = false
+	seat.remote_source_id = source_id
 	return true
 
 

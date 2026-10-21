@@ -47,6 +47,13 @@ func revoke_source(source_id: String) -> bool:
 	return router.registry.revoke_remote_source(source_id, authority)
 
 
+## Reconnects a reserved seat to a new source (NLB-P08); the caller proved the reclaim token.
+func reclaim_source(source_id: String, seat_index: int) -> bool:
+	if not _can_assign() or not _valid_source_id(source_id):
+		return false
+	return router.registry.reclaim_remote_source(source_id, seat_index, authority)
+
+
 func release_source(source_id: String) -> bool:
 	if not _can_assign() or router.registry.seat_for_remote_source(source_id) < 0:
 		return false
