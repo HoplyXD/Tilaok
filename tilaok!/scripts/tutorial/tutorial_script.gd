@@ -19,6 +19,28 @@ const KANGAROO_STEPS: Array[StringName] = [
 	STEP_KANGAROO_POSES, STEP_KANGAROO_SUPPORTS, STEP_KANGAROO_MISSES
 ]
 
+## NLB-P10 phone help cards (client-local, never host-driven), shown in this order. The offline
+## coach never uses them; they teach phone play, build mode, placement results, LAN joining and
+## the host-only pause.
+const STEP_NET_PHONE_CONTROLS := &"net_phone_controls"
+const STEP_NET_PUGAD := &"net_pugad"
+const STEP_NET_GO := &"net_go"
+const STEP_NET_BUILD_MODE := &"net_build_mode"
+const STEP_NET_REJECTED := &"net_rejected"
+const STEP_NET_CANCEL := &"net_cancel"
+const STEP_NET_LAN_JOIN := &"net_lan_join"
+const STEP_NET_HOST_PAUSE := &"net_host_pause"
+const NETWORK_STEPS: Array[StringName] = [
+	STEP_NET_PHONE_CONTROLS,
+	STEP_NET_PUGAD,
+	STEP_NET_GO,
+	STEP_NET_BUILD_MODE,
+	STEP_NET_REJECTED,
+	STEP_NET_CANCEL,
+	STEP_NET_LAN_JOIN,
+	STEP_NET_HOST_PAUSE,
+]
+
 @export var steps: Array[TutorialStepDef] = []
 ## Visible label on every live prompt until the copy is reviewed (honest provenance).
 @export var placeholder_tag := "PLACEHOLDER copy"
@@ -39,6 +61,13 @@ func has_all_steps() -> bool:
 		if step(step_id) == null:
 			return false
 	for step_id in KANGAROO_STEPS:
+		if step(step_id) == null:
+			return false
+	return true
+
+
+func has_all_network_steps() -> bool:
+	for step_id in NETWORK_STEPS:
 		if step(step_id) == null:
 			return false
 	return true

@@ -412,6 +412,8 @@ func _choose_map(map_id: String) -> void:
 ## The map the next match will use: the Tutorial map while the guided tutorial is pending; a
 ## left-over Tutorial selection falls back to the default stage once it is done or skipped.
 func _match_map_id() -> String:
+	if _network_live_build_route():
+		return MapCatalog.DEFAULT_ID if selected_map_id == TUTORIAL_MAP_ID else selected_map_id
 	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
 		return TUTORIAL_MAP_ID
 	if selected_map_id == TUTORIAL_MAP_ID:
@@ -435,6 +437,8 @@ func _start_replay() -> void:
 
 ## The coach is a child of the room, so it is freed with it. It only reads room state.
 func _attach_tutorial() -> void:
+	if _network_live_build_route():
+		return
 	if room == null or tutorial_script == null or room.presenter == null:
 		return
 	tutorial = TutorialCoordinator.new()
@@ -625,3 +629,12 @@ func _harness_requested() -> bool:
 
 func _open_harness() -> void:
 	get_tree().change_scene_to_file(HARNESS_SCENE_PATH)
+
+
+## NLB-P10: the live-build matrix disables the guided tutorial, so a hosted live-build match never
+## selects the tutorial stage or attaches the coach. Phones get client-local help cards instead.
+func _network_live_build_route() -> bool:
+	return (
+		network_session != null
+		and network_session.network_route == NetworkSessionManager.ROUTE_LIVE_BUILD
+	)

@@ -27,6 +27,7 @@ var _status_label: Label
 var _results_overlay: NetworkResultsOverlay
 var _touch_layer: NetworkTouchLayer
 var _phone_hud: NetworkPhoneHud
+var _help_cards: NetworkHelpCards
 var _move_direction := Vector2i.ZERO
 var _axis_x := 0
 ## NLB-P08: a local menu opened by the client's pause button. It never pauses the match.
@@ -129,6 +130,8 @@ func apply_state(state: Dictionary) -> void:
 		_results_overlay.set_phase(next_phase)
 	_refresh_controls_visibility()
 	_refresh_touch_state()
+	if _help_cards != null and not _state.is_empty():
+		_help_cards.auto_open_once()
 	_state = state.duplicate(true)
 	var map_id := str(next_metadata.get("map_id", MapCatalog.DEFAULT_ID))
 	if not MapCatalog.ids().has(map_id):
@@ -187,6 +190,11 @@ func _on_host_pause_changed(_paused: bool, _epoch: int) -> void:
 func _on_router_action(seat_index: int, action_name: String) -> void:
 	if seat_index == -1 and action_name == "client_pause_overlay":
 		_local_overlay = not _local_overlay
+		if _help_cards != null:
+			if _local_overlay:
+				_help_cards.open_from_menu()
+			else:
+				_help_cards.close()
 		_status_label.text = _host_status_text()
 		queue_redraw()
 
@@ -432,6 +440,9 @@ func _build_touch() -> void:
 	_phone_hud = NetworkPhoneHud.new()
 	_phone_hud.name = "NetworkPhoneHud"
 	add_child(_phone_hud)
+	_help_cards = NetworkHelpCards.new()
+	_help_cards.name = "NetworkHelpCards"
+	add_child(_help_cards)
 	_status_label.position = Vector2(24, 18 + NetworkPhoneHud.BADGE_SIZE.y + NetworkPhoneHud.CHIP_SIZE.y + 14.0)
 	_refresh_touch_state()
 
@@ -521,6 +532,8 @@ func _refresh_touch_state() -> void:
 	if _phone_hud != null:
 		_phone_hud.set_seat(network_session.client_assigned_seat if network_session != null else -1)
 		_phone_hud.set_placement(int(live_client.state), live_client.ghost_label())
+	if _help_cards != null:
+		_help_cards.seat = network_session.client_assigned_seat if network_session != null else -1
 
 
 func _on_terrain_resync(_gap: bool) -> void:
