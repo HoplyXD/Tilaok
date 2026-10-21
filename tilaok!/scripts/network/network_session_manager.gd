@@ -64,6 +64,10 @@ const CLIENT_STALE_RETURN_MS := 2000
 ## Contract v1.6: a phone's result action is limited to 4/s; the per-peer dedupe cache holds 32.
 const RESULT_ACTION_MAX_PER_SECOND := 4
 const RESULT_ACTION_CACHE_CAP := 32
+## Replay re-key: a peer must acknowledge within 3 s; the old epoch is dropped silently for 10 s.
+const REKEY_ACK_TIMEOUT_MS := 3000
+const RETIRED_EPOCH_MS := 10000
+const REKEY_ACK_MAX_PER_SECOND := 2
 const LIVE_ACTION_FIRST := 12
 const ACTION_NAMES := [
 	"jump", "confirm", "back", "rotate", "claim", "ready", "cheer", "left", "right", "up", "down",
@@ -201,6 +205,12 @@ var _result_action_cache: Dictionary = {}
 var _result_request_id := 0
 ## Client mirror of the host's committed result ledger and the latest result vote.
 var client_results := ClientResultsModel.new()
+## NLB-P09 session end and in-place replay re-key state. Retired epochs are dropped silently for a
+## short window so in-flight packets of the old identity are never treated as a violation.
+var _pending_end_reason := 0
+var _retired_epochs: Dictionary = {}
+var _client_retired_epochs: Dictionary = {}
+var _rekey_pending: Dictionary = {}
 
 
 func _init() -> void:
@@ -400,12 +410,17 @@ func connect_client(
 	return true
 
 
-func stop_session() -> void:
+## `end_reason` (a NetworkLifecycleCodec.SessionEnd value) tells the peers why the session ended. A
+## host that does not say defaults to HOST_CLOSED; a client that does not say is CLIENT_LEFT, unless
+## the cause was already recorded (host notice or transport loss).
+func stop_session(end_reason: int = NetworkLifecycleCodec.SessionEnd.NONE) -> void:
 	if state == SessionState.OFFLINE:
 		discovery.stop()
 		return
 	if state == SessionState.STOPPING:
 		return
+	if end_reason != NetworkLifecycleCodec.SessionEnd.NONE:
+		_pending_end_reason = end_reason
 	if not _keep_reclaim_credential and not _reclaim_credential.is_empty():
 		_reclaim_credential.clear()
 		reclaim_available_changed.emit(false)
@@ -417,12 +432,20 @@ func stop_session() -> void:
 	admission_open = false
 	if transport.is_open:
 		if transport.is_host:
+			var close_payload := NetworkLifecycleCodec.encode_session_close_host(
+				NetworkFrame.Reason.SESSION_CLOSED,
+				(
+					_pending_end_reason
+					if _pending_end_reason != NetworkLifecycleCodec.SessionEnd.NONE
+					else NetworkLifecycleCodec.SessionEnd.HOST_CLOSED
+				),
+				match_room.result_ledger.revision() if match_room != null and is_instance_valid(match_room) else 0,
+				Engine.get_physics_frames()
+			)
+			if close_payload.is_empty():
+				close_payload = _u16(NetworkFrame.Reason.SESSION_CLOSED)
 			for peer_id in candidates.keys():
-				_send(
-					int(peer_id),
-					NetworkFrame.Family.SESSION_CLOSE,
-					_u16(NetworkFrame.Reason.SESSION_CLOSED)
-				)
+				_send(int(peer_id), NetworkFrame.Family.SESSION_CLOSE, close_payload)
 		else:
 			for peer_id in _connected_peer_ids():
 				_send(int(peer_id), NetworkFrame.Family.SESSION_CLOSE, _u16(NetworkFrame.Reason.OK))
@@ -450,9 +473,17 @@ func _physics_process(_delta: float) -> void:
 	_send_periodic_state()
 	_send_live_seat_states(false)
 	_send_result_vote_if_changed()
+	_expire_rekey_pending()
 
 
 func _finish_stop() -> void:
+	var was_client := client_mode
+	var end_reason := (
+		_pending_end_reason
+		if _pending_end_reason != NetworkLifecycleCodec.SessionEnd.NONE
+		else NetworkLifecycleCodec.SessionEnd.CLIENT_LEFT
+	)
+	_pending_end_reason = NetworkLifecycleCodec.SessionEnd.NONE
 	_pending_stop = false
 	transport.close()
 	candidates.clear()
@@ -504,7 +535,37 @@ func _finish_stop() -> void:
 	_result_action_cache.clear()
 	_result_request_id = 0
 	client_results.reset(0)
+	_retired_epochs.clear()
+	_client_retired_epochs.clear()
+	_rekey_pending.clear()
+	# Match-scoped client input and snapshot counters, and host snapshot/event bookkeeping, that
+	# earlier phases left behind (ten replay/lobby cycles must retain none of them).
+	_client_input_sequence = 0
+	_client_action_sequence = 0
+	_client_request_id = 0
+	_client_axes = [0, 0]
+	_client_aim = [0, 0]
+	_client_held_mask = 0
+	_client_build_mode = false
+	_client_edge_watermark = 0
+	_client_input_elapsed = 0.0
+	_client_sequence = 0
+	_client_pending_hint = -1
+	_snapshot_counter = 0
+	_snapshot_request_count = 0
+	_snapshot_request_last_ms = 0
+	_last_state_send_tick = -1
+	_initial_snapshots_started = false
+	_known_stage_entity_ids.clear()
+	_transient_overflow_reported = false
+	_last_event_signature = ""
 	terrain_gap = false
+	if match_room != null and is_instance_valid(match_room):
+		# A room that outlives the session goes back to its offline behavior.
+		match_room.network_replay_handler = Callable()
+		match_room.network_mode = false
+		match_room.network_host_commands = false
+		match_room.network_exempt_unconnected_seats = false
 	match_room = null
 	match_active = false
 	sync_ready = false
@@ -537,6 +598,9 @@ func _finish_stop() -> void:
 	state = SessionState.OFFLINE
 	state_changed.emit("OFFLINE")
 	lobby_changed.emit()
+	if was_client:
+		# Contract v1.6: every client end carries a bounded reason, so no screen waits on a dead host.
+		session_ended.emit(end_reason)
 
 
 func approve_peer(peer_id: int) -> bool:
@@ -710,6 +774,7 @@ func bind_match_room(room: P12ScheduledMatchRoom) -> void:
 		match_room.result_committed.connect(_on_result_committed)
 	match_room.network_mode = true
 	match_room.network_host_commands = true
+	match_room.network_replay_handler = Callable(self, "_network_replay")
 	_last_vote_signature = ""
 	_vote_sequence = 0
 	_result_action_cache.clear()
@@ -1486,6 +1551,9 @@ func _on_peer_disconnected(peer_id: int) -> void:
 		client_assigned_seat = -1
 		client_ready = false
 		if state != SessionState.STOPPING:
+			if _pending_end_reason == NetworkLifecycleCodec.SessionEnd.NONE:
+				# A transport loss with no notice from the host: the host is gone.
+				_pending_end_reason = NetworkLifecycleCodec.SessionEnd.HOST_LOST
 			if not _client_disconnect_notice_set:
 				client_message.emit(
 					(
@@ -1507,9 +1575,24 @@ func _on_peer_disconnected(peer_id: int) -> void:
 		_reliable_edge_watermarks.erase(peer_id)
 		_action_request_cache.erase(peer_id)
 		_snapshot_sender.erase(peer_id)
+		_erase_peer_state(peer_id)
 		candidates.erase(peer_id)
 		_broadcast_lobby_state()
 		lobby_changed.emit()
+
+
+## Peer IDs only grow, so a lost peer's leftovers can never collide, but they must not accumulate:
+## ten replay/lobby cycles retain no per-peer table entry.
+func _erase_peer_state(peer_id: int) -> void:
+	_peer_abuse.erase(peer_id)
+	_pending_snapshot_peers.erase(peer_id)
+	_snapshot_retry_counts.erase(peer_id)
+	_result_action_cache.erase(peer_id)
+	_rekey_pending.erase(peer_id)
+	_erase_peer_keys(_sequences, peer_id)
+	_erase_peer_keys(_incoming_sequences, peer_id)
+	_erase_peer_keys(_peer_family_times, peer_id)
+	_erase_peer_keys(_idempotent_requests, peer_id)
 
 
 func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) -> void:
@@ -1517,6 +1600,14 @@ func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) ->
 	_receipt_usec = Time.get_ticks_usec()
 	var decoded := NetworkFrame.decode(packet, -1 if client_mode else session_epoch, false)
 	if not bool(decoded.ok):
+		# After a replay re-key, packets still in flight under the old epoch are dropped quietly;
+		# a rejection would release the sender's seat for no fault of its own.
+		if (
+			not client_mode
+			and int(decoded.reason) == NetworkFrame.Reason.STALE_STATE
+			and _epoch_is_retired(_retired_epochs, NetworkFrame.peek_epoch(packet))
+		):
+			return
 		_reject(peer_id, int(decoded.reason))
 		return
 	if not NetworkFrame.family_allowed_on_channel(int(decoded.family), channel):
@@ -1529,6 +1620,8 @@ func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) ->
 		_reject(peer_id, NetworkFrame.Reason.RATE_LIMIT)
 		return
 	if client_mode:
+		if _epoch_is_retired(_client_retired_epochs, int(decoded.epoch)):
+			return
 		if _client_expected_host_epoch > 0 and int(decoded.epoch) != _client_expected_host_epoch:
 			client_message.emit("This invitation belongs to an older host session.")
 			stop_session()
@@ -1709,7 +1802,14 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
 				return
 			_clear_live_placement_peer(peer_id)
+			var leaving_seat := int(candidate.seat)
 			_unbind_peer_seat(peer_id, candidate)
+			if match_active and leaving_seat >= 0 and reservations.is_reserved(leaving_seat):
+				# A deliberate Leave is not a lost connection (contract v1.6): no 60 s reservation.
+				# The one disconnect elimination commits at the next safe boundary, no Patibong.
+				reservations.forfeit(leaving_seat, Time.get_ticks_msec())
+				print("NLB_P09_SEAT_FORFEIT seat=%d" % leaving_seat)
+			_erase_peer_state(peer_id)
 			candidates.erase(peer_id)
 			transport.close_peer(peer_id)
 			_broadcast_lobby_state()
@@ -1718,7 +1818,9 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			_accept_reclaim_begin(peer_id, payload, candidate)
 		NetworkFrame.Family.LIFECYCLE_HINT:
 			_accept_lifecycle_hint(peer_id, payload, candidate)
-		NetworkFrame.Family.PAUSE_STATE, NetworkFrame.Family.RESULT_EVENT, NetworkFrame.Family.RESULT_VOTE:
+		NetworkFrame.Family.REKEY_ACK:
+			_accept_rekey_ack(peer_id, payload, candidate)
+		NetworkFrame.Family.PAUSE_STATE, NetworkFrame.Family.RESULT_EVENT, NetworkFrame.Family.RESULT_VOTE, NetworkFrame.Family.REKEY:
 			# Only the host may change the global state or declare a result; a client frame is
 			# refused, never applied (contract v1.6: a client never proposes a score or a ledger).
 			_reject(peer_id, NetworkFrame.Reason.HOST_ONLY)
@@ -1921,6 +2023,8 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			):
 				client_message.emit("The host sent an invalid match start.")
 				return
+			if match_active and sync_ready and _read_u64(payload, 1) == active_match_id:
+				return # a repeated start of the match this client already runs
 			active_match_id = _read_u64(payload, 1)
 			client_results.reset(active_match_id)
 			client_route = int(payload[9])
@@ -1980,9 +2084,13 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			_receive_result_event(payload)
 		NetworkFrame.Family.RESULT_VOTE:
 			_receive_result_vote(payload)
+		NetworkFrame.Family.REKEY:
+			_receive_rekey(peer_id, payload)
 		NetworkFrame.Family.RECLAIM_RESULT:
 			_receive_reclaim_result(peer_id, payload)
 		NetworkFrame.Family.SESSION_CLOSE:
+			# An unknown or malformed notice still ends the session (as HOST_LOST).
+			_pending_end_reason = int(NetworkLifecycleCodec.decode_session_close_host(payload).end)
 			client_message.emit("The host closed the session.")
 			_client_disconnect_notice_set = true
 			stop_session()
@@ -2855,6 +2963,8 @@ func _accept_rate(peer_id: int, family: int) -> bool:
 			limit = RECLAIM_BEGIN_MAX_PER_SECOND
 		NetworkFrame.Family.RESULT_ACTION:
 			limit = RESULT_ACTION_MAX_PER_SECOND
+		NetworkFrame.Family.REKEY_ACK:
+			limit = REKEY_ACK_MAX_PER_SECOND
 		NetworkFrame.Family.READY_REQUEST:
 			if now - int(state.last) < 100:
 				return false
@@ -3713,3 +3823,307 @@ func _receive_result_vote(payload: PackedByteArray) -> void:
 		return
 	if client_results.apply_vote(record, active_match_id):
 		results_changed.emit()
+
+
+# ---------------------------------------------------------------------------------------------
+# NLB-P09 (contract v1.6): in-place replay re-key, retired epochs and teardown accounting.
+# Spec 3.3: session teardown precedes a new session identity. A replay therefore clears every
+# match-scoped container, reservation, token and the pause epoch (the connections stay open) and
+# only then mints a new epoch and a new match ID. Return to Lobby is a full stop_session().
+# ---------------------------------------------------------------------------------------------
+
+
+func _new_epoch() -> int:
+	var epoch := 0
+	while epoch == 0 or epoch == session_epoch or _retired_epochs.has(epoch):
+		var epoch_bytes := Crypto.new().generate_random_bytes(8)
+		epoch_bytes[7] = int(epoch_bytes[7]) & 0x7f
+		epoch = _bytes_to_u64(epoch_bytes)
+	return epoch
+
+
+func _retire_epoch(table: Dictionary, epoch: int) -> void:
+	if epoch <= 0:
+		return
+	table[epoch] = Time.get_ticks_msec()
+	while table.size() > 2:
+		var oldest := -1
+		for key in table.keys():
+			if oldest < 0 or int(table[key]) < int(table[oldest]):
+				oldest = int(key)
+		table.erase(oldest)
+
+
+## True while `epoch` was retired within RETIRED_EPOCH_MS; an expired entry is forgotten.
+func _epoch_is_retired(table: Dictionary, epoch: int) -> bool:
+	if epoch <= 0 or not table.has(epoch):
+		return false
+	if Time.get_ticks_msec() - int(table[epoch]) > RETIRED_EPOCH_MS:
+		table.erase(epoch)
+		return false
+	return true
+
+
+## Host: every match-scoped container. Connections, candidates, sequence counters and abuse
+## windows are connection-scoped and stay (sequences keep growing across a re-key, so a frame of the
+## old identity can never move a counter backwards).
+func _clear_match_scope() -> void:
+	_pending_continuous.clear()
+	_pending_actions.clear()
+	_host_input_state.clear()
+	_action_edge_watermarks.clear()
+	_reliable_edge_watermarks.clear()
+	_action_request_cache.clear()
+	_snapshot_receivers.clear()
+	_snapshot_sender.clear()
+	_pending_snapshot_peers.clear()
+	_snapshot_retry_counts.clear()
+	_placement_cache.clear()
+	_placement_inflight.clear()
+	_placement_new_id_times.clear()
+	_live_seat_state_sent.clear()
+	_terrain_shadow.clear()
+	_terrain_shadow_version = -1
+	_tombstone_repeats.clear()
+	_terrain_parts.clear()
+	_terrain_behind_since_ms = 0
+	_known_stage_entity_ids.clear()
+	_known_transient_keys.clear()
+	_transient_end_repeats.clear()
+	_transient_overflow_reported = false
+	_idempotent_requests.clear()
+	_result_action_cache.clear()
+	_last_event_signature = ""
+	_last_vote_signature = ""
+	_vote_sequence = 0
+	_snapshot_counter = 0
+	_last_state_send_tick = -1
+	_pause_heartbeat_ms = 0
+	pause_controller.reset()
+	for peer_id in candidates.keys():
+		var candidate: Dictionary = candidates[peer_id]
+		candidate.match_sync_ready = false
+		candidate.reclaim_bind_pending = false
+		candidates[peer_id] = candidate
+
+
+## Client: everything the previous match left on this device (replica, ledger, pause, input and
+## request counters, snapshot buffers). Hint counters belong to the connection and stay.
+func _client_clear_match_scope() -> void:
+	client_replica_state.clear()
+	client_results.reset(0)
+	_snapshot_receivers.clear()
+	_snapshot_request_count = 0
+	_snapshot_request_last_ms = 0
+	_terrain_parts.clear()
+	_terrain_behind_since_ms = 0
+	_set_terrain_gap(false)
+	client_live_seat_state.clear()
+	var was_paused := client_paused
+	pause_controller.reset()
+	client_paused = false
+	client_pause_epoch = 0
+	if was_paused:
+		pause_state_changed.emit(false, 0)
+	sync_ready = false
+	_client_axes = [0, 0]
+	_client_aim = [0, 0]
+	_client_held_mask = 0
+	_client_build_mode = false
+	_client_input_sequence = 0
+	_client_action_sequence = 0
+	_client_request_id = 0
+	_client_edge_watermark = 0
+	_client_placement_request_id = 0
+	_result_request_id = 0
+	_client_last_state_ms = 0
+
+
+## The room's replay handler. Returns true once the identity was re-keyed and the room may reset
+## and start the next match; false leaves the room on its results with a visible reason.
+func _network_replay() -> bool:
+	if client_mode or not match_active or match_room == null or not is_instance_valid(match_room):
+		return false
+	if match_room.network_prepare_replay_roster() < 2:
+		return false
+	var seats: Array[int] = match_room.original_seat_indices.duplicate()
+	var new_epoch := _new_epoch()
+	var new_match_id := _match_lineage + 1
+	var live := network_route == ROUTE_LIVE_BUILD
+	var flags := NetworkLifecycleCodec.REKEY_FLAG_UNVERIFIED if live and live_unverified_content else 0
+	reservations.retain_only(seats)
+	var participants: Array[int] = []
+	var failed: Array[int] = []
+	for peer_id in candidates.keys():
+		var candidate: Dictionary = candidates[peer_id]
+		var seat := int(candidate.get("seat", -1))
+		if seat < 0 or not seats.has(seat) or int(candidate.state) < CandidateState.ACKNOWLEDGED:
+			continue
+		var identity := reservations.rekey(seat)
+		var payload := NetworkLifecycleCodec.encode_rekey(
+			new_epoch,
+			new_match_id,
+			ROUTE_LIVE_BUILD if live else ROUTE_SCHEDULED,
+			flags,
+			identity.get("token", PackedByteArray())
+		)
+		if payload.is_empty():
+			failed.append(int(peer_id))
+			continue
+		# Still the old epoch: this is the last frame a peer accepts under the identity being retired.
+		_send(int(peer_id), NetworkFrame.Family.REKEY, payload)
+		participants.append(int(peer_id))
+	_retire_epoch(_retired_epochs, session_epoch)
+	session_epoch = new_epoch
+	_match_lineage = new_match_id
+	active_match_id = new_match_id
+	_clear_match_scope()
+	# Snapshots go out per peer after its acknowledgement, never to everyone at once.
+	_initial_snapshots_started = true
+	sync_ready = true
+	var deadline := Time.get_ticks_msec() + REKEY_ACK_TIMEOUT_MS
+	for peer_id in participants:
+		_rekey_pending[peer_id] = deadline
+	for peer_id in failed:
+		_drop_rekey_peer(peer_id)
+	print("NLB_P09_REKEY match=%d peers=%d failed=%d" % [new_match_id, participants.size(), failed.size()])
+	return true
+
+
+## Host: the peer adopted the new identity (the frame itself arrived under the new epoch). It gets
+## the new match start and a fresh snapshot; its input starts from a neutral sample.
+func _accept_rekey_ack(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	if not _rekey_pending.has(peer_id):
+		return
+	var ack := NetworkLifecycleCodec.decode_rekey_ack(payload)
+	if (
+		not bool(ack.get("ok", false))
+		or int(ack.new_epoch) != session_epoch
+		or int(ack.peer_generation) != int(candidate.get("peer_generation", 0))
+	):
+		_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
+		return
+	_rekey_pending.erase(peer_id)
+	_host_input_state[peer_id] = {
+		"generation": int(candidate.peer_generation),
+		"last_valid_ms": Time.get_ticks_msec(),
+		"last_sequence": -1,
+		"timed_out": true,
+		"await_neutral": true,
+	}
+	_action_edge_watermarks[peer_id] = 0
+	_reliable_edge_watermarks[peer_id] = 0
+	router.clear_remote_source("peer_%d" % peer_id)
+	candidate.match_sync_ready = false
+	candidates[peer_id] = candidate
+	_send(peer_id, NetworkFrame.Family.MATCH_LIFECYCLE, _match_lifecycle_payload())
+	_pending_snapshot_peers[peer_id] = true
+
+
+func _expire_rekey_pending() -> void:
+	if _rekey_pending.is_empty():
+		return
+	var now := Time.get_ticks_msec()
+	for peer_id in _rekey_pending.keys():
+		if now >= int(_rekey_pending[peer_id]):
+			_drop_rekey_peer(int(peer_id))
+
+
+## A peer that never adopted the new identity cannot take part in the new match: its seat forfeits
+## through the existing disconnect-elimination path, and its (never delivered) token is useless.
+func _drop_rekey_peer(peer_id: int) -> void:
+	_rekey_pending.erase(peer_id)
+	if not candidates.has(peer_id):
+		return
+	var candidate: Dictionary = candidates[peer_id]
+	var seat := int(candidate.get("seat", -1))
+	_clear_live_placement_peer(peer_id)
+	_unbind_peer_seat(peer_id, candidate)
+	if match_active and seat >= 0 and reservations.is_reserved(seat):
+		reservations.forfeit(seat, Time.get_ticks_msec())
+	_erase_peer_state(peer_id)
+	candidates.erase(peer_id)
+	transport.close_peer(peer_id)
+	lobby_changed.emit()
+
+
+## Client: the host re-keyed the session for a replay. Adopt the identity, clear the old match,
+## and acknowledge under the new epoch; the host then sends the new match start and a snapshot.
+func _receive_rekey(peer_id: int, payload: PackedByteArray) -> void:
+	var rekey := NetworkLifecycleCodec.decode_rekey(payload)
+	if not bool(rekey.get("ok", false)):
+		client_message.emit("The host sent an invalid replay notice.")
+		return
+	if (
+		not match_active
+		or client_assigned_seat < 0
+		or int(rekey.new_match_id) <= active_match_id
+		or int(rekey.new_epoch) == session_epoch
+	):
+		return
+	_retire_epoch(_client_retired_epochs, session_epoch)
+	_client_clear_match_scope()
+	session_epoch = int(rekey.new_epoch)
+	_client_expected_host_epoch = session_epoch
+	active_match_id = int(rekey.new_match_id)
+	client_reclaim_token = rekey.token
+	client_route = int(rekey.route)
+	client_unverified_content = (
+		(int(rekey.flags) & NetworkLifecycleCodec.REKEY_FLAG_UNVERIFIED) != 0
+		and client_route == ROUTE_LIVE_BUILD
+	)
+	client_results.reset(active_match_id)
+	var ack := NetworkLifecycleCodec.encode_rekey_ack(session_epoch, assigned_peer_generation)
+	if not ack.is_empty():
+		_send(peer_id, NetworkFrame.Family.REKEY_ACK, ack)
+	client_message.emit("The host started a replay.")
+
+
+## Every match- and peer-scoped container and counter, for the ten-cycle teardown audit. A stopped
+## session reports zero everywhere; after a re-key only the connection-scoped tables remain.
+func teardown_counts() -> Dictionary:
+	return {
+		"peers": transport.peer_count(),
+		"candidates": candidates.size(),
+		"sequences": _sequences.size(),
+		"incoming_sequences": _incoming_sequences.size(),
+		"idempotent_requests": _idempotent_requests.size(),
+		"peer_abuse": _peer_abuse.size(),
+		"peer_family_times": _peer_family_times.size(),
+		"pending_continuous": _pending_continuous.size(),
+		"pending_actions": _pending_actions.size(),
+		"host_input_state": _host_input_state.size(),
+		"edge_watermarks": _action_edge_watermarks.size() + _reliable_edge_watermarks.size(),
+		"action_request_cache": _action_request_cache.size(),
+		"result_action_cache": _result_action_cache.size(),
+		"snapshot_receivers": _snapshot_receivers.size(),
+		"snapshot_sender": _snapshot_sender.size(),
+		"pending_snapshot_peers": _pending_snapshot_peers.size(),
+		"snapshot_retry_counts": _snapshot_retry_counts.size(),
+		"placement_cache": _placement_cache.size(),
+		"placement_inflight": _placement_inflight.size(),
+		"placement_new_id_times": _placement_new_id_times.size(),
+		"live_seat_state_sent": _live_seat_state_sent.size(),
+		"terrain_shadow": _terrain_shadow.size(),
+		"tombstone_repeats": _tombstone_repeats.size(),
+		"terrain_parts": _terrain_parts.size(),
+		"known_stage_entities": _known_stage_entity_ids.size(),
+		"known_transients": _known_transient_keys.size() + _transient_end_repeats.size(),
+		"reservation_entries": reservations.entry_count(),
+		"retired_epochs": _retired_epochs.size() + _client_retired_epochs.size(),
+		"rekey_pending": _rekey_pending.size(),
+		"client_replica": client_replica_state.size(),
+		"client_live_seat_state": client_live_seat_state.size(),
+		"client_ledger_revision": client_results.revision(),
+		"host_ledger_revision":
+		(
+			match_room.result_ledger.revision()
+			if match_room != null and is_instance_valid(match_room)
+			else 0
+		),
+		"pause_epoch": pause_controller.epoch,
+		"match_id": active_match_id,
+		"match_lineage": _match_lineage,
+		"session_epoch": session_epoch,
+		"match_active": 1 if match_active else 0,
+	}

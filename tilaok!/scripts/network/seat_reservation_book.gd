@@ -38,8 +38,51 @@ func forget(seat: int) -> void:
 	_entries.erase(seat)
 
 
+## NLB-P09 replay re-key: the seat keeps its Player ID, its token is revoked and replaced, and every
+## reservation, claim and per-round commit mark is cleared for the new match identity.
+func rekey(seat: int) -> Dictionary:
+	if not _entries.has(seat):
+		return {}
+	var entry: Dictionary = _entries[seat]
+	entry.token = Crypto.new().generate_random_bytes(16)
+	entry.reserved = false
+	entry.deadline_ms = 0
+	entry.expired = false
+	entry.committed_round = -1
+	entry.pending_peer = -1
+	_entries[seat] = entry
+	return {"player_id": entry.player_id.duplicate(), "token": entry.token.duplicate()}
+
+
+## NLB-P09: seats that are not part of the next match lose their identity entry.
+func retain_only(seats: Array) -> void:
+	for seat in _entries.keys():
+		if not seats.has(int(seat)):
+			_entries.erase(seat)
+
+
+## NLB-P09 explicit leave: a deliberate Leave is not a lost connection. The seat is reserved with its
+## grace already over (so the one disconnect elimination commits at the next safe boundary) and its
+## token is replaced by one nobody holds, so the identity can never be reclaimed.
+func forfeit(seat: int, now_ms: int) -> bool:
+	if not _entries.has(seat):
+		return false
+	var entry: Dictionary = _entries[seat]
+	entry.token = Crypto.new().generate_random_bytes(16)
+	entry.reserved = true
+	entry.deadline_ms = now_ms
+	entry.expired = false
+	entry.pending_peer = -1
+	_entries[seat] = entry
+	return true
+
+
 func has_entry(seat: int) -> bool:
 	return _entries.has(seat)
+
+
+func entry_count() -> int:
+	return _entries.size()
 
 
 func player_id_of(seat: int) -> PackedByteArray:
