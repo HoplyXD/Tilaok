@@ -16,6 +16,9 @@ enum State { RUNNING, PAUSED, COUNTDOWN }
 ## When true the pause menu is drawn by a scene (UiPauseScreen): the owner's confirm no longer
 ## readies the owner implicitly. Default false keeps the P02 behaviour exactly.
 @export var external_menu := false
+## NLB-P08: on the network routes remote phones cannot set "ready", so resume follows the host's
+## own seats only. Offline play leaves this false and keeps the all-seats rule exactly.
+var remote_ready_exempt := false
 
 var authority := SimulationAuthority.offline()
 var state := State.RUNNING
@@ -105,7 +108,7 @@ func set_paused(reason: String, owner_seat: int) -> void:
 func request_resume() -> bool:
 	if state != State.PAUSED or input_router == null or not _can_global_pause():
 		return false
-	if not input_router.registry.all_joined_ready_and_connected():
+	if not _resume_ready():
 		return false
 	state = State.COUNTDOWN
 	countdown_remaining = resume_countdown_seconds
@@ -119,7 +122,7 @@ func mark_ready(seat_index: int) -> bool:
 		return false
 	if not input_router.registry.set_ready(seat_index, true):
 		return false
-	if input_router.registry.all_joined_ready_and_connected():
+	if _resume_ready():
 		request_resume()
 	return true
 
@@ -207,7 +210,7 @@ func _on_action_pressed(seat_index: int, action_name: String) -> void:
 	if seat_index != menu_owner and menu_owner >= 0:
 		if action_name in ["ready", "confirm"]:
 			input_router.registry.set_ready(seat_index, true)
-			if input_router.registry.all_joined_ready_and_connected():
+			if _resume_ready():
 				request_resume()
 		return
 	if external_menu and seat_index == menu_owner:
@@ -218,7 +221,7 @@ func _on_action_pressed(seat_index: int, action_name: String) -> void:
 			reclaim_menu_requested.emit()
 			return
 		input_router.registry.set_ready(seat_index, true)
-		if input_router.registry.all_joined_ready_and_connected():
+		if _resume_ready():
 			request_resume()
 
 
@@ -229,6 +232,17 @@ func _on_navigation_step(seat_index: int, direction: String) -> void:
 		return
 	menu_selection = 1 - menu_selection
 	menu_selection_changed.emit(menu_selection, menu_owner)
+
+
+func _resume_ready() -> bool:
+	if not remote_ready_exempt:
+		return input_router.registry.all_joined_ready_and_connected()
+	for seat in input_router.registry.joined_seats():
+		if str(seat.device_kind) == "remote":
+			continue
+		if not seat.connected or not seat.ready:
+			return false
+	return true
 
 
 func _missing_seats() -> Array[int]:
