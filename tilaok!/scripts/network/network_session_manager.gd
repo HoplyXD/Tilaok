@@ -432,18 +432,7 @@ func stop_session(end_reason: int = NetworkLifecycleCodec.SessionEnd.NONE) -> vo
 	admission_open = false
 	if transport.is_open:
 		if transport.is_host:
-			var close_payload := NetworkLifecycleCodec.encode_session_close_host(
-				NetworkFrame.Reason.SESSION_CLOSED,
-				(
-					_pending_end_reason
-					if _pending_end_reason != NetworkLifecycleCodec.SessionEnd.NONE
-					else NetworkLifecycleCodec.SessionEnd.HOST_CLOSED
-				),
-				match_room.result_ledger.revision() if match_room != null and is_instance_valid(match_room) else 0,
-				Engine.get_physics_frames()
-			)
-			if close_payload.is_empty():
-				close_payload = _u16(NetworkFrame.Reason.SESSION_CLOSED)
+			var close_payload := _host_close_payload()
 			for peer_id in candidates.keys():
 				_send(int(peer_id), NetworkFrame.Family.SESSION_CLOSE, close_payload)
 		else:
@@ -3831,6 +3820,25 @@ func _receive_result_vote(payload: PackedByteArray) -> void:
 # match-scoped container, reservation, token and the pause epoch (the connections stay open) and
 # only then mints a new epoch and a new match ID. Return to Lobby is a full stop_session().
 # ---------------------------------------------------------------------------------------------
+
+
+## The host's SESSION_CLOSE body: the v1.2 reason plus why, the last ledger revision and the tick.
+func _host_close_payload() -> PackedByteArray:
+	var payload := NetworkLifecycleCodec.encode_session_close_host(
+		NetworkFrame.Reason.SESSION_CLOSED,
+		(
+			_pending_end_reason
+			if _pending_end_reason != NetworkLifecycleCodec.SessionEnd.NONE
+			else NetworkLifecycleCodec.SessionEnd.HOST_CLOSED
+		),
+		(
+			match_room.result_ledger.revision()
+			if match_room != null and is_instance_valid(match_room)
+			else 0
+		),
+		Engine.get_physics_frames()
+	)
+	return payload if not payload.is_empty() else _u16(NetworkFrame.Reason.SESSION_CLOSED)
 
 
 func _new_epoch() -> int:
