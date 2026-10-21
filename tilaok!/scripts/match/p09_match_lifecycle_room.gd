@@ -736,13 +736,12 @@ func network_vote_state() -> Dictionary:
 			action = NetworkResultsCodec.ResultAction.VOTE_LOBBY
 	elif phase_controller.phase == MatchPhaseController.Phase.RESULTS:
 		action = NetworkResultsCodec.ResultAction.CONTINUE
-	var latest := result_ledger.latest()
 	return {
 		"action": action,
 		"ready_mask": ready,
 		"required_mask": required,
-		"event_id": int(latest.get("event_id", 0)),
-		"round_id": int(latest.get("round_id", 0)),
+		"event_id": result_ledger.latest_event_id(),
+		"round_id": result_ledger.latest_round_id(),
 	}
 
 

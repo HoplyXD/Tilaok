@@ -23,6 +23,10 @@ signal pause_state_changed(paused: bool, epoch: int)
 signal reclaim_available_changed(available: bool)
 ## Host: a reservation started, ended by reclaim, or expired (seat, event name).
 signal seat_reservation_changed(seat: int, event_name: String)
+## Contract v1.6 (NLB-P09). Client: the replicated result ledger or the result vote changed.
+signal results_changed
+## Client: the session ended (a NetworkLifecycleCodec.SessionEnd value) and match state was cleared.
+signal session_ended(end_reason: int)
 
 enum SessionState { OFFLINE, STARTING, LOBBY_OPEN, STOPPING }
 enum CandidateState {
@@ -57,6 +61,9 @@ const LIFECYCLE_HINT_MAX_PER_SECOND := 2
 const RECLAIM_BEGIN_MAX_PER_SECOND := 1
 const PAUSE_HEARTBEAT_MS := 1000
 const CLIENT_STALE_RETURN_MS := 2000
+## Contract v1.6: a phone's result action is limited to 4/s; the per-peer dedupe cache holds 32.
+const RESULT_ACTION_MAX_PER_SECOND := 4
+const RESULT_ACTION_CACHE_CAP := 32
 const LIVE_ACTION_FIRST := 12
 const ACTION_NAMES := [
 	"jump", "confirm", "back", "rotate", "claim", "ready", "cheer", "left", "right", "up", "down",
@@ -185,6 +192,15 @@ var _client_backgrounded := false
 var _client_hint_sequence := 0
 var _client_hint_times: Array[int] = []
 var _client_last_state_ms := 0
+## NLB-P09 (contract v1.6). The match ID is a host-lineage counter: it only grows within one host
+## session, so an old match's packets, results and requests are stale even after a re-key.
+var _match_lineage := 0
+var _vote_sequence := 0
+var _last_vote_signature := ""
+var _result_action_cache: Dictionary = {}
+var _result_request_id := 0
+## Client mirror of the host's committed result ledger and the latest result vote.
+var client_results := ClientResultsModel.new()
 
 
 func _init() -> void:
@@ -433,6 +449,7 @@ func _physics_process(_delta: float) -> void:
 	_send_queued_snapshots()
 	_send_periodic_state()
 	_send_live_seat_states(false)
+	_send_result_vote_if_changed()
 
 
 func _finish_stop() -> void:
@@ -481,6 +498,12 @@ func _finish_stop() -> void:
 	_client_hint_sequence = 0
 	_client_hint_times.clear()
 	_client_last_state_ms = 0
+	_match_lineage = 0
+	_vote_sequence = 0
+	_last_vote_signature = ""
+	_result_action_cache.clear()
+	_result_request_id = 0
+	client_results.reset(0)
 	terrain_gap = false
 	match_room = null
 	match_active = false
@@ -641,7 +664,8 @@ func live_content_summary() -> PackedStringArray:
 func start_network_match() -> bool:
 	if client_mode or match_active or start_gate_status() != "Ready to start the scheduled network match.":
 		return false
-	active_match_id = 1
+	_match_lineage += 1
+	active_match_id = _match_lineage
 	if active_match_id <= 0:
 		return false
 	match_active = true
@@ -680,6 +704,15 @@ func bind_match_room(room: P12ScheduledMatchRoom) -> void:
 		(coordinator as PauseRecoveryCoordinator).remote_ready_exempt = true
 	if not match_room.presentation_changed.is_connected(_on_match_presentation_changed):
 		match_room.presentation_changed.connect(_on_match_presentation_changed)
+	# NLB-P09: results replicate from the host ledger; Return to Lobby and Replay are owned by the
+	# session (spec 3.3), and a spectator host commits the result planks by host authority.
+	if not match_room.result_committed.is_connected(_on_result_committed):
+		match_room.result_committed.connect(_on_result_committed)
+	match_room.network_mode = true
+	match_room.network_host_commands = true
+	_last_vote_signature = ""
+	_vote_sequence = 0
+	_result_action_cache.clear()
 	if (
 		match_room is NLBP05LiveBuildMatchRoom
 		and not (match_room as NLBP05LiveBuildMatchRoom).live_placement_boundary_resolved.is_connected(
@@ -725,7 +758,20 @@ func _send_initial_snapshot(peer_id: int) -> void:
 		active_match_id, _snapshot_counter, Engine.get_physics_frames()
 	)
 	var metadata := NetworkMatchCodec.encode_metadata(snapshot.metadata)
-	var body := NetworkMatchCodec.pack_snapshot(snapshot.records)
+	# Contract v1.6: the complete committed result ledger rides every snapshot, so a resync or a
+	# reclaim restores the results exactly. It is never truncated: an unencodable entry refuses.
+	var snapshot_records: Array[PackedByteArray] = []
+	snapshot_records.append_array(snapshot.records)
+	var ledger_complete := true
+	for ledger_entry in _wire_ledger_entries():
+		var ledger_record := NetworkMatchCodec.encode_ledger_record(ledger_entry)
+		if ledger_record.is_empty():
+			ledger_complete = false
+			break
+		snapshot_records.append(ledger_record)
+	var body := (
+		NetworkMatchCodec.pack_snapshot(snapshot_records) if ledger_complete else PackedByteArray()
+	)
 	if (
 		metadata.is_empty() or body.is_empty() or metadata.size() > 255
 		or bool(snapshot.get("transient_overflow", false))
@@ -857,6 +903,11 @@ func _receive_snapshot_end(payload: PackedByteArray, peer_id: int) -> void:
 		_request_snapshot_recovery()
 		return
 	var installed := _replica_from_records(metadata, unpacked.records, snapshot_id)
+	# The ledger inside the snapshot must itself obey the ledger rules before anything is installed.
+	if not client_results.install_snapshot(installed.get("ledger", []), active_match_id):
+		client_message.emit("The host sent an invalid result ledger.")
+		_request_snapshot_recovery()
+		return
 	client_replica_state = installed
 	_snapshot_receivers.clear()
 	# A complete snapshot is the full entity manifest, so it repairs any terrain gap.
@@ -864,6 +915,7 @@ func _receive_snapshot_end(payload: PackedByteArray, peer_id: int) -> void:
 	_terrain_behind_since_ms = 0
 	_set_terrain_gap(false)
 	match_state_received.emit(client_replica_state.duplicate(true))
+	results_changed.emit()
 	var ack := _u32(snapshot_id)
 	ack.append_array(_u32(checksum))
 	ack.append_array(_u32(total))
@@ -894,6 +946,10 @@ func _accept_snapshot_ack(peer_id: int, payload: PackedByteArray, candidate: Dic
 	var ready_payload := _u32(int(sent.snapshot_id))
 	_send(peer_id, NetworkFrame.Family.SYNC_READY, ready_payload)
 	_send_pause_state(peer_id)
+	# Contract v1.6: repeat the committed ledger and the vote so an entry committed while the peer
+	# was still synchronizing is never lost (older entries are idempotent duplicates on the client).
+	_send_ledger_repeat(peer_id)
+	_send_result_vote(peer_id)
 	_snapshot_sender.erase(peer_id)
 	_snapshot_retry_counts.erase(peer_id)
 
@@ -916,8 +972,11 @@ func _replica_from_records(metadata: Dictionary, records: Array[Dictionary], sna
 	var objective := {}
 	var event_context := {}
 	var transients := {}
+	var ledger_entries: Array = []
 	for record in records:
-		if bool(record.get("transient", false)):
+		if record.has("ledger"):
+			ledger_entries.append((record.entry as Dictionary).duplicate(true))
+		elif bool(record.get("transient", false)):
 			if not bool(record.get("ended", false)):
 				var installed := record.duplicate(true)
 				installed["received_ms"] = Time.get_ticks_msec()
@@ -944,6 +1003,7 @@ func _replica_from_records(metadata: Dictionary, records: Array[Dictionary], sna
 		"event_context": event_context,
 		"event_revision": int(metadata.event_revision),
 		"transients": transients,
+		"ledger": ledger_entries,
 	}
 
 
@@ -1658,9 +1718,12 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			_accept_reclaim_begin(peer_id, payload, candidate)
 		NetworkFrame.Family.LIFECYCLE_HINT:
 			_accept_lifecycle_hint(peer_id, payload, candidate)
-		NetworkFrame.Family.PAUSE_STATE:
-			# Only the host may change the global state; a client frame is refused, never applied.
+		NetworkFrame.Family.PAUSE_STATE, NetworkFrame.Family.RESULT_EVENT, NetworkFrame.Family.RESULT_VOTE:
+			# Only the host may change the global state or declare a result; a client frame is
+			# refused, never applied (contract v1.6: a client never proposes a score or a ledger).
 			_reject(peer_id, NetworkFrame.Reason.HOST_ONLY)
+		NetworkFrame.Family.RESULT_ACTION:
+			_accept_result_action(peer_id, payload, candidate)
 		NetworkFrame.Family.CONTINUOUS_INPUT:
 			_accept_continuous_input(peer_id, payload, candidate)
 		NetworkFrame.Family.ACTION_REQUEST:
@@ -1859,6 +1922,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				client_message.emit("The host sent an invalid match start.")
 				return
 			active_match_id = _read_u64(payload, 1)
+			client_results.reset(active_match_id)
 			client_route = int(payload[9])
 			client_unverified_content = int(payload[10]) == 1 and client_route == ROUTE_LIVE_BUILD
 			client_live_seat_state.clear()
@@ -1912,6 +1976,10 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			live_seat_state_received.emit(seat_state.duplicate(true))
 		NetworkFrame.Family.PAUSE_STATE:
 			_receive_pause_state(payload)
+		NetworkFrame.Family.RESULT_EVENT:
+			_receive_result_event(payload)
+		NetworkFrame.Family.RESULT_VOTE:
+			_receive_result_vote(payload)
 		NetworkFrame.Family.RECLAIM_RESULT:
 			_receive_reclaim_result(peer_id, payload)
 		NetworkFrame.Family.SESSION_CLOSE:
@@ -2157,7 +2225,9 @@ func _action_phase_allowed(action_id: int) -> bool:
 			# Build toggle / live rotate / live cancel exist only on the opt-in live route.
 			return phase == MatchPhaseController.Phase.PLAY and _live_route_active()
 		1, 2:
-			return phase in [MatchPhaseController.Phase.PUGAD, MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.RESULTS]
+			# Contract v1.6: results travel only through RESULT_ACTION, so a phone can neither claim
+			# the host's result menu nor open its leave dialog (which pauses the whole tree).
+			return phase in [MatchPhaseController.Phase.PUGAD, MatchPhaseController.Phase.PLACE]
 		3:
 			return phase == MatchPhaseController.Phase.PLACE
 		4:
@@ -2167,7 +2237,7 @@ func _action_phase_allowed(action_id: int) -> bool:
 		6:
 			return phase in [MatchPhaseController.Phase.PLAY, MatchPhaseController.Phase.RESULTS]
 		7, 8, 9, 10:
-			return phase in [MatchPhaseController.Phase.PUGAD, MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.RESULTS]
+			return phase in [MatchPhaseController.Phase.PUGAD, MatchPhaseController.Phase.PLACE]
 	return false
 
 
@@ -2783,6 +2853,8 @@ func _accept_rate(peer_id: int, family: int) -> bool:
 			limit = LIFECYCLE_HINT_MAX_PER_SECOND
 		NetworkFrame.Family.RECLAIM_BEGIN:
 			limit = RECLAIM_BEGIN_MAX_PER_SECOND
+		NetworkFrame.Family.RESULT_ACTION:
+			limit = RESULT_ACTION_MAX_PER_SECOND
 		NetworkFrame.Family.READY_REQUEST:
 			if now - int(state.last) < 100:
 				return false
@@ -3470,3 +3542,174 @@ func _receive_reclaim_result(peer_id: int, payload: PackedByteArray) -> void:
 	_send(peer_id, NetworkFrame.Family.ASSIGNMENT_ACK, ack)
 	client_assigned.emit(client_assigned_seat)
 	client_message.emit("Seat reclaimed. Syncing with the host…")
+
+
+# ---------------------------------------------------------------------------------------------
+# NLB-P09 (contract v1.6): replicated results, the result vote and the phone's result action.
+# The host ledger is the only source; a client never proposes a score, a winner or a ledger.
+# ---------------------------------------------------------------------------------------------
+
+
+## The room keys its ledger by its own run counter; the wire carries the session's match ID.
+func _wire_ledger_entries() -> Array[Dictionary]:
+	var wire: Array[Dictionary] = []
+	if match_room == null or not is_instance_valid(match_room):
+		return wire
+	for entry in match_room.result_ledger.entries():
+		entry["match_id"] = active_match_id
+		wire.append(entry)
+	return wire
+
+
+func _on_result_committed(entry: Dictionary) -> void:
+	if client_mode or not match_active:
+		return
+	var wire := entry.duplicate(true)
+	wire["match_id"] = active_match_id
+	for peer_id in candidates.keys():
+		if bool(candidates[peer_id].get("match_sync_ready", false)):
+			_send_result_event(int(peer_id), wire)
+
+
+func _send_result_event(peer_id: int, wire_entry: Dictionary) -> void:
+	var payload := NetworkResultsCodec.encode_event(wire_entry)
+	if payload.is_empty():
+		push_error("NLB_P09 could not encode result entry %d." % int(wire_entry.get("event_id", 0)))
+		return
+	_send(peer_id, NetworkFrame.Family.RESULT_EVENT, payload)
+
+
+func _send_ledger_repeat(peer_id: int) -> void:
+	for entry in _wire_ledger_entries():
+		_send_result_event(peer_id, entry)
+
+
+func _send_result_vote_if_changed() -> void:
+	if match_room == null or not is_instance_valid(match_room):
+		return
+	var vote_state := match_room.network_vote_state()
+	if int(vote_state.event_id) <= 0:
+		return
+	var signature := (
+		"%d:%d:%d:%d"
+		% [
+			int(vote_state.action),
+			int(vote_state.ready_mask),
+			int(vote_state.required_mask),
+			int(vote_state.event_id),
+		]
+	)
+	if signature == _last_vote_signature:
+		return
+	_last_vote_signature = signature
+	_vote_sequence = (_vote_sequence + 1) & 0xffffffff
+	for peer_id in candidates.keys():
+		if bool(candidates[peer_id].get("match_sync_ready", false)):
+			_send_result_vote(int(peer_id))
+
+
+func _send_result_vote(peer_id: int) -> void:
+	if client_mode or match_room == null or not is_instance_valid(match_room):
+		return
+	var vote_state := match_room.network_vote_state()
+	if int(vote_state.event_id) <= 0:
+		return
+	var payload := NetworkResultsCodec.encode_vote(
+		{
+			"match_id": active_match_id,
+			"round_id": int(vote_state.round_id),
+			"event_id": int(vote_state.event_id),
+			"vote_seq": _vote_sequence,
+			"action": int(vote_state.action),
+			"ready_mask": int(vote_state.ready_mask),
+			"required_mask": int(vote_state.required_mask),
+		}
+	)
+	if not payload.is_empty():
+		_send(peer_id, NetworkFrame.Family.RESULT_VOTE, payload)
+
+
+## Host: one RESULT_ACTION. The seat always comes from the peer's binding. A stale or repeated
+## request is answered with the current vote and never rejected: a rejection would release the seat.
+func _accept_result_action(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	if (
+		not match_active
+		or match_room == null
+		or not is_instance_valid(match_room)
+		or not bool(candidate.get("match_sync_ready", false))
+	):
+		return
+	var request := NetworkResultsCodec.decode_action(payload)
+	if not bool(request.get("ok", false)):
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+		return
+	var seat_index := int(candidate.get("seat", -1))
+	if seat_index < 0 or router.registry.seat_for_remote_source("peer_%d" % peer_id) != seat_index:
+		_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
+		return
+	var cache: Dictionary = _result_action_cache.get(peer_id, {})
+	var request_key := str(request.request_id)
+	if cache.has(request_key):
+		_send_result_vote(peer_id)
+		return
+	while cache.size() >= RESULT_ACTION_CACHE_CAP:
+		cache.erase(cache.keys()[0])
+	cache[request_key] = true
+	_result_action_cache[peer_id] = cache
+	if (
+		int(request.match_id) != active_match_id
+		or int(request.attempt_id) != (int(match_room.match_run_id) & 0xffff)
+		or int(request.event_id) != match_room.result_ledger.latest_event_id()
+	):
+		_send_result_vote(peer_id)
+		return
+	if not match_room.network_result_vote(seat_index, int(request.action)):
+		_send_result_vote(peer_id)
+
+
+## Client: ask the host to count this phone's vote. The host decides; nothing is applied locally.
+func client_send_result_action(action: int) -> bool:
+	if (
+		not client_mode
+		or not sync_ready
+		or client_assigned_seat < 0
+		or client_results.latest_event_id() <= 0
+	):
+		return false
+	_result_request_id += 1
+	var latest := client_results.latest()
+	var payload := NetworkResultsCodec.encode_action(
+		{
+			"request_id": _result_request_id,
+			"match_id": active_match_id,
+			"round_id": int(latest.get("round_id", 0)),
+			"attempt_id": int(client_replica_state.get("attempt_id", 0)),
+			"event_id": int(latest.get("event_id", 0)),
+			"action": action,
+		}
+	)
+	return not payload.is_empty() and _send_to_host(NetworkFrame.Family.RESULT_ACTION, payload)
+
+
+func _receive_result_event(payload: PackedByteArray) -> void:
+	var entry := NetworkResultsCodec.decode_event(payload)
+	if not bool(entry.get("ok", false)):
+		client_message.emit("The host sent an invalid result.")
+		return
+	match client_results.apply(entry, active_match_id):
+		ClientResultsModel.Apply.APPLIED:
+			results_changed.emit()
+		ClientResultsModel.Apply.GAP:
+			_request_snapshot_recovery()
+		ClientResultsModel.Apply.INVALID:
+			client_message.emit("The host sent a result that does not fit the ledger.")
+			_request_snapshot_recovery()
+
+
+func _receive_result_vote(payload: PackedByteArray) -> void:
+	var record := NetworkResultsCodec.decode_vote(payload)
+	if not bool(record.get("ok", false)):
+		client_message.emit("The host sent an invalid result vote.")
+		return
+	if client_results.apply_vote(record, active_match_id):
+		results_changed.emit()

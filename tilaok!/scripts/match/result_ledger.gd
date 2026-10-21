@@ -40,6 +40,10 @@ func latest_event_id() -> int:
 	return int(_entries.back().event_id) if not _entries.is_empty() else 0
 
 
+func latest_round_id() -> int:
+	return int(_entries.back().round_id) if not _entries.is_empty() else 0
+
+
 func has_kind(kind: int) -> bool:
 	for entry in _entries:
 		if int(entry.kind) == kind:
