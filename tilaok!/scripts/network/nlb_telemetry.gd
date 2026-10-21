@@ -31,6 +31,8 @@ const MAX_EVENTS := 4096
 ## Space kept free so the closing summaries always fit after the live lines stop.
 const SUMMARY_RESERVE_BYTES := 32768
 const MAX_NAME_LENGTH := 32
+## Event text values are short labels only: shorter than any room code, token or proof.
+const MAX_EVENT_TEXT := 16
 const SECOND_USEC := 1000000
 
 ## Distribution metrics: name -> [unit, bucket width in that unit]. Values at or beyond
@@ -236,7 +238,7 @@ func event(name: String, fields: Dictionary) -> void:
 		var value: Variant = fields[key]
 		if value is int or value is float or value is bool:
 			line += " %s=%s" % [field_name, str(value)]
-		elif value is String and _is_identifier(str(value)):
+		elif value is String and str(value).length() <= MAX_EVENT_TEXT and _is_identifier(str(value)):
 			line += " %s=%s" % [field_name, str(value)]
 	events_written += 1
 	_write(line)
