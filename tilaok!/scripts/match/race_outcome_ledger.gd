@@ -3,6 +3,11 @@ extends RefCounted
 
 enum CandidateKind { GOAL, ELIMINATION }
 
+## NLB-P08 (contract v1.5): a disconnected seat whose 60 s grace ended during the round. It is a
+## no-source elimination, so it ranks with the lowest cause class (equal to a command failure) and
+## can never carry a Patibong owner.
+const CAUSE_DISCONNECT := "disconnect"
+
 var round_id := ""
 var seat_indices: Array[int] = []
 var starting_totals: Dictionary = {}

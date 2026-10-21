@@ -1242,6 +1242,38 @@ func network_transient_states() -> Array[Dictionary]:
 	return []
 
 
+## NLB-P08 (contract v1.5): the host's single disconnect elimination for this round, committed
+## through the existing outcome paths with cause `disconnect` and no source item, so it can never
+## earn Patibong. Returns "committed", "already_terminal" or "not_playing" (retry later).
+## Kangaroo main rounds are not wired here: a neutral seat fails its own commands instead.
+func network_commit_disconnect(seat_index: int) -> String:
+	if not _simulation_can_commit() or phase_controller.phase != MatchPhaseController.Phase.PLAY:
+		return "not_playing"
+	var actor := actors.get(seat_index) as ChickenController
+	if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+		return "already_terminal"
+	var tick := Engine.get_physics_frames()
+	if lagsanay_controller != null and lagsanay_controller.active:
+		if lagsanay_controller.outcomes_by_seat.has(seat_index):
+			return "already_terminal"
+		return (
+			"committed" if lagsanay_controller.submit_disconnect(seat_index, tick) else "not_playing"
+		)
+	if _event_round_active():
+		return "not_playing"
+	if race_round_controller == null:
+		return "not_playing"
+	var queued := race_candidate_queue.queue_elimination(
+		seat_index,
+		tick,
+		"",
+		-1,
+		"%s:disconnect:%d" % [race_round_controller.ledger.round_id, seat_index],
+		RaceOutcomeLedger.CAUSE_DISCONNECT
+	)
+	return "committed" if queued else "not_playing"
+
+
 func network_current_round_id() -> int:
 	if items == null:
 		return 1

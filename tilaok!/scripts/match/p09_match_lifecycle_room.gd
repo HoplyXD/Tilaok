@@ -572,6 +572,8 @@ func _try_commit_result_action() -> void:
 		return
 	for seat_index in original_seat_indices:
 		var seat := input_router.registry.get_seat(seat_index)
+		if network_exempt_unconnected_seats and not bool(seat.get("connected", true)):
+			continue
 		if (
 			seat.is_empty()
 			or not bool(seat.get("joined", false))

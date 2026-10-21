@@ -66,6 +66,9 @@ var egg_pool: Array[Dictionary] = []
 var assignments: Dictionary = {}
 var selected_egg_by_seat: Dictionary = {}
 var results_ready: Dictionary = {}
+## NLB-P08: set by the network host. A reserved (disconnected) remote seat then never blocks the
+## round results, which wait only for the seats that are still connected. Offline keeps all seats.
+var network_exempt_unconnected_seats := false
 var claim_feedback: Dictionary = {}
 var pending_claims: Array[Dictionary] = []
 var match_seed := 12345
@@ -1136,10 +1139,25 @@ func _all_results_ready() -> bool:
 	var seats := input_router.registry.joined_seats()
 	if seats.size() < 2:
 		return false
+	var waiting_on := 0
 	for seat in seats:
+		if network_exempt_unconnected_seats and not bool(seat.get("connected", true)):
+			continue
+		waiting_on += 1
 		if not bool(results_ready.get(int(seat.seat), false)):
 			return false
-	return true
+	return waiting_on > 0 or not network_exempt_unconnected_seats
+
+
+## NLB-P08: a seat that was the last one the results screen waited on may have just been reserved.
+func network_recheck_results() -> void:
+	if (
+		network_exempt_unconnected_seats
+		and _simulation_can_commit()
+		and phase_controller.phase == MatchPhaseController.Phase.RESULTS
+		and _all_results_ready()
+	):
+		_start_next_round()
 
 
 func _start_next_round() -> void:
