@@ -5,6 +5,9 @@ extends Control
 ## collision shapes, hazards, score logic, or simulation clocks. On the opt-in live-build route it
 ## also draws a tentative ghost (NetworkLivePlacementClient) that is never shown as committed.
 
+## NLB-P09: the session is over and the player asked to leave the dead match view.
+signal session_end_dismissed
+
 const GRID_CELL_WU := 64.0
 ## Indexed by MatchPhaseController.Phase (LOBBY, PUGAD, PLACE, PLAY, RESULTS, GO).
 const PHASE_NAMES := ["Lobby", "Pugad", "Place", "Play", "Results", "Go"]
@@ -22,6 +25,8 @@ var _last_snapshot_id := -1
 var _last_phase := -1
 var _layout: ArenaLayout
 var _status_label: Label
+var _results_overlay: NetworkResultsOverlay
+var _phone_panel: HBoxContainer
 var _phone_controls_built := false
 var _live_controls: GridContainer
 var _live_buttons: Dictionary = {}
@@ -41,10 +46,21 @@ func _ready() -> void:
 	add_child(_status_label)
 	if _touch_enabled():
 		_build_phone_controls()
+	# Added last so it draws above the match view and the touch row.
+	_results_overlay = NetworkResultsOverlay.new()
+	_results_overlay.name = "NetworkResultsOverlay"
+	_results_overlay.dismissed.connect(func() -> void: session_end_dismissed.emit())
+	add_child(_results_overlay)
+	if network_session != null:
+		_results_overlay.bind(network_session)
 
 
 func bind_session(session: NetworkSessionManager) -> void:
 	network_session = session
+	if _results_overlay != null:
+		_results_overlay.bind(session)
+	if session != null and not session.results_changed.is_connected(_on_results_changed):
+		session.results_changed.connect(_on_results_changed)
 	if session != null and not session.match_state_received.is_connected(apply_state):
 		session.match_state_received.connect(apply_state)
 	if session != null and not session.terrain_resync_changed.is_connected(_on_terrain_resync):
@@ -67,6 +83,8 @@ func bind_session(session: NetworkSessionManager) -> void:
 func _exit_tree() -> void:
 	live_client.unbind()
 	if network_session != null and is_instance_valid(network_session):
+		if network_session.results_changed.is_connected(_on_results_changed):
+			network_session.results_changed.disconnect(_on_results_changed)
 		if network_session.match_state_received.is_connected(apply_state):
 			network_session.match_state_received.disconnect(apply_state)
 		if network_session.terrain_resync_changed.is_connected(_on_terrain_resync):
@@ -108,6 +126,9 @@ func apply_state(state: Dictionary) -> void:
 		live_client.reset()
 	_last_snapshot_id = next_snapshot_id
 	_last_phase = next_phase
+	if _results_overlay != null:
+		_results_overlay.set_phase(next_phase)
+	_refresh_controls_visibility()
 	_state = state.duplicate(true)
 	var map_id := str(next_metadata.get("map_id", MapCatalog.DEFAULT_ID))
 	if not MapCatalog.ids().has(map_id):
@@ -130,6 +151,30 @@ func apply_state(state: Dictionary) -> void:
 	_last_drawn_ms = now
 	_status_label.text = _host_status_text()
 	queue_redraw()
+
+
+## NLB-P09: the replicated ledger or vote changed. The status line and the overlay follow it.
+func _on_results_changed() -> void:
+	_refresh_controls_visibility()
+	_status_label.text = _host_status_text()
+	queue_redraw()
+
+
+## The gameplay touch row is hidden while a results or session-ended screen covers the view.
+func _refresh_controls_visibility() -> void:
+	var covered := _results_overlay != null and _results_overlay.is_blocking()
+	if _phone_panel != null:
+		_phone_panel.visible = not covered
+	if _live_controls != null:
+		_live_controls.visible = not covered
+
+
+## The session ended (host loss, host close, lobby return, host quit or the player leaving): show
+## why and let the owner return to the title or lobby. Never leaves a stale match view on screen.
+func show_session_ended(reason: int) -> void:
+	if _results_overlay != null:
+		_results_overlay.show_session_ended(reason)
+	_refresh_controls_visibility()
 
 
 func _on_host_pause_changed(_paused: bool, _epoch: int) -> void:
@@ -171,7 +216,13 @@ func _host_status_text() -> String:
 	if event_clock_ms > 0:
 		event_text += "  ·  %.1fs" % (float(event_clock_ms) / 1000.0)
 	var phase_name: String = PHASE_NAMES[clampi(phase, 0, PHASE_NAMES.size() - 1)]
-	var text := "Tilaok!  ·  %s%s  ·  Round %d  ·  %.1fs" % [phase_name, event_text, round_number, remaining]
+	# The ledger, not the wire round number, says when the match is in sudden death or over.
+	var round_text := "Round %d" % round_number
+	if network_session != null and network_session.client_results.is_final():
+		round_text = "Final results"
+	elif network_session != null and network_session.client_results.is_sudden_death():
+		round_text = "Sudden Death"
+	var text := "Tilaok!  ·  %s%s  ·  %s  ·  %.1fs" % [phase_name, event_text, round_text, remaining]
 	if _host_paused():
 		text += "
 PAUSED BY HOST — the match is frozen for everyone until the host resumes."
@@ -351,8 +402,9 @@ func _draw_score_rows(size: Vector2, seats: Dictionary) -> void:
 	var index := 0
 	for seat_id in seats.keys():
 		var seat: Dictionary = seats[seat_id]
-		var points := float(int(seat.get("score_units", 0))) / 100.0
-		draw_string(ThemeDB.fallback_font, Vector2(size.x - 190, 42 + index * 26), "P%d  %.2f" % [int(seat.identity), points], HORIZONTAL_ALIGNMENT_LEFT, 170, 18, Color.WHITE)
+		# Scores are integer eighth-point units end to end; the text derives from the units.
+		var points_text := ScoreFormat.format_units(int(seat.get("score_units", 0)))
+		draw_string(ThemeDB.fallback_font, Vector2(size.x - 190, 42 + index * 26), "P%d  %s" % [int(seat.identity), points_text], HORIZONTAL_ALIGNMENT_LEFT, 170, 18, Color.WHITE)
 		index += 1
 
 
@@ -369,6 +421,7 @@ func _build_phone_controls() -> void:
 	panel.offset_top = -88
 	panel.offset_bottom = -8
 	panel.add_theme_constant_override("separation", 5)
+	_phone_panel = panel
 	add_child(panel)
 	var left := _touch_button("◀", 56)
 	left.button_down.connect(func() -> void: _set_horizontal(-1000); _send_action(7, true))

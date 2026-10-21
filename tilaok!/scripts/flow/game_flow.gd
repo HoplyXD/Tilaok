@@ -140,6 +140,7 @@ func _ready() -> void:
 		)
 	network_session.network_match_start_requested.connect(_enter_network_match)
 	network_session.network_match_start_received.connect(_enter_client_network_match)
+	network_session.session_ended.connect(_on_network_session_ended)
 	bridge = UiInputBridge.new()
 	bridge.name = "FlowBridge"
 	add_child(bridge)
@@ -175,6 +176,10 @@ func _exit_tree() -> void:
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).
 func show_title(clear_seats: bool = false) -> void:
+	# NLB-P09: leaving a hosted network match for the title ends the session; a freed room must
+	# never keep a running match, its peers or its host authority behind.
+	if _hosting_network_match():
+		_end_host_network_match(NetworkLifecycleCodec.SessionEnd.HOST_CLOSED)
 	_free_room()
 	_free_screen()
 	if clear_seats:
@@ -253,6 +258,9 @@ func _enter_match() -> void:
 		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
 	):
 		network_session.stop_session()
+	if network_session != null:
+		# The offline match must not inherit the host authority a network match swapped in.
+		simulation_authority = network_session.local_authority
 	_create_authoritative_match(false)
 
 
@@ -336,6 +344,7 @@ func _enter_client_network_match(match_id: int) -> void:
 	network_presentation.name = "NetworkMatchPresentation"
 	add_child(network_presentation)
 	network_presentation.bind_session(network_session)
+	network_presentation.session_end_dismissed.connect(_leave_client_match)
 	if network_session.active_match_id != match_id:
 		return
 
@@ -344,6 +353,46 @@ func _free_network_presentation() -> void:
 	if network_presentation != null and is_instance_valid(network_presentation):
 		network_presentation.queue_free()
 	network_presentation = null
+
+
+## NLB-P09: the client's session ended (host loss, host close, lobby return, host quit, or its own
+## Leave). The match view shows why and then returns to the lobby; it never stays on a dead match.
+func _on_network_session_ended(end_reason: int) -> void:
+	if state != State.IN_MATCH:
+		return
+	if (
+		network_presentation == null
+		or not is_instance_valid(network_presentation)
+		or end_reason == NetworkLifecycleCodec.SessionEnd.CLIENT_LEFT
+	):
+		# The player chose to leave, or there is no match view to explain anything on.
+		_leave_client_match()
+		return
+	network_presentation.show_session_ended(end_reason)
+
+
+func _leave_client_match() -> void:
+	_free_network_presentation()
+	show_lan_lobby()
+
+
+## True while this process is the PC host of a running network match.
+func _hosting_network_match() -> bool:
+	return (
+		network_session != null
+		and network_session.match_active
+		and not network_session.client_mode
+	)
+
+
+## Ends the hosted session (SESSION_CLOSE carries `end_reason` to every phone) and gives the flow
+## its own local authority back, so nothing of the network match is kept.
+func _end_host_network_match(end_reason: int) -> void:
+	if network_session == null:
+		return
+	if network_session.state != NetworkSessionManager.SessionState.OFFLINE:
+		network_session.stop_session(end_reason)
+	simulation_authority = network_session.local_authority
 
 
 ## Lobby map choice. The Tutorial map is the guided match: picking it (re)starts the tutorial for
@@ -400,9 +449,18 @@ func _on_flow_requested(kind: StringName) -> void:
 		&"lobby_back":
 			show_title(true)
 		&"leave_match":
-			# PROTOTYPE_DEFAULTS §3: leaving a match returns the whole group to the Lobby.
-			_enter_match()
+			if _hosting_network_match():
+				# Spec 3.3: Return to Lobby tears the network session down. The host lands on the LAN
+				# lobby so it can host again; every phone gets a LOBBY_RETURN session-ended screen.
+				_end_host_network_match(NetworkLifecycleCodec.SessionEnd.LOBBY_RETURN)
+				_free_room()
+				show_lan_lobby()
+			else:
+				# PROTOTYPE_DEFAULTS §3: leaving a match returns the whole group to the Lobby.
+				_enter_match()
 		&"replay_match":
+			if _hosting_network_match():
+				return # a network replay re-keys inside the session and never reaches the flow
 			# Replay from a room that held the tutorial stage: a fresh room, started at once.
 			_enter_match()
 			_start_replay()
@@ -490,8 +548,20 @@ func _free_room() -> void:
 func _quit() -> void:
 	if harness_mode:
 		return_requested.emit()
-	else:
-		get_tree().quit()
+		return
+	if (
+		network_session != null
+		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
+	):
+		# Let SESSION_CLOSE reach the phones (HOST_QUIT) before the process goes, with a short cap.
+		network_session.stop_session(NetworkLifecycleCodec.SessionEnd.HOST_QUIT)
+		var deadline := Time.get_ticks_msec() + 600
+		while (
+			network_session.state != NetworkSessionManager.SessionState.OFFLINE
+			and Time.get_ticks_msec() < deadline
+		):
+			await get_tree().process_frame
+	get_tree().quit()
 
 
 func _route_name() -> String:
