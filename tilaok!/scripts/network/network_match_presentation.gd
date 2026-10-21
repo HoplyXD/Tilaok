@@ -11,7 +11,6 @@ signal session_end_dismissed
 const GRID_CELL_WU := 64.0
 ## Indexed by MatchPhaseController.Phase (LOBBY, PUGAD, PLACE, PLAY, RESULTS, GO).
 const PHASE_NAMES := ["Lobby", "Pugad", "Place", "Play", "Results", "Go"]
-const LIVE_BUTTON_SIZE := 72.0
 
 ## Lets a desktop test or capture show the touch controls; Android always builds them.
 var touch_controls_forced := false
@@ -26,10 +25,9 @@ var _last_phase := -1
 var _layout: ArenaLayout
 var _status_label: Label
 var _results_overlay: NetworkResultsOverlay
-var _phone_panel: HBoxContainer
-var _phone_controls_built := false
-var _live_controls: GridContainer
-var _live_buttons: Dictionary = {}
+var _touch_layer: NetworkTouchLayer
+var _phone_hud: NetworkPhoneHud
+var _move_direction := Vector2i.ZERO
 var _axis_x := 0
 ## NLB-P08: a local menu opened by the client's pause button. It never pauses the match.
 var _local_overlay := false
@@ -45,7 +43,7 @@ func _ready() -> void:
 	_status_label.add_theme_font_size_override("font_size", 22)
 	add_child(_status_label)
 	if _touch_enabled():
-		_build_phone_controls()
+		_build_touch()
 	# Added last so it draws above the match view and the touch row.
 	_results_overlay = NetworkResultsOverlay.new()
 	_results_overlay.name = "NetworkResultsOverlay"
@@ -75,7 +73,8 @@ func bind_session(session: NetworkSessionManager) -> void:
 		session.router.action_pressed.connect(_on_router_action)
 	live_client.bind(session)
 	if session != null and session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD and _touch_enabled():
-		_build_live_controls()
+		if _touch_layer != null:
+			_touch_layer.configure(true)
 	if session != null and not session.client_replica_state.is_empty():
 		apply_state(session.client_replica_state)
 
@@ -98,7 +97,7 @@ func _exit_tree() -> void:
 			network_session.router.action_pressed.disconnect(_on_router_action)
 		if _touch_enabled():
 			network_session.client_set_continuous_input([0, 0])
-			for action_id in [0, 1, 2, 3, 4, 9, 10, 11]:
+			for action_id in [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11]:
 				network_session.client_set_action(action_id, false)
 
 
@@ -109,7 +108,7 @@ func _process(delta: float) -> void:
 	var previous_cell := live_client.cell
 	live_client.process(delta)
 	_push_input()
-	_refresh_live_buttons()
+	_refresh_touch_state()
 	if was_visible or live_client.ghost_visible() or previous_cell != live_client.cell:
 		_status_label.text = _host_status_text()
 		queue_redraw()
@@ -129,6 +128,7 @@ func apply_state(state: Dictionary) -> void:
 	if _results_overlay != null:
 		_results_overlay.set_phase(next_phase)
 	_refresh_controls_visibility()
+	_refresh_touch_state()
 	_state = state.duplicate(true)
 	var map_id := str(next_metadata.get("map_id", MapCatalog.DEFAULT_ID))
 	if not MapCatalog.ids().has(map_id):
@@ -163,10 +163,10 @@ func _on_results_changed() -> void:
 ## The gameplay touch row is hidden while a results or session-ended screen covers the view.
 func _refresh_controls_visibility() -> void:
 	var covered := _results_overlay != null and _results_overlay.is_blocking()
-	if _phone_panel != null:
-		_phone_panel.visible = not covered
-	if _live_controls != null:
-		_live_controls.visible = not covered
+	if _touch_layer != null:
+		_touch_layer.visible = not covered
+	if _phone_hud != null:
+		_phone_hud.visible = not covered
 
 
 ## The session ended (host loss, host close, lobby return, host quit or the player leaving): show
@@ -272,6 +272,10 @@ func _draw() -> void:
 			color = Color("#70777a")
 		draw_circle(point, 20.0 * scale_factor, color)
 		draw_arc(point, 22.0 * scale_factor, 0.0, TAU, 24, Color.WHITE, 3.0 * scale_factor)
+		if network_session != null and network_session.client_assigned_seat == int(seat_id):
+			# The local chicken is marked with an outer ring and a text tag, never colour alone.
+			draw_arc(point, 30.0 * scale_factor, 0.0, TAU, 28, Color.WHITE, 3.0 * scale_factor)
+			draw_string(ThemeDB.fallback_font, point + Vector2(-14, 44) * scale_factor, "YOU", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
 		draw_string(ThemeDB.fallback_font, point + Vector2(-7, 6) * scale_factor, str(int(seat.identity)), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("#16232a"))
 		var event_context: Dictionary = _state.get("event_context", {})
 		if int(event_context.get("taya_seat", -1)) == int(seat_id):
@@ -412,136 +416,113 @@ func _touch_enabled() -> bool:
 	return OS.has_feature("android") or touch_controls_forced
 
 
-func _build_phone_controls() -> void:
-	if _phone_controls_built:
+## NLB-P10: one index-owning touch layer replaces the old Button rows (see NetworkTouchLayer).
+func _build_touch() -> void:
+	if _touch_layer != null:
 		return
-	_phone_controls_built = true
-	var panel := HBoxContainer.new()
-	panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	panel.offset_top = -88
-	panel.offset_bottom = -8
-	panel.add_theme_constant_override("separation", 5)
-	_phone_panel = panel
-	add_child(panel)
-	var left := _touch_button("◀", 56)
-	left.button_down.connect(func() -> void: _set_horizontal(-1000); _send_action(7, true))
-	left.button_up.connect(func() -> void: _set_horizontal(0); _send_action(7, false))
-	panel.add_child(left)
-	var right := _touch_button("▶", 56)
-	right.button_down.connect(func() -> void: _set_horizontal(1000); _send_action(8, true))
-	right.button_up.connect(func() -> void: _set_horizontal(0); _send_action(8, false))
-	panel.add_child(right)
-	var up := _touch_button("▲", 52)
-	up.button_down.connect(func() -> void: _send_action(9, true))
-	up.button_up.connect(func() -> void: _send_action(9, false))
-	panel.add_child(up)
-	var down := _touch_button("▼", 52)
-	down.button_down.connect(func() -> void: _send_action(10, true))
-	down.button_up.connect(func() -> void: _send_action(10, false))
-	panel.add_child(down)
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.add_child(spacer)
-	var choose := _touch_button("Claim / OK", 88)
-	choose.pressed.connect(_choose_action)
-	panel.add_child(choose)
-	var rotate := _touch_button("Turn", 56)
-	rotate.pressed.connect(func() -> void: _send_action(3, true); _send_action(3, false))
-	panel.add_child(rotate)
-	var jump := _touch_button("Jump", 64)
-	jump.button_down.connect(func() -> void: _send_action(0, true))
-	jump.button_up.connect(func() -> void: _send_action(0, false))
-	panel.add_child(jump)
-	var sneak := _touch_button("Sneak", 70)
-	sneak.button_down.connect(func() -> void: _send_action(11, true))
-	sneak.button_up.connect(func() -> void: _send_action(11, false))
-	panel.add_child(sneak)
-	var back := _touch_button("Cancel / Back", 84)
-	back.pressed.connect(func() -> void: _send_action(2, true); _send_action(2, false))
-	panel.add_child(back)
+	_touch_layer = NetworkTouchLayer.new()
+	_touch_layer.name = "NetworkTouchLayer"
+	_touch_layer.accept_mouse = touch_controls_forced and not OS.has_feature("android")
+	_touch_layer.live_route = _is_live_route()
+	_touch_layer.control_pressed.connect(_on_touch_pressed)
+	_touch_layer.control_released.connect(_on_touch_released)
+	_touch_layer.move_changed.connect(_on_touch_move)
+	_touch_layer.aim_changed.connect(_on_touch_aim)
+	add_child(_touch_layer)
+	_phone_hud = NetworkPhoneHud.new()
+	_phone_hud.name = "NetworkPhoneHud"
+	add_child(_phone_hud)
+	_status_label.position = Vector2(24, 18 + NetworkPhoneHud.BADGE_SIZE.y + NetworkPhoneHud.CHIP_SIZE.y + 14.0)
+	_refresh_touch_state()
 
 
-## Minimum live-build cluster (NLB-P06), right side above the existing row: Build, a four-way aim
-## pad that moves only the ghost, Rotate, Place and Cancel. Movement buttons keep working while
-## building. Full touch UX, dp scaling and the accessibility audit remain P10 work.
-func _build_live_controls() -> void:
-	if _live_controls != null:
+func _is_live_route() -> bool:
+	return network_session != null and network_session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD
+
+
+func _on_touch_pressed(control_id: String) -> void:
+	var live := _is_live_route()
+	match control_id:
+		"jump":
+			_send_action(0, true)
+		"sneak":
+			_send_action(11, true)
+		"cheer":
+			_send_action(6, true)
+		"claim":
+			_choose_action()
+		"back":
+			_tap_action(2)
+		"pause":
+			_on_router_action(-1, "client_pause_overlay")
+		"rotate":
+			if live:
+				live_client.rotate()
+			else:
+				_tap_action(3)
+		"build":
+			live_client.toggle_build()
+		"place":
+			live_client.confirm()
+		"cancel":
+			live_client.cancel()
+	queue_redraw()
+
+
+func _on_touch_released(control_id: String) -> void:
+	match control_id:
+		"jump":
+			_send_action(0, false)
+		"sneak":
+			_send_action(11, false)
+		"cheer":
+			_send_action(6, false)
+
+
+## Move zone: the horizontal axis plus the four held direction actions the old arrows sent.
+func _on_touch_move(direction: Vector2i) -> void:
+	_axis_x = direction.x * 1000
+	# Only edges are sent, so the per-action rate limit is never spent on repeats.
+	var previous := _move_direction
+	_move_direction = direction
+	if (direction.x < 0) != (previous.x < 0):
+		_send_action(7, direction.x < 0)
+	if (direction.x > 0) != (previous.x > 0):
+		_send_action(8, direction.x > 0)
+	if (direction.y < 0) != (previous.y < 0):
+		_send_action(9, direction.y < 0)
+	if (direction.y > 0) != (previous.y > 0):
+		_send_action(10, direction.y > 0)
+	_push_input()
+
+
+## Aim zone: moves only the ghost (live route); it never feeds the movement axis.
+func _on_touch_aim(direction: Vector2) -> void:
+	live_client.set_aim(direction)
+
+
+func _refresh_touch_state() -> void:
+	if _touch_layer == null:
 		return
-	_live_controls = GridContainer.new()
-	_live_controls.columns = 3
-	_live_controls.add_theme_constant_override("h_separation", 6)
-	_live_controls.add_theme_constant_override("v_separation", 6)
-	_live_controls.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	var span := LIVE_BUTTON_SIZE * 3.0 + 12.0
-	_live_controls.offset_right = -8
-	_live_controls.offset_left = -8 - span
-	_live_controls.offset_bottom = -96
-	_live_controls.offset_top = -96 - span
-	add_child(_live_controls)
-	var layout := [
-		["build", "Build"], ["aim_up", "▲ Aim"], ["rotate", "Rotate"],
-		["aim_left", "◀ Aim"], ["place", "Place"], ["aim_right", "Aim ▶"],
-		["cancel", "Cancel"], ["aim_down", "▼ Aim"], ["", ""],
-	]
-	for entry in layout:
-		if str(entry[0]).is_empty():
-			var filler := Control.new()
-			filler.custom_minimum_size = Vector2(LIVE_BUTTON_SIZE, LIVE_BUTTON_SIZE)
-			filler.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			_live_controls.add_child(filler)
-			continue
-		var button := _touch_button(str(entry[1]), LIVE_BUTTON_SIZE)
-		button.custom_minimum_size = Vector2(LIVE_BUTTON_SIZE, LIVE_BUTTON_SIZE)
-		_live_buttons[str(entry[0])] = button
-		_live_controls.add_child(button)
-	(_live_buttons.build as Button).pressed.connect(func() -> void: live_client.toggle_build(); queue_redraw())
-	(_live_buttons.rotate as Button).pressed.connect(func() -> void: live_client.rotate(); queue_redraw())
-	(_live_buttons.place as Button).pressed.connect(func() -> void: live_client.confirm(); queue_redraw())
-	(_live_buttons.cancel as Button).pressed.connect(func() -> void: live_client.cancel(); queue_redraw())
-	var aims := {
-		"aim_up": Vector2.UP, "aim_down": Vector2.DOWN, "aim_left": Vector2.LEFT, "aim_right": Vector2.RIGHT,
-	}
-	for aim_name in aims:
-		var aim_button := _live_buttons[aim_name] as Button
-		var direction: Vector2 = aims[aim_name]
-		aim_button.button_down.connect(func() -> void: live_client.set_aim(direction))
-		aim_button.button_up.connect(func() -> void: live_client.set_aim(Vector2.ZERO))
-	_refresh_live_buttons()
-
-
-func _refresh_live_buttons() -> void:
-	if _live_controls == null:
-		return
+	var live := network_session != null and network_session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD
 	var building := live_client.state == NetworkLivePlacementClient.GhostState.TENTATIVE
 	var pending := live_client.state == NetworkLivePlacementClient.GhostState.PENDING
 	var available := network_session != null and network_session.client_live_build_available()
-	(_live_buttons.build as Button).disabled = not available and not building
-	(_live_buttons.build as Button).text = "Close" if building else "Build"
-	(_live_buttons.place as Button).disabled = not (live_client.can_confirm() or pending)
-	(_live_buttons.rotate as Button).disabled = not building
-	(_live_buttons.cancel as Button).disabled = live_client.state == NetworkLivePlacementClient.GhostState.NONE
-	for aim_name in ["aim_up", "aim_down", "aim_left", "aim_right"]:
-		(_live_buttons[aim_name] as Button).disabled = not building
+	_touch_layer.set_button_enabled("build", live and (available or building))
+	_touch_layer.set_button_label("build", "Close" if building else "Build")
+	_touch_layer.set_button_enabled("place", live_client.can_confirm() or pending)
+	_touch_layer.set_button_enabled("rotate", building)
+	_touch_layer.set_button_enabled("cancel", live_client.state != NetworkLivePlacementClient.GhostState.NONE)
+	_touch_layer.set_button_enabled(NetworkTouchLayer.ZONE_AIM, building)
+	if _phone_hud != null:
+		_phone_hud.set_seat(network_session.client_assigned_seat if network_session != null else -1)
+		_phone_hud.set_placement(int(live_client.state), live_client.ghost_label())
 
 
 func _on_terrain_resync(_gap: bool) -> void:
 	_status_label.text = _host_status_text()
-	_refresh_live_buttons()
+	_refresh_touch_state()
 	queue_redraw()
-
-
-func _touch_button(label: String, width: float) -> Button:
-	var button := Button.new()
-	button.text = label
-	button.custom_minimum_size = Vector2(width, 72)
-	button.add_theme_font_size_override("font_size", 17)
-	button.focus_mode = Control.FOCUS_NONE
-	return button
-
-
-func _set_horizontal(value: int) -> void:
-	_axis_x = value
-	_push_input()
 
 
 ## One continuous-input sample: movement axis plus (live route) the aim pad and the build echo.
@@ -558,6 +539,11 @@ func _push_input() -> void:
 func _send_action(action_id: int, pressed: bool) -> void:
 	if network_session != null:
 		network_session.client_set_action(action_id, pressed)
+
+
+func _tap_action(action_id: int) -> void:
+	_send_action(action_id, true)
+	_send_action(action_id, false)
 
 
 func _choose_action() -> void:
