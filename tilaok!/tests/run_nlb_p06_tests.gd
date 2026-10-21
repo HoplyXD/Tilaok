@@ -54,7 +54,7 @@ func _run() -> void:
 func _test_wire_constants() -> void:
 	_check(NetworkFrame.MAJOR == 1 and NetworkFrame.MINOR == 2, "envelope stays 1.2 so older binaries read the welcome")
 	# NLB-P07 (contract v1.4) raised the schema to 4 and requires the live-transient bit as well.
-	_check(NetworkFrame.SCHEMA == 4 and NetworkFrame.FEATURE_P06_MASK == 0x00ff and NetworkFrame.FEATURE_REQUIRED_MASK == 0x01ff, "schema 4 requires the live-placement and live-transient features")
+	_check(NetworkFrame.SCHEMA == 5 and NetworkFrame.FEATURE_P06_MASK == 0x00ff and NetworkFrame.FEATURE_P07_MASK == 0x01ff and NetworkFrame.FEATURE_REQUIRED_MASK == 0x03ff, "schema 5 requires the live-placement, live-transient and lifecycle features")
 	_check((NetworkFrame.FEATURE_P06_MASK & NetworkFrame.FEATURE_LIVE_PLACEMENT) != 0 and (NetworkFrame.FEATURE_P04_MASK & NetworkFrame.FEATURE_LIVE_PLACEMENT) == 0, "P04 mask lacks the live-placement bit")
 	for family in [NetworkFrame.Family.PLACEMENT_INTENT, NetworkFrame.Family.PLACEMENT_RESULT, NetworkFrame.Family.LIVE_SEAT_STATE, NetworkFrame.Family.TERRAIN_COMMIT]:
 		_check(family in NetworkFrame.FAMILIES, "family 0x%02X is allowlisted" % family)

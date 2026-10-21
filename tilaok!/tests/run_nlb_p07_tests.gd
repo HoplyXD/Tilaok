@@ -91,7 +91,7 @@ func _test_matrix_schema_and_enumeration() -> void:
 			item_cells += 1
 	_check(item_cells == expected_items + 1, "item cells = catalog variant x allowed mode (%d) + Barya" % expected_items)
 	_check(expected_items == 70, "the current catalog yields 70 variant x mode cells (34 variants)")
-	_check(cells.size() == 91, "the matrix has 91 cells (6 life, 4 map, 10 round, 70 item, Barya)")
+	_check(cells.size() == 94, "the matrix has 94 cells (9 life, 4 map, 10 round, 70 item, Barya)")
 	for map_id in MapCatalog.ids():
 		_check(cells.has(M.map_cell_id(map_id)), "map cell %s enumerated" % map_id)
 	for mode_id in DiagnosticContentCatalog.MODES:
@@ -185,7 +185,7 @@ func _test_manifest_digest() -> void:
 	var manifest: Dictionary = built.manifest
 	_check(manifest.has("live_matrix") and int(manifest.live_matrix.version) == M.MATRIX_VERSION, "manifest carries the live matrix")
 	_check((manifest.live_matrix.cells as Array).size() == M.cells().size(), "manifest lists every matrix cell")
-	_check(str(manifest.build) == "tilaok-nlb-p07-2026-10-21", "build identity is the P07 build")
+	_check(str(manifest.build) == "tilaok-nlb-p08-2026-10-21", "build identity is the P08 build")
 	var changed := manifest.duplicate(true)
 	(changed.live_matrix.cells[0] as Dictionary).status = M.STATUS_VERIFIED
 	_check(CompatibilityManifest.sha256(changed) != built.digest, "a different matrix gives a different digest (INCOMPATIBLE before admission)")
