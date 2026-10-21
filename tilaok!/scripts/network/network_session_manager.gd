@@ -17,6 +17,12 @@ signal match_state_received(state: Dictionary)
 signal placement_result_received(result: Dictionary)
 signal live_seat_state_received(state: Dictionary)
 signal terrain_resync_changed(gap: bool)
+## Contract v1.5 (NLB-P08). Client: the host's global pause state changed (never a local overlay).
+signal pause_state_changed(paused: bool, epoch: int)
+## Client: a reclaim credential is held and the host may still reserve the seat.
+signal reclaim_available_changed(available: bool)
+## Host: a reservation started, ended by reclaim, or expired (seat, event name).
+signal seat_reservation_changed(seat: int, event_name: String)
 
 enum SessionState { OFFLINE, STARTING, LOBBY_OPEN, STOPPING }
 enum CandidateState {
@@ -46,6 +52,11 @@ const TOMBSTONE_REPEATS := 3
 ## A client drops a live transient the host has not refreshed for this long (contract v1.4).
 const TRANSIENT_STALE_MS := 500
 const TERRAIN_BEHIND_RESYNC_MS := 2000
+## Contract v1.5 rates: lifecycle hints <= 2/s, reclaim begin <= 1/s, host pause heartbeat 1 Hz.
+const LIFECYCLE_HINT_MAX_PER_SECOND := 2
+const RECLAIM_BEGIN_MAX_PER_SECOND := 1
+const PAUSE_HEARTBEAT_MS := 1000
+const CLIENT_STALE_RETURN_MS := 2000
 const LIVE_ACTION_FIRST := 12
 const ACTION_NAMES := [
 	"jump", "confirm", "back", "rotate", "claim", "ready", "cheer", "left", "right", "up", "down",
@@ -158,6 +169,22 @@ var _tombstone_repeats: Dictionary = {}
 var _terrain_parts: Dictionary = {}
 var _terrain_behind_since_ms := 0
 var _client_placement_request_id := 0
+## NLB-P08 host state: identities/tokens/reservations (memory only) and the global pause epoch.
+var reservations := SeatReservationBook.new()
+var pause_controller := NetworkPauseController.new()
+var _pause_heartbeat_ms := 0
+## NLB-P08 client state. The reclaim credential is memory only and is lost with the process.
+var client_paused := false
+var client_pause_epoch := 0
+var client_player_id := PackedByteArray()
+var client_reclaim_token := PackedByteArray()
+var _reclaim_credential: Dictionary = {}
+var _keep_reclaim_credential := false
+var _client_reclaiming := false
+var _client_backgrounded := false
+var _client_hint_sequence := 0
+var _client_hint_times: Array[int] = []
+var _client_last_state_ms := 0
 
 
 func _init() -> void:
@@ -222,7 +249,27 @@ func _process(delta: float) -> void:
 		if _client_input_elapsed >= (1.0 / 30.0):
 			_client_input_elapsed = fmod(_client_input_elapsed, 1.0 / 30.0)
 			_send_client_continuous_input()
+	if client_mode and match_active and _client_pending_hint >= 0:
+		_client_send_hint(_client_pending_hint)
 	_maintain_snapshot_transfers()
+
+
+func _notification(what: int) -> void:
+	if not client_mode:
+		return
+	match what:
+		NOTIFICATION_APPLICATION_FOCUS_OUT:
+			_client_enter_background(NetworkLifecycleCodec.Hint.FOCUS_OUT)
+		NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+			_client_enter_background(NetworkLifecycleCodec.Hint.FOCUS_OUT)
+		NOTIFICATION_APPLICATION_PAUSED:
+			_client_enter_background(NetworkLifecycleCodec.Hint.BACKGROUND)
+		NOTIFICATION_APPLICATION_FOCUS_IN:
+			_client_return_foreground(NetworkLifecycleCodec.Hint.FOCUS_IN)
+		NOTIFICATION_WM_WINDOW_FOCUS_IN:
+			_client_return_foreground(NetworkLifecycleCodec.Hint.FOCUS_IN)
+		NOTIFICATION_APPLICATION_RESUMED:
+			_client_return_foreground(NetworkLifecycleCodec.Hint.FOREGROUND)
 
 
 func configure(input_router: LocalInputRouter) -> bool:
@@ -343,6 +390,10 @@ func stop_session() -> void:
 		return
 	if state == SessionState.STOPPING:
 		return
+	if not _keep_reclaim_credential and not _reclaim_credential.is_empty():
+		_reclaim_credential.clear()
+		reclaim_available_changed.emit(false)
+	_keep_reclaim_credential = false
 	state = SessionState.STOPPING
 	match_active = false
 	sync_ready = false
@@ -375,6 +426,8 @@ func stop_session() -> void:
 func _physics_process(_delta: float) -> void:
 	if not match_active or client_mode or not host_authority.can_commit():
 		return
+	_sync_pause_state()
+	_process_reservations()
 	_expire_input_sources()
 	_apply_queued_gameplay_input()
 	_send_queued_snapshots()
@@ -416,6 +469,18 @@ func _finish_stop() -> void:
 	client_unverified_content = false
 	_known_transient_keys.clear()
 	_transient_end_repeats.clear()
+	reservations.clear()
+	pause_controller.reset()
+	_pause_heartbeat_ms = 0
+	client_paused = false
+	client_pause_epoch = 0
+	client_player_id = PackedByteArray()
+	client_reclaim_token = PackedByteArray()
+	_client_reclaiming = false
+	_client_backgrounded = false
+	_client_hint_sequence = 0
+	_client_hint_times.clear()
+	_client_last_state_ms = 0
 	terrain_gap = false
 	match_room = null
 	match_active = false
@@ -483,11 +548,23 @@ func approve_peer(peer_id: int) -> bool:
 	candidate.peer_generation = _generation_counter
 	candidate.deadline = Time.get_ticks_msec() + CHALLENGE_TIMEOUT_SECONDS * 1000
 	candidates[peer_id] = candidate
-	var payload := PackedByteArray([seat_index, seat_index + 1])
-	var generation_writer := StreamPeerBuffer.new()
-	generation_writer.big_endian = false
-	generation_writer.put_u32(_generation_counter)
-	payload.append_array(generation_writer.data_array)
+	# Contract v1.5: the assignment carries the host-assigned Player ID and the reclaim token. This is
+	# the only packet that ever carries the token (reliable channel 0, trusted LAN, no encryption).
+	var identity := reservations.issue(seat_index)
+	var payload := NetworkLifecycleCodec.encode_seat_assignment(
+		seat_index,
+		_generation_counter,
+		identity.get("player_id", PackedByteArray()),
+		identity.get("token", PackedByteArray())
+	)
+	if payload.is_empty():
+		remote_adapter.release_source(source_id)
+		reservations.forget(seat_index)
+		_send(
+			peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.INTERNAL_RETRY)
+		)
+		transport.close_peer(peer_id, true)
+		return false
 	_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.OK))
 	_send(peer_id, NetworkFrame.Family.SEAT_ASSIGNMENT, payload)
 	_broadcast_lobby_state()
@@ -570,13 +647,7 @@ func start_network_match() -> bool:
 	match_active = true
 	sync_ready = true
 	close_admission()
-	# Contract v1.4: u8 1, u64 match ID, u8 route (0 scheduled, 1 live build), u8 flags
-	# (bit 0: the host runs unverified NLB-P07 content under the development override).
-	var payload := _u8_u64(1, active_match_id)
-	payload.append(ROUTE_LIVE_BUILD if network_route == ROUTE_LIVE_BUILD else ROUTE_SCHEDULED)
-	payload.append(
-		1 if network_route == ROUTE_LIVE_BUILD and live_unverified_content else 0
-	)
+	var payload := _match_lifecycle_payload()
 	for peer_id in candidates.keys():
 		var candidate: Dictionary = candidates[peer_id]
 		if int(candidate.get("seat", -1)) >= 0 and candidate.state >= CandidateState.ACKNOWLEDGED:
@@ -588,10 +659,25 @@ func start_network_match() -> bool:
 	return true
 
 
+## Contract v1.4: u8 1, u64 match ID, u8 route (0 scheduled, 1 live build), u8 flags
+## (bit 0: the host runs unverified NLB-P07 content under the development override).
+func _match_lifecycle_payload() -> PackedByteArray:
+	var payload := _u8_u64(1, active_match_id)
+	payload.append(ROUTE_LIVE_BUILD if network_route == ROUTE_LIVE_BUILD else ROUTE_SCHEDULED)
+	payload.append(1 if network_route == ROUTE_LIVE_BUILD and live_unverified_content else 0)
+	return payload
+
+
 func bind_match_room(room: P12ScheduledMatchRoom) -> void:
 	if client_mode or not match_active:
 		return
 	match_room = room
+	# NLB-P08: remote seats cannot ready, so results and pause-resume follow the host's own seats,
+	# and a reserved (disconnected) seat never blocks a round from ending.
+	match_room.network_exempt_unconnected_seats = true
+	var coordinator: Variant = match_room.get("pause_coordinator")
+	if coordinator is PauseRecoveryCoordinator:
+		(coordinator as PauseRecoveryCoordinator).remote_ready_exempt = true
 	if not match_room.presentation_changed.is_connected(_on_match_presentation_changed):
 		match_room.presentation_changed.connect(_on_match_presentation_changed)
 	if (
@@ -796,12 +882,18 @@ func _accept_snapshot_ack(peer_id: int, payload: PackedByteArray, candidate: Dic
 	):
 		_reject(peer_id, NetworkFrame.Reason.SNAPSHOT_INVALID)
 		return
+	if bool(candidate.get("reclaim_bind_pending", false)) and not _finalize_reclaim_bind(
+		peer_id, candidate
+	):
+		return
+	candidate = candidates[peer_id]
 	candidate.match_sync_ready = true
 	candidates[peer_id] = candidate
 	# Resend the live inventory/build echo after every (re)sync.
 	_live_seat_state_sent.erase(peer_id)
 	var ready_payload := _u32(int(sent.snapshot_id))
 	_send(peer_id, NetworkFrame.Family.SYNC_READY, ready_payload)
+	_send_pause_state(peer_id)
 	_snapshot_sender.erase(peer_id)
 	_snapshot_retry_counts.erase(peer_id)
 
@@ -1104,6 +1196,7 @@ func _receive_state_update(payload: PackedByteArray) -> void:
 	var metadata: Dictionary = update.metadata
 	if int(metadata.match_id) != active_match_id or int(metadata.attempt_id) < int(client_replica_state.get("attempt_id", 0)):
 		return
+	_client_last_state_ms = Time.get_ticks_msec()
 	var current_tick := int(client_replica_state.get("tick", -1))
 	if int(update.tick) < current_tick:
 		return
@@ -1303,7 +1396,13 @@ func _on_peer_connected(peer_id: int) -> void:
 		_client_connect_deadline = 0
 		_local_nonce = InvitationCode.generate()
 		return
-	if not admission_open or transport.peer_count() > RawEnetTransport.MAX_PEERS:
+	# A new join never takes a reserved seat: after the lobby closes, only a peer that proves a
+	# reclaim token for a reserved seat can continue past the compatibility hello (NLB-P08).
+	var reclaim_window := match_active and not reservations.reserved_seats().is_empty()
+	if (
+		(not admission_open and not reclaim_window)
+		or transport.peer_count() > RawEnetTransport.MAX_PEERS
+	):
 		transport.close_peer(peer_id)
 		return
 	candidates[peer_id] = {
@@ -1312,6 +1411,8 @@ func _on_peer_connected(peer_id: int) -> void:
 		"nonce": PackedByteArray(),
 		"server_nonce": PackedByteArray(),
 		"seat": -1,
+		"reclaim_only": not admission_open,
+		"claim_seat": -1,
 	}
 	var welcome := _u16(NetworkFrame.Reason.OK)
 	welcome.append_array(manifest_digest)
@@ -1320,18 +1421,25 @@ func _on_peer_connected(peer_id: int) -> void:
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	if client_mode:
+		if state != SessionState.STOPPING and not _client_disconnect_notice_set:
+			_save_reclaim_credential()
 		client_assigned_seat = -1
 		client_ready = false
 		if state != SessionState.STOPPING:
 			if not _client_disconnect_notice_set:
-				client_message.emit("Host connection closed.")
+				client_message.emit(
+					(
+						"Host connection closed."
+						if _reclaim_credential.is_empty()
+						else "Connection lost. Your seat is held for about 60 seconds; reconnect to take it back."
+					)
+				)
 			stop_session()
 		return
 	if candidates.has(peer_id):
 		var candidate: Dictionary = candidates[peer_id]
 		_clear_live_placement_peer(peer_id)
-		if int(candidate.seat) >= 0:
-			remote_adapter.release_source("peer_%d" % peer_id)
+		_unbind_peer_seat(peer_id, candidate)
 		_pending_continuous.erase(peer_id)
 		_pending_actions.erase(peer_id)
 		_host_input_state.erase(peer_id)
@@ -1411,6 +1519,14 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			_send(peer_id, NetworkFrame.Family.COMPATIBILITY_RESULT, _u16(NetworkFrame.Reason.OK))
 			candidates[peer_id] = candidate
 		NetworkFrame.Family.JOIN_BEGIN:
+			if bool(candidate.get("reclaim_only", false)):
+				_send(
+					peer_id,
+					NetworkFrame.Family.ADMISSION_DECISION,
+					_u16(NetworkFrame.Reason.LOBBY_CLOSED)
+				)
+				transport.close_peer(peer_id)
+				return
 			if candidate.state != CandidateState.CHALLENGE or payload.size() != 16:
 				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
 				return
@@ -1430,6 +1546,9 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			var proof_value := payload.slice(32, 64)
 			if client_nonce != candidate.nonce or payload.slice(16, 32) != candidate.server_nonce:
 				_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+				return
+			if int(candidate.get("claim_seat", -1)) >= 0:
+				_verify_reclaim_proof(peer_id, candidate, proof_value)
 				return
 			if not _invitation_valid():
 				_reject(peer_id, NetworkFrame.Reason.TOKEN_EXPIRED)
@@ -1483,6 +1602,13 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 			_action_edge_watermarks[peer_id] = 0
 			_reliable_edge_watermarks[peer_id] = 0
 			_send_lobby_state(peer_id)
+			if bool(candidate.get("reclaim_bind_pending", false)) and match_active:
+				# Reclaim: the peer learns the running match, then installs a current snapshot. The
+				# seat itself is rebound only after that snapshot is acknowledged.
+				candidate.match_sync_ready = false
+				candidates[peer_id] = candidate
+				_send(peer_id, NetworkFrame.Family.MATCH_LIFECYCLE, _match_lifecycle_payload())
+				_pending_snapshot_peers[peer_id] = true
 			lobby_changed.emit()
 		NetworkFrame.Family.READY_REQUEST:
 			if _poll_manifest_sources():
@@ -1523,11 +1649,18 @@ func _handle_host_packet(peer_id: int, family: int, payload: PackedByteArray) ->
 				_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
 				return
 			_clear_live_placement_peer(peer_id)
-			remote_adapter.release_source("peer_%d" % peer_id)
+			_unbind_peer_seat(peer_id, candidate)
 			candidates.erase(peer_id)
 			transport.close_peer(peer_id)
 			_broadcast_lobby_state()
 			lobby_changed.emit()
+		NetworkFrame.Family.RECLAIM_BEGIN:
+			_accept_reclaim_begin(peer_id, payload, candidate)
+		NetworkFrame.Family.LIFECYCLE_HINT:
+			_accept_lifecycle_hint(peer_id, payload, candidate)
+		NetworkFrame.Family.PAUSE_STATE:
+			# Only the host may change the global state; a client frame is refused, never applied.
+			_reject(peer_id, NetworkFrame.Reason.HOST_ONLY)
 		NetworkFrame.Family.CONTINUOUS_INPUT:
 			_accept_continuous_input(peer_id, payload, candidate)
 		NetworkFrame.Family.ACTION_REQUEST:
@@ -1580,6 +1713,15 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				client_message.emit("This client is not compatible with the host.")
 				_client_disconnect_notice_set = true
 				return
+			if _client_reclaiming:
+				var begin := NetworkLifecycleCodec.encode_reclaim_begin(
+					client_player_id, _local_nonce, int(client_replica_state.get("snapshot_id", 0))
+				)
+				if begin.is_empty():
+					client_message.emit("The reconnect request could not be built.")
+					return
+				_send(peer_id, NetworkFrame.Family.RECLAIM_BEGIN, begin)
+				return
 			var join := _local_nonce.duplicate()
 			_send(peer_id, NetworkFrame.Family.JOIN_BEGIN, join)
 		NetworkFrame.Family.CHALLENGE:
@@ -1591,8 +1733,16 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 			if client_nonce != _local_nonce:
 				client_message.emit("The pairing challenge expired.")
 				return
-			var proof_value := InvitationCode.proof(
-				client_invite_token, session_epoch, client_nonce, server_nonce
+			var proof_value := (
+				InvitationCode.proof(
+					client_reclaim_token,
+					session_epoch,
+					client_nonce,
+					server_nonce,
+					InvitationCode.CONTEXT_RECLAIM
+				)
+				if _client_reclaiming
+				else InvitationCode.proof(client_invite_token, session_epoch, client_nonce, server_nonce)
 			)
 			var proof_payload := client_nonce.duplicate()
 			proof_payload.append_array(server_nonce)
@@ -1616,17 +1766,27 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 					)
 				)
 			elif reason != NetworkFrame.Reason.OK:
-				client_message.emit(_reason_message(reason))
+				client_message.emit(
+					(
+						"The host could not give your seat back (%d). Try again while it is held."
+						% reason
+						if _client_reclaiming
+						else _reason_message(reason)
+					)
+				)
 				_client_disconnect_notice_set = true
 		NetworkFrame.Family.SEAT_ASSIGNMENT:
-			if payload.size() != 6 or int(payload[0]) >= 4 or int(payload[1]) != int(payload[0]) + 1:
+			var assignment := NetworkLifecycleCodec.decode_seat_assignment(payload)
+			if not bool(assignment.get("ok", false)):
 				client_message.emit("The host sent an invalid seat assignment.")
 				return
-			client_assigned_seat = int(payload[0])
-			assigned_peer_generation = _read_u32(payload, 2)
+			client_assigned_seat = int(assignment.seat)
+			assigned_peer_generation = int(assignment.peer_generation)
 			if assigned_peer_generation == 0:
 				client_message.emit("The host sent an invalid seat generation.")
 				return
+			client_player_id = assignment.player_id
+			client_reclaim_token = assignment.token
 			var ack := PackedByteArray([client_assigned_seat])
 			ack.append_array(_u32(assigned_peer_generation))
 			_send(peer_id, NetworkFrame.Family.ASSIGNMENT_ACK, ack)
@@ -1717,6 +1877,7 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				client_message.emit("The host sent an invalid synchronization notice.")
 				return
 			sync_ready = true
+			_client_last_state_ms = Time.get_ticks_msec()
 			_snapshot_request_count = 0
 			_client_axes = [0, 0]
 			_client_aim = [0, 0]
@@ -1749,6 +1910,10 @@ func _handle_client_packet(peer_id: int, family: int, payload: PackedByteArray) 
 				return
 			client_live_seat_state = seat_state
 			live_seat_state_received.emit(seat_state.duplicate(true))
+		NetworkFrame.Family.PAUSE_STATE:
+			_receive_pause_state(payload)
+		NetworkFrame.Family.RECLAIM_RESULT:
+			_receive_reclaim_result(peer_id, payload)
 		NetworkFrame.Family.SESSION_CLOSE:
 			client_message.emit("The host closed the session.")
 			_client_disconnect_notice_set = true
@@ -1777,7 +1942,7 @@ func _send_to_host(family: int, payload: PackedByteArray) -> bool:
 
 
 func client_set_continuous_input(axes: Array, aim: Array = [0, 0], build_mode: bool = false) -> bool:
-	if not client_mode or axes.size() != 2 or aim.size() != 2:
+	if not client_mode or axes.size() != 2 or aim.size() != 2 or _client_backgrounded:
 		return false
 	for value in axes + aim:
 		if int(value) < -1000 or int(value) > 1000:
@@ -1790,6 +1955,8 @@ func client_set_continuous_input(axes: Array, aim: Array = [0, 0], build_mode: b
 
 func client_set_action(action_id: int, pressed: bool) -> bool:
 	if not client_mode or not sync_ready or client_assigned_seat < 0:
+		return false
+	if _client_backgrounded and pressed:
 		return false
 	var held_bit := _held_bit_for_action(action_id)
 	if held_bit != 0:
@@ -1820,8 +1987,13 @@ func client_set_action(action_id: int, pressed: bool) -> bool:
 	return not payload.is_empty() and _send_to_host(NetworkFrame.Family.ACTION_REQUEST, payload)
 
 
-func _send_client_continuous_input() -> void:
-	if not sync_ready or client_assigned_seat < 0 or assigned_peer_generation == 0:
+func _send_client_continuous_input(force_neutral: bool = false) -> void:
+	if (
+		not sync_ready
+		or client_assigned_seat < 0
+		or assigned_peer_generation == 0
+		or (_client_backgrounded and not force_neutral)
+	):
 		return
 	_client_input_sequence = (_client_input_sequence + 1) & 0xffffffff
 	var sample := {
@@ -1857,8 +2029,11 @@ func _accept_continuous_input(peer_id: int, payload: PackedByteArray, candidate:
 		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
 		return
 	var prior: Dictionary = _host_input_state.get(peer_id, {})
+	if _peer_backgrounded(candidate) and not _sample_is_neutral(sample):
+		return
 	if bool(prior.get("await_neutral", true)) and not _sample_is_neutral(sample):
-		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		# Dropped, not a protocol violation: a held stick right after assignment, resync or reclaim
+		# must not cost the player the seat. Input starts with the first neutral sample.
 		return
 	var sequence := int(sample.sequence)
 	if int(prior.get("last_sequence", -1)) >= 0 and not _sequence_is_newer(sequence, int(prior.last_sequence)):
@@ -2041,8 +2216,14 @@ func _apply_action_request(source_id: String, request: Dictionary) -> bool:
 
 func _expire_input_sources() -> void:
 	var now := Time.get_ticks_msec()
+	var host_paused := get_tree().paused
 	for peer_id in _host_input_state.keys():
 		var input: Dictionary = _host_input_state[peer_id]
+		if host_paused and not bool(input.get("timed_out", true)):
+			# The host pause freezes the input clock too; a peer is not timed out for a pause.
+			input.last_valid_ms = now
+			_host_input_state[peer_id] = input
+			continue
 		if not bool(input.get("timed_out", true)) and now - int(input.last_valid_ms) >= INPUT_TIMEOUT_MS:
 			router.clear_remote_source("peer_%d" % int(peer_id))
 			_pending_continuous.erase(peer_id)
@@ -2530,7 +2711,8 @@ func _reject(peer_id: int, reason: int) -> void:
 		in [
 			NetworkFrame.Reason.TOKEN_INVALID,
 			NetworkFrame.Reason.TOKEN_EXPIRED,
-			NetworkFrame.Reason.OWNERSHIP
+			NetworkFrame.Reason.OWNERSHIP,
+			NetworkFrame.Reason.HOST_ONLY
 		]
 	):
 		if now - int(abuse.auth_window) >= 10000:
@@ -2556,7 +2738,7 @@ func _reject(peer_id: int, reason: int) -> void:
 		abuse.suppressed += 1
 	_peer_abuse[peer_id] = abuse
 	if candidates.has(peer_id) and int(candidates[peer_id].state) >= CandidateState.ASSIGNED:
-		remote_adapter.release_source("peer_%d" % peer_id)
+		_unbind_peer_seat(peer_id, candidates[peer_id])
 	_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(reason))
 	if int(abuse.auth_failures) >= 3 or int(abuse.format_failures) >= 120:
 		_clear_live_placement_peer(peer_id)
@@ -2597,6 +2779,10 @@ func _accept_rate(peer_id: int, family: int) -> bool:
 			limit = ACTION_MAX_PER_SECOND
 		NetworkFrame.Family.PLACEMENT_INTENT:
 			limit = PLACEMENT_INTENT_MAX_PER_SECOND
+		NetworkFrame.Family.LIFECYCLE_HINT:
+			limit = LIFECYCLE_HINT_MAX_PER_SECOND
+		NetworkFrame.Family.RECLAIM_BEGIN:
+			limit = RECLAIM_BEGIN_MAX_PER_SECOND
 		NetworkFrame.Family.READY_REQUEST:
 			if now - int(state.last) < 100:
 				return false
@@ -2618,8 +2804,7 @@ func _expire_candidates(delta: float) -> void:
 		var candidate: Dictionary = candidates[peer_id]
 		if int(candidate.deadline) > 0 and now >= int(candidate.deadline):
 			_clear_live_placement_peer(int(peer_id))
-			if int(candidate.seat) >= 0:
-				remote_adapter.release_source("peer_%d" % peer_id)
+			_unbind_peer_seat(int(peer_id), candidate)
 			_send(
 				int(peer_id),
 				NetworkFrame.Family.ADMISSION_DECISION,
@@ -2861,3 +3046,427 @@ func _reason_message(reason: int) -> String:
 
 var _invitation_token := PackedByteArray()
 var _invitation_code := ""
+
+
+# ---------------------------------------------------------------------------------------------
+# NLB-P08 (contract v1.5): host pause, client lifecycle, seat reservation and reclaim.
+# No token or proof byte is ever printed, logged or echoed here.
+# ---------------------------------------------------------------------------------------------
+
+
+## Lobby: a lost peer's seat is released completely. During a match the seat is reserved for 60 s
+## instead (identity, seat and score kept; input neutral). A peer that no longer owns the seat
+## (a newer generation reclaimed it) can never revoke or reserve the new owner's seat.
+func _unbind_peer_seat(peer_id: int, candidate: Dictionary) -> void:
+	var claim_seat := int(candidate.get("claim_seat", -1))
+	if claim_seat >= 0:
+		reservations.release_claim(claim_seat, peer_id)
+	var seat_index := int(candidate.get("seat", -1))
+	if seat_index < 0:
+		return
+	var source_id := "peer_%d" % peer_id
+	if not (match_active and reservations.has_entry(seat_index)):
+		remote_adapter.release_source(source_id)
+		reservations.forget(seat_index)
+		return
+	var holder := str(router.registry.get_seat(seat_index).get("remote_source_id", ""))
+	if holder == source_id:
+		remote_adapter.revoke_source(source_id)
+	elif not holder.is_empty():
+		return
+	if not reservations.is_reserved(seat_index):
+		reservations.reserve(seat_index, Time.get_ticks_msec())
+		seat_reservation_changed.emit(seat_index, "reserved")
+		print("NLB_P08_SEAT_RESERVED seat=%d grace_ms=%d" % [seat_index, SeatReservationBook.GRACE_MS])
+		if match_room != null and is_instance_valid(match_room):
+			match_room.network_recheck_results()
+
+
+func _peer_backgrounded(candidate: Dictionary) -> bool:
+	return (
+		bool(candidate.get("backgrounded", false))
+		and Time.get_ticks_msec() - int(candidate.get("background_at_ms", 0)) < 5000
+	)
+
+
+func _neutralize_peer(peer_id: int) -> void:
+	router.clear_remote_source("peer_%d" % peer_id)
+	_pending_continuous.erase(peer_id)
+	_pending_actions[peer_id] = []
+	if _host_input_state.has(peer_id):
+		_host_input_state[peer_id].timed_out = true
+		_host_input_state[peer_id].await_neutral = false
+
+
+## Host: the tree pause (set only by host-local input) is the authoritative state. A change
+## advances the monotonic epoch and goes to every synchronized peer on the reliable channel.
+func _sync_pause_state() -> void:
+	var tree_paused := get_tree().paused
+	var now := Time.get_ticks_msec()
+	if tree_paused != pause_controller.paused:
+		if pause_controller.host_set(
+			tree_paused, NetworkLifecycleCodec.PauseReason.HOST_REQUEST, now, host_authority
+		):
+			_pause_heartbeat_ms = now
+			print("NLB_P08_PAUSE epoch=%d paused=%d" % [pause_controller.epoch, 1 if tree_paused else 0])
+			_broadcast_pause_state()
+	elif pause_controller.paused and now - _pause_heartbeat_ms >= PAUSE_HEARTBEAT_MS:
+		_pause_heartbeat_ms = now
+		_broadcast_pause_state()
+
+
+func _broadcast_pause_state() -> void:
+	for peer_id in candidates.keys():
+		if bool(candidates[peer_id].get("match_sync_ready", false)):
+			_send_pause_state(int(peer_id))
+
+
+func _send_pause_state(peer_id: int) -> void:
+	if client_mode or pause_controller.epoch <= 0:
+		return
+	var round_id := match_room.network_current_round_id() if match_room != null else 0
+	var attempt_id := (int(match_room.match_run_id) & 0xffff) if match_room != null else 0
+	var payload := NetworkLifecycleCodec.encode_pause_state(
+		pause_controller.record(active_match_id, round_id, attempt_id, Engine.get_physics_frames())
+	)
+	if not payload.is_empty():
+		_send(peer_id, NetworkFrame.Family.PAUSE_STATE, payload)
+
+
+func _receive_pause_state(payload: PackedByteArray) -> void:
+	var record := NetworkLifecycleCodec.decode_pause_state(payload)
+	if not bool(record.get("ok", false)):
+		client_message.emit("The host sent an invalid pause notice.")
+		return
+	if int(record.match_id) != active_match_id:
+		return
+	if pause_controller.apply_host_state(record) != "applied":
+		return
+	client_paused = pause_controller.paused
+	client_pause_epoch = pause_controller.epoch
+	if not client_paused:
+		_client_last_state_ms = Time.get_ticks_msec()
+	pause_state_changed.emit(client_paused, client_pause_epoch)
+
+
+## Host: reservation clocks run on the host monotonic clock and never freeze for a pause; the
+## elimination itself commits only while the simulation can commit (not paused).
+func _process_reservations() -> void:
+	var reserved := reservations.reserved_seats()
+	if reserved.is_empty():
+		return
+	for seat in reservations.take_expired(Time.get_ticks_msec()):
+		seat_reservation_changed.emit(seat, "expired")
+		print("NLB_P08_RESERVATION_EXPIRED seat=%d" % seat)
+	for seat in reserved:
+		if reservations.is_expired(seat):
+			_commit_disconnect_for(seat)
+
+
+## At most one disconnect elimination per seat per round; a result of "not_playing" retries on a
+## later tick, so an expiry during Pugad or a pause still lands once the round is playing.
+func _commit_disconnect_for(seat: int) -> void:
+	if match_room == null or not is_instance_valid(match_room) or get_tree().paused:
+		return
+	var round_id := match_room.network_current_round_id()
+	if reservations.committed_round(seat) == round_id:
+		return
+	var outcome := match_room.network_commit_disconnect(seat)
+	if outcome in ["committed", "already_terminal"]:
+		reservations.claim_round_commit(seat, round_id)
+		print("NLB_P08_DISCONNECT_ELIMINATION seat=%d round=%d result=%s" % [seat, round_id, outcome])
+
+
+func _accept_lifecycle_hint(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	var hint := NetworkLifecycleCodec.decode_lifecycle_hint(payload)
+	if not bool(hint.get("ok", false)):
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+		return
+	if (
+		int(candidate.state) < CandidateState.ACKNOWLEDGED
+		or int(hint.peer_generation) != int(candidate.get("peer_generation", 0))
+	):
+		_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
+		return
+	var last_sequence := int(candidate.get("hint_sequence", -1))
+	if last_sequence >= 0 and not _sequence_is_newer(int(hint.client_seq), last_sequence):
+		return
+	candidate.hint_sequence = int(hint.client_seq)
+	if int(hint.state) in [NetworkLifecycleCodec.Hint.BACKGROUND, NetworkLifecycleCodec.Hint.FOCUS_OUT]:
+		candidate.backgrounded = true
+		candidate.background_at_ms = Time.get_ticks_msec()
+		candidates[peer_id] = candidate
+		_neutralize_peer(peer_id)
+		return
+	candidate.backgrounded = false
+	candidates[peer_id] = candidate
+
+
+func _accept_reclaim_begin(peer_id: int, payload: PackedByteArray, candidate: Dictionary) -> void:
+	if (
+		not match_active
+		or candidate.state != CandidateState.CHALLENGE
+		or int(candidate.get("claim_seat", -1)) >= 0
+	):
+		_reject(peer_id, NetworkFrame.Reason.WRONG_PHASE)
+		return
+	var begin := NetworkLifecycleCodec.decode_reclaim_begin(payload)
+	if not bool(begin.get("ok", false)):
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+		return
+	var seat := reservations.seat_for_player(begin.player_id)
+	if seat < 0 or not reservations.is_reserved(seat):
+		# One answer for an unknown identity and an unreserved seat, so neither can be probed.
+		_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
+		return
+	# An expired reservation (its round already forfeited) is taken back at a boundary only.
+	if (
+		reservations.is_expired(seat)
+		and match_room != null
+		and match_room.phase_controller.phase == MatchPhaseController.Phase.PLAY
+	):
+		_send_reclaim_result(peer_id, NetworkFrame.Reason.WRONG_PHASE, seat, 0, PackedByteArray())
+		transport.close_peer(peer_id)
+		return
+	if not reservations.begin_claim(seat, peer_id):
+		_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
+		return
+	candidate.claim_seat = seat
+	candidate.nonce = begin.client_nonce
+	candidate.server_nonce = InvitationCode.generate()
+	candidate.state = CandidateState.PROOF
+	candidate.deadline = Time.get_ticks_msec() + CHALLENGE_TIMEOUT_SECONDS * 1000
+	candidates[peer_id] = candidate
+	var challenge: PackedByteArray = candidate.nonce.duplicate()
+	challenge.append_array(candidate.server_nonce)
+	_send(peer_id, NetworkFrame.Family.CHALLENGE, challenge)
+
+
+func _send_reclaim_result(
+	peer_id: int, reason: int, seat: int, generation: int, token: PackedByteArray
+) -> void:
+	var payload := NetworkLifecycleCodec.encode_reclaim_result(
+		reason,
+		maxi(seat, 0),
+		generation,
+		token if token.size() == NetworkLifecycleCodec.TOKEN_BYTES else PackedByteArray([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+		reservations.remaining_ms(seat, Time.get_ticks_msec()) if seat >= 0 else 0
+	)
+	if not payload.is_empty():
+		_send(peer_id, NetworkFrame.Family.RECLAIM_RESULT, payload)
+
+
+func _verify_reclaim_proof(peer_id: int, candidate: Dictionary, proof_value: PackedByteArray) -> void:
+	var seat := int(candidate.claim_seat)
+	var token := reservations.token_for_proof(seat)
+	var expected := (
+		InvitationCode.proof(
+			token,
+			session_epoch,
+			candidate.nonce,
+			candidate.server_nonce,
+			InvitationCode.CONTEXT_RECLAIM
+		)
+		if token.size() == NetworkLifecycleCodec.TOKEN_BYTES
+		else PackedByteArray()
+	)
+	if expected.size() != 32 or not Crypto.new().constant_time_compare(expected, proof_value):
+		# A wrong proof frees the claim at once, so a forger cannot lock the real owner out.
+		reservations.release_claim(seat, peer_id)
+		candidate.claim_seat = -1
+		candidate.state = CandidateState.CHALLENGE
+		candidates[peer_id] = candidate
+		_reject(peer_id, NetworkFrame.Reason.TOKEN_INVALID)
+		return
+	# Any older connection still holding this seat loses authority the moment the proof lands.
+	for other_id in candidates.keys():
+		if int(other_id) != peer_id and int(candidates[other_id].get("seat", -1)) == seat:
+			var other: Dictionary = candidates[other_id]
+			_clear_live_placement_peer(int(other_id))
+			_unbind_peer_seat(int(other_id), other)
+			candidates.erase(other_id)
+			transport.close_peer(int(other_id))
+	var new_token := reservations.rotate_token(seat, peer_id)
+	if new_token.is_empty():
+		_reject(peer_id, NetworkFrame.Reason.OWNERSHIP)
+		return
+	_generation_counter = (_generation_counter + 1) & 0xffffffff
+	if _generation_counter == 0:
+		_generation_counter = 1
+	candidate.peer_generation = _generation_counter
+	candidate.seat = seat
+	candidate.state = CandidateState.ASSIGNED
+	candidate.reclaim_bind_pending = true
+	candidate.match_sync_ready = false
+	candidate.deadline = Time.get_ticks_msec() + CHALLENGE_TIMEOUT_SECONDS * 1000
+	candidates[peer_id] = candidate
+	_send_reclaim_result(peer_id, NetworkFrame.Reason.OK, seat, _generation_counter, new_token)
+	print("NLB_P08_RECLAIM_ACCEPTED seat=%d generation=%d" % [seat, _generation_counter])
+
+
+## Runs after the reclaiming peer acknowledged a current snapshot, at a host packet boundary (never
+## inside a physics step). The seat is rebound now, input stays gated on a fresh neutral sample, and
+## no earlier input is ever replayed.
+func _finalize_reclaim_bind(peer_id: int, candidate: Dictionary) -> bool:
+	var seat := int(candidate.seat)
+	if not remote_adapter.reclaim_source("peer_%d" % peer_id, seat):
+		_send(peer_id, NetworkFrame.Family.ADMISSION_DECISION, _u16(NetworkFrame.Reason.OWNERSHIP))
+		transport.close_peer(peer_id)
+		return false
+	reservations.finish_reclaim(seat, peer_id)
+	candidate.reclaim_bind_pending = false
+	candidate.claim_seat = -1
+	candidates[peer_id] = candidate
+	_host_input_state[peer_id] = {
+		"generation": int(candidate.peer_generation),
+		"last_valid_ms": Time.get_ticks_msec(),
+		"last_sequence": -1,
+		"timed_out": true,
+		"await_neutral": true,
+	}
+	_pending_continuous.erase(peer_id)
+	_pending_actions[peer_id] = []
+	seat_reservation_changed.emit(seat, "reclaimed")
+	print("NLB_P08_RECLAIM_BOUND seat=%d" % seat)
+	_broadcast_lobby_state()
+	return true
+
+
+## Client: focus loss or backgrounding. Nothing stays held: one neutral sample goes out now, the
+## held state is zeroed and streaming stops. The host's 150 ms input timeout stays the authority
+## because Android may never deliver these callbacks.
+func _client_enter_background(hint: int) -> void:
+	if not client_mode or not match_active:
+		return
+	var was_backgrounded := _client_backgrounded
+	_client_backgrounded = true
+	_client_axes = [0, 0]
+	_client_aim = [0, 0]
+	_client_held_mask = 0
+	_client_build_mode = false
+	_send_client_continuous_input(true)
+	if not was_backgrounded:
+		_client_send_hint(hint)
+
+
+func _client_return_foreground(hint: int) -> void:
+	if not client_mode or not match_active or not _client_backgrounded:
+		return
+	_client_backgrounded = false
+	_send_client_continuous_input(true)
+	_client_send_hint(hint)
+	if (
+		Time.get_ticks_msec() - _client_last_state_ms > CLIENT_STALE_RETURN_MS
+		or terrain_gap
+		or client_replica_state.is_empty()
+	):
+		_snapshot_request_count = 0
+		_snapshot_request_last_ms = 0
+		_request_snapshot_recovery()
+
+
+## At most two hints per second leave the client; a hint over the budget is retried next frame.
+func _client_send_hint(state_value: int) -> bool:
+	var now := Time.get_ticks_msec()
+	while not _client_hint_times.is_empty() and now - _client_hint_times[0] >= 1000:
+		_client_hint_times.pop_front()
+	if _client_hint_times.size() >= LIFECYCLE_HINT_MAX_PER_SECOND:
+		_client_pending_hint = state_value
+		return false
+	_client_hint_times.append(now)
+	_client_hint_sequence = (_client_hint_sequence + 1) & 0xffffffff
+	var payload := NetworkLifecycleCodec.encode_lifecycle_hint(
+		assigned_peer_generation, _client_hint_sequence, state_value
+	)
+	if payload.is_empty():
+		return false
+	_client_pending_hint = -1
+	return _send_to_host(NetworkFrame.Family.LIFECYCLE_HINT, payload)
+
+
+var _client_pending_hint := -1
+
+
+func _save_reclaim_credential() -> void:
+	if (
+		not match_active
+		or client_assigned_seat < 0
+		or client_player_id.size() != NetworkLifecycleCodec.ID_BYTES
+		or client_reclaim_token.size() != NetworkLifecycleCodec.TOKEN_BYTES
+	):
+		return
+	_reclaim_credential = {
+		"player_id": client_player_id.duplicate(),
+		"token": client_reclaim_token.duplicate(),
+		"address": selected_address,
+		"port": game_port,
+		"epoch": session_epoch,
+		"digest": client_manifest_digest.duplicate(),
+	}
+	_keep_reclaim_credential = true
+	reclaim_available_changed.emit(true)
+
+
+func client_reclaim_available() -> bool:
+	return state == SessionState.OFFLINE and not _reclaim_credential.is_empty()
+
+
+## Client: reconnect to the same host session and prove the reclaim token. The credential lives in
+## memory only; an Android process kill loses it by design and that player cannot reclaim.
+func connect_reclaim() -> bool:
+	if not client_reclaim_available():
+		client_message.emit("There is no seat to reconnect to.")
+		return false
+	var address := str(_reclaim_credential.address)
+	var port := int(_reclaim_credential.port)
+	if not address.is_valid_ip_address() or port < 1024 or port > 65535:
+		return false
+	state = SessionState.STARTING
+	state_changed.emit("STARTING")
+	_client_disconnect_notice_set = false
+	client_player_id = (_reclaim_credential.player_id as PackedByteArray).duplicate()
+	client_reclaim_token = (_reclaim_credential.token as PackedByteArray).duplicate()
+	_client_reclaiming = true
+	_keep_reclaim_credential = true
+	CompatibilityManifest.reload_sources()
+	client_manifest_digest = CompatibilityManifest.build().digest
+	_client_expected_host_digest = (_reclaim_credential.digest as PackedByteArray).duplicate()
+	_client_expected_host_epoch = int(_reclaim_credential.epoch)
+	var error := transport.open_client(address, port)
+	if error != OK:
+		_client_reclaiming = false
+		return _rollback_start("Could not reach the host (%d)." % error)
+	client_mode = true
+	_client_connect_deadline = Time.get_ticks_msec() + 8000
+	_client_transport_connected = false
+	selected_address = address
+	game_port = port
+	manifest_digest = client_manifest_digest
+	state = SessionState.LOBBY_OPEN
+	state_changed.emit("LOBBY_OPEN")
+	return true
+
+
+func _receive_reclaim_result(peer_id: int, payload: PackedByteArray) -> void:
+	var result := NetworkLifecycleCodec.decode_reclaim_result(payload)
+	if not bool(result.get("ok", false)) or not _client_reclaiming:
+		client_message.emit("The host sent an invalid reconnect result.")
+		return
+	if int(result.reason) != NetworkFrame.Reason.OK:
+		client_message.emit("The host could not give your seat back (%d)." % int(result.reason))
+		_client_disconnect_notice_set = true
+		return
+	if (result.token as PackedByteArray).size() != NetworkLifecycleCodec.TOKEN_BYTES or int(result.peer_generation) == 0:
+		client_message.emit("The host sent an invalid reconnect result.")
+		return
+	client_assigned_seat = int(result.seat)
+	assigned_peer_generation = int(result.peer_generation)
+	client_reclaim_token = result.token
+	_client_reclaiming = false
+	_reclaim_credential.clear()
+	reclaim_available_changed.emit(false)
+	var ack := PackedByteArray([client_assigned_seat])
+	ack.append_array(_u32(assigned_peer_generation))
+	_send(peer_id, NetworkFrame.Family.ASSIGNMENT_ACK, ack)
+	client_assigned.emit(client_assigned_seat)
+	client_message.emit("Seat reclaimed. Syncing with the host…")

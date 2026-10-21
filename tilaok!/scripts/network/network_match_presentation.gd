@@ -26,6 +26,8 @@ var _phone_controls_built := false
 var _live_controls: GridContainer
 var _live_buttons: Dictionary = {}
 var _axis_x := 0
+## NLB-P08: a local menu opened by the client's pause button. It never pauses the match.
+var _local_overlay := false
 var _catalog: ItemDefinitions
 var _footprints: Dictionary = {}
 
@@ -47,6 +49,14 @@ func bind_session(session: NetworkSessionManager) -> void:
 		session.match_state_received.connect(apply_state)
 	if session != null and not session.terrain_resync_changed.is_connected(_on_terrain_resync):
 		session.terrain_resync_changed.connect(_on_terrain_resync)
+	if session != null and not session.pause_state_changed.is_connected(_on_host_pause_changed):
+		session.pause_state_changed.connect(_on_host_pause_changed)
+	if (
+		session != null
+		and session.router != null
+		and not session.router.action_pressed.is_connected(_on_router_action)
+	):
+		session.router.action_pressed.connect(_on_router_action)
 	live_client.bind(session)
 	if session != null and session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD and _touch_enabled():
 		_build_live_controls()
@@ -61,6 +71,13 @@ func _exit_tree() -> void:
 			network_session.match_state_received.disconnect(apply_state)
 		if network_session.terrain_resync_changed.is_connected(_on_terrain_resync):
 			network_session.terrain_resync_changed.disconnect(_on_terrain_resync)
+		if network_session.pause_state_changed.is_connected(_on_host_pause_changed):
+			network_session.pause_state_changed.disconnect(_on_host_pause_changed)
+		if (
+			network_session.router != null
+			and network_session.router.action_pressed.is_connected(_on_router_action)
+		):
+			network_session.router.action_pressed.disconnect(_on_router_action)
 		if _touch_enabled():
 			network_session.client_set_continuous_input([0, 0])
 			for action_id in [0, 1, 2, 3, 4, 9, 10, 11]:
@@ -115,11 +132,29 @@ func apply_state(state: Dictionary) -> void:
 	queue_redraw()
 
 
+func _on_host_pause_changed(_paused: bool, _epoch: int) -> void:
+	# The host's global pause froze the shared clocks; the banner and the held timer follow it.
+	_received_at_ms = Time.get_ticks_msec()
+	_status_label.text = _host_status_text()
+	queue_redraw()
+
+
+func _on_router_action(seat_index: int, action_name: String) -> void:
+	if seat_index == -1 and action_name == "client_pause_overlay":
+		_local_overlay = not _local_overlay
+		_status_label.text = _host_status_text()
+		queue_redraw()
+
+
+func _host_paused() -> bool:
+	return network_session != null and network_session.client_paused
+
+
 func _host_status_text() -> String:
 	var metadata: Dictionary = _state.get("metadata", {})
 	var phase := int(metadata.get("phase", 0))
 	var remaining_ms := int(metadata.get("remaining_ms", 0))
-	if not bool(metadata.get("paused", false)) and _received_at_ms > 0:
+	if not _host_paused() and not bool(metadata.get("paused", false)) and _received_at_ms > 0:
 		remaining_ms -= Time.get_ticks_msec() - _received_at_ms
 	var remaining := maxf(0.0, float(remaining_ms) / 1000.0)
 	var round_number := int(metadata.get("round_id", 0))
@@ -137,6 +172,12 @@ func _host_status_text() -> String:
 		event_text += "  ·  %.1fs" % (float(event_clock_ms) / 1000.0)
 	var phase_name: String = PHASE_NAMES[clampi(phase, 0, PHASE_NAMES.size() - 1)]
 	var text := "Tilaok!  ·  %s%s  ·  Round %d  ·  %.1fs" % [phase_name, event_text, round_number, remaining]
+	if _host_paused():
+		text += "
+PAUSED BY HOST — the match is frozen for everyone until the host resumes."
+	if _local_overlay:
+		text += "
+MENU (local) — the match keeps running; only the host can pause it."
 	if network_session != null and network_session.client_unverified_content:
 		text += "\nUNVERIFIED CONTENT — development host; results are not evidence."
 	if network_session != null and network_session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD:
