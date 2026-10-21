@@ -21,13 +21,13 @@ That authorization clears none of the open dependencies:
 
 ## What the matrix does
 
-The matrix has 91 cells:
-- 6 lifecycle cells;
+The matrix has 94 cells (91 at P07; NLB-P08 added three lifecycle cells):
+- 9 lifecycle cells;
 - 4 map cells;
 - 10 round cells (Mains, stacks, sudden death and the Kangaroo commands);
 - 70 variant × allowed-mode cells, plus Barya.
 
-84 cells are ENGINEERING, 7 are DISABLED, and none is VERIFIED. The full table, the enforcement points and the §6.2 coverage are in [compatibility-matrix.md](compatibility-matrix.md).
+87 cells are ENGINEERING, 7 are DISABLED, and none is VERIFIED. The full table, the enforcement points and the §6.2 coverage are in [compatibility-matrix.md](compatibility-matrix.md).
 
 Consequences:
 - **Strict host (the default):** it cannot start a networked live match. The lobby says why and names the override.

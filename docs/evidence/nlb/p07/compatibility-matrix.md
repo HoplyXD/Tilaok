@@ -4,7 +4,7 @@
 
 **Source of truth:** `tilaok!/scripts/network/nlb_live_compatibility_matrix.gd` (`NLBLiveCompatibilityMatrix`). It is a GDScript constant table, not JSON, because the current export filter would not ship a `.json` file. This document must list exactly the rows that `NLBLiveCompatibilityMatrix.markdown_rows()` produces. `tests/run_nlb_p07_tests.gd` checks every row against it when the deferred suite runs.
 
-**Matrix version:** 1. **Minimum protocol for every cell:** `1.2/schema4/0x01FF` ([contract v1.4](../p00/protocol-measurement-contract-v1.4.md)). **Minimum content:** `tilaok-nlb-p07-2026-10-21`.
+**Matrix version:** 1. **Minimum protocol for every cell:** `1.2/schema5/0x03FF` ([contract v1.5](../p00/protocol-measurement-contract-v1.5.md); NLB-P08 raised it from `1.2/schema4/0x01FF`, [v1.4](../p00/protocol-measurement-contract-v1.4.md)). **Minimum content:** `tilaok-nlb-p08-2026-10-21`.
 
 ## How it is used
 
@@ -42,15 +42,15 @@
 
 ## Shape and counts
 
-There are 91 cells, factored on four axes instead of one cross product:
+There are 94 cells (NLB-P08 added `life:client_lifecycle`, `life:host_pause` and `life:seat_reclaim`), factored on four axes instead of one cross product:
 
 | Axis | Cells | ENGINEERING | DISABLED (reason) |
 |---|---:|---:|---|
-| `life:` cross-cutting live behavior | 6 | 6 | — |
+| `life:` cross-cutting live behavior | 9 | 9 | — |
 | `map:` MapCatalog maps | 4 | 3 | 1 (`tutorial`: NO_LIVE_RULE) |
 | `round:` Mains, stacks, sudden death, Kangaroo commands | 10 | 10 | — |
 | `item:` variant × allowed mode (34 variants), plus Barya in Karera | 71 | 64 | 7 (DISABLED_BY_DEFAULT: `hollow_blocks.column_1x3` ×3, `bamboo_bridge.span_3x1` ×2, `bamboo_bridge.span_5x1` ×2) |
-| **Total** | **91** | **84** | **7** |
+| **Total** | **94** | **87** | **7** |
 
 **Notes on the axes:**
 - A mode that a family does not allow, or that is only pending review, gets no cell. Offline never deals it either.
@@ -148,10 +148,13 @@ There are 91 cells, factored on four axes instead of one cross product:
 | `item:utility.walis_cleanup.area_3x3@karera` | item | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:persistent_terrain |
 | `item:utility.walis_cleanup.area_5x5@karera` | item | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:persistent_terrain |
 | `life:barya_lifecycle` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:round_end_pending_edits, life:snapshot_recovery |
+| `life:client_lifecycle` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:snapshot_recovery |
+| `life:host_pause` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:snapshot_recovery |
 | `life:live_transients` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:snapshot_recovery |
 | `life:map_transition` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:snapshot_recovery, life:persistent_terrain |
 | `life:persistent_terrain` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | — |
 | `life:round_end_pending_edits` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | — |
+| `life:seat_reclaim` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:client_lifecycle, life:host_pause, life:snapshot_recovery |
 | `life:snapshot_recovery` | life | ENGINEERING | PENDING_NETWORK_VERIFICATION | — |
 | `map:Basic Map` | map | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:map_transition |
 | `map:default` | map | ENGINEERING | PENDING_NETWORK_VERIFICATION | life:map_transition |
