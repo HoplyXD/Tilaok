@@ -864,3 +864,23 @@ This section records authored source and runners only. It is not a human playtes
 | Physical mixed-device matrix at 2/3/4 total players | COULD-NOT-RUN | Deferred; needs an APK from this revision (a P06 APK is refused at hello) and a real reviewer |
 | Android export/install | COULD-NOT-RUN | Deferred while the shared laptop is in use |
 | Performance and transient bandwidth | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |
+
+## NLB-P08 pause, lifecycle and seat reclaim — preparatory status, 2026-10-21
+
+This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use.
+
+- **Behavior authored:** host-only global pause with an epoch; a client pause is a local overlay; client focus loss sends neutral input at once; a 60 s seat reservation; token-proven same-identity reclaim after a snapshot ack; one `disconnect` elimination per round with no Patibong. An Android process kill loses the memory-only token and cannot reclaim.
+- **Contract:** [v1.5](evidence/nlb/p00/protocol-measurement-contract-v1.5.md).
+- **Deferred commands and physical session sheet:** in [P08 evidence](evidence/nlb/p08/README.md).
+- **Open dependencies:** P06-T03 and the upstream P03-T03, P04-T03 and P05-T02/T03.
+
+| Check | Result | Reason / limit |
+|---|---|---|
+| Godot import/parse of the new and changed scripts | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| gdlint / gdformat | COULD-NOT-RUN | Tools absent; deferred |
+| `run_nlb_p08_tests.gd` (wire/codecs, HMAC context, pause epoch and freeze, client lifecycle, reservation, reclaim races and rotation, disconnect elimination, offline rules unchanged) | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| `run_nlb_p08_multi_process.gd` (drop/reserve/reclaim, host pause clock freeze, 60 s expiry, late reclaim) | COULD-NOT-RUN | Deferred; synthetic only, never physical evidence |
+| Regressions: NLB P01–P07, P02, P05, P09, P12, match UI, P13 navigation, fix regression | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Physical background / screen lock / Wi-Fi off-on / 60 s expiry / host pause / app kill | COULD-NOT-RUN | Needs a real phone, an APK from this revision (a P07 APK is refused at hello) and a named reviewer |
+| Android export/install | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Performance and reclaim latency (≤5 s target) | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |

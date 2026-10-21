@@ -89,6 +89,21 @@ The matrix document rows were produced by a scratch script that mirrors the matr
 
 All three P07 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P06-T03 and the upstream dependencies remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; transient visuals are code-drawn placeholders. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P07 evidence and exact deferred commands](evidence/nlb/p07/README.md).
 
+### NLB-P08 preparatory pause, lifecycle and seat reclaim — October 21, 2026
+
+At the user's explicit authorization of NLB-P08 as preparatory implementation, the AI coding agent Claude Code (Claude Sonnet 5.5, model `claude-sonnet-5-5`) authored the following. The user decided that a disconnect elimination ranks with command failure and earns no Patibong, that fewer than two connected players does not pause or end a round, that the reclaim token is memory only (an Android process kill loses it), that three lifecycle cells join the compatibility matrix, and that the work ships as several commits with no co-author trailer.
+
+- the P00 contract v1.5 amendment and its source: schema 5, required mask `0x03FF`, the pause-state, lifecycle-hint, reclaim-begin and reclaim-result families, the extended seat assignment and the reclaim HMAC context;
+- the host-only pause epoch, the input-clock freeze while paused, the client pause banner and local-only overlay, and an opt-in network resume rule in the pause coordinator;
+- client focus/background neutralisation with bounded hints;
+- the memory-only Player ID, reclaim token and 60 s reservation book, the registry/adapter reclaim path, and the proof, rotation, snapshot-gated rebind and old-generation handling;
+- the one-per-round `disconnect` elimination (Karera ledger and Lagsanay controller) and the network results gating;
+- the authored `run_nlb_p08_tests.gd` and `run_nlb_p08_multi_process.gd`, schema/build/cell-count updates to the P04, P06 and P07 tests, and the P08 evidence, tracker and status documentation.
+
+While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, multi-process or phone session, ADB, network listener, capture, lint or performance measurement. Only `git diff --check`, git status, grep audits and manual source review were performed. The code has therefore never been parsed by Godot.
+
+All three P08 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P06-T03 and the upstream dependencies remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; the pause banner is a text label. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P08 evidence and exact deferred commands](evidence/nlb/p08/README.md).
+
 ## Form 03 preparation
 
 The team must choose the official extent category (Minimal / Moderate / Heavy) based on all project-wide AI work and obtain required signatures. Do not claim the project is unaided. Keep this record aligned with actual assistance, asset records, prompts/history and repository history. Review factual claims, cultural names, gameplay rules and citations before submission. Do not invent missing prompts or review evidence.

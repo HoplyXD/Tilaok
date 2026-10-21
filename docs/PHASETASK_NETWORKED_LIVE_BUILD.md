@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Preparatory P06 source (contract v1.3 live placement, versioned terrain commits, opt-in network live route, minimum phone build controls) was authored 2026-10-21 under the same authorization; nothing in it has run and P06 remains 0/3 checked. Preparatory P07 source (contract v1.4, the default-deny live compatibility matrix with a dev-only `--nlb-unverified-content` host override, live transients, and the §6.2 item/event special cases) was authored 2026-10-21 under the same authorization; nothing in it has run and P07 remains 0/3 checked. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Preparatory P06 source (contract v1.3 live placement, versioned terrain commits, opt-in network live route, minimum phone build controls) was authored 2026-10-21 under the same authorization; nothing in it has run and P06 remains 0/3 checked. Preparatory P07 source (contract v1.4, the default-deny live compatibility matrix with a dev-only `--nlb-unverified-content` host override, live transients, and the §6.2 item/event special cases) was authored 2026-10-21 under the same authorization; nothing in it has run and P07 remains 0/3 checked. Preparatory P08 source (contract v1.5: host-only pause epoch, client focus/background neutralisation, 60 s seat reservation, token-proven same-identity reclaim after a snapshot ack, one disconnect elimination with no Patibong) was authored 2026-10-21 under the same authorization; nothing in it has run and P08 remains 0/3 checked. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,7 +12,7 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current (recounted from the task records, 2026-10-21): **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 11, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 12.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), P05 is PARTIAL (1/3), P06 is PARTIAL (0/3 checked; preparatory source), and P07 is PARTIAL (0/3 checked; preparatory source); P02 passes 3/3. P04's P03-T03 prerequisite, all P04 verification, P06's P03-T03/P04-T03/P05-T03 dependencies, and P07's P06-T03 dependency remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current (recounted from the task records, 2026-10-21): **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 14, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 9.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), P05 is PARTIAL (1/3), P06 is PARTIAL (0/3 checked; preparatory source), P07 is PARTIAL (0/3 checked; preparatory source), and P08 is PARTIAL (0/3 checked; preparatory source); P02 passes 3/3. P04's P03-T03 prerequisite, all P04 verification, P06's P03-T03/P04-T03/P05-T03 dependencies, and the P06-T03 dependency of P07 and P08 remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
@@ -24,12 +24,12 @@ Counts are derived from the task records in this document. Current (recounted fr
 | NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | PARTIAL (1/3) |
 | NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | PARTIAL (0/3 checked; preparatory source) |
 | NLB-P07 | All current content/modes/stacks compatibility | 3 | P06 | PARTIAL (0/3 checked; preparatory source) |
-| NLB-P08 | Pause, background, disconnect/reclaim, resync | 3 | P06 | TODO |
+| NLB-P08 | Pause, background, disconnect/reclaim, resync | 3 | P06 | PARTIAL (0/3 checked; preparatory source) |
 | NLB-P09 | Results, sudden death, replay and teardown | 3 | P07, P08 | TODO |
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 25 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 11 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 12. (2026-10-21 recount: the earlier "TODO 26" did not match the 25 unchecked TODO records; the NLB-P07 preparatory delivery moved P07-T01/T02/T03 from NOT RUN to COULD-NOT-RUN.) Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 25 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 14 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 9. (2026-10-21 recount: the earlier "TODO 26" did not match the 25 unchecked TODO records; the NLB-P07 preparatory delivery moved P07-T01/T02/T03 from NOT RUN to COULD-NOT-RUN, and the NLB-P08 preparatory delivery moved P08-T01/T02/T03 the same way.) Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -362,7 +362,7 @@ Counts are derived from the task records in this document. Current (recounted fr
 
 ## NLB-P08 — Pause, background, disconnect/reclaim, and resynchronization
 
-**Phase goal:** make host pause and client lifecycle failures recoverable without stuck state. **Entry:** P06 exit. **Dependencies:** P06. **Systems touched:** pause coordinator, Android lifecycle, neutral-input timeout, reserved seats, snapshot/delta restore. **Decisions:** host-only global pause; client continues neutral; 60-second reclaim then round forfeit; reclaim same identity at a later boundary. **Exit:** every lifecycle transition is bounded and recoverable or has a clear session-end result. **Evidence:** lifecycle fault runs and reclaim identity logs.
+**Phase goal:** make host pause and client lifecycle failures recoverable without stuck state. **Entry:** P06 exit. **Dependencies:** P06. **Systems touched:** pause coordinator, Android lifecycle, neutral-input timeout, reserved seats, snapshot/delta restore. **Decisions:** host-only global pause; client continues neutral; 60-second reclaim then round forfeit; reclaim same identity at a later boundary. **Exit:** every lifecycle transition is bounded and recoverable or has a clear session-end result. **Evidence:** lifecycle fault runs and reclaim identity logs. **Status:** PARTIAL (0/3 checked; preparatory source). The user authorized preparatory implementation while the entry dependency remains open; that authorization clears no dependency. Decisions recorded 2026-10-21: a disconnect elimination ranks with `command_failure` and earns no Patibong (P12 table U13); fewer than two connected players does not pause or end the round; the reclaim token is memory only, so an Android process kill forfeits the seat; three `life` matrix cells were added. Contract: [v1.5](evidence/nlb/p00/protocol-measurement-contract-v1.5.md). Evidence and deferred commands: [P08 evidence](evidence/nlb/p08/README.md).
 
 ### [ ] NLB-P08-T01 — IMPLEMENT — Add host pause and phone lifecycle handling
 
@@ -372,7 +372,11 @@ Counts are derived from the task records in this document. Current (recounted fr
 - **Work:** implement host-only global pause; client-local overlay; focus/background input neutralization; authoritative server timers and visible pause state.
 - **Acceptance:** non-host pause cannot freeze simulation; host pause freezes all simulation clocks consistently; client focus loss cannot leave held movement/jump.
 - **Evidence:** pause-transition logs, host/client captures, clock assertions.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):**
+  - contract [v1.5](evidence/nlb/p00/protocol-measurement-contract-v1.5.md): `network_frame.gd` (schema 5, mask `0x03FF`, families `0x1E`–`0x21`), `network_lifecycle_codec.gd` (new; pause, hint, reclaim and extended assignment layouts);
+  - `network_pause_controller.gd` (new; host-only monotonic epoch, ≤2/s), `network_session_manager.gd` (tree-pause sync, reliable broadcast, 1 Hz heartbeat, input clock frozen while paused, client `PAUSE_STATE` apply, `HOST_ONLY` refusal of a client pause frame, focus/window/Android-pause handling with one neutral sample and ≤2/s hints), `pause_recovery_coordinator.gd` (opt-in `remote_ready_exempt` so remote seats cannot deadlock network resume), `network_match_presentation.gd` ("PAUSED BY HOST" banner, held timer, local-only overlay for the client pause button).
+  - Authored checks: `tilaok!/tests/run_nlb_p08_tests.gd`. Known gap: a host without a local seat has no in-game resume control (host UI is P09/P10).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; P06-T03 and upstream dependencies open.
 
 ### [ ] NLB-P08-T02 — IMPLEMENT — Reserve and reclaim disconnected seats
 
@@ -382,7 +386,11 @@ Counts are derived from the task records in this document. Current (recounted fr
 - **Work:** reserve identity/score for 60 seconds, neutralize input, reconnect with valid token, require current snapshot, forfeit active round on grace expiry, and permit same identity reclaim at later round boundary.
 - **Acceptance:** no new join takes reserved seat; no stale connection can control it; disconnect elimination has no Patibong and scores once.
 - **Evidence:** disconnect/reclaim/expiry logs across race and Lagsanay, identity and score snapshots.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):**
+  - `seat_reservation_book.gd` (new; memory-only Player ID and reclaim token, 60 s reservation, ≤4 seats, one commit per round), `player_seat_registry.gd` / `remote_seat_input_adapter.gd` (`reclaim_remote_source`, `reclaim_source`), `invitation_code.gd` (auth context 0 join / 1 reclaim), `network_session_manager.gd` (reserve instead of release during a match, reclaim begin → challenge → constant-time proof → token rotation → snapshot ack → rebind, old generation dropped, racing claims refused, join refused in the reclaim window, in-memory client credential with `connect_reclaim()`);
+  - `race_outcome_ledger.gd`, `lagsanay_round_controller.gd`, `p12_scheduled_match_room.gd`, `match_room.gd`, `p09_match_lifecycle_room.gd` (one no-source `disconnect` elimination, results no longer blocked by a reserved seat).
+  - Known gaps: Kangaroo main rounds are not wired (a neutral seat fails its own commands); no reconnect button (P10); a lost Wi-Fi link is reclaimable only after the host notices the transport loss; an Android process kill loses the token by design.
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; P06-T03 and upstream dependencies open.
 
 ### [ ] NLB-P08-T03 — VERIFY — Network loss, suspension and full resync
 
@@ -392,7 +400,8 @@ Counts are derived from the task records in this document. Current (recounted fr
 - **Work:** test app background, screen lock, Wi-Fi loss/return, packet loss, host pause, 60-second expiry, stage changes while absent, and full snapshot recovery.
 - **Acceptance:** return state matches host for terrain, actors, event clocks, movers, projectiles, captures, Barya, outcomes and exact scores; expiry follows approved rule.
 - **Evidence:** device model/OS, timing, packet conditions, hashes/diffs and captures.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):** authored `tilaok!/tests/run_nlb_p08_multi_process.gd` (host plus one client process: drop → reserve → reclaim, host pause clock freeze, 60 s expiry, late reclaim, no seat for a token-less process; `-- phone` mode; synthetic only); physical session sheet and exact deferred commands in [P08 evidence](evidence/nlb/p08/README.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; P06-T03 and upstream dependencies open.
 
 ## NLB-P09 — Results, sudden death, replay, lobby return, teardown
 

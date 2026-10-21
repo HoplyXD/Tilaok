@@ -325,3 +325,15 @@ The P04 runners are `tilaok!/tests/run_nlb_p04_tests.gd` and `run_nlb_p04_multi_
   - `nlb_p06_network_live_build_match_room.gd` (`network_transient_states`, blast flashes).
   - `match_room.gd` and `p12_scheduled_match_room.gd` gain no-op hooks only.
 - **Tests:** `tests/run_nlb_p07_tests.gd` and `tests/run_nlb_p07_matrix_runner.gd` are authored and have not run. P07 is 0/3 checked. See [P07 evidence and deferred commands](evidence/nlb/p07/README.md) and [contract v1.4](evidence/nlb/p00/protocol-measurement-contract-v1.4.md).
+
+## NLB-P08 pause, lifecycle and seat reclaim — 2026-10-21 (preparatory, unrun)
+
+- **Wire, contract v1.5:**
+  - `network_frame.gd`: schema 5, mask `0x03FF`, families `0x1E` pause state, `0x1F` lifecycle hint, `0x20` reclaim begin, `0x21` reclaim result.
+  - `network_lifecycle_codec.gd` (new): the exact byte layouts and the extended 38-byte seat assignment.
+  - `invitation_code.gd`: the HMAC `auth_context` (0 join, 1 reclaim).
+  - `compatibility_manifest.gd` and `nlb_live_compatibility_matrix.gd`: build `tilaok-nlb-p08-2026-10-21` and three `life` cells.
+- **Pause and lifecycle:** `network_pause_controller.gd` (new, host-only epoch), `network_session_manager.gd` (tree-pause sync, heartbeat, input-clock freeze, focus/background handling and hints), `pause_recovery_coordinator.gd` (opt-in `remote_ready_exempt`), `network_match_presentation.gd` (banner, local-only overlay).
+- **Reservation and reclaim:** `seat_reservation_book.gd` (new, memory-only identities and 60 s reservations), `player_seat_registry.gd` / `remote_seat_input_adapter.gd` (`reclaim_remote_source`), `network_session_manager.gd` (reserve on disconnect, proof, rotation, snapshot-gated rebind, client `connect_reclaim()`).
+- **Elimination and results:** `race_outcome_ledger.gd`, `lagsanay_round_controller.gd`, `p12_scheduled_match_room.gd`, `match_room.gd`, `p09_match_lifecycle_room.gd`.
+- **Tests:** `tests/run_nlb_p08_tests.gd` and `tests/run_nlb_p08_multi_process.gd` (`-- phone`) are authored and have not run. P08 is 0/3 checked. See [P08 evidence and deferred commands](evidence/nlb/p08/README.md) and [contract v1.5](evidence/nlb/p00/protocol-measurement-contract-v1.5.md).
