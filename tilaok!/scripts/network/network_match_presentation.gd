@@ -511,7 +511,11 @@ func _refresh_touch_state() -> void:
 	_touch_layer.set_button_enabled("build", live and (available or building))
 	_touch_layer.set_button_label("build", "Close" if building else "Build")
 	_touch_layer.set_button_enabled("place", live_client.can_confirm() or pending)
-	_touch_layer.set_button_enabled("rotate", building)
+	# One control per action in each context (InputContextTable): Claim / OK only answers in the Pugad
+	# and Place screens, so it never doubles as the live Place button.
+	var claim_phase := _last_phase == MatchPhaseController.Phase.PUGAD or _last_phase == MatchPhaseController.Phase.PLACE
+	_touch_layer.set_button_enabled("claim", claim_phase)
+	_touch_layer.set_button_enabled("rotate", building or (not live and _last_phase == MatchPhaseController.Phase.PLACE))
 	_touch_layer.set_button_enabled("cancel", live_client.state != NetworkLivePlacementClient.GhostState.NONE)
 	_touch_layer.set_button_enabled(NetworkTouchLayer.ZONE_AIM, building)
 	if _phone_hud != null:
