@@ -77,6 +77,12 @@ func _on_screen_ready() -> void:
 	_effects_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("effects", v))
 	_crowd_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("crowd", v))
 	_back_button.pressed.connect(func() -> void: back_requested.emit())
+	# P11 about line: version, channel and the build id the compatibility check uses.
+	var about := Label.new()
+	about.name = "BuildAboutLabel"
+	about.theme_type_variation = &"CaptionLabel"
+	about.text = BuildIdentity.about_line()
+	_menu.get_parent().add_child(about)
 	_menu.refresh_items()
 
 

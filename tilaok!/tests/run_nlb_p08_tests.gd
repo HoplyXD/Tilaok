@@ -67,7 +67,7 @@ func _test_wire_constants() -> void:
 		_check(not NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.INPUT_CHANNEL), "family 0x%02X rejected on the input channel" % family)
 		_check(not NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.STATE_CHANNEL), "family 0x%02X rejected on the state channel" % family)
 	_check(NetworkFrame.FAMILIES.size() == 38 and NetworkFrame.FAMILIES.max() == 0x26, "the allowlist ends at 0x26 after NLB-P09")
-	_check(str(CompatibilityManifest.build().manifest.build) == "tilaok-nlb-p09-2026-10-21", "the manifest build ID is the P09 build")
+	_check(str(CompatibilityManifest.build().manifest.build) == BuildIdentity.BUILD_ID, "the manifest build ID is the current BuildIdentity build (P11 bump)")
 
 
 func _test_codecs() -> void:

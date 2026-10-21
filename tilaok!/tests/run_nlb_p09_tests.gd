@@ -107,7 +107,7 @@ func _test_wire_constants() -> void:
 		_check(not NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.INPUT_CHANNEL), "family 0x%02X is refused on the input channel" % family)
 		_check(not NetworkFrame.family_allowed_on_channel(family, RawEnetTransport.STATE_CHANNEL), "family 0x%02X is refused on the state channel" % family)
 	_check(NetworkFrame.FAMILIES.size() == 38 and NetworkFrame.FAMILIES.max() == 0x26, "the allowlist ends at 0x26")
-	_check(str(CompatibilityManifest.build().manifest.build) == "tilaok-nlb-p09-2026-10-21", "the manifest build ID is the P09 build")
+	_check(str(CompatibilityManifest.build().manifest.build) == BuildIdentity.BUILD_ID, "the manifest build ID is the current BuildIdentity build (P11 bump)")
 	var frame := NetworkFrame.encode(NetworkFrame.Family.REKEY, 0x1122334455667788 & 0x7fffffffffffffff, 5, PackedByteArray([1]))
 	_check(NetworkFrame.peek_epoch(frame) == (0x1122334455667788 & 0x7fffffffffffffff), "peek_epoch reads the envelope epoch")
 	_check(NetworkFrame.peek_epoch(PackedByteArray([1, 2, 3])) == -1, "peek_epoch refuses a short frame")

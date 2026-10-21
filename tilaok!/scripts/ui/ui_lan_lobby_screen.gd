@@ -135,6 +135,11 @@ func _build_ui() -> void:
 	_root.add_child(title)
 	_status = _label("Offline play is unchanged. Choose whether this computer will host or join.")
 	_root.add_child(_status)
+	# P11: the build label is visible in the host lobby and the phone lobby (same screen).
+	var build_line := _label(BuildIdentity.about_line())
+	build_line.name = "BuildLabel"
+	build_line.theme_type_variation = &"CaptionLabel"
+	_root.add_child(build_line)
 	_root.add_child(HSeparator.new())
 	_role_picker = HBoxContainer.new()
 	var host_choice := _button("Host a room")
@@ -829,9 +834,15 @@ func _friendly_error(message: String) -> String:
 		"The host session changed during connection.":
 		"This invite is out of date. Ask the host to create a fresh access code.",
 		"This client does not match the host build.":
-		"This game copy doesn't match the host. Update both copies and try again.",
+		(
+			"This game copy doesn't match the host. Update both copies and try again. %s"
+			% BuildIdentity.mismatch_text()
+		),
 		"This client is not compatible with the host.":
-		"This game copy doesn't match the host. Update both copies and try again.",
+		(
+			"This game copy doesn't match the host. Update both copies and try again. %s"
+			% BuildIdentity.mismatch_text()
+		),
 		"The host is reviewing the maximum number of players.":
 		"The host is handling other join requests. Try again in a moment."
 	}

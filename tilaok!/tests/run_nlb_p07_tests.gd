@@ -185,7 +185,7 @@ func _test_manifest_digest() -> void:
 	var manifest: Dictionary = built.manifest
 	_check(manifest.has("live_matrix") and int(manifest.live_matrix.version) == M.MATRIX_VERSION, "manifest carries the live matrix")
 	_check((manifest.live_matrix.cells as Array).size() == M.cells().size(), "manifest lists every matrix cell")
-	_check(str(manifest.build) == "tilaok-nlb-p09-2026-10-21", "build identity is the P09 build")
+	_check(str(manifest.build) == BuildIdentity.BUILD_ID, "build identity is the current BuildIdentity build (P11 bump)")
 	var changed := manifest.duplicate(true)
 	(changed.live_matrix.cells[0] as Dictionary).status = M.STATUS_VERIFIED
 	_check(CompatibilityManifest.sha256(changed) != built.digest, "a different matrix gives a different digest (INCOMPATIBLE before admission)")

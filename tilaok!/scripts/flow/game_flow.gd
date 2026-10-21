@@ -12,7 +12,7 @@ signal return_requested
 
 enum State { TITLE, LIBRARY, SETTINGS, LAN_LOBBY, IN_MATCH }
 
-const BUILD_LABEL := "Tilaok! development build"
+## P11: the visible build text comes from BuildIdentity.label() (version + dev/release channel).
 ## The first-playable route (the P07 human-gate build): karera_slice, no match end. Kept behind
 ## `-- --match-route=first_playable` since the 2026-10-15 default-route decision (D4).
 const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
@@ -514,7 +514,7 @@ func _refresh_title() -> void:
 		return
 	var seats := router.registry.joined_seats()
 	var device := UiContext.device_for_seat(seats[0]) if not seats.is_empty() else "k1"
-	var label := "%s • %s" % [BUILD_LABEL, PLAYTEST_PROFILE]
+	var label := "%s • %s" % [BuildIdentity.label(), PLAYTEST_PROFILE]
 	if match_scene == MATCH_SCENE:
 		label += " • first playable"
 	elif match_scene == OFFLINE_LIVE_BUILD_SCENE:
