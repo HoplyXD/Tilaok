@@ -2,9 +2,9 @@
 
 **Networked target status (2026-10-21):** the opt-in P02 PC lobby uses raw ENet and UDP discovery for host approval and seat readiness. P04 adds the scheduled network match and the Android client view. Preparatory P06 source adds an opt-in network live-build route (`-- --match-route=network_live_build`), which is unrun. The offline live-build route is a separate opt-in on the P12 room, with scheduled play remaining default and fallback. See [spec](NETWORKED_LIVE_BUILD.md), [tracker](PHASETASK_NETWORKED_LIVE_BUILD.md), [P02 evidence](evidence/nlb/p02/README.md), and [P05 engineering evidence](evidence/nlb/p05/README.md).
 
-**NLB-P00/P01/P02/P05 evidence:** offline baseline and tool/device facts are in [the P00 baseline](evidence/nlb/p00/baseline-2026-10-19.md); local action/seat and authority is [P01](evidence/nlb/p01/verification-2026-10-19.md); P02 host, discovery, admission and teardown are in [P02 evidence](evidence/nlb/p02/README.md); offline live-build implementation and synthetic test results are in [P05 evidence](evidence/nlb/p05/README.md). P02 passes; P05 acceptance remains partial/open. P03/P04 Android and transport work and the preparatory P06 source are recorded in their own evidence folders, with acceptance open.
+**NLB-P00/P01/P02/P05 evidence:** offline baseline and tool/device facts are in [the P00 baseline](evidence/nlb/p00/baseline-2026-10-19.md); local action/seat and authority is [P01](evidence/nlb/p01/verification-2026-10-19.md); P02 host, discovery, admission and teardown are in [P02 evidence](evidence/nlb/p02/README.md); offline live-build implementation and synthetic test results are in [P05 evidence](evidence/nlb/p05/README.md). P02 passes; P05 acceptance remains partial/open. P03/P04 Android and transport work and the preparatory P06 and P07 source are recorded in their own evidence folders, with acceptance open.
 
-P01 foundation plus P02 input/movement, P03 graybox stage/camera/support, P04 item infrastructure, P05 scheduled Place and the opt-in offline live-build route, P06 Karera with explained race results, scoped P07 First Playable, standalone P08 Lagsanay Lab, P09 full-match lifecycle, and P11 independent Kangaroo route run on Godot 4.7. The configured main scene opens the player-facing Title flow; pass `-- --harness` to open the local development harness. The player-facing default selects `P12ScheduledMatchRoom`; `-- --match-route=offline_live_build` selects `NLBP05LiveBuildMatchRoom`, while `-- --match-route=first_playable` remains available. Exact commands and controls are in the [README run instructions](../README.md#play-the-live-match-flow-p07-playtest-build). P02 passes; P05 broad safety/compatibility acceptance remains partial/open; P03 has a verified debug package but its retained Android runtime and physical-device evidence is incomplete. Network gameplay (P04) and live placement (P06) are not accepted; no human/device acceptance is implied.
+P01 foundation plus P02 input/movement, P03 graybox stage/camera/support, P04 item infrastructure, P05 scheduled Place and the opt-in offline live-build route, P06 Karera with explained race results, scoped P07 First Playable, standalone P08 Lagsanay Lab, P09 full-match lifecycle, and P11 independent Kangaroo route run on Godot 4.7. The configured main scene opens the player-facing Title flow; pass `-- --harness` to open the local development harness. The player-facing default selects `P12ScheduledMatchRoom`; `-- --match-route=offline_live_build` selects `NLBP05LiveBuildMatchRoom`, while `-- --match-route=first_playable` remains available. Exact commands and controls are in the [README run instructions](../README.md#play-the-live-match-flow-p07-playtest-build). P02 passes; P05 broad safety/compatibility acceptance remains partial/open; P03 has a verified debug package but its retained Android runtime and physical-device evidence is incomplete. Network gameplay (P04), live placement (P06) and the live content matrix (P07) are not accepted; no human/device acceptance is implied.
 
 | Area | P01 path | Responsibility and current state |
 |---|---|---|
@@ -305,3 +305,23 @@ The P04 runners are `tilaok!/tests/run_nlb_p04_tests.gd` and `run_nlb_p04_multi_
   - `network_live_placement_client.gd` and `network_match_presentation.gd` draw a tentative ghost, real footprints, the grace tell and the minimum phone Build/aim/Rotate/Place/Cancel controls.
 - **Input:** `local_input_router.gd` and `remote_seat_input_adapter.gd` accept the remote live actions. `live_build_confirm_enabled` lets keyboard south keys confirm in live rooms.
 - **Tests:** `tests/run_nlb_p06_tests.gd` and `tests/run_nlb_p06_multi_process.gd` (`-- client`, `-- phone`) are authored and have not run. P06 is 0/3 checked. See [P06 evidence and deferred commands](evidence/nlb/p06/README.md) and [contract v1.3](evidence/nlb/p00/protocol-measurement-contract-v1.3.md).
+
+## NLB-P07 live compatibility matrix and special cases — 2026-10-21 (preparatory, unrun)
+
+- **Matrix:** `tilaok!/scripts/network/nlb_live_compatibility_matrix.gd` (`NLBLiveCompatibilityMatrix`) is the single default-deny table for the networked live route. It has map, round/stack/sudden-death, item × mode and lifecycle cells, each with status, reason, minimum protocol/content and evidence.
+  - **Readers:** Pugad dealing (`NLBP06NetworkLiveBuildMatchRoom._prepare_pugad_pool`), the schedule (`schedule_pairs`, `available_modes`), the Barya offer, the start gate (`NetworkSessionManager.start_gate_status`, room `start_match`), commit-time intent checks, the host lobby list and the compatibility manifest digest.
+  - **Offline live route:** it reads its P05 slice from the same table (`offline_live_variants`).
+  - **Document:** [compatibility matrix](evidence/nlb/p07/compatibility-matrix.md).
+- **Development override:** `-- --nlb-unverified-content` (host, live route only; ignored on Android and release templates) is parsed in `game_flow.gd`. It is announced to clients through the v1.4 lifecycle flag.
+- **Wire, contract v1.4:**
+  - `network_frame.gd`: schema 4, mask `0x01FF`.
+  - `network_match_codec.gd`: transient records 6/7 with per-kind caps.
+  - `network_placement_codec.gd`: details 41–49.
+  - `network_session_manager.gd`: transient send/end/stale, 11-byte lifecycle.
+  - `network_match_presentation.gd`: transient drawing, banner.
+- **§6.2 special cases:**
+  - `item_manager.gd` (`apply_live_one_shot` entity age).
+  - `nlb_p05_live_build_match_room.gd` (`_live_effect_check`, `_live_effect_rects_in_flight`, Barya rejection code).
+  - `nlb_p06_network_live_build_match_room.gd` (`network_transient_states`, blast flashes).
+  - `match_room.gd` and `p12_scheduled_match_room.gd` gain no-op hooks only.
+- **Tests:** `tests/run_nlb_p07_tests.gd` and `tests/run_nlb_p07_matrix_runner.gd` are authored and have not run. P07 is 0/3 checked. See [P07 evidence and deferred commands](evidence/nlb/p07/README.md) and [contract v1.4](evidence/nlb/p00/protocol-measurement-contract-v1.4.md).

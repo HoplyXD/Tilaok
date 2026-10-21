@@ -1,6 +1,6 @@
 # Tilaok! — PC Host, Android Clients, and Live Placement Tracker
 
-**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Preparatory P06 source (contract v1.3 live placement, versioned terrain commits, opt-in network live route, minimum phone build controls) was authored 2026-10-21 under the same authorization; nothing in it has run and P06 remains 0/3 checked. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
+**Status (2026-10-21):** NLB-P00 documentation, P01 local action/authority, the P02 PC LAN lobby, P05 offline opt-in live-build implementation, and partial P03 Android lobby/export work have engineering evidence. P02 exit passes (3/3). P03 T01's Android debug export and package inspection pass (1/3 tasks); T02 Android runtime/host compatibility and retained T03 physical-device evidence remain open. P03 entry is no longer held by P02. Preparatory P04 source implementation is authorized while the recorded P03-T03 dependency remains open; P04 remains 0/3 checked and unverified. P05-T01 passes its own route acceptance; P05-T02/T03 remain open against their broader safety and regression criteria. Preparatory P06 source (contract v1.3 live placement, versioned terrain commits, opt-in network live route, minimum phone build controls) was authored 2026-10-21 under the same authorization; nothing in it has run and P06 remains 0/3 checked. Preparatory P07 source (contract v1.4, the default-deny live compatibility matrix with a dev-only `--nlb-unverified-content` host override, live transients, and the §6.2 item/event special cases) was authored 2026-10-21 under the same authorization; nothing in it has run and P07 remains 0/3 checked. **Spec:** [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md). **Legacy history:** [PHASETASK.md](PHASETASK.md) P00–P19 is preserved and is not renumbered or included in these counts.
 
 ## How to use this tracker
 
@@ -12,7 +12,7 @@
 
 ## Phase summary and counts
 
-Counts are derived from the task records in this document. Current (recounted from the task records, 2026-10-21): **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 8, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 15.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), P05 is PARTIAL (1/3), and P06 is PARTIAL (0/3 checked; preparatory source); P02 passes 3/3. P04's P03-T03 prerequisite, all P04 verification, and P06's P03-T03/P04-T03/P05-T03 dependencies remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
+Counts are derived from the task records in this document. Current (recounted from the task records, 2026-10-21): **12 phases, 36 tasks; 11/36 checked; 25 TODO; actual results PASSED 11, COULD-NOT-RUN 11, USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2, NOT RUN 12.** P03 is PARTIAL (1/3), P04 is PARTIAL (0/3 checked), P05 is PARTIAL (1/3), P06 is PARTIAL (0/3 checked; preparatory source), and P07 is PARTIAL (0/3 checked; preparatory source); P02 passes 3/3. P04's P03-T03 prerequisite, all P04 verification, P06's P03-T03/P04-T03/P05-T03 dependencies, and P07's P06-T03 dependency remain open. Legacy P00–P19 counts remain only in `docs/PHASETASK.md`.
 
 | Phase | Goal | Tasks | Dependencies | Status |
 |---|---|---:|---|---|
@@ -23,13 +23,13 @@ Counts are derived from the task records in this document. Current (recounted fr
 | NLB-P04 | Input transport, authoritative simulation and shared view | 3 | P03 | PARTIAL (0/3 checked; source verification open) |
 | NLB-P05 | Offline active-placement flow and safe commit | 3 | P01 | PARTIAL (1/3) |
 | NLB-P06 | Network placement replication and vertical slice | 3 | P04, P05 | PARTIAL (0/3 checked; preparatory source) |
-| NLB-P07 | All current content/modes/stacks compatibility | 3 | P06 | TODO |
+| NLB-P07 | All current content/modes/stacks compatibility | 3 | P06 | PARTIAL (0/3 checked; preparatory source) |
 | NLB-P08 | Pause, background, disconnect/reclaim, resync | 3 | P06 | TODO |
 | NLB-P09 | Results, sudden death, replay and teardown | 3 | P07, P08 | TODO |
 | NLB-P10 | Touch UX, tutorial, accessibility, mixed-device parity | 3 | P06 | TODO |
 | NLB-P11 | Scale, fault/performance QA, packaging and release gate | 3 | P09, P10 | TODO |
 
-**Status totals:** TODO 25 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 8 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 15. (2026-10-21 recount: the earlier "TODO 26" did not match the 25 unchecked TODO records.) Recalculate from records after every update; do not copy forward stale totals.
+**Status totals:** TODO 25 · BLOCKED 0 · DEFERRED 0 · IMPLEMENT 24 · VERIFY 12 · checked 11. Result totals: PASSED 11 · FAILED 0 · COULD-NOT-RUN 11 · USER-REPORTED PASS WITH EVIDENCE INCOMPLETE 2 · NOT RUN 12. (2026-10-21 recount: the earlier "TODO 26" did not match the 25 unchecked TODO records; the NLB-P07 preparatory delivery moved P07-T01/T02/T03 from NOT RUN to COULD-NOT-RUN.) Recalculate from records after every update; do not copy forward stale totals.
 
 ## Requirements
 
@@ -51,7 +51,7 @@ Counts are derived from the task records in this document. Current (recounted fr
 | NLB-REQ-014 | Measured host/phone performance, traffic, memory, battery and cleanup | NLB-P11-T01, NLB-P11-T02 |
 | NLB-REQ-015 | Physical device, mixed-seat, 2/3/4-phone, human and release evidence | NLB-P03-T03, NLB-P06-T03, NLB-P07-T03, NLB-P10-T03, NLB-P11-T01, NLB-P11-T03 |
 | NLB-REQ-016 | Preserve one host-owned RNG, timers, event outcomes and exact scores | NLB-P04-T01, NLB-P04-T02, NLB-P07-T02, NLB-P09-T01 |
-| NLB-REQ-017 | Compatibility checks reject stale/incompatible clients and content | NLB-P02-T02, NLB-P03-T02, NLB-P06-T02 |
+| NLB-REQ-017 | Compatibility checks reject stale/incompatible clients and content | NLB-P02-T02, NLB-P03-T02, NLB-P06-T02, NLB-P07-T01 |
 | NLB-REQ-018 | LAN Lobby ID is discovery lookup; QR/manual IP are explicit connection paths | NLB-P02-T01, NLB-P02-T02, NLB-P03-T01 |
 | NLB-REQ-019 | Live solid insertion/removal avoids trapping, crushing and unavoidable hits | NLB-P05-T02, NLB-P05-T03, NLB-P06-T01, NLB-P07-T02 |
 | NLB-REQ-020 | Early integrated PC + Android + local PC vertical slice | NLB-P06-T01, NLB-P06-T02, NLB-P06-T03 |
@@ -317,7 +317,7 @@ Counts are derived from the task records in this document. Current (recounted fr
 
 ## NLB-P07 — All existing content, modes, items, Barya, commands and stacks
 
-**Phase goal:** explicitly gate every current mode/map/item/stack for replicated live operation. **Entry:** P06 exit. **Dependencies:** P06. **Systems touched:** content manifest, event controllers, item runtime, map/stage replication, score ledger. **Decisions:** unsupported matrix entries stay disabled. **Exit:** every release-target content cell passes its owner-specific contract; no category is deferred under “polish.” **Evidence:** complete compatibility matrix and per-cell verification.
+**Phase goal:** explicitly gate every current mode/map/item/stack for replicated live operation. **Entry:** P06 exit. **Dependencies:** P06. **Systems touched:** content manifest, event controllers, item runtime, map/stage replication, score ledger. **Decisions:** unsupported matrix entries stay disabled; strict default-deny with a dev-only host override `--nlb-unverified-content` for ENGINEERING cells (user decision 2026-10-21); live explosives detonate at the host commit boundary with no new fuse (user decision 2026-10-21). **Exit:** every release-target content cell passes its owner-specific contract; no category is deferred under “polish.” **Evidence:** complete compatibility matrix and per-cell verification. **Status:** PARTIAL (0/3 checked; preparatory source). The user authorized preparatory implementation while the entry dependency remains open; that authorization clears no dependency. Contract: [v1.4](evidence/nlb/p00/protocol-measurement-contract-v1.4.md). Matrix: [compatibility-matrix.md](evidence/nlb/p07/compatibility-matrix.md). Evidence and deferred commands: [P07 evidence](evidence/nlb/p07/README.md).
 
 ### [ ] NLB-P07-T01 — IMPLEMENT — Build and enforce the compatibility matrix
 
@@ -327,7 +327,13 @@ Counts are derived from the task records in this document. Current (recounted fr
 - **Work:** enumerate all current maps, modes, variants, event stacks, sudden death and item combinations; attach minimum protocol/content version and an enabled/disabled reason per cell.
 - **Acceptance:** no content enters lobby pool unless host/client compatibility and verification status pass for that exact cell.
 - **Evidence:** signed-off matrix linked from spec and profile validation output.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):**
+  - `tilaok!/scripts/network/nlb_live_compatibility_matrix.gd` (new; 91 cells: 6 life, 4 map, 10 round, 70 variant × mode, Barya; 84 ENGINEERING, 7 DISABLED, 0 VERIFIED; `validate()`, `coverage_gaps()`, `start_gate()`, `live_variants()`, `offline_live_variants()`, `manifest_record()`);
+  - `compatibility_manifest.gd` (`live_matrix` in the digest);
+  - `nlb_p05_live_build_match_room.gd` (allowlist removed; offline slice from `offline_live` cells), `nlb_p06_network_live_build_match_room.gd` (per-round pool, schedule modes/stacks, Barya offer, start and commit gates), `match_room.gd` / `p12_scheduled_match_room.gd` (no-op hooks);
+  - `network_session_manager.gd` (live start gate, host lobby summary), `game_flow.gd` (override flag, effective map), `ui_lan_lobby_screen.gd` (host content list).
+  - Matrix document: [compatibility-matrix.md](evidence/nlb/p07/compatibility-matrix.md) (not signed off).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; P06-T03 and upstream dependencies open.
 
 ### [ ] NLB-P07-T02 — IMPLEMENT — Replicate item and event special cases
 
@@ -337,7 +343,11 @@ Counts are derived from the task records in this document. Current (recounted fr
 - **Work:** integrate Walis, explosives, movers, collapse/support, projectiles, captures, hazards, Barya, Rising, Freeze/Hug, Lagsanay, Kangaroo, stacks, terminal ordering, exact scores and Sudden Death under host authority.
 - **Acceptance:** each migrated behavior follows the special-case table in NETWORKED_LIVE_BUILD.md; host remains sole source of truth and reuses one rules implementation.
 - **Evidence:** per-family/stack coverage map, focused tests, authoritative result traces.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):**
+  - contract [v1.4](evidence/nlb/p00/protocol-measurement-contract-v1.4.md): `network_frame.gd` (schema 4, mask `0x01FF`), `network_match_codec.gd` (transient records 6/7, per-kind caps, no truncation), `network_placement_codec.gd` (details 41–49), `network_session_manager.gd` (11-byte lifecycle with unverified flag, transient send/end/stale, overflow resync), `network_match_presentation.gd` (transient drawing, banner);
+  - `item_manager.gd` (live one-shot crash fix, entity-age targets for Walis/explosives), `nlb_p05_live_build_match_room.gd` (lethal clearance, in-flight effect check, fall path, Barya rejection code, same-tick ordering audit), `nlb_p06_network_live_build_match_room.gd` (transient collector, blast flashes).
+  - Coverage map: [compatibility-matrix.md §6.2 table](evidence/nlb/p07/compatibility-matrix.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; P06-T03 and upstream dependencies open.
 
 ### [ ] NLB-P07-T03 — VERIFY — All mode/map/item regression and physical mix
 
@@ -347,7 +357,8 @@ Counts are derived from the task records in this document. Current (recounted fr
 - **Work:** run all enabled compatibility cells at 2/3/4 total players, including Barya, exact scoring, persistent terrain, event stacks and map transitions.
 - **Acceptance:** exact score comparison matches offline source rules; unsupported cells cannot be selected; physical and synthetic evidence are labeled separately.
 - **Evidence:** complete matrix results, logs, builds, physical-device list and reviewer notes.
-- **Status:** TODO · **Actual result:** NOT RUN.
+- **Implementation (preparatory, unverified):** authored `tilaok!/tests/run_nlb_p07_tests.gd` and `tilaok!/tests/run_nlb_p07_matrix_runner.gd` (round cells at 2/3/4 seats against the offline P12 oracle; synthetic only); physical session sheet and exact deferred commands in [P07 evidence](evidence/nlb/p07/README.md).
+- **Status:** TODO · **Actual result:** COULD-NOT-RUN — preparatory source only; deferred while the shared laptop is in use; P06-T03 and upstream dependencies open.
 
 ## NLB-P08 — Pause, background, disconnect/reclaim, and resynchronization
 

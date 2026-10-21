@@ -14,3 +14,5 @@ The opt-in room applies a three-variant construction allowlist before Pugad gene
 | Other P12 events and sudden death | P12 schedule, terminal ordering, and same-stage sudden-death controller are inherited. No Pugad or new item is started for sudden death. | Existing P08/P09/P11/P12 suites pass; full P05 live event and sudden-death matrix remains open. |
 
 This manifest reflects the P05 route's actual runtime allowlist, not the default P12 pool or the separate first-playable route. The allowlist is intentionally small while live-specific content safety evidence is incomplete. No P07-wide certification is claimed.
+
+**Forward link (2026-10-21):** the hard-coded allowlist was replaced by the preparatory [NLB-P07 compatibility matrix](../p07/compatibility-matrix.md). The offline live route keeps exactly these three variants through its `offline_live` cells; the networked live route uses the matrix's default-deny cells. Neither is verified.

@@ -1,6 +1,6 @@
 # Tilaok! Verification and Playtest Plan
 
-**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 has bounded runtime evidence: the focused 35-check suite and a separate-process host/client run passed, and a physical phone was admitted with snapshot readiness and remote movement. ENet channel, loss/recovery, rendered and full acceptance checks remain open. Preparatory NLB-P06 live-placement source and its runners are authored; none has run (see the NLB-P06 section below). New testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
+**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 has bounded runtime evidence: the focused 35-check suite and a separate-process host/client run passed, and a physical phone was admitted with snapshot readiness and remote movement. ENet channel, loss/recovery, rendered and full acceptance checks remain open. Preparatory NLB-P06 live-placement source and NLB-P07 content-matrix/special-case source and their runners are authored; none has run (see the NLB-P06 and NLB-P07 sections below). New testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
 
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
@@ -784,7 +784,7 @@ This is synthetic engineering evidence for the explicit offline live-build route
 | Full results/replay cycles and baseline/live performance under recorded load | Replay semantics plus comparative frame/resource samples; 16.67 ms / 512 MiB / 0 B/s target record | Replay and comparative performance were not run; thresholds remain targets only | COULD NOT RUN |
 | Human/device review | Independent human session and physical gamepad evidence | No such session occurred | COULD NOT RUN |
 
-The opt-in content availability matrix and disabled-cell handling are in the [P05 content manifest](evidence/nlb/p05/content-manifest.md); this does not certify the full P07 catalog.
+The opt-in content availability matrix and disabled-cell handling are in the [P05 content manifest](evidence/nlb/p05/content-manifest.md); this does not certify the full P07 catalog. The networked live route now uses the preparatory, unverified [NLB-P07 compatibility matrix](evidence/nlb/p07/compatibility-matrix.md); the offline live route keeps the same P05 slice through it.
 
 ## NLB-P02 PC host lobby verification — 2026-10-20
 
@@ -840,3 +840,27 @@ This section records authored source and runners only. It is not a human playtes
 | Loss/reorder/duplicate replay and terrain diff audit | COULD-NOT-RUN | Authored as in-process cases; deferred |
 | Android export/install, rendered host/client captures | COULD-NOT-RUN | Deferred; no network-client capture runner exists yet |
 | Performance (host 60 Hz / 16.67 ms; phone ≥30 FPS, p95 ≤33.3 ms; 512 MiB) | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |
+
+## NLB-P07 live compatibility matrix and special cases — preparatory status, 2026-10-21
+
+This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use.
+
+- **Matrix:** the networked live route now takes its content from the default-deny [compatibility matrix](evidence/nlb/p07/compatibility-matrix.md). It has 91 cells: 84 ENGINEERING, 7 DISABLED and none VERIFIED.
+  - A strict host refuses the live route.
+  - A PC host started with `-- --nlb-unverified-content` plays ENGINEERING cells. Its clients show "UNVERIFIED CONTENT — development host; results are not evidence."
+  - The scheduled network route and both offline routes are unchanged.
+- **Contract:** [v1.4](evidence/nlb/p00/protocol-measurement-contract-v1.4.md).
+- **Deferred commands and physical session sheet:** in [P07 evidence](evidence/nlb/p07/README.md).
+- **Open dependencies:** P06-T03 and the upstream P03-T03, P04-T03 and P05-T02/T03.
+
+| Check | Result | Reason / limit |
+|---|---|---|
+| Godot import/parse of the new and changed scripts | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| gdlint / gdformat | COULD-NOT-RUN | Tool absent (not installed by request); deferred |
+| `run_nlb_p07_tests.gd` (matrix schema/enumeration/default deny/override/start gate/digest/document parity, v1.4 codecs and caps, reason map, build controls vs Freeze, host enforcement, one-shot entity age, lethal clearance, fall path) | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| `run_nlb_p07_matrix_runner.gd` (round cells at 2/3/4 seats vs the offline P12 oracle; exact eighth-point totals) | COULD-NOT-RUN | Deferred; synthetic seats only, never physical evidence |
+| Regressions: NLB P01–P06, P12, P12 pairs/stack, Barya, explosives, item/mode integration, maps, blocks, P10, P19, controls, match UI, P13 navigation | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Multi-process live slice ×2 (now under the development override) | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Physical mixed-device matrix at 2/3/4 total players | COULD-NOT-RUN | Deferred; needs an APK from this revision (a P06 APK is refused at hello) and a real reviewer |
+| Android export/install | COULD-NOT-RUN | Deferred while the shared laptop is in use |
+| Performance and transient bandwidth | COULD-NOT-RUN | Targets remain PROPOSED/UNMEASURED |

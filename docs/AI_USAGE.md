@@ -66,6 +66,29 @@ At the user's explicit authorization of NLB-P06 as preparatory implementation, t
 
 While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, multi-process or phone session, ADB, network listener, capture, lint or performance measurement. Only `git diff --check`, git status and manual source review were performed. All three P06 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. Dependencies P03-T03, P04-T03 and P05-T03 remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; the client visuals are code-drawn placeholders. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P06 evidence and exact deferred commands](evidence/nlb/p06/README.md).
 
+### NLB-P07 preparatory live compatibility matrix and special cases — October 21, 2026
+
+At the user's explicit authorization of NLB-P07 as preparatory implementation, the AI coding agent Claude Code (Claude Opus 5.5, model `claude-opus-5-5`) authored the following. The user chose strict default-deny with a dev-only host override, explosive detonation at the host commit boundary, and delivery as several commits.
+
+- the default-deny `NLBLiveCompatibilityMatrix` (91 cells; none VERIFIED). It replaces the P05/P06 hard-coded live allowlist. It drives per-round Pugad dealing, schedule modes and stacks, the Barya offer, the start gate, commit-time intent checks, the host lobby content list and the compatibility manifest digest. The offline live route keeps its P05 slice through it.
+- the `--nlb-unverified-content` development override and its client banner;
+- the P00 contract v1.4 amendment and its source: schema 4, required mask `0x01FF`, bounded live transient and transient-end records with per-kind caps and no truncation, the 11-byte match lifecycle, and placement details 41–49;
+- the host transient collector and client drawing;
+- the §6.2 live special cases:
+  - Walis/explosive entity age and a fix for a live one-shot crash;
+  - the lethal-clearance, in-flight effect and fall-path checks;
+  - the Barya rejection code;
+  - the same-tick ordering and Freeze/Hug audit;
+- the authored `run_nlb_p07_tests.gd` and `run_nlb_p07_matrix_runner.gd`;
+- P04/P06 test and runner updates for the schema and override;
+- the P07 evidence, matrix document, tracker and status documentation.
+
+While the user's game was running on the shared laptop, nothing was launched or run: no Godot editor, game, headless run, script, import, export, test suite, multi-process or phone session, ADB, network listener, capture, lint or performance measurement. Only `git diff --check`, git status, grep audits and manual source review were performed.
+
+The matrix document rows were produced by a scratch script that mirrors the matrix rules. The deferred P07 suite checks them against the real table.
+
+All three P07 tracker boxes remain unchecked, with the actual result `COULD-NOT-RUN`. P06-T03 and the upstream dependencies remain open, and this authorization does not clear them. No human review is claimed. No art, audio or other production asset was generated; transient visuals are code-drawn placeholders. The code is original to this task, with no Ultimate Chicken Horse or third-party core implementation copied; provenance review remains the team's responsibility. See [P07 evidence and exact deferred commands](evidence/nlb/p07/README.md).
+
 ## Form 03 preparation
 
 The team must choose the official extent category (Minimal / Moderate / Heavy) based on all project-wide AI work and obtain required signatures. Do not claim the project is unaided. Keep this record aligned with actual assistance, asset records, prompts/history and repository history. Review factual claims, cultural names, gameplay rules and citations before submission. Do not invent missing prompts or review evidence.
