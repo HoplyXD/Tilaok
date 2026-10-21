@@ -84,6 +84,12 @@ func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 	if get_tree().paused or not _simulation_can_commit():
 		return
+	# Same-tick order (contract v1.3 §3, NLB-P07 §6.2 audit): super resolves this tick's terminal
+	# outcomes first, including Kangaroo Rising against the host support tracker and Freeze/Hug
+	# against host input edges and contacts. Edits drained below are accepted after that, so every
+	# evaluation sees exactly the edits accepted before its tick; a removal invalidates support at
+	# once (P12 table C8). Build aim/rotate/confirm are not movement edges, so they never become
+	# Freeze intent, and building never changes a chicken's eligibility or Hug contacts.
 	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
 		_resolve_live_placement_boundary()
 	elif phase_controller.phase != MatchPhaseController.Phase.GO:
@@ -433,7 +439,7 @@ func _commit_live_intent(seat_index: int, intent: Dictionary, boundary: int) -> 
 			return _live_result(
 				base,
 				false,
-				str(objective_verdict.get("code", "objective_invalid")),
+				str(objective_verdict.get("code", "objective_rejected")),
 				str(objective_verdict.get("reason", "Barya cannot be placed there."))
 			)
 		var objective := _commit_round_objective_placement(
@@ -444,10 +450,13 @@ func _commit_live_intent(seat_index: int, intent: Dictionary, boundary: int) -> 
 				"quarter_turns": turns,
 			}
 		)
+		# A refused commit (stale assignment, coin scene) is a rejection on the wire, not an
+		# accepted objective with an INTERNAL_RETRY reason (NLB-P07 fix).
+		var objective_allowed := bool(objective.get("allowed", false))
 		var objective_result := _live_result(
 			base,
-			bool(objective.get("allowed", false)),
-			"objective",
+			objective_allowed,
+			"objective" if objective_allowed else "objective_rejected",
 			str(objective.get("reason", "Barya placed."))
 		)
 		objective_result["objective"] = true
