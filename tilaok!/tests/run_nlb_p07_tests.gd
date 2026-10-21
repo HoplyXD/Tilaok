@@ -90,7 +90,8 @@ func _test_matrix_schema_and_enumeration() -> void:
 		if str(cells[cell_id].axis) == M.AXIS_ITEM:
 			item_cells += 1
 	_check(item_cells == expected_items + 1, "item cells = catalog variant x allowed mode (%d) + Barya" % expected_items)
-	_check(expected_items == 74, "the current catalog yields 74 variant x mode cells (34 variants)")
+	_check(expected_items == 70, "the current catalog yields 70 variant x mode cells (34 variants)")
+	_check(cells.size() == 91, "the matrix has 91 cells (6 life, 4 map, 10 round, 70 item, Barya)")
 	for map_id in MapCatalog.ids():
 		_check(cells.has(M.map_cell_id(map_id)), "map cell %s enumerated" % map_id)
 	for mode_id in DiagnosticContentCatalog.MODES:
