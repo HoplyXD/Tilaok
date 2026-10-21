@@ -43,7 +43,10 @@ const REMOTE_ACTIONS := [
 	"ready",
 	"claim",
 	"cheer",
-	"help"
+	"help",
+	"build_toggle",
+	"live_rotate",
+	"live_cancel"
 ]
 ## The physical Rotate control (West / R / Right Shift) is context-sensitive: it opens the Library
 ## from the Lobby ("help") and cheers from the stands during Play ("cheer"). Rotation itself is
@@ -62,6 +65,8 @@ var tuning: GameplayTuning
 var phase := Phase.LOBBY
 var shared_keyboard_enabled := false
 var rotation_supported := false
+## Set only by live-build rooms: keyboard south keys then confirm a live placement during Play.
+var live_build_confirm_enabled := false
 var _held: Dictionary = {}
 var _pressed: Dictionary = {}
 var _blocked: Dictionary = {}
@@ -1078,5 +1083,7 @@ func _keyboard_south_action() -> String:
 	if phase == Phase.PUGAD:
 		return "claim"
 	if phase in [Phase.MENU, Phase.PLACE, Phase.PAUSE, Phase.RESULTS]:
+		return "confirm"
+	if phase == Phase.PLAY and live_build_confirm_enabled:
 		return "confirm"
 	return ""

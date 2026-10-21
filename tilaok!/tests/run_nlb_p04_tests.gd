@@ -25,7 +25,8 @@ func _run() -> void:
 
 
 func _test_wire_channels_and_inputs() -> void:
-	_check(NetworkFrame.MAJOR == 1 and NetworkFrame.MINOR == 2 and NetworkFrame.SCHEMA == 2, "P04 wire version")
+	# NLB-P06 (contract v1.3) raised the schema to 3; the envelope stays 1.2 and P04 families keep their layout.
+	_check(NetworkFrame.MAJOR == 1 and NetworkFrame.MINOR == 2 and NetworkFrame.SCHEMA == 3, "P04 wire version (schema 3 since NLB-P06)")
 	_check(NetworkFrame.family_allowed_on_channel(NetworkFrame.Family.CONTINUOUS_INPUT, RawEnetTransport.INPUT_CHANNEL), "continuous input channel")
 	_check(not NetworkFrame.family_allowed_on_channel(NetworkFrame.Family.CONTINUOUS_INPUT, RawEnetTransport.CONTROL_CHANNEL), "input wrong channel rejected")
 	_check(NetworkFrame.family_allowed_on_channel(NetworkFrame.Family.STATE_UPDATE, RawEnetTransport.STATE_CHANNEL), "state channel")

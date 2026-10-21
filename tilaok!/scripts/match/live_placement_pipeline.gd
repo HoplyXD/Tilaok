@@ -161,6 +161,23 @@ func cached_result(request_id: String) -> Dictionary:
 	)
 
 
+func pending_requests() -> Array[Dictionary]:
+	return pending.duplicate()
+
+
+## Removes one seat's queued request (for example when its network peer disconnects) and returns
+## the removed receipts. The request record stays so an exact retry still finds its result.
+func cancel_seat(seat_index: int) -> Array[Dictionary]:
+	var removed: Array[Dictionary] = []
+	for entry in pending:
+		if int(entry.seat_index) == seat_index:
+			removed.append(entry)
+	for entry in removed:
+		pending.erase(entry)
+	pending_by_seat.erase(seat_index)
+	return removed
+
+
 func close_attempt() -> void:
 	pending.clear()
 	pending_by_seat.clear()

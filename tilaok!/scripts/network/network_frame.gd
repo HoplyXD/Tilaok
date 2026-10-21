@@ -3,21 +3,27 @@ class_name NetworkFrame
 extends RefCounted
 
 ## Exact TILK v1 envelope. Application payloads are raw ENet bytes; no Variant/RPC framing.
+## Contract v1.3 keeps envelope minor 2 so older binaries can still read the host welcome and show
+## the readable build-mismatch notice; live placement is gated by schema 3 and a required feature.
 const MAGIC := "TILK"
 const MAJOR := 1
 const MINOR := 2
-const SCHEMA := 2
+const SCHEMA := 3
 const FEATURE_BASE_MASK := 0x000f
 const FEATURE_LOGICAL_INPUT := 0x0010
 const FEATURE_AUTHORITATIVE_VIEW := 0x0020
 const FEATURE_SNAPSHOT_RECOVERY := 0x0040
 const FEATURE_P04_MASK := 0x007f
+const FEATURE_LIVE_PLACEMENT := 0x0080
+const FEATURE_P06_MASK := 0x00ff
 const HEADER_BYTES := 22
 const MAX_FRAME_BYTES := 900
+const MAX_PAYLOAD_BYTES := MAX_FRAME_BYTES - HEADER_BYTES
 const MAX_DISCOVERY_BYTES := 256
 const DISCOVERY_FAMILIES := [1, 2]
 const FAMILIES := [
-	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26
+	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+	27, 28, 29
 ]
 
 enum Family {
@@ -47,6 +53,9 @@ enum Family {
 	SYNC_READY = 0x18,
 	AUTHORITATIVE_EVENT = 0x19,
 	TERRAIN_COMMIT = 0x1A,
+	PLACEMENT_INTENT = 0x1B,
+	PLACEMENT_RESULT = 0x1C,
+	LIVE_SEAT_STATE = 0x1D,
 }
 
 

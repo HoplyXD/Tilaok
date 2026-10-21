@@ -23,11 +23,15 @@ const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 ## Explicit local-only live-build route; the default scheduled route remains reversible.
 const OFFLINE_LIVE_BUILD_SCENE := preload("res://scenes/match/nlb_p05_live_build_room.tscn")
+## Explicit PC-host opt-in for the networked live-build round (NLB-P06). Without it every network
+## match stays on the scheduled LIFECYCLE_SCENE; offline routes are unaffected by this flag.
+const NETWORK_LIVE_BUILD_SCENE := preload("res://scenes/match/nlb_p06_network_live_build_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const MAP_PREFIX := "--map="
 const ROUTE_LIFECYCLE := "lifecycle"
 const ROUTE_FIRST_PLAYABLE := "first_playable"
 const ROUTE_OFFLINE_LIVE_BUILD := "offline_live_build"
+const ROUTE_NETWORK_LIVE_BUILD := "network_live_build"
 ## `-- --match-seed=3` reproduces a match for a facilitator or a bug report (never shown in play).
 const SEED_PREFIX := "--match-seed="
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
@@ -65,6 +69,8 @@ var network_session: NetworkSessionManager
 var network_presentation: NetworkMatchPresentation
 ## The map for the next match (MapCatalog id; "default" is the built-in stage). Session only.
 var selected_map_id := MapCatalog.DEFAULT_ID
+## True only for `-- --match-route=network_live_build` on a non-Android host.
+var network_live_build_requested := false
 
 var _screen: UiScreen
 
@@ -98,6 +104,11 @@ func _ready() -> void:
 			push_warning(
 				"offline_live_build requires OFFLINE_AUTHORITY; keeping the scheduled route"
 			)
+	elif requested_route == ROUTE_NETWORK_LIVE_BUILD:
+		if android_client:
+			push_warning("network_live_build is a PC-host option; Android follows the host route")
+		else:
+			network_live_build_requested = true
 	PresentationApplier.apply(settings)
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
@@ -110,6 +121,11 @@ func _ready() -> void:
 	network_session.name = "NetworkSession"
 	add_child(network_session)
 	network_session.configure(router)
+	network_session.network_route = (
+		NetworkSessionManager.ROUTE_LIVE_BUILD
+		if network_live_build_requested
+		else NetworkSessionManager.ROUTE_SCHEDULED
+	)
 	network_session.network_match_start_requested.connect(_enter_network_match)
 	network_session.network_match_start_received.connect(_enter_client_network_match)
 	bridge = UiInputBridge.new()
@@ -257,7 +273,13 @@ func _create_authoritative_match(network_match: bool) -> void:
 	if not network_match:
 		for seat in router.registry.joined_seats():
 			router.registry.set_ready(int(seat.seat), false)
-	var selected_scene := LIFECYCLE_SCENE if network_match else match_scene
+	var selected_scene := match_scene
+	if network_match:
+		selected_scene = (
+			NETWORK_LIVE_BUILD_SCENE
+			if network_session.network_route == NetworkSessionManager.ROUTE_LIVE_BUILD
+			else LIFECYCLE_SCENE
+		)
 	room = selected_scene.instantiate() as P05MatchRoom
 	var requested_seed := seed_from_args(OS.get_cmdline_user_args())
 	if requested_seed >= 0:
@@ -443,6 +465,8 @@ func _quit() -> void:
 
 
 func _route_name() -> String:
+	if network_live_build_requested:
+		return ROUTE_NETWORK_LIVE_BUILD
 	if match_scene == MATCH_SCENE:
 		return ROUTE_FIRST_PLAYABLE
 	if match_scene == OFFLINE_LIVE_BUILD_SCENE:
@@ -485,7 +509,9 @@ static func route_from_args(arguments: PackedStringArray) -> String:
 		if not argument.begins_with(ROUTE_PREFIX):
 			continue
 		var value := argument.trim_prefix(ROUTE_PREFIX)
-		if value in [ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE, ROUTE_OFFLINE_LIVE_BUILD]:
+		if value in [
+			ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE, ROUTE_OFFLINE_LIVE_BUILD, ROUTE_NETWORK_LIVE_BUILD
+		]:
 			result = value
 	return result
 

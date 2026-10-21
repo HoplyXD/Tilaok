@@ -2,9 +2,18 @@ class_name NetworkMatchPresentation
 extends Control
 
 ## Read-only client canvas. It consumes detached codec records and never creates gameplay nodes,
-## collision shapes, hazards, score logic, or simulation clocks.
+## collision shapes, hazards, score logic, or simulation clocks. On the opt-in live-build route it
+## also draws a tentative ghost (NetworkLivePlacementClient) that is never shown as committed.
 
+const GRID_CELL_WU := 64.0
+## Indexed by MatchPhaseController.Phase (LOBBY, PUGAD, PLACE, PLAY, RESULTS, GO).
+const PHASE_NAMES := ["Lobby", "Pugad", "Place", "Play", "Results", "Go"]
+const LIVE_BUTTON_SIZE := 72.0
+
+## Lets a desktop test or capture show the touch controls; Android always builds them.
+var touch_controls_forced := false
 var network_session: NetworkSessionManager
+var live_client := NetworkLivePlacementClient.new()
 var _state: Dictionary = {}
 var _seat_buffer: Dictionary = {}
 var _last_drawn_ms := 0
@@ -13,6 +22,12 @@ var _last_snapshot_id := -1
 var _last_phase := -1
 var _layout: ArenaLayout
 var _status_label: Label
+var _phone_controls_built := false
+var _live_controls: GridContainer
+var _live_buttons: Dictionary = {}
+var _axis_x := 0
+var _catalog: ItemDefinitions
+var _footprints: Dictionary = {}
 
 
 func _ready() -> void:
@@ -22,7 +37,7 @@ func _ready() -> void:
 	_status_label.position = Vector2(24, 18)
 	_status_label.add_theme_font_size_override("font_size", 22)
 	add_child(_status_label)
-	if OS.has_feature("android"):
+	if _touch_enabled():
 		_build_phone_controls()
 
 
@@ -30,18 +45,39 @@ func bind_session(session: NetworkSessionManager) -> void:
 	network_session = session
 	if session != null and not session.match_state_received.is_connected(apply_state):
 		session.match_state_received.connect(apply_state)
+	if session != null and not session.terrain_resync_changed.is_connected(_on_terrain_resync):
+		session.terrain_resync_changed.connect(_on_terrain_resync)
+	live_client.bind(session)
+	if session != null and session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD and _touch_enabled():
+		_build_live_controls()
 	if session != null and not session.client_replica_state.is_empty():
 		apply_state(session.client_replica_state)
 
 
 func _exit_tree() -> void:
+	live_client.unbind()
 	if network_session != null and is_instance_valid(network_session):
 		if network_session.match_state_received.is_connected(apply_state):
 			network_session.match_state_received.disconnect(apply_state)
-		if OS.has_feature("android"):
+		if network_session.terrain_resync_changed.is_connected(_on_terrain_resync):
+			network_session.terrain_resync_changed.disconnect(_on_terrain_resync)
+		if _touch_enabled():
 			network_session.client_set_continuous_input([0, 0])
 			for action_id in [0, 1, 2, 3, 4, 9, 10, 11]:
 				network_session.client_set_action(action_id, false)
+
+
+func _process(delta: float) -> void:
+	if network_session == null or network_session.client_route != NetworkSessionManager.ROUTE_LIVE_BUILD:
+		return
+	var was_visible := live_client.ghost_visible()
+	var previous_cell := live_client.cell
+	live_client.process(delta)
+	_push_input()
+	_refresh_live_buttons()
+	if was_visible or live_client.ghost_visible() or previous_cell != live_client.cell:
+		_status_label.text = _host_status_text()
+		queue_redraw()
 
 
 func apply_state(state: Dictionary) -> void:
@@ -51,6 +87,8 @@ func apply_state(state: Dictionary) -> void:
 	var next_phase := int(next_metadata.get("phase", -1))
 	if next_snapshot_id != _last_snapshot_id or next_phase != _last_phase:
 		_seat_buffer.clear()
+	if next_phase != _last_phase and next_phase != MatchPhaseController.Phase.PLAY:
+		live_client.reset()
 	_last_snapshot_id = next_snapshot_id
 	_last_phase = next_phase
 	_state = state.duplicate(true)
@@ -80,7 +118,6 @@ func apply_state(state: Dictionary) -> void:
 func _host_status_text() -> String:
 	var metadata: Dictionary = _state.get("metadata", {})
 	var phase := int(metadata.get("phase", 0))
-	var phase_name := ["Lobby", "Pugad", "Place", "Play", "Results", "Pause", "Results", "Go"]
 	var remaining_ms := int(metadata.get("remaining_ms", 0))
 	if not bool(metadata.get("paused", false)) and _received_at_ms > 0:
 		remaining_ms -= Time.get_ticks_msec() - _received_at_ms
@@ -98,7 +135,14 @@ func _host_status_text() -> String:
 	var event_clock_ms := int(event_context.get("event_clock_ms", 0))
 	if event_clock_ms > 0:
 		event_text += "  ·  %.1fs" % (float(event_clock_ms) / 1000.0)
-	return "Tilaok!  ·  %s%s  ·  Round %d  ·  %.1fs" % [phase_name[mini(phase, phase_name.size() - 1)], event_text, round_number, remaining]
+	var phase_name: String = PHASE_NAMES[clampi(phase, 0, PHASE_NAMES.size() - 1)]
+	var text := "Tilaok!  ·  %s%s  ·  Round %d  ·  %.1fs" % [phase_name, event_text, round_number, remaining]
+	if network_session != null and network_session.client_route == NetworkSessionManager.ROUTE_LIVE_BUILD:
+		if network_session.terrain_gap:
+			text += "\nResyncing the stage…"
+		elif not live_client.notice.is_empty():
+			text += "\n" + live_client.notice
+	return text
 
 
 func _draw() -> void:
@@ -121,17 +165,9 @@ func _draw() -> void:
 	for entity in entities.values():
 		if not entity.has("variant_key"):
 			continue
-		var point: Vector2 = origin + entity.position * scale_factor
-		var tint := Color("#d8bb82")
-		if str(entity.variant_key).contains("bamboo"):
-			tint = Color("#78a96b")
-		elif str(entity.variant_key).contains("tire"):
-			tint = Color("#52616b")
-		elif str(entity.variant_key).contains("collapsing"):
-			tint = Color("#c89955")
-		if (int(entity.get("state_flags", 0)) & 6) == (StageBlock.CollapseState.GONE << 1):
-			tint = Color("#777c78")
-		draw_rect(Rect2(point - Vector2(48, 12) * scale_factor, Vector2(96, 24) * scale_factor), tint, true)
+		_draw_entity(entity, origin, scale_factor)
+	if live_client.ghost_visible():
+		_draw_ghost(origin, scale_factor)
 	for seat_id in seats.keys():
 		var seat: Dictionary = seats[seat_id]
 		var point := origin + _interpolated_position(int(seat_id), seat.position) * scale_factor
@@ -151,6 +187,81 @@ func _draw() -> void:
 		draw_circle(coin_point, 11.0 * scale_factor, Color("#f4d05c"))
 		draw_arc(coin_point, 14.0 * scale_factor, 0.0, TAU, 20, Color("#fff4b8"), 3.0 * scale_factor)
 	_draw_score_rows(size, seats)
+
+
+## Committed host terrain: its real footprint and rotation from the local draw-only catalog, with
+## the stage record position as the top-left corner. A live piece in its safe grace gets a dashed
+## outline, an hourglass and its remaining time, so the tell never depends on colour alone.
+func _draw_entity(entity: Dictionary, origin: Vector2, scale_factor: float) -> void:
+	var key := str(entity.variant_key)
+	var known := _footprint_cells(key) != Vector2i.ZERO
+	var size := _footprint_size(key, int(entity.get("rotation", 0)))
+	var rect := Rect2(origin + entity.position * scale_factor, size * scale_factor)
+	var tint := Color("#d8bb82")
+	if key.contains("bamboo"):
+		tint = Color("#78a96b")
+	elif key.contains("tire"):
+		tint = Color("#52616b")
+	elif key.contains("collapsing"):
+		tint = Color("#c89955")
+	if (int(entity.get("state_flags", 0)) & 6) == (StageBlock.CollapseState.GONE << 1):
+		tint = Color("#777c78")
+	var outline := Color("#2a1f14")
+	if not known:
+		draw_rect(rect, outline, false, 2.0)
+		draw_string(ThemeDB.fallback_font, rect.get_center() + Vector2(-4, 6), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color.WHITE)
+		return
+	if int(entity.get("lifecycle", 0)) == NetworkPlacementCodec.Lifecycle.GRACE:
+		draw_rect(rect, Color(tint, 0.55), true)
+		_draw_dashed_rect(rect, Color("#fff4b8"), 3.0)
+		var seconds := float(int(entity.get("timer_ms", 0))) / 1000.0
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(4, 18), "⌛ %.1fs" % seconds, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
+		return
+	draw_rect(rect, tint, true)
+	draw_rect(rect, outline, false, 2.0)
+
+
+## The local tentative ghost: dashed outline, no fill, and a text state. It is never drawn as
+## solid terrain; a rejection shows a cross and its reason.
+func _draw_ghost(origin: Vector2, scale_factor: float) -> void:
+	var world := Vector2(live_client.cell) * GRID_CELL_WU
+	var size := live_client.footprint_size_wu(GRID_CELL_WU)
+	var rect := Rect2(origin + world * scale_factor, size * scale_factor)
+	var color := Color.WHITE
+	if live_client.state == NetworkLivePlacementClient.GhostState.PENDING:
+		color = Color("#ffe08a")
+	elif live_client.state == NetworkLivePlacementClient.GhostState.REJECTED:
+		color = Color("#ff9a8a")
+		draw_line(rect.position, rect.end, color, 3.0)
+		draw_line(Vector2(rect.position.x, rect.end.y), Vector2(rect.end.x, rect.position.y), color, 3.0)
+	_draw_dashed_rect(rect, color, 3.0)
+	draw_string(ThemeDB.fallback_font, rect.position + Vector2(0, -8), live_client.ghost_label(), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, color)
+
+
+func _draw_dashed_rect(rect: Rect2, color: Color, width: float) -> void:
+	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
+	for index in corners.size():
+		draw_dashed_line(corners[index], corners[(index + 1) % corners.size()], color, width, 8.0)
+
+
+func _footprint_cells(variant_key: String) -> Vector2i:
+	if _footprints.has(variant_key):
+		return _footprints[variant_key]
+	if _catalog == null:
+		_catalog = ItemDefinitions.load_all(GameplayTuning.new())
+	var found := _catalog.find_variant(variant_key)
+	var cells := Vector2i.ZERO
+	if not found.is_empty():
+		cells = (found.variant as ItemVariantDefinition).footprint_cells
+	_footprints[variant_key] = cells
+	return cells
+
+
+func _footprint_size(variant_key: String, rotation: int) -> Vector2:
+	var cells := _footprint_cells(variant_key)
+	if cells == Vector2i.ZERO:
+		cells = Vector2i.ONE
+	return ItemGeometry.rotated_size(Vector2(cells) * GRID_CELL_WU, rotation)
 
 
 func _interpolated_position(seat_id: int, fallback: Vector2) -> Vector2:
@@ -174,7 +285,14 @@ func _draw_score_rows(size: Vector2, seats: Dictionary) -> void:
 		index += 1
 
 
+func _touch_enabled() -> bool:
+	return OS.has_feature("android") or touch_controls_forced
+
+
 func _build_phone_controls() -> void:
+	if _phone_controls_built:
+		return
+	_phone_controls_built = true
 	var panel := HBoxContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	panel.offset_top = -88
@@ -219,6 +337,75 @@ func _build_phone_controls() -> void:
 	panel.add_child(back)
 
 
+## Minimum live-build cluster (NLB-P06), right side above the existing row: Build, a four-way aim
+## pad that moves only the ghost, Rotate, Place and Cancel. Movement buttons keep working while
+## building. Full touch UX, dp scaling and the accessibility audit remain P10 work.
+func _build_live_controls() -> void:
+	if _live_controls != null:
+		return
+	_live_controls = GridContainer.new()
+	_live_controls.columns = 3
+	_live_controls.add_theme_constant_override("h_separation", 6)
+	_live_controls.add_theme_constant_override("v_separation", 6)
+	_live_controls.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	var span := LIVE_BUTTON_SIZE * 3.0 + 12.0
+	_live_controls.offset_right = -8
+	_live_controls.offset_left = -8 - span
+	_live_controls.offset_bottom = -96
+	_live_controls.offset_top = -96 - span
+	add_child(_live_controls)
+	var layout := [
+		["build", "Build"], ["aim_up", "▲ Aim"], ["rotate", "Rotate"],
+		["aim_left", "◀ Aim"], ["place", "Place"], ["aim_right", "Aim ▶"],
+		["cancel", "Cancel"], ["aim_down", "▼ Aim"], ["", ""],
+	]
+	for entry in layout:
+		if str(entry[0]).is_empty():
+			var filler := Control.new()
+			filler.custom_minimum_size = Vector2(LIVE_BUTTON_SIZE, LIVE_BUTTON_SIZE)
+			filler.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_live_controls.add_child(filler)
+			continue
+		var button := _touch_button(str(entry[1]), LIVE_BUTTON_SIZE)
+		button.custom_minimum_size = Vector2(LIVE_BUTTON_SIZE, LIVE_BUTTON_SIZE)
+		_live_buttons[str(entry[0])] = button
+		_live_controls.add_child(button)
+	(_live_buttons.build as Button).pressed.connect(func() -> void: live_client.toggle_build(); queue_redraw())
+	(_live_buttons.rotate as Button).pressed.connect(func() -> void: live_client.rotate(); queue_redraw())
+	(_live_buttons.place as Button).pressed.connect(func() -> void: live_client.confirm(); queue_redraw())
+	(_live_buttons.cancel as Button).pressed.connect(func() -> void: live_client.cancel(); queue_redraw())
+	var aims := {
+		"aim_up": Vector2.UP, "aim_down": Vector2.DOWN, "aim_left": Vector2.LEFT, "aim_right": Vector2.RIGHT,
+	}
+	for aim_name in aims:
+		var aim_button := _live_buttons[aim_name] as Button
+		var direction: Vector2 = aims[aim_name]
+		aim_button.button_down.connect(func() -> void: live_client.set_aim(direction))
+		aim_button.button_up.connect(func() -> void: live_client.set_aim(Vector2.ZERO))
+	_refresh_live_buttons()
+
+
+func _refresh_live_buttons() -> void:
+	if _live_controls == null:
+		return
+	var building := live_client.state == NetworkLivePlacementClient.GhostState.TENTATIVE
+	var pending := live_client.state == NetworkLivePlacementClient.GhostState.PENDING
+	var available := network_session != null and network_session.client_live_build_available()
+	(_live_buttons.build as Button).disabled = not available and not building
+	(_live_buttons.build as Button).text = "Close" if building else "Build"
+	(_live_buttons.place as Button).disabled = not (live_client.can_confirm() or pending)
+	(_live_buttons.rotate as Button).disabled = not building
+	(_live_buttons.cancel as Button).disabled = live_client.state == NetworkLivePlacementClient.GhostState.NONE
+	for aim_name in ["aim_up", "aim_down", "aim_left", "aim_right"]:
+		(_live_buttons[aim_name] as Button).disabled = not building
+
+
+func _on_terrain_resync(_gap: bool) -> void:
+	_status_label.text = _host_status_text()
+	_refresh_live_buttons()
+	queue_redraw()
+
+
 func _touch_button(label: String, width: float) -> Button:
 	var button := Button.new()
 	button.text = label
@@ -229,9 +416,19 @@ func _touch_button(label: String, width: float) -> Button:
 
 
 func _set_horizontal(value: int) -> void:
+	_axis_x = value
+	_push_input()
+
+
+## One continuous-input sample: movement axis plus (live route) the aim pad and the build echo.
+## The aim never moves the chicken; the host routes it to the live cursor only.
+func _push_input() -> void:
 	if network_session == null:
 		return
-	network_session.client_set_continuous_input([value, 0])
+	var building := live_client.state == NetworkLivePlacementClient.GhostState.TENTATIVE
+	network_session.client_set_continuous_input(
+		[_axis_x, 0], live_client.aim_axes() if building else [0, 0], building
+	)
 
 
 func _send_action(action_id: int, pressed: bool) -> void:

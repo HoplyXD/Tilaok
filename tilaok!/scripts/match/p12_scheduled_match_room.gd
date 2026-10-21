@@ -1146,11 +1146,18 @@ func network_replication_snapshot(match_id: int, snapshot_id: int, tick: int) ->
 			var velocity := Vector2.ZERO
 			var state_flags := 0
 			var timer_ms := 0
+			var lifecycle := 0
 			if piece.node is StageBlock:
 				var replicated_block := (piece.node as StageBlock).network_replication_state()
 				velocity = replicated_block.velocity
 				state_flags = (1 if replicated_block.active else 0) | ((int(replicated_block.collapse_state) & 3) << 1) | (8 if replicated_block.grounded else 0)
 				timer_ms = mini(int(replicated_block.collapse_remaining_ms), 65535)
+			# Contract v1.3 activation tell: lifecycle 1 while a live placement is in its safe
+			# grace, with timer_ms holding the remaining grace. Scheduled rooms never set it.
+			if items.live_activation.has(instance_id):
+				var grace: Dictionary = items.live_activation[instance_id]
+				lifecycle = 1
+				timer_ms = clampi(roundi(float(grace.get("remaining", 0.0)) * 1000.0), 0, 65535)
 			var stage_record := NetworkMatchCodec.encode_stage_record(
 				{
 					"entity_id": _network_id_for(str(instance_id)),
@@ -1158,7 +1165,7 @@ func network_replication_snapshot(match_id: int, snapshot_id: int, tick: int) ->
 					"position": node.global_position,
 					"velocity": velocity,
 					"rotation": piece.quarter_turns,
-					"lifecycle": 0,
+					"lifecycle": lifecycle,
 					"state_flags": state_flags,
 					"timer_ms": timer_ms,
 					"revision": items.stage_version,
@@ -1211,6 +1218,11 @@ func network_current_round_id() -> int:
 	if items == null:
 		return 1
 	return items.round_number if phase_controller.phase == MatchPhaseController.Phase.RESULTS else items.round_number + 1
+
+
+## Stable wire entity ID for a placed instance (allocated on first use, cleared with the room).
+func network_entity_id_for(instance_id: String) -> int:
+	return 0 if instance_id.is_empty() else _network_id_for(instance_id)
 
 
 func _network_id_for(instance_id: String) -> int:

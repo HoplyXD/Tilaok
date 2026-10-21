@@ -1,8 +1,12 @@
 class_name CompatibilityManifest
 extends RefCounted
 
-const BUILD_ID := "tilaok-p02-2026-10-19"
+## NLB-P06 changed the gameplay wire (schema 3, live placement), so the build identity changed too:
+## an older binary's digest differs and it shows the readable build-mismatch notice.
+const BUILD_ID := "tilaok-nlb-p06-2026-10-21"
 const PROFILE_ID := "karera_slice"
+## Network routes this binary can host or join; the host picks one per match (MATCH_LIFECYCLE).
+const NETWORK_ROUTES := ["network_live_build", "scheduled"]
 
 
 static func build(profile_id: String = PROFILE_ID) -> Dictionary:
@@ -17,6 +21,7 @@ static func build(profile_id: String = PROFILE_ID) -> Dictionary:
 		"build": BUILD_ID,
 		"engine": Engine.get_version_info().string,
 		"profile": profile_id,
+		"routes": NETWORK_ROUTES.duplicate(),
 		"maps": _map_records(),
 		"items": _item_records(definitions),
 	}

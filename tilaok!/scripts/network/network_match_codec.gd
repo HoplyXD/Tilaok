@@ -336,7 +336,8 @@ static func decode_stage_record(payload: PackedByteArray) -> Dictionary:
 		"timer_ms": stream.get_u16(),
 		"revision": stream.get_u32(),
 	}
-	entity.ok = int(entity.rotation) < 4 and int(entity.state_flags) <= 15
+	# Lifecycle 0 = static/legacy, 1 = live grace (timer_ms remaining), 2 = active (contract v1.3).
+	entity.ok = int(entity.rotation) < 4 and int(entity.state_flags) <= 15 and int(entity.lifecycle) <= 2
 	return entity
 
 

@@ -5,6 +5,11 @@ extends P12ScheduledMatchRoom
 ## Opt-in offline route. It reuses P12's schedule, objective and terminal rules while changing the
 ## round opening and allowing one assigned item to be placed during Play.
 
+## Emitted once per authority boundary after the stage version settles, and once when a round
+## closes with queued requests (each then carries code "round_ended"). Offline nothing listens;
+## the P06 network route answers its peers from it.
+signal live_placement_boundary_resolved(results: Array)
+
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
 const LIVE_VARIANT_ALLOWLIST: PackedStringArray = [
 	"build.hollow_blocks.cell_1x1",
@@ -48,6 +53,12 @@ func _ready() -> void:
 	_edge_layer.add_child(_edge_root)
 
 
+func _exit_tree() -> void:
+	if input_router != null:
+		input_router.live_build_confirm_enabled = false
+	super._exit_tree()
+
+
 func _process(delta: float) -> void:
 	super._process(delta)
 	if get_tree().paused or not _simulation_can_commit():
@@ -75,7 +86,8 @@ func _physics_process(delta: float) -> void:
 	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
 		_resolve_live_placement_boundary()
 	elif phase_controller.phase != MatchPhaseController.Phase.GO:
-		request_pipeline.close_attempt()
+		# The terminal round result (resolved in super) closes admission before any queued edit.
+		_close_live_attempt()
 
 
 func _enter_place() -> void:
@@ -100,6 +112,8 @@ func _enter_place() -> void:
 		live_notices.erase(seat_index)
 		_aim_repeat[seat_index] = {"elapsed": 0.0, "first": true, "direction": Vector2.ZERO}
 	input_router.set_rotation_supported(false)
+	# Keyboard south keys (E/F, Enter, O, Num 0) confirm live placement only in live-build rooms.
+	input_router.live_build_confirm_enabled = true
 	_go_remaining = go_countdown_seconds
 	phase_controller.enter(MatchPhaseController.Phase.GO, go_countdown_seconds)
 	input_router.set_phase(LocalInputRouter.Phase.GO)
@@ -340,14 +354,37 @@ func _resolve_live_placement_boundary() -> void:
 	if terrain_changed:
 		items.stage_version += 1
 		request_pipeline.stage_version = items.stage_version
+	var boundary_results: Array = []
 	for resolved_row in resolved:
 		var result: Dictionary = resolved_row.result
 		result.stage_version = items.stage_version
 		request_pipeline.resolve_result(str(resolved_row.request_id), result)
+		boundary_results.append(result.duplicate(true))
 	for seat_variant in placement_controller.cursors.keys():
 		_refresh_match_ghost(int(seat_variant))
+	live_placement_boundary_resolved.emit(boundary_results)
 	_notify_presentation(&"live_build")
 	_refresh_match_ui()
+
+
+## Closes the live attempt. Requests still queued were never validated, so each is answered once
+## with "round_ended" and its seat keeps the item; the pipeline is then empty, so repeated calls
+## emit nothing.
+func _close_live_attempt() -> void:
+	var queued := request_pipeline.pending_requests()
+	request_pipeline.close_attempt()
+	if queued.is_empty():
+		return
+	var results: Array = []
+	for receipt in queued:
+		var base := {
+			"request_id": str(receipt.request_id),
+			"seat_index": int(receipt.seat_index),
+			"commit_boundary": Engine.get_physics_frames(),
+			"stage_version": items.stage_version if items != null else 0,
+		}
+		results.append(_live_result(base, false, "round_ended", "The round ended first."))
+	live_placement_boundary_resolved.emit(results)
 
 
 func _commit_live_intent(seat_index: int, intent: Dictionary, boundary: int) -> Dictionary:
@@ -539,7 +576,9 @@ func play_status_text() -> String:
 
 
 func reset_room() -> void:
-	request_pipeline.close_attempt()
+	_close_live_attempt()
+	if input_router != null:
+		input_router.live_build_confirm_enabled = false
 	build_mode.clear()
 	inventory_used.clear()
 	live_notices.clear()

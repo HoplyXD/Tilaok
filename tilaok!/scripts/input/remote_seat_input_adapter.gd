@@ -16,7 +16,10 @@ const ACTIONS := [
 	"ready",
 	"claim",
 	"cheer",
-	"help"
+	"help",
+	"build_toggle",
+	"live_rotate",
+	"live_cancel"
 ]
 
 var router: LocalInputRouter
