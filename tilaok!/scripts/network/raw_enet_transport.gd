@@ -127,6 +127,9 @@ func close_peer(peer_id: int, after_queued_packets: bool = false) -> void:
 			peer.peer_disconnect_later()
 			connection.flush()
 		else:
+			# disconnect_now raises no DISCONNECT event, so the endpoint tables are cleared here.
+			_peer_ids_by_instance.erase(peer.get_instance_id())
+			_peer_ids_by_endpoint.erase(_endpoint_key(peer))
 			peer.peer_disconnect_now()
 			_peers.erase(peer_id)
 

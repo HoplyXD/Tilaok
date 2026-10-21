@@ -68,6 +68,20 @@ const RESULT_ACTION_CACHE_CAP := 32
 const REKEY_ACK_TIMEOUT_MS := 3000
 const RETIRED_EPOCH_MS := 10000
 const REKEY_ACK_MAX_PER_SECOND := 2
+## Contract v1 §3.7 (P11): saturating per-peer/family/reason rejection counters stop at this value.
+const ABUSE_COUNTER_SATURATION := 65535
+## P11 per-second limits for client-to-host families that had none. Generous on purpose: legitimate
+## traffic sends each of these a handful of times per join, snapshot or replay. The host applies
+## them to packets it receives; the client never limits what the host sends it.
+const FAMILY_RATE_LIMITS := {
+	NetworkFrame.Family.COMPATIBILITY_HELLO: 2,
+	NetworkFrame.Family.JOIN_BEGIN: 2,
+	NetworkFrame.Family.PROOF: 2,
+	NetworkFrame.Family.ASSIGNMENT_ACK: 4,
+	NetworkFrame.Family.SESSION_CLOSE: 2,
+	NetworkFrame.Family.SNAPSHOT_REQUEST: 4,
+	NetworkFrame.Family.SNAPSHOT_ACK: 8,
+}
 const LIVE_ACTION_FIRST := 12
 const ACTION_NAMES := [
 	"jump", "confirm", "back", "rotate", "claim", "ready", "cheer", "left", "right", "up", "down",
@@ -107,6 +121,7 @@ var _sequences: Dictionary = {}
 var _incoming_sequences: Dictionary = {}
 var _idempotent_requests: Dictionary = {}
 var _peer_abuse: Dictionary = {}
+var _abuse_counters: Dictionary = {}
 var _peer_family_times: Dictionary = {}
 var _candidate_timer := 0.0
 var _client_sequence := 0
@@ -480,6 +495,7 @@ func _finish_stop() -> void:
 	_incoming_sequences.clear()
 	_idempotent_requests.clear()
 	_peer_abuse.clear()
+	_abuse_counters.clear()
 	_peer_family_times.clear()
 	_pending_continuous.clear()
 	_pending_actions.clear()
@@ -900,6 +916,8 @@ func _receive_snapshot_chunk(payload: PackedByteArray) -> void:
 	):
 		client_message.emit("The host sent an invalid snapshot chunk.")
 		return
+	if not _snapshot_receivers.has(snapshot_id):
+		_bound_snapshot_receivers()
 	var receiver: Dictionary = _snapshot_receivers.get(snapshot_id, {
 		"checksum": checksum, "total": total, "count": count, "chunks": {}, "ended": false,
 		"started_ms": Time.get_ticks_msec(),
@@ -919,6 +937,23 @@ func _receive_snapshot_chunk(payload: PackedByteArray) -> void:
 	chunks[index] = chunk_data[1]
 	receiver.chunks = chunks
 	_snapshot_receivers[snapshot_id] = receiver
+
+
+## A client keeps at most this many partially received snapshots; the oldest is dropped first so
+## a host (or spoofer) cannot grow the table by inventing snapshot ids.
+const MAX_SNAPSHOT_RECEIVERS := 4
+
+
+func _bound_snapshot_receivers() -> void:
+	while _snapshot_receivers.size() >= MAX_SNAPSHOT_RECEIVERS:
+		var oldest_id = null
+		var oldest_ms := 0
+		for key in _snapshot_receivers:
+			var started := int(_snapshot_receivers[key].started_ms)
+			if oldest_id == null or started < oldest_ms:
+				oldest_id = key
+				oldest_ms = started
+		_snapshot_receivers.erase(oldest_id)
 
 
 func _receive_snapshot_end(payload: PackedByteArray, peer_id: int) -> void:
@@ -1557,17 +1592,13 @@ func _on_peer_disconnected(peer_id: int) -> void:
 		var candidate: Dictionary = candidates[peer_id]
 		_clear_live_placement_peer(peer_id)
 		_unbind_peer_seat(peer_id, candidate)
-		_pending_continuous.erase(peer_id)
-		_pending_actions.erase(peer_id)
-		_host_input_state.erase(peer_id)
-		_action_edge_watermarks.erase(peer_id)
-		_reliable_edge_watermarks.erase(peer_id)
-		_action_request_cache.erase(peer_id)
-		_snapshot_sender.erase(peer_id)
-		_erase_peer_state(peer_id)
+		_drop_peer_tables(peer_id)
 		candidates.erase(peer_id)
 		_broadcast_lobby_state()
 		lobby_changed.emit()
+	else:
+		# A peer that was never a candidate (or was already kicked) can still own abuse counters.
+		_drop_peer_tables(peer_id)
 
 
 ## Peer IDs only grow, so a lost peer's leftovers can never collide, but they must not accumulate:
@@ -1582,6 +1613,7 @@ func _erase_peer_state(peer_id: int) -> void:
 	_erase_peer_keys(_incoming_sequences, peer_id)
 	_erase_peer_keys(_peer_family_times, peer_id)
 	_erase_peer_keys(_idempotent_requests, peer_id)
+	_erase_peer_keys(_abuse_counters, peer_id)
 
 
 func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) -> void:
@@ -1600,13 +1632,13 @@ func _on_packet_received(peer_id: int, channel: int, packet: PackedByteArray) ->
 		_reject(peer_id, int(decoded.reason))
 		return
 	if not NetworkFrame.family_allowed_on_channel(int(decoded.family), channel):
-		_reject(peer_id, NetworkFrame.Reason.MALFORMED)
+		_reject(peer_id, NetworkFrame.Reason.MALFORMED, int(decoded.family))
 		return
 	if not _accept_incoming_sequence(peer_id, int(decoded.family), int(decoded.sequence)):
-		_reject(peer_id, NetworkFrame.Reason.STALE_STATE)
+		_reject(peer_id, NetworkFrame.Reason.STALE_STATE, int(decoded.family))
 		return
 	if not _accept_rate(peer_id, int(decoded.family)):
-		_reject(peer_id, NetworkFrame.Reason.RATE_LIMIT)
+		_reject(peer_id, NetworkFrame.Reason.RATE_LIMIT, int(decoded.family))
 		return
 	if client_mode:
 		if _epoch_is_retired(_client_retired_epochs, int(decoded.epoch)):
@@ -2847,10 +2879,13 @@ func _broadcast_lobby_state() -> void:
 			_send_lobby_state(int(peer_id))
 
 
-func _reject(peer_id: int, reason: int) -> void:
+## `family` is the decoded family when the caller has one, else 0 (unknown). Nothing the peer sent
+## is echoed: only peer id, family and reason numbers are logged or counted.
+func _reject(peer_id: int, reason: int, family: int = 0) -> void:
 	if client_mode:
 		client_message.emit("The host sent an invalid or out-of-order message (%d)." % reason)
 		return
+	_count_abuse(peer_id, family, reason)
 	var now := Time.get_ticks_msec()
 	var abuse: Dictionary = (
 		_peer_abuse
@@ -2891,7 +2926,8 @@ func _reject(peer_id: int, reason: int) -> void:
 		in [
 			NetworkFrame.Reason.MALFORMED,
 			NetworkFrame.Reason.RATE_LIMIT,
-			NetworkFrame.Reason.FIELD_RANGE
+			NetworkFrame.Reason.FIELD_RANGE,
+			NetworkFrame.Reason.STALE_STATE
 		]
 	):
 		if now - int(abuse.format_window) >= 10000:
@@ -2911,18 +2947,33 @@ func _reject(peer_id: int, reason: int) -> void:
 		_clear_live_placement_peer(peer_id)
 		transport.close_peer(peer_id)
 		candidates.erase(peer_id)
-		# Sequence tables are keyed "peer:family"; erase by prefix (an int-key erase was a no-op).
-		_erase_peer_keys(_sequences, peer_id)
-		_erase_peer_keys(_incoming_sequences, peer_id)
-		_pending_continuous.erase(peer_id)
-		_pending_actions.erase(peer_id)
-		_host_input_state.erase(peer_id)
-		_action_edge_watermarks.erase(peer_id)
-		_reliable_edge_watermarks.erase(peer_id)
-		_action_request_cache.erase(peer_id)
-		_snapshot_sender.erase(peer_id)
-		_erase_peer_keys(_peer_family_times, peer_id)
+		# A hard close raises no disconnect event, so every per-peer table is dropped here.
+		_drop_peer_tables(peer_id)
 		lobby_changed.emit()
+
+
+## Every per-peer table the host keeps, keyed by peer id or "peer:..." prefix. Shared by the
+## disconnect and kick paths so a kicked peer leaves nothing behind.
+func _drop_peer_tables(peer_id: int) -> void:
+	_pending_continuous.erase(peer_id)
+	_pending_actions.erase(peer_id)
+	_host_input_state.erase(peer_id)
+	_action_edge_watermarks.erase(peer_id)
+	_reliable_edge_watermarks.erase(peer_id)
+	_action_request_cache.erase(peer_id)
+	_snapshot_sender.erase(peer_id)
+	_erase_peer_state(peer_id)
+
+
+## Saturating counter per peer/family/reason (contract v1 §3.7). Bounded by peers x families x
+## reasons and erased with the peer.
+func _count_abuse(peer_id: int, family: int, reason: int) -> void:
+	var key := "%d:%d:%d" % [peer_id, family, reason]
+	_abuse_counters[key] = mini(int(_abuse_counters.get(key, 0)) + 1, ABUSE_COUNTER_SATURATION)
+
+
+func abuse_count(peer_id: int, family: int, reason: int) -> int:
+	return int(_abuse_counters.get("%d:%d:%d" % [peer_id, family, reason], 0))
 
 
 func _erase_peer_keys(table: Dictionary, peer_id: int) -> void:
@@ -2957,6 +3008,9 @@ func _accept_rate(peer_id: int, family: int) -> bool:
 		NetworkFrame.Family.READY_REQUEST:
 			if now - int(state.last) < 100:
 				return false
+		_:
+			if not client_mode:
+				limit = int(FAMILY_RATE_LIMITS.get(family, 0))
 	if limit > 0 and int(state.count) >= limit:
 		return false
 	state.count = int(state.count) + 1
@@ -4097,6 +4151,7 @@ func teardown_counts() -> Dictionary:
 		"incoming_sequences": _incoming_sequences.size(),
 		"idempotent_requests": _idempotent_requests.size(),
 		"peer_abuse": _peer_abuse.size(),
+		"abuse_counters": _abuse_counters.size(),
 		"peer_family_times": _peer_family_times.size(),
 		"pending_continuous": _pending_continuous.size(),
 		"pending_actions": _pending_actions.size(),

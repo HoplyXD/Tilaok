@@ -3,6 +3,9 @@ extends RefCounted
 
 const DISCOVERY_PORT_DEFAULT := 27778
 const MAX_ENTRIES := 64
+## Contract v1 §3.7 / P11: per-source query throttle state is bounded in count and age.
+const MAX_QUERY_SOURCES := 128
+const QUERY_SOURCE_TTL_MS := 10000
 const MAX_EVENTS_PER_FRAME := 16
 const ENTRY_TTL_SECONDS := 3.0
 const QUERY_INTERVAL_SECONDS := 1.0
@@ -164,6 +167,21 @@ func _send_beacon(destination: String = "255.255.255.255", destination_port: int
 			_last_beacon_msec = now
 
 
+func _bound_query_sources(now: int) -> void:
+	for source in _last_query_by_source.keys():
+		if now - int(_last_query_by_source[source]) >= QUERY_SOURCE_TTL_MS:
+			_last_query_by_source.erase(source)
+	while _last_query_by_source.size() > MAX_QUERY_SOURCES:
+		var oldest_source = null
+		var oldest_time := 0
+		for source in _last_query_by_source:
+			var seen := int(_last_query_by_source[source])
+			if oldest_source == null or seen < oldest_time:
+				oldest_source = source
+				oldest_time = seen
+		_last_query_by_source.erase(oldest_source)
+
+
 func _receive_query(frame: PackedByteArray, source: String, source_port: int) -> void:
 	var decoded := NetworkFrame.decode(frame, -1, true)
 	if not bool(decoded.ok) or int(decoded.family) != NetworkFrame.Family.DISCOVERY_QUERY:
@@ -172,6 +190,7 @@ func _receive_query(frame: PackedByteArray, source: String, source_port: int) ->
 	if now - int(_last_query_by_source.get(source, 0)) < 1000:
 		return
 	_last_query_by_source[source] = now
+	_bound_query_sources(now)
 	var payload: PackedByteArray = decoded.payload
 	if payload.size() != 10:
 		return
