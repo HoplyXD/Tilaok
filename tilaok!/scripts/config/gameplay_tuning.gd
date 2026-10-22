@@ -103,7 +103,9 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var camera_hud_reservation_px: float = 64.0
 @export var camera_target_padding_wu: float = 128.0
 @export var camera_zoom_min: float = 0.5
-@export var camera_zoom_max: float = 0.7
+## 1.0 = normal, one world unit per screen pixel (user request, 2026-10-22). The camera opens here
+## and only zooms out, towards camera_zoom_min, as the chickens spread apart.
+@export var camera_zoom_max: float = 1.0
 @export var camera_ease_seconds: float = 0.20
 @export var camera_view_bounds := Rect2(Vector2(-128.0, -128.0), Vector2(2304.0, 1280.0))
 @export var support_normal_limit_degrees: float = 45.0

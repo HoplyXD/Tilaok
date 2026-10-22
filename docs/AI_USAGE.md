@@ -661,3 +661,21 @@ Verified after the change: maps 27, p02 89, p03 103, blocks 111, tutorial 142, c
 ### Offline live-build and network retirement — October 22, 2026
 
 At the user's approved implementation request, OpenAI Codex authored the local live-build room promotion, timed construction job and preview lifecycle, local result-type extraction, remote-seat/network runtime removal, build/tutorial/input changes, regression updates, and project documentation/verification records. It also archived the retired network specifications/evidence and created an external recovery bundle before overlapping edits. Verification run during this task used Godot 4.7.2 headless synthetic checks; actual counts, failures, export status and limitations are in [P20 evidence](evidence/p20_offline_live_build/README.md). The game was not launched interactively. No physical-controller test, human playtest, independent human review, performance measurement, final art or audio generation is claimed. The user's staged changes are preserved in the recovery bundle; a temporary-index delivery is still required so they are not included in the task commit.
+
+**Build area, camera bounds and the merge, 2026-10-23.**
+
+**Merge resolution.** `Merge branch 'main'` (4a68fb0) brought in "Promote offline live-build and retire LAN networking". Two conflicts were resolved by hand: `game_flow.gd` kept the local `_first_playable_map()` map-selection fix while accepting the networking removal (`_network_live_build_route()` and `_sync_live_map()` dropped, no dangling references left in the tree), and `AI_USAGE.md` kept **both** sides because each is an append-only record of different work.
+
+**The merge left the tutorial broken, and it is not from this work.** `run_tutorial_tests` went 142/0 to **134/15**. This was controlled for by rebuilding the merge result *without* the local placement edits: **identical 134/15**. The incoming commit changed the Place phase to the live-build copy ("Keep moving while you build...") while the tutorial script still expects the old Place copy, so step 3 onward cascades. This is incomplete tutorial rework on the incoming branch and is **not fixed here**.
+
+**Build placement follows the map instead of a hardcoded range.** `MatchPlacementController.move()` clamped the cursor to `tuning.arena_width_tiles/height_tiles`, a fixed 32x16. On map1 that is wrong in both directions at once: the build area is tiles x 4..53, y 4..22, so the cursor could not reach most of the map *and* could roam into x 0..3 / y 0..3 outside the painted green area. The controller now takes `build_region_tiles` from the map's Build markers (via `ArenaDefinition.build_region`) and clamps to it, falling back to the tuning size only for a stage that paints none. Verified by probe: min (4,4), max (53,22), both inside the region.
+
+`START_CELLS` was likewise hardcoded to (8,8)/(12,8)/(17,8)/(22,8). Cursors now open at the spawn anchor, spread so four seats do not stack: on map1 that is (8,22) and (9,22).
+
+**The camera could not see the stage.** `BoundedStageCamera._clamp_camera_center()` clamped to `tuning.camera_view_bounds`, a global `Rect2(-128, -128, 2304, 1280)` sized for the old 32x16 arena. map1 is 3712x1984, so the view was pinned inside a box in the top-left corner showing empty background. The camera now takes a per-map `view_bounds`: a map's own camera border when authored, otherwise the stage extent grown by one cell. On map1 that is 3840x2112 instead of 2304x1280.
+
+A map authors its camera border with a `Camera2D` child's own `limit_left/top/right/bottom`, which is what those properties are for; `StageMap.camera_bounds_world()` reads them and ignores Godot's +/-10000000 defaults. **map1's existing Camera2D sets position, scale and zoom but no limits, so it currently contributes nothing** and the stage extent is used. Setting the four limits on that node will take effect with no further code change.
+
+Camera zoom: `camera_zoom_max` raised 0.7 -> **1.0** (normal), and `configure()` now opens at `camera_zoom_max` rather than `camera_zoom_min`, so the view starts at normal zoom and only widens as the chickens spread.
+
+Verified: p03 103, maps 27, match-UI 196, blocks 111, controls 13, p19 25 - all 0 failures. P04 2 remains, identical to baseline. Tutorial 134/15 is the inherited merge breakage described above.

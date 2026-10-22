@@ -294,6 +294,9 @@ func _build_world() -> void:
 	camera_rig = BoundedStageCamera.new()
 	camera_rig.name = "BoundedStageCamera"
 	camera_rig.configure(tuning)
+	# Follow this stage's camera border instead of the fixed tuning rect, which is sized for the
+	# old 32x16 arena and pins the view to the top-left corner of any larger map.
+	camera_rig.view_bounds = arena.camera_bounds
 	camera_rig.position = _camera_home()
 	world_layer.add_child(camera_rig)
 	camera_rig.make_current()

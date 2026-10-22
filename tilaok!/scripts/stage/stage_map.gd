@@ -33,6 +33,9 @@ const MARKER_BUILD := Vector2i(1, 0)
 const MARKER_FLAG := Vector2i(2, 0)
 ## Black marker: the kill boundary. Invisible in play; a chicken entering one is eliminated.
 const MARKER_BORDER := Vector2i(3, 0)
+## Optional child naming the camera's limit: a CollisionShape2D holding a RectangleShape2D drawn
+## over the area the camera may show.
+const CAMERA_BORDER_NODE := "Camera Border"
 ## Terrain set and terrain indices of map_tiles_tileset.tres. Godot stores terrains 0-based, so
 ## these are the 1st/2nd/3rd terrains listed in the TileSet editor.
 const TERRAIN_SET := 0
@@ -117,6 +120,56 @@ func marker_cells(marker: Vector2i) -> Array[Vector2i]:
 ## Border marker cells: the stage's kill boundary.
 func border_cells() -> Array[Vector2i]:
 	return marker_cells(MARKER_BORDER)
+
+
+## The optional camera border: the box the view may never leave. Authored either way round:
+##   - a child named CAMERA_BORDER_NODE (a CollisionShape2D with a RectangleShape2D) drawn over the
+##     area the camera may show, which is the easy one to size by eye in the editor; or
+##   - a Camera2D child with its own limit_left/top/right/bottom set.
+## Empty when the map authors neither, and the stage extent is used instead.
+func camera_bounds_world() -> Rect2:
+	var shape_bounds := _camera_border_shape_bounds()
+	if shape_bounds.has_area():
+		return shape_bounds
+	return _camera_limit_bounds()
+
+
+## The drawn Camera Border rectangle, in this map's space.
+func _camera_border_shape_bounds() -> Rect2:
+	var node := get_node_or_null(CAMERA_BORDER_NODE) as CollisionShape2D
+	if node == null:
+		for child in get_children():
+			if child is CollisionShape2D and str(child.name).to_lower().begins_with("camera"):
+				node = child as CollisionShape2D
+				break
+	if node == null:
+		return Rect2()
+	var rectangle := node.shape as RectangleShape2D
+	if rectangle == null or rectangle.size.x <= 0.0 or rectangle.size.y <= 0.0:
+		return Rect2()
+	# A RectangleShape2D is centred on its node, and the scale is part of how it was sized by eye.
+	var size := rectangle.size * node.scale.abs()
+	return Rect2(node.position - size * 0.5, size)
+
+
+## A Camera2D child's own limits, ignoring Godot's +/-10000000 "not authored" defaults.
+func _camera_limit_bounds() -> Rect2:
+	var camera: Camera2D = null
+	for child in get_children():
+		if child is Camera2D:
+			camera = child as Camera2D
+			break
+	if camera == null:
+		return Rect2()
+	var left := float(camera.limit_left)
+	var top := float(camera.limit_top)
+	var right := float(camera.limit_right)
+	var bottom := float(camera.limit_bottom)
+	if right - left >= 1000000.0 or bottom - top >= 1000000.0:
+		return Rect2()
+	if right <= left or bottom <= top:
+		return Rect2()
+	return Rect2(Vector2(left, top), Vector2(right - left, bottom - top))
 
 
 ## The terrain of a painted cell, or -1 when the cell is empty or carries no terrain. A tile whose
@@ -279,6 +332,7 @@ func to_layout(layout_id: String) -> ArenaLayout:
 	layout.water_regions_tiles = _water_regions()
 	layout.border_regions_tiles = _border_regions()
 	layout.stage_size_tiles = stage_size_tiles()
+	layout.camera_bounds = camera_bounds_world()
 	layout.floor_top_tile = float(spawn.end.y)
 	for surface in layout.surfaces:
 		if surface.surface_id == "arena.floor":

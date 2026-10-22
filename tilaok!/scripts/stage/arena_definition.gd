@@ -26,6 +26,9 @@ var water_regions: Array[Rect2] = []
 ## border, a chicken that enters one is eliminated. This replaced the containment walls, so a map
 ## that paints no Border has no boundary and a chicken can leave the stage freely.
 var border_regions: Array[Rect2] = []
+## The camera border in world units: the box the view may never leave. Defaults to the stage's own
+## extent, so the camera follows a larger map instead of the fixed tuning rect.
+var camera_bounds := Rect2()
 var _immutable_ids: Dictionary = {}
 var _construction_ids: Dictionary = {}
 
@@ -73,6 +76,13 @@ func _apply_layout(source_layout: ArenaLayout) -> void:
 	border_regions.clear()
 	for border in source_layout.border_regions_tiles:
 		border_regions.append(_scaled_rect(border, cell))
+	# A map's own camera border wins; otherwise frame the stage itself, grown by one cell so the
+	# edge columns are not flush against the screen edge.
+	camera_bounds = (
+		source_layout.camera_bounds
+		if source_layout.camera_bounds.size.x > 0.0 and source_layout.camera_bounds.size.y > 0.0
+		else arena_bounds.grow(cell)
+	)
 	for surface in source_layout.surfaces:
 		_add_surface(
 			surface.surface_id,
