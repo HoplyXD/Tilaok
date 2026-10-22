@@ -1,7 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bplucieln5fss"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_3uvtu"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_phq7c"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_3uvtu"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_phq7c"]
+[ext_resource type="Texture2D" uid="uid://wxifxgkydolb" path="res://assets/tiles/Crate.png" id="3_phq7c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7taed"]
 size = Vector2(128, 192)
@@ -31,41 +32,6 @@ shape = SubResource("RectangleShape2D_7taed")
 
 [node name="Visual" type="Node2D" parent="." unique_id=317412167]
 
-[node name="Fill" type="Polygon2D" parent="Visual" unique_id=471646704]
-color = Color(0.6039216, 0.41960785, 0.22745098, 1)
-polygon = PackedVector2Array(-64, -96, 64, -96, 64, 96, -64, 96)
-
-[node name="Slats0_0" type="Line2D" parent="Visual" unique_id=1908996613]
-points = PackedVector2Array(-64, -96, 0, -32, 0, -96, -64, -32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats0_1" type="Line2D" parent="Visual" unique_id=600602083]
-points = PackedVector2Array(-64, -32, 0, 32, 0, -32, -64, 32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats0_2" type="Line2D" parent="Visual" unique_id=845511259]
-points = PackedVector2Array(-64, 32, 0, 96, 0, 32, -64, 96)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats1_0" type="Line2D" parent="Visual" unique_id=261115560]
-points = PackedVector2Array(0, -96, 64, -32, 64, -96, 0, -32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats1_1" type="Line2D" parent="Visual" unique_id=409081140]
-points = PackedVector2Array(0, -32, 64, 32, 64, -32, 0, 32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats1_2" type="Line2D" parent="Visual" unique_id=520246144]
-points = PackedVector2Array(0, 32, 64, 96, 64, 32, 0, 96)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Outline" type="Line2D" parent="Visual" unique_id=1665387133]
-points = PackedVector2Array(-64, -96, 64, -96, 64, 96, -64, 96, -64, -96)
-width = 6.0
-default_color = Color(0.16470589, 0.101960786, 0.047058824, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=1880202325]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_phq7c")

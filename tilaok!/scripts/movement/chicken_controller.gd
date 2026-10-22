@@ -49,6 +49,8 @@ var on_ice := false
 var water_regions: Array[Rect2] = []
 ## True while the body's centre is inside a water volume; the chicken floats instead of falling.
 var in_water := false
+## True while a jump pressed in water is still rising, so buoyancy and drag leave the arc alone.
+var water_jumping := false
 ## Per-physics-step velocity retained while floating. Below 1.0 it damps the rise/fall overshoot so
 ## a chicken settles at the waterline; it is a feel constant, not a tuned magnitude.
 const WATER_DRAG := 0.86
@@ -707,6 +709,9 @@ func _update_water() -> void:
 	if in_water and not was_in_water:
 		# Entering water kills the fall so a long drop does not punch through the pool.
 		locomotion_velocity.y = minf(locomotion_velocity.y, tuning.water_sink_cap_wu_s)
+		water_jumping = false
+	if not in_water:
+		water_jumping = false
 
 
 ## Floating: below the waterline buoyancy lifts the chicken, above it gravity pulls it back, and
@@ -722,8 +727,18 @@ func _update_float(delta: float) -> void:
 		jump_buffer_remaining = 0.0
 		return
 	if jump_buffer_remaining > 0.0:
-		locomotion_velocity.y = -tuning.water_stroke_wu_s
+		# Water is jumpable: a press uses the full jump impulse so a chicken can leave the pool.
+		# The swim stroke alone never clears the waterline, because the stroke clamp below is a
+		# fraction of the jump impulse.
+		locomotion_velocity.y = _jump_impulse
+		water_jumping = true
 		jump_buffer_remaining = 0.0
+	elif water_jumping:
+		# Carry the jump arc through the water under plain gravity. Buoyancy, drag and the stroke
+		# clamp would otherwise cancel the impulse within a frame or two and trap the chicken.
+		locomotion_velocity.y += _fall_gravity * delta
+		if locomotion_velocity.y >= 0.0:
+			water_jumping = false
 	else:
 		var submerged := global_position.y > _water_surface_y
 		if submerged:

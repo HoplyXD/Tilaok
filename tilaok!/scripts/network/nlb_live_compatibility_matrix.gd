@@ -170,12 +170,6 @@ const FAMILY_RULES := {
 	{"status": STATUS_ENGINEERING, "requires": ["life:persistent_terrain", "life:live_transients"]},
 	"utility.walis_cleanup":
 	{"status": STATUS_ENGINEERING, "requires": ["life:persistent_terrain"]},
-	"explosive.bomb":
-	{"status": STATUS_ENGINEERING, "requires": ["life:persistent_terrain", "life:live_transients"]},
-	"explosive.dynamite":
-	{"status": STATUS_ENGINEERING, "requires": ["life:persistent_terrain", "life:live_transients"]},
-	"explosive.nuke":
-	{"status": STATUS_ENGINEERING, "requires": ["life:persistent_terrain", "life:live_transients"]},
 }
 
 ## Round objectives are not catalog blocks (BaryaObjectiveDefinition), so they are listed here.

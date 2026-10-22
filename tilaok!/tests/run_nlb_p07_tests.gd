@@ -16,7 +16,6 @@ const CELL_1X1 := "build.hollow_blocks.cell_1x1"
 const COLUMN_1X3 := "build.hollow_blocks.column_1x3"
 const SPAN_4X1 := "build.bamboo_bridge.span_4x1"
 const WALIS_3X3 := "utility.walis_cleanup.area_3x3"
-const BOMB := "explosive.bomb.main"
 const SPIKES := "block.spikes.main"
 const WOOD_BOX := "build.wood_box.box_2x2"
 const DOC_PATH := "../docs/evidence/nlb/p07/compatibility-matrix.md"
@@ -92,8 +91,8 @@ func _test_matrix_schema_and_enumeration() -> void:
 		if str(cells[cell_id].axis) == M.AXIS_ITEM:
 			item_cells += 1
 	_check(item_cells == expected_items + 1, "item cells = catalog variant x allowed mode (%d) + Barya" % expected_items)
-	_check(expected_items == 70, "the current catalog yields 70 variant x mode cells (34 variants)")
-	_check(cells.size() == 97, "the matrix has 97 cells (12 life, 4 map, 10 round, 70 item, Barya)")
+	_check(expected_items == 61, "the current catalog yields 61 variant x mode cells (31 variants)")
+	_check(cells.size() == 88, "the matrix has 88 cells (12 life, 4 map, 10 round, 61 item, Barya)")
 	for map_id in MapCatalog.ids():
 		_check(cells.has(M.map_cell_id(map_id)), "map cell %s enumerated" % map_id)
 	for mode_id in DiagnosticContentCatalog.MODES:
@@ -149,7 +148,7 @@ func _test_route_pools_and_schedule() -> void:
 	_check(offline == sorted_expected, "offline live pool equals the three P05 slice variants")
 	_check(M.live_variants(PackedStringArray(["karera"]), false).is_empty(), "a strict host deals nothing (no VERIFIED item cell)")
 	var karera := M.live_variants(PackedStringArray(["karera"]), true)
-	_check(karera.has(CELL_1X1) and karera.has(WALIS_3X3) and karera.has(BOMB) and not karera.has(COLUMN_1X3), "override Karera pool holds engineering cells and no disabled variant")
+	_check(karera.has(CELL_1X1) and karera.has(WALIS_3X3) and not karera.has(COLUMN_1X3), "override Karera pool holds engineering cells and no disabled variant")
 	var lagsanay := M.live_variants(PackedStringArray(["lagsanay"]), true)
 	_check(not lagsanay.has(SPAN_4X1) and not lagsanay.has(WALIS_3X3) and lagsanay.has(CELL_1X1), "a Lagsanay round deals only Lagsanay-allowed families")
 	var stacked := M.live_variants(PackedStringArray(["karera", "kangaroo"]), true)
@@ -412,7 +411,7 @@ func _test_one_shot_entity_age() -> void:
 		_check(false, "live room reaches Play for the one-shot checks")
 		await _close(room)
 		return
-	room.tuning.item_enabled_variants = PackedStringArray([CELL_1X1, WALIS_3X3, BOMB])
+	room.tuning.item_enabled_variants = PackedStringArray([CELL_1X1, WALIS_3X3])
 	var cells := _clear_cells(room, CELL_1X1, 2)
 	if cells.size() < 2:
 		_check(false, "two clear cells exist for the one-shot checks")
@@ -434,9 +433,9 @@ func _test_one_shot_entity_age() -> void:
 	room.items.live_boundary = 102
 	var second := room.items.place_live(CELL_1X1, cells[1], 0, 0, no_actors, false)
 	room.items.live_boundary = 103
-	var bomb := room.items.validate_placement(BOMB, cells[1], 0)
-	var blast := room.items.apply_live_one_shot(bomb, 1, false)
-	_check(bool(bomb.get("one_shot", false)) and (blast.removed as Array).has(str(second.instance_id)), "an explosive removes an older live piece in its area at detonation")
+	var sweep := room.items.validate_placement(WALIS_3X3, cells[1] - Vector2i(1, 1), 0)
+	var cleared := room.items.apply_live_one_shot(sweep, 1, false)
+	_check(bool(sweep.get("one_shot", false)) and (cleared.removed as Array).has(str(second.instance_id)), "a one-shot removes an older live piece in its area")
 	_check(not room.items.pieces.has(str(second.instance_id)) and not room.items.live_commit_boundary.has(str(second.instance_id)), "removal also clears the entity age record")
 	await _close(room)
 

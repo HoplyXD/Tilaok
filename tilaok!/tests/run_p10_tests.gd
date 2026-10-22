@@ -180,11 +180,11 @@ func _test_definitions() -> void:
 	_check(
 		definitions.is_valid(), "T01 eight definitions load and validate: %s" % [definitions.errors]
 	)
-	# 8 first-batch families plus the 2026-10-14 stage blocks, Spikes and Cannon and the
-	# 2026-10-15 Bomb, Dynamite and Nuke.
+	# 8 first-batch families plus the 2026-10-14 stage blocks, Spikes and Cannon. The Bomb,
+	# Dynamite and Nuke were removed on 2026-10-22: Walis cleanup is the only removal tool.
 	_check(
 		definitions.families.size() == BlockCatalog.families(BlockCatalog.SET_LAB).size(),
-		"T01 eight families (+3 stage blocks, Spikes, Cannon and 3 explosives) are defined"
+		"T01 eight families (+3 stage blocks, Spikes and Cannon) are defined"
 	)
 	var expected := {
 		"move.tire_spring": {"tire_2x2": Vector2i(2, 2)},
@@ -1596,7 +1596,7 @@ func _test_visualizer() -> void:
 	await _fresh()
 	_check(
 		room.family_ids().size() == BlockCatalog.families(BlockCatalog.SET_LAB).size(),
-		"Visualizer lists all eight families (+3 stage blocks, Spikes, Cannon and 3 explosives)"
+		"Visualizer lists all eight families (+3 stage blocks, Spikes and Cannon)"
 	)
 	for family_id in room.family_ids():
 		var selected := room.select_family(family_id)

@@ -106,19 +106,35 @@ func _test_water_float() -> void:
 		"descent in water never exceeds the sink cap"
 	)
 
+	# Water is jumpable: a press uses the full jump impulse, not the swim stroke, and the arc is
+	# left alone by buoyancy and drag so the chicken can actually leave the pool.
+	actor.global_position = Vector2(128.0, waterline + 32.0)
 	actor.locomotion_velocity = Vector2.ZERO
 	actor.jump_buffer_remaining = tuning.jump_buffer_seconds
 	actor._update_water()
 	actor._update_float(delta)
 	_check(
-		is_equal_approx(actor.locomotion_velocity.y, -tuning.water_stroke_wu_s),
-		"a jump press in water is an upward stroke"
+		is_equal_approx(actor.locomotion_velocity.y, actor._jump_impulse) and actor.water_jumping,
+		"a jump press in water uses the full jump impulse"
 	)
+	var escaped := false
+	for _step in 240:
+		actor._update_water()
+		if actor.in_water:
+			actor._update_float(delta)
+		else:
+			actor.locomotion_velocity.y += actor._fall_gravity * delta
+		actor.global_position.y += actor.locomotion_velocity.y * delta
+		if actor.global_position.y < waterline - tuning.grid_cell_wu:
+			escaped = true
+			break
+	_check(escaped, "a jump carries the chicken clear of the waterline")
 
 	actor.water_regions = restore_regions
 	actor.global_position = restore_position
 	actor.locomotion_velocity = Vector2.ZERO
 	actor.jump_buffer_remaining = 0.0
+	actor.water_jumping = false
 	actor.in_water = false
 
 

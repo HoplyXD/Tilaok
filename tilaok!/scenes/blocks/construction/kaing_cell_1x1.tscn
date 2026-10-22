@@ -31,23 +31,8 @@ preview_silhouette = "crate"
 shape = SubResource("RectangleShape2D_hop5y")
 
 [node name="Visual" type="Node2D" parent="." unique_id=250061564]
-visible = false
 
-[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1548419197]
-color = Color(0.6039216, 0.41960785, 0.22745098, 1)
-polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
-
-[node name="Slats0_0" type="Line2D" parent="Visual" unique_id=1751661449]
-points = PackedVector2Array(-32, -32, 32, 32, 32, -32, -32, 32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Outline" type="Line2D" parent="Visual" unique_id=1570936983]
-points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32, -32, -32)
-width = 6.0
-default_color = Color(0.16470589, 0.101960786, 0.047058824, 1)
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=510910359]
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=510910359]
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_ey56e")
 hframes = 9

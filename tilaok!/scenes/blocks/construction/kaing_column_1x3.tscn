@@ -1,7 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://driinl2ctqft8"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_fhx63"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_3ibnr"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_fhx63"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_3ibnr"]
+[ext_resource type="Texture2D" uid="uid://36iur8u5fq4i" path="res://assets/tiles/Log.png" id="3_3ibnr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3u70h"]
 size = Vector2(64, 192)
@@ -32,26 +33,6 @@ shape = SubResource("RectangleShape2D_3u70h")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1847949563]
 
-[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1932207562]
-color = Color(0.6039216, 0.41960785, 0.22745098, 1)
-polygon = PackedVector2Array(-32, -96, 32, -96, 32, 96, -32, 96)
-
-[node name="Slats0_0" type="Line2D" parent="Visual" unique_id=2045427824]
-points = PackedVector2Array(-32, -96, 32, -32, 32, -96, -32, -32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats0_1" type="Line2D" parent="Visual" unique_id=770645044]
-points = PackedVector2Array(-32, -32, 32, 32, 32, -32, -32, 32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Slats0_2" type="Line2D" parent="Visual" unique_id=66244037]
-points = PackedVector2Array(-32, 32, 32, 96, 32, 32, -32, 96)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Outline" type="Line2D" parent="Visual" unique_id=1475254187]
-points = PackedVector2Array(-32, -96, 32, -96, 32, 96, -32, 96, -32, -96)
-width = 6.0
-default_color = Color(0.16470589, 0.101960786, 0.047058824, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=176282946]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_3ibnr")

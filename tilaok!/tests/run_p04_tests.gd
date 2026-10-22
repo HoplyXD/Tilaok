@@ -134,7 +134,7 @@ func _test_tuning_and_definitions() -> void:
 		),
 		(
 			"every catalog block family is defined (at least Kaing, Tulay, stage blocks, Spikes, Cannon,"
-			+ " explosives, six P10 families): %d" % definitions.families.size()
+			+ " six P10 families): %d" % definitions.families.size()
 		)
 	)
 	var kaing := definitions.find_family("build.hollow_blocks")
