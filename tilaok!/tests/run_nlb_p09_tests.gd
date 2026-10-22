@@ -208,7 +208,7 @@ func _test_exact_unit_matches() -> void:
 		{"kind": "race", "outcomes": [_finished(0, 10), _eliminated(1, 11, "direct_hazard", 0)], "coins": []},
 		{"kind": "race", "outcomes": [_finished(0, 10), _finished(1, 11)], "coins": []},
 		{"kind": "race", "outcomes": [_finished(0, 10), _finished(1, 11)], "coins": [1]},
-		{"kind": "race", "outcomes": [_eliminated(0, 10), _eliminated(1, 11, "direct_hazard", 0)], "coins": []},
+		{"kind": "race", "outcomes": [_eliminated(0, 10, "elimination", -1), _eliminated(1, 11, "direct_hazard", 0)], "coins": []},
 	])
 	_check(two.agreed, "two-seat race rounds agree on every unit: %s" % str(two.notes))
 	_check(two.deltas[0] == {0: 16, 1: 0}, "a sole finisher earns Tapos 8 + Una 2 + Bayani 4, plus Patibong 2 for the trap kill: %s" % str(two.deltas[0]))

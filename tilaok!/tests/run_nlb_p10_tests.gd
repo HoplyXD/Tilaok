@@ -315,7 +315,7 @@ func _test_context_table() -> void:
 	for context in InputContextTable.CONTEXTS:
 		router.set_phase(_router_phase(context))
 		router.live_build_confirm_enabled = context == "build"
-		for device in ["k1", "k2", "k3", "k4"]:
+		for device: String in ["k1", "k2", "k3", "k4"]:
 			var layout := device.to_upper()
 			for row in InputContextTable.bindings(device, context):
 				if int(row.control) == KEY_ESCAPE:

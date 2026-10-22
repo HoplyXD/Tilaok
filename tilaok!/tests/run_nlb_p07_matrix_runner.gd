@@ -14,7 +14,9 @@ extends SceneTree
 
 const ORACLE_ROOM := preload("res://scenes/match/p12_scheduled_match_room.tscn")
 const LIVE_ROOM := preload("res://scenes/match/nlb_p06_network_live_build_room.tscn")
-const M := NLBLiveCompatibilityMatrix
+## preload, not the NLBLiveCompatibilityMatrix global class name: a global class identifier is not
+## a constant expression, so `const M := NLBLiveCompatibilityMatrix` fails to parse.
+const M := preload("res://scripts/network/nlb_live_compatibility_matrix.gd")
 const SEED := 7307
 const MAX_STEPS := 900
 const KARERA := EventSchedule.Challenge.KARERA
@@ -50,7 +52,7 @@ func _run() -> void:
 			var oracle := await _play(ORACLE_ROOM, false, seat_count, ROUND_ENTRIES[cell_id])
 			var live := await _play(LIVE_ROOM, true, seat_count, ROUND_ENTRIES[cell_id])
 			runs += 1
-			var same := (
+			var same: bool = (
 				bool(oracle.ok) and bool(live.ok)
 				and str(oracle.signature) == str(live.signature)
 				and oracle.totals == live.totals

@@ -218,6 +218,23 @@ Terminal, opening-freeze, capture and external-force precedence remain unchanged
 - **Glide:** hold jump while falling to cap descent at a configurable 180 wu/s; steering is unchanged. Tapping still jumps normally, a fresh press on a wall still wall-jumps, and wall slide wins over glide while touching an eligible wall.
 - Wall slide and wall jump are the existing approved extension below (rescaled to the 64 px grid).
 
+### Map terrains and water — 2026-10-22 (user request)
+
+**Status — October 22, 2026:** requested by the user and implemented; automated Godot checks pass (maps, P02 movement, P03 stage, blocks and tutorial suites). Human feel review, water art and physical-device checks are pending. No shipped map paints water yet.
+
+A map scene's `Blocks` layer no longer carries meaning in its atlas coordinates. What a painted cell does comes from its **terrain** in terrain set 0 of `assets/tiles/map_tiles_tileset.tres`, so the art can be repainted without changing gameplay:
+
+| Terrain | Name | Behavior |
+|---|---|---|
+| 1st | Grass | Solid base geometry; chickens may wall-slide and wall-kick on its sides. |
+| 2nd | Stone | Solid base geometry that is **not climbable** — no wall slide, no wall kick. |
+| 3rd | Water | **Not solid.** Chickens float in it. |
+
+- **Floating:** a chicken whose centre enters a water volume has its fall capped at the sink cap, is then carried up by buoyancy, and settles bobbing at the waterline rather than being thrown out of the pool. Jump is an upward stroke; horizontal speed is capped while submerged. Wall slide, wall kick, coyote time and glide do not apply in water — the chicken is swimming, not standing on anything.
+- Water is drawn by the map's own tiles and generates no collision, so it never blocks a build and never counts as a support surface.
+- Tunables live in `GameplayTuning` (`water_enabled`, `water_sink_cap_wu_s`, `water_buoyancy_wu_s2`, `water_stroke_wu_s`, `water_move_wu_s`) and are distance-scaled with the grid. **PROTOTYPE — UNMEASURED.**
+- Water does not yet interact with eliminations, Lagsanay tagging or Barya; a chicken in water is simply floating. Drowning, currents and water-specific scoring are **not** approved by this entry.
+
 ### Stage blocks — 2026-10-14
 
 Each block is its own editable scene in `tilaok!/scenes/blocks/` and enters the Pugad pool like any other construction item.

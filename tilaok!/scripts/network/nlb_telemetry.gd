@@ -123,7 +123,7 @@ static func from_cmdline() -> NlbTelemetry:
 ## Returns the path to write, or "" when it is not allowed. Allowed: `user://...` (no `..`) or an
 ## absolute path inside `<project_root>/../build/`. Pure so tests can pin it.
 static func resolve_path(requested: String, project_root: String) -> String:
-	if requested.contains("..") or requested.contains("\0"):
+	if requested.contains("..") or requested.contains(String.chr(0)):
 		return ""
 	if requested.begins_with("user://") and requested.length() > "user://".length():
 		return requested

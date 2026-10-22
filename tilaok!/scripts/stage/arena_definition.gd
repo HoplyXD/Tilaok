@@ -20,6 +20,8 @@ var goal_trigger: Rect2
 var build_here_zone := Rect2()
 var layout_id := DEFAULT_LAYOUT_ID
 var surface_specs: Array[Dictionary] = []
+## Water volumes in world units. Not surfaces: they carry no collision and never block a build.
+var water_regions: Array[Rect2] = []
 var _immutable_ids: Dictionary = {}
 var _construction_ids: Dictionary = {}
 
@@ -59,6 +61,9 @@ func _apply_layout(source_layout: ArenaLayout) -> void:
 	goal_trigger = _scaled_rect(source_layout.goal_trigger_tiles, cell)
 	build_here_zone = _scaled_rect(source_layout.build_here_zone_tiles, cell)
 	spawn_feet = source_layout.spawn_feet_tiles * cell
+	water_regions.clear()
+	for water in source_layout.water_regions_tiles:
+		water_regions.append(_scaled_rect(water, cell))
 	for surface in source_layout.surfaces:
 		_add_surface(
 			surface.surface_id,

@@ -12,11 +12,17 @@ extends Node2D
 ##     at its horizontal centre.
 ##   - Build Area (atlas 1,0): where players may build (the rectangle around every Build tile).
 ##   - Flag (atlas 2,0): the flag trigger; nobody may build within one tile of it.
-## - "Blocks": the stage itself, painted with the block sprite sheet. Every painted cell inside
-##   the stage is solid base geometry; touching cells merge into rectangles (one collision surface
-##   each). Cells outside the stage (a frame around it) are drawn only: the game already closes
-##   the stage with invisible walls and a ceiling there. Tiles whose TileSet custom data
-##   "no_wall_slide" is on make surfaces chickens cannot wall-slide or wall-kick on.
+## - "Blocks": the stage itself, painted with assets/tiles/map_tiles_tileset.tres. What a cell
+##   does comes from its terrain in terrain set 0, not from the atlas coordinates, so repainting
+##   the art never changes gameplay:
+##     Grass (terrain 0) - solid base geometry, chickens may wall-slide and wall-kick on it.
+##     Stone (terrain 1) - solid base geometry that is NOT climbable (no wall slide or kick).
+##     Water (terrain 2) - not solid; chickens float in it (ArenaLayout.water_regions_tiles).
+##   Touching solid cells merge into rectangles (one collision surface each). Cells outside the
+##   stage (a frame around it) are drawn only: the game already closes the stage with invisible
+##   walls and a ceiling there.
+##   The art is authored at 256 px while the stage grid is 64 px, so the Blocks layer is scaled
+##   0.25 in each map scene; one painted cell is still one stage tile.
 ## Markers outside the stage are ignored. The "Precise" settings below are optional and only
 ## needed for off-grid details (the tutorial's half-tile flag ledge).
 
@@ -25,6 +31,16 @@ const BLOCKS_LAYER := "Blocks"
 const MARKER_SPAWN := Vector2i(0, 0)
 const MARKER_BUILD := Vector2i(1, 0)
 const MARKER_FLAG := Vector2i(2, 0)
+## Terrain set and terrain indices of map_tiles_tileset.tres. Godot stores terrains 0-based, so
+## these are the 1st/2nd/3rd terrains listed in the TileSet editor.
+const TERRAIN_SET := 0
+const TERRAIN_GRASS := 0
+const TERRAIN_STONE := 1
+const TERRAIN_WATER := 2
+## Checked by validate() so a reordered or renamed TileSet shows up as an editor warning instead
+## of silently changing what every map does.
+const TERRAIN_NAMES := ["Grass", "Stone", "Water"]
+## Pre-terrain TileSet custom data, still honoured for any map not yet repainted.
 const NO_WALL_SLIDE := "no_wall_slide"
 ## Stage size in tiles (GameplayTuning.arena_width_tiles x arena_height_tiles).
 const ARENA_SIZE := Vector2i(32, 16)
@@ -92,21 +108,35 @@ func marker_cells(marker: Vector2i) -> Array[Vector2i]:
 	return cells
 
 
-## Solid block cells (inside the stage).
-func block_cells() -> Array[Vector2i]:
-	var cells: Array[Vector2i] = []
+## The terrain of a painted cell, or -1 when the cell is empty or carries no terrain. A tile whose
+## terrain has not been assigned yet counts as -1 and is treated as solid, so a half-set-up TileSet
+## still produces a playable stage instead of a map with no floor.
+func terrain_at(cell: Vector2i) -> int:
 	var layer := blocks_layer()
 	if layer == null:
-		return cells
-	var arena := Rect2i(Vector2i.ZERO, ARENA_SIZE)
-	for cell in layer.get_used_cells():
-		if arena.has_point(cell):
-			cells.append(cell)
-	cells.sort()
-	return cells
+		return -1
+	var data := layer.get_cell_tile_data(cell)
+	if data == null or data.terrain_set != TERRAIN_SET:
+		return -1
+	return data.terrain
 
 
+## Solid block cells (inside the stage): everything painted except water.
+func block_cells() -> Array[Vector2i]:
+	return _cells_where(func(cell: Vector2i) -> bool: return terrain_at(cell) != TERRAIN_WATER)
+
+
+## Water cells (inside the stage). Not solid; chickens float in them.
+func water_cells() -> Array[Vector2i]:
+	return _cells_where(func(cell: Vector2i) -> bool: return terrain_at(cell) == TERRAIN_WATER)
+
+
+## Stone is the not-climbable terrain. Falls back to the pre-terrain custom data for maps that
+## still use the old block sprite sheet.
 func is_no_wall_slide(cell: Vector2i) -> bool:
+	var terrain := terrain_at(cell)
+	if terrain >= 0:
+		return terrain == TERRAIN_STONE
 	var layer := blocks_layer()
 	if layer == null or layer.tile_set == null:
 		return false
@@ -114,6 +144,19 @@ func is_no_wall_slide(cell: Vector2i) -> bool:
 		return false
 	var data := layer.get_cell_tile_data(cell)
 	return data != null and bool(data.get_custom_data(NO_WALL_SLIDE))
+
+
+func _cells_where(predicate: Callable) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	var layer := blocks_layer()
+	if layer == null:
+		return cells
+	var arena := Rect2i(Vector2i.ZERO, ARENA_SIZE)
+	for cell in layer.get_used_cells():
+		if arena.has_point(cell) and predicate.call(cell):
+			cells.append(cell)
+	cells.sort()
+	return cells
 
 
 ## Problems that keep this map out of the selection (also shown as editor warnings).
@@ -133,6 +176,7 @@ func validate() -> PackedStringArray:
 				% [ARENA_SIZE.x, ARENA_SIZE.y]
 			)
 		)
+	errors.append_array(_terrain_errors())
 	var labels := {MARKER_SPAWN: "Spawn", MARKER_BUILD: "Build Area", MARKER_FLAG: "Flag"}
 	for marker in labels:
 		if marker_cells(marker).is_empty():
@@ -152,6 +196,38 @@ func validate() -> PackedStringArray:
 		if flag.intersects(Rect2(cell, Vector2.ONE)):
 			errors.append("The flag overlaps block %s; leave the flag in open air." % cell)
 			break
+	return errors
+
+
+## Warns when the Blocks TileSet does not carry the three terrains this script reads by index, so
+## a reordered or renamed terrain set is caught in the editor instead of silently changing which
+## cells are climbable or watery. A TileSet with no terrain set at all is not an error: those maps
+## fall back to the pre-terrain custom data.
+func _terrain_errors() -> PackedStringArray:
+	var errors := PackedStringArray()
+	var layer := blocks_layer()
+	if layer == null or layer.tile_set == null:
+		return errors
+	var tiles := layer.tile_set
+	if tiles.get_terrain_sets_count() <= TERRAIN_SET:
+		return errors
+	for index in TERRAIN_NAMES.size():
+		if tiles.get_terrains_count(TERRAIN_SET) <= index:
+			errors.append(
+				(
+					"The Blocks TileSet needs %d terrains in set %d (%s)."
+					% [TERRAIN_NAMES.size(), TERRAIN_SET, ", ".join(TERRAIN_NAMES)]
+				)
+			)
+			break
+		var actual := tiles.get_terrain_name(TERRAIN_SET, index)
+		if actual != TERRAIN_NAMES[index]:
+			errors.append(
+				(
+					'Terrain %d of the Blocks TileSet should be "%s" but is "%s".'
+					% [index, TERRAIN_NAMES[index], actual]
+				)
+			)
 	return errors
 
 
@@ -179,6 +255,7 @@ func to_layout(layout_id: String) -> ArenaLayout:
 		else flag.grow(1.0).intersection(Rect2(Vector2.ZERO, Vector2(ARENA_SIZE)))
 	)
 	layout.build_here_zone_tiles = build_here_zone_tiles
+	layout.water_regions_tiles = _water_regions()
 	layout.floor_top_tile = float(spawn.end.y)
 	for surface in layout.surfaces:
 		if surface.surface_id == "arena.floor":
@@ -215,53 +292,19 @@ func _flag_rect() -> Rect2:
 	return Rect2(_bounds(marker_cells(MARKER_FLAG)))
 
 
-## Painted cells merged into rectangles: maximal horizontal runs per row (cells with the same
-## wall-slide setting), stacked with the run directly above when both span the same columns.
-## Deterministic, and it reproduces the default stage's six surfaces exactly. The widest lowest
-## rectangle is the floor; "no_wall_slide" tiles give wall-ineligible surfaces.
+## Solid cells merged into rectangles by _merge_runs(), grouped so a Grass run and a Stone run
+## never share a surface. The widest lowest rectangle is the floor; Stone gives wall-ineligible
+## surfaces.
 func _surfaces() -> Array[ArenaSurfaceLayout]:
-	var filled := {}
+	var groups := {}
 	for cell in block_cells():
-		filled[cell] = is_no_wall_slide(cell)
-	var rects: Array[Rect2i] = []
+		groups[cell] = 1 if is_no_wall_slide(cell) else 0
+	var merged := _merge_runs(groups)
+	var rects: Array[Rect2i] = merged[0]
+	var rect_groups: Array[int] = merged[1]
 	var rect_no_wall: Array[bool] = []
-	var open_by_span := {}
-	var rows: Array = []
-	for cell in filled:
-		if not rows.has(cell.y):
-			rows.append(cell.y)
-	rows.sort()
-	for y in rows:
-		var xs: Array = []
-		for cell in filled:
-			if cell.y == y:
-				xs.append(cell.x)
-		xs.sort()
-		var next_open := {}
-		var index := 0
-		while index < xs.size():
-			var start: int = xs[index]
-			var no_wall: bool = filled[Vector2i(start, y)]
-			var end := start
-			while (
-				index + 1 < xs.size()
-				and xs[index + 1] == end + 1
-				and filled[Vector2i(xs[index + 1], y)] == no_wall
-			):
-				index += 1
-				end = xs[index]
-			index += 1
-			var span := Vector3i(start, end, 1 if no_wall else 0)
-			var rect_index := -1
-			if open_by_span.has(span) and rects[open_by_span[span]].end.y == y:
-				rect_index = open_by_span[span]
-				rects[rect_index].size.y += 1
-			else:
-				rects.append(Rect2i(start, y, end - start + 1, 1))
-				rect_no_wall.append(no_wall)
-				rect_index = rects.size() - 1
-			next_open[span] = rect_index
-		open_by_span = next_open
+	for group in rect_groups:
+		rect_no_wall.append(group == 1)
 	var floor_index := -1
 	for i in rects.size():
 		var rect := rects[i]
@@ -285,6 +328,67 @@ func _surfaces() -> Array[ArenaSurfaceLayout]:
 			surface.wall_eligible = not rect_no_wall[i]
 		result.append(surface)
 	return result
+
+
+## Water cells merged into rectangles, in tiles (the same deterministic merge the solid surfaces
+## use, so a water pool is one region instead of one per cell).
+func _water_regions() -> Array[Rect2]:
+	var groups := {}
+	for cell in water_cells():
+		groups[cell] = 0
+	var merged := _merge_runs(groups)
+	var rects: Array[Rect2i] = merged[0]
+	var result: Array[Rect2] = []
+	for rect in rects:
+		result.append(Rect2(rect))
+	return result
+
+
+## Cells merged into rectangles: maximal horizontal runs per row (cells sharing the same `groups`
+## value), stacked with the run directly above when both span the same columns. Deterministic, and
+## it reproduces the default stage's six surfaces exactly.
+## Returns [Array[Rect2i] rects, Array[int] group of each rect].
+static func _merge_runs(groups: Dictionary) -> Array:
+	var rects: Array[Rect2i] = []
+	var rect_groups: Array[int] = []
+	var open_by_span := {}
+	var rows: Array = []
+	for cell in groups:
+		if not rows.has(cell.y):
+			rows.append(cell.y)
+	rows.sort()
+	for y in rows:
+		var xs: Array = []
+		for cell in groups:
+			if cell.y == y:
+				xs.append(cell.x)
+		xs.sort()
+		var next_open := {}
+		var index := 0
+		while index < xs.size():
+			var start: int = xs[index]
+			var group: int = groups[Vector2i(start, y)]
+			var end := start
+			while (
+				index + 1 < xs.size()
+				and xs[index + 1] == end + 1
+				and groups[Vector2i(xs[index + 1], y)] == group
+			):
+				index += 1
+				end = xs[index]
+			index += 1
+			var span := Vector3i(start, end, group)
+			var rect_index := -1
+			if open_by_span.has(span) and rects[open_by_span[span]].end.y == y:
+				rect_index = open_by_span[span]
+				rects[rect_index].size.y += 1
+			else:
+				rects.append(Rect2i(start, y, end - start + 1, 1))
+				rect_groups.append(group)
+				rect_index = rects.size() - 1
+			next_open[span] = rect_index
+		open_by_span = next_open
+	return [rects, rect_groups]
 
 
 static func _bounds(cells: Array[Vector2i]) -> Rect2i:

@@ -45,6 +45,14 @@ var stun_immunity_remaining := 0.0
 var gliding := false
 ## True while standing on a slippery block (Yelo ice, 2026-10-16); refreshed every step.
 var on_ice := false
+## Water volumes in world units (ArenaDefinition.water_regions). Empty on a stage without water.
+var water_regions: Array[Rect2] = []
+## True while the body's centre is inside a water volume; the chicken floats instead of falling.
+var in_water := false
+## Per-physics-step velocity retained while floating. Below 1.0 it damps the rise/fall overshoot so
+## a chicken settles at the waterline; it is a feel constant, not a tuned magnitude.
+const WATER_DRAG := 0.86
+var _water_surface_y := 0.0
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
 var _jump_impulse := -600.0
@@ -135,9 +143,13 @@ func _physics_process(delta: float) -> void:
 		axis = 0.0
 		locomotion_velocity.x = 0.0
 		jump_buffer_remaining = 0.0
+	_update_water()
 	_update_wall_contact(delta)
 	_update_horizontal(axis, delta)
-	_update_vertical(delta, jump_down)
+	if in_water:
+		_update_float(delta)
+	else:
+		_update_vertical(delta, jump_down)
 	var combined := locomotion_velocity + external_velocity
 	combined.y -= _vertical_half_step
 	velocity = combined
@@ -677,6 +689,54 @@ func _update_vertical(delta: float, jump_down: bool) -> void:
 			_vertical_half_step = 0.0
 			gliding = true
 	jump_was_held = jump_down
+
+
+## Water is not solid, so there is no collision to read: a chicken is in water when its centre is
+## inside one of the stage's water volumes. Remembers that volume's waterline for _update_float().
+func _update_water() -> void:
+	if not tuning.water_enabled or water_regions.is_empty():
+		in_water = false
+		return
+	var was_in_water := in_water
+	in_water = false
+	for region in water_regions:
+		if region.has_point(global_position):
+			in_water = true
+			_water_surface_y = region.position.y
+			break
+	if in_water and not was_in_water:
+		# Entering water kills the fall so a long drop does not punch through the pool.
+		locomotion_velocity.y = minf(locomotion_velocity.y, tuning.water_sink_cap_wu_s)
+
+
+## Floating: below the waterline buoyancy lifts the chicken, above it gravity pulls it back, and
+## drag bleeds the overshoot so it settles bobbing at the surface instead of being flung out.
+## A jump press is an upward stroke. Wall slide, wall kick, coyote time and glide do not apply in
+## water; the chicken is swimming, not standing on anything.
+func _update_float(delta: float) -> void:
+	_vertical_half_step = 0.0
+	wall_sliding = false
+	gliding = false
+	coyote_remaining = 0.0
+	if external_velocity.length_squared() > 0.01:
+		jump_buffer_remaining = 0.0
+		return
+	if jump_buffer_remaining > 0.0:
+		locomotion_velocity.y = -tuning.water_stroke_wu_s
+		jump_buffer_remaining = 0.0
+	else:
+		var submerged := global_position.y > _water_surface_y
+		if submerged:
+			locomotion_velocity.y -= tuning.water_buoyancy_wu_s2 * delta
+		else:
+			locomotion_velocity.y += _fall_gravity * delta
+		locomotion_velocity.y *= WATER_DRAG
+		locomotion_velocity.y = clampf(
+			locomotion_velocity.y, -tuning.water_stroke_wu_s, tuning.water_sink_cap_wu_s
+		)
+	locomotion_velocity.x = clampf(
+		locomotion_velocity.x, -tuning.water_move_wu_s, tuning.water_move_wu_s
+	)
 
 
 func _update_external_motion(delta: float) -> void:

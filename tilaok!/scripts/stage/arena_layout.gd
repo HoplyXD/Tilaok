@@ -17,6 +17,9 @@ extends Resource
 @export var goal_trigger_tiles := Rect2(30.0, 10.0, 1.0, 2.0)
 ## Where a coach marker should point a builder. Empty means "no guidance zone".
 @export var build_here_zone_tiles := Rect2()
+## Water volumes in tiles (StageMap's Water terrain). Not solid: chickens float in them instead of
+## landing on them. Empty for every stage without water.
+@export var water_regions_tiles: Array[Rect2] = []
 ## Tile row of the floor top, used to describe how high the flag sits.
 @export var floor_top_tile := 15.0
 ## A map scene (scenes/maps/, StageMap root) whose Blocks layer is the stage picture. Set by

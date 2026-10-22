@@ -390,6 +390,7 @@ func _build_actor(seat_index: int) -> ChickenController:
 	actor.simulation_authority = simulation_authority
 	actor.support_tracker = support_tracker
 	actor.support_actor_id = "seat_%d" % seat_index
+	actor.water_regions = arena.water_regions
 	actor.bounds = Rect2(
 		Vector2(tuning.body_width_wu * 0.5, tuning.body_height_wu * 0.5),
 		arena.arena_bounds.size - Vector2(tuning.body_width_wu, tuning.body_height_wu)

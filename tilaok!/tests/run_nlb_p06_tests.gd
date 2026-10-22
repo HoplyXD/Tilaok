@@ -432,7 +432,7 @@ func _test_host_placement_path() -> void:
 	manager.network_route = NetworkSessionManager.ROUTE_SCHEDULED
 	manager._placement_new_id_times.clear()
 	manager._accept_placement_intent(REMOTE_PEER, _remote_intent(room, remote_seat, 21, cells[0]), manager.candidates[REMOTE_PEER])
-	var scheduled := _results(manager).back()
+	var scheduled: Dictionary = _results(manager).back()
 	_check(int(scheduled.reason) == NetworkFrame.Reason.WRONG_PHASE and int(scheduled.detail) == NetworkPlacementCodec.Detail.WRONG_ROUTE, "placement intents are refused on the scheduled route")
 	_check(not manager._action_phase_allowed(12), "build actions are refused on the scheduled route")
 	manager.network_route = NetworkSessionManager.ROUTE_LIVE_BUILD

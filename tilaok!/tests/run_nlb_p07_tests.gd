@@ -9,7 +9,9 @@ extends SceneTree
 ## Run: Godot --headless --fixed-fps 60 --path tilaok! --script res://tests/run_nlb_p07_tests.gd
 
 const LIVE_NETWORK_ROOM := preload("res://scenes/match/nlb_p06_network_live_build_room.tscn")
-const M := NLBLiveCompatibilityMatrix
+## preload, not the NLBLiveCompatibilityMatrix global class name: a global class identifier is not
+## a constant expression, so `const M := NLBLiveCompatibilityMatrix` fails to parse.
+const M := preload("res://scripts/network/nlb_live_compatibility_matrix.gd")
 const CELL_1X1 := "build.hollow_blocks.cell_1x1"
 const COLUMN_1X3 := "build.hollow_blocks.column_1x3"
 const SPAN_4X1 := "build.bamboo_bridge.span_4x1"

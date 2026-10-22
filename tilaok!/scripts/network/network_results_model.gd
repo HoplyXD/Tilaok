@@ -138,7 +138,7 @@ func apply_vote(record: Dictionary, current_match_id: int) -> bool:
 
 ## The ledger's own rules, checked against what is already committed.
 func _fits_ledger(entry: Dictionary) -> bool:
-	var previous := _entries.back() if not _entries.is_empty() else {}
+	var previous: Dictionary = _entries.back() if not _entries.is_empty() else {}
 	var previous_kind := int(previous.get("kind", 0))
 	var committed_totals := totals()
 	match int(entry.kind):
