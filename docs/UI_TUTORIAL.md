@@ -1,8 +1,6 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
-**Future networked extension (approved 2026-10-19):** this document currently specifies offline onboarding. A separately gated tutorial update must teach shared-arena phone play, active build mode, accepted/rejected placement, LAN joining and host pause while preserving the offline tutorial. See [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) and [NLB-P10](PHASETASK_NETWORKED_LIVE_BUILD.md#nlb-p10--touch-ux-tutorial-accessibility-mixed-device-parity).
-
-**NLB-P10 preparatory status (2026-10-21, unrun):** eight `net_*` steps (`net_phone_controls`, `net_pugad`, `net_go`, `net_build_mode`, `net_rejected`, `net_cancel`, `net_lan_join`, `net_host_pause`) now exist as data in `data/ui/tutorial_script.tres` and are shown to phone clients as **client-local help cards** (`network_help_cards.gd`): no host authority and no new wire family. The cards open once per session on the first match state and again from the local Menu; Back only steps to the previous card, Skip is session-only and Replay restores the cards (nothing is saved). The offline steps and coach are unchanged. A hosted live-build match no longer selects the tutorial stage or attaches the coach, which matches the live matrix disabling `tutorial`. The copy is PLACEHOLDER English and needs the same Filipino/Hiligaynon and cultural review as the offline copy. Rendered and human checks remain open (NLB-P10-T02/T03).
+**Current onboarding (2026-10-22):** teach local join, Pugad selection, shared GO, movement while building, preview warnings, the two-second completion delay, obstruction rejection and cancellation. Phone/LAN help content is retired; historical NLB records are archived.
 
 
 ## Experience goals
@@ -19,7 +17,7 @@ flowchart LR
   Title[Title] --> Lobby[Local join lobby]
   Title --> Library[Library]
   Lobby --> Tutorial[Guided first Karera]
-  Tutorial --> Match[Pugad → Place → Play]
+  Tutorial --> Match[Pugad → GO → move and build → results]
   Match --> Round[Round result]
   Round --> Match
   Match --> Results[Match result]
@@ -33,6 +31,7 @@ flowchart LR
 | Local join lobby | Two-to-four player join slots, controller/keyboard prompt, chicken colour plus number/shape marker, ready state. | Join, select permitted identifier, ready, leave. |
 | Tutorial | Guided first Karera with one instruction at a time. | Move, jump, grab egg, place/rotate/confirm, reach flag. |
 | Pugad | Visible eggs and contained items, selection countdown, locked next-round Main Challenge/Twist announcement where applicable. | Move pointer/character, claim egg. |
+| GO / active Play | Shared 3-second GO; move while aiming a fixed build preview. It shows player number, shape, footprint, progress and time remaining. Completion takes 2.0 gameplay seconds; invalid obstruction rejects and keeps the item. | Move, jump, toggle build, aim, rotate, confirm or cancel. |
 | Place | Shared stage, each player pointer, valid/invalid ghost, rotation prompt, countdown, protected-zone feedback. | Move, rotate where available, confirm. |
 | Play | Phase/objective display, timer where applicable, score, player identity markers, event and item tells. | Run and jump baseline; wall slide/jump controls appear only if the approved Should extension is implemented, verified and selected for release. |
 | Round result | Finishes/eliminations, awarded points, current match total, clear winner or no-score explanation. | Continue when all players are ready or after timeout. |
@@ -60,7 +59,7 @@ The Library is available from the title screen, lobby, and pause/settings menu. 
 
 | Section | Contents |
 |---|---|
-| How to Play | Pugad → Place → Play, controls, placement validation, stage persistence, and match end. |
+| How to Play | Pugad → shared GO → move and build → results, local controls, safety checks, stage persistence, and match end. |
 | Karera | Flag objective, Tapos, first-finisher Una, no second/third-place points, Bayani, Bawi, Barya, and too-easy/too-hard outcomes. |
 | Lagsanay | Taya, passing, timer, eliminations, Last Cluck, and survival placement scoring (first eliminated in four-player play is fourth for zero placement points). |
 | Kangaroo | Slipper poses, Freeze, Rising wave, Hug pairs, misses, Slipper Storm, and player-built wave supports. |
@@ -122,13 +121,13 @@ The giant background slipper is a non-colliding presenter. Every command needs a
 
 ## Tutorial sequence
 
-The first match begins with a guided Karera. It introduces only the normal loop; it does not require a player to learn Lagsanay or Kangaroo before playing.
+The first match begins with a guided Karera. It teaches the normal live-build loop, including building while moving; it does not require a player to learn Lagsanay or Kangaroo before playing.
 
 1. **Welcome:** identify the player’s chicken number/shape and explain the local join display.
 2. **Move and jump:** reach short, safe markers on the base stage.
 3. **Pugad:** point out that each egg shows the item inside; claim one egg.
-4. **Place:** move the ghost, rotate if the selected item allows it, explain valid/invalid feedback, and confirm.
-5. **Karera:** show the flag, run/jump prompt, and finish.
+4. **Shared GO / build while running:** show the preview, footprint warning and progress timer; keep moving, then explain safe completion at 2.0 seconds and cancellation.
+5. **Karera:** run, jump and reach the flag.
 6. **Results:** explain Tapos and first-finisher Una with the actual Karera result; explain that second and third finishers get no rank bonus.
 7. **Later just-in-time prompts:** before the first Lagsanay, explain taya, pass, timer, and last-survivor objective. Before the first Kangaroo, explain the three slipper poses, three misses, and player-built Rising wave supports.
 
@@ -136,20 +135,20 @@ Tutorial prompts must be skippable after a player has completed them in the curr
 
 **Future approved Should extension:** if wall movement is included before release, add a brief optional practice cue showing that wall contact slows descent and a fresh jump press kicks away. The cue must explain that holding jump does not repeat and that players must separate before kicking from the same wall again. Add the control to the Library and tutorial only after implementation and verification; no wall-movement tutorial, HUD, animation or sound currently exists. Human production owns any final animation/audio assets.
 
-## Guided first match — implemented slice (2026-10-14, PLACEHOLDER copy)
+## Guided first match — live-build onboarding
 
-**Owner decision (2026-10-14):** the guided first match uses a tutorial-only layout where building is required to reach the flag. The flag ledge is raised above the highest no-build jump, so the first round teaches Pugad → Place → Play for real. Every mode in that match plays on the same built map (no per-mode map change); normal matches are unchanged. Skip and replay are session-only.
+The guided first match teaches Pugad → shared GO/build while moving → Karera. It uses the normal live-build route and a tutorial layout that makes a completed build useful for reaching the flag. Skip and replay are session-only.
 
 | Step | Shown during | Advances when |
 |---|---|---|
 | 1 Welcome | Lobby | the match leaves the Lobby (number + shape of every seat; run/jump glyphs per device) |
 | 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout; claim feedback wins over the Barya note, which repeats the claim key and timer — 2026-10-16) |
-| 3 Place | Place | all confirmed or Place ends; BUILD HERE zone marker; stronger hint when the previous round had no finishers |
-| 4 Karera | Play | the round ends |
+| 3 Shared GO / build | active race | a construction job completes or the round ends; teach moving during the visible progress and footprint warning |
+| 4 Karera | active race | the round ends |
 | 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody); all-finish suppresses ordinary awards even with two players, while Barya still counts |
 | Lagsanay | first Lagsanay or sudden death of a session | Lagsanay ends; shown once per session (only reachable on the lifecycle route today) |
 
-**D1 note:** move/jump is taught inside the real first Karera (a warm-up note in step 1 and the Play prompt), not in a pre-Pugad practice phase. This supersedes the wording of sequence step 2 above ("reach short, safe markers on the base stage") for the guided match; the P13-T07 acceptance is unchanged.
+Move/jump is taught before and during the first race. The scheduled Place route remains available as a developer fallback and is not part of normal onboarding.
 
 Skip is a Pause menu entry ("Skip tutorial", shown only while the tutorial is active); Back is not used (P09 binds it to leave-confirm). Replay is the "Replay tutorial" entry on the Library How to Play page; it clears the session set. The coach box is display-only and sits where it does not cover the 64 px HUD or the Place strip. Copy lives in `tilaok!/data/ui/tutorial_script.tres` and is not culturally reviewed. The wall-slide practice cue is still a later Should extension. No human novice session has run: P13-T08 stays unchecked.
 
@@ -162,7 +161,7 @@ Skip is a Pause menu entry ("Skip tutorial", shown only while the tutorial is ac
 | `kangaroo_supports` | the Place of that round (build up for the Rising wave) | step `kangaroo_supports` |
 | `kangaroo_misses` | once Kangaroo commands run (KANG, GA, ROO; the third is out) | step `kangaroo_misses` |
 
-Each shows once per session (`TutorialSession.seen_kangaroo_steps`, never saved); Pause > Skip tutorial hides all of them and Library > How to Play > Replay tutorial clears them. On a stacked round the taya prompt is shown first and hands over to the Kangaroo prompt. The guided first match keeps its own Pugad / Place / Results steps; the Kangaroo prompt takes over only in Play. Evidence: [P13 tutorial suite](evidence/p13/test_logs/run_p13_tutorial_tests.txt).
+Each shows once per session (`TutorialSession.seen_kangaroo_steps`, never saved); Pause > Skip tutorial hides all of them and Library > How to Play > Replay tutorial clears them. On a stacked round the taya prompt is shown first and hands over to the Kangaroo prompt. The guided first match keeps its Pugad / GO-build / Results steps; the Kangaroo prompt takes over during the event. Evidence: [P13 tutorial suite](evidence/p13/test_logs/run_p13_tutorial_tests.txt).
 
 ## Accessibility baseline
 
@@ -193,4 +192,4 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 ## Verification links
 
 `PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity and P09 live match-end, sudden-death, result and restart behavior passed synthetic engineering checks. P11's standalone command cues and event checks also have synthetic engineering evidence; see [P08 evidence](evidence/p08/README.md), [P09 evidence](evidence/p09/README.md) and [P11 evidence](evidence/p11/README.md). The guided tutorial, final visual treatment, player comprehension/readability, physical-device validation and P13 product UI remain open.
-**Status:** pre-production contract. `GDD.md` is the gameplay source of truth. This document defines what players must be able to understand and operate; it does not prescribe UI code or final visual style. **UI shell status (2026-10-14):** placeholder scene-based shells for the Title, Lobby, Tutorial prompt box, Pugad, Place, Play HUD, results, Pause/Reconnect, Settings and Library exist; the Title, Lobby, Pugad, Place, Play HUD, Round result and Pause/Reconnect screens are **bound to the live P05/P06 match loop**, and the Match result screen is bound to live P09 data on the lifecycle route (`-- --match-route=lifecycle`); the Library shows live Items with SAMPLE text for other categories; see [UI_HANDOFF.md](UI_HANDOFF.md)). P08 adds a development Lagsanay HUD and explained round results; P09 binds live final match results to the themed screen; P11 renders standalone DEBUG command poses, timing cues and generated tones. The shared event-overlay component remains a placeholder. The guided first-match script is implemented as a PLACEHOLDER-copy slice (2026-10-14, see [Guided first match](#guided-first-match--implemented-slice-2026-10-14-placeholder-copy)) and, since 2026-10-15, the first-Kangaroo and Bomb-Taya prompts, the real Library, the live HUD cues, the cheer and the accessibility controls are implemented on the scheduled full match (the default route); it has had no human novice, spectator or QA session, so P13-T04/T08/T10 stay open (see [P13 evidence](evidence/p13/README.md)).
+**Status (updated 2026-10-22):** the normal onboarding route teaches Pugad → shared GO/build while running → Karera → results. The guidance here defines what players must understand and operate; it does not prescribe final visual style. The UI shell inventory and P05/P06/P09 implementation details below are dated historical notes. The scheduled Place route is now a developer fallback. No human novice, spectator or QA session is claimed; related acceptance remains open (see [P13 evidence](evidence/p13/README.md)).

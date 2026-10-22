@@ -1,19 +1,19 @@
 # Roadmap
 
-**Separately gated future track (approved 2026-10-19):** PC-hosted matches with Android clients and live placement are documented in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md), with a separate [12-phase tracker](PHASETASK_NETWORKED_LIVE_BUILD.md). It does not enter the October 21 freeze or October 25 submission denominator. Keep the existing offline route available; scheduling or release promotion requires a separate scope decision.
+**Active route (2026-10-22):** normal Play is local/offline live-build with a shared GO and visible two-second construction jobs. Phone/LAN, Android and QR features are retired; historical specifications, tracker and evidence remain under `archive/retired-networked-live-build/` and are not marked complete. The scheduled P12 Place route remains a developer fallback.
 
 Deadline: **Oct 25, 2026** (as of Oct 12, 2026).
 
 ## Priorities
 | Priority | Scope |
 |---|---|
-| **Must** | Team-directed platformer controls developed under the standing AI-assisted programming workflow; Pugad → Place → Play loop; 1 stage; Karera as the weighted default Main Challenge; unified scoring; Lagsanay; core event stacking with Karera + Lagsanay, Karera + Kangaroo, and Kangaroo + Lagsanay; tutorial/onboarding (required for screening); all eight first-batch families and applicable approved variants (conditional Tulay orientation gated); title/results, Library, settings/help, essential audio/visual cues and release presentation |
+| **Must** | Team-directed platformer controls developed under the standing AI-assisted programming workflow; Pugad → shared GO → active move/build → results loop; 1 stage; Karera as the weighted default Main Challenge; unified scoring; Lagsanay; core event stacking with Karera + Lagsanay, Karera + Kangaroo, and Kangaroo + Lagsanay; tutorial/onboarding (required for screening); all eight first-batch families and applicable approved variants (conditional Tulay orientation gated); title/results, Library, settings/help, essential audio/visual cues and release presentation |
 | **Should** | Approved optional wall slide/jump extension; Langit-Lupa remains the named second event; richer chicken cosmetics; enhanced crowd audio; Barya (implemented on default P12 route 2026-10-15; human/art review open); reviewed "Alam mo ba?" cards; session-only local win tally |
 | **Nice / backlog** | Expanded 36-family item catalog, more events/stages, extra polish, accessories |
 
 **Rule:** polish beats quantity. Completeness is 20% of screening.
 
-**P13 status — October 15, 2026:** the player-facing UX pass is implemented on the scheduled full match, which is now the default route: every menu route, a live HUD cue table, a real Library, Kangaroo / Bomb-Taya just-in-time prompts, audio buses and Mute, Screen shake that reaches the match, the spectator cheer and the keyboard chord recorder. P13 is 8/14; the physical-gamepad, spectator, novice, QA and physical-keyboard sessions are prepared in PLAYTEST and are the remaining work before the Oct 21 freeze review. Evidence: [P13](evidence/p13/README.md).
+**P13 historical status — October 15, 2026:** the player-facing UX pass was implemented on the scheduled full match, then the default route. The current default is the offline live-build route above; scheduled Place remains a developer fallback. P13's physical-gamepad, spectator, novice, QA and physical-keyboard sessions remain open. Evidence: [P13](evidence/p13/README.md).
 
 **Implementation status — October 14, 2026:** P08 has a playable independent Lagsanay development route, P09 has a development-only full Karera match ending at 10 points or round 12 with tied leaders resolved on the persistent stage, and P11 has an independent `kangaroo_contract_lab` route. P08 is 6/6, P09 is 4/4 and P11 is 13/13 on technical evidence. These routes do not close their release gates: P07-T04 player/device/human acceptance, P08 entry/release approval, P09/P11 performance and human acceptance, P11 physical-device/balance/cultural/asset review, and P02 physical-device work remain open. The P11 short debug sample exceeded the provisional frame target. P09 and P11 do not implement P12 event scheduling or stacks. P12 (2026-10-15, 10/10 technical on synthetic seats) adds the seeded schedule, the three verified Twist pairs and the owner-approved terminal-order table on the opt-in `--match-route=lifecycle` development route; human sessions, physical devices and balance remain open.
 

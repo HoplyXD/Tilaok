@@ -12,8 +12,6 @@ var starting_totals: Dictionary = {}
 var outcomes_by_seat: Dictionary = {}
 var seen_event_ids: Dictionary = {}
 var pending_hazards: Array[AttributionRecord] = []
-## NLB-P08: seats whose network grace expired, folded into the next step as the lowest-ranked cause.
-var pending_disconnects: Array[Dictionary] = []
 var rng: RandomNumberGenerator
 var authority := SimulationAuthority.offline()
 var taya_seat := -1
@@ -80,7 +78,6 @@ func begin(
 	outcomes_by_seat.clear()
 	seen_event_ids.clear()
 	pending_hazards.clear()
-	pending_disconnects.clear()
 	pass_back_immunity_until.clear()
 	active = true
 	ended = false
@@ -102,7 +99,6 @@ func reset() -> void:
 	outcomes_by_seat.clear()
 	seen_event_ids.clear()
 	pending_hazards.clear()
-	pending_disconnects.clear()
 	pass_back_immunity_until.clear()
 	taya_seat = -1
 	opening_taya_seat = -1
@@ -118,20 +114,6 @@ func reset() -> void:
 
 func pass_back_remaining_seconds(seat: int) -> float:
 	return maxf(0.0, float(pass_back_immunity_until.get(seat, simulation_clock)) - simulation_clock)
-
-
-## Host only. One disconnect elimination per seat; it is processed with the next step's batch and
-## never outranks a hazard or timeout recorded for the same seat on that step.
-func submit_disconnect(seat: int, physics_tick: int) -> bool:
-	if not _can_mutate() or not active or ended or not seat_indices.has(seat):
-		return false
-	if outcomes_by_seat.has(seat):
-		return false
-	for pending in pending_disconnects:
-		if int(pending.seat) == seat:
-			return true
-	pending_disconnects.append({"seat": seat, "tick": physics_tick})
-	return true
 
 
 func submit_hazard(record: AttributionRecord) -> bool:
@@ -220,15 +202,6 @@ func advance_step(
 			chosen = _timeout_outcome(taya_seat, physics_tick, expiry_time)
 		terminal_candidates.erase(_outcome_for_seat(terminal_candidates, taya_seat))
 		terminal_candidates.append(chosen)
-	for pending in pending_disconnects:
-		var gone := int(pending.seat)
-		if (
-			outcomes_by_seat.has(gone)
-			or not _outcome_for_seat(terminal_candidates, gone).is_empty()
-		):
-			continue
-		terminal_candidates.append(_disconnect_outcome(gone, physics_tick, tick_end))
-	pending_disconnects.clear()
 	for outcome in terminal_candidates:
 		var seat := int(outcome.seat_index)
 		if outcomes_by_seat.has(seat) or not seat_indices.has(seat):
@@ -395,20 +368,6 @@ func _timeout_outcome(seat: int, tick: int, event_time: float) -> Dictionary:
 		"source_item_id": "",
 		"direct_owner_seat": -1,
 		"cause": "timeout",
-	}
-
-
-func _disconnect_outcome(seat: int, tick: int, event_time: float) -> Dictionary:
-	return {
-		"seat_index": seat,
-		"outcome": "eliminated",
-		"physics_tick": tick,
-		"physics_time": event_time,
-		"time_comparable": true,
-		"event_id": "%s:disconnect:%d:%d" % [round_id, tick, seat],
-		"source_item_id": "",
-		"direct_owner_seat": -1,
-		"cause": "disconnect",
 	}
 
 

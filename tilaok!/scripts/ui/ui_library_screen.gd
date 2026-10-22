@@ -57,7 +57,7 @@ var _cycle_time := 0.0
 
 
 static func dev_mode_requested() -> bool:
-	return NlbBuildFlags.dev_flag_present(DEV_FLAG)
+	return DevBuildFlags.dev_flag_present(DEV_FLAG)
 
 
 ## The lab catalog the dev-only reference rows are read from (never dealt in a match).

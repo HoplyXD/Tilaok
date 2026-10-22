@@ -1,6 +1,6 @@
 # CLAUDE.md — Tilaok!
 
-**Networked live-build track (approved 2026-10-19):** this is future, separately gated work, not an October 21 freeze or October 25 submission obligation. The current executable remains offline/local. Follow [the specification](docs/NETWORKED_LIVE_BUILD.md) and [its tracker](docs/PHASETASK_NETWORKED_LIVE_BUILD.md) only when that track is scheduled; this scoped exception supersedes the older local-only guidance for that track.
+**Current route (2026-10-22):** normal Play is local/offline: Lobby → Pugad → shared 3-second GO → movement and construction together → results → next round. Phone/LAN, Android and QR support are retired; their specification, tracker and evidence remain as historical records under `docs/archive/retired-networked-live-build/`. The scheduled P12 Place route remains a developer fallback. See P20 in `docs/PHASETASK.md` for active acceptance and evidence status.
 
 Context for Claude Code sessions in this repo.
 

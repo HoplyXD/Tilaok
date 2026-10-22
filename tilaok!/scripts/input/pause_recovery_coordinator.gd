@@ -16,10 +16,6 @@ enum State { RUNNING, PAUSED, COUNTDOWN }
 ## When true the pause menu is drawn by a scene (UiPauseScreen): the owner's confirm no longer
 ## readies the owner implicitly. Default false keeps the P02 behaviour exactly.
 @export var external_menu := false
-## NLB-P08: on the network routes remote phones cannot set "ready", so resume follows the host's
-## own seats only. Offline play leaves this false and keeps the all-seats rule exactly.
-var remote_ready_exempt := false
-
 var authority := SimulationAuthority.offline()
 var state := State.RUNNING
 var pause_reason := ""
@@ -235,14 +231,7 @@ func _on_navigation_step(seat_index: int, direction: String) -> void:
 
 
 func _resume_ready() -> bool:
-	if not remote_ready_exempt:
-		return input_router.registry.all_joined_ready_and_connected()
-	for seat in input_router.registry.joined_seats():
-		if str(seat.device_kind) == "remote":
-			continue
-		if not seat.connected or not seat.ready:
-			return false
-	return true
+	return input_router.registry.all_joined_ready_and_connected()
 
 
 func _missing_seats() -> Array[int]:

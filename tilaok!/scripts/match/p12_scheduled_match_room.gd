@@ -24,10 +24,6 @@ var kangaroo_round: KangarooMainRound
 ## Lagsanay as a Twist on a Karera Main (P12-T05).
 var bomb_taya := BombTayaTwist.new()
 var barya_objective := BaryaRoundObjective.new()
-var network_map_id := MapCatalog.DEFAULT_ID
-var _network_entity_ids: Dictionary = {}
-var _network_entity_serial := 1
-var _network_event_revision := 0
 var barya_offer_egg_id := ""
 var barya_feedback := ""
 ## The Main Challenge of the round in Play (NONE outside Play and during sudden death).
@@ -47,7 +43,7 @@ func _ready() -> void:
 	# Barya is enabled on the scheduled default route. `--barya-disabled` is the rollback switch;
 	# first_playable uses P07 and never enters this room.
 	if tuning != null:
-		tuning.barya_enabled = not NlbBuildFlags.dev_flag_present("--barya-disabled")
+		tuning.barya_enabled = not DevBuildFlags.dev_flag_present("--barya-disabled")
 	kangaroo_round = KangarooMainRound.new()
 	add_child(kangaroo_round)
 	kangaroo_round.setup(self)
@@ -145,8 +141,7 @@ func _begin_pugad() -> void:
 	_notify_presentation(&"eggs")
 
 
-## Stack rows this room may roll. The networked live route filters them by its compatibility
-## matrix; every other route uses the enabled EventSchedule rows unchanged.
+## Stack rows enabled by the current offline event schedule.
 func schedule_pairs() -> Array[Dictionary]:
 	return EventSchedule.enabled_pairs()
 
@@ -937,9 +932,9 @@ func _finish_event_round() -> void:
 			return
 	_stage_round_record(
 		(
-			NetworkResultsCodec.ScoringFamily.LAGSANAY
+			MatchResultTypes.ScoringFamily.LAGSANAY
 			if is_lagsanay
-			else NetworkResultsCodec.ScoringFamily.KANGAROO
+			else MatchResultTypes.ScoringFamily.KANGAROO
 		),
 		score_result,
 		outcome_rows
@@ -1096,209 +1091,6 @@ func reset_room() -> void:
 	if kangaroo_round != null:
 		kangaroo_round.reset()
 	super.reset_room()
-	_network_entity_ids.clear()
-	_network_entity_serial = 1
-	_network_event_revision = 0
-
-
-## Detached values for the raw-ENet replica. Only stable seat identities and catalog variant keys
-## cross the wire; no Node, Resource, scene path, or authoritative collection is exposed.
-func network_replication_snapshot(match_id: int, snapshot_id: int, tick: int) -> Dictionary:
-	var network_round_id := network_current_round_id()
-	var metadata := {
-		"match_id": match_id,
-		"round_id": network_round_id,
-		"attempt_id": int(match_run_id) & 0xffff,
-		"tick": tick & 0xffffffff,
-		"stage_version": items.stage_version if items != null else 0,
-		"snapshot_id": snapshot_id,
-		"event_revision": _network_event_revision,
-		"host_time_ms": Time.get_ticks_msec() & 0xffffffff,
-		"phase": int(phase_controller.phase),
-		"paused": get_tree().paused if get_tree() != null else false,
-		"remaining_ms": roundi(maxf(0.0, phase_controller.remaining_seconds) * 1000.0),
-		"map_id": network_map_id,
-		"camera_position": camera_rig.global_position if camera_rig != null else Vector2.ZERO,
-		"camera_zoom": camera_rig.zoom.x if camera_rig != null else 1.0,
-		"event_main": int(event_main) & 0xff,
-		"event_twist": int(current_entry().get("twist", EventSchedule.Challenge.NONE)) & 0xff,
-		"barya_state": int(barya_objective.state),
-		"carrier_seat": barya_objective.carrier_seat,
-		"receipt_seat": barya_objective.receipt_seat,
-		"rng_decision_id": ((int(match_run_id) << 16) | (network_round_id & 0xffff)) & 0xffffffff,
-	}
-	var records: Array[PackedByteArray] = []
-	for seat_data in input_router.registry.joined_seats():
-		var seat_index := int(seat_data.seat)
-		var actor := actors.get(seat_index) as ChickenController
-		var position := actor.global_position if actor != null and is_instance_valid(actor) else Vector2.ZERO
-		var velocity := actor.velocity if actor != null and is_instance_valid(actor) else Vector2.ZERO
-		var flags := 0
-		if actor != null and is_instance_valid(actor):
-			flags |= 1 if actor.sneaking else 0
-			flags |= 2 if actor.gliding else 0
-			flags |= 4 if actor.is_on_floor() else 0
-		var seat_record := NetworkMatchCodec.encode_seat_record(
-			{
-				"seat": seat_index,
-				"identity": int(seat_data.identity),
-				"shape_id": seat_index,
-				"status": int(actor.lifecycle.status) if actor != null else 0,
-				"flags": flags,
-				"position": position,
-				"velocity": velocity,
-			},
-			int(cumulative_score_units.get(seat_index, 0))
-		)
-		if not seat_record.is_empty():
-			records.append(seat_record)
-	if items != null:
-		for instance_id in items.pieces.keys():
-			var piece := items.pieces[instance_id] as PlacedItem
-			if piece == null or piece.node == null or not is_instance_valid(piece.node):
-				continue
-			var node := piece.node as Node2D
-			var velocity := Vector2.ZERO
-			var state_flags := 0
-			var timer_ms := 0
-			var lifecycle := 0
-			if piece.node is StageBlock:
-				var replicated_block := (piece.node as StageBlock).network_replication_state()
-				velocity = replicated_block.velocity
-				state_flags = (1 if replicated_block.active else 0) | ((int(replicated_block.collapse_state) & 3) << 1) | (8 if replicated_block.grounded else 0)
-				timer_ms = mini(int(replicated_block.collapse_remaining_ms), 65535)
-			# Contract v1.3 activation tell: lifecycle 1 while a live placement is in its safe
-			# grace, with timer_ms holding the remaining grace. Scheduled rooms never set it.
-			if items.live_activation.has(instance_id):
-				var grace: Dictionary = items.live_activation[instance_id]
-				lifecycle = 1
-				timer_ms = clampi(roundi(float(grace.get("remaining", 0.0)) * 1000.0), 0, 65535)
-			var stage_record := NetworkMatchCodec.encode_stage_record(
-				{
-					"entity_id": _network_id_for(str(instance_id)),
-					"variant_key": piece.variant_key,
-					"position": node.global_position,
-					"velocity": velocity,
-					"rotation": piece.quarter_turns,
-					"lifecycle": lifecycle,
-					"state_flags": state_flags,
-					"timer_ms": timer_ms,
-					"revision": items.stage_version,
-				}
-			)
-			if not stage_record.is_empty():
-				records.append(stage_record)
-	var coin_position := Vector2.ZERO
-	if barya_objective.coin != null and is_instance_valid(barya_objective.coin):
-		coin_position = barya_objective.coin.global_position
-	records.append(
-		NetworkMatchCodec.encode_objective_record(
-			{
-				"kind": 1,
-				"state": int(barya_objective.state),
-				"carrier_seat": barya_objective.carrier_seat,
-				"receipt_seat": barya_objective.receipt_seat,
-				"position": coin_position,
-				"round_id": network_round_id,
-				"attempt_id": int(match_run_id) & 0xffff,
-			}
-		)
-	)
-	var upcoming := schedule.entry_for((items.round_number + 1) if items != null else 1)
-	var markers: Dictionary = kangaroo_round.controller.marker_counts if kangaroo_round != null else {}
-	var taya := -1
-	if event_main == EventSchedule.Challenge.LAGSANAY and lagsanay_controller.active:
-		taya = lagsanay_controller.taya_seat
-	elif bomb_taya.active:
-		taya = bomb_taya.taya_seat
-	records.append(
-		NetworkMatchCodec.encode_event_context_record(
-			{
-				"event_main": int(event_main) & 0xff,
-				"event_twist": int(current_entry().get("twist", EventSchedule.Challenge.NONE)) & 0xff,
-				"next_main": int(upcoming.get("main", 255)) & 0xff,
-				"next_twist": int(upcoming.get("twist", 255)) & 0xff,
-				"taya_seat": taya,
-				"event_clock_ms": roundi(maxf(0.0, play_clock_seconds()) * 1000.0),
-				"event_revision": _network_event_revision,
-				"rng_decision_id": int(metadata.rng_decision_id),
-				"markers": markers,
-			}
-		)
-	)
-	# Contract v1.4 live transients. Over a wire cap nothing is truncated: the frame is flagged and
-	# the session refuses or resyncs (CONTENT_LIMIT_EXCEEDED / SNAPSHOT_LIMIT).
-	var transients := network_transient_states()
-	var overflow := (
-		NetworkMatchCodec.transient_cap_status(transients) != NetworkFrame.Reason.OK
-	)
-	var transient_records: Array[PackedByteArray] = []
-	if not overflow:
-		for transient in transients:
-			var transient_record := NetworkMatchCodec.encode_transient_record(transient)
-			if transient_record.is_empty():
-				overflow = true
-				break
-			transient_records.append(transient_record)
-	if not overflow:
-		records.append_array(transient_records)
-	return {"metadata": metadata, "records": records, "transient_overflow": overflow}
-
-
-## Host-owned live transients for contract v1.4 (projectiles, bubbles, blasts, movers). The
-## scheduled route sends none, so its wire stays as it was; the live network route overrides it.
-func network_transient_states() -> Array[Dictionary]:
-	return []
-
-
-## NLB-P08 (contract v1.5): the host's single disconnect elimination for this round, committed
-## through the existing outcome paths with cause `disconnect` and no source item, so it can never
-## earn Patibong. Returns "committed", "already_terminal" or "not_playing" (retry later).
-## Kangaroo main rounds are not wired here: a neutral seat fails its own commands instead.
-func network_commit_disconnect(seat_index: int) -> String:
-	if not _simulation_can_commit() or phase_controller.phase != MatchPhaseController.Phase.PLAY:
-		return "not_playing"
-	var actor := actors.get(seat_index) as ChickenController
-	if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
-		return "already_terminal"
-	var tick := Engine.get_physics_frames()
-	if lagsanay_controller != null and lagsanay_controller.active:
-		if lagsanay_controller.outcomes_by_seat.has(seat_index):
-			return "already_terminal"
-		return (
-			"committed" if lagsanay_controller.submit_disconnect(seat_index, tick) else "not_playing"
-		)
-	if _event_round_active():
-		return "not_playing"
-	if race_round_controller == null:
-		return "not_playing"
-	var queued := race_candidate_queue.queue_elimination(
-		seat_index,
-		tick,
-		"",
-		-1,
-		"%s:disconnect:%d" % [race_round_controller.ledger.round_id, seat_index],
-		RaceOutcomeLedger.CAUSE_DISCONNECT
-	)
-	return "committed" if queued else "not_playing"
-
-
-func network_current_round_id() -> int:
-	if items == null:
-		return 1
-	return items.round_number if phase_controller.phase == MatchPhaseController.Phase.RESULTS else items.round_number + 1
-
-
-## Stable wire entity ID for a placed instance (allocated on first use, cleared with the room).
-func network_entity_id_for(instance_id: String) -> int:
-	return 0 if instance_id.is_empty() else _network_id_for(instance_id)
-
-
-func _network_id_for(instance_id: String) -> int:
-	if not _network_entity_ids.has(instance_id):
-		_network_entity_ids[instance_id] = _network_entity_serial
-		_network_entity_serial += 1
-	return int(_network_entity_ids[instance_id])
 
 
 # --- Presentation hooks -----------------------------------------------------------------------

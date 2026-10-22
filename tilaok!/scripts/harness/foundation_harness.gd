@@ -118,7 +118,7 @@ func _ready() -> void:
 	_update_identity()
 	_validate_selected_profile()
 	# Exported-build smoke hook: "-- --open-room=item_lab" opens a fixture at startup.
-	for argument in NlbBuildFlags.dev_user_args():
+	for argument in DevBuildFlags.dev_user_args():
 		if argument.begins_with("--open-room="):
 			_open_room.call_deferred(argument.trim_prefix("--open-room="))
 	_append_status(

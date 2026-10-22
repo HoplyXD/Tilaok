@@ -1,0 +1,1185 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS 16:9 live=false: jump inside the safe inner rect
+PASS 16:9 live=false: jump meets the size floor
+PASS 16:9 live=false: jump stays in the lower band, clear of the ghost area
+PASS 16:9 live=false: sneak inside the safe inner rect
+PASS 16:9 live=false: sneak meets the size floor
+PASS 16:9 live=false: sneak stays in the lower band, clear of the ghost area
+PASS 16:9 live=false: cheer inside the safe inner rect
+PASS 16:9 live=false: cheer meets the size floor
+PASS 16:9 live=false: cheer stays in the lower band, clear of the ghost area
+PASS 16:9 live=false: claim inside the safe inner rect
+PASS 16:9 live=false: claim meets the size floor
+PASS 16:9 live=false: claim stays in the lower band, clear of the ghost area
+PASS 16:9 live=false: back inside the safe inner rect
+PASS 16:9 live=false: back meets the size floor
+PASS 16:9 live=false: back stays in the lower band, clear of the ghost area
+PASS 16:9 live=false: pause inside the safe inner rect
+PASS 16:9 live=false: pause meets the size floor
+PASS 16:9 live=false: pause stays in the lower band, clear of the ghost area
+PASS 16:9 live=false: no two buttons overlap
+PASS 16:9 live=false: move zone inside the inner rect
+PASS 16:9 live=false: move zone capped to 40 percent width
+PASS 16:9 live=false: buttons never sit inside a drag zone
+PASS 16:9 live=true: jump inside the safe inner rect
+PASS 16:9 live=true: jump meets the size floor
+PASS 16:9 live=true: jump stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: sneak inside the safe inner rect
+PASS 16:9 live=true: sneak meets the size floor
+PASS 16:9 live=true: sneak stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: cheer inside the safe inner rect
+PASS 16:9 live=true: cheer meets the size floor
+PASS 16:9 live=true: cheer stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: claim inside the safe inner rect
+PASS 16:9 live=true: claim meets the size floor
+PASS 16:9 live=true: claim stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: back inside the safe inner rect
+PASS 16:9 live=true: back meets the size floor
+PASS 16:9 live=true: back stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: pause inside the safe inner rect
+PASS 16:9 live=true: pause meets the size floor
+PASS 16:9 live=true: pause stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: build inside the safe inner rect
+PASS 16:9 live=true: build meets the size floor
+PASS 16:9 live=true: build stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: rotate inside the safe inner rect
+PASS 16:9 live=true: rotate meets the size floor
+PASS 16:9 live=true: rotate stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: place inside the safe inner rect
+PASS 16:9 live=true: place meets the size floor
+PASS 16:9 live=true: place stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: cancel inside the safe inner rect
+PASS 16:9 live=true: cancel meets the size floor
+PASS 16:9 live=true: cancel stays in the lower band, clear of the ghost area
+PASS 16:9 live=true: no two buttons overlap
+PASS 16:9 live=true: move zone inside the inner rect
+PASS 16:9 live=true: move zone capped to 40 percent width
+PASS 16:9 live=true: buttons never sit inside a drag zone
+PASS 16:9 live=true: the move and aim zones are independent
+PASS 16:9 notch: jump inside the safe inner rect
+PASS 16:9 notch: jump meets the size floor
+PASS 16:9 notch: jump stays in the lower band, clear of the ghost area
+PASS 16:9 notch: sneak inside the safe inner rect
+PASS 16:9 notch: sneak meets the size floor
+PASS 16:9 notch: sneak stays in the lower band, clear of the ghost area
+PASS 16:9 notch: cheer inside the safe inner rect
+PASS 16:9 notch: cheer meets the size floor
+PASS 16:9 notch: cheer stays in the lower band, clear of the ghost area
+PASS 16:9 notch: claim inside the safe inner rect
+PASS 16:9 notch: claim meets the size floor
+PASS 16:9 notch: claim stays in the lower band, clear of the ghost area
+PASS 16:9 notch: back inside the safe inner rect
+PASS 16:9 notch: back meets the size floor
+PASS 16:9 notch: back stays in the lower band, clear of the ghost area
+PASS 16:9 notch: pause inside the safe inner rect
+PASS 16:9 notch: pause meets the size floor
+PASS 16:9 notch: pause stays in the lower band, clear of the ghost area
+PASS 16:9 notch: build inside the safe inner rect
+PASS 16:9 notch: build meets the size floor
+PASS 16:9 notch: build stays in the lower band, clear of the ghost area
+PASS 16:9 notch: rotate inside the safe inner rect
+PASS 16:9 notch: rotate meets the size floor
+PASS 16:9 notch: rotate stays in the lower band, clear of the ghost area
+PASS 16:9 notch: place inside the safe inner rect
+PASS 16:9 notch: place meets the size floor
+PASS 16:9 notch: place stays in the lower band, clear of the ghost area
+PASS 16:9 notch: cancel inside the safe inner rect
+PASS 16:9 notch: cancel meets the size floor
+PASS 16:9 notch: cancel stays in the lower band, clear of the ghost area
+PASS 16:9 notch: no two buttons overlap
+PASS 16:9 notch: move zone inside the inner rect
+PASS 16:9 notch: move zone capped to 40 percent width
+PASS 16:9 notch: buttons never sit inside a drag zone
+PASS 16:9 notch: the move and aim zones are independent
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 16:9 notch: every button stays inside the safe rect
+PASS 19.5:9 live=false: jump inside the safe inner rect
+PASS 19.5:9 live=false: jump meets the size floor
+PASS 19.5:9 live=false: jump stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=false: sneak inside the safe inner rect
+PASS 19.5:9 live=false: sneak meets the size floor
+PASS 19.5:9 live=false: sneak stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=false: cheer inside the safe inner rect
+PASS 19.5:9 live=false: cheer meets the size floor
+PASS 19.5:9 live=false: cheer stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=false: claim inside the safe inner rect
+PASS 19.5:9 live=false: claim meets the size floor
+PASS 19.5:9 live=false: claim stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=false: back inside the safe inner rect
+PASS 19.5:9 live=false: back meets the size floor
+PASS 19.5:9 live=false: back stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=false: pause inside the safe inner rect
+PASS 19.5:9 live=false: pause meets the size floor
+PASS 19.5:9 live=false: pause stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=false: no two buttons overlap
+PASS 19.5:9 live=false: move zone inside the inner rect
+PASS 19.5:9 live=false: move zone capped to 40 percent width
+PASS 19.5:9 live=false: buttons never sit inside a drag zone
+PASS 19.5:9 live=true: jump inside the safe inner rect
+PASS 19.5:9 live=true: jump meets the size floor
+PASS 19.5:9 live=true: jump stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: sneak inside the safe inner rect
+PASS 19.5:9 live=true: sneak meets the size floor
+PASS 19.5:9 live=true: sneak stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: cheer inside the safe inner rect
+PASS 19.5:9 live=true: cheer meets the size floor
+PASS 19.5:9 live=true: cheer stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: claim inside the safe inner rect
+PASS 19.5:9 live=true: claim meets the size floor
+PASS 19.5:9 live=true: claim stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: back inside the safe inner rect
+PASS 19.5:9 live=true: back meets the size floor
+PASS 19.5:9 live=true: back stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: pause inside the safe inner rect
+PASS 19.5:9 live=true: pause meets the size floor
+PASS 19.5:9 live=true: pause stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: build inside the safe inner rect
+PASS 19.5:9 live=true: build meets the size floor
+PASS 19.5:9 live=true: build stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: rotate inside the safe inner rect
+PASS 19.5:9 live=true: rotate meets the size floor
+PASS 19.5:9 live=true: rotate stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: place inside the safe inner rect
+PASS 19.5:9 live=true: place meets the size floor
+PASS 19.5:9 live=true: place stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: cancel inside the safe inner rect
+PASS 19.5:9 live=true: cancel meets the size floor
+PASS 19.5:9 live=true: cancel stays in the lower band, clear of the ghost area
+PASS 19.5:9 live=true: no two buttons overlap
+PASS 19.5:9 live=true: move zone inside the inner rect
+PASS 19.5:9 live=true: move zone capped to 40 percent width
+PASS 19.5:9 live=true: buttons never sit inside a drag zone
+PASS 19.5:9 live=true: the move and aim zones are independent
+PASS 19.5:9 notch: jump inside the safe inner rect
+PASS 19.5:9 notch: jump meets the size floor
+PASS 19.5:9 notch: jump stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: sneak inside the safe inner rect
+PASS 19.5:9 notch: sneak meets the size floor
+PASS 19.5:9 notch: sneak stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: cheer inside the safe inner rect
+PASS 19.5:9 notch: cheer meets the size floor
+PASS 19.5:9 notch: cheer stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: claim inside the safe inner rect
+PASS 19.5:9 notch: claim meets the size floor
+PASS 19.5:9 notch: claim stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: back inside the safe inner rect
+PASS 19.5:9 notch: back meets the size floor
+PASS 19.5:9 notch: back stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: pause inside the safe inner rect
+PASS 19.5:9 notch: pause meets the size floor
+PASS 19.5:9 notch: pause stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: build inside the safe inner rect
+PASS 19.5:9 notch: build meets the size floor
+PASS 19.5:9 notch: build stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: rotate inside the safe inner rect
+PASS 19.5:9 notch: rotate meets the size floor
+PASS 19.5:9 notch: rotate stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: place inside the safe inner rect
+PASS 19.5:9 notch: place meets the size floor
+PASS 19.5:9 notch: place stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: cancel inside the safe inner rect
+PASS 19.5:9 notch: cancel meets the size floor
+PASS 19.5:9 notch: cancel stays in the lower band, clear of the ghost area
+PASS 19.5:9 notch: no two buttons overlap
+PASS 19.5:9 notch: move zone inside the inner rect
+PASS 19.5:9 notch: move zone capped to 40 percent width
+PASS 19.5:9 notch: buttons never sit inside a drag zone
+PASS 19.5:9 notch: the move and aim zones are independent
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 19.5:9 notch: every button stays inside the safe rect
+PASS 20:9 live=false: jump inside the safe inner rect
+PASS 20:9 live=false: jump meets the size floor
+PASS 20:9 live=false: jump stays in the lower band, clear of the ghost area
+PASS 20:9 live=false: sneak inside the safe inner rect
+PASS 20:9 live=false: sneak meets the size floor
+PASS 20:9 live=false: sneak stays in the lower band, clear of the ghost area
+PASS 20:9 live=false: cheer inside the safe inner rect
+PASS 20:9 live=false: cheer meets the size floor
+PASS 20:9 live=false: cheer stays in the lower band, clear of the ghost area
+PASS 20:9 live=false: claim inside the safe inner rect
+PASS 20:9 live=false: claim meets the size floor
+PASS 20:9 live=false: claim stays in the lower band, clear of the ghost area
+PASS 20:9 live=false: back inside the safe inner rect
+PASS 20:9 live=false: back meets the size floor
+PASS 20:9 live=false: back stays in the lower band, clear of the ghost area
+PASS 20:9 live=false: pause inside the safe inner rect
+PASS 20:9 live=false: pause meets the size floor
+PASS 20:9 live=false: pause stays in the lower band, clear of the ghost area
+PASS 20:9 live=false: no two buttons overlap
+PASS 20:9 live=false: move zone inside the inner rect
+PASS 20:9 live=false: move zone capped to 40 percent width
+PASS 20:9 live=false: buttons never sit inside a drag zone
+PASS 20:9 live=true: jump inside the safe inner rect
+PASS 20:9 live=true: jump meets the size floor
+PASS 20:9 live=true: jump stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: sneak inside the safe inner rect
+PASS 20:9 live=true: sneak meets the size floor
+PASS 20:9 live=true: sneak stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: cheer inside the safe inner rect
+PASS 20:9 live=true: cheer meets the size floor
+PASS 20:9 live=true: cheer stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: claim inside the safe inner rect
+PASS 20:9 live=true: claim meets the size floor
+PASS 20:9 live=true: claim stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: back inside the safe inner rect
+PASS 20:9 live=true: back meets the size floor
+PASS 20:9 live=true: back stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: pause inside the safe inner rect
+PASS 20:9 live=true: pause meets the size floor
+PASS 20:9 live=true: pause stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: build inside the safe inner rect
+PASS 20:9 live=true: build meets the size floor
+PASS 20:9 live=true: build stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: rotate inside the safe inner rect
+PASS 20:9 live=true: rotate meets the size floor
+PASS 20:9 live=true: rotate stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: place inside the safe inner rect
+PASS 20:9 live=true: place meets the size floor
+PASS 20:9 live=true: place stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: cancel inside the safe inner rect
+PASS 20:9 live=true: cancel meets the size floor
+PASS 20:9 live=true: cancel stays in the lower band, clear of the ghost area
+PASS 20:9 live=true: no two buttons overlap
+PASS 20:9 live=true: move zone inside the inner rect
+PASS 20:9 live=true: move zone capped to 40 percent width
+PASS 20:9 live=true: buttons never sit inside a drag zone
+PASS 20:9 live=true: the move and aim zones are independent
+PASS 20:9 notch: jump inside the safe inner rect
+PASS 20:9 notch: jump meets the size floor
+PASS 20:9 notch: jump stays in the lower band, clear of the ghost area
+PASS 20:9 notch: sneak inside the safe inner rect
+PASS 20:9 notch: sneak meets the size floor
+PASS 20:9 notch: sneak stays in the lower band, clear of the ghost area
+PASS 20:9 notch: cheer inside the safe inner rect
+PASS 20:9 notch: cheer meets the size floor
+PASS 20:9 notch: cheer stays in the lower band, clear of the ghost area
+PASS 20:9 notch: claim inside the safe inner rect
+PASS 20:9 notch: claim meets the size floor
+PASS 20:9 notch: claim stays in the lower band, clear of the ghost area
+PASS 20:9 notch: back inside the safe inner rect
+PASS 20:9 notch: back meets the size floor
+PASS 20:9 notch: back stays in the lower band, clear of the ghost area
+PASS 20:9 notch: pause inside the safe inner rect
+PASS 20:9 notch: pause meets the size floor
+PASS 20:9 notch: pause stays in the lower band, clear of the ghost area
+PASS 20:9 notch: build inside the safe inner rect
+PASS 20:9 notch: build meets the size floor
+PASS 20:9 notch: build stays in the lower band, clear of the ghost area
+PASS 20:9 notch: rotate inside the safe inner rect
+PASS 20:9 notch: rotate meets the size floor
+PASS 20:9 notch: rotate stays in the lower band, clear of the ghost area
+PASS 20:9 notch: place inside the safe inner rect
+PASS 20:9 notch: place meets the size floor
+PASS 20:9 notch: place stays in the lower band, clear of the ghost area
+PASS 20:9 notch: cancel inside the safe inner rect
+PASS 20:9 notch: cancel meets the size floor
+PASS 20:9 notch: cancel stays in the lower band, clear of the ghost area
+PASS 20:9 notch: no two buttons overlap
+PASS 20:9 notch: move zone inside the inner rect
+PASS 20:9 notch: move zone capped to 40 percent width
+PASS 20:9 notch: buttons never sit inside a drag zone
+PASS 20:9 notch: the move and aim zones are independent
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 20:9 notch: every button stays inside the safe rect
+PASS 4:3 live=false: jump inside the safe inner rect
+PASS 4:3 live=false: jump meets the size floor
+PASS 4:3 live=false: jump stays in the lower band, clear of the ghost area
+PASS 4:3 live=false: sneak inside the safe inner rect
+PASS 4:3 live=false: sneak meets the size floor
+PASS 4:3 live=false: sneak stays in the lower band, clear of the ghost area
+PASS 4:3 live=false: cheer inside the safe inner rect
+PASS 4:3 live=false: cheer meets the size floor
+PASS 4:3 live=false: cheer stays in the lower band, clear of the ghost area
+PASS 4:3 live=false: claim inside the safe inner rect
+PASS 4:3 live=false: claim meets the size floor
+PASS 4:3 live=false: claim stays in the lower band, clear of the ghost area
+PASS 4:3 live=false: back inside the safe inner rect
+PASS 4:3 live=false: back meets the size floor
+PASS 4:3 live=false: back stays in the lower band, clear of the ghost area
+PASS 4:3 live=false: pause inside the safe inner rect
+PASS 4:3 live=false: pause meets the size floor
+PASS 4:3 live=false: pause stays in the lower band, clear of the ghost area
+PASS 4:3 live=false: no two buttons overlap
+PASS 4:3 live=false: move zone inside the inner rect
+PASS 4:3 live=false: move zone capped to 40 percent width
+PASS 4:3 live=false: buttons never sit inside a drag zone
+PASS 4:3 live=true: jump inside the safe inner rect
+PASS 4:3 live=true: jump meets the size floor
+PASS 4:3 live=true: jump stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: sneak inside the safe inner rect
+PASS 4:3 live=true: sneak meets the size floor
+PASS 4:3 live=true: sneak stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: cheer inside the safe inner rect
+PASS 4:3 live=true: cheer meets the size floor
+PASS 4:3 live=true: cheer stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: claim inside the safe inner rect
+PASS 4:3 live=true: claim meets the size floor
+PASS 4:3 live=true: claim stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: back inside the safe inner rect
+PASS 4:3 live=true: back meets the size floor
+PASS 4:3 live=true: back stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: pause inside the safe inner rect
+PASS 4:3 live=true: pause meets the size floor
+PASS 4:3 live=true: pause stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: build inside the safe inner rect
+PASS 4:3 live=true: build meets the size floor
+PASS 4:3 live=true: build stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: rotate inside the safe inner rect
+PASS 4:3 live=true: rotate meets the size floor
+PASS 4:3 live=true: rotate stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: place inside the safe inner rect
+PASS 4:3 live=true: place meets the size floor
+PASS 4:3 live=true: place stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: cancel inside the safe inner rect
+PASS 4:3 live=true: cancel meets the size floor
+PASS 4:3 live=true: cancel stays in the lower band, clear of the ghost area
+PASS 4:3 live=true: no two buttons overlap
+PASS 4:3 live=true: move zone inside the inner rect
+PASS 4:3 live=true: move zone capped to 40 percent width
+PASS 4:3 live=true: buttons never sit inside a drag zone
+PASS 4:3 live=true: the move and aim zones are independent
+PASS 4:3 notch: jump inside the safe inner rect
+PASS 4:3 notch: jump meets the size floor
+PASS 4:3 notch: jump stays in the lower band, clear of the ghost area
+PASS 4:3 notch: sneak inside the safe inner rect
+PASS 4:3 notch: sneak meets the size floor
+PASS 4:3 notch: sneak stays in the lower band, clear of the ghost area
+PASS 4:3 notch: cheer inside the safe inner rect
+PASS 4:3 notch: cheer meets the size floor
+PASS 4:3 notch: cheer stays in the lower band, clear of the ghost area
+PASS 4:3 notch: claim inside the safe inner rect
+PASS 4:3 notch: claim meets the size floor
+PASS 4:3 notch: claim stays in the lower band, clear of the ghost area
+PASS 4:3 notch: back inside the safe inner rect
+PASS 4:3 notch: back meets the size floor
+PASS 4:3 notch: back stays in the lower band, clear of the ghost area
+PASS 4:3 notch: pause inside the safe inner rect
+PASS 4:3 notch: pause meets the size floor
+PASS 4:3 notch: pause stays in the lower band, clear of the ghost area
+PASS 4:3 notch: build inside the safe inner rect
+PASS 4:3 notch: build meets the size floor
+PASS 4:3 notch: build stays in the lower band, clear of the ghost area
+PASS 4:3 notch: rotate inside the safe inner rect
+PASS 4:3 notch: rotate meets the size floor
+PASS 4:3 notch: rotate stays in the lower band, clear of the ghost area
+PASS 4:3 notch: place inside the safe inner rect
+PASS 4:3 notch: place meets the size floor
+PASS 4:3 notch: place stays in the lower band, clear of the ghost area
+PASS 4:3 notch: cancel inside the safe inner rect
+PASS 4:3 notch: cancel meets the size floor
+PASS 4:3 notch: cancel stays in the lower band, clear of the ghost area
+PASS 4:3 notch: no two buttons overlap
+PASS 4:3 notch: move zone inside the inner rect
+PASS 4:3 notch: move zone capped to 40 percent width
+PASS 4:3 notch: buttons never sit inside a drag zone
+PASS 4:3 notch: the move and aim zones are independent
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 4:3 notch: every button stays inside the safe rect
+PASS 420 dpi phone: jump inside the safe inner rect
+PASS 420 dpi phone: jump meets the size floor
+PASS 420 dpi phone: jump stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: sneak inside the safe inner rect
+PASS 420 dpi phone: sneak meets the size floor
+PASS 420 dpi phone: sneak stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: cheer inside the safe inner rect
+PASS 420 dpi phone: cheer meets the size floor
+PASS 420 dpi phone: cheer stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: claim inside the safe inner rect
+PASS 420 dpi phone: claim meets the size floor
+PASS 420 dpi phone: claim stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: back inside the safe inner rect
+PASS 420 dpi phone: back meets the size floor
+PASS 420 dpi phone: back stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: pause inside the safe inner rect
+PASS 420 dpi phone: pause meets the size floor
+PASS 420 dpi phone: pause stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: build inside the safe inner rect
+PASS 420 dpi phone: build meets the size floor
+PASS 420 dpi phone: build stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: rotate inside the safe inner rect
+PASS 420 dpi phone: rotate meets the size floor
+PASS 420 dpi phone: rotate stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: place inside the safe inner rect
+PASS 420 dpi phone: place meets the size floor
+PASS 420 dpi phone: place stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: cancel inside the safe inner rect
+PASS 420 dpi phone: cancel meets the size floor
+PASS 420 dpi phone: cancel stays in the lower band, clear of the ghost area
+PASS 420 dpi phone: no two buttons overlap
+PASS 420 dpi phone: move zone inside the inner rect
+PASS 420 dpi phone: move zone capped to 40 percent width
+PASS 420 dpi phone: buttons never sit inside a drag zone
+PASS 420 dpi phone: the move and aim zones are independent
+PASS a dense phone raises the floor above the 44 px minimum
+PASS tiny dpi still honours the pixel floor
+PASS live layouts add the four build controls
+PASS no aim zone outside live build
+PASS 160 dpi unstretched is 1 px per dp
+PASS stretch halves the density
+PASS an unknown dpi and window fall back safely
+PASS the dp floor stays the proposed 44
+PASS a finger in the move zone is owned
+PASS index 0 owns the move zone
+PASS dragging right moves right
+PASS index 1 owns the aim zone
+PASS dragging up aims up
+PASS aiming never changes the movement direction
+PASS rotate fires once while moving and aiming
+PASS place fires while moving, aiming and holding rotate
+PASS four fingers hold four independent owners
+PASS each button releases exactly once
+PASS the zones stay held while buttons come and go
+PASS a release outside the zone releases its owner
+PASS releasing the move finger neutralises movement
+PASS the aim finger is unaffected
+PASS a repeated press edge fires once
+PASS sliding onto a neighbour never fires it
+PASS the release goes to the original owner only
+PASS a touch on nothing is ignored
+PASS an ignored touch owns nothing
+PASS a second finger in an owned zone is swallowed
+PASS the swallowed finger owns nothing
+PASS a disabled button neither presses nor releases
+PASS disabling a held button releases it
+PASS no finger is left owning a disabled control
+PASS a canceled touch releases its owner
+PASS focus loss clears every owner
+PASS focus loss releases held buttons and neutralises movement
+PASS a viewport change releases every finger
+PASS a drag from an unowned index is ignored
+PASS mouse input is ignored unless the debug flag allows it
+PASS the debug flag lets desktop tests click the layer
+PASS a hidden layer takes no input
+PASS build controls exist only on the live route
+PASS numpad key 4194445 is detected as K4
+PASS numpad key 4194439 is detected as K4
+PASS numpad key 4194441 is detected as K4
+PASS numpad key 4194447 is detected as K4
+PASS numpad key 4194446 is detected as K4
+PASS numpad key 4194442 is detected as K4
+PASS numpad key 4194440 is detected as K4
+PASS numpad key 4194444 is detected as K4
+PASS K4 key 4194445 reaches aim
+PASS K4 key 4194439 reaches aim
+PASS K4 key 4194441 reaches aim
+PASS K4 key 4194447 reaches aim
+PASS the left bumper cancels a live placement in Play
+PASS the left bumper is a known joypad button
+PASS B stays Back and never cancels
+PASS A stays Jump in Play
+PASS X stays Rotate (the Play cheer alias)
+PASS the left bumper does nothing outside Play
+PASS the rotate aliases are unchanged
+PASS the action table is unambiguous ([])
+PASS k1/lobby: key 65 belongs to K1
+PASS k1/lobby: key 65 sends left
+PASS k1/lobby: key 68 belongs to K1
+PASS k1/lobby: key 68 sends right
+PASS k1/lobby: key 83 belongs to K1
+PASS k1/lobby: key 83 sends down
+PASS k1/lobby: key 87 belongs to K1
+PASS k1/lobby: key 87 sends up
+PASS k1/lobby: key 69 belongs to K1
+PASS k1/lobby: key 69 sends ready
+PASS k1/lobby: key 71 belongs to K1
+PASS k1/lobby: key 71 sends back
+PASS k1/lobby: key 82 belongs to K1
+PASS k1/lobby: key 82 sends help
+PASS k1/lobby: key 70 belongs to K1
+PASS k1/lobby: key 70 sends ready
+PASS k2/lobby: key 4194319 belongs to K2
+PASS k2/lobby: key 4194319 sends left
+PASS k2/lobby: key 4194321 belongs to K2
+PASS k2/lobby: key 4194321 sends right
+PASS k2/lobby: key 4194322 belongs to K2
+PASS k2/lobby: key 4194322 sends down
+PASS k2/lobby: key 4194320 belongs to K2
+PASS k2/lobby: key 4194320 sends up
+PASS k2/lobby: key 4194309 belongs to K2
+PASS k2/lobby: key 4194309 sends ready
+PASS k2/lobby: key 4194308 belongs to K2
+PASS k2/lobby: key 4194308 sends back
+PASS k2/lobby: key 4194325 belongs to K2
+PASS k2/lobby: key 4194325 sends help
+PASS k3/lobby: key 74 belongs to K3
+PASS k3/lobby: key 74 sends left
+PASS k3/lobby: key 76 belongs to K3
+PASS k3/lobby: key 76 sends right
+PASS k3/lobby: key 75 belongs to K3
+PASS k3/lobby: key 75 sends down
+PASS k3/lobby: key 73 belongs to K3
+PASS k3/lobby: key 73 sends up
+PASS k3/lobby: key 79 belongs to K3
+PASS k3/lobby: key 79 sends ready
+PASS k3/lobby: key 85 belongs to K3
+PASS k3/lobby: key 85 sends back
+PASS k3/lobby: key 80 belongs to K3
+PASS k3/lobby: key 80 sends help
+PASS k4/lobby: key 4194442 belongs to K4
+PASS k4/lobby: key 4194442 sends left
+PASS k4/lobby: key 4194444 belongs to K4
+PASS k4/lobby: key 4194444 sends right
+PASS k4/lobby: key 4194440 belongs to K4
+PASS k4/lobby: key 4194440 sends down
+PASS k4/lobby: key 4194446 belongs to K4
+PASS k4/lobby: key 4194446 sends up
+PASS k4/lobby: key 4194438 belongs to K4
+PASS k4/lobby: key 4194438 sends ready
+PASS k4/lobby: key 4194436 belongs to K4
+PASS k4/lobby: key 4194436 sends back
+PASS k4/lobby: key 4194443 belongs to K4
+PASS k4/lobby: key 4194443 sends help
+PASS gamepad/lobby: button 6 sends pause
+PASS gamepad/lobby: button 1 sends back
+PASS gamepad/lobby: button 13 sends left
+PASS gamepad/lobby: button 14 sends right
+PASS gamepad/lobby: button 11 sends up
+PASS gamepad/lobby: button 12 sends down
+PASS gamepad/lobby: button 0 sends ready
+PASS gamepad/lobby: button 2 sends help
+PASS k1/pugad: key 65 belongs to K1
+PASS k1/pugad: key 65 sends left
+PASS k1/pugad: key 68 belongs to K1
+PASS k1/pugad: key 68 sends right
+PASS k1/pugad: key 83 belongs to K1
+PASS k1/pugad: key 83 sends down
+PASS k1/pugad: key 87 belongs to K1
+PASS k1/pugad: key 87 sends up
+PASS k1/pugad: key 69 belongs to K1
+PASS k1/pugad: key 69 sends claim
+PASS k1/pugad: key 71 belongs to K1
+PASS k1/pugad: key 71 sends back
+PASS k1/pugad: key 70 belongs to K1
+PASS k1/pugad: key 70 sends claim
+PASS k2/pugad: key 4194319 belongs to K2
+PASS k2/pugad: key 4194319 sends left
+PASS k2/pugad: key 4194321 belongs to K2
+PASS k2/pugad: key 4194321 sends right
+PASS k2/pugad: key 4194322 belongs to K2
+PASS k2/pugad: key 4194322 sends down
+PASS k2/pugad: key 4194320 belongs to K2
+PASS k2/pugad: key 4194320 sends up
+PASS k2/pugad: key 4194309 belongs to K2
+PASS k2/pugad: key 4194309 sends claim
+PASS k2/pugad: key 4194308 belongs to K2
+PASS k2/pugad: key 4194308 sends back
+PASS k3/pugad: key 74 belongs to K3
+PASS k3/pugad: key 74 sends left
+PASS k3/pugad: key 76 belongs to K3
+PASS k3/pugad: key 76 sends right
+PASS k3/pugad: key 75 belongs to K3
+PASS k3/pugad: key 75 sends down
+PASS k3/pugad: key 73 belongs to K3
+PASS k3/pugad: key 73 sends up
+PASS k3/pugad: key 79 belongs to K3
+PASS k3/pugad: key 79 sends claim
+PASS k3/pugad: key 85 belongs to K3
+PASS k3/pugad: key 85 sends back
+PASS k4/pugad: key 4194442 belongs to K4
+PASS k4/pugad: key 4194442 sends left
+PASS k4/pugad: key 4194444 belongs to K4
+PASS k4/pugad: key 4194444 sends right
+PASS k4/pugad: key 4194440 belongs to K4
+PASS k4/pugad: key 4194440 sends down
+PASS k4/pugad: key 4194446 belongs to K4
+PASS k4/pugad: key 4194446 sends up
+PASS k4/pugad: key 4194438 belongs to K4
+PASS k4/pugad: key 4194438 sends claim
+PASS k4/pugad: key 4194436 belongs to K4
+PASS k4/pugad: key 4194436 sends back
+PASS gamepad/pugad: button 6 sends pause
+PASS gamepad/pugad: button 1 sends back
+PASS gamepad/pugad: button 13 sends left
+PASS gamepad/pugad: button 14 sends right
+PASS gamepad/pugad: button 11 sends up
+PASS gamepad/pugad: button 12 sends down
+PASS gamepad/pugad: button 0 sends claim
+PASS k1/go: key 65 belongs to K1
+PASS k1/go: key 65 sends left
+PASS k1/go: key 68 belongs to K1
+PASS k1/go: key 68 sends right
+PASS k1/go: key 83 belongs to K1
+PASS k1/go: key 83 sends down
+PASS k1/go: key 87 belongs to K1
+PASS k1/go: key 87 sends up
+PASS k1/go: key 71 belongs to K1
+PASS k1/go: key 71 sends back
+PASS k2/go: key 4194319 belongs to K2
+PASS k2/go: key 4194319 sends left
+PASS k2/go: key 4194321 belongs to K2
+PASS k2/go: key 4194321 sends right
+PASS k2/go: key 4194322 belongs to K2
+PASS k2/go: key 4194322 sends down
+PASS k2/go: key 4194320 belongs to K2
+PASS k2/go: key 4194320 sends up
+PASS k2/go: key 4194308 belongs to K2
+PASS k2/go: key 4194308 sends back
+PASS k3/go: key 74 belongs to K3
+PASS k3/go: key 74 sends left
+PASS k3/go: key 76 belongs to K3
+PASS k3/go: key 76 sends right
+PASS k3/go: key 75 belongs to K3
+PASS k3/go: key 75 sends down
+PASS k3/go: key 73 belongs to K3
+PASS k3/go: key 73 sends up
+PASS k3/go: key 85 belongs to K3
+PASS k3/go: key 85 sends back
+PASS k4/go: key 4194442 belongs to K4
+PASS k4/go: key 4194442 sends left
+PASS k4/go: key 4194444 belongs to K4
+PASS k4/go: key 4194444 sends right
+PASS k4/go: key 4194440 belongs to K4
+PASS k4/go: key 4194440 sends down
+PASS k4/go: key 4194446 belongs to K4
+PASS k4/go: key 4194446 sends up
+PASS k4/go: key 4194436 belongs to K4
+PASS k4/go: key 4194436 sends back
+PASS gamepad/go: button 6 sends pause
+PASS gamepad/go: button 1 sends back
+PASS gamepad/go: button 13 sends left
+PASS gamepad/go: button 14 sends right
+PASS gamepad/go: button 11 sends up
+PASS gamepad/go: button 12 sends down
+PASS k1/play: key 65 belongs to K1
+PASS k1/play: key 65 sends left
+PASS k1/play: key 68 belongs to K1
+PASS k1/play: key 68 sends right
+PASS k1/play: key 83 belongs to K1
+PASS k1/play: key 83 sends down
+PASS k1/play: key 87 belongs to K1
+PASS k1/play: key 87 sends jump
+PASS k1/play: key 82 belongs to K1
+PASS k1/play: key 82 sends cheer
+PASS k1/play: key 71 belongs to K1
+PASS k1/play: key 71 sends back
+PASS k1/play: key 32 belongs to K1
+PASS k1/play: key 32 sends jump
+PASS k1/play: key 81 belongs to K1
+PASS k1/play: key 81 sends build_toggle
+PASS k2/play: key 4194319 belongs to K2
+PASS k2/play: key 4194319 sends left
+PASS k2/play: key 4194321 belongs to K2
+PASS k2/play: key 4194321 sends right
+PASS k2/play: key 4194322 belongs to K2
+PASS k2/play: key 4194322 sends down
+PASS k2/play: key 4194320 belongs to K2
+PASS k2/play: key 4194320 sends jump
+PASS k2/play: key 4194325 belongs to K2
+PASS k2/play: key 4194325 sends cheer
+PASS k2/play: key 4194308 belongs to K2
+PASS k2/play: key 4194308 sends back
+PASS k2/play: key 4194326 belongs to K2
+PASS k2/play: key 4194326 sends jump
+PASS k2/play: key 91 belongs to K2
+PASS k2/play: key 91 sends build_toggle
+PASS k3/play: key 74 belongs to K3
+PASS k3/play: key 74 sends left
+PASS k3/play: key 76 belongs to K3
+PASS k3/play: key 76 sends right
+PASS k3/play: key 75 belongs to K3
+PASS k3/play: key 75 sends down
+PASS k3/play: key 73 belongs to K3
+PASS k3/play: key 73 sends jump
+PASS k3/play: key 80 belongs to K3
+PASS k3/play: key 80 sends cheer
+PASS k3/play: key 85 belongs to K3
+PASS k3/play: key 85 sends back
+PASS k3/play: key 45 belongs to K3
+PASS k3/play: key 45 sends build_toggle
+PASS k4/play: key 4194442 belongs to K4
+PASS k4/play: key 4194442 sends left
+PASS k4/play: key 4194444 belongs to K4
+PASS k4/play: key 4194444 sends right
+PASS k4/play: key 4194440 belongs to K4
+PASS k4/play: key 4194440 sends down
+PASS k4/play: key 4194446 belongs to K4
+PASS k4/play: key 4194446 sends jump
+PASS k4/play: key 4194443 belongs to K4
+PASS k4/play: key 4194443 sends cheer
+PASS k4/play: key 4194436 belongs to K4
+PASS k4/play: key 4194436 sends back
+PASS k4/play: key 4194437 belongs to K4
+PASS k4/play: key 4194437 sends build_toggle
+PASS gamepad/play: button 6 sends pause
+PASS gamepad/play: button 1 sends back
+PASS gamepad/play: button 13 sends left
+PASS gamepad/play: button 14 sends right
+PASS gamepad/play: button 11 sends up
+PASS gamepad/play: button 12 sends down
+PASS gamepad/play: button 0 sends jump
+PASS gamepad/play: button 2 sends cheer
+PASS gamepad/play: button 3 sends build_toggle
+PASS k1/build: key 65 belongs to K1
+PASS k1/build: key 65 sends left
+PASS k1/build: key 68 belongs to K1
+PASS k1/build: key 68 sends right
+PASS k1/build: key 83 belongs to K1
+PASS k1/build: key 83 sends down
+PASS k1/build: key 87 belongs to K1
+PASS k1/build: key 87 sends jump
+PASS k1/build: key 82 belongs to K1
+PASS k1/build: key 82 sends cheer
+PASS k1/build: key 71 belongs to K1
+PASS k1/build: key 71 sends back
+PASS k1/build: key 32 belongs to K1
+PASS k1/build: key 32 sends jump
+PASS k1/build: key 81 belongs to K1
+PASS k1/build: key 81 sends build_toggle
+PASS k1/build: key 90 belongs to K1
+PASS k1/build: key 90 sends aim_up
+PASS k1/build: key 67 belongs to K1
+PASS k1/build: key 67 sends aim_left
+PASS k1/build: key 86 belongs to K1
+PASS k1/build: key 86 sends aim_down
+PASS k1/build: key 66 belongs to K1
+PASS k1/build: key 66 sends aim_right
+PASS k1/build: key 84 belongs to K1
+PASS k1/build: key 84 sends live_rotate
+PASS k1/build: key 88 belongs to K1
+PASS k1/build: key 88 sends live_cancel
+PASS k1/build: key 69 belongs to K1
+PASS k1/build: key 69 sends live_confirm
+PASS k1/build: key 70 belongs to K1
+PASS k1/build: key 70 sends live_confirm
+PASS k2/build: key 4194319 belongs to K2
+PASS k2/build: key 4194319 sends left
+PASS k2/build: key 4194321 belongs to K2
+PASS k2/build: key 4194321 sends right
+PASS k2/build: key 4194322 belongs to K2
+PASS k2/build: key 4194322 sends down
+PASS k2/build: key 4194320 belongs to K2
+PASS k2/build: key 4194320 sends jump
+PASS k2/build: key 4194325 belongs to K2
+PASS k2/build: key 4194325 sends cheer
+PASS k2/build: key 4194308 belongs to K2
+PASS k2/build: key 4194308 sends back
+PASS k2/build: key 4194326 belongs to K2
+PASS k2/build: key 4194326 sends jump
+PASS k2/build: key 91 belongs to K2
+PASS k2/build: key 91 sends build_toggle
+PASS k2/build: key 89 belongs to K2
+PASS k2/build: key 89 sends aim_up
+PASS k2/build: key 72 belongs to K2
+PASS k2/build: key 72 sends aim_left
+PASS k2/build: key 78 belongs to K2
+PASS k2/build: key 78 sends aim_down
+PASS k2/build: key 77 belongs to K2
+PASS k2/build: key 77 sends aim_right
+PASS k2/build: key 93 belongs to K2
+PASS k2/build: key 93 sends live_rotate
+PASS k2/build: key 92 belongs to K2
+PASS k2/build: key 92 sends live_cancel
+PASS k2/build: key 4194309 belongs to K2
+PASS k2/build: key 4194309 sends live_confirm
+PASS k3/build: key 74 belongs to K3
+PASS k3/build: key 74 sends left
+PASS k3/build: key 76 belongs to K3
+PASS k3/build: key 76 sends right
+PASS k3/build: key 75 belongs to K3
+PASS k3/build: key 75 sends down
+PASS k3/build: key 73 belongs to K3
+PASS k3/build: key 73 sends jump
+PASS k3/build: key 80 belongs to K3
+PASS k3/build: key 80 sends cheer
+PASS k3/build: key 85 belongs to K3
+PASS k3/build: key 85 sends back
+PASS k3/build: key 45 belongs to K3
+PASS k3/build: key 45 sends build_toggle
+PASS k3/build: key 55 belongs to K3
+PASS k3/build: key 55 sends aim_up
+PASS k3/build: key 52 belongs to K3
+PASS k3/build: key 52 sends aim_left
+PASS k3/build: key 56 belongs to K3
+PASS k3/build: key 56 sends aim_down
+PASS k3/build: key 54 belongs to K3
+PASS k3/build: key 54 sends aim_right
+PASS k3/build: key 61 belongs to K3
+PASS k3/build: key 61 sends live_rotate
+PASS k3/build: key 39 belongs to K3
+PASS k3/build: key 39 sends live_cancel
+PASS k3/build: key 79 belongs to K3
+PASS k3/build: key 79 sends live_confirm
+PASS k4/build: key 4194442 belongs to K4
+PASS k4/build: key 4194442 sends left
+PASS k4/build: key 4194444 belongs to K4
+PASS k4/build: key 4194444 sends right
+PASS k4/build: key 4194440 belongs to K4
+PASS k4/build: key 4194440 sends down
+PASS k4/build: key 4194446 belongs to K4
+PASS k4/build: key 4194446 sends jump
+PASS k4/build: key 4194443 belongs to K4
+PASS k4/build: key 4194443 sends cheer
+PASS k4/build: key 4194436 belongs to K4
+PASS k4/build: key 4194436 sends back
+PASS k4/build: key 4194437 belongs to K4
+PASS k4/build: key 4194437 sends build_toggle
+PASS k4/build: key 4194445 belongs to K4
+PASS k4/build: key 4194445 sends aim_up
+PASS k4/build: key 4194439 belongs to K4
+PASS k4/build: key 4194439 sends aim_left
+PASS k4/build: key 4194441 belongs to K4
+PASS k4/build: key 4194441 sends aim_down
+PASS k4/build: key 4194447 belongs to K4
+PASS k4/build: key 4194447 sends aim_right
+PASS k4/build: key 4194433 belongs to K4
+PASS k4/build: key 4194433 sends live_rotate
+PASS k4/build: key 4194435 belongs to K4
+PASS k4/build: key 4194435 sends live_cancel
+PASS k4/build: key 4194438 belongs to K4
+PASS k4/build: key 4194438 sends live_confirm
+PASS gamepad/build: button 6 sends pause
+PASS gamepad/build: button 1 sends back
+PASS gamepad/build: button 13 sends left
+PASS gamepad/build: button 14 sends right
+PASS gamepad/build: button 11 sends up
+PASS gamepad/build: button 12 sends down
+PASS gamepad/build: button 0 sends jump
+PASS gamepad/build: button 2 sends cheer
+PASS gamepad/build: button 3 sends build_toggle
+PASS gamepad/build: button 10 sends live_rotate
+PASS gamepad/build: button 9 sends live_cancel
+PASS k1/results: key 65 belongs to K1
+PASS k1/results: key 65 sends left
+PASS k1/results: key 68 belongs to K1
+PASS k1/results: key 68 sends right
+PASS k1/results: key 83 belongs to K1
+PASS k1/results: key 83 sends down
+PASS k1/results: key 87 belongs to K1
+PASS k1/results: key 87 sends up
+PASS k1/results: key 69 belongs to K1
+PASS k1/results: key 69 sends confirm
+PASS k1/results: key 71 belongs to K1
+PASS k1/results: key 71 sends back
+PASS k1/results: key 70 belongs to K1
+PASS k1/results: key 70 sends confirm
+PASS k2/results: key 4194319 belongs to K2
+PASS k2/results: key 4194319 sends left
+PASS k2/results: key 4194321 belongs to K2
+PASS k2/results: key 4194321 sends right
+PASS k2/results: key 4194322 belongs to K2
+PASS k2/results: key 4194322 sends down
+PASS k2/results: key 4194320 belongs to K2
+PASS k2/results: key 4194320 sends up
+PASS k2/results: key 4194309 belongs to K2
+PASS k2/results: key 4194309 sends confirm
+PASS k2/results: key 4194308 belongs to K2
+PASS k2/results: key 4194308 sends back
+PASS k3/results: key 74 belongs to K3
+PASS k3/results: key 74 sends left
+PASS k3/results: key 76 belongs to K3
+PASS k3/results: key 76 sends right
+PASS k3/results: key 75 belongs to K3
+PASS k3/results: key 75 sends down
+PASS k3/results: key 73 belongs to K3
+PASS k3/results: key 73 sends up
+PASS k3/results: key 79 belongs to K3
+PASS k3/results: key 79 sends confirm
+PASS k3/results: key 85 belongs to K3
+PASS k3/results: key 85 sends back
+PASS k4/results: key 4194442 belongs to K4
+PASS k4/results: key 4194442 sends left
+PASS k4/results: key 4194444 belongs to K4
+PASS k4/results: key 4194444 sends right
+PASS k4/results: key 4194440 belongs to K4
+PASS k4/results: key 4194440 sends down
+PASS k4/results: key 4194446 belongs to K4
+PASS k4/results: key 4194446 sends up
+PASS k4/results: key 4194438 belongs to K4
+PASS k4/results: key 4194438 sends confirm
+PASS k4/results: key 4194436 belongs to K4
+PASS k4/results: key 4194436 sends back
+PASS gamepad/results: button 6 sends pause
+PASS gamepad/results: button 1 sends back
+PASS gamepad/results: button 13 sends left
+PASS gamepad/results: button 14 sends right
+PASS gamepad/results: button 11 sends up
+PASS gamepad/results: button 12 sends down
+PASS gamepad/results: button 0 sends confirm
+PASS k1/pause: key 65 belongs to K1
+PASS k1/pause: key 65 sends left
+PASS k1/pause: key 68 belongs to K1
+PASS k1/pause: key 68 sends right
+PASS k1/pause: key 83 belongs to K1
+PASS k1/pause: key 83 sends down
+PASS k1/pause: key 87 belongs to K1
+PASS k1/pause: key 87 sends up
+PASS k1/pause: key 69 belongs to K1
+PASS k1/pause: key 69 sends confirm
+PASS k1/pause: key 71 belongs to K1
+PASS k1/pause: key 71 sends back
+PASS k1/pause: key 70 belongs to K1
+PASS k1/pause: key 70 sends confirm
+PASS k2/pause: key 4194319 belongs to K2
+PASS k2/pause: key 4194319 sends left
+PASS k2/pause: key 4194321 belongs to K2
+PASS k2/pause: key 4194321 sends right
+PASS k2/pause: key 4194322 belongs to K2
+PASS k2/pause: key 4194322 sends down
+PASS k2/pause: key 4194320 belongs to K2
+PASS k2/pause: key 4194320 sends up
+PASS k2/pause: key 4194309 belongs to K2
+PASS k2/pause: key 4194309 sends confirm
+PASS k2/pause: key 4194308 belongs to K2
+PASS k2/pause: key 4194308 sends back
+PASS k3/pause: key 74 belongs to K3
+PASS k3/pause: key 74 sends left
+PASS k3/pause: key 76 belongs to K3
+PASS k3/pause: key 76 sends right
+PASS k3/pause: key 75 belongs to K3
+PASS k3/pause: key 75 sends down
+PASS k3/pause: key 73 belongs to K3
+PASS k3/pause: key 73 sends up
+PASS k3/pause: key 79 belongs to K3
+PASS k3/pause: key 79 sends confirm
+PASS k3/pause: key 85 belongs to K3
+PASS k3/pause: key 85 sends back
+PASS k4/pause: key 4194442 belongs to K4
+PASS k4/pause: key 4194442 sends left
+PASS k4/pause: key 4194444 belongs to K4
+PASS k4/pause: key 4194444 sends right
+PASS k4/pause: key 4194440 belongs to K4
+PASS k4/pause: key 4194440 sends down
+PASS k4/pause: key 4194446 belongs to K4
+PASS k4/pause: key 4194446 sends up
+PASS k4/pause: key 4194438 belongs to K4
+PASS k4/pause: key 4194438 sends confirm
+PASS k4/pause: key 4194436 belongs to K4
+PASS k4/pause: key 4194436 sends back
+PASS gamepad/pause: button 6 sends pause
+PASS gamepad/pause: button 1 sends back
+PASS gamepad/pause: button 13 sends left
+PASS gamepad/pause: button 14 sends right
+PASS gamepad/pause: button 11 sends up
+PASS gamepad/pause: button 12 sends down
+PASS gamepad/pause: button 0 sends confirm
+PASS touch keeps jump identical in play and build
+PASS touch keeps cheer identical in play and build
+PASS k1 keeps jump identical in play and build
+PASS k1 keeps cheer identical in play and build
+PASS k2 keeps jump identical in play and build
+PASS k2 keeps cheer identical in play and build
+PASS k3 keeps jump identical in play and build
+PASS k3 keeps cheer identical in play and build
+PASS k4 keeps jump identical in play and build
+PASS k4 keeps cheer identical in play and build
+PASS gamepad keeps jump identical in play and build
+PASS gamepad keeps cheer identical in play and build
+PASS gamepad live_cancel is the left bumper only
+PASS the prompt map loads
+PASS glyph ready|k1 exists
+PASS glyph ready|k2 exists
+PASS glyph ready|k3 exists
+PASS glyph ready|k4 exists
+PASS glyph ready|gamepad exists
+PASS glyph ready|touch exists
+PASS action name for ready exists
+PASS glyph back|k1 exists
+PASS glyph back|k2 exists
+PASS glyph back|k3 exists
+PASS glyph back|k4 exists
+PASS glyph back|gamepad exists
+PASS glyph back|touch exists
+PASS action name for back exists
+PASS glyph navigate|k1 exists
+PASS glyph navigate|k2 exists
+PASS glyph navigate|k3 exists
+PASS glyph navigate|k4 exists
+PASS glyph navigate|gamepad exists
+PASS glyph navigate|touch exists
+PASS action name for navigate exists
+PASS glyph run|k1 exists
+PASS glyph run|k2 exists
+PASS glyph run|k3 exists
+PASS glyph run|k4 exists
+PASS glyph run|gamepad exists
+PASS glyph run|touch exists
+PASS action name for run exists
+PASS glyph jump|k1 exists
+PASS glyph jump|k2 exists
+PASS glyph jump|k3 exists
+PASS glyph jump|k4 exists
+PASS glyph jump|gamepad exists
+PASS glyph jump|touch exists
+PASS action name for jump exists
+PASS glyph claim|k1 exists
+PASS glyph claim|k2 exists
+PASS glyph claim|k3 exists
+PASS glyph claim|k4 exists
+PASS glyph claim|gamepad exists
+PASS glyph claim|touch exists
+PASS action name for claim exists
+PASS glyph rotate|k1 exists
+PASS glyph rotate|k2 exists
+PASS glyph rotate|k3 exists
+PASS glyph rotate|k4 exists
+PASS glyph rotate|gamepad exists
+PASS glyph rotate|touch exists
+PASS action name for rotate exists
+PASS glyph confirm|k1 exists
+PASS glyph confirm|k2 exists
+PASS glyph confirm|k3 exists
+PASS glyph confirm|k4 exists
+PASS glyph confirm|gamepad exists
+PASS glyph confirm|touch exists
+PASS action name for confirm exists
+PASS glyph results_ready|k1 exists
+PASS glyph results_ready|k2 exists
+PASS glyph results_ready|k3 exists
+PASS glyph results_ready|k4 exists
+PASS glyph results_ready|gamepad exists
+PASS glyph results_ready|touch exists
+PASS action name for results_ready exists
+PASS glyph pause|k1 exists
+PASS glyph pause|k2 exists
+PASS glyph pause|k3 exists
+PASS glyph pause|k4 exists
+PASS glyph pause|gamepad exists
+PASS glyph pause|touch exists
+PASS action name for pause exists
+PASS glyph cheer|k1 exists
+PASS glyph cheer|k2 exists
+PASS glyph cheer|k3 exists
+PASS glyph cheer|k4 exists
+PASS glyph cheer|gamepad exists
+PASS glyph cheer|touch exists
+PASS action name for cheer exists
+PASS glyph help|k1 exists
+PASS glyph help|k2 exists
+PASS glyph help|k3 exists
+PASS glyph help|k4 exists
+PASS glyph help|gamepad exists
+PASS glyph help|touch exists
+PASS action name for help exists
+PASS glyph build_toggle|k1 exists
+PASS glyph build_toggle|k2 exists
+PASS glyph build_toggle|k3 exists
+PASS glyph build_toggle|k4 exists
+PASS glyph build_toggle|gamepad exists
+PASS glyph build_toggle|touch exists
+PASS action name for build_toggle exists
+PASS glyph aim|k1 exists
+PASS glyph aim|k2 exists
+PASS glyph aim|k3 exists
+PASS glyph aim|k4 exists
+PASS glyph aim|gamepad exists
+PASS glyph aim|touch exists
+PASS action name for aim exists
+PASS glyph live_rotate|k1 exists
+PASS glyph live_rotate|k2 exists
+PASS glyph live_rotate|k3 exists
+PASS glyph live_rotate|k4 exists
+PASS glyph live_rotate|gamepad exists
+PASS glyph live_rotate|touch exists
+PASS action name for live_rotate exists
+PASS glyph live_confirm|k1 exists
+PASS glyph live_confirm|k2 exists
+PASS glyph live_confirm|k3 exists
+PASS glyph live_confirm|k4 exists
+PASS glyph live_confirm|gamepad exists
+PASS glyph live_confirm|touch exists
+PASS action name for live_confirm exists
+PASS glyph live_cancel|k1 exists
+PASS glyph live_cancel|k2 exists
+PASS glyph live_cancel|k3 exists
+PASS glyph live_cancel|k4 exists
+PASS glyph live_cancel|gamepad exists
+PASS glyph live_cancel|touch exists
+PASS action name for live_cancel exists
+PASS the gamepad cancel glyph names the left bumper
+PASS the K4 aim glyph matches the fixed keys
+PASS touch build and rotate glyphs differ
+PASS seat 0 has its own shape
+PASS seat 1 has its own shape
+PASS seat 2 has its own shape
+PASS seat 3 has its own shape
+PASS the badge names the player number
+PASS an unassigned seat says so
+PASS placement state 1 has a shape and text
+PASS placement state 2 has a shape and text
+PASS placement state 3 has a shape and text
+PASS placement state 4 has a shape and text
+PASS no ghost shows no chip
+PASS the mid-round text floor stays at the proposed 16
+PASS the Pugad has an objective line
+PASS the offline tutorial steps are all still present
+PASS all eight phone steps exist as data
+PASS eight phone cards are listed
+PASS step net_phone_controls has copy
+PASS step net_phone_controls resolves every token
+PASS step net_phone_controls glyph action exists for touch
+PASS step net_pugad has copy
+PASS step net_pugad resolves every token
+PASS step net_pugad glyph action exists for touch
+PASS step net_go has copy
+PASS step net_go resolves every token
+PASS step net_go glyph action exists for touch
+PASS step net_build_mode has copy
+PASS step net_build_mode resolves every token
+PASS step net_build_mode glyph action exists for touch
+PASS step net_rejected has copy
+PASS step net_rejected resolves every token
+PASS step net_rejected glyph action exists for touch
+PASS step net_cancel has copy
+PASS step net_cancel resolves every token
+PASS step net_cancel glyph action exists for touch
+PASS step net_lan_join has copy
+PASS step net_lan_join resolves every token
+PASS step net_lan_join glyph action exists for touch
+PASS step net_host_pause has copy
+PASS step net_host_pause resolves every token
+PASS step net_host_pause glyph action exists for touch
+PASS a fresh session shows the cards
+PASS the cards open at the first step
+PASS Next advances
+PASS Back only steps back and is not Skip
+PASS Skip is session-only
+PASS a skipped session never auto-opens
+PASS Replay restores the cards
+PASS the last card completes and closes
+PASS nothing is persisted for the session
+PASS the cards auto-open once per session
+PASS the presentation builds the touch layer when forced
+PASS the presentation builds the phone HUD
+PASS the presentation builds the help cards
+PASS the move zone drives the horizontal axis
+PASS releasing the move finger zeroes the axis
+PASS a desktop presentation never builds touch controls
+PASS the presentation no longer builds plain gameplay Buttons
+PASS the presentation uses the touch layer
+PASS the layer owns raw touch events, not Buttons
+PASS the layer handles drags by index
+PASS the K4 detector lists the numpad aim keys
+NLB_P10_TESTS checks=1182 failures=0

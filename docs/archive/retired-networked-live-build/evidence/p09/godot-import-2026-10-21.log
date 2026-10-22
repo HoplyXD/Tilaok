@@ -1,0 +1,93 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started Registering global classes... (52 steps)
+[   0% ] update_scripts_classes | NlbBuildFlags
+[   1% ] update_scripts_classes | GameFlow
+[   3% ] update_scripts_classes | FoundationHarness
+[   5% ] update_scripts_classes | InputContextTable
+[   7% ] update_scripts_classes | LocalInputRouter
+[   9% ] update_scripts_classes | PlayerSeatRegistry
+[  11% ] update_scripts_classes | MatchScreenPresenter
+[  13% ] update_scripts_classes | P09MatchLifecycleRoom
+[  15% ] update_scripts_classes | P12ScheduledMatchRoom
+[  16% ] update_scripts_classes | ResultLedger
+[  18% ] update_scripts_classes | BuildIdentity
+[  20% ] update_scripts_classes | CompatibilityManifest
+[  22% ] update_scripts_classes | LanDiscovery
+[  24% ] update_scripts_classes | NetworkFrame
+[  26% ] update_scripts_classes | NetworkHelpCards
+[  28% ] update_scripts_classes | NetworkLifecycleCodec
+[  30% ] update_scripts_classes | NetworkMatchCodec
+[  32% ] update_scripts_classes | NetworkMatchPresentation
+[  33% ] update_scripts_classes | NetworkPhoneHud
+[  35% ] update_scripts_classes | NetworkResultsCodec
+[  37% ] update_scripts_classes | ClientResultsModel
+[  39% ] update_scripts_classes | NetworkResultsOverlay
+[  41% ] update_scripts_classes | NetworkSessionManager
+[  43% ] update_scripts_classes | NetworkTouchLayer
+[  45% ] update_scripts_classes | NlbFaultInjector
+[  47% ] update_scripts_classes | NLBLiveCompatibilityMatrix
+[  49% ] update_scripts_classes | NlbTelemetry
+[  50% ] update_scripts_classes | RawEnetTransport
+[  52% ] update_scripts_classes | SeatReservationBook
+[  54% ] update_scripts_classes | TutorialScript
+[  56% ] update_scripts_classes | TouchLayout
+[  58% ] update_scripts_classes | UiLanLobbyScreen
+[  60% ] update_scripts_classes | UiLibraryScreen
+[  62% ] update_scripts_classes | UiPromptMap
+[  64% ] update_scripts_classes | UiSettingsScreen
+[  66% ] update_scripts_classes | NlbP11CrowdedStage
+[  67% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | NlbP11ReportCore
+[  71% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[  33% ] loading_editor_layout | Reopening scenes...
+SCRIPT ERROR: Parse Error: Could not parse global class "NlbTelemetry" from "res://scripts/network/nlb_telemetry.gd".
+   at: GDScript::reload (res://scripts/network/network_session_manager.gd:105)
+SCRIPT ERROR: Parse Error: Could not resolve class "NlbTelemetry", because of a parser error.
+   at: GDScript::reload (res://scripts/network/network_session_manager.gd:257)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/ui/ui_lan_lobby_screen.gd:0)
+ERROR: Failed to load script "res://scripts/ui/ui_lan_lobby_screen.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+   at: GDScript::reload (res://scripts/network/network_results_model.gd:141)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/network/network_results_overlay.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/network/network_match_presentation.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/flow/game_flow.gd:0)
+ERROR: Failed to load script "res://scripts/flow/game_flow.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[  50% ] loading_editor_layout | Loading central editor layout...
+[  66% ] loading_editor_layout | Loading plugin window layout...
+[  83% ] loading_editor_layout | Editor layout ready.
+[ DONE ] loading_editor_layout
+

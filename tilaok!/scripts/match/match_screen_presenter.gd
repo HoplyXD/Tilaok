@@ -60,7 +60,7 @@ var _cheer_player: AudioStreamPlayer
 
 func _ready() -> void:
 	debug_toggle_allowed = (
-		OS.is_debug_build() or NlbBuildFlags.dev_flag_present(DEBUG_OVERLAY_FLAG)
+		OS.is_debug_build() or DevBuildFlags.dev_flag_present(DEBUG_OVERLAY_FLAG)
 	)
 	for screen in [lobby_screen, play_hud, pugad_overlay, place_overlay, result_screen]:
 		(screen as Control).visible = false

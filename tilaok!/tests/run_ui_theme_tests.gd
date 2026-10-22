@@ -1315,17 +1315,9 @@ func _test_title_card() -> void:
 		),
 		"the selected button's 0 4 0 #754526 shadow falls on its pointer too, as in the frame"
 	)
-	var lan := title.get_node("%LanLobbyButton") as Control
-	var lan_rect := lan.get_global_rect()
 	_check(
-		(
-			lan is UiMenuActionButton
-			and (lan as Button).text == "LAN Lobby"
-			and not lan_rect.intersects(card_rect)
-			and lan_rect.end.x <= 1216.0
-			and lan_rect.end.y <= 684.0
-		),
-		"LAN Lobby (not in the frame) stays off the card, inside the safe area (%s)" % lan_rect
+		title.find_child("LanLobbyButton", true, false) == null,
+		"retired LAN lobby action is absent from the Title"
 	)
 	_check(title.find_child("Tag", true, false) == null, "no PLACEHOLDER tag on the title")
 	title.show_state(1, UiContext.make(2, "k1"))

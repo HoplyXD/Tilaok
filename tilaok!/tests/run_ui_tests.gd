@@ -88,7 +88,7 @@ const CONTRACT := {
 	"round_result_screen":
 	{
 		"RoundLabel": "Label",
-		"Outcome1": "UiScoreRow",
+		"ScoreChart": "ScoreboardChart",
 		"Award1": "UiAwardLine",
 		"Award10": "UiAwardLine",
 		"EndReasonLabel": "Label",
@@ -101,7 +101,7 @@ const CONTRACT := {
 	{
 		"WinnerBadge": "UiPlayerBadge",
 		"WinnerLabel": "Label",
-		"Final1": "UiScoreRow",
+		"FinalChart": "ScoreboardChart",
 		"LastCluckCallout": "UiPhaseBanner",
 		"MenuList": "UiMenuList",
 		"ReplayButton": "Button",
@@ -215,10 +215,6 @@ func _test_script_source_rules() -> void:
 		if not file_name.ends_with(".gd"):
 			continue
 		var text := FileAccess.get_file_as_string(SCRIPT_DIR + file_name)
-		if file_name == "ui_lan_lobby_screen.gd":
-			# This opt-in network screen builds its variable lobby rows at runtime; it uses the shared Theme.
-			_check(not text.contains("add_theme_"), "LAN lobby screen keeps shared Theme styling")
-			continue
 		var clean := true
 		for token in FORBIDDEN_TOKENS:
 			if text.contains(token):

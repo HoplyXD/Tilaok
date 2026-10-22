@@ -10,7 +10,8 @@ static func generate(
 	tuning: GameplayTuning,
 	streams: SeededDiagnosticStreams,
 	egg_count: int,
-	mode_ids: PackedStringArray = PackedStringArray()
+	mode_ids: PackedStringArray = PackedStringArray(),
+	excluded_variant_keys: PackedStringArray = PackedStringArray()
 ) -> Array[Dictionary]:
 	var pool: Array[Dictionary] = []
 	if definitions == null or tuning == null or streams == null or egg_count <= 0:
@@ -21,6 +22,10 @@ static func generate(
 		if not allows_modes(family, mode_ids):
 			continue
 		var variants := definitions.enabled_variant_keys(family.family_id)
+		for excluded_key in excluded_variant_keys:
+			var excluded_index := variants.find(excluded_key)
+			if excluded_index >= 0:
+				variants.remove_at(excluded_index)
 		if variants.is_empty():
 			continue
 		var weight := family.selection_weight(tuning)

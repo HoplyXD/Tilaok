@@ -30,24 +30,6 @@ const ONE_SHOT_ACTIONS := [
 	"live_rotate",
 	"live_cancel"
 ]
-const REMOTE_ACTIONS := [
-	"left",
-	"right",
-	"up",
-	"down",
-	"jump",
-	"confirm",
-	"back",
-	"rotate",
-	"pause",
-	"ready",
-	"claim",
-	"cheer",
-	"help",
-	"build_toggle",
-	"live_rotate",
-	"live_cancel"
-]
 ## The physical Rotate control (West / R / Right Shift) is context-sensitive: it opens the Library
 ## from the Lobby ("help") and cheers from the stands during Play ("cheer"). Rotation itself is
 ## only meaningful in Place, so neither alias takes anything from the placement rules.
@@ -78,8 +60,6 @@ var _aim_x: Dictionary = {}
 var _aim_y: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
-var _remote_axis: Dictionary = {}
-var _remote_build_mode: Dictionary = {}
 var _system_paused := false
 
 
@@ -168,121 +148,6 @@ func set_authority(value: SimulationAuthority) -> bool:
 	authority = value
 	registry.authority = value
 	return true
-
-
-## Shared logical input boundary used by transport-free remote fixtures and future transports.
-## The caller supplies a source identity and action only; ownership resolves the seat locally.
-func apply_remote_action(source_id: String, action_name: String, pressed: bool) -> bool:
-	if (
-		authority == null
-		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
-		or not authority.can_commit()
-	):
-		return false
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0 or action_name not in REMOTE_ACTIONS:
-		return false
-	var physical_key := "remote:%s:%s" % [source_id, action_name]
-	if pressed == _held.has(physical_key):
-		return true
-	_handle_action_edge(seat_index, action_name, physical_key, pressed)
-	return true
-
-
-func apply_remote_axis(source_id: String, value: float) -> bool:
-	if (
-		authority == null
-		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
-		or not authority.can_commit()
-	):
-		return false
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0 or not is_finite(value) or value < -1.0 or value > 1.0:
-		return false
-	var previous := float(_remote_axis.get(seat_index, 0.0))
-	_remote_axis[seat_index] = value
-	if is_zero_approx(previous) != is_zero_approx(value):
-		intentional_input_edge.emit(
-			seat_index,
-			"run_axis",
-			"remote:%s" % source_id,
-			not is_zero_approx(value),
-			Time.get_ticks_usec()
-		)
-	return true
-
-
-## Applies one complete, validated logical sample at the host simulation boundary. The seat is
-## resolved from the host's source binding; callers cannot select or mutate another seat.
-func apply_remote_sample(
-	source_id: String, axes: Array, aim: Array, held_mask: int, build_mode: bool
-) -> bool:
-	if (
-		axes.size() != 2
-		or aim.size() != 2
-		or held_mask < 0
-		or (held_mask & ~0x3f) != 0
-	):
-		return false
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0:
-		return false
-	for value in axes + aim:
-		if int(value) < -1000 or int(value) > 1000:
-			return false
-	if not apply_remote_axis(source_id, float(axes[0]) / 1000.0):
-		return false
-	if phase in [Phase.MENU, Phase.PUGAD, Phase.PLACE, Phase.PAUSE, Phase.RESULTS]:
-		var directions := {
-			"left": int(axes[0]) <= -500,
-			"right": int(axes[0]) >= 500,
-			"up": int(axes[1]) <= -500,
-			"down": int(axes[1]) >= 500,
-		}
-		for direction in directions:
-			if not apply_remote_action(source_id, str(direction), bool(directions[direction])):
-				return false
-	_aim_x[seat_index] = float(aim[0]) / 1000.0
-	_aim_y[seat_index] = float(aim[1]) / 1000.0
-	_remote_build_mode[seat_index] = build_mode
-	var held_actions := {
-		NetworkMatchCodec.HELD_LEFT: "left",
-		NetworkMatchCodec.HELD_RIGHT: "right",
-		NetworkMatchCodec.HELD_UP: "up",
-		NetworkMatchCodec.HELD_DOWN: "down",
-		NetworkMatchCodec.HELD_JUMP: "jump",
-		NetworkMatchCodec.HELD_SNEAK: "down",
-	}
-	for bit in held_actions:
-		if bit == NetworkMatchCodec.HELD_SNEAK and (held_mask & NetworkMatchCodec.HELD_DOWN) != 0:
-			continue
-		if not apply_remote_action(source_id, str(held_actions[bit]), (held_mask & int(bit)) != 0):
-			return false
-	return true
-
-
-func remote_build_mode(seat_index: int) -> bool:
-	return bool(_remote_build_mode.get(seat_index, false))
-
-
-func clear_remote_source(source_id: String) -> void:
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0:
-		return
-	var prefix := "remote:%s:" % source_id
-	for key_variant in _held.keys():
-		var key := str(key_variant)
-		if key.begins_with(prefix):
-			_handle_action_edge(seat_index, str(_held[key_variant]), key, false)
-	var axis := float(_remote_axis.get(seat_index, 0.0))
-	if not is_zero_approx(axis):
-		intentional_input_edge.emit(
-			seat_index, "run_axis", "remote:%s" % source_id, false, Time.get_ticks_usec()
-		)
-	_remote_axis.erase(seat_index)
-	_remote_build_mode.erase(seat_index)
-	_aim_x.erase(seat_index)
-	_aim_y.erase(seat_index)
 
 
 func _input(event: InputEvent) -> void:
@@ -551,7 +416,7 @@ func intent_vector(seat_index: int) -> Vector2:
 	var x := _digital_axis(seat_index, "left", "right")
 	var y := _digital_axis(seat_index, "up", "down")
 	if x == 0.0 and not _has_active_gamepad_dpad(seat_index):
-		x = float(_remote_axis.get(seat_index, _stick_x.get(seat_index, 0.0)))
+		x = float(_stick_x.get(seat_index, 0.0))
 	return (
 		Vector2(x, y).normalized()
 		if phase in [Phase.MENU, Phase.PUGAD, Phase.PLACE]
@@ -564,7 +429,7 @@ func movement_axis(seat_index: int) -> float:
 	return (
 		dpad
 		if dpad != 0.0 or _has_active_gamepad_dpad(seat_index)
-		else float(_remote_axis.get(seat_index, _stick_x.get(seat_index, 0.0)))
+		else float(_stick_x.get(seat_index, 0.0))
 	)
 
 
@@ -572,7 +437,7 @@ func has_direction_intent(seat_index: int) -> bool:
 	return (
 		_is_action_held(seat_index, "left")
 		or _is_action_held(seat_index, "right")
-		or not is_zero_approx(float(_remote_axis.get(seat_index, 0.0)))
+		or not is_zero_approx(float(_stick_x.get(seat_index, 0.0)))
 	)
 
 
@@ -588,10 +453,6 @@ func intentional_input_sources(seat_index: int) -> Array[String]:
 			result.append(str(physical_key))
 	if not is_zero_approx(float(_stick_x.get(seat_index, 0.0))):
 		result.append("stick")
-	for seat in registry.joined_seats():
-		if int(seat.seat) == seat_index and seat.device_kind == "remote":
-			if not is_zero_approx(float(_remote_axis.get(seat_index, 0.0))):
-				result.append("remote:%s" % str(seat.remote_source_id))
 	result.sort()
 	return result
 
@@ -691,7 +552,6 @@ func clear_input_state() -> void:
 	_stick_x.clear()
 	_aim_x.clear()
 	_aim_y.clear()
-	_remote_axis.clear()
 	_stick_sign.clear()
 
 
@@ -778,9 +638,6 @@ func _physical_key_seat(key: String) -> int:
 	if key.begins_with("kbd:"):
 		var parts := key.split(":")
 		return registry.seat_for_keyboard(parts[1])
-	if key.begins_with("remote:"):
-		var parts := key.split(":")
-		return registry.seat_for_remote_source(parts[1])
 	return -1
 
 

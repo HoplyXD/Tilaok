@@ -10,7 +10,7 @@ extends Control
 
 signal return_requested
 
-enum State { TITLE, LIBRARY, SETTINGS, LAN_LOBBY, IN_MATCH }
+enum State { TITLE, LIBRARY, SETTINGS, IN_MATCH }
 
 ## P11: the visible build text comes from BuildIdentity.label() (version + dev/release channel).
 ## The first-playable route (the P07 human-gate build): karera_slice, no match end. Kept behind
@@ -21,23 +21,18 @@ const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
 ## and Kangaroo Main rounds announced a round ahead, Twist stacks). `-- --match-route=lifecycle`
 ## still selects it explicitly.
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
-## Explicit local-only live-build route; the default scheduled route remains reversible.
-const OFFLINE_LIVE_BUILD_SCENE := preload("res://scenes/match/nlb_p05_live_build_room.tscn")
-## Explicit PC-host opt-in for the networked live-build round (NLB-P06). Without it every network
-## match stays on the scheduled LIFECYCLE_SCENE; offline routes are unaffected by this flag.
-const NETWORK_LIVE_BUILD_SCENE := preload("res://scenes/match/nlb_p06_network_live_build_room.tscn")
+## Default local PC route: the P12 schedule with a shared GO and timed live construction.
+const OFFLINE_LIVE_BUILD_SCENE := preload("res://scenes/match/offline_live_build_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const MAP_PREFIX := "--map="
 const ROUTE_LIFECYCLE := "lifecycle"
 const ROUTE_FIRST_PLAYABLE := "first_playable"
 const ROUTE_OFFLINE_LIVE_BUILD := "offline_live_build"
-const ROUTE_NETWORK_LIVE_BUILD := "network_live_build"
 ## `-- --match-seed=3` reproduces a match for a facilitator or a bug report (never shown in play).
 const SEED_PREFIX := "--match-seed="
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
 const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
 const SETTINGS_SCENE := preload("res://scenes/ui/screens/settings_screen.tscn")
-const LAN_LOBBY_SCENE := preload("res://scenes/ui/screens/lan_lobby_screen.tscn")
 const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
@@ -58,45 +53,34 @@ var bridge: UiInputBridge
 var room: P05MatchRoom
 var settings := PresentationSettings.new()
 ## The room each match instantiates: the scheduled full match unless first_playable is asked.
-var match_scene: PackedScene = LIFECYCLE_SCENE
+var match_scene: PackedScene = OFFLINE_LIVE_BUILD_SCENE
 var prompt_map: UiPromptMap
 var library_text: UiLibraryText
 ## Session-only tutorial memory (never written to disk) and the coach for the current match.
 var tutorial_session := TutorialSession.new()
 var tutorial_script: TutorialScript
 var tutorial: TutorialCoordinator
-var network_session: NetworkSessionManager
-var network_presentation: NetworkMatchPresentation
 ## The map for the next match (MapCatalog id; "default" is the built-in stage). Session only.
 var selected_map_id := MapCatalog.DEFAULT_ID
-## True only for `-- --match-route=network_live_build` on a non-Android host.
-var network_live_build_requested := false
 
 var _screen: UiScreen
 var _close_requested := false
 
 
 func _ready() -> void:
-	var android_client := OS.has_feature("android")
-	if android_client:
-		# Android is always a lobby client; never fall through the offline-authority default.
-		simulation_role = SimulationAuthority.Role.CLIENT_PRESENTATION
 	if not simulation_authority.configure(int(simulation_role)):
 		push_error("Invalid simulation role; gameplay authority is disabled.")
 		return
-	if not android_client and not harness_mode and _harness_requested():
+	if not harness_mode and _harness_requested():
 		_open_harness.call_deferred()
 		return
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	library_text = load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 	tutorial_script = load(TUTORIAL_SCRIPT_PATH) as TutorialScript
-	var requested_map := map_from_args(NlbBuildFlags.dev_user_args())
+	var requested_map := map_from_args(DevBuildFlags.dev_user_args())
 	if MapCatalog.ids().has(requested_map):
 		selected_map_id = requested_map
-	var requested_route := route_from_args(OS.get_cmdline_user_args())
-	# P11: a release or Android client build honours only the network opt-in route flag.
-	if not NlbBuildFlags.dev_flags_allowed() and requested_route != ROUTE_NETWORK_LIVE_BUILD:
-		requested_route = ""
+	var requested_route := route_from_args(DevBuildFlags.dev_user_args())
 	if requested_route == ROUTE_LIFECYCLE:
 		match_scene = LIFECYCLE_SCENE
 	elif requested_route == ROUTE_FIRST_PLAYABLE:
@@ -108,11 +92,6 @@ func _ready() -> void:
 			push_warning(
 				"offline_live_build requires OFFLINE_AUTHORITY; keeping the scheduled route"
 			)
-	elif requested_route == ROUTE_NETWORK_LIVE_BUILD:
-		if android_client:
-			push_warning("network_live_build is a PC-host option; Android follows the host route")
-		else:
-			network_live_build_requested = true
 	PresentationApplier.apply(settings)
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
@@ -120,31 +99,7 @@ func _ready() -> void:
 	if not router.set_authority(simulation_authority):
 		push_error("Could not configure input authority; gameplay input is disabled.")
 		return
-	router.set_shared_keyboard_enabled(not android_client)
-	network_session = NetworkSessionManager.new()
-	network_session.name = "NetworkSession"
-	add_child(network_session)
-	network_session.configure(router)
-	network_session.network_route = (
-		NetworkSessionManager.ROUTE_LIVE_BUILD
-		if network_live_build_requested
-		else NetworkSessionManager.ROUTE_SCHEDULED
-	)
-	_sync_live_map()
-	tutorial_session.changed.connect(_sync_live_map)
-	# NLB-P07 development override: host live route only; ignored on Android and release exports.
-	network_session.live_unverified_content = (
-		network_live_build_requested
-		and NLBLiveCompatibilityMatrix.override_requested(OS.get_cmdline_user_args())
-	)
-	if network_session.live_unverified_content:
-		push_warning(
-			"UNVERIFIED CONTENT: %s is on; networked live results are not evidence."
-			% NLBLiveCompatibilityMatrix.OVERRIDE_FLAG
-		)
-	network_session.network_match_start_requested.connect(_enter_network_match)
-	network_session.network_match_start_received.connect(_enter_client_network_match)
-	network_session.session_ended.connect(_on_network_session_ended)
+	router.set_shared_keyboard_enabled(true)
 	bridge = UiInputBridge.new()
 	bridge.name = "FlowBridge"
 	add_child(bridge)
@@ -155,21 +110,13 @@ func _ready() -> void:
 	if not harness_mode:
 		# The close button is handled by _notification so SESSION_CLOSE can be attempted first.
 		get_tree().set_auto_accept_quit(false)
-	if android_client:
-		show_lan_lobby()
-		print("TILAOK_FLOW_READY state=android_client_lobby profile=%s" % PLAYTEST_PROFILE)
-	else:
-		show_title()
-		print(
-			"TILAOK_FLOW_READY state=title profile=%s route=%s" % [PLAYTEST_PROFILE, _route_name()]
-		)
+	show_title()
+	print("TILAOK_FLOW_READY state=title profile=%s route=%s" % [PLAYTEST_PROFILE, _route_name()])
 
 
 func _exit_tree() -> void:
 	if get_tree() != null:
 		get_tree().set_auto_accept_quit(true)
-	if network_session != null and is_instance_valid(network_session):
-		network_session.stop_session()
 	if router != null and is_instance_valid(router):
 		if router.seat_joined.is_connected(_on_seat_joined):
 			router.seat_joined.disconnect(_on_seat_joined)
@@ -185,10 +132,6 @@ func _exit_tree() -> void:
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).
 func show_title(clear_seats: bool = false) -> void:
-	# NLB-P09: leaving a hosted network match for the title ends the session; a freed room must
-	# never keep a running match, its peers or its host authority behind.
-	if _hosting_network_match():
-		_end_host_network_match(NetworkLifecycleCodec.SessionEnd.HOST_CLOSED)
 	_free_room()
 	_free_screen()
 	if clear_seats:
@@ -197,7 +140,6 @@ func show_title(clear_seats: bool = false) -> void:
 	var title := TITLE_SCENE.instantiate() as UiTitleScreen
 	add_child(title)
 	title.start_requested.connect(_enter_match)
-	title.lan_lobby_requested.connect(show_lan_lobby)
 	title.library_requested.connect(show_library)
 	title.settings_requested.connect(show_settings)
 	title.quit_requested.connect(_quit)
@@ -245,72 +187,22 @@ func show_settings() -> void:
 	_use_menu_screen(screen)
 
 
-func show_lan_lobby() -> void:
-	_free_screen()
-	state = State.LAN_LOBBY
-	bridge.screen = null
-	var screen := LAN_LOBBY_SCENE.instantiate() as UiLanLobbyScreen
-	screen.client_only_mode = OS.has_feature("android")
-	screen.bind_session(network_session)
-	screen.back_requested.connect(show_title)
-	add_child(screen)
-	_screen = screen
-	_use_menu_screen(screen)
-
-
 ## Creates a fresh match room on the shared router; the room's own Lobby phase comes first.
 func _enter_match() -> void:
-	if OS.has_feature("android") or not simulation_authority.can_commit():
+	if not simulation_authority.can_commit():
 		return
-	if (
-		network_session != null
-		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
-	):
-		network_session.stop_session()
-	if network_session != null:
-		# The offline match must not inherit the host authority a network match swapped in.
-		simulation_authority = network_session.local_authority
-	_create_authoritative_match(false)
+	_create_authoritative_match()
 
 
-func _enter_network_match() -> void:
-	if OS.has_feature("android") or not simulation_authority.can_commit() or network_session.client_mode:
-		return
-	if (
-		network_session.host_authority == null
-		or network_session.host_authority.role != SimulationAuthority.Role.HOST_AUTHORITY
-		or not router.set_authority(network_session.host_authority)
-	):
-		push_error("The network session could not transfer simulation ownership to the host.")
-		network_session.stop_session()
-		return
-	simulation_authority = network_session.host_authority
-	_create_authoritative_match(true)
-	# Lobby readiness admits the network match; the host then starts the scheduled room
-	# directly. Clients remain presentation-only and never run this gameplay transition.
-	if room != null and not room.start_match():
-		push_error("The host could not start the scheduled network match.")
-		network_session.stop_session()
-
-
-func _create_authoritative_match(network_match: bool) -> void:
+func _create_authoritative_match() -> void:
 	_free_room()
 	_free_screen()
-	_free_network_presentation()
 	state = State.IN_MATCH
 	bridge.screen = null
-	if not network_match:
-		for seat in router.registry.joined_seats():
-			router.registry.set_ready(int(seat.seat), false)
-	var selected_scene := match_scene
-	if network_match:
-		selected_scene = (
-			NETWORK_LIVE_BUILD_SCENE
-			if network_session.network_route == NetworkSessionManager.ROUTE_LIVE_BUILD
-			else LIFECYCLE_SCENE
-		)
-	room = selected_scene.instantiate() as P05MatchRoom
-	var requested_seed := seed_from_args(NlbBuildFlags.dev_user_args())
+	for seat in router.registry.joined_seats():
+		router.registry.set_ready(int(seat.seat), false)
+	room = match_scene.instantiate() as P05MatchRoom
+	var requested_seed := seed_from_args(DevBuildFlags.dev_user_args())
 	if requested_seed >= 0:
 		room.set_match_seed(requested_seed)
 	room.input_router = router
@@ -325,83 +217,12 @@ func _create_authoritative_match(network_match: bool) -> void:
 	# skipped, a left-over Tutorial selection falls back to the default stage.
 	selected_map_id = _match_map_id()
 	room.arena_layout = MapCatalog.layout_for(selected_map_id)
-	if room is P12ScheduledMatchRoom:
-		(room as P12ScheduledMatchRoom).network_map_id = selected_map_id
-	if room is NLBP06NetworkLiveBuildMatchRoom:
-		(room as NLBP06NetworkLiveBuildMatchRoom).unverified_content = (
-			network_session.live_unverified_content
-		)
 	room.map_choice_label = map_label(selected_map_id)
 	room.map_selection_enabled = MapCatalog.ids().size() > 1
 	room.flow_requested.connect(_on_flow_requested)
 	room.return_requested.connect(_on_room_return)
 	add_child(room)
 	_attach_tutorial()
-	if network_match:
-		network_session.bind_match_room(room as P12ScheduledMatchRoom)
-
-
-func _enter_client_network_match(match_id: int) -> void:
-	if not network_session.client_mode:
-		return
-	_free_room()
-	_free_screen()
-	_free_network_presentation()
-	state = State.IN_MATCH
-	bridge.screen = null
-	network_presentation = NetworkMatchPresentation.new()
-	network_presentation.name = "NetworkMatchPresentation"
-	add_child(network_presentation)
-	network_presentation.bind_session(network_session)
-	network_presentation.session_end_dismissed.connect(_leave_client_match)
-	if network_session.active_match_id != match_id:
-		return
-
-
-func _free_network_presentation() -> void:
-	if network_presentation != null and is_instance_valid(network_presentation):
-		network_presentation.queue_free()
-	network_presentation = null
-
-
-## NLB-P09: the client's session ended (host loss, host close, lobby return, host quit, or its own
-## Leave). The match view shows why and then returns to the lobby; it never stays on a dead match.
-func _on_network_session_ended(end_reason: int) -> void:
-	if state != State.IN_MATCH:
-		return
-	if (
-		network_presentation == null
-		or not is_instance_valid(network_presentation)
-		or end_reason == NetworkLifecycleCodec.SessionEnd.CLIENT_LEFT
-	):
-		# The player chose to leave, or there is no match view to explain anything on.
-		_leave_client_match()
-		return
-	network_presentation.show_session_ended(end_reason)
-
-
-func _leave_client_match() -> void:
-	_free_network_presentation()
-	show_lan_lobby()
-
-
-## True while this process is the PC host of a running network match.
-func _hosting_network_match() -> bool:
-	return (
-		network_session != null
-		and network_session.match_active
-		and not network_session.client_mode
-	)
-
-
-## Ends the hosted session (SESSION_CLOSE carries `end_reason` to every phone) and gives the flow
-## its own local authority back, so nothing of the network match is kept.
-func _end_host_network_match(end_reason: int) -> void:
-	if network_session == null:
-		return
-	if network_session.state != NetworkSessionManager.SessionState.OFFLINE:
-		network_session.stop_session(end_reason)
-	simulation_authority = network_session.local_authority
 
 
 ## Lobby map choice. The Tutorial map is the guided match: picking it (re)starts the tutorial for
@@ -414,26 +235,17 @@ func _choose_map(map_id: String) -> void:
 	elif tutorial_session.is_active():
 		tutorial_session.skip()
 	selected_map_id = map_id
-	_sync_live_map()
 	_enter_match()
 
 
 ## The map the next match will use: the Tutorial map while the guided tutorial is pending; a
 ## left-over Tutorial selection falls back to the default stage once it is done or skipped.
 func _match_map_id() -> String:
-	if _network_live_build_route():
-		return MapCatalog.DEFAULT_ID if selected_map_id == TUTORIAL_MAP_ID else selected_map_id
 	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
 		return TUTORIAL_MAP_ID
 	if selected_map_id == TUTORIAL_MAP_ID:
 		return MapCatalog.DEFAULT_ID
 	return selected_map_id
-
-
-## Keeps the host's NLB-P07 live start gate on the map the match will actually load.
-func _sync_live_map() -> void:
-	if network_session != null:
-		network_session.live_map_id = _match_map_id()
 
 
 func _start_replay() -> void:
@@ -446,8 +258,6 @@ func _start_replay() -> void:
 
 ## The coach is a child of the room, so it is freed with it. It only reads room state.
 func _attach_tutorial() -> void:
-	if _network_live_build_route():
-		return
 	if room == null or tutorial_script == null or room.presenter == null:
 		return
 	tutorial = TutorialCoordinator.new()
@@ -462,18 +272,9 @@ func _on_flow_requested(kind: StringName) -> void:
 		&"lobby_back":
 			show_title(true)
 		&"leave_match":
-			if _hosting_network_match():
-				# Spec 3.3: Return to Lobby tears the network session down. The host lands on the LAN
-				# lobby so it can host again; every phone gets a LOBBY_RETURN session-ended screen.
-				_end_host_network_match(NetworkLifecycleCodec.SessionEnd.LOBBY_RETURN)
-				_free_room()
-				show_lan_lobby()
-			else:
-				# PROTOTYPE_DEFAULTS §3: leaving a match returns the whole group to the Lobby.
-				_enter_match()
+			# PROTOTYPE_DEFAULTS §3: leaving a match returns the whole group to the Lobby.
+			_enter_match()
 		&"replay_match":
-			if _hosting_network_match():
-				return # a network replay re-keys inside the session and never reaches the flow
 			# Replay from a room that held the tutorial stage: a fresh room, started at once.
 			_enter_match()
 			_start_replay()
@@ -558,8 +359,6 @@ func _free_room() -> void:
 	router.resume_system()
 
 
-## P11: the window's close button takes the same path as the in-game Quit, so the host attempts
-## SESSION_CLOSE (HOST_QUIT) and releases its listeners instead of vanishing mid-session.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST and not harness_mode and not _close_requested:
 		_close_requested = true
@@ -570,24 +369,10 @@ func _quit() -> void:
 	if harness_mode:
 		return_requested.emit()
 		return
-	if (
-		network_session != null
-		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
-	):
-		# Let SESSION_CLOSE reach the phones (HOST_QUIT) before the process goes, with a short cap.
-		network_session.stop_session(NetworkLifecycleCodec.SessionEnd.HOST_QUIT)
-		var deadline := Time.get_ticks_msec() + 600
-		while (
-			network_session.state != NetworkSessionManager.SessionState.OFFLINE
-			and Time.get_ticks_msec() < deadline
-		):
-			await get_tree().process_frame
 	get_tree().quit()
 
 
 func _route_name() -> String:
-	if network_live_build_requested:
-		return ROUTE_NETWORK_LIVE_BUILD
 	if match_scene == MATCH_SCENE:
 		return ROUTE_FIRST_PLAYABLE
 	if match_scene == OFFLINE_LIVE_BUILD_SCENE:
@@ -630,15 +415,13 @@ static func route_from_args(arguments: PackedStringArray) -> String:
 		if not argument.begins_with(ROUTE_PREFIX):
 			continue
 		var value := argument.trim_prefix(ROUTE_PREFIX)
-		if value in [
-			ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE, ROUTE_OFFLINE_LIVE_BUILD, ROUTE_NETWORK_LIVE_BUILD
-		]:
+		if value in [ROUTE_LIFECYCLE, ROUTE_FIRST_PLAYABLE, ROUTE_OFFLINE_LIVE_BUILD]:
 			result = value
 	return result
 
 
 func _harness_requested() -> bool:
-	for argument in NlbBuildFlags.dev_user_args():
+	for argument in DevBuildFlags.dev_user_args():
 		if argument == HARNESS_FLAG or argument.begins_with(OPEN_ROOM_PREFIX):
 			return true
 	return false
@@ -646,12 +429,3 @@ func _harness_requested() -> bool:
 
 func _open_harness() -> void:
 	get_tree().change_scene_to_file(HARNESS_SCENE_PATH)
-
-
-## NLB-P10: the live-build matrix disables the guided tutorial, so a hosted live-build match never
-## selects the tutorial stage or attaches the coach. Phones get client-local help cards instead.
-func _network_live_build_route() -> bool:
-	return (
-		network_session != null
-		and network_session.network_route == NetworkSessionManager.ROUTE_LIVE_BUILD
-	)

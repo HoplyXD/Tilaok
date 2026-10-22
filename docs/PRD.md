@@ -1,6 +1,6 @@
 # Tilaok! — Product Requirements Document
 
-**Track status (2026-10-20):** the scheduled P12 offline route remains default and submission baseline. The opt-in offline live-build engineering route `-- --match-route=offline_live_build` is implemented as Lobby → Pugad → GO → active Play/build → results → next round; the scheduled route remains the fallback. Android lobby/export work is partial, with the scanner and physical-phone acceptance incomplete; network gameplay is not implemented and P02 real Wi-Fi/no-internet acceptance remains open. Track requirements and status are in [NETWORKED_LIVE_BUILD](NETWORKED_LIVE_BUILD.md), [PHASETASK_NETWORKED_LIVE_BUILD](PHASETASK_NETWORKED_LIVE_BUILD.md), and [P03 evidence](evidence/nlb/p03/README.md). Older local-only and zero-traffic requirements apply to the offline routes.
+**Current route (2026-10-22):** normal Play uses the local P12 schedule with Lobby → Pugad → shared 3-second GO → movement plus visible 2-second construction → results → next round. Construction pauses with gameplay, reserves a deterministic fixed footprint, and commits only after a completion-boundary safety recheck. Phone/LAN and Android/QR features are retired; historical specs and evidence remain in `archive/retired-networked-live-build/`.
 
 **Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
@@ -110,7 +110,7 @@ Non-goals: networking, online accounts, servers/RPCs, paid gameplay licence, clo
 
 ## 4. Complete player journey
 
-Launch → title → join/ready lobby → guided first Karera → Pugad → Place → Play → round results → next round is the default scheduled flow. The opt-in offline live-build route keeps Pugad assignment, then uses shared GO before opening movement and construction in Play. Both preserve current event/scoring outcomes and round lifecycle; network transport is not part of the offline engineering route. Threshold/round limit → tied-player sudden death when needed → match results → replay or lobby. Title/lobby/pause provide Library/help access. Settings/pause/back/quit paths remain operable with supported inputs.
+Launch → Title → local Lobby → Pugad → shared 3-second GO → active event/race with movement and two-second construction jobs → round results → next round is the normal flow. It preserves P12 event/scoring outcomes, stage persistence, Barya and tied-player sudden death. The scheduled Place route is a developer fallback. Threshold/round limit → tied-player sudden death when needed → match results → replay or lobby. Title/lobby/pause provide Library/help access. Settings/pause/back/quit paths remain operable with supported local inputs.
 
 | State | Player-visible information/actions |
 |---|---|
@@ -1365,7 +1365,7 @@ Required presentation expresses Filipino barrio identity through original chicke
 
 ## 15. Technical and quality requirements
 
-The current October release baseline is a local-only Godot game, not a service. It has no public APIs, remote endpoints, accounts or network/save migrations. The separately gated approved PC-host/Android target is specified in NETWORKED_LIVE_BUILD.md. Proposed interfaces describe responsibilities: assigned player inputs; actual support contacts; item definition/lifecycle; atomic stage edit set; terminal outcome ledger; exact score calculation; Main/Twist scheduling; presentation fed by resolved state. Names/paths in the tracker are suggested NEW components, not existing code or a mandated framework.
+The current October release baseline is a local-only Godot game, not a service. It has no public APIs, remote endpoints, accounts or network/save migrations. Phone/LAN functionality was retired on 2026-10-22; the historical specification and tracker are preserved in `archive/retired-networked-live-build/`. Current interfaces describe responsibilities: assigned player inputs; actual support contacts; item definition/lifecycle; atomic stage edit set; terminal outcome ledger; exact score calculation; Main/Twist scheduling; presentation fed by resolved state. Names/paths in the tracker are suggested NEW components, not existing code or a mandated framework.
 
 The available engine does not verify the target version. Do not change project version to make prose appear complete. Central tunables are provisional; capability switches prevent unverified content entering production. Memory/performance targets are budgets awaiting measurement, not achievements.
 
@@ -1418,7 +1418,7 @@ The available engine does not verify the target version. Do not change project v
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** QA (name TBD).
 
-**Expected behavior:** Offline-baseline provisional targets: 60 FPS/16.67 ms at 1080p, 512 MiB process memory pending target-PC confirmation, and 0 B/s gameplay traffic. The separate networked track has proposed, unmeasured budgets in NETWORKED_LIVE_BUILD.md. Measure base, representative four-player and worst-case round-12 stages at persistent/transient caps and repeated restarts. Record median/p95/worst frame times, memory and object counts.
+**Expected behavior:** Offline-baseline provisional targets: 60 FPS/16.67 ms at 1080p, 512 MiB process memory pending target-PC confirmation, and 0 B/s gameplay traffic. No active gameplay network traffic is expected; 0 B/s remains an architectural expectation, not a measured network result. Measure base, representative four-player and worst-case round-12 stages at persistent/transient caps and repeated restarts. Record median/p95/worst frame times, memory and object counts.
 
 **Acceptance:** Evidence names OS/CPU/GPU/RAM, build, resolution, duration, counts and modes; compare against confirmed budgets, investigate spikes/growth, and record any budget revision explicitly. No measured results are fabricated.
 
