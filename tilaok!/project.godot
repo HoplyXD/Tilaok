@@ -11,10 +11,10 @@ config_version=5
 [application]
 
 config/name="Tilaok!"
+config/version="0.4.0"
 run/main_scene="res://scenes/flow/game_flow.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/version="0.4.0"
 config/icon="res://icon.svg"
 
 [display]
@@ -25,6 +25,10 @@ window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/tilaok_qr_scanner/plugin.cfg")
+
 [global_group]
 
 Player=""
@@ -34,10 +38,6 @@ Flag=""
 [gui]
 
 theme/custom="res://assets/ui/theme/tilaok_theme.tres"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/tilaok_qr_scanner/plugin.cfg")
 
 [input]
 
