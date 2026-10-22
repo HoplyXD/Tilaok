@@ -112,15 +112,19 @@ func _physics_process(delta: float) -> void:
 	var in_play := input_router.phase == LocalInputRouter.Phase.PLAY
 	if not in_play:
 		_clear_support()
-	var axis := input_router.movement_axis(seat_index) if in_play else 0.0
-	var jump_down := in_play and input_router.is_action_held(seat_index, "jump")
+	# In build mode the movement keys drive the block cursor, so the chicken holds still.
+	var building := in_play and input_router.is_build_mode(seat_index)
+	var axis := input_router.movement_axis(seat_index) if in_play and not building else 0.0
+	var jump_down := in_play and not building and input_router.is_action_held(seat_index, "jump")
 	var next_intent := (
-		in_play and (input_router.has_direction_intent(seat_index) or absf(axis) > 0.0 or jump_down)
+		in_play
+		and not building
+		and (input_router.has_direction_intent(seat_index) or absf(axis) > 0.0 or jump_down)
 	)
 	if intentional_input != next_intent:
 		intentional_input = next_intent
 		intentional_input_changed.emit(intentional_input)
-	if in_play and input_router.consume_pressed(seat_index, "jump"):
+	if in_play and input_router.consume_pressed(seat_index, "jump") and not building:
 		jump_buffer_remaining = tuning.jump_buffer_seconds
 	else:
 		jump_buffer_remaining = maxf(0.0, jump_buffer_remaining - delta)

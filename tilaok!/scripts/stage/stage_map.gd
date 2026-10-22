@@ -42,9 +42,12 @@ const TERRAIN_SET := 0
 const TERRAIN_GRASS := 0
 const TERRAIN_STONE := 1
 const TERRAIN_WATER := 2
+## Solid and unclimbable exactly like Stone. It is a separate terrain only so a map can give it its
+## own occlusion and light settings (it is meant to cast no shadow) without changing Stone.
+const TERRAIN_BORDER_BLOCK := 3
 ## Checked by validate() so a reordered or renamed TileSet shows up as an editor warning instead
 ## of silently changing what every map does.
-const TERRAIN_NAMES := ["Grass", "Stone", "Water"]
+const TERRAIN_NAMES := ["Grass", "Stone", "Water", "Border Block"]
 ## Pre-terrain TileSet custom data, still honoured for any map not yet repainted.
 const NO_WALL_SLIDE := "no_wall_slide"
 ## Default stage size in tiles (GameplayTuning.arena_width_tiles x arena_height_tiles). Only the
@@ -195,12 +198,12 @@ func water_cells() -> Array[Vector2i]:
 	return _cells_where(func(cell: Vector2i) -> bool: return terrain_at(cell) == TERRAIN_WATER)
 
 
-## Stone is the not-climbable terrain. Falls back to the pre-terrain custom data for maps that
-## still use the old block sprite sheet.
+## Stone and Border Block are the not-climbable terrains. Falls back to the pre-terrain custom data
+## for maps that still use the old block sprite sheet.
 func is_no_wall_slide(cell: Vector2i) -> bool:
 	var terrain := terrain_at(cell)
 	if terrain >= 0:
-		return terrain == TERRAIN_STONE
+		return terrain == TERRAIN_STONE or terrain == TERRAIN_BORDER_BLOCK
 	var layer := blocks_layer()
 	if layer == null or layer.tile_set == null:
 		return false

@@ -49,6 +49,10 @@ var shared_keyboard_enabled := false
 var rotation_supported := false
 ## Set only by live-build rooms: keyboard south keys then confirm a live placement during Play.
 var live_build_confirm_enabled := false
+## Seats currently in build mode. While a seat is listed here its movement keys drive the block
+## cursor instead of the chicken: `movement_axis()` reports nothing and `live_aim_vector()` reads
+## the movement directions, so WASD (and each layout's movement keys) aim the block.
+var build_mode_seats: Dictionary = {}
 var _held: Dictionary = {}
 var _pressed: Dictionary = {}
 var _blocked: Dictionary = {}
@@ -424,7 +428,22 @@ func intent_vector(seat_index: int) -> Vector2:
 	)
 
 
+## True while this seat is aiming a block instead of steering its chicken.
+func is_build_mode(seat_index: int) -> bool:
+	return bool(build_mode_seats.get(seat_index, false))
+
+
+func set_build_mode(seat_index: int, enabled: bool) -> void:
+	if enabled:
+		build_mode_seats[seat_index] = true
+	else:
+		build_mode_seats.erase(seat_index)
+
+
 func movement_axis(seat_index: int) -> float:
+	# In build mode the movement keys belong to the block cursor, so the chicken reads nothing.
+	if is_build_mode(seat_index):
+		return 0.0
 	var dpad := _digital_axis(seat_index, "left", "right")
 	return (
 		dpad
@@ -500,6 +519,23 @@ func is_action_held(seat_index: int, action_name: String) -> bool:
 
 
 func live_aim_vector(seat_index: int) -> Vector2:
+	# In build mode the movement keys aim the block, so WASD / arrows / IJKL / numpad 8426 steer
+	# the cursor. The dedicated aim keys keep working as a second way in.
+	if is_build_mode(seat_index):
+		# During Play the up key resolves to "jump" (W, Up, I, Numpad 8), so accept either name:
+		# the chicken cannot jump in build mode anyway.
+		var up_held := (
+			_is_action_held(seat_index, "up", true) or _is_action_held(seat_index, "jump", true)
+		)
+		var moved := Vector2(
+			(
+				float(_is_action_held(seat_index, "right", true))
+				- float(_is_action_held(seat_index, "left", true))
+			),
+			float(_is_action_held(seat_index, "down", true)) - float(up_held)
+		)
+		if not moved.is_zero_approx():
+			return moved.normalized()
 	var x := float(_aim_x.get(seat_index, 0.0))
 	var y := float(_aim_y.get(seat_index, 0.0))
 	if is_zero_approx(x):

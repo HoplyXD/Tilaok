@@ -138,6 +138,7 @@ func _enter_place() -> void:
 	placement_controller.setup(claimed_variants, definitions, tuning)
 	for seat_index in seats:
 		build_mode[seat_index] = false
+		input_router.set_build_mode(int(seat_index), false)
 		inventory_used[seat_index] = false
 		live_notices.erase(seat_index)
 		_aim_repeat[seat_index] = {"elapsed": 0.0, "first": true, "direction": Vector2.ZERO}
@@ -212,6 +213,22 @@ func _dominant_step(direction: Vector2) -> Vector2i:
 	return Vector2i.DOWN if direction.y > 0.0 else Vector2i.UP
 
 
+## Entering build mode puts the block on the tile beside this player, so it appears where the
+## chicken is standing rather than wherever the cursor was left last time.
+func _snap_cursor_to_seat(seat_index: int) -> void:
+	var actor := actors.get(seat_index) as ChickenController
+	if actor == null or not is_instance_valid(actor):
+		return
+	var cell := tuning.grid_cell_wu
+	if cell <= 0.0:
+		return
+	var feet := actor.global_position.y + tuning.body_height_wu * 0.5
+	var tile := Vector2i(floori(actor.global_position.x / cell), maxi(0, floori(feet / cell) - 1))
+	if placement_controller.set_cell(seat_index, tile):
+		_refresh_match_ghost(seat_index)
+		_notify_presentation(&"live_build")
+
+
 func _move_live_cursor(seat_index: int, step: Vector2i) -> void:
 	if not placement_controller.move(seat_index, step):
 		return
@@ -236,6 +253,11 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 				if not bool(inventory_used.get(seat_index, false)):
 					build_mode[seat_index] = not bool(build_mode.get(seat_index, false))
 					input_router.consume_held_presses_for_seat(seat_index)
+					# The movement keys now steer the block cursor, and the block appears on a tile
+					# beside this player instead of wherever the cursor was last left.
+					input_router.set_build_mode(seat_index, bool(build_mode[seat_index]))
+					if bool(build_mode[seat_index]):
+						_snap_cursor_to_seat(seat_index)
 					_set_live_ghost_visible(seat_index, bool(build_mode[seat_index]))
 					live_notices[seat_index] = (
 						"Build mode on." if bool(build_mode[seat_index]) else "Build mode off."
@@ -257,6 +279,7 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 						return
 				if bool(build_mode.get(seat_index, false)):
 					build_mode[seat_index] = false
+					input_router.set_build_mode(seat_index, false)
 					_set_live_ghost_visible(seat_index, false)
 					live_notices[seat_index] = "Build preview closed."
 					_notify_presentation(&"live_build")
@@ -381,6 +404,7 @@ func _resolve_live_placement_boundary() -> void:
 		resolved.append({"request_id": request_id, "result": result})
 		inventory_used[seat_index] = bool(result.get("allowed", false))
 		build_mode[seat_index] = false
+		input_router.set_build_mode(int(seat_index), false)
 		_set_live_ghost_visible(seat_index, false)
 		live_notices[seat_index] = str(result.get("reason", "Placement resolved."))
 		if bool(result.get("allowed", false)):

@@ -20,6 +20,12 @@ polygon = PackedVector2Array(-128, -128, 128, -128, 128, 128, -128, 128)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_7rf41"]
 polygon = PackedVector2Array(-128, -128, 128, -128, 128, 128, -128, 128)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_cmpse"]
+polygon = PackedVector2Array(-128, -128, 128, -128, 128, 128, -128, 128)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_h0fm4"]
+polygon = PackedVector2Array(-128, -128, 128, -128, 128, 128, -128, 128)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_maptiles"]
 resource_name = "map_tiles"
 texture = ExtResource("1_maptiles")
@@ -241,14 +247,14 @@ texture_region_size = Vector2i(256, 256)
 2:5/0 = 0
 2:5/0/terrain_set = 0
 2:5/0/terrain = 1
-2:5/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_3t8dc")
+2:5/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_cmpse")
 2:5/0/terrains_peering_bit/right_side = 1
 2:5/0/terrains_peering_bit/left_side = 1
 2:5/0/custom_data_0 = true
 3:5/0 = 0
 3:5/0/terrain_set = 0
 3:5/0/terrain = 1
-3:5/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_3t8dc")
+3:5/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_h0fm4")
 3:5/0/terrains_peering_bit/left_side = 1
 3:5/0/custom_data_0 = true
 5:5/0 = 0
@@ -264,7 +270,7 @@ texture_region_size = Vector2i(256, 256)
 5:5/0/terrains_peering_bit/top_right_corner = 2
 6:5/0 = 0
 6:5/0/terrain_set = 0
-6:5/0/terrain = 2
+6:5/0/terrain = 3
 1:1/0 = 0
 1:1/0/terrain_set = 0
 1:1/0/terrain = 0
@@ -354,6 +360,8 @@ terrain_set_0/terrain_1/name = "Stone"
 terrain_set_0/terrain_1/color = Color(0.55, 0.56, 0.58, 1)
 terrain_set_0/terrain_2/name = "Water"
 terrain_set_0/terrain_2/color = Color(0.25, 0.55, 0.85, 1)
+terrain_set_0/terrain_3/name = "Border Block"
+terrain_set_0/terrain_3/color = Color(0.3, 0.3, 0.36, 1)
 custom_data_layer_0/name = "no_wall_slide"
 custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_maptiles")

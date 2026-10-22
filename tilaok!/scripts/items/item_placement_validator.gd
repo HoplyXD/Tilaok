@@ -60,9 +60,12 @@ static func validate(
 		if not arena.arena_bounds.encloses(footprint):
 			return _reject("out_of_bounds", "outside arena bounds")
 	else:
+		# A family marked can_place_on_player waives the player-clearance rule, so it may be
+		# dropped on a tile a chicken is standing in.
+		var clearance_rects := [] as Array[Rect2] if family.can_place_on_player else actor_rects
 		for occupied_rect in occupied:
 			var arena_result := arena.validate_region(
-				occupied_rect, ArenaDefinition.REGION_FOOTPRINT, actor_rects
+				occupied_rect, ArenaDefinition.REGION_FOOTPRINT, clearance_rects
 			)
 			if not bool(arena_result.allowed):
 				return _reject(

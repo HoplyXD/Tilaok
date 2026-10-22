@@ -52,6 +52,22 @@ func move(seat_index: int, delta_cells: Vector2i) -> bool:
 	return true
 
 
+## Places the cursor directly, clamped into the build area. Used when build mode opens so the
+## block appears beside the player. Returns false when the seat has no cursor or nothing moved.
+func set_cell(seat_index: int, cell: Vector2i) -> bool:
+	if not cursors.has(seat_index):
+		return false
+	var cursor: Dictionary = cursors[seat_index]
+	if bool(cursor.confirmed):
+		return false
+	var next := _clamp_to_build_area(cell)
+	if next == cursor.cell:
+		return false
+	cursor.cell = next
+	cursors[seat_index] = cursor
+	return true
+
+
 ## Keeps the cursor inside the map's painted build area, falling back to the tuning arena size for
 ## a stage that supplies none.
 func _clamp_to_build_area(cell: Vector2i) -> Vector2i:
