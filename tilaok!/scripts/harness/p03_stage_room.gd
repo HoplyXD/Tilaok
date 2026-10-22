@@ -391,10 +391,10 @@ func _build_actor(seat_index: int) -> ChickenController:
 	actor.support_tracker = support_tracker
 	actor.support_actor_id = "seat_%d" % seat_index
 	actor.water_regions = arena.water_regions
-	actor.bounds = Rect2(
-		Vector2(tuning.body_width_wu * 0.5, tuning.body_height_wu * 0.5),
-		arena.arena_bounds.size - Vector2(tuning.body_width_wu, tuning.body_height_wu)
-	)
+	actor.border_regions = arena.border_regions
+	# Containment was removed on 2026-10-22, so `bounds` is no longer the stage edge: it is only the
+	# far backstop that reports a chicken lost to the void. The kill line is the Border marker.
+	actor.bounds = Rect2(-arena.arena_bounds.size, arena.arena_bounds.size * 3.0)
 	actor.position = arena.controller_origin_from_feet(arena.spawn_feet)
 	actor.collision_layer = 2
 	actor.collision_mask = 1

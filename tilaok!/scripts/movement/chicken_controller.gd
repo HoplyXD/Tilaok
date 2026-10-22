@@ -47,6 +47,9 @@ var gliding := false
 var on_ice := false
 ## Water volumes in world units (ArenaDefinition.water_regions). Empty on a stage without water.
 var water_regions: Array[Rect2] = []
+## Kill volumes in world units (ArenaDefinition.border_regions). A chicken whose centre enters one
+## is eliminated. Empty on a stage that paints no Border, which then has no boundary at all.
+var border_regions: Array[Rect2] = []
 ## True while the body's centre is inside a water volume; the chicken floats instead of falling.
 var in_water := false
 ## True while a jump pressed in water is still rising, so buoyancy and drag leave the arc alone.
@@ -172,6 +175,7 @@ func _physics_process(delta: float) -> void:
 		coyote_remaining = 0.0
 	_notify_block_contacts(axis)
 	_refresh_wall_debug()
+	_check_border()
 	_check_bounds()
 
 
@@ -875,6 +879,17 @@ func _draw_wall_debug() -> void:
 		draw_string(
 			font, Vector2(-40.0, 40.0), label, HORIZONTAL_ALIGNMENT_LEFT, 120.0, 9, bar_color
 		)
+
+
+## The Border marker kills instead of blocking: touching one eliminates the chicken. It replaced
+## the containment walls, so this is what stops a chicken running off the stage forever.
+func _check_border() -> void:
+	if border_regions.is_empty() or lifecycle.is_terminal():
+		return
+	for region in border_regions:
+		if region.has_point(global_position):
+			eliminate("border")
+			return
 
 
 func _check_bounds() -> void:

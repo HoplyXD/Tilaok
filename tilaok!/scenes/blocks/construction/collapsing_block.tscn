@@ -25,7 +25,6 @@ rotations = PackedInt32Array(0)
 gated_rotations = PackedInt32Array()
 weight_tuning_key = &"item_collapsing_block_weight"
 special = 5
-preview_silhouette = "collapsing_block"
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=1495639000]
 shape = SubResource("RectangleShape2D_3wn3k")

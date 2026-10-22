@@ -419,15 +419,29 @@ func _choose_map(map_id: String) -> void:
 
 
 ## The map the next match will use: the Tutorial map while the guided tutorial is pending; a
-## left-over Tutorial selection falls back to the default stage once it is done or skipped.
+## left-over Tutorial selection falls back to the first map in the folder once it is done or
+## skipped. The built-in default stage is no longer a selectable entry, so a selection still
+## holding it (a fresh launch) snaps to a real map too: otherwise the Lobby arrows would start
+## from an id that is not in the list and cycle from the wrong place.
 func _match_map_id() -> String:
 	if _network_live_build_route():
 		return MapCatalog.DEFAULT_ID if selected_map_id == TUTORIAL_MAP_ID else selected_map_id
-	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
+	var available := MapCatalog.ids()
+	if tutorial_session.wants_tutorial_layout() and available.has(TUTORIAL_MAP_ID):
 		return TUTORIAL_MAP_ID
-	if selected_map_id == TUTORIAL_MAP_ID:
-		return MapCatalog.DEFAULT_ID
+	if selected_map_id == TUTORIAL_MAP_ID or not available.has(selected_map_id):
+		return _first_playable_map(available)
 	return selected_map_id
+
+
+## The first map that is not the guided Tutorial, so skipping the tutorial does not immediately
+## re-select the Tutorial map (it sorts first). Falls back to the built-in default stage when the
+## folder holds nothing else.
+func _first_playable_map(available: PackedStringArray) -> String:
+	for map_id in available:
+		if map_id != TUTORIAL_MAP_ID:
+			return map_id
+	return MapCatalog.DEFAULT_ID
 
 
 ## Keeps the host's NLB-P07 live start gate on the map the match will actually load.

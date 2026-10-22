@@ -410,12 +410,18 @@ func _test_playable_route(actor: ChickenController) -> void:
 		"ground braking reduces horizontal speed while the actor stays contained"
 	)
 	_press(router, KEY_D, true)
+	# Containment was removed, so nothing parks the actor against a right wall any more. Check that
+	# it genuinely stands on the goal platform inside the stage, instead of relying on a wall to
+	# settle its feet on exactly y=768.
 	var reached_goal := false
 	for _frame in range(60):
 		await physics_frame
+		var feet := actor.global_position.y + room.tuning.body_height_wu * 0.5
 		if (
 			actor.global_position.x >= 1800.0
-			and is_equal_approx(actor.global_position.y + room.tuning.body_height_wu * 0.5, 768.0)
+			and actor.global_position.x <= 2048.0
+			and absf(feet - 768.0) <= 1.0
+			and actor.is_on_floor()
 		):
 			reached_goal = true
 			break

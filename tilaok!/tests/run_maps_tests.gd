@@ -27,7 +27,7 @@ func _run() -> void:
 	_test_default_replica()
 	_test_tutorial_map()
 	_test_decomposition_and_validation()
-	_test_frame_is_decoration()
+	_test_painting_past_the_default_size()
 	_test_drop_in_and_broken_maps()
 	await _test_room_on_map()
 	await _test_lobby_map_selection()
@@ -47,9 +47,11 @@ func _check(condition: bool, label: String) -> void:
 
 func _test_catalog() -> void:
 	var ids := MapCatalog.ids()
+	# The built-in default stage is no longer offered: it is not a scene under scenes/maps, so it
+	# listed a map nobody could open or edit. The selection is exactly the maps folder, by order.
 	_check(
-		ids.size() >= 2 and ids[0] == MapCatalog.DEFAULT_ID and ids[1] == TUTORIAL,
-		"the selection lists the built-in default, then the maps folder by order: %s" % [ids]
+		ids.size() >= 1 and not ids.has(MapCatalog.DEFAULT_ID) and ids[0] == TUTORIAL,
+		"the selection lists only the maps folder, by order: %s" % [ids]
 	)
 	_check(
 		MapCatalog.errors().is_empty(),
@@ -265,16 +267,16 @@ func _test_decomposition_and_validation() -> void:
 	no_flag.free()
 
 
-## Cells outside the 32x16 stage (a painted frame, like the Basic Map) are picture only: the game
-## already closes the stage with invisible walls and a ceiling there. Outside markers are ignored.
-func _test_frame_is_decoration() -> void:
+## A map is as large as what it paints (2026-10-22). Cells and markers past the default 32x16 used
+## to be clipped away, which silently discarded a larger map's Spawn and Flag and left it failing
+## validation with no visible cause. They are now real geometry, and the stage grows to fit.
+func _test_painting_past_the_default_size() -> void:
 	var map := _default_replica()
 	var blocks := map.blocks_layer()
-	_fill(blocks, Rect2i(-1, -2, 34, 1), 1, Vector2i(1, 0))
-	_fill(blocks, Rect2i(-1, -1, 1, 17), 1, Vector2i(1, 0))
-	_fill(blocks, Rect2i(32, -1, 1, 17), 1, Vector2i(1, 0))
-	_fill(map.markers_layer(), Rect2i(5, -1, 23, 1), 0, StageMap.MARKER_BUILD)
-	_check(map.validate().is_empty(), "a map with a frame outside the stage validates")
+	_fill(blocks, Rect2i(0, 0, 34, 1), 1, Vector2i(1, 0))
+	_fill(blocks, Rect2i(32, 0, 1, 17), 1, Vector2i(1, 0))
+	_fill(map.markers_layer(), Rect2i(5, 16, 23, 1), 0, StageMap.MARKER_BUILD)
+	_check(map.validate().is_empty(), "a map painted past the default size validates")
 	var layout := map.to_layout("framed")
 	var outside := 0
 	for surface in layout.surfaces:
@@ -282,11 +284,15 @@ func _test_frame_is_decoration() -> void:
 			outside += 1
 	_check(
 		(
-			outside == 0
-			and layout.surfaces.size() == 6
-			and layout.build_region_tiles == Rect2(5, 3, 23, 12)
+			outside > 0
+			and layout.stage_size_tiles.x >= 33
+			and layout.stage_size_tiles.y >= 17
+			and layout.build_region_tiles.end.y >= 17.0
 		),
-		"frame cells add no collision and outside markers are ignored"
+		(
+			"cells and markers past the default size are kept (outside=%d stage=%s build=%s)"
+			% [outside, layout.stage_size_tiles, layout.build_region_tiles]
+		)
 	)
 	map.free()
 
@@ -416,9 +422,18 @@ func _test_lobby_map_selection() -> void:
 	flow.tutorial_session.skip()
 	flow._enter_match()
 	await process_frame
+	# The built-in default stage is no longer selectable, so the fallback is the first map in the
+	# folder that is not the Tutorial itself (the Tutorial sorts first, so it must be skipped).
 	_check(
-		flow.selected_map_id == MapCatalog.DEFAULT_ID and flow.room.arena_layout == null,
-		"after the tutorial is done or skipped, the next match falls back to the default stage"
+		(
+			flow.selected_map_id != MapCatalog.DEFAULT_ID
+			and flow.selected_map_id != TUTORIAL
+			and flow.room.arena_layout != null
+		),
+		(
+			"after the tutorial is done or skipped, the next match falls back to the first playable map (%s)"
+			% flow.selected_map_id
+		)
 	)
 	flow.queue_free()
 	await process_frame

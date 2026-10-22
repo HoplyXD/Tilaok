@@ -539,7 +539,27 @@ func _test_gulong_cooldown() -> void:
 	_row(
 		"T03 spring cooldown holds 0.20 s", "1 launch in first 10 frames", "%d" % early, early == 1
 	)
-	_row("T03 spring relaunches after cooldown", ">=2 launches by frame 40", "%d" % late, late >= 2)
+	# A chicken that comes to rest on the tire is never bounced again: the spring fires on the
+	# rising edge of contact, so the cooldown expiring on its own launches nothing.
+	_row(
+		"T03 resting on the spring never relaunches",
+		"still 1 launch at frame 40",
+		"%d" % late,
+		late == 1
+	)
+	# Leaving and landing again is a fresh contact, so the spring still works.
+	for _frame in range(10):
+		_hold(face_center - Vector2(0.0, 512.0))
+		await physics_frame
+	for _frame in range(10):
+		_hold(face_center)
+		await physics_frame
+	_row(
+		"T03 landing on the spring again relaunches",
+		">=2 launches after re-landing",
+		"%d" % behavior.launch_count,
+		behavior.launch_count >= 2
+	)
 	await _dispose()
 
 
@@ -575,12 +595,15 @@ func _test_gulong_rotations_and_caps() -> void:
 			_hold(_feet_to_center(Vector2(960.0, top_y - 1.0)))
 		await physics_frame
 		lowest = minf(lowest, actor.global_position.y)
-	var bounds_ok := lowest >= room.tuning.body_height_wu * 0.5 - 0.5
+	# The arena ceiling was removed on 2026-10-22, so a launch near the top of the stage rises past
+	# y=0 instead of being stopped by it. The invariant now is that the chicken does rise, falls
+	# back down, and is never reported lost to the void.
+	var fell_back := actor.global_position.y >= top_y - CELL
 	_row(
-		"T04 launch never leaves the arena",
-		"centre y >= half body height",
-		"min centre y %.2f" % lowest,
-		bounds_ok and not actor.containment_outcome_reported
+		"T04 launch near the top of the stage stays in the world",
+		"rises, falls back, never reported lost",
+		"min centre y %.2f, final centre y %.2f" % [lowest, actor.global_position.y],
+		lowest < top_y and fell_back and not actor.containment_outcome_reported
 	)
 	await _dispose()
 

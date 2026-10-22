@@ -22,6 +22,10 @@ var layout_id := DEFAULT_LAYOUT_ID
 var surface_specs: Array[Dictionary] = []
 ## Water volumes in world units. Not surfaces: they carry no collision and never block a build.
 var water_regions: Array[Rect2] = []
+## Kill volumes in world units (the Border marker). Not surfaces either: nothing collides with a
+## border, a chicken that enters one is eliminated. This replaced the containment walls, so a map
+## that paints no Border has no boundary and a chicken can leave the stage freely.
+var border_regions: Array[Rect2] = []
 var _immutable_ids: Dictionary = {}
 var _construction_ids: Dictionary = {}
 
@@ -35,8 +39,11 @@ func _init(source_tuning: GameplayTuning = null, source_layout: ArenaLayout = nu
 		Vector2.ZERO, Vector2(tuning.arena_width_tiles, tuning.arena_height_tiles) * cell
 	)
 	if source_layout != null:
+		# A map is as large as what it paints, so the stage bounds follow the layout instead of the
+		# fixed tuning size. Zero keeps layouts authored before larger maps working unchanged.
+		if source_layout.stage_size_tiles.x > 0 and source_layout.stage_size_tiles.y > 0:
+			arena_bounds = Rect2(Vector2.ZERO, Vector2(source_layout.stage_size_tiles) * cell)
 		_apply_layout(source_layout)
-		_add_containment()
 		return
 	build_region = tile_rect(5, 3, 28, 15)
 	protected_spawn = tile_rect(0, 11, 5, 15)
@@ -49,7 +56,6 @@ func _init(source_tuning: GameplayTuning = null, source_layout: ArenaLayout = nu
 	_add_surface("arena.base_c", tile_rect(18, 13, 22, 15), true, true)
 	_add_surface("arena.base_d", tile_rect(24, 11, 28, 12), true, true)
 	_add_surface("arena.goal", tile_rect(28, 12, 32, 15), true, true)
-	_add_containment()
 
 
 func _apply_layout(source_layout: ArenaLayout) -> void:
@@ -64,6 +70,9 @@ func _apply_layout(source_layout: ArenaLayout) -> void:
 	water_regions.clear()
 	for water in source_layout.water_regions_tiles:
 		water_regions.append(_scaled_rect(water, cell))
+	border_regions.clear()
+	for border in source_layout.border_regions_tiles:
+		border_regions.append(_scaled_rect(border, cell))
 	for surface in source_layout.surfaces:
 		_add_surface(
 			surface.surface_id,
@@ -74,19 +83,9 @@ func _apply_layout(source_layout: ArenaLayout) -> void:
 		)
 
 
-func _add_containment() -> void:
-	var cell := tuning.grid_cell_wu
-	_add_surface(
-		"arena.left_wall", Rect2(Vector2(-cell, 0.0), Vector2(cell, arena_bounds.size.y)), true
-	)
-	_add_surface(
-		"arena.right_wall",
-		Rect2(Vector2(arena_bounds.end.x, 0.0), Vector2(cell, arena_bounds.size.y)),
-		true
-	)
-	_add_surface(
-		"arena.ceiling", Rect2(Vector2(0.0, -cell), Vector2(arena_bounds.size.x, cell)), true
-	)
+## The containment box (left/right walls and a ceiling) was removed on 2026-10-22 so chickens and
+## blocks may leave the stage. A map closes itself by painting Border markers instead, which kill
+## on contact rather than blocking movement.
 
 
 func tile_rect(left: float, top: float, right: float, bottom: float) -> Rect2:

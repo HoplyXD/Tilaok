@@ -535,13 +535,15 @@ func _test_grid_and_tiles() -> void:
 		tiles.get_used_cells().size() == expected,
 		"every arena surface cell is painted (%d tiles)" % tiles.get_used_cells().size()
 	)
+	# Containment was removed on 2026-10-22, so cell (-1, 0) is empty: there is no boundary tile to
+	# paint any more. The floor and base platform must still read as different surfaces.
 	_check(
 		(
 			tiles.get_cell_atlas_coords(Vector2i(0, 15)) == StageTileLayer.TILE_GROUND
 			and tiles.get_cell_atlas_coords(Vector2i(6, 13)) == StageTileLayer.TILE_PLATFORM
-			and tiles.get_cell_atlas_coords(Vector2i(-1, 0)) == StageTileLayer.TILE_BOUNDARY
+			and tiles.get_cell_atlas_coords(Vector2i(-1, 0)) == Vector2i(-1, -1)
 		),
-		"floor, base platform and containment use distinct tiles"
+		"floor and base platform use distinct tiles, and no containment is painted"
 	)
 	_check(
 		tiles.map_to_local(Vector2i(6, 13)) == Vector2(6.5, 13.5) * 64.0,

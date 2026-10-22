@@ -26,7 +26,6 @@ rotations = PackedInt32Array(0, 1)
 gated_rotations = PackedInt32Array()
 enabled_by_default = false
 weight_tuning_key = &"item_kaing_weight"
-preview_silhouette = "crate"
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=151794239]
 shape = SubResource("RectangleShape2D_3u70h")

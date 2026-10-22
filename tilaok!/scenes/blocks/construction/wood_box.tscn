@@ -26,7 +26,6 @@ rotations = PackedInt32Array(0)
 gated_rotations = PackedInt32Array()
 weight_tuning_key = &"item_wood_box_weight"
 anchor = 2
-preview_silhouette = "wood_box"
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=1270363777]
 shape = SubResource("RectangleShape2D_vxf84")

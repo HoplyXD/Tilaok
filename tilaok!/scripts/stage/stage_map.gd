@@ -31,6 +31,8 @@ const BLOCKS_LAYER := "Blocks"
 const MARKER_SPAWN := Vector2i(0, 0)
 const MARKER_BUILD := Vector2i(1, 0)
 const MARKER_FLAG := Vector2i(2, 0)
+## Black marker: the kill boundary. Invisible in play; a chicken entering one is eliminated.
+const MARKER_BORDER := Vector2i(3, 0)
 ## Terrain set and terrain indices of map_tiles_tileset.tres. Godot stores terrains 0-based, so
 ## these are the 1st/2nd/3rd terrains listed in the TileSet editor.
 const TERRAIN_SET := 0
@@ -42,7 +44,10 @@ const TERRAIN_WATER := 2
 const TERRAIN_NAMES := ["Grass", "Stone", "Water"]
 ## Pre-terrain TileSet custom data, still honoured for any map not yet repainted.
 const NO_WALL_SLIDE := "no_wall_slide"
-## Stage size in tiles (GameplayTuning.arena_width_tiles x arena_height_tiles).
+## Default stage size in tiles (GameplayTuning.arena_width_tiles x arena_height_tiles). Only the
+## fallback for a map that paints nothing beyond it: since 2026-10-22 a map is as large as what it
+## paints, so markers and terrain are read wherever they are and `stage_size_tiles()` reports the
+## real extent. Maps used to be clipped to this, which silently discarded a larger map's markers.
 const ARENA_SIZE := Vector2i(32, 16)
 
 ## Name shown in the Lobby map selection.
@@ -94,18 +99,24 @@ func blocks_layer() -> TileMapLayer:
 	return get_node_or_null(BLOCKS_LAYER) as TileMapLayer
 
 
-## Marker cells of one kind inside the stage.
+## Marker cells of one kind, wherever they are painted. A map is as large as what it paints, so
+## nothing is clipped to ARENA_SIZE: clipping used to discard a larger map's Spawn and Flag and
+## leave it failing validation with no visible cause.
 func marker_cells(marker: Vector2i) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	var layer := markers_layer()
 	if layer == null:
 		return cells
-	var arena := Rect2i(Vector2i.ZERO, ARENA_SIZE)
 	for cell in layer.get_used_cells():
-		if layer.get_cell_atlas_coords(cell) == marker and arena.has_point(cell):
+		if layer.get_cell_atlas_coords(cell) == marker:
 			cells.append(cell)
 	cells.sort()
 	return cells
+
+
+## Border marker cells: the stage's kill boundary.
+func border_cells() -> Array[Vector2i]:
+	return marker_cells(MARKER_BORDER)
 
 
 ## The terrain of a painted cell, or -1 when the cell is empty or carries no terrain. A tile whose
@@ -151,12 +162,24 @@ func _cells_where(predicate: Callable) -> Array[Vector2i]:
 	var layer := blocks_layer()
 	if layer == null:
 		return cells
-	var arena := Rect2i(Vector2i.ZERO, ARENA_SIZE)
 	for cell in layer.get_used_cells():
-		if arena.has_point(cell) and predicate.call(cell):
+		if predicate.call(cell):
 			cells.append(cell)
 	cells.sort()
 	return cells
+
+
+## The stage's real extent in tiles: everything the map paints, at least ARENA_SIZE. Drives the
+## arena bounds so the camera and clamps follow a larger map instead of the old fixed 32x16.
+func stage_size_tiles() -> Vector2i:
+	var extent := ARENA_SIZE
+	var layers: Array[TileMapLayer] = [markers_layer(), blocks_layer()]
+	for layer in layers:
+		if layer == null:
+			continue
+		for cell in layer.get_used_cells():
+			extent = Vector2i(maxi(extent.x, cell.x + 1), maxi(extent.y, cell.y + 1))
+	return extent
 
 
 ## Problems that keep this map out of the selection (also shown as editor warnings).
@@ -170,17 +193,12 @@ func validate() -> PackedStringArray:
 		errors.append("Add a TileMapLayer named %s." % BLOCKS_LAYER)
 	var blocks := block_cells()
 	if blocks.is_empty():
-		errors.append(
-			(
-				"Paint at least one block inside the %dx%d stage (the floor)."
-				% [ARENA_SIZE.x, ARENA_SIZE.y]
-			)
-		)
+		errors.append("Paint at least one block on the Blocks layer (the floor).")
 	errors.append_array(_terrain_errors())
 	var labels := {MARKER_SPAWN: "Spawn", MARKER_BUILD: "Build Area", MARKER_FLAG: "Flag"}
 	for marker in labels:
 		if marker_cells(marker).is_empty():
-			errors.append("Paint at least one %s marker tile inside the stage." % labels[marker])
+			errors.append("Paint at least one %s marker tile on the DevMarkers layer." % labels[marker])
 	if not errors.is_empty():
 		return errors
 	var feet := _spawn_feet()
@@ -249,13 +267,18 @@ func to_layout(layout_id: String) -> ArenaLayout:
 	var flag := _flag_rect()
 	_name_goal_surface(layout.surfaces, flag)
 	layout.goal_trigger_tiles = flag
+	# Clip to the map's own extent, not the fixed ARENA_SIZE: a flag beyond 32x16 used to intersect
+	# to nothing and leave the goal unprotected.
+	var stage := Rect2(Vector2.ZERO, Vector2(stage_size_tiles()))
 	layout.protected_goal_tiles = (
 		protected_goal_override_tiles
 		if protected_goal_override_tiles.has_area()
-		else flag.grow(1.0).intersection(Rect2(Vector2.ZERO, Vector2(ARENA_SIZE)))
+		else flag.grow(1.0).intersection(stage)
 	)
 	layout.build_here_zone_tiles = build_here_zone_tiles
 	layout.water_regions_tiles = _water_regions()
+	layout.border_regions_tiles = _border_regions()
+	layout.stage_size_tiles = stage_size_tiles()
 	layout.floor_top_tile = float(spawn.end.y)
 	for surface in layout.surfaces:
 		if surface.surface_id == "arena.floor":
@@ -333,8 +356,17 @@ func _surfaces() -> Array[ArenaSurfaceLayout]:
 ## Water cells merged into rectangles, in tiles (the same deterministic merge the solid surfaces
 ## use, so a water pool is one region instead of one per cell).
 func _water_regions() -> Array[Rect2]:
+	return _regions_of(water_cells())
+
+
+## Border marker cells merged into kill rectangles, the same way water pools are merged.
+func _border_regions() -> Array[Rect2]:
+	return _regions_of(border_cells())
+
+
+static func _regions_of(cells: Array[Vector2i]) -> Array[Rect2]:
 	var groups := {}
-	for cell in water_cells():
+	for cell in cells:
 		groups[cell] = 0
 	var merged := _merge_runs(groups)
 	var rects: Array[Rect2i] = merged[0]
