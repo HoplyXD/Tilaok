@@ -19,6 +19,7 @@ const SHAKE_OFF := 2
 @onready var _effects_row: UiOptionRow = %EffectsRow
 @onready var _crowd_row: UiOptionRow = %CrowdRow
 @onready var _back_button: Button = %BackButton
+@onready var _build_about_label: Label = %BuildAboutLabel
 
 
 func state_names() -> PackedStringArray:
@@ -77,12 +78,8 @@ func _on_screen_ready() -> void:
 	_effects_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("effects", v))
 	_crowd_row.level_changed.connect(func(v: float) -> void: volume_changed.emit("crowd", v))
 	_back_button.pressed.connect(func() -> void: back_requested.emit())
-	# P11 about line: version, channel and the build id the compatibility check uses.
-	var about := Label.new()
-	about.name = "BuildAboutLabel"
-	about.theme_type_variation = &"CaptionLabel"
-	about.text = BuildIdentity.about_line()
-	_menu.get_parent().add_child(about)
+	# Version, channel, and local build identity for support reports.
+	_build_about_label.text = BuildIdentity.about_line()
 	_menu.refresh_items()
 
 

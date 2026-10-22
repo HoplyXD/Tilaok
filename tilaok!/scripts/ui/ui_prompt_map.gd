@@ -1,7 +1,7 @@
 class_name UiPromptMap
 extends Resource
 
-## Data-driven action -> glyph text per device kind ("k1".."k4", "gamepad", "touch"), from UI_HANDOFF §5.
+## Data-driven action -> glyph text per device kind ("k1".."k4", "gamepad"), from UI_HANDOFF §5.
 ## Gamepad labels are positions (South/East/West/Start), never brand symbols.
 ## Designers can replace a text glyph by assigning a texture in a PromptGlyph's Art_Glyph slot.
 

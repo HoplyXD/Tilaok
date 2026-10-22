@@ -1,0 +1,344 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS envelope stays 1.2 and the schema is 6
+PASS bit 10 is required: mask 0x07FF
+PASS a P08 peer lacks the results bit and is refused at hello
+PASS family 0x22 is allowlisted
+PASS family 0x22 uses reliable channel 0
+PASS family 0x22 is refused on the input channel
+PASS family 0x22 is refused on the state channel
+PASS family 0x23 is allowlisted
+PASS family 0x23 uses reliable channel 0
+PASS family 0x23 is refused on the input channel
+PASS family 0x23 is refused on the state channel
+PASS family 0x24 is allowlisted
+PASS family 0x24 uses reliable channel 0
+PASS family 0x24 is refused on the input channel
+PASS family 0x24 is refused on the state channel
+PASS family 0x25 is allowlisted
+PASS family 0x25 uses reliable channel 0
+PASS family 0x25 is refused on the input channel
+PASS family 0x25 is refused on the state channel
+PASS family 0x26 is allowlisted
+PASS family 0x26 uses reliable channel 0
+PASS family 0x26 is refused on the input channel
+PASS family 0x26 is refused on the state channel
+PASS the allowlist ends at 0x26
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:117)
+       [4] build (res://scripts/network/compatibility_manifest.gd:19)
+       [5] _test_wire_constants (res://tests/run_nlb_p09_tests.gd:110)
+       [6] _run (res://tests/run_nlb_p09_tests.gd:79)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:117)
+       [4] build (res://scripts/network/compatibility_manifest.gd:19)
+       [5] _test_wire_constants (res://tests/run_nlb_p09_tests.gd:110)
+       [6] _run (res://tests/run_nlb_p09_tests.gd:79)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:122)
+       [2] build (res://scripts/network/compatibility_manifest.gd:19)
+       [3] _test_wire_constants (res://tests/run_nlb_p09_tests.gd:110)
+       [4] _run (res://tests/run_nlb_p09_tests.gd:79)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:122)
+       [2] build (res://scripts/network/compatibility_manifest.gd:19)
+       [3] _test_wire_constants (res://tests/run_nlb_p09_tests.gd:110)
+       [4] _run (res://tests/run_nlb_p09_tests.gd:79)
+PASS the manifest build ID is the current BuildIdentity build (P11 bump)
+PASS peek_epoch reads the envelope epoch
+PASS peek_epoch refuses a short frame
+PASS a round entry round-trips
+PASS a round entry fits one frame
+PASS per-seat units and award segments survive the wire
+PASS four seats of eight awards stay inside one 900-byte frame (186 bytes)
+PASS nine awards cannot be encoded
+PASS an entry with unknown kind is refused on encode
+PASS an entry with zero match is refused on encode
+PASS an entry with event id over 128 is refused on encode
+PASS an entry with unknown scoring family is refused on encode
+PASS an entry with unknown suppression is refused on encode
+PASS an entry with unknown decision is refused on encode
+PASS an entry with winner on a continue is refused on encode
+PASS an entry with terminal reason on a continue is refused on encode
+PASS an entry with one seat only is refused on encode
+PASS an entry with duplicate seat is refused on encode
+PASS an entry with seat out of range is refused on encode
+PASS an entry with unknown cause is refused on encode
+PASS an entry with unknown award key is refused on encode
+PASS an entry with delta is not the award sum is refused on encode
+PASS an entry with negative total is refused on encode
+PASS an entry with owner out of range is refused on encode
+PASS an entry with first mask outside the seats is refused on encode
+PASS a truncated entry is refused
+PASS trailing bytes are refused
+PASS an unknown kind byte is refused on decode
+PASS an unknown family byte is refused on decode
+PASS a sudden-death entry round-trips
+PASS a sudden-death result round-trips
+PASS a final entry round-trips
+PASS a result action is exactly 27 bytes and round-trips
+PASS request id 0 cannot be encoded
+PASS an unknown result action cannot be encoded
+PASS an unknown action byte is refused
+PASS a vote is exactly 23 bytes and round-trips
+PASS a ready seat outside the required set is refused
+PASS action 0 is not a vote
+PASS no selected action (-1) is a valid vote state
+PASS a re-key is exactly 34 bytes and round-trips with its token
+PASS a re-key needs a non-zero epoch and match ID
+PASS an unknown re-key flag cannot be encoded
+PASS a short re-key is refused
+PASS a re-key ack is exactly 12 bytes and round-trips
+PASS the host SESSION_CLOSE is 11 bytes and carries the end reason
+PASS a malformed close notice ends the session as HOST_LOST
+PASS a malformed close notice ends the session as HOST_LOST
+PASS a malformed close notice ends the session as HOST_LOST
+PASS a malformed close notice ends the session as HOST_LOST
+PASS a malformed close notice ends the session as HOST_LOST
+PASS an unknown end reason ends the session as HOST_LOST
+PASS two-seat race rounds agree on every unit: []
+PASS a sole finisher earns Tapos 8 + Una 2 + Bayani 4, plus Patibong 2 for the trap kill: { 0: 16, 1: 0 }
+PASS all-finish suppression pays nobody without Barya
+PASS Barya still pays +0.5 (4 units) in an all-finish round
+PASS no finisher: no points, no Patibong
+PASS three-seat rounds agree on every unit: []
+PASS race: Tapos+Una+Patibong (12) for the trapper, Tapos (8) for the other finisher: { 0: 12, 1: 8, 2: 0 }
+PASS Lagsanay 3 seats: placement 8/4/0 plus one Patibong (+2): { 0: 8, 1: 6, 2: 0 }
+PASS a disconnect elimination is recorded with cause disconnect and no owner
+PASS a disconnect earns no Patibong for anyone: { 0: 10, 1: 0, 2: 8 }
+PASS four-seat rounds agree on every unit: []
+PASS Last Cluck: the latest elimination takes first (8/4/2/0)
+PASS the Last Cluck winner is recorded as finished in first place
+PASS Bawi: an underdog 3+ points back who finishes alone earns 8+2+4+6 = 20 units: { 0: 0, 1: 0, 2: 20 }
+PASS the Bawi round names every award segment: ["tapos", "una", "bayani", "bawi"]
+PASS a ledger without a match ID refuses every commit
+PASS the first commit is event 1, revision 1, under the ledger's match
+PASS each commit advances the revision by exactly one
+ERROR: ResultLedger refused an entry that fails the wire invariants (kind 3).
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _commit (res://scripts/match/result_ledger.gd:259)
+       [1] commit_sudden_death_result (res://scripts/match/result_ledger.gd:89)
+       [2] _test_ledger_and_model_rules (res://tests/run_nlb_p09_tests.gd:342)
+       [3] _run (res://tests/run_nlb_p09_tests.gd:83)
+PASS an invalid entry is refused and changes nothing
+PASS the ledger holds at most 128 entries and never overwrites
+PASS entries() returns copies; the committed record cannot be edited from outside
+PASS a reset starts a new empty ledger
+PASS an entry two ahead of the ledger is a gap
+PASS revision 1 applies
+PASS the same revision again is idempotent
+PASS a different body for an old revision is ignored
+PASS an entry of another match is stale
+PASS a total that does not continue the ledger is invalid
+PASS a total below the previous one plus its own delta is invalid
+PASS the genuine entries apply in order (three sole-finisher rounds = 42 units)
+PASS an entry whose event ID is not its revision never applies
+PASS a snapshot installs the complete ledger in revision order
+PASS a snapshot whose ledger breaks the rules installs nothing
+PASS a vote for another event is ignored
+PASS a vote for the latest event is kept
+PASS an older vote sequence is ignored
+PASS vote sequence comparison is wrap-aware
+PASS a target-score match agrees: []
+PASS round 6 (84 units) decides the winner by score target
+PASS rounds 1-5 continue
+PASS no round entry can follow a winner (no extra round)
+PASS the final entry cannot change a total
+PASS the final entry applies and names the winner
+PASS twelve rounds agree: []
+PASS round 12 with tied leaders enters Sudden Death
+PASS no round entry exceeds round 12
+PASS Sudden Death cannot carry a score change
+PASS the Sudden Death entry applies and the phone shows Sudden Death
+PASS a thirteenth round entry never applies
+PASS the Sudden Death winner must be one of the tied seats
+PASS the Sudden Death result closes it
+PASS the final result after Sudden Death keeps every total exactly as it was at the tie
+PASS the host commits the Sudden Death entry with no deltas
+PASS the host commits the Sudden Death result and the final result
+PASS a re-key keeps the Player ID and replaces the token
+PASS a re-key clears the reservation and the per-round commit mark
+PASS retain_only drops seats outside the next match
+PASS a forfeit reserves the seat
+PASS a forfeited seat's grace is already over
+PASS a forfeited seat's token is replaced by one nobody holds
+PASS a lost remote seat can be released for the next match
+PASS a connected seat is never released
+PASS a local seat is never released by this path
+PASS a commit is sent once, keyed by the session match ID (7), not the room's run id
+PASS a peer that is still synchronizing gets the entry after SYNC_READY, not before
+PASS the repeat after sync carries the whole ledger in order
+PASS a phone's vote reaches the room for its own seat
+PASS an exact retry is not applied twice and is answered with the current vote
+PASS an action for a stale result is repaired with the vote, never rejected (a reject would free the seat)
+PASS an action for another match is not applied
+NLB_P02_REJECT peer=51 reason=1
+NLB_P08_SEAT_RESERVED seat=1 grace_ms=60000
+PASS a malformed result action is refused MALFORMED
+PASS a peer that is not synchronized cannot vote
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+NLB_P02_REJECT peer=51 reason=10
+SCRIPT ERROR: Out of bounds get index '51' (on base: 'Dictionary')
+   at: _test_host_results_flow (res://tests/run_nlb_p09_tests.gd:550)
+   GDScript backtrace (most recent call first):
+       [0] _test_host_results_flow (res://tests/run_nlb_p09_tests.gd:550)
+       [1] _host_fixture (res://tests/run_nlb_p09_tests.gd:914)
+PASS a result event updates the model and notifies the screen once
+PASS a duplicate event changes nothing and does not re-notify
+PASS the next revision applies
+PASS an undecodable event is ignored with one notice
+PASS a gap asks for a snapshot and applies nothing
+PASS a vote for the latest entry is shown
+PASS ledger records ride a snapshot and decode as ledger records
+PASS the replica carries the snapshot ledger
+PASS a resync restores the full ledger and the exact cumulative scores (28 and 0 units)
+PASS 128 ledger records fit one snapshot (3716 bytes)
+PASS a replay with fewer than two connected players is refused and changes nothing
+NLB_P09_REKEY match=8 peers=1 failed=0
+PASS a replay with two connected players re-keys the session
+PASS the replay mints a new epoch
+PASS the replay mints a new match ID that is never reused
+PASS the re-key frame is sent under the OLD epoch and names the new epoch and match ID
+PASS the reclaim token is replaced and the per-round mark cleared
+PASS the old epoch is retired and the peer must acknowledge
+PASS the re-key cleared pending_actions
+PASS the re-key cleared placement_cache
+PASS the re-key cleared terrain_shadow
+PASS the re-key cleared known_stage_entities
+PASS the re-key cleared result_action_cache
+PASS the re-key cleared host_input_state
+PASS the re-key cleared pause_epoch
+PASS no peer is synchronized until it acknowledges the new identity
+PASS an old-epoch packet right after the re-key is dropped without a rejection
+NLB_P02_REJECT peer=51 reason=11
+NLB_P08_SEAT_RESERVED seat=1 grace_ms=60000
+PASS an epoch that was never ours is still rejected STALE_STATE
+PASS a retired epoch is forgotten after its window
+NLB_P02_REJECT peer=51 reason=10
+PASS an acknowledgement for the wrong epoch is refused
+PASS a valid acknowledgement sends the new match start
+PASS it queues a fresh snapshot and re-arms the neutral-input gate
+PASS a repeated acknowledgement is ignored
+PASS a peer that does not acknowledge in time is dropped and its seat forfeits
+PASS the forfeited seat is due for its single disconnect elimination
+ERROR: Parameter "data.tree" is null.
+   at: get_tree (scene/main/node.h:559)
+   GDScript backtrace (most recent call first):
+       [0] network_replication_snapshot (res://scripts/match/p12_scheduled_match_room.gd:1108)
+       [1] _send_periodic_state (res://scripts/network/network_session_manager.gd:1158)
+       [2] _physics_process (res://scripts/network/network_session_manager.gd:505)
+PASS a re-key that does not advance the match ID is ignored
+PASS a client adopts the new epoch and match ID
+PASS the client clears the old match: replica, ledger, sync and counters
+PASS the client keeps the new token and retires the old epoch
+PASS the acknowledgement is sent under the NEW epoch
+PASS an old-epoch host packet after the re-key is dropped silently (no notice, no stop)
+PASS a host notice ends the client session with its reason (3)
+PASS a host notice ends the client session with its reason (4)
+PASS a host notice ends the client session with its reason (2)
+PASS a malformed host notice still ends the session as HOST_LOST
+PASS a transport loss with no notice reads as the host being lost
+PASS a client that leaves reports CLIENT_LEFT
+PASS the host's close notice names the end reason and the last ledger revision
+PASS a host that says nothing closes with HOST_CLOSED
+ERROR: Parameter "data.tree" is null.
+   at: get_tree (scene/main/node.h:559)
+   GDScript backtrace (most recent call first):
+       [0] network_replication_snapshot (res://scripts/match/p12_scheduled_match_room.gd:1108)
+       [1] _send_periodic_state (res://scripts/network/network_session_manager.gd:1158)
+       [2] _physics_process (res://scripts/network/network_session_manager.gd:505)
+ERROR: Parameter "data.tree" is null.
+   at: get_tree (scene/main/node.h:559)
+   GDScript backtrace (most recent call first):
+       [0] network_replication_snapshot (res://scripts/match/p12_scheduled_match_room.gd:1108)
+       [1] _send_periodic_state (res://scripts/network/network_session_manager.gd:1158)
+       [2] _physics_process (res://scripts/network/network_session_manager.gd:505)
+NLB_P08_SEAT_RESERVED seat=1 grace_ms=60000
+NLB_P09_SEAT_FORFEIT seat=1
+PASS a deliberate Leave forfeits the seat for the next safe boundary
+PASS the leaving peer is removed
+NLB_P08_SEAT_RESERVED seat=1 grace_ms=60000
+PASS a lost connection still holds the seat for about 60 seconds
+ERROR: Parameter "data.tree" is null.
+   at: get_tree (scene/main/node.h:559)
+   GDScript backtrace (most recent call first):
+       [0] network_replication_snapshot (res://scripts/match/p12_scheduled_match_room.gd:1108)
+       [1] _send_periodic_state (res://scripts/network/network_session_manager.gd:1158)
+       [2] _physics_process (res://scripts/network/network_session_manager.gd:505)
+PASS a stopped session retains nothing: []
+PASS the counters earlier phases left behind are reset
+PASS a room that outlives the session returns to its offline behavior
+NLB_P08_SEAT_RESERVED seat=1 grace_ms=60000
+PASS a disconnect erases the peer's abuse, snapshot, result and sequence entries
+ERROR: Parameter "data.tree" is null.
+   at: get_tree (scene/main/node.h:559)
+   GDScript backtrace (most recent call first):
+       [0] network_replication_snapshot (res://scripts/match/p12_scheduled_match_room.gd:1108)
+       [1] _send_periodic_state (res://scripts/network/network_session_manager.gd:1158)
+       [2] _physics_process (res://scripts/network/network_session_manager.gd:505)
+PASS an offline room has every network hook off
+PASS an offline room has an empty ledger and no vote
+PASS no hard-coded match ID 1 remains in the session manager
+PASS the match ID is a host-lineage counter
+PASS family RESULT_EVENT is declared and handled
+PASS family RESULT_ACTION is declared and handled
+PASS family RESULT_VOTE is declared and handled
+PASS family REKEY is declared and handled
+PASS family REKEY_ACK is declared and handled
+PASS the host refuses the host-only families from a client
+NLB_P09_TESTS checks=213 failures=0

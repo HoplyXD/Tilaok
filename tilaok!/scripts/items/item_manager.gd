@@ -32,7 +32,7 @@ var stage_version := 0
 var live_activation: Dictionary = {}
 var live_activation_grace_seconds := 1.0
 var live_actor_clearance_wu := 32.0
-## Live route entity age (NLB-P07, NETWORKED_LIVE_BUILD.md §6.2): the authority boundary being
+## Live route entity age: the physics boundary being
 ## resolved, and the boundary each live piece was committed at. A one-shot edit only affects
 ## pieces committed at an earlier boundary; pieces with no entry are older (Place or earlier round).
 var live_boundary := -1
@@ -164,18 +164,26 @@ func place_live(
 		return committed
 	var instance_id := str(committed.instance_id)
 	var piece := piece_for(instance_id)
-	if piece != null and piece.has_method("set_block_active"):
-		piece.call("set_block_active", false)
-	live_activation[instance_id] = {"remaining": live_activation_grace_seconds, "held": false}
+	var family := definitions.find_variant(variant_key).get("family") as ItemFamilyDefinition
+	var needs_hazard_protection := (
+		family != null
+		and family.behavior_kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"]
+	)
+	if needs_hazard_protection:
+		if piece != null and piece.has_method("set_block_active"):
+			piece.call("set_block_active", false)
+		live_activation[instance_id] = {"remaining": live_activation_grace_seconds, "held": false}
 	live_commit_boundary[instance_id] = live_boundary
 	if advance_version:
 		stage_version += 1
 	committed["stage_version"] = stage_version
-	committed["activation_after_seconds"] = live_activation_grace_seconds
+	committed["activation_after_seconds"] = (
+		live_activation_grace_seconds if needs_hazard_protection else 0.0
+	)
 	return committed
 
 
-## Live one-shot commit (Walis Cleanup and, since NLB-P07, Bomb/Dynamite/Nuke) derives its target
+## Live one-shot commit (Walis Cleanup and explosive removals) derives its target
 ## set again from the current world. Every surface is preflighted before support invalidation or
 ## removal, so a stale preview cannot remove new pieces. There is no shared Place batch on the live
 ## route, so the offline same-Place blast rule does not apply: a piece committed at an earlier

@@ -1,0 +1,2 @@
+# Preserve raw retired console logs byte-for-byte; Godot progress rows include trailing padding.
+docs/archive/retired-networked-live-build/evidence/**/*.log whitespace=-blank-at-eol,-blank-at-eof

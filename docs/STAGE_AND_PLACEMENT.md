@@ -1,6 +1,6 @@
 # Tilaok! Stage and Placement Specification
 
-**Live-placement target (approved 2026-10-19):** the verified current resolver and atomic Place phase remain the offline baseline. Future opt-in active-round placement must use host validation, receipt ordering with round-rotated priority only for true ties, one-time commit/acknowledgment, and actor/mover safety checks. See [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md) and [NLB-P05/P06](PHASETASK_NETWORKED_LIVE_BUILD.md#nlb-p05--offline-live-placement-and-revised-round-flow).
+**Current live construction (2026-10-22):** construction is a local, fixed-footprint two-second job. Reservations follow physics-boundary receipt order; preview geometry has no gameplay effect. At completion, terminal events resolve first, then eligibility, current actors/movers/hazards/support and item validity are checked before a one-time commit. See P20 in `PHASETASK.md`.
 
 **Status:** pre-production contract with a verified P03 graybox implementation record (2026-10-13). `GDD.md` remains the source of truth when this document conflicts with it. The implementation is diagnostic geometry and reusable contracts, not production art or the complete placement/gameplay systems.
 

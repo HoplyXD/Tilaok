@@ -1,0 +1,156 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS a development build allows dev flags
+PASS the release tag blocks dev flags
+PASS the android_client tag blocks dev flags
+PASS both tags block dev flags
+PASS the last value of a prefixed flag wins
+PASS an absent prefixed flag is empty
+PASS release builds create no fault injector
+PASS release builds create no telemetry sink
+PASS the unverified-content override cannot be on where dev flags are blocked
+PASS no runtime script outside the allowlist reads the command line: []
+PASS game_flow reads map, seed and harness flags through NlbBuildFlags
+PASS game_flow keeps only the network opt-in route in release
+PASS ui_library_screen.gd gates its flag
+PASS p12_scheduled_match_room.gd gates its flag
+PASS match_screen_presenter.gd gates its flag
+PASS foundation_harness.gd gates its flag
+PASS the offline scheduled route is still the default route
+PASS a full spec parses
+PASS a configured injector is active
+PASS an empty injector is inactive
+PASS spec 'loss=101' is rejected
+PASS spec 'loss=-1' is rejected
+PASS spec 'bogus=1' is rejected
+PASS spec 'loss=x' is rejected
+PASS spec 'loss' is rejected
+PASS spec 'seed=-3' is rejected
+PASS spec 'jitter=99999' is rejected
+PASS loss drops unreliable channel 1
+PASS loss drops unreliable channel 2
+PASS loss never drops reliable channel 0
+PASS duplicate=100 delivers twice
+PASS delay sets the due time
+PASS a held packet is released exactly when due
+PASS the same seed produces the same fault sequence
+PASS the held-packet queue is bounded and counts overflow
+PASS the injector lives inside the production RawEnetTransport
+PASS the session manager creates the injector only through the gated factory
+PASS user:// output is accepted
+PASS a path with .. is rejected
+PASS a path outside user:// and build/ is rejected
+PASS the ignored build/ folder is accepted
+PASS an empty user:// target is rejected
+PASS the sink opens a user:// file
+PASS 100k samples are counted in constant space
+PASS the histogram never grows past its fixed buckets
+PASS p95 comes from the histogram upper edge (got 22.25)
+PASS an off-scale sample lands in the overflow bucket
+PASS unknown metrics are ignored
+PASS events are capped
+PASS the file has a header and an end line
+PASS short labels and numbers survive in event fields
+PASS codes and addresses in event fields are dropped
+PASS summaries are written with an overflow count
+PASS the report core parses the sink's own output
+PASS the telemetry module never touches codes, tokens or addresses
+PASS the manager's telemetry glue never reads the invitation code
+PASS family 3 is limited to 2 per second on the host
+PASS family 5 is limited to 2 per second on the host
+PASS family 7 is limited to 2 per second on the host
+PASS family 10 is limited to 4 per second on the host
+PASS family 14 is limited to 2 per second on the host
+PASS family 20 is limited to 4 per second on the host
+PASS family 23 is limited to 8 per second on the host
+PASS the client never rate-limits packets from the host
+PASS abuse counters saturate instead of overflowing
+PASS counters are separate per reason
+NLB_P02_REJECT peer=9 reason=11
+PASS STALE_STATE counts toward the format-violation threshold
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+NLB_P02_REJECT peer=9 reason=11
+PASS a peer kicked for stale-state spam leaves no abuse record
+PASS a kicked peer leaves no saturating counters
+PASS a kicked peer leaves no per-family rate state
+PASS teardown_counts reports the saturating counter table
+PASS the placement new-id budget is enforced
+PASS query-source throttle state is capped
+PASS stale query sources are pruned by age
+PASS BuildIdentity.VERSION matches project.godot
+PASS the manifest build id is the BuildIdentity build id
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:117)
+       [4] build (res://scripts/network/compatibility_manifest.gd:19)
+       [5] _test_build_identity_and_presets (res://tests/run_nlb_p11_tests.gd:256)
+       [6] _run (res://tests/run_nlb_p11_tests.gd:31)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:117)
+       [4] build (res://scripts/network/compatibility_manifest.gd:19)
+       [5] _test_build_identity_and_presets (res://tests/run_nlb_p11_tests.gd:256)
+       [6] _run (res://tests/run_nlb_p11_tests.gd:31)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:122)
+       [2] build (res://scripts/network/compatibility_manifest.gd:19)
+       [3] _test_build_identity_and_presets (res://tests/run_nlb_p11_tests.gd:256)
+       [4] _run (res://tests/run_nlb_p11_tests.gd:31)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:122)
+       [2] build (res://scripts/network/compatibility_manifest.gd:19)
+       [3] _test_build_identity_and_presets (res://tests/run_nlb_p11_tests.gd:256)
+       [4] _run (res://tests/run_nlb_p11_tests.gd:31)
+PASS the built manifest carries the BuildIdentity build id
+PASS the visible label shows the version
+PASS the about line shows the build id
+PASS a mismatch notice may show both labels
+PASS control characters in a peer label are stripped
+PASS the Windows debug preset is unchanged
+PASS the Android debug preset is unchanged
+PASS the Windows host release preset exists
+PASS the Android client release preset exists
+PASS the release preset has a distinct package id and the BuildIdentity version
+PASS the release preset has its own version code
+PASS export_presets.cfg holds no keystore path, user or password
+PASS every preset keeps the scanner plugin source excluded
+PASS release tagging relies on the engine's built-in release feature
+PASS the scanner plugin provenance is intact
+PASS game_flow handles the window close request
+PASS game_flow turns off the engine's immediate close
+PASS game_flow restores auto-accept when it leaves the tree
+PASS quit attempts SESSION_CLOSE (HOST_QUIT) before exiting
+PASS a complete hardware record has no missing field
+PASS an incomplete record lists every missing field
+PASS a long complete host run under budget is PASS
+PASS a host run over budget is FAIL
+PASS no hardware record means COULD-NOT-RUN, never PASS
+PASS a run shorter than the profile is COULD-NOT-RUN
+PASS a SYNTHETIC client is never phone evidence
+PASS end-to-end is COULD-NOT-RUN without an external capture
+PASS memory is COULD-NOT-RUN without an external RSS value
+PASS battery/thermal is COULD-NOT-RUN without the sampler
+PASS RTT never receives a pass verdict (no threshold set)
+PASS a synthetic report is labeled SYNTHETIC
+NLB_P11_TESTS checks=107 failures=0

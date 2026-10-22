@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialScript" load_steps=20 format=3]
+[gd_resource type="Resource" script_class="TutorialScript" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/tutorial/tutorial_script.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/tutorial/tutorial_step_def.gd" id="2"]
@@ -28,8 +28,16 @@ body = "You can't reach the flag yet: it is {ledge_tiles} tiles up and one jump 
 retry_body = "Nobody reached the flag. Put your piece inside BUILD HERE, above the platform and beside the flag wall, to make a step. Built pieces stay."
 glyph_action = "rotate"
 variants = {
-"timeout": "Time ran out, so an egg was picked for you. The flag is {ledge_tiles} tiles up: build a way up inside BUILD HERE, then confirm with {confirm} (no undo). {place_s} seconds."
+"timeout": "Time ran out, so an egg was picked for you. Keep moving while you build; your piece appears after {construction_s} seconds if the space is safe."
 }
+
+[sub_resource type="Resource" id="Step_9"]
+script = ExtResource("2")
+step_id = &"live_build"
+title = "Step 3 of 5 - Build while running"
+body = "Keep moving while you build. Press {build} to aim, move the footprint, and confirm. It appears after {construction_s} seconds if the space is still safe. Cancel with {cancel} to keep your item."
+retry_body = "Keep moving while you build. The footprint is only a preview until its {construction_s} second timer ends."
+glyph_action = "build_toggle"
 
 [sub_resource type="Resource" id="Step_3"]
 script = ExtResource("2")
@@ -79,64 +87,8 @@ title = "Kangaroo - three misses"
 body = "Each missed command adds a mark: KANG, then GA, then ROO. The third mark puts you out. Traps still eliminate you. Last chicken standing wins."
 glyph_action = "jump"
 
-[sub_resource type="Resource" id="Step_9"]
-script = ExtResource("2")
-step_id = &"net_phone_controls"
-title = "Phone 1 of 8 - Controls"
-body = "You are {seat}: look for your number and shape. {navigate}: drag on the left to run. Jump: {jump}. Sneak, Cheer and Menu are the other buttons."
-glyph_action = "navigate"
-
-[sub_resource type="Resource" id="Step_10"]
-script = ExtResource("2")
-step_id = &"net_pugad"
-title = "Phone 2 of 8 - Pugad"
-body = "The Pugad is a nest of eggs. Point at one and press {claim} before the timer ends. If you wait, an egg is picked for you."
-glyph_action = "claim"
-
-[sub_resource type="Resource" id="Step_11"]
-script = ExtResource("2")
-step_id = &"net_go"
-title = "Phone 3 of 8 - GO"
-body = "When GO starts the host runs the round. Reach the flag with {jump} and {navigate}. Everyone plays at the same time on the same stage."
-glyph_action = "jump"
-
-[sub_resource type="Resource" id="Step_12"]
-script = ExtResource("2")
-step_id = &"net_build_mode"
-title = "Phone 4 of 8 - Build mode"
-body = "Tap {build} to open build mode. Drag on the right ({aim}) to move the ghost, {rotate_live} turns it, {place} sends it to the host. You can keep running while you build. The match never pauses."
-glyph_action = "build_toggle"
-
-[sub_resource type="Resource" id="Step_13"]
-script = ExtResource("2")
-step_id = &"net_rejected"
-title = "Phone 5 of 8 - Accepted or rejected"
-body = "After {place} the host decides. Accepted: the piece joins the stage. Rejected: the ghost shows a cross and a reason, and you keep your item. Move it and try again."
-glyph_action = "live_confirm"
-
-[sub_resource type="Resource" id="Step_14"]
-script = ExtResource("2")
-step_id = &"net_cancel"
-title = "Phone 6 of 8 - Cancel"
-body = "{cancel} drops the ghost and keeps your item. Closing build mode with {build} never places the piece."
-glyph_action = "live_cancel"
-
-[sub_resource type="Resource" id="Step_15"]
-script = ExtResource("2")
-step_id = &"net_lan_join"
-title = "Phone 7 of 8 - Joining"
-body = "Join a room on the same Wi-Fi as the host. If you drop out, rejoin the same room and reclaim your seat. {ready} when you are set."
-glyph_action = "ready"
-
-[sub_resource type="Resource" id="Step_16"]
-script = ExtResource("2")
-step_id = &"net_host_pause"
-title = "Phone 8 of 8 - Pausing"
-body = "Only the host can pause the match for everyone. {pause} opens your own menu: the match keeps running while it is open."
-glyph_action = "pause"
-
 [resource]
 script = ExtResource("1")
-steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8"), SubResource("Step_9"), SubResource("Step_10"), SubResource("Step_11"), SubResource("Step_12"), SubResource("Step_13"), SubResource("Step_14"), SubResource("Step_15"), SubResource("Step_16")])
+steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8"), SubResource("Step_9")])
 placeholder_tag = "PLACEHOLDER copy"
 skip_caption = "Pause > Skip tutorial"

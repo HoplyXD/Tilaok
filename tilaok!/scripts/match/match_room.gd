@@ -66,9 +66,6 @@ var egg_pool: Array[Dictionary] = []
 var assignments: Dictionary = {}
 var selected_egg_by_seat: Dictionary = {}
 var results_ready: Dictionary = {}
-## NLB-P08: set by the network host. A reserved (disconnected) remote seat then never blocks the
-## round results, which wait only for the seats that are still connected. Offline keeps all seats.
-var network_exempt_unconnected_seats := false
 var claim_feedback: Dictionary = {}
 var pending_claims: Array[Dictionary] = []
 var match_seed := 12345
@@ -342,10 +339,9 @@ func pugad_mode_ids() -> PackedStringArray:
 	return PackedStringArray()
 
 
-## Called with this round's modes just before the egg pool is generated. Only the networked
-## live route uses it (NLB-P07 compatibility matrix); other routes keep their pool unchanged.
-func _prepare_pugad_pool(_mode_ids: PackedStringArray) -> void:
-	pass
+## Route-specific content safety exclusions; the scheduled route has none by default.
+func pugad_excluded_variant_keys() -> PackedStringArray:
+	return PackedStringArray()
 
 
 ## P12 can replace one Pugad egg with a round-scoped objective without changing the ordinary
@@ -479,13 +475,13 @@ func _begin_pugad() -> void:
 	for seat in joined:
 		seat_indices.append(int(seat.seat))
 	var mode_ids := pugad_mode_ids()
-	_prepare_pugad_pool(mode_ids)
 	egg_pool = PugadEggPoolGenerator.generate(
 		definitions,
 		tuning,
 		match_streams,
 		seat_indices.size() + tuning.match_pugad_extra_eggs,
-		mode_ids
+		mode_ids,
+		pugad_excluded_variant_keys()
 	)
 	_augment_pugad_egg_pool(seat_indices.size())
 	for seat_index in seat_indices:
@@ -1141,23 +1137,10 @@ func _all_results_ready() -> bool:
 		return false
 	var waiting_on := 0
 	for seat in seats:
-		if network_exempt_unconnected_seats and not bool(seat.get("connected", true)):
-			continue
 		waiting_on += 1
 		if not bool(results_ready.get(int(seat.seat), false)):
 			return false
-	return waiting_on > 0 or not network_exempt_unconnected_seats
-
-
-## NLB-P08: a seat that was the last one the results screen waited on may have just been reserved.
-func network_recheck_results() -> void:
-	if (
-		network_exempt_unconnected_seats
-		and _simulation_can_commit()
-		and phase_controller.phase == MatchPhaseController.Phase.RESULTS
-		and _all_results_ready()
-	):
-		_start_next_round()
+	return waiting_on > 0
 
 
 func _start_next_round() -> void:

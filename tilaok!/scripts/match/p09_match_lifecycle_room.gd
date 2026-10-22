@@ -1,19 +1,13 @@
 class_name P09MatchLifecycleRoom
 extends P07FirstPlayableMatchRoom
 
-const P09_BUILD_ID := "P09-match-lifecycle-dev"
-
-## NLB-P09: a committed ledger entry (round result, sudden-death entry/result, final result).
+## A committed ledger entry (round result, sudden-death entry/result, final result).
 signal result_committed(entry: Dictionary)
+
+const P09_BUILD_ID := "P09-match-lifecycle-dev"
 
 ## The host's committed result ledger for this match (integer units and enums only).
 var result_ledger := ResultLedger.new()
-## NLB-P09: set by the network session on bind. Offline rooms never set any of the three, so the
-## offline replay, lobby and results behavior is unchanged.
-var network_mode := false
-var network_host_commands := false
-## Returns true when the session re-keyed and the room may reset and start the next match.
-var network_replay_handler := Callable()
 var lifecycle := MatchLifecycleCoordinator.new()
 var base_match_seed := 12345
 var original_seat_indices: Array[int] = []
@@ -179,7 +173,7 @@ func _finish_race(reason: String) -> void:
 		race_round_controller.ledger.round_id, score_result
 	):
 		return
-	_stage_round_record(NetworkResultsCodec.ScoringFamily.RACE, score_result, outcome_rows)
+	_stage_round_record(MatchResultTypes.ScoringFamily.RACE, score_result, outcome_rows)
 	_record_score_presentation(active_round, score_result)
 	_after_race_score_committed(score_result)
 	for seat_index in seat_indices:
@@ -237,7 +231,7 @@ func _conclude_round(
 	_start_sudden_death(decision)
 
 
-## NLB-P09: keeps the calculator result until the lifecycle decision for the round is known.
+## Keeps the calculator result until the lifecycle decision for the round is known.
 func _stage_round_record(family: int, score_result: Dictionary, outcome_rows: Array) -> void:
 	_pending_round_record = {
 		"family": family,
@@ -251,18 +245,22 @@ func _commit_round_record(active_round: int, decision: Dictionary) -> void:
 		return
 	var staged := _pending_round_record
 	_pending_round_record = {}
-	if result_ledger.commit_round(
-		active_round,
-		_ledger_attempt(),
-		int(staged.family),
-		staged.score_result,
-		staged.outcome_rows,
-		decision
-	).is_empty():
+	if (
+		result_ledger
+		. commit_round(
+			active_round,
+			_ledger_attempt(),
+			int(staged.family),
+			staged.score_result,
+			staged.outcome_rows,
+			decision
+		)
+		. is_empty()
+	):
 		push_error("P09 could not commit the round %d result ledger entry." % active_round)
 
 
-## The wire attempt id: the same match-run discriminator the network metadata already carries.
+## A stable, compact match-run discriminator for this match ledger.
 func _ledger_attempt() -> int:
 	return match_run_id & 0xffff
 
@@ -604,23 +602,14 @@ func _on_result_menu_selection_changed(index: int) -> void:
 
 
 func _on_result_replay_requested() -> void:
-	if network_host_commands:
-		_commit_result_action_now(0)
-		return
 	_select_result_action(0)
 
 
 func _on_result_lobby_requested() -> void:
-	if network_host_commands:
-		_commit_result_action_now(1)
-		return
 	_select_result_action(1)
 
 
 func _on_result_quit_requested() -> void:
-	if network_host_commands:
-		_commit_result_action_now(2)
-		return
 	_select_result_action(2)
 
 
@@ -653,8 +642,6 @@ func _try_commit_result_action() -> void:
 		return
 	for seat_index in original_seat_indices:
 		var seat := input_router.registry.get_seat(seat_index)
-		if network_exempt_unconnected_seats and not bool(seat.get("connected", true)):
-			continue
 		if (
 			seat.is_empty()
 			or not bool(seat.get("joined", false))
@@ -676,137 +663,13 @@ func _try_commit_result_action() -> void:
 func _hands_back_for_fresh_stage(kind: StringName) -> bool:
 	if flow_requested.get_connections().is_empty():
 		return false
-	# NLB-P09: Return to Lobby on a network match tears the session down, so the owner always
-	# decides it (spec 3.3); the offline default-stage lobby return stays in the room.
-	if network_mode and kind == &"leave_match":
-		flow_requested.emit(kind)
-		return true
 	if arena == null or arena.layout_id == ArenaDefinition.DEFAULT_LAYOUT_ID:
 		return false
 	flow_requested.emit(kind)
 	return true
 
 
-## NLB-P09: the network replay roster. Lost remote seats (reserved for 60 s or expired) are released
-## so they cannot block or join the next match; a lost local device keeps blocking the replay.
-## Returns the number of connected original seats that remain, or 0 when a local device is lost.
-func network_prepare_replay_roster() -> int:
-	var kept: Array[int] = []
-	var dropped: Array[int] = []
-	for seat_index in original_seat_indices:
-		var seat := input_router.registry.get_seat(seat_index)
-		if seat.is_empty() or not bool(seat.get("joined", false)):
-			continue
-		if bool(seat.get("connected", false)):
-			kept.append(seat_index)
-		elif str(seat.get("device_kind", "")) == "remote":
-			dropped.append(seat_index)
-		else:
-			return 0
-	if kept.size() < 2:
-		return kept.size()
-	for seat_index in dropped:
-		input_router.registry.release_unconnected_remote_seat(seat_index, simulation_authority)
-	original_seat_indices = kept
-	return kept.size()
-
-
-## NLB-P09: the result vote as the phones see it. `action` is a NetworkResultsCodec.ResultAction
-## value, or -1 when no action is selected (or Quit is selected, which no phone can vote on).
-func network_vote_state() -> Dictionary:
-	var required := 0
-	var ready := 0
-	for seat_index in original_seat_indices:
-		var seat := input_router.registry.get_seat(seat_index)
-		if network_exempt_unconnected_seats and not bool(seat.get("connected", true)):
-			continue
-		required |= 1 << seat_index
-		var voted := (
-			bool(result_ready.get(seat_index, false))
-			if final_results_visible
-			else bool(results_ready.get(seat_index, false))
-		)
-		if voted:
-			ready |= 1 << seat_index
-	var action := -1
-	if final_results_visible:
-		if result_action == 0:
-			action = NetworkResultsCodec.ResultAction.VOTE_REPLAY
-		elif result_action == 1:
-			action = NetworkResultsCodec.ResultAction.VOTE_LOBBY
-	elif phase_controller.phase == MatchPhaseController.Phase.RESULTS:
-		action = NetworkResultsCodec.ResultAction.CONTINUE
-	return {
-		"action": action,
-		"ready_mask": ready,
-		"required_mask": required,
-		"event_id": result_ledger.latest_event_id(),
-		"round_id": result_ledger.latest_round_id(),
-	}
-
-
-## NLB-P09: a phone's result action. The session has already tied it to the peer's authenticated
-## seat; this applies the same rules the offline menu uses (changing the selected action clears
-## everyone's readiness; every connected original seat must agree before the host commits).
-func network_result_vote(seat_index: int, action: int) -> bool:
-	if not _simulation_can_commit() or not original_seat_indices.has(seat_index):
-		return false
-	if _confirm_dialog != null and _confirm_dialog.is_open():
-		return false
-	if action == NetworkResultsCodec.ResultAction.CONTINUE:
-		if final_results_visible or phase_controller.phase != MatchPhaseController.Phase.RESULTS:
-			return false
-		results_ready[seat_index] = true
-		last_message = "P%d is ready for the next round." % (seat_index + 1)
-		_refresh_match_ui()
-		if _all_results_ready():
-			_start_next_round()
-		return true
-	if not final_results_visible:
-		return false
-	var index := 0 if action == NetworkResultsCodec.ResultAction.VOTE_REPLAY else 1
-	if result_action != index:
-		_clear_result_readiness("selected action changed", true)
-		result_action = index
-	_set_result_ready(seat_index)
-	return true
-
-
-## NLB-P09: a host-local click on the result planks commits at once by host authority, because a
-## spectator host has no seat to ready up with. Quit still asks first.
-func _commit_result_action_now(index: int) -> void:
-	if not final_results_visible:
-		return
-	result_action = index
-	match index:
-		0:
-			_replay_match()
-		1:
-			_return_group_to_lobby()
-		2:
-			_open_confirmation("quit", -1)
-
-
-## NLB-P09: a seat the final results were waiting on may have just been reserved.
-func network_recheck_results() -> void:
-	super.network_recheck_results()
-	if network_exempt_unconnected_seats and _simulation_can_commit() and final_results_visible:
-		_try_commit_result_action()
-
-
 func _replay_match() -> void:
-	if network_mode and network_replay_handler.is_valid():
-		if not bool(network_replay_handler.call()):
-			_clear_result_readiness("replay unavailable")
-			last_message = "Replay needs two connected players. Return to the lobby instead."
-			_refresh_match_ui()
-			return
-		reset_room()
-		for seat_index in original_seat_indices:
-			input_router.registry.set_ready(seat_index, true)
-		if not start_match():
-			push_error("P09 network Replay could not start from the connected roster.")
-		return
 	var joined := input_router.registry.joined_seats()
 	if joined.size() != original_seat_indices.size():
 		_clear_result_readiness("seat roster changed")

@@ -1,6 +1,6 @@
 # Tilaok! Verification and Playtest Plan
 
-**Networked verification status (2026-10-21):** historical local-only checks and their 0 B/s architectural expectations remain valid for the offline build. P04 has bounded runtime evidence: the focused 35-check suite and a separate-process host/client run passed, and a physical phone was admitted with snapshot readiness and remote movement. ENet channel, loss/recovery, rendered and full acceptance checks remain open. Preparatory NLB-P06 live-placement source, NLB-P07 content-matrix/special-case source, NLB-P08 pause/reclaim source and NLB-P09 results/replay/teardown source and their runners are authored; none has run (see the NLB-P06 to NLB-P09 sections below). New testing is deferred while the shared laptop is in use. See [P04 evidence and required capture conditions](evidence/nlb/p04/README.md), [PHASETASK_NETWORKED_LIVE_BUILD.md](PHASETASK_NETWORKED_LIVE_BUILD.md), and the proposed budgets in [NETWORKED_LIVE_BUILD.md](NETWORKED_LIVE_BUILD.md).
+**Current verification status (2026-10-22):** local/offline live-build is the normal route. The P20 synthetic regression and focused existing P12, Barya, controls, UI and lifecycle checks are recorded at [P20 evidence](evidence/p20_offline_live_build/README.md). Historical phone/LAN tests remain archived and are not active acceptance. This record distinguishes synthetic input from physical-controller and human play evidence; those sessions remain open.
 
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
@@ -770,9 +770,9 @@ Needs the UI designer (Shanti) plus one other person, a 1080p screen viewed from
 
 Record the date, devices, build, who observed and the result in the table; **never fill a result in by inference.**
 
-## NLB-P05 offline live-build engineering check — 2026-10-19
+## Retired NLB-P05 offline live-build check — historical, 2026-10-19
 
-This is synthetic engineering evidence for the explicit offline live-build route, not a human playtest, physical-controller session, network test, or release check. The default scheduled P12 route remains unchanged. Godot 4.7.2 `4.7.2.stable.official.ed1daf0bf`; profile `karera_slice`; the focused route fixture used two synthetic keyboard seats and seed 73. Full raw logs, captures, commands, and limitations are in [NLB-P05 evidence](evidence/nlb/p05/README.md).
+This is historical synthetic engineering evidence for the former opt-in offline live-build route, not a human playtest, physical-controller session, network test, or release check. At the time, scheduled P12 was the default. Godot 4.7.2 `4.7.2.stable.official.ed1daf0bf`; profile `karera_slice`; the focused route fixture used two synthetic keyboard seats and seed 73. Full raw logs, captures, commands, and limitations are in [retired NLB-P05 evidence](archive/retired-networked-live-build/evidence/p05/README.md).
 
 | Check | Expected | Actual | Result |
 |---|---|---|---|
@@ -784,11 +784,11 @@ This is synthetic engineering evidence for the explicit offline live-build route
 | Full results/replay cycles and baseline/live performance under recorded load | Replay semantics plus comparative frame/resource samples; 16.67 ms / 512 MiB / 0 B/s target record | Replay and comparative performance were not run; thresholds remain targets only | COULD NOT RUN |
 | Human/device review | Independent human session and physical gamepad evidence | No such session occurred | COULD NOT RUN |
 
-The opt-in content availability matrix and disabled-cell handling are in the [P05 content manifest](evidence/nlb/p05/content-manifest.md); this does not certify the full P07 catalog. The networked live route now uses the preparatory, unverified [NLB-P07 compatibility matrix](evidence/nlb/p07/compatibility-matrix.md); the offline live route keeps the same P05 slice through it.
+The opt-in content availability matrix and disabled-cell handling are in the [P05 content manifest](archive/retired-networked-live-build/evidence/p05/content-manifest.md); this does not certify the full P07 catalog. The networked live route now uses the preparatory, unverified [NLB-P07 compatibility matrix](archive/retired-networked-live-build/evidence/p07/compatibility-matrix.md); the offline live route keeps the same P05 slice through it.
 
-## NLB-P02 PC host lobby verification — 2026-10-20
+## Retired NLB-P02 PC host lobby verification — historical, 2026-10-20
 
-This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no-internet, Android, human-play, or network-gameplay acceptance. Godot 4.7.2 ran on Windows; only a WSL virtual IPv4 interface was available. No firewall/router settings were changed and no general LAN flood was run. Full report, captures, command logs and limitations are in [NLB-P02 evidence](evidence/nlb/p02/README.md).
+This is local engineering evidence for the PC spectator lobby, not real-Wi-Fi/no-internet, Android, human-play, or network-gameplay acceptance. Godot 4.7.2 ran on Windows; only a WSL virtual IPv4 interface was available. No firewall/router settings were changed and no general LAN flood was run. Full report, captures, command logs and limitations are in [NLB-P02 evidence](archive/retired-networked-live-build/evidence/p02/README.md).
 
 | Check | Expected | Actual | Result |
 |---|---|---|---|
@@ -814,20 +814,20 @@ Opt-in offline live-build route:
 
 ## NLB-P03 Android phone lobby — engineering status, 2026-10-20
 
-T01's debug APK exports and passes merged-manifest, plugin, ABI and signature inspection. The APK includes the locally decoding CameraX/ZXing scanner. Desktop and decoder unit tests pass, but they do not establish Android permission UI, phone rendering, end-to-end join or cross-export digest acceptance. No physical device is connected. P02-T03 remains open because a real Wi-Fi/no-internet LAN run has not occurred. See [P03 evidence](evidence/nlb/p03/README.md).
+T01's debug APK exports and passes merged-manifest, plugin, ABI and signature inspection. The APK includes the locally decoding CameraX/ZXing scanner. Desktop and decoder unit tests pass, but they do not establish Android permission UI, phone rendering, end-to-end join or cross-export digest acceptance. No physical device is connected. P02-T03 remains open because a real Wi-Fi/no-internet LAN run has not occurred. See [P03 evidence](archive/retired-networked-live-build/evidence/p03/README.md).
 
 | Check | Result | Evidence / limit |
 |---|---|---|
-| Parser, client authority, lobby UI and scanner package source checks | PASSED — 44 checks | [`p03-focused-tests-final.log`](evidence/nlb/p03/p03-focused-tests-final.log); Godot desktop/source tests only. |
-| ZXing local QR frame decoder | PASSED — 2 unit tests | [`scanner-gradle-final.log`](evidence/nlb/p03/scanner-gradle-final.log); no camera hardware or Android UI exercised. |
-| Android APK export / manifest / signature / ABI / plugin contents | PASSED — T01 | [`P03 evidence`](evidence/nlb/p03/README.md), final export and package inspection logs. |
+| Parser, client authority, lobby UI and scanner package source checks | PASSED — 44 checks | [`p03-focused-tests-final.log`](archive/retired-networked-live-build/evidence/p03/p03-focused-tests-final.log); Godot desktop/source tests only. |
+| ZXing local QR frame decoder | PASSED — 2 unit tests | [`scanner-gradle-final.log`](archive/retired-networked-live-build/evidence/p03/scanner-gradle-final.log); no camera hardware or Android UI exercised. |
+| Android APK export / manifest / signature / ABI / plugin contents | PASSED — T01 | [`P03 evidence`](archive/retired-networked-live-build/evidence/p03/README.md), final export and package inspection logs. |
 | Android runtime permission, actual camera scan, joins and host/client content compatibility | COULD-NOT-RUN | No connected phone; Android sparse resource digest is not compared against the Windows host. |
 | Physical install, real Wi-Fi join/leave/rejoin and failure cases | COULD-NOT-RUN | ADB reports no devices. No emulator or port forwarding used. |
 | Real Wi-Fi and no-internet host/client prerequisite | COULD-NOT-RUN | No real Wi-Fi/no-internet test occurred; P02 exit remains required. |
 
 ## NLB-P06 network live placement — preparatory status, 2026-10-21
 
-This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use. The opt-in route is `-- --match-route=network_live_build` on the PC host; the scheduled network route and both offline routes are unchanged. The contract is [v1.3](evidence/nlb/p00/protocol-measurement-contract-v1.3.md); exact deferred commands and the physical session sheet are in [P06 evidence](evidence/nlb/p06/README.md). Dependencies P03-T03, P04-T03 and P05-T03 remain open.
+This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use. The opt-in route is `-- --match-route=network_live_build` on the PC host; the scheduled network route and both offline routes are unchanged. The contract is [v1.3](archive/retired-networked-live-build/evidence/p00/protocol-measurement-contract-v1.3.md); exact deferred commands and the physical session sheet are in [P06 evidence](archive/retired-networked-live-build/evidence/p06/README.md). Dependencies P03-T03, P04-T03 and P05-T03 remain open.
 
 | Check | Result | Reason / limit |
 |---|---|---|
@@ -845,12 +845,12 @@ This section records authored source and runners only. It is not a human playtes
 
 This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use.
 
-- **Matrix:** the networked live route now takes its content from the default-deny [compatibility matrix](evidence/nlb/p07/compatibility-matrix.md). It has 91 cells: 84 ENGINEERING, 7 DISABLED and none VERIFIED.
+- **Matrix:** the networked live route now takes its content from the default-deny [compatibility matrix](archive/retired-networked-live-build/evidence/p07/compatibility-matrix.md). It has 91 cells: 84 ENGINEERING, 7 DISABLED and none VERIFIED.
   - A strict host refuses the live route.
   - A PC host started with `-- --nlb-unverified-content` plays ENGINEERING cells. Its clients show "UNVERIFIED CONTENT — development host; results are not evidence."
   - The scheduled network route and both offline routes are unchanged.
-- **Contract:** [v1.4](evidence/nlb/p00/protocol-measurement-contract-v1.4.md).
-- **Deferred commands and physical session sheet:** in [P07 evidence](evidence/nlb/p07/README.md).
+- **Contract:** [v1.4](archive/retired-networked-live-build/evidence/p00/protocol-measurement-contract-v1.4.md).
+- **Deferred commands and physical session sheet:** in [P07 evidence](archive/retired-networked-live-build/evidence/p07/README.md).
 - **Open dependencies:** P06-T03 and the upstream P03-T03, P04-T03 and P05-T02/T03.
 
 | Check | Result | Reason / limit |
@@ -870,8 +870,8 @@ This section records authored source and runners only. It is not a human playtes
 This section records authored source and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use.
 
 - **Behavior authored:** host-only global pause with an epoch; a client pause is a local overlay; client focus loss sends neutral input at once; a 60 s seat reservation; token-proven same-identity reclaim after a snapshot ack; one `disconnect` elimination per round with no Patibong. An Android process kill loses the memory-only token and cannot reclaim.
-- **Contract:** [v1.5](evidence/nlb/p00/protocol-measurement-contract-v1.5.md).
-- **Deferred commands and physical session sheet:** in [P08 evidence](evidence/nlb/p08/README.md).
+- **Contract:** [v1.5](archive/retired-networked-live-build/evidence/p00/protocol-measurement-contract-v1.5.md).
+- **Deferred commands and physical session sheet:** in [P08 evidence](archive/retired-networked-live-build/evidence/p08/README.md).
 - **Open dependencies:** P06-T03 and the upstream P03-T03, P04-T03 and P05-T02/T03.
 
 | Check | Result | Reason / limit |
@@ -890,8 +890,8 @@ This section records authored source and runners only. It is not a human playtes
 This section records authored source, an audit and runners only. It is not a human playtest, a network test or a physical-device session. Nothing was launched while the shared laptop was in use.
 
 - **Behavior authored:** the host's committed result ledger (round results, sudden-death entry/result, match winner, exact eighth-point totals) replicates once to every phone and rides every snapshot; phones show the round results with Continue, the match result with Replay / Return to Lobby / Leave, and a session-ended screen; Replay re-keys the session in place (new epoch and match ID, every container, reservation and token cleared); Return to Lobby and host Quit stop the session with a bounded reason; a deliberate Leave forfeits the seat; an abrupt host loss ends every client cleanly.
-- **Contract:** [v1.6](evidence/nlb/p00/protocol-measurement-contract-v1.6.md).
-- **Deferred commands, ten-cycle ledger template and physical session sheet:** in [P09 evidence](evidence/nlb/p09/README.md).
+- **Contract:** [v1.6](archive/retired-networked-live-build/evidence/p00/protocol-measurement-contract-v1.6.md).
+- **Deferred commands, ten-cycle ledger template and physical session sheet:** in [P09 evidence](archive/retired-networked-live-build/evidence/p09/README.md).
 - **Open dependencies:** P07-T03 and P08-T03, and the upstream P03-T03, P04-T03, P05-T02/T03 and P06-T03.
 
 | Check | Result | Reason / limit |
@@ -911,7 +911,7 @@ This section records authored source, an audit and runners only. It is not a hum
 This section records authored source and runners only. It is not a human playtest, a physical-device session or a rendered review. Nothing was launched while the shared laptop was in use, and synthetic touch events are never physical or human evidence.
 
 - **Behavior authored:** an index-owning phone touch layer (left Move zone and right Aim zone are independent; Jump, Sneak, Cheer, Claim/OK, Back, Menu, Build, Rotate, Place and Cancel are distinct controls; Ready and Results stay on the P09 overlay), a phone HUD with a "You are P#" badge (number + shape + colour), objective line and a placement chip (shape + text), the K4 aim detection fix, a Left-bumper gamepad `live_cancel`, build glyphs and a `touch` device, an action table, and eight client-local help cards. A hosted live-build match no longer selects the tutorial stage.
-- **Deferred commands, action table, layout math, T03 session protocol and Shanti review list:** in [P10 evidence](evidence/nlb/p10/README.md).
+- **Deferred commands, action table, layout math, T03 session protocol and Shanti review list:** in [P10 evidence](archive/retired-networked-live-build/evidence/p10/README.md).
 - **Open dependencies:** P06-T02 and everything upstream.
 
 | Check | Result | Reason / limit |
@@ -928,7 +928,7 @@ This section records authored source and runners only. It is not a human playtes
 This section records authored source, config and tests only. It is not a playtest, a measurement, an export or a physical-device session. Nothing was launched while the shared laptop was in use, and synthetic clients are never phones or participants.
 
 - **Behavior authored:** opt-in bounded telemetry and a production-path fault injector (development builds only), a crowded-stage fixture, 2/3/4-seat synthetic scale and fault runners, a metrics report generator (PASS / FAIL / COULD-NOT-RUN against a hardware record), per-family rate limits and saturating counters, a close-request shutdown, release-gated development flags, one build identity shown in both lobbies, the title and settings, and Windows host / Android client release presets.
-- **Deferred commands, field dictionary, release preset review, hash template and the consolidated T03 matrix with session sheets:** in [P11 evidence](evidence/nlb/p11/README.md) and [release-matrix.md](evidence/nlb/p11/release-matrix.md).
+- **Deferred commands, field dictionary, release preset review, hash template and the consolidated T03 matrix with session sheets:** in [P11 evidence](archive/retired-networked-live-build/evidence/p11/README.md) and [release-matrix.md](archive/retired-networked-live-build/evidence/p11/release-matrix.md).
 - **Open dependencies:** P09-T03, P10-T03 and everything upstream. The networked build stays opt-in; promotion needs a separate recorded team scope decision.
 
 | Check | Result | Reason / limit |

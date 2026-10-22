@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+NLB_P11_SCALE_CELL seats=2 clients=1 mode=profile seconds=30 result=PROBLEM evidence=SYNTHETIC problems=["host exit code 1", "client 1 telemetry missing or not labeled SYNTHETIC"]
+NLB_P11_SCALE_CELL seats=3 clients=2 mode=profile seconds=30 result=PROBLEM evidence=SYNTHETIC problems=["host exit code 1", "client 1 telemetry missing or not labeled SYNTHETIC", "client 2 telemetry missing or not labeled SYNTHETIC"]
+NLB_P11_SCALE_CELL seats=4 clients=3 mode=profile seconds=30 result=PROBLEM evidence=SYNTHETIC problems=["host exit code 1", "client 1 telemetry missing or not labeled SYNTHETIC", "client 2 telemetry missing or not labeled SYNTHETIC", "client 3 telemetry missing or not labeled SYNTHETIC"]
+NLB_P11_SCALE_MATRIX cells=3 problems=3 evidence=SYNTHETIC not_phones=true
