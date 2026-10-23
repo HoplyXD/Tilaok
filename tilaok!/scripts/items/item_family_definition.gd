@@ -35,6 +35,8 @@ const WALL_INELIGIBLE := "ineligible"
 @export var modes_allowed: PackedStringArray = PackedStringArray()
 @export var modes_pending_review: PackedStringArray = PackedStringArray()
 @export var wall_contact := ""
+## On: this family may be placed on a tile a player occupies (BlockData.can_place_on_player).
+@export var can_place_on_player := false
 ## GameplayTuning field that supplies this family's Pugad selection weight.
 @export var weight_tuning_key: StringName = &""
 @export var preview_silhouette := ""

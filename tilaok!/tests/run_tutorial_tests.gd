@@ -41,7 +41,18 @@ func _initialize() -> void:
 func _run() -> void:
 	var user_before := _user_listing()
 	var tuning := GameplayTuning.new()
-	_default_signature = ArenaDefinition.new(tuning).arena_geometry_signature()
+	# The built-in default stage is no longer a selectable entry, so a match after the tutorial
+	# lands on the first playable map in the folder instead. Compare against that stage.
+	var after_tutorial := ""
+	for map_id in MapCatalog.ids():
+		if map_id != "tutorial":
+			after_tutorial = map_id
+			break
+	_default_signature = (
+		ArenaDefinition.new(tuning, MapCatalog.layout_for(after_tutorial)).arena_geometry_signature()
+		if not after_tutorial.is_empty()
+		else ArenaDefinition.new(tuning).arena_geometry_signature()
+	)
 	_tutorial_signature = (
 		ArenaDefinition.new(tuning, MapCatalog.layout_for("tutorial")).arena_geometry_signature()
 	)

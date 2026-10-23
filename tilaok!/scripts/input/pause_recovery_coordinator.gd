@@ -16,7 +16,6 @@ enum State { RUNNING, PAUSED, COUNTDOWN }
 ## When true the pause menu is drawn by a scene (UiPauseScreen): the owner's confirm no longer
 ## readies the owner implicitly. Default false keeps the P02 behaviour exactly.
 @export var external_menu := false
-
 var authority := SimulationAuthority.offline()
 var state := State.RUNNING
 var pause_reason := ""
@@ -74,14 +73,7 @@ func _process(delta: float) -> void:
 	countdown_remaining = maxf(0.0, countdown_remaining - delta)
 	countdown_changed.emit(countdown_remaining)
 	if countdown_remaining <= 0.0:
-		state = State.RUNNING
-		pause_reason = ""
-		menu_owner = -1
-		get_tree().paused = false
-		input_router.resume_system()
-		input_router.set_phase(_phase_before_pause)
-		pause_state_changed.emit(false, "resumed")
-		recovery_complete.emit()
+		_finish_resume()
 
 
 func set_paused(reason: String, owner_seat: int) -> void:
@@ -105,8 +97,11 @@ func set_paused(reason: String, owner_seat: int) -> void:
 func request_resume() -> bool:
 	if state != State.PAUSED or input_router == null or not _can_global_pause():
 		return false
-	if not input_router.registry.all_joined_ready_and_connected():
+	if not external_menu and not _resume_ready():
 		return false
+	if _phase_before_pause == LocalInputRouter.Phase.LOBBY:
+		_finish_resume()
+		return true
 	state = State.COUNTDOWN
 	countdown_remaining = resume_countdown_seconds
 	countdown_changed.emit(countdown_remaining)
@@ -117,9 +112,11 @@ func request_resume() -> bool:
 func mark_ready(seat_index: int) -> bool:
 	if state != State.PAUSED or input_router == null:
 		return false
+	if external_menu:
+		return seat_index >= 0 and request_resume()
 	if not input_router.registry.set_ready(seat_index, true):
 		return false
-	if input_router.registry.all_joined_ready_and_connected():
+	if _resume_ready():
 		request_resume()
 	return true
 
@@ -205,9 +202,9 @@ func _on_action_pressed(seat_index: int, action_name: String) -> void:
 		menu_selection_changed.emit(menu_selection, menu_owner)
 		return
 	if seat_index != menu_owner and menu_owner >= 0:
-		if action_name in ["ready", "confirm"]:
+		if not external_menu and action_name in ["ready", "confirm"]:
 			input_router.registry.set_ready(seat_index, true)
-			if input_router.registry.all_joined_ready_and_connected():
+			if _resume_ready():
 				request_resume()
 		return
 	if external_menu and seat_index == menu_owner:
@@ -217,9 +214,12 @@ func _on_action_pressed(seat_index: int, action_name: String) -> void:
 		if seat_index == menu_owner and menu_selection == 1:
 			reclaim_menu_requested.emit()
 			return
-		input_router.registry.set_ready(seat_index, true)
-		if input_router.registry.all_joined_ready_and_connected():
+		if external_menu:
 			request_resume()
+		else:
+			input_router.registry.set_ready(seat_index, true)
+			if _resume_ready():
+				request_resume()
 
 
 func _on_navigation_step(seat_index: int, direction: String) -> void:
@@ -239,6 +239,22 @@ func _missing_seats() -> Array[int]:
 		if not seat.connected:
 			result.append(int(seat.seat))
 	return result
+
+
+func _resume_ready() -> bool:
+	return input_router.registry.all_joined_ready_and_connected()
+
+
+func _finish_resume() -> void:
+	state = State.RUNNING
+	pause_reason = ""
+	menu_owner = -1
+	countdown_remaining = 0.0
+	get_tree().paused = false
+	input_router.resume_system()
+	input_router.set_phase(_phase_before_pause)
+	pause_state_changed.emit(false, "resumed")
+	recovery_complete.emit()
 
 
 func _clear_readiness() -> void:

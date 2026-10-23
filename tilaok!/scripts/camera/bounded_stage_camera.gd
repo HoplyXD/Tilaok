@@ -7,6 +7,11 @@ var tuning: GameplayTuning
 var context := Context.PLAY
 var targets: Array[StageCameraTarget] = []
 var last_safe_position := Vector2.ZERO
+## The box the camera may never leave, in world units. Set per map from its Camera2D "camera
+## border" node, or from the stage's own extent. Empty falls back to `tuning.camera_view_bounds`,
+## which is a fixed rect sized for the old 32x16 stage and pins the view to the top-left corner of
+## anything larger.
+var view_bounds := Rect2()
 var _initialized := false
 
 
@@ -18,7 +23,9 @@ func _ready() -> void:
 
 func configure(source_tuning: GameplayTuning) -> void:
 	tuning = source_tuning if source_tuning != null else GameplayTuning.new()
-	zoom = Vector2.ONE * tuning.camera_zoom_min
+	# Open at normal zoom and widen only as the chickens spread, rather than starting at the
+	# most zoomed-out setting and never coming back in.
+	zoom = Vector2.ONE * tuning.camera_zoom_max
 
 
 func set_context(next_context: Context) -> void:
@@ -87,6 +94,13 @@ func _usable_rect() -> Rect2:
 	)
 
 
+## The box in force: the map's own camera border when it supplies one, otherwise the tuning rect.
+func active_view_bounds() -> Rect2:
+	if view_bounds.size.x > 0.0 and view_bounds.size.y > 0.0:
+		return view_bounds
+	return tuning.camera_view_bounds
+
+
 func _clamped_camera_position(target_center: Vector2, zoom_value: float) -> Vector2:
 	var camera_center := (
 		target_center - Vector2(0.0, tuning.camera_hud_reservation_px * 0.5 / zoom_value)
@@ -96,7 +110,7 @@ func _clamped_camera_position(target_center: Vector2, zoom_value: float) -> Vect
 
 func _clamp_camera_center(camera_center: Vector2, zoom_value: float) -> Vector2:
 	var viewport_size := Vector2(tuning.camera_virtual_width_px, tuning.camera_virtual_height_px)
-	var bounds := tuning.camera_view_bounds
+	var bounds := active_view_bounds()
 	var half_x := viewport_size.x * 0.5 / zoom_value
 	var low_x := bounds.position.x + half_x
 	var high_x := bounds.end.x - half_x

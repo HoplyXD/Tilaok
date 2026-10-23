@@ -81,6 +81,9 @@ const OVERRIDE_FIELDS := {
 @export var gated_rotations := PackedInt32Array()
 ## Reserve only the cells under solid shapes (Parol posts) instead of the whole box.
 @export var reserve_only_solid_cells := false
+## On: this block may be placed on a tile a player is standing in. Off (the default) keeps the
+## player-clearance rule, which refuses any placement overlapping a living chicken.
+@export var can_place_on_player := false
 ## Chickens may wall-slide on its solid sides.
 @export var wall_slide_eligible := true
 ## Its solid tops count as raised support (Kangaroo Rising wave). Off for hazards/launchers.

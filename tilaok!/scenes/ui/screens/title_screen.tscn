@@ -353,24 +353,6 @@ horizontal_alignment = 1
 text_overrun_behavior = 3
 metadata/note = "Sits in the frame's footer line (103:589: Margarine 14, #94734f, a 440 px box at the top 685, 593 here; 592.1 because Godot draws the line about 0.9 px lower than Figma). The frame's line ('A little kindness goes a long way.') is sample text; the build label takes its place."
 
-[node name="LanLobbyButton" parent="." unique_id=1137404617 instance=ExtResource("6")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 54)
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -304.0
-offset_top = -90.0
-offset_right = -64.0
-offset_bottom = -36.0
-grow_horizontal = 0
-grow_vertical = 0
-text = "LAN Lobby"
-metadata/note = "Not in the Figma frame (networked live-build track). Kept outside the card, bottom-right inside the safe area; still mouse-only as before."
-
 [node name="QuitScrim" type="PanelContainer" parent="." unique_id=319018032]
 unique_name_in_owner = true
 visible = false

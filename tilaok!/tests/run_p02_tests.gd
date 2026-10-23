@@ -30,6 +30,7 @@ func _run() -> void:
 	await _test_no_held_jump_repeat()
 	await _test_launch_and_containment()
 	await _test_terminal_precedence()
+	_test_water_float()
 	await _test_cleanup_cycles()
 	print("P02_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -46,6 +47,95 @@ func _check(condition: bool, label: String) -> void:
 
 func _record_navigation_step(_seat_index: int, _direction: String) -> void:
 	navigation_event_count += 1
+
+
+## A chicken in a Water-terrain volume floats: entering caps the fall, buoyancy carries it up to
+## the waterline and it settles there instead of being thrown out, and jump is an upward stroke.
+## Stepped directly rather than through the room, because no shipped map has water painted yet.
+func _test_water_float() -> void:
+	var actor: ChickenController = room.actors[0]
+	var tuning := actor.tuning
+	var restore_position := actor.global_position
+	var restore_regions := actor.water_regions
+	var waterline := 640.0
+	actor.water_regions = [Rect2(0.0, waterline, 256.0, 256.0)]
+
+	actor.global_position = Vector2(128.0, waterline - 200.0)
+	actor._update_water()
+	_check(not actor.in_water, "a chicken above the pool is not in water")
+
+	# Falling in fast is capped at the sink cap instead of punching through the pool.
+	actor.global_position = Vector2(128.0, waterline + 220.0)
+	actor.locomotion_velocity = Vector2(0.0, 600.0)
+	actor._update_water()
+	_check(
+		actor.in_water and is_equal_approx(actor.locomotion_velocity.y, tuning.water_sink_cap_wu_s),
+		"entering water caps the fall at the sink cap"
+	)
+
+	# Run until it stops moving rather than for a fixed time: the room's tuning may be distance
+	# scaled, which changes how long the rise from the pool floor takes.
+	var delta := 1.0 / 60.0
+	var settled_steps := 0
+	for _step in 1800:
+		actor._update_water()
+		if actor.in_water:
+			actor._update_float(delta)
+		else:
+			actor.locomotion_velocity.y += actor._fall_gravity * delta
+		actor.global_position.y += actor.locomotion_velocity.y * delta
+		if absf(actor.locomotion_velocity.y) <= tuning.water_sink_cap_wu_s * 0.25:
+			settled_steps += 1
+			if settled_steps >= 30:
+				break
+		else:
+			settled_steps = 0
+	_check(
+		absf(actor.global_position.y - waterline) <= tuning.grid_cell_wu * 0.25,
+		"a floating chicken rises and settles at the waterline (%.1f wu off)" % absf(
+			actor.global_position.y - waterline
+		)
+	)
+
+	actor.global_position = Vector2(128.0, waterline + 160.0)
+	actor.locomotion_velocity = Vector2(0.0, 5000.0)
+	actor._update_water()
+	actor._update_float(delta)
+	_check(
+		is_equal_approx(actor.locomotion_velocity.y, tuning.water_sink_cap_wu_s),
+		"descent in water never exceeds the sink cap"
+	)
+
+	# Water is jumpable: a press uses the full jump impulse, not the swim stroke, and the arc is
+	# left alone by buoyancy and drag so the chicken can actually leave the pool.
+	actor.global_position = Vector2(128.0, waterline + 32.0)
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.jump_buffer_remaining = tuning.jump_buffer_seconds
+	actor._update_water()
+	actor._update_float(delta)
+	_check(
+		is_equal_approx(actor.locomotion_velocity.y, actor._jump_impulse) and actor.water_jumping,
+		"a jump press in water uses the full jump impulse"
+	)
+	var escaped := false
+	for _step in 240:
+		actor._update_water()
+		if actor.in_water:
+			actor._update_float(delta)
+		else:
+			actor.locomotion_velocity.y += actor._fall_gravity * delta
+		actor.global_position.y += actor.locomotion_velocity.y * delta
+		if actor.global_position.y < waterline - tuning.grid_cell_wu:
+			escaped = true
+			break
+	_check(escaped, "a jump carries the chicken clear of the waterline")
+
+	actor.water_regions = restore_regions
+	actor.global_position = restore_position
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.jump_buffer_remaining = 0.0
+	actor.water_jumping = false
+	actor.in_water = false
 
 
 func _test_seat_identity_and_reclaim() -> void:

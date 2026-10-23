@@ -180,11 +180,11 @@ func _test_definitions() -> void:
 	_check(
 		definitions.is_valid(), "T01 eight definitions load and validate: %s" % [definitions.errors]
 	)
-	# 8 first-batch families plus the 2026-10-14 stage blocks, Spikes and Cannon and the
-	# 2026-10-15 Bomb, Dynamite and Nuke.
+	# 8 first-batch families plus the 2026-10-14 stage blocks, Spikes and Cannon. The Bomb,
+	# Dynamite and Nuke were removed on 2026-10-22: Walis cleanup is the only removal tool.
 	_check(
 		definitions.families.size() == BlockCatalog.families(BlockCatalog.SET_LAB).size(),
-		"T01 eight families (+3 stage blocks, Spikes, Cannon and 3 explosives) are defined"
+		"T01 eight families (+3 stage blocks, Spikes and Cannon) are defined"
 	)
 	var expected := {
 		"move.tire_spring": {"tire_2x2": Vector2i(2, 2)},
@@ -539,7 +539,27 @@ func _test_gulong_cooldown() -> void:
 	_row(
 		"T03 spring cooldown holds 0.20 s", "1 launch in first 10 frames", "%d" % early, early == 1
 	)
-	_row("T03 spring relaunches after cooldown", ">=2 launches by frame 40", "%d" % late, late >= 2)
+	# A chicken that comes to rest on the tire is never bounced again: the spring fires on the
+	# rising edge of contact, so the cooldown expiring on its own launches nothing.
+	_row(
+		"T03 resting on the spring never relaunches",
+		"still 1 launch at frame 40",
+		"%d" % late,
+		late == 1
+	)
+	# Leaving and landing again is a fresh contact, so the spring still works.
+	for _frame in range(10):
+		_hold(face_center - Vector2(0.0, 512.0))
+		await physics_frame
+	for _frame in range(10):
+		_hold(face_center)
+		await physics_frame
+	_row(
+		"T03 landing on the spring again relaunches",
+		">=2 launches after re-landing",
+		"%d" % behavior.launch_count,
+		behavior.launch_count >= 2
+	)
 	await _dispose()
 
 
@@ -575,12 +595,15 @@ func _test_gulong_rotations_and_caps() -> void:
 			_hold(_feet_to_center(Vector2(960.0, top_y - 1.0)))
 		await physics_frame
 		lowest = minf(lowest, actor.global_position.y)
-	var bounds_ok := lowest >= room.tuning.body_height_wu * 0.5 - 0.5
+	# The arena ceiling was removed on 2026-10-22, so a launch near the top of the stage rises past
+	# y=0 instead of being stopped by it. The invariant now is that the chicken does rise, falls
+	# back down, and is never reported lost to the void.
+	var fell_back := actor.global_position.y >= top_y - CELL
 	_row(
-		"T04 launch never leaves the arena",
-		"centre y >= half body height",
-		"min centre y %.2f" % lowest,
-		bounds_ok and not actor.containment_outcome_reported
+		"T04 launch near the top of the stage stays in the world",
+		"rises, falls back, never reported lost",
+		"min centre y %.2f, final centre y %.2f" % [lowest, actor.global_position.y],
+		lowest < top_y and fell_back and not actor.containment_outcome_reported
 	)
 	await _dispose()
 
@@ -841,7 +864,9 @@ func _test_parol_contact_and_occlusion() -> void:
 	# Occlusion by a real solid between the posts.
 	await _fresh()
 	var parol := _place(PAROL_5, Vector2i(13, 8), 0, 0)
-	var block := _place(KAING_1, Vector2i(15, 8), 0, 0)
+	# The 1x1 Kaing block is intentionally pushable and falls out of the beam
+	# during warmup. Use an anchored column for persistent cover.
+	var block := _place(KAING_3, Vector2i(15, 7), 0, 0)
 	_check(
 		bool(block.allowed), "T20 a block may sit between the posts (posts reserve only two cells)"
 	)
@@ -972,7 +997,8 @@ func _test_launcher_hit_cover_and_spawn_safety() -> void:
 	# Cover: a block in the lane stops the slipper; a chicken behind it is safe.
 	await _fresh()
 	var launcher := _place(LANE_6, Vector2i(8, 8), 0, 0)
-	var cover := _place(KAING_1, Vector2i(10, 8), 0, 0)
+	# Keep the cover anchored in the firing lane for the full warmup and test.
+	var cover := _place(KAING_3, Vector2i(10, 7), 0, 0)
 	_check(bool(cover.allowed), "T30 a block can sit in the lane (lanes are not footprints)")
 	var behavior := _piece(str(launcher.instance_id)).behavior as LauncherBehavior
 	await _arm()
@@ -1596,7 +1622,7 @@ func _test_visualizer() -> void:
 	await _fresh()
 	_check(
 		room.family_ids().size() == BlockCatalog.families(BlockCatalog.SET_LAB).size(),
-		"Visualizer lists all eight families (+3 stage blocks, Spikes, Cannon and 3 explosives)"
+		"Visualizer lists all eight families (+3 stage blocks, Spikes and Cannon)"
 	)
 	for family_id in room.family_ids():
 		var selected := room.select_family(family_id)

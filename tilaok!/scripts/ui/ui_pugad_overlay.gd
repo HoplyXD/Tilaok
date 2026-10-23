@@ -56,11 +56,13 @@ func _layout_eggs(count: int) -> void:
 	var spots := _spots.get_node_or_null("Spots%d" % clampi(count, 4, 6))
 	if spots == null:
 		return
+	var card_scale := Vector2.ONE if count <= 4 else Vector2(0.8, 0.8)
 	for index in mini(egg_slots.size(), spots.get_child_count()):
 		var spot := spots.get_child(index) as Control
 		var pill := spot.get_node("Pill") as Control
 		egg_slots[index].position = spot.position
 		egg_slots[index].rotation = spot.rotation
+		egg_slots[index].scale = card_scale
 		egg_slots[index].set_pill_rect(pill.position, pill.size, pill.rotation)
 
 

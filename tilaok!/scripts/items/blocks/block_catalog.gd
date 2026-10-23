@@ -206,6 +206,7 @@ static func _family_from(
 		if data.wall_slide_eligible
 		else ItemFamilyDefinition.WALL_INELIGIBLE
 	)
+	family.can_place_on_player = data.can_place_on_player
 	family.weight_tuning_key = data.weight_tuning_key
 	family.uses_pool_weight = data.weight_tuning_key == &""
 	family.pool_weight = data.pool_weight

@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Tilaok!"
+config/version="0.4.0"
 run/main_scene="res://scenes/flow/game_flow.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
@@ -30,7 +31,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/tilaok_qr_scanner/plugin.cfg")
+enabled=PackedStringArray()
 
 [global_group]
 
@@ -85,3 +86,4 @@ rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+viewport/hdr_2d=true

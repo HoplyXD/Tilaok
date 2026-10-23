@@ -5,7 +5,6 @@ signal start_requested
 signal library_requested
 signal settings_requested
 signal quit_requested
-signal lan_lobby_requested
 
 @onready var _menu: UiMenuList = %MenuList
 @onready var _build_label: Label = %BuildLabel
@@ -16,7 +15,6 @@ signal lan_lobby_requested
 @onready var _library_button: Button = %LibraryButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
-@onready var _lan_button: Button = %LanLobbyButton
 
 
 func state_names() -> PackedStringArray:
@@ -57,7 +55,6 @@ func _on_screen_ready() -> void:
 	_library_button.pressed.connect(func() -> void: library_requested.emit())
 	_settings_button.pressed.connect(func() -> void: settings_requested.emit())
 	_quit_button.pressed.connect(_on_quit_pressed)
-	_lan_button.pressed.connect(func() -> void: lan_lobby_requested.emit())
 	_quit_confirm.confirmed.connect(func() -> void: quit_requested.emit())
 	_quit_confirm.visibility_changed.connect(
 		func() -> void: _quit_scrim.visible = _quit_confirm.visible

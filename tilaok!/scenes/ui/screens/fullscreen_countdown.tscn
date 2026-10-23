@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/ui_fullscreen_countdown.gd" id="2"]
+
+[node name="FullscreenCountdown" type="Control"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.055, 0.075, 0.08, 0.78)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Stack" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Caption" type="Label" parent="Center/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.86, 0.63, 1)
+theme_override_font_sizes/font_size = 40
+text = "GET READY"
+horizontal_alignment = 1
+
+[node name="Number" type="Label" parent="Center/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.82, 1)
+theme_override_font_sizes/font_size = 180
+text = "3"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Center/Stack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.86, 0.63, 1)
+theme_override_font_sizes/font_size = 24
+text = "EVERYONE STARTS TOGETHER"
+horizontal_alignment = 1

@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:107)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] _print_digest (res://tests/print_nlb_compatibility_digest.gd:10)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:107)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] _print_digest (res://tests/print_nlb_compatibility_digest.gd:10)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:112)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] _print_digest (res://tests/print_nlb_compatibility_digest.gd:10)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:112)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] _print_digest (res://tests/print_nlb_compatibility_digest.gd:10)
+NLB_COMPATIBILITY_DIGEST profile=karera_slice engine=4.7.2-stable (official) digest=876982d7f38bc5b5ed80749e643f68dbeb28d231bae64ab0b2530fe301937ba6

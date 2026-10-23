@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/environment/grass_patch.gd" id="1_grass"]
+[ext_resource type="Texture2D" uid="uid://dun2fur8hkorg" path="res://assets/tiles/Grass.png" id="2_grass"]
+[ext_resource type="Shader" path="res://assets/shaders/grass_sway.gdshader" id="3_grass"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grass"]
+shader = ExtResource("3_grass")
+shader_parameter/bend = 0.0
+shader_parameter/sway = 0.0
+shader_parameter/lean_pixels = 26.0
+shader_parameter/breeze_pixels = 3.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_grass"]
+size = Vector2(200, 96)
+
+[node name="Grass" type="Node2D"]
+script = ExtResource("1_grass")
+
+[node name="Visual" type="Sprite2D" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_grass")
+texture = ExtResource("2_grass")
+centered = false
+offset = Vector2(-128, -256)
+
+[node name="Detector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="Shape" type="CollisionShape2D" parent="Detector"]
+position = Vector2(0, -48)
+shape = SubResource("RectangleShape2D_grass")

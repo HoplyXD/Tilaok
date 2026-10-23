@@ -13,8 +13,8 @@ const REASON_TEXT := {
 	"shared system pause": "The game is paused",
 	"assigned device disconnected": "A controller was disconnected",
 	"application focus lost": "The game window lost focus",
-	"application focus changed": "The window changed - everybody ready up again",
-	"device status changed": "A controller changed - everybody ready up again",
+	"application focus changed": "The window changed. Resume when you are ready.",
+	"device status changed": "A controller changed. Resume when you are ready.",
 }
 ## Reasons the Figma layout already says in its first line ("paused by" / "shared pause"), so the
 ## extra reason line stays hidden for them and the panel keeps the frame's exact layout.
@@ -81,6 +81,8 @@ func bind_state(
 	for index in rosters.size():
 		var seat: Dictionary = seats[index] if index < seats.size() else {}
 		var text := "READY" if bool(seat.get("ready", false)) else "WAITING"
+		if bool(status.get("quick_resume", false)) and bool(seat.get("joined", false)):
+			text = "IN GAME"
 		# Only a joined seat can lose its device; empty seats are never "missing".
 		if (
 			not seat.is_empty()
@@ -270,7 +272,7 @@ func _refresh_live() -> void:
 	var seats: Array[Dictionary] = []
 	for index in PlayerSeatRegistry.MAX_SEATS:
 		seats.append(_registry.get_seat(index))
-	var status := {"leave_confirm": _leave_confirm.is_open()}
+	var status := {"leave_confirm": _leave_confirm.is_open(), "quick_resume": true}
 	var missing: Array[int] = []
 	for seat in seats:
 		if bool(seat.get("joined", false)) and not bool(seat.get("connected", true)):

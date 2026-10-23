@@ -56,6 +56,18 @@ func _test_tuning_and_pool() -> void:
 	repeated_streams.seed_all(12345)
 	var repeated := PugadEggPoolGenerator.generate(definitions, tuning, repeated_streams, 6)
 	_check(pool == repeated, "egg pool is stable for the same match seed")
+	var unique_streams := SeededDiagnosticStreams.new()
+	unique_streams.seed_all(12345)
+	var unique_pool := PugadEggPoolGenerator.generate(
+		definitions, tuning, unique_streams, 6, PackedStringArray(), PackedStringArray(), true
+	)
+	var unique_variants := {}
+	for egg in unique_pool:
+		unique_variants[str(egg.variant_key)] = true
+	_check(
+		unique_pool.size() == 6 and unique_variants.size() == unique_pool.size(),
+		"a nest samples distinct eligible item variants before refilling"
+	)
 	var bad_tuning := tuning.duplicate(true) as GameplayTuning
 	bad_tuning.match_pugad_seconds = 0.0
 	_check(

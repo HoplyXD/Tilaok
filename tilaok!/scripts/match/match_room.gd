@@ -302,6 +302,11 @@ func play_status_text() -> String:
 	return ""
 
 
+## True only when this room lets the seat control a live-build preview instead of its chicken.
+func is_seat_in_build_mode(_seat_index: int) -> bool:
+	return false
+
+
 ## Per-seat state override for the HUD score row ("" keeps RUN / SECURED / OUT).
 func seat_state_text(_seat_index: int) -> String:
 	return ""
@@ -340,6 +345,11 @@ func run_debug_action() -> void:
 ## The modes this round's eggs must be approved for. Rooms with a fixed development pool deal
 ## it unfiltered; the scheduled P12 room returns the locked round's Main and Twist.
 func pugad_mode_ids() -> PackedStringArray:
+	return PackedStringArray()
+
+
+## Route-specific content safety exclusions; the scheduled route has none by default.
+func pugad_excluded_variant_keys() -> PackedStringArray:
 	return PackedStringArray()
 
 
@@ -473,12 +483,15 @@ func _begin_pugad() -> void:
 	var seat_indices: Array[int] = []
 	for seat in joined:
 		seat_indices.append(int(seat.seat))
+	var mode_ids := pugad_mode_ids()
 	egg_pool = PugadEggPoolGenerator.generate(
 		definitions,
 		tuning,
 		match_streams,
 		seat_indices.size() + tuning.match_pugad_extra_eggs,
-		pugad_mode_ids()
+		mode_ids,
+		pugad_excluded_variant_keys(),
+		true
 	)
 	_augment_pugad_egg_pool(seat_indices.size())
 	for seat_index in seat_indices:
@@ -600,6 +613,10 @@ func _enter_place() -> void:
 	items.enter_place()
 	var claimed_variants := _claimed_variants_by_seat()
 	_on_place_assignments_ready(claimed_variants)
+	# Follow the map's painted Build markers, not the fixed tuning arena size, and open the cursor
+	# beside the spawn so a round starts where the chickens are.
+	placement_controller.build_region_tiles = _build_region_tiles()
+	placement_controller.start_anchor_tile = _build_start_anchor_tile()
 	placement_controller.setup(claimed_variants, definitions, tuning)
 	input_router.set_rotation_supported(true)
 	phase_controller.enter(MatchPhaseController.Phase.PLACE, tuning.match_place_seconds)
@@ -1134,10 +1151,12 @@ func _all_results_ready() -> bool:
 	var seats := input_router.registry.joined_seats()
 	if seats.size() < 2:
 		return false
+	var waiting_on := 0
 	for seat in seats:
+		waiting_on += 1
 		if not bool(results_ready.get(int(seat.seat), false)):
 			return false
-	return true
+	return waiting_on > 0
 
 
 func _start_next_round() -> void:
@@ -1211,6 +1230,28 @@ func _short_variant_label(variant_key: String) -> String:
 	if VARIANT_LABELS.has(variant_key):
 		return str(VARIANT_LABELS[variant_key])
 	return definitions.short_label(variant_key)
+
+
+## The map's build area in tiles, from its Build markers. Empty when the stage supplies none, which
+## leaves the controller on its tuning-size fallback.
+func _build_region_tiles() -> Rect2i:
+	var cell := tuning.grid_cell_wu
+	var region := arena.build_region
+	if cell <= 0.0 or not region.has_area():
+		return Rect2i()
+	return Rect2i(
+		Vector2i(roundi(region.position.x / cell), roundi(region.position.y / cell)),
+		Vector2i(maxi(1, roundi(region.size.x / cell)), maxi(1, roundi(region.size.y / cell)))
+	)
+
+
+## The build cursor's opening cell: the spawn column, clamped into the build area by the controller.
+func _build_start_anchor_tile() -> Vector2i:
+	var cell := tuning.grid_cell_wu
+	if cell <= 0.0:
+		return Vector2i(-1, -1)
+	var feet := arena.spawn_feet / cell
+	return Vector2i(floori(feet.x), maxi(0, floori(feet.y) - 1))
 
 
 func _move_build_region_label_below_controls() -> void:

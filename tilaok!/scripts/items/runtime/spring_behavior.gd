@@ -8,12 +8,17 @@ const COMPRESS_DECAY_S := 0.25
 
 var compress := 0.0
 var launch_count := 0
+## Seats touching a launch face as of the previous step. A launch fires only on the rising edge of
+## contact, so a chicken that comes to rest on the tire is never bounced again without leaving it
+## first: the cooldown alone used to let it re-launch on the spot with no input.
+var _contact_seats: Dictionary = {}
 
 
 func reset_to_start() -> void:
 	super.reset_to_start()
 	compress = 0.0
 	launch_count = 0
+	_contact_seats.clear()
 
 
 func launch_normal() -> Vector2:
@@ -24,6 +29,7 @@ func step(ctx: ItemStepContext) -> void:
 	advance(ctx.dt)
 	compress = maxf(0.0, compress - ctx.dt / COMPRESS_DECAY_S)
 	var normal := launch_normal()
+	var touching: Dictionary = {}
 	for face in launch_faces():
 		for actor in ctx.actors:
 			if not ctx.is_hazard_target(actor):
@@ -31,7 +37,14 @@ func step(ctx: ItemStepContext) -> void:
 			if SweptContact.face_contact(
 				ctx.body_of(actor), face, normal, tuning.item_spring_contact_probe_wu
 			):
-				ctx.request_launch(actor.seat_index, item_id, normal)
+				var seat := actor.seat_index
+				# Rising edge only: a seat already touching last step (or matched by another face
+				# this step) is resting on the tire, not landing on it.
+				var landed := not _contact_seats.has(seat) and not touching.has(seat)
+				touching[seat] = true
+				if landed:
+					ctx.request_launch(seat, item_id, normal)
+	_contact_seats = touching
 
 
 func preview_at(seconds: float) -> void:

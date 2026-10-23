@@ -1,7 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dc1gn3wba8ums"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_sebsq"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_ieue3"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_sebsq"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_ieue3"]
+[ext_resource type="Texture2D" uid="uid://cdco1duys16jq" path="res://assets/tiles/2x2 Box.png" id="3_ieue3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vxf84"]
 size = Vector2(128, 128)
@@ -25,40 +26,12 @@ rotations = PackedInt32Array(0)
 gated_rotations = PackedInt32Array()
 weight_tuning_key = &"item_wood_box_weight"
 anchor = 2
-preview_silhouette = "wood_box"
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=1270363777]
 shape = SubResource("RectangleShape2D_vxf84")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1800300999]
 
-[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1659242617]
-color = Color(0.72, 0.5, 0.28, 1)
-polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
-
-[node name="Planks" type="Line2D" parent="Visual" unique_id=705921371]
-points = PackedVector2Array(-64, -64, 64, 64, 0, 0, 64, -64, -64, 64)
-width = 6.0
-default_color = Color(0.48, 0.31, 0.14, 1)
-
-[node name="Frame" type="Line2D" parent="Visual" unique_id=1654646929]
-points = PackedVector2Array(-56, -56, 56, -56, 56, 56, -56, 56, -56, -56)
-width = 8.0
-default_color = Color(0.55, 0.36, 0.17, 1)
-
-[node name="Outline" type="Line2D" parent="Visual" unique_id=1590598071]
-points = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64, -64, -64)
-width = 4.0
-default_color = Color(0.17, 0.1, 0.04, 1)
-
-[node name="Label" type="Label" parent="Visual" unique_id=624272659]
-offset_left = -60.0
-offset_top = 34.0
-offset_right = 60.0
-offset_bottom = 58.0
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.17, 0.1, 0.04, 1)
-theme_override_constants/outline_size = 4
-text = "BOX • DEBUG"
-horizontal_alignment = 1
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=410106659]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_ieue3")

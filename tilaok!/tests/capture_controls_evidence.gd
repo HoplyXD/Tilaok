@@ -38,7 +38,6 @@ func _run() -> void:
 		["block.spikes.main", Vector2i(9, 9), 1],
 		["block.cannon.main", Vector2i(14, 8), 2],
 		["build.bamboo_bridge.span_4x1", Vector2i(18, 6), 0],
-		["explosive.bomb.main", Vector2i(23, 9), 0],
 	]
 	for seat_index in range(picks.size()):
 		if not room.placement_controller.cursors.has(seat_index):

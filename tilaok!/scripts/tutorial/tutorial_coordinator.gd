@@ -299,6 +299,8 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 			var level := 2 if _nobody_finished_last_round else 1
 			var place_variant := VARIANT_TIMEOUT if _timeout_assigned else &""
 			result = _view_for(TutorialScript.STEP_PLACE, place_variant, 3, level)
+		MatchPhaseController.Phase.GO:
+			result = _view_for(TutorialScript.STEP_LIVE_BUILD, &"", 3)
 		MatchPhaseController.Phase.PLAY:
 			result = _view_for(TutorialScript.STEP_KARERA, &"", 4)
 		MatchPhaseController.Phase.RESULTS:
@@ -370,8 +372,21 @@ func _fill(text: String) -> String:
 		"claim": _glyphs("claim"),
 		"rotate": _glyphs("rotate"),
 		"confirm": _glyphs("confirm"),
+		"build": _glyphs("build_toggle"),
+		"aim": _glyphs("aim"),
+		"live_confirm": _glyphs("live_confirm"),
+		"rotate_live": _glyphs("live_rotate"),
+		"cancel": _glyphs("live_cancel"),
 		"pugad_s": _number(tuning.match_pugad_seconds),
 		"place_s": _number(tuning.match_place_seconds),
+		"construction_s":
+		_number(
+			(
+				(room as OfflineLiveBuildMatchRoom).construction_seconds
+				if room is OfflineLiveBuildMatchRoom
+				else 2.0
+			)
+		),
 		"cap_s": _number(tuning.match_race_hard_cap_seconds),
 		"finish_s": _number(tuning.match_race_after_first_finish_seconds),
 		"advance_s": _number(tuning.match_results_advance_seconds),

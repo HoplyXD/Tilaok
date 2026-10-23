@@ -134,7 +134,7 @@ func _test_tuning_and_definitions() -> void:
 		),
 		(
 			"every catalog block family is defined (at least Kaing, Tulay, stage blocks, Spikes, Cannon,"
-			+ " explosives, six P10 families): %d" % definitions.families.size()
+			+ " six P10 families): %d" % definitions.families.size()
 		)
 	)
 	var kaing := definitions.find_family("build.hollow_blocks")
@@ -156,21 +156,24 @@ func _test_tuning_and_definitions() -> void:
 	_check(
 		(
 			definitions.enabled_variant_keys("build.hollow_blocks")
-			== PackedStringArray([KAING_1X1, KAING_2X3])
+			== PackedStringArray([KAING_1X1, KAING_1X3, KAING_2X3])
 		),
-		"prototype Kaing subset is exactly 1x1 and 2x3"
-	)
-	_check(
-		definitions.enabled_variant_keys("build.bamboo_bridge") == PackedStringArray([TULAY_4X1]),
-		"prototype Tulay subset is exactly horizontal 4x1"
+		"all three Kaing variants are enabled"
 	)
 	_check(
 		(
-			not definitions.is_variant_enabled(KAING_1X3)
-			and not definitions.is_variant_enabled(TULAY_3X1)
-			and not definitions.is_variant_enabled(TULAY_5X1)
+			definitions.enabled_variant_keys("build.bamboo_bridge")
+			== PackedStringArray([TULAY_3X1, TULAY_4X1, TULAY_5X1])
 		),
-		"1x3 column and 3x1/5x1 Tulay are defined but not enabled"
+		"all three Tulay variants are enabled"
+	)
+	_check(
+		(
+			definitions.is_variant_enabled(KAING_1X3)
+			and definitions.is_variant_enabled(TULAY_3X1)
+			and definitions.is_variant_enabled(TULAY_5X1)
+		),
+		"1x3 column and 3x1/5x1 Tulay join the default egg pool"
 	)
 	var kaing_solid_only := true
 	for variant in kaing.variants:
@@ -1256,25 +1259,24 @@ func _test_tulay_physics() -> void:
 		"peak_speed=%.1f all_landed=%s" % [worst_speed, all_landed],
 		all_landed and worst_speed >= 1700.0
 	)
-	# Ceiling: rising through a Tulay directly under the arena ceiling never clips.
+	# Rising through a Tulay near the top of the stage never clips. The arena ceiling was removed on
+	# 2026-10-22, so the chicken now rises past y=0 and falls back: what matters is that it passes
+	# the one-way strip from below and still lands on top of it.
 	ids = _arrange([{"variant": TULAY_4X1, "cell": Vector2i(14, 3)}])
 	_put_actor_feet(Vector2(1024.0, 210.0 + room.tuning.body_height_wu))
 	await _frames(1)
 	actor.launch(Vector2(0.0, -1600.0))
 	var highest_head := 10000.0
-	var saw_ceiling := false
 	for _frame in range(25):
 		await physics_frame
 		highest_head = minf(highest_head, actor.global_position.y - _half_height())
-		saw_ceiling = saw_ceiling or actor.is_on_ceiling()
 	await _settle(60)
 	_row(
-		"T18 Tulay under ceiling",
-		"passes the strip, stops at the arena ceiling (head y>=0), then lands on top (feet y=192)",
-		"highest_head=%.2f ceiling=%s final_feet=%.2f" % [highest_head, saw_ceiling, _feet_y()],
+		"T18 Tulay rising through the strip",
+		"passes the strip from below, then lands on top (feet y=192)",
+		"highest_head=%.2f final_feet=%.2f" % [highest_head, _feet_y()],
 		(
-			highest_head >= -0.5
-			and saw_ceiling
+			highest_head < 192.0
 			and absf(_feet_y() - 192.0) <= FEET_TOLERANCE_WU
 			and _supported_by(ids[0])
 		)
@@ -1580,7 +1582,14 @@ func _test_placeholder_previews_and_library() -> void:
 		if egg == null:
 			text_free = false
 			continue
-		text_free = text_free and egg.variant_key == key and egg.get_child_count() == 0
+		# A "scene" preview egg holds a copy of the block's own Visual node, so a child is expected.
+		# What must never appear is name or description text: check for labels, not for 0 children.
+		var has_text := false
+		for child in egg.get_children():
+			if child is Label or child is RichTextLabel:
+				has_text = true
+				break
+		text_free = text_free and egg.variant_key == key and not has_text
 	_check(text_free, "each egg shows its exact variant and carries no name or description text")
 	var sample := room.egg_previews[KAING_2X3] as ItemEggPreview
 	var first_phase := sample.loop_phase()

@@ -1,7 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://q0msamkjnjyc"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_c06e7"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_ey56e"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_c06e7"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_ey56e"]
+[ext_resource type="Texture2D" uid="uid://c655qvx8ycqr1" path="res://assets/tiles/Blocks Tiles.png" id="3_ey56e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hop5y"]
 size = Vector2(64, 64)
@@ -23,23 +24,16 @@ modes_pending_review = PackedStringArray()
 rotations = PackedInt32Array(0)
 gated_rotations = PackedInt32Array()
 weight_tuning_key = &"item_kaing_weight"
-preview_silhouette = "crate"
+anchor = 2
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=1199292455]
 shape = SubResource("RectangleShape2D_hop5y")
 
 [node name="Visual" type="Node2D" parent="." unique_id=250061564]
 
-[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1548419197]
-color = Color(0.6039216, 0.41960785, 0.22745098, 1)
-polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
-
-[node name="Slats0_0" type="Line2D" parent="Visual" unique_id=1751661449]
-points = PackedVector2Array(-32, -32, 32, 32, 32, -32, -32, 32)
-width = 4.0
-default_color = Color(0.3529412, 0.22745098, 0.09411765, 1)
-
-[node name="Outline" type="Line2D" parent="Visual" unique_id=1570936983]
-points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32, -32, -32)
-width = 6.0
-default_color = Color(0.16470589, 0.101960786, 0.047058824, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=510910359]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_ey56e")
+hframes = 9
+vframes = 7
+frame = 10

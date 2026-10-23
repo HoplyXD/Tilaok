@@ -1,7 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b4mwby4bh4yhx"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_ko3cw"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_w8qf1"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_ko3cw"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_w8qf1"]
+[ext_resource type="Texture2D" uid="uid://bixjgmn0cc5nw" path="res://assets/tiles/Collapsing Block.png" id="3_w8qf1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3wn3k"]
 size = Vector2(64, 64)
@@ -24,35 +25,12 @@ rotations = PackedInt32Array(0)
 gated_rotations = PackedInt32Array()
 weight_tuning_key = &"item_collapsing_block_weight"
 special = 5
-preview_silhouette = "collapsing_block"
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=1495639000]
 shape = SubResource("RectangleShape2D_3wn3k")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1229893236]
 
-[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1147314785]
-color = Color(0.85, 0.73, 0.52, 1)
-polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
-
-[node name="Cracks" type="Line2D" parent="Visual" unique_id=731375968]
-points = PackedVector2Array(-20, -32, -6, -12, -16, 4, 2, 18, -4, 32, 2, 18, 20, 8, 32, 14)
-width = 3.0
-default_color = Color(0.36, 0.25, 0.12, 1)
-
-[node name="Outline" type="Line2D" parent="Visual" unique_id=1665788899]
-points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32, -32, -32)
-width = 4.0
-default_color = Color(0.36, 0.25, 0.12, 1)
-
-[node name="Label" type="Label" parent="Visual" unique_id=720842475]
-offset_left = -32.0
-offset_top = -30.0
-offset_right = 32.0
-offset_bottom = -12.0
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.2, 0.13, 0.05, 1)
-theme_override_constants/outline_size = 4
-text = "CRUMBLE"
-horizontal_alignment = 1
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=1803773346]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_w8qf1")

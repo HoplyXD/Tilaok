@@ -245,7 +245,7 @@ offset_right = -3.8
 offset_bottom = 24.33
 grow_horizontal = 2
 theme_type_variation = &"PauseScript"
-text = "everyone must be ready to resume"
+text = "any one player can resume"
 horizontal_alignment = 1
 
 [node name="CountdownLabel" type="Label" parent="Center/Panel/Content/HeadingRow" unique_id=64976362]

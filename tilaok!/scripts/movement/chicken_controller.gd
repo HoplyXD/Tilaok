@@ -8,6 +8,8 @@ signal wall_kicked(side: int)
 signal sneak_changed(is_sneaking: bool)
 signal stunned(seconds: float)
 
+const WATER_DRAG := 0.86
+
 @export var seat_index := 0
 @export var tuning: GameplayTuning
 @export var input_router: LocalInputRouter
@@ -29,6 +31,9 @@ var coyote_remaining := 0.0
 var jump_buffer_remaining := 0.0
 var jump_was_held := false
 var intentional_input := false
+## Build mode suppresses direct player movement while leaving gravity, collisions and external
+## forces active. The live-build room owns this per-seat lock.
+var build_input_locked := false
 var containment_outcome_reported := false
 ## Wall slide/jump state (REQ-MOVE-004). Side: -1 wall on the left, +1 on the right, 0 none.
 var wall_side := 0
@@ -45,6 +50,18 @@ var stun_immunity_remaining := 0.0
 var gliding := false
 ## True while standing on a slippery block (Yelo ice, 2026-10-16); refreshed every step.
 var on_ice := false
+## Water volumes in world units (ArenaDefinition.water_regions). Empty on a stage without water.
+var water_regions: Array[Rect2] = []
+## Kill volumes in world units (ArenaDefinition.border_regions). A chicken whose centre enters one
+## is eliminated. Empty on a stage that paints no Border, which then has no boundary at all.
+var border_regions: Array[Rect2] = []
+## True while the body's centre is inside a water volume; the chicken floats instead of falling.
+var in_water := false
+## True while a jump pressed in water is still rising, so buoyancy and drag leave the arc alone.
+var water_jumping := false
+## Per-physics-step velocity retained while floating. Below 1.0 it damps the rise/fall overshoot so
+## a chicken settles at the waterline; it is a feel constant, not a tuned magnitude.
+var _water_surface_y := 0.0
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
 var _jump_impulse := -600.0
@@ -99,16 +116,22 @@ func _physics_process(delta: float) -> void:
 	var in_play := input_router.phase == LocalInputRouter.Phase.PLAY
 	if not in_play:
 		_clear_support()
-	var axis := input_router.movement_axis(seat_index) if in_play else 0.0
-	var jump_down := in_play and input_router.is_action_held(seat_index, "jump")
+	# In build mode the movement keys drive the block cursor, so the chicken holds still.
+	var building := in_play and (input_router.is_build_mode(seat_index) or build_input_locked)
+	var controls_active := in_play and not building
+	var axis := input_router.movement_axis(seat_index) if controls_active else 0.0
+	var jump_down := controls_active and input_router.is_action_held(seat_index, "jump")
 	var next_intent := (
-		in_play and (input_router.has_direction_intent(seat_index) or absf(axis) > 0.0 or jump_down)
+		controls_active
+		and (input_router.has_direction_intent(seat_index) or absf(axis) > 0.0 or jump_down)
 	)
 	if intentional_input != next_intent:
 		intentional_input = next_intent
 		intentional_input_changed.emit(intentional_input)
-	if in_play and input_router.consume_pressed(seat_index, "jump"):
+	if controls_active and input_router.consume_pressed(seat_index, "jump"):
 		jump_buffer_remaining = tuning.jump_buffer_seconds
+	elif building:
+		jump_buffer_remaining = 0.0
 	else:
 		jump_buffer_remaining = maxf(0.0, jump_buffer_remaining - delta)
 	if not in_play:
@@ -123,6 +146,11 @@ func _physics_process(delta: float) -> void:
 		return
 	stun_immunity_remaining = maxf(0.0, stun_immunity_remaining - delta)
 	var stunned_now := stun_remaining > 0.0
+	if building:
+		# Entering build mode stops player-driven horizontal motion immediately. Gravity and
+		# external motion from hazards remain part of the live simulation.
+		locomotion_velocity.x = 0.0
+		jump_was_held = false
 	if stunned_now:
 		# Stunned: no walking, jumping, gliding or sneaking until the timer runs out.
 		stun_remaining = maxf(0.0, stun_remaining - delta)
@@ -135,9 +163,13 @@ func _physics_process(delta: float) -> void:
 		axis = 0.0
 		locomotion_velocity.x = 0.0
 		jump_buffer_remaining = 0.0
+	_update_water()
 	_update_wall_contact(delta)
 	_update_horizontal(axis, delta)
-	_update_vertical(delta, jump_down)
+	if in_water:
+		_update_float(delta)
+	else:
+		_update_vertical(delta, jump_down)
 	var combined := locomotion_velocity + external_velocity
 	combined.y -= _vertical_half_step
 	velocity = combined
@@ -158,6 +190,7 @@ func _physics_process(delta: float) -> void:
 		coyote_remaining = 0.0
 	_notify_block_contacts(axis)
 	_refresh_wall_debug()
+	_check_border()
 	_check_bounds()
 
 
@@ -679,6 +712,67 @@ func _update_vertical(delta: float, jump_down: bool) -> void:
 	jump_was_held = jump_down
 
 
+## Water is not solid, so there is no collision to read: a chicken is in water when its centre is
+## inside one of the stage's water volumes. Remembers that volume's waterline for _update_float().
+func _update_water() -> void:
+	if not tuning.water_enabled or water_regions.is_empty():
+		in_water = false
+		return
+	var was_in_water := in_water
+	in_water = false
+	for region in water_regions:
+		if region.has_point(global_position):
+			in_water = true
+			_water_surface_y = region.position.y
+			break
+	if in_water and not was_in_water:
+		# Entering water kills the fall so a long drop does not punch through the pool.
+		locomotion_velocity.y = minf(locomotion_velocity.y, tuning.water_sink_cap_wu_s)
+		water_jumping = false
+	if not in_water:
+		water_jumping = false
+
+
+## Floating: below the waterline buoyancy lifts the chicken, above it gravity pulls it back, and
+## drag bleeds the overshoot so it settles bobbing at the surface instead of being flung out.
+## A jump press is an upward stroke. Wall slide, wall kick, coyote time and glide do not apply in
+## water; the chicken is swimming, not standing on anything.
+func _update_float(delta: float) -> void:
+	_vertical_half_step = 0.0
+	wall_sliding = false
+	gliding = false
+	coyote_remaining = 0.0
+	if external_velocity.length_squared() > 0.01:
+		jump_buffer_remaining = 0.0
+		return
+	if jump_buffer_remaining > 0.0:
+		# Water is jumpable: a press uses the full jump impulse so a chicken can leave the pool.
+		# The swim stroke alone never clears the waterline, because the stroke clamp below is a
+		# fraction of the jump impulse.
+		locomotion_velocity.y = _jump_impulse
+		water_jumping = true
+		jump_buffer_remaining = 0.0
+	elif water_jumping:
+		# Carry the jump arc through the water under plain gravity. Buoyancy, drag and the stroke
+		# clamp would otherwise cancel the impulse within a frame or two and trap the chicken.
+		locomotion_velocity.y += _fall_gravity * delta
+		if locomotion_velocity.y >= 0.0:
+			water_jumping = false
+	else:
+		var submerged := global_position.y > _water_surface_y
+		if submerged:
+			locomotion_velocity.y -= tuning.water_buoyancy_wu_s2 * delta
+		else:
+			locomotion_velocity.y += _fall_gravity * delta
+		locomotion_velocity.y *= WATER_DRAG
+		locomotion_velocity.y = clampf(
+			locomotion_velocity.y, -tuning.water_stroke_wu_s, tuning.water_sink_cap_wu_s
+		)
+	locomotion_velocity.x = clampf(
+		locomotion_velocity.x, -tuning.water_move_wu_s, tuning.water_move_wu_s
+	)
+
+
 func _update_external_motion(delta: float) -> void:
 	if external_velocity.length_squared() <= 0.01:
 		external_velocity = Vector2.ZERO
@@ -800,6 +894,17 @@ func _draw_wall_debug() -> void:
 		draw_string(
 			font, Vector2(-40.0, 40.0), label, HORIZONTAL_ALIGNMENT_LEFT, 120.0, 9, bar_color
 		)
+
+
+## The Border marker kills instead of blocking: touching one eliminates the chicken. It replaced
+## the containment walls, so this is what stops a chicken running off the stage forever.
+func _check_border() -> void:
+	if border_regions.is_empty() or lifecycle.is_terminal():
+		return
+	for region in border_regions:
+		if region.has_point(global_position):
+			eliminate("border")
+			return
 
 
 func _check_bounds() -> void:

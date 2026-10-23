@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://wu2x1no62irx"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_7tbe0"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_mt4h3"]
-[ext_resource type="Resource" path="res://data/items/visual/hazard.parol_pulse.tres" id="3_lqgah"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_mw4rc"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_7tbe0"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_mt4h3"]
+[ext_resource type="Resource" uid="uid://bfvshtlisbnkj" path="res://data/items/visual/hazard.parol_pulse.tres" id="3_lqgah"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_mw4rc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_81hch"]
 size = Vector2(64, 64)
@@ -26,7 +26,7 @@ variant_id = "span_3x1"
 category = "hazard"
 catalog_order = 4
 library_tell = "Two lantern posts; a dotted line, then a thickening charge line, then a solid beam band."
-library_counterplay = "Cross while the beam is inactive, or use solid cover that truly blocks it."
+library_counterplay = "Cross while the beam is inactive, or place an anchored block between the posts."
 modes_allowed = PackedStringArray("karera")
 modes_pending_review = PackedStringArray("lagsanay", "kangaroo")
 placement_size = Vector2i(3, 1)
@@ -50,6 +50,10 @@ position = Vector2(64, 0)
 shape = SubResource("RectangleShape2D_g131b")
 
 [node name="BeamHitbox" type="Area2D" parent="." unique_id=1294258356]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_mw4rc")
 effect = 4
 

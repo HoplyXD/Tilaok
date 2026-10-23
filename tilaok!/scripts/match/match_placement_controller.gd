@@ -1,6 +1,7 @@
 class_name MatchPlacementController
 extends RefCounted
 
+## Fallback cursor columns, used only when no build region is supplied.
 const START_CELLS: Array[Vector2i] = [
 	Vector2i(8, 8), Vector2i(12, 8), Vector2i(17, 8), Vector2i(22, 8)
 ]
@@ -8,6 +9,14 @@ const START_CELLS: Array[Vector2i] = [
 var cursors: Dictionary = {}
 var definitions: ItemDefinitions
 var tuning: GameplayTuning
+## The map's build area in tiles, from its Build markers (ArenaDefinition.build_region). The cursor
+## is clamped to this instead of the fixed tuning arena size, which on a map larger than 32x16
+## trapped the cursor in the top-left corner and let it roam outside the painted build area.
+## Empty falls back to the tuning arena size.
+var build_region_tiles := Rect2i()
+## Where the build cursor starts: the spawn column, so a round opens next to the chickens rather
+## than at a hardcoded middle-of-the-stage cell. Negative means "use START_CELLS".
+var start_anchor_tile := Vector2i(-1, -1)
 
 
 func setup(
@@ -22,7 +31,7 @@ func setup(
 		var seat_index := int(seat_index_variant)
 		cursors[seat_index] = {
 			"variant_key": str(items_by_seat[seat_index]),
-			"cell": START_CELLS[seat_index % START_CELLS.size()],
+			"cell": _start_cell(seat_index),
 			"quarter_turns": 0,
 			"confirmed": false,
 			"reason": "",
@@ -35,14 +44,51 @@ func move(seat_index: int, delta_cells: Vector2i) -> bool:
 	var cursor: Dictionary = cursors[seat_index]
 	if bool(cursor.confirmed):
 		return false
-	var next: Vector2i = cursor.cell + delta_cells
-	next.x = clampi(next.x, 0, tuning.arena_width_tiles - 1)
-	next.y = clampi(next.y, 0, tuning.arena_height_tiles - 1)
+	var next := _clamp_to_build_area(cursor.cell + delta_cells)
 	if next == cursor.cell:
 		return false
 	cursor.cell = next
 	cursors[seat_index] = cursor
 	return true
+
+
+## Places the cursor directly, clamped into the build area. Used when build mode opens so the
+## block appears beside the player. Returns false when the seat has no cursor or nothing moved.
+func set_cell(seat_index: int, cell: Vector2i) -> bool:
+	if not cursors.has(seat_index):
+		return false
+	var cursor: Dictionary = cursors[seat_index]
+	if bool(cursor.confirmed):
+		return false
+	var next := _clamp_to_build_area(cell)
+	if next == cursor.cell:
+		return false
+	cursor.cell = next
+	cursors[seat_index] = cursor
+	return true
+
+
+## Keeps the cursor inside the map's painted build area, falling back to the tuning arena size for
+## a stage that supplies none.
+func _clamp_to_build_area(cell: Vector2i) -> Vector2i:
+	if build_region_tiles.size.x > 0 and build_region_tiles.size.y > 0:
+		return Vector2i(
+			clampi(cell.x, build_region_tiles.position.x, build_region_tiles.end.x - 1),
+			clampi(cell.y, build_region_tiles.position.y, build_region_tiles.end.y - 1)
+		)
+	return Vector2i(
+		clampi(cell.x, 0, tuning.arena_width_tiles - 1),
+		clampi(cell.y, 0, tuning.arena_height_tiles - 1)
+	)
+
+
+## Seat `seat_index` opens near the spawn anchor when one is known, spread a little so four seats
+## do not stack on one cell, and always inside the build area.
+func _start_cell(seat_index: int) -> Vector2i:
+	if start_anchor_tile.x < 0 or start_anchor_tile.y < 0:
+		return _clamp_to_build_area(START_CELLS[seat_index % START_CELLS.size()])
+	var spread := Vector2i(seat_index % 2, seat_index / 2)
+	return _clamp_to_build_area(start_anchor_tile + spread)
 
 
 func rotate(seat_index: int) -> bool:

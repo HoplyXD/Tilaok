@@ -10,9 +10,9 @@ extends Control
 
 signal return_requested
 
-enum State { TITLE, LIBRARY, SETTINGS, LAN_LOBBY, IN_MATCH }
+enum State { TITLE, LIBRARY, SETTINGS, IN_MATCH }
 
-const BUILD_LABEL := "Tilaok! development build"
+## P11: the visible build text comes from BuildIdentity.label() (version + dev/release channel).
 ## The first-playable route (the P07 human-gate build): karera_slice, no match end. Kept behind
 ## `-- --match-route=first_playable` since the 2026-10-15 default-route decision (D4).
 const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
@@ -21,8 +21,8 @@ const MATCH_SCENE := preload("res://scenes/match/p07_first_playable_room.tscn")
 ## and Kangaroo Main rounds announced a round ahead, Twist stacks). `-- --match-route=lifecycle`
 ## still selects it explicitly.
 const LIFECYCLE_SCENE := preload("res://scenes/match/p12_scheduled_match_room.tscn")
-## Explicit local-only live-build route; the default scheduled route remains reversible.
-const OFFLINE_LIVE_BUILD_SCENE := preload("res://scenes/match/nlb_p05_live_build_room.tscn")
+## Default local PC route: the P12 schedule with a shared GO and timed live construction.
+const OFFLINE_LIVE_BUILD_SCENE := preload("res://scenes/match/offline_live_build_room.tscn")
 const ROUTE_PREFIX := "--match-route="
 const MAP_PREFIX := "--map="
 const ROUTE_LIFECYCLE := "lifecycle"
@@ -33,7 +33,6 @@ const SEED_PREFIX := "--match-seed="
 const TITLE_SCENE := preload("res://scenes/ui/screens/title_screen.tscn")
 const LIBRARY_SCENE := preload("res://scenes/ui/screens/library_screen.tscn")
 const SETTINGS_SCENE := preload("res://scenes/ui/screens/settings_screen.tscn")
-const LAN_LOBBY_SCENE := preload("res://scenes/ui/screens/lan_lobby_screen.tscn")
 const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
@@ -54,38 +53,34 @@ var bridge: UiInputBridge
 var room: P05MatchRoom
 var settings := PresentationSettings.new()
 ## The room each match instantiates: the scheduled full match unless first_playable is asked.
-var match_scene: PackedScene = LIFECYCLE_SCENE
+var match_scene: PackedScene = OFFLINE_LIVE_BUILD_SCENE
 var prompt_map: UiPromptMap
 var library_text: UiLibraryText
 ## Session-only tutorial memory (never written to disk) and the coach for the current match.
 var tutorial_session := TutorialSession.new()
 var tutorial_script: TutorialScript
 var tutorial: TutorialCoordinator
-var network_session: NetworkSessionManager
 ## The map for the next match (MapCatalog id; "default" is the built-in stage). Session only.
 var selected_map_id := MapCatalog.DEFAULT_ID
 
 var _screen: UiScreen
+var _close_requested := false
 
 
 func _ready() -> void:
-	var android_client := OS.has_feature("android")
-	if android_client:
-		# Android is always a lobby client; never fall through the offline-authority default.
-		simulation_role = SimulationAuthority.Role.CLIENT_PRESENTATION
 	if not simulation_authority.configure(int(simulation_role)):
 		push_error("Invalid simulation role; gameplay authority is disabled.")
 		return
-	if not android_client and not harness_mode and _harness_requested():
+	if not harness_mode and _harness_requested():
 		_open_harness.call_deferred()
 		return
 	prompt_map = load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	library_text = load(UiContext.LIBRARY_TEXT_PATH) as UiLibraryText
 	tutorial_script = load(TUTORIAL_SCRIPT_PATH) as TutorialScript
-	var requested_map := map_from_args(OS.get_cmdline_user_args())
+	var requested_map := map_from_args(DevBuildFlags.dev_user_args())
 	if MapCatalog.ids().has(requested_map):
 		selected_map_id = requested_map
-	var requested_route := route_from_args(OS.get_cmdline_user_args())
+	var requested_route := route_from_args(DevBuildFlags.dev_user_args())
 	if requested_route == ROUTE_LIFECYCLE:
 		match_scene = LIFECYCLE_SCENE
 	elif requested_route == ROUTE_FIRST_PLAYABLE:
@@ -104,11 +99,7 @@ func _ready() -> void:
 	if not router.set_authority(simulation_authority):
 		push_error("Could not configure input authority; gameplay input is disabled.")
 		return
-	router.set_shared_keyboard_enabled(not android_client)
-	network_session = NetworkSessionManager.new()
-	network_session.name = "NetworkSession"
-	add_child(network_session)
-	network_session.configure(router)
+	router.set_shared_keyboard_enabled(true)
 	bridge = UiInputBridge.new()
 	bridge.name = "FlowBridge"
 	add_child(bridge)
@@ -116,19 +107,16 @@ func _ready() -> void:
 	router.seat_joined.connect(_on_seat_joined)
 	router.seat_disconnected.connect(_on_seat_disconnected)
 	router.action_pressed.connect(_on_action_pressed)
-	if android_client:
-		show_lan_lobby()
-		print("TILAOK_FLOW_READY state=android_client_lobby profile=%s" % PLAYTEST_PROFILE)
-	else:
-		show_title()
-		print(
-			"TILAOK_FLOW_READY state=title profile=%s route=%s" % [PLAYTEST_PROFILE, _route_name()]
-		)
+	if not harness_mode:
+		# The close button is handled by _notification so SESSION_CLOSE can be attempted first.
+		get_tree().set_auto_accept_quit(false)
+	show_title()
+	print("TILAOK_FLOW_READY state=title profile=%s route=%s" % [PLAYTEST_PROFILE, _route_name()])
 
 
 func _exit_tree() -> void:
-	if network_session != null and is_instance_valid(network_session):
-		network_session.stop_session()
+	if get_tree() != null:
+		get_tree().set_auto_accept_quit(true)
 	if router != null and is_instance_valid(router):
 		if router.seat_joined.is_connected(_on_seat_joined):
 			router.seat_joined.disconnect(_on_seat_joined)
@@ -175,7 +163,6 @@ func show_title(clear_seats: bool = false) -> void:
 	var title := TITLE_SCENE.instantiate() as UiTitleScreen
 	add_child(title)
 	title.start_requested.connect(_enter_match)
-	title.lan_lobby_requested.connect(show_lan_lobby)
 	title.library_requested.connect(show_library)
 	title.settings_requested.connect(show_settings)
 	title.quit_requested.connect(_quit)
@@ -223,28 +210,14 @@ func show_settings() -> void:
 	_use_menu_screen(screen)
 
 
-func show_lan_lobby() -> void:
-	_free_screen()
-	state = State.LAN_LOBBY
-	bridge.screen = null
-	var screen := LAN_LOBBY_SCENE.instantiate() as UiLanLobbyScreen
-	screen.client_only_mode = OS.has_feature("android")
-	screen.bind_session(network_session)
-	screen.back_requested.connect(show_title)
-	add_child(screen)
-	_screen = screen
-	_use_menu_screen(screen)
-
-
 ## Creates a fresh match room on the shared router; the room's own Lobby phase comes first.
 func _enter_match() -> void:
-	if OS.has_feature("android") or not simulation_authority.can_commit():
+	if not simulation_authority.can_commit():
 		return
-	if (
-		network_session != null
-		and network_session.state != NetworkSessionManager.SessionState.OFFLINE
-	):
-		network_session.stop_session()
+	_create_authoritative_match()
+
+
+func _create_authoritative_match() -> void:
 	_free_room()
 	_free_screen()
 	state = State.IN_MATCH
@@ -252,9 +225,12 @@ func _enter_match() -> void:
 	for seat in router.registry.joined_seats():
 		router.registry.set_ready(int(seat.seat), false)
 	room = match_scene.instantiate() as P05MatchRoom
-	var requested_seed := seed_from_args(OS.get_cmdline_user_args())
-	if requested_seed >= 0:
-		room.set_match_seed(requested_seed)
+	var requested_seed := seed_from_args(DevBuildFlags.dev_user_args())
+	if requested_seed < 0:
+		var session_random := RandomNumberGenerator.new()
+		session_random.randomize()
+		requested_seed = session_random.randi()
+	room.set_match_seed(requested_seed)
 	room.input_router = router
 	room.simulation_authority = simulation_authority
 	room.auto_start_on_ready = true
@@ -265,10 +241,7 @@ func _enter_match() -> void:
 	# One map per match: the layout is chosen here, once, before the room builds its arena.
 	# While the guided tutorial is pending the match is on the Tutorial map; once it is done or
 	# skipped, a left-over Tutorial selection falls back to the default stage.
-	if tutorial_session.wants_tutorial_layout() and MapCatalog.ids().has(TUTORIAL_MAP_ID):
-		selected_map_id = TUTORIAL_MAP_ID
-	elif selected_map_id == TUTORIAL_MAP_ID:
-		selected_map_id = MapCatalog.DEFAULT_ID
+	selected_map_id = _match_map_id()
 	room.arena_layout = MapCatalog.layout_for(selected_map_id)
 	room.map_choice_label = map_label(selected_map_id)
 	room.map_selection_enabled = MapCatalog.ids().size() > 1
@@ -289,6 +262,30 @@ func _choose_map(map_id: String) -> void:
 		tutorial_session.skip()
 	selected_map_id = map_id
 	_enter_match()
+
+
+## The map the next match will use: the Tutorial map while the guided tutorial is pending; a
+## left-over Tutorial selection falls back to the first map in the folder once it is done or
+## skipped. The built-in default stage is no longer a selectable entry, so a selection still
+## holding it (a fresh launch) snaps to a real map too: otherwise the Lobby arrows would start
+## from an id that is not in the list and cycle from the wrong place.
+func _match_map_id() -> String:
+	var available := MapCatalog.ids()
+	if tutorial_session.wants_tutorial_layout() and available.has(TUTORIAL_MAP_ID):
+		return TUTORIAL_MAP_ID
+	if selected_map_id == TUTORIAL_MAP_ID or not available.has(selected_map_id):
+		return _first_playable_map(available)
+	return selected_map_id
+
+
+## The first map that is not the guided Tutorial, so skipping the tutorial does not immediately
+## re-select the Tutorial map (it sorts first). Falls back to the built-in default stage when the
+## folder holds nothing else.
+func _first_playable_map(available: PackedStringArray) -> String:
+	for map_id in available:
+		if map_id != TUTORIAL_MAP_ID:
+			return map_id
+	return MapCatalog.DEFAULT_ID
 
 
 func _start_replay() -> void:
@@ -358,7 +355,7 @@ func _refresh_title() -> void:
 		return
 	var seats := router.registry.joined_seats()
 	var device := UiContext.device_for_seat(seats[0]) if not seats.is_empty() else "k1"
-	var label := "%s • %s" % [BUILD_LABEL, PLAYTEST_PROFILE]
+	var label := "%s • %s" % [BuildIdentity.label(), PLAYTEST_PROFILE]
 	if match_scene == MATCH_SCENE:
 		label += " • first playable"
 	elif match_scene == OFFLINE_LIVE_BUILD_SCENE:
@@ -402,11 +399,17 @@ func _free_room() -> void:
 	router.resume_system()
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and not harness_mode and not _close_requested:
+		_close_requested = true
+		_quit()
+
+
 func _quit() -> void:
 	if harness_mode:
 		return_requested.emit()
-	else:
-		get_tree().quit()
+		return
+	get_tree().quit()
 
 
 func _route_name() -> String:
@@ -458,7 +461,7 @@ static func route_from_args(arguments: PackedStringArray) -> String:
 
 
 func _harness_requested() -> bool:
-	for argument in OS.get_cmdline_user_args():
+	for argument in DevBuildFlags.dev_user_args():
 		if argument == HARNESS_FLAG or argument.begins_with(OPEN_ROOM_PREFIX):
 			return true
 	return false

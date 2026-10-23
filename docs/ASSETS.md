@@ -269,13 +269,13 @@ Cultural review: not required for the fonts themselves; Filipino/Hiligaynon copy
 
 **Placeholders written for the restyle (programming, not production art).** All are scene nodes or Theme StyleBoxes written by Claude (AI) from the user-supplied reference PNGs; the PNGs themselves are the team's design exports and are not shipped (only downscaled side-by-side evidence JPGs are kept in `docs/evidence/ui-reference/`).
 
-## NLB-P02 QR utility — 2026-10-20
+## Retired NLB-P02 QR utility — historical, 2026-10-20
 
 | Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | Status |
 |---|---|---|---|---|---|---|
-| `utility.kenyoni_qr_code_v1_2_0` | `tilaok!/addons/qr_code/` | Godot code utility; renders short-lived lobby invitation QR in the PC LAN lobby | Kenyoni Software, Godot QR Code Generator v1.2.0; [documentation/source](https://kenyoni-software.github.io/godot-addons/addons/qr_code/) | MIT; retained at `tilaok!/addons/qr_code/LICENSE.md` | Vendor code copied as a functional utility; not production art | Engineering use; invitation output independently decoded with ZXing C++ 3.1.1 |
+| `utility.kenyoni_qr_code_v1_2_0` | `tilaok!/addons/qr_code/` | Godot code utility; renders short-lived lobby invitation QR in the PC LAN lobby | Kenyoni Software, Godot QR Code Generator v1.2.0; [documentation/source](https://kenyoni-software.github.io/godot-addons/addons/qr_code/) | MIT; retained at `archive/retired-networked-live-build/third_party_licenses/qr_code/LICENSE.md` | Vendor code copied as a functional utility; not production art | Engineering use; invitation output independently decoded with ZXing C++ 3.1.1 |
 
-The project uses only the v1.2.0 code utility because its documentation lists Godot 4.7 compatibility. The v2 listing is marked unstable. AI assistance wired the licensed utility into the lobby; no AI-generated production asset is included. The QR verification used a synthetic invalid address and dummy credential; no live invitation is stored in repository evidence.
+This dependency was removed from the active project on 2026-10-22 with phone/LAN retirement. Its MIT license text is retained at `archive/retired-networked-live-build/third_party_licenses/qr_code/LICENSE.md`; the source attribution and prior verification remain historical. No QR utility is packaged in the current build.
 
 | Item | Where | Status | Human handoff |
 |---|---|---|---|
@@ -357,9 +357,9 @@ Read from frame `103:553` "Parchment main menu" of the team Figma file "UI-Tilao
 |---|---|---|---|---|---|---|---|
 | `ui.title.emblem` | `assets/ui/title/ui.title.emblem.svg` (SHA-256 `3d091ebe…a6506fe`; `svg/scale=3.0`, mipmaps on) | UI vector; olive envelope above the title (`Card/Art_Emblem` in `title_screen.tscn`) | Team Figma layer "Postal emblem" (`103:557`) | To confirm (see above); Figma file history | None | Download and placement only ([AI_USAGE](AI_USAGE.md#title-screen-built-from-the-figma-frame--october-20-2026)) | Imported — provenance open |
 | `ui.title.ornament` | `assets/ui/title/ui.title.ornament.svg` (SHA-256 `fd5be760…9565901`; `svg/scale=3.0`, mipmaps on) | UI vector; leaf-and-diamond divider under the subtitle (`Card/Art_Ornament`) | Team Figma layer "Botanical ornament" (`103:560`) | To confirm (see above); Figma file history | None (the right-hand leaf is clipped by the layer's own bounds, as in the frame) | Download and placement only | Imported — provenance open |
-## Android scanner provenance — NLB-P03 (2026-10-20)
+## Retired Android scanner provenance — NLB-P03 (historical, 2026-10-20)
 
-The Godot v2 plugin source is `tilaok!/addons/tilaok_qr_scanner/`; plugin glue and camera overlay are project-authored. Godot's Android Plugin Template was used for Gradle/wrapper structure; its upstream `m4gr3d/Godot-Android-Plugin-Template` source is pinned in the plugin README and its MIT license is retained as `LICENSE-GODOT-PLUGIN-TEMPLATE`. No template application/game logic was copied. Build-time Gradle wrapper components retain their upstream licenses.
+The Android scanner/plugin was removed from the active project on 2026-10-22. Its template MIT license text is retained at `archive/retired-networked-live-build/third_party_licenses/tilaok_qr_scanner/LICENSE-GODOT-PLUGIN-TEMPLATE`; the dependency record below is historical, and no scanner is packaged. Godot's Android Plugin Template was used for Gradle/wrapper structure; its upstream `m4gr3d/Godot-Android-Plugin-Template` source is pinned in the plugin README and its MIT license is retained as `LICENSE-GODOT-PLUGIN-TEMPLATE`. No template application/game logic was copied. Build-time Gradle wrapper components retain their upstream licenses.
 
 | Dependency | Source/version | License | Runtime use, ABI and network behavior |
 |---|---|---|---|
@@ -368,7 +368,8 @@ The Godot v2 plugin source is `tilaok!/addons/tilaok_qr_scanner/`; plugin glue a
 | AndroidX Activity / Fragment | 1.10.1 / 1.8.6, Google Maven | Apache-2.0 | Android plugin/UI compatibility dependencies, no network service or native ABI payload. |
 | Godot Android API | `org.godotengine:godot:4.7.2.stable`, Godot Maven; compile-only | Godot engine license | Plugin API only; Godot runtime is packaged by the export. |
 
-The APK packages the plugin and decoder and supports Godot's `arm64-v8a` and `armeabi-v7a` engine libraries. Gradle downloads dependencies only at build time. The installed scanner requires no network, account, analytics, ML model download, cloud QR decoder, or external image transfer. Godot's v2 plugin manifest registers `TilaokQrScanner`; Android CAMERA is a runtime permission requested only after the player selects Scan QR. A user can cancel/back out or use Lobby ID/manual entry after denial. No camera frame, invitation token or session credential is persisted. Actual permission UX and camera use still require physical-device verification. See [P03 evidence](evidence/nlb/p03/README.md) and the [plugin source README](../tilaok!/addons/tilaok_qr_scanner/README.md).
+The APK packages the plugin and decoder and supports Godot's `arm64-v8a` and `armeabi-v7a` engine libraries. Gradle downloads dependencies only at build time. The installed scanner requires no network, account, analytics, ML model download, cloud QR decoder, or external image transfer. Godot's v2 plugin manifest registers `TilaokQrScanner`; Android CAMERA is a runtime permission requested only after the player selects Scan QR. A user can cancel/back out or use Lobby ID/manual entry after denial. No camera frame, invitation token or session credential is persisted. Actual permission UX and camera use still require physical-device verification. See [P03 evidence](archive/retired-networked-live-build/evidence/p03/README.md).
+
 
 ## UI and placement sound effects — 2026-10-23
 

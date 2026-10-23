@@ -30,21 +30,6 @@ const ONE_SHOT_ACTIONS := [
 	"live_rotate",
 	"live_cancel"
 ]
-const REMOTE_ACTIONS := [
-	"left",
-	"right",
-	"up",
-	"down",
-	"jump",
-	"confirm",
-	"back",
-	"rotate",
-	"pause",
-	"ready",
-	"claim",
-	"cheer",
-	"help"
-]
 ## The physical Rotate control (West / R / Right Shift) is context-sensitive: it opens the Library
 ## from the Lobby ("help") and cheers from the stands during Play ("cheer"). Rotation itself is
 ## only meaningful in Place, so neither alias takes anything from the placement rules.
@@ -62,6 +47,10 @@ var tuning: GameplayTuning
 var phase := Phase.LOBBY
 var shared_keyboard_enabled := false
 var rotation_supported := false
+## Set only by live-build rooms: keyboard south keys then confirm a live placement during Play.
+var live_build_confirm_enabled := false
+## Seats currently in build mode. Their movement keys steer the block cursor instead of the chicken.
+var build_mode_seats: Dictionary = {}
 var _held: Dictionary = {}
 var _pressed: Dictionary = {}
 var _blocked: Dictionary = {}
@@ -69,11 +58,11 @@ var _axis: Dictionary = {}
 var _repeat_elapsed: Dictionary = {}
 var _active_navigation: Dictionary = {}
 var _stick_x: Dictionary = {}
+var _stick_y: Dictionary = {}
 var _aim_x: Dictionary = {}
 var _aim_y: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
-var _remote_axis: Dictionary = {}
 var _system_paused := false
 
 
@@ -156,71 +145,16 @@ func set_rotation_supported(supported: bool) -> void:
 	rotation_supported = supported
 
 
+func set_live_build_mode(seat_index: int, enabled: bool) -> void:
+	set_build_mode(seat_index, enabled)
+
+
 func set_authority(value: SimulationAuthority) -> bool:
 	if value == null or not value.configured:
 		return false
 	authority = value
 	registry.authority = value
 	return true
-
-
-## Shared logical input boundary used by transport-free remote fixtures and future transports.
-## The caller supplies a source identity and action only; ownership resolves the seat locally.
-func apply_remote_action(source_id: String, action_name: String, pressed: bool) -> bool:
-	if (
-		authority == null
-		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
-		or not authority.can_commit()
-	):
-		return false
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0 or action_name not in REMOTE_ACTIONS:
-		return false
-	var physical_key := "remote:%s:%s" % [source_id, action_name]
-	if pressed == _held.has(physical_key):
-		return true
-	_handle_action_edge(seat_index, action_name, physical_key, pressed)
-	return true
-
-
-func apply_remote_axis(source_id: String, value: float) -> bool:
-	if (
-		authority == null
-		or authority.role != SimulationAuthority.Role.HOST_AUTHORITY
-		or not authority.can_commit()
-	):
-		return false
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0 or not is_finite(value) or value < -1.0 or value > 1.0:
-		return false
-	var previous := float(_remote_axis.get(seat_index, 0.0))
-	_remote_axis[seat_index] = value
-	if is_zero_approx(previous) != is_zero_approx(value):
-		intentional_input_edge.emit(
-			seat_index,
-			"run_axis",
-			"remote:%s" % source_id,
-			not is_zero_approx(value),
-			Time.get_ticks_usec()
-		)
-	return true
-
-
-func clear_remote_source(source_id: String) -> void:
-	var seat_index := registry.seat_for_remote_source(source_id)
-	if seat_index < 0:
-		return
-	var prefix := "remote:%s:" % source_id
-	for key_variant in _held.keys():
-		var key := str(key_variant)
-		if key.begins_with(prefix):
-			_handle_action_edge(seat_index, str(_held[key_variant]), key, false)
-	var axis := float(_remote_axis.get(seat_index, 0.0))
-	if not is_zero_approx(axis):
-		intentional_input_edge.emit(
-			seat_index, "run_axis", "remote:%s" % source_id, false, Time.get_ticks_usec()
-		)
-	_remote_axis.erase(seat_index)
 
 
 func _input(event: InputEvent) -> void:
@@ -234,10 +168,17 @@ func _input(event: InputEvent) -> void:
 
 func _handle_joy_button(event: InputEventJoypadButton) -> void:
 	var physical_key := "joy:%d:%d" % [event.device, event.button_index]
+	var seat_index := registry.seat_for_gamepad(event.device)
+	if not event.pressed and _held.has(physical_key):
+		if seat_index >= 0:
+			_handle_action_edge(seat_index, str(_held[physical_key]), physical_key, false)
+		else:
+			_held.erase(physical_key)
+			_blocked.erase(physical_key)
+		return
 	var action_name := _joy_action(event.button_index)
 	if action_name.is_empty():
 		return
-	var seat_index := registry.seat_for_gamepad(event.device)
 	if seat_index < 0:
 		if event.pressed and event.button_index == JOY_BUTTON_A:
 			if _held.has(physical_key):
@@ -255,6 +196,8 @@ func _handle_joy_button(event: InputEventJoypadButton) -> void:
 			_blocked.erase(physical_key)
 		return
 	action_name = _gamepad_phase_action(event.button_index)
+	if phase == Phase.PLAY and is_build_mode(seat_index):
+		action_name = _gamepad_build_action_for_joy_button(event.button_index, action_name)
 	_handle_action_edge(seat_index, action_name, physical_key, event.pressed)
 
 
@@ -291,6 +234,30 @@ func _handle_joy_axis(event: InputEventJoypadMotion) -> void:
 		return
 	var seat_index := registry.seat_for_gamepad(event.device)
 	if seat_index < 0:
+		return
+	if phase == Phase.PLAY and is_build_mode(seat_index):
+		var current := event.axis_value
+		if absf(current) < tuning_neutral_threshold():
+			current = 0.0
+		elif absf(current) < tuning_activation_threshold():
+			current = (
+				float(_aim_x.get(seat_index, 0.0))
+				if event.axis == JOY_AXIS_LEFT_X
+				else float(_aim_y.get(seat_index, 0.0))
+			)
+		if event.axis == JOY_AXIS_LEFT_X:
+			_aim_x[seat_index] = current
+		else:
+			_aim_y[seat_index] = current
+		return
+	if event.axis == JOY_AXIS_LEFT_Y:
+		var vertical := event.axis_value
+		if absf(vertical) < tuning_neutral_threshold():
+			vertical = 0.0
+		elif absf(vertical) < tuning_activation_threshold():
+			vertical = float(_stick_y.get(seat_index, 0.0))
+		_stick_y[seat_index] = vertical
+		_handle_stick_navigation(seat_index, event)
 		return
 	if event.axis == JOY_AXIS_LEFT_X:
 		var previous: float = _stick_x.get(seat_index, 0.0)
@@ -366,13 +333,20 @@ func _handle_key(event: InputEventKey) -> void:
 	if not shared_keyboard_enabled:
 		return
 	var physical_key := "kbd:%s:%d" % [layout, key]
-	var action_name := _key_action(layout, key)
+	var seat_index := registry.seat_for_keyboard(layout)
+	if not event.pressed and _held.has(physical_key):
+		if seat_index >= 0:
+			_handle_action_edge(seat_index, str(_held[physical_key]), physical_key, false)
+		else:
+			_held.erase(physical_key)
+			_blocked.erase(physical_key)
+		return
+	var action_name := _key_action(layout, key, seat_index)
 	if action_name.is_empty():
 		if not event.pressed and _held.has(physical_key):
 			_held.erase(physical_key)
 			_blocked.erase(physical_key)
 		return
-	var seat_index := registry.seat_for_keyboard(layout)
 	if seat_index < 0 and phase == Phase.LOBBY and event.pressed and action_name == "ready":
 		seat_index = registry.join_keyboard(layout)
 		if seat_index >= 0:
@@ -489,7 +463,7 @@ func intent_vector(seat_index: int) -> Vector2:
 	var x := _digital_axis(seat_index, "left", "right")
 	var y := _digital_axis(seat_index, "up", "down")
 	if x == 0.0 and not _has_active_gamepad_dpad(seat_index):
-		x = float(_remote_axis.get(seat_index, _stick_x.get(seat_index, 0.0)))
+		x = float(_stick_x.get(seat_index, 0.0))
 	return (
 		Vector2(x, y).normalized()
 		if phase in [Phase.MENU, Phase.PUGAD, Phase.PLACE]
@@ -497,12 +471,31 @@ func intent_vector(seat_index: int) -> Vector2:
 	)
 
 
+## True while this seat is aiming a block instead of steering its chicken.
+func is_build_mode(seat_index: int) -> bool:
+	return bool(build_mode_seats.get(seat_index, false))
+
+
+func set_build_mode(seat_index: int, enabled: bool) -> void:
+	if enabled:
+		build_mode_seats[seat_index] = true
+		_aim_x[seat_index] = float(_stick_x.get(seat_index, 0.0))
+		_aim_y[seat_index] = float(_stick_y.get(seat_index, 0.0))
+	else:
+		build_mode_seats.erase(seat_index)
+		_aim_x[seat_index] = 0.0
+		_aim_y[seat_index] = 0.0
+
+
 func movement_axis(seat_index: int) -> float:
+	# In build mode the movement keys belong to the block cursor, so the chicken reads nothing.
+	if is_build_mode(seat_index):
+		return 0.0
 	var dpad := _digital_axis(seat_index, "left", "right")
 	return (
 		dpad
 		if dpad != 0.0 or _has_active_gamepad_dpad(seat_index)
-		else float(_remote_axis.get(seat_index, _stick_x.get(seat_index, 0.0)))
+		else float(_stick_x.get(seat_index, 0.0))
 	)
 
 
@@ -510,7 +503,7 @@ func has_direction_intent(seat_index: int) -> bool:
 	return (
 		_is_action_held(seat_index, "left")
 		or _is_action_held(seat_index, "right")
-		or not is_zero_approx(float(_remote_axis.get(seat_index, 0.0)))
+		or not is_zero_approx(float(_stick_x.get(seat_index, 0.0)))
 	)
 
 
@@ -526,10 +519,6 @@ func intentional_input_sources(seat_index: int) -> Array[String]:
 			result.append(str(physical_key))
 	if not is_zero_approx(float(_stick_x.get(seat_index, 0.0))):
 		result.append("stick")
-	for seat in registry.joined_seats():
-		if int(seat.seat) == seat_index and seat.device_kind == "remote":
-			if not is_zero_approx(float(_remote_axis.get(seat_index, 0.0))):
-				result.append("remote:%s" % str(seat.remote_source_id))
 	result.sort()
 	return result
 
@@ -577,6 +566,23 @@ func is_action_held(seat_index: int, action_name: String) -> bool:
 
 
 func live_aim_vector(seat_index: int) -> Vector2:
+	# In build mode the movement keys aim the block, so WASD / arrows / IJKL / numpad 8426 steer
+	# the cursor. The dedicated aim keys keep working as a second way in.
+	if is_build_mode(seat_index):
+		# During Play the up key resolves to "jump" (W, Up, I, Numpad 8), so accept either name:
+		# the chicken cannot jump in build mode anyway.
+		var up_held := (
+			_is_action_held(seat_index, "up", true) or _is_action_held(seat_index, "jump", true)
+		)
+		var moved := Vector2(
+			(
+				float(_is_action_held(seat_index, "right", true))
+				- float(_is_action_held(seat_index, "left", true))
+			),
+			float(_is_action_held(seat_index, "down", true)) - float(up_held)
+		)
+		if not moved.is_zero_approx():
+			return moved.normalized()
 	var x := float(_aim_x.get(seat_index, 0.0))
 	var y := float(_aim_y.get(seat_index, 0.0))
 	if is_zero_approx(x):
@@ -627,9 +633,9 @@ func clear_input_state() -> void:
 	_repeat_elapsed.clear()
 	_active_navigation.clear()
 	_stick_x.clear()
+	_stick_y.clear()
 	_aim_x.clear()
 	_aim_y.clear()
-	_remote_axis.clear()
 	_stick_sign.clear()
 
 
@@ -716,9 +722,6 @@ func _physical_key_seat(key: String) -> int:
 	if key.begins_with("kbd:"):
 		var parts := key.split(":")
 		return registry.seat_for_keyboard(parts[1])
-	if key.begins_with("remote:"):
-		var parts := key.split(":")
-		return registry.seat_for_remote_source(parts[1])
 	return -1
 
 
@@ -746,6 +749,8 @@ func _joy_action(button: int) -> String:
 			return "build_toggle"
 		JOY_BUTTON_RIGHT_SHOULDER:
 			return "live_rotate"
+		JOY_BUTTON_LEFT_SHOULDER:
+			return "live_cancel"
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -777,6 +782,8 @@ func _gamepad_phase_action(button: int) -> String:
 			return "build_toggle" if phase == Phase.PLAY else ""
 		JOY_BUTTON_RIGHT_SHOULDER:
 			return "live_rotate" if phase == Phase.PLAY else ""
+		JOY_BUTTON_LEFT_SHOULDER:
+			return "live_cancel" if phase == Phase.PLAY else ""
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -869,6 +876,10 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 			KEY_KP_4,
 			KEY_KP_2,
 			KEY_KP_6,
+			KEY_KP_7,
+			KEY_KP_1,
+			KEY_KP_3,
+			KEY_KP_9,
 			KEY_KP_0,
 			KEY_KP_5,
 			KEY_KP_PERIOD,
@@ -881,7 +892,13 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 	return ""
 
 
-func _key_action(layout: String, key: int) -> String:
+func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
+	if phase == Phase.PLAY and is_build_mode(seat_index):
+		if live_build_confirm_enabled and key == KEY_SPACE and layout == "K1":
+			return "confirm"
+		var build_direction := _build_aim_action_for_key(layout, key)
+		if not build_direction.is_empty():
+			return build_direction
 	if layout == "K1":
 		match key:
 			KEY_Q:
@@ -1009,6 +1026,69 @@ func _key_action(layout: String, key: int) -> String:
 	return ""
 
 
+func _build_aim_action_for_key(layout: String, key: int) -> String:
+	if layout == "K1":
+		match key:
+			KEY_A:
+				return "aim_left"
+			KEY_D:
+				return "aim_right"
+			KEY_W:
+				return "aim_up"
+			KEY_S:
+				return "aim_down"
+	elif layout == "K3":
+		match key:
+			KEY_J:
+				return "aim_left"
+			KEY_L:
+				return "aim_right"
+			KEY_I:
+				return "aim_up"
+			KEY_K:
+				return "aim_down"
+	elif layout == "K4":
+		match key:
+			KEY_KP_4:
+				return "aim_left"
+			KEY_KP_6:
+				return "aim_right"
+			KEY_KP_8:
+				return "aim_up"
+			KEY_KP_2:
+				return "aim_down"
+	else:
+		match key:
+			KEY_LEFT:
+				return "aim_left"
+			KEY_RIGHT:
+				return "aim_right"
+			KEY_UP:
+				return "aim_up"
+			KEY_DOWN:
+				return "aim_down"
+	return ""
+
+
+func _build_aim_action_for_joy_button(button: int, fallback: String) -> String:
+	match button:
+		JOY_BUTTON_DPAD_LEFT:
+			return "aim_left"
+		JOY_BUTTON_DPAD_RIGHT:
+			return "aim_right"
+		JOY_BUTTON_DPAD_UP:
+			return "aim_up"
+		JOY_BUTTON_DPAD_DOWN:
+			return "aim_down"
+	return fallback
+
+
+func _gamepad_build_action_for_joy_button(button: int, fallback: String) -> String:
+	if button == JOY_BUTTON_A:
+		return "confirm"
+	return _build_aim_action_for_joy_button(button, fallback)
+
+
 ## W (K1), Up (K2), I (K3) and Numpad 8 (K4) jump during Play (hold to glide) and stay "up" for
 ## menus and Place. Space/Right Ctrl remain alternate jump keys for K1/K2.
 func _keyboard_up_action() -> String:
@@ -1021,5 +1101,7 @@ func _keyboard_south_action() -> String:
 	if phase == Phase.PUGAD:
 		return "claim"
 	if phase in [Phase.MENU, Phase.PLACE, Phase.PAUSE, Phase.RESULTS]:
+		return "confirm"
+	if phase == Phase.PLAY and live_build_confirm_enabled:
 		return "confirm"
 	return ""

@@ -1,0 +1,244 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P04_ITEM_LAB_READY families=19 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 1 starts a match
+PASS cycle 1 reaches the final results
+PASS cycle 1: the client ledger and totals equal the host's
+PASS cycle 1: the ledger records the ending kind
+NLB_P09_REKEY match=2 peers=2 failed=0
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 1: Replay mints a new match ID and epoch
+PASS cycle 1: every peer is re-keyed under the old epoch
+PASS cycle 1: Replay leaves pending_actions empty
+PASS cycle 1: Replay leaves placement_cache empty
+PASS cycle 1: Replay leaves placement_inflight empty
+PASS cycle 1: Replay leaves known_stage_entities empty
+PASS cycle 1: Replay leaves known_transients empty
+PASS cycle 1: Replay leaves result_action_cache empty
+PASS cycle 1: Replay leaves snapshot_receivers empty
+PASS cycle 1: Replay leaves tombstone_repeats empty
+PASS cycle 1: Replay leaves terrain_parts empty
+PASS cycle 1: Replay leaves pause_epoch empty
+PASS cycle 1: Replay leaves rekey_pending empty
+PASS cycle 1: only the live identities and at most two retired epochs remain
+PASS cycle 1 clears construction, transients and claims
+PASS cycle 1 clears every score
+PASS cycle 1 clears readiness, results and the host ledger
+PASS cycle 1 clears the Lagsanay controller
+PASS cycle 2 enters tied Sudden Death
+NLB_P06_TERRAIN_COMMIT base=0 new=1 edits=1 parts=1
+PASS Sudden Death resolves
+PASS cycle 2 reaches the final results
+FAIL cycle 2: the client ledger and totals equal the host's
+FAIL cycle 2: the ledger records the ending kind
+NLB_P09_REKEY match=3 peers=2 failed=0
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 2: Replay mints a new match ID and epoch
+PASS cycle 2: every peer is re-keyed under the old epoch
+PASS cycle 2: Replay leaves pending_actions empty
+PASS cycle 2: Replay leaves placement_cache empty
+PASS cycle 2: Replay leaves placement_inflight empty
+PASS cycle 2: Replay leaves known_stage_entities empty
+PASS cycle 2: Replay leaves known_transients empty
+PASS cycle 2: Replay leaves result_action_cache empty
+PASS cycle 2: Replay leaves snapshot_receivers empty
+PASS cycle 2: Replay leaves tombstone_repeats empty
+PASS cycle 2: Replay leaves terrain_parts empty
+PASS cycle 2: Replay leaves pause_epoch empty
+PASS cycle 2: Replay leaves rekey_pending empty
+PASS cycle 2: only the live identities and at most two retired epochs remain
+PASS cycle 2 clears construction, transients and claims
+PASS cycle 2 clears every score
+PASS cycle 2 clears readiness, results and the host ledger
+PASS cycle 2 clears the Lagsanay controller
+PASS cycle 3 reaches the final results
+FAIL cycle 3: the client ledger and totals equal the host's
+FAIL cycle 3: the ledger records the ending kind
+PASS cycle 3: Return to Lobby is handed to the session owner
+PASS cycle 3: a stopped session retains nothing []
+PASS cycle 3 clears construction, transients and claims
+PASS cycle 3 clears every score
+PASS cycle 3 clears readiness, results and the host ledger
+PASS cycle 3 clears the Lagsanay controller
+PASS cycle 3 object count stays within five of the warmed baseline
+PASS cycle 3 static memory stays within 1 MiB of the warmed baseline
+P12_BARYA_OFFER match=4 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 4 starts a match
+PASS cycle 4 enters tied Sudden Death
+NLB_P06_TERRAIN_COMMIT base=0 new=1 edits=1 parts=1
+PASS Sudden Death resolves
+PASS cycle 4 reaches the final results
+PASS cycle 4: the client ledger and totals equal the host's
+PASS cycle 4: the ledger records the ending kind
+NLB_P09_REKEY match=2 peers=2 failed=0
+P12_BARYA_OFFER match=5 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 4: Replay mints a new match ID and epoch
+PASS cycle 4: every peer is re-keyed under the old epoch
+PASS cycle 4: Replay leaves pending_actions empty
+PASS cycle 4: Replay leaves placement_cache empty
+PASS cycle 4: Replay leaves placement_inflight empty
+PASS cycle 4: Replay leaves known_stage_entities empty
+PASS cycle 4: Replay leaves known_transients empty
+PASS cycle 4: Replay leaves result_action_cache empty
+PASS cycle 4: Replay leaves snapshot_receivers empty
+PASS cycle 4: Replay leaves tombstone_repeats empty
+PASS cycle 4: Replay leaves terrain_parts empty
+PASS cycle 4: Replay leaves pause_epoch empty
+PASS cycle 4: Replay leaves rekey_pending empty
+PASS cycle 4: only the live identities and at most two retired epochs remain
+PASS cycle 4 clears construction, transients and claims
+PASS cycle 4 clears every score
+PASS cycle 4 clears readiness, results and the host ledger
+PASS cycle 4 clears the Lagsanay controller
+PASS cycle 4 object count stays within five of the warmed baseline
+PASS cycle 4 static memory stays within 1 MiB of the warmed baseline
+PASS cycle 5 reaches the final results
+FAIL cycle 5: the client ledger and totals equal the host's
+FAIL cycle 5: the ledger records the ending kind
+NLB_P09_REKEY match=3 peers=2 failed=0
+P12_BARYA_OFFER match=6 round=1 egg=egg_05
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 5: Replay mints a new match ID and epoch
+PASS cycle 5: every peer is re-keyed under the old epoch
+PASS cycle 5: Replay leaves pending_actions empty
+PASS cycle 5: Replay leaves placement_cache empty
+PASS cycle 5: Replay leaves placement_inflight empty
+PASS cycle 5: Replay leaves known_stage_entities empty
+PASS cycle 5: Replay leaves known_transients empty
+PASS cycle 5: Replay leaves result_action_cache empty
+PASS cycle 5: Replay leaves snapshot_receivers empty
+PASS cycle 5: Replay leaves tombstone_repeats empty
+PASS cycle 5: Replay leaves terrain_parts empty
+PASS cycle 5: Replay leaves pause_epoch empty
+PASS cycle 5: Replay leaves rekey_pending empty
+PASS cycle 5: only the live identities and at most two retired epochs remain
+PASS cycle 5 clears construction, transients and claims
+PASS cycle 5 clears every score
+PASS cycle 5 clears readiness, results and the host ledger
+PASS cycle 5 clears the Lagsanay controller
+PASS cycle 5 object count stays within five of the warmed baseline
+PASS cycle 5 static memory stays within 1 MiB of the warmed baseline
+NLB_P06_TERRAIN_COMMIT base=0 new=1 edits=1 parts=1
+PASS cycle 6 enters tied Sudden Death
+PASS Sudden Death resolves
+PASS cycle 6 reaches the final results
+FAIL cycle 6: the client ledger and totals equal the host's
+FAIL cycle 6: the ledger records the ending kind
+PASS cycle 6: Return to Lobby is handed to the session owner
+PASS cycle 6: a stopped session retains nothing []
+PASS cycle 6 clears construction, transients and claims
+PASS cycle 6 clears every score
+PASS cycle 6 clears readiness, results and the host ledger
+PASS cycle 6 clears the Lagsanay controller
+PASS cycle 6 object count stays within five of the warmed baseline
+PASS cycle 6 static memory stays within 1 MiB of the warmed baseline
+P12_BARYA_OFFER match=7 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 7 starts a match
+PASS cycle 7 reaches the final results
+PASS cycle 7: the client ledger and totals equal the host's
+PASS cycle 7: the ledger records the ending kind
+NLB_P09_REKEY match=2 peers=2 failed=0
+P12_BARYA_OFFER match=8 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 7: Replay mints a new match ID and epoch
+PASS cycle 7: every peer is re-keyed under the old epoch
+PASS cycle 7: Replay leaves pending_actions empty
+PASS cycle 7: Replay leaves placement_cache empty
+PASS cycle 7: Replay leaves placement_inflight empty
+PASS cycle 7: Replay leaves known_stage_entities empty
+PASS cycle 7: Replay leaves known_transients empty
+PASS cycle 7: Replay leaves result_action_cache empty
+PASS cycle 7: Replay leaves snapshot_receivers empty
+PASS cycle 7: Replay leaves tombstone_repeats empty
+PASS cycle 7: Replay leaves terrain_parts empty
+PASS cycle 7: Replay leaves pause_epoch empty
+PASS cycle 7: Replay leaves rekey_pending empty
+PASS cycle 7: only the live identities and at most two retired epochs remain
+PASS cycle 7 clears construction, transients and claims
+PASS cycle 7 clears every score
+PASS cycle 7 clears readiness, results and the host ledger
+PASS cycle 7 clears the Lagsanay controller
+FAIL cycle 7 object count stays within five of the warmed baseline
+PASS cycle 7 static memory stays within 1 MiB of the warmed baseline
+NLB_P06_TERRAIN_COMMIT base=0 new=1 edits=1 parts=1
+PASS cycle 8 enters tied Sudden Death
+PASS Sudden Death resolves
+PASS cycle 8 reaches the final results
+FAIL cycle 8: the client ledger and totals equal the host's
+FAIL cycle 8: the ledger records the ending kind
+NLB_P09_REKEY match=3 peers=2 failed=0
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 8: Replay mints a new match ID and epoch
+PASS cycle 8: every peer is re-keyed under the old epoch
+PASS cycle 8: Replay leaves pending_actions empty
+PASS cycle 8: Replay leaves placement_cache empty
+PASS cycle 8: Replay leaves placement_inflight empty
+PASS cycle 8: Replay leaves known_stage_entities empty
+PASS cycle 8: Replay leaves known_transients empty
+PASS cycle 8: Replay leaves result_action_cache empty
+PASS cycle 8: Replay leaves snapshot_receivers empty
+PASS cycle 8: Replay leaves tombstone_repeats empty
+PASS cycle 8: Replay leaves terrain_parts empty
+PASS cycle 8: Replay leaves pause_epoch empty
+PASS cycle 8: Replay leaves rekey_pending empty
+PASS cycle 8: only the live identities and at most two retired epochs remain
+PASS cycle 8 clears construction, transients and claims
+PASS cycle 8 clears every score
+PASS cycle 8 clears readiness, results and the host ledger
+PASS cycle 8 clears the Lagsanay controller
+FAIL cycle 8 object count stays within five of the warmed baseline
+PASS cycle 8 static memory stays within 1 MiB of the warmed baseline
+PASS cycle 9 reaches the final results
+FAIL cycle 9: the client ledger and totals equal the host's
+FAIL cycle 9: the ledger records the ending kind
+PASS cycle 9: Return to Lobby is handed to the session owner
+PASS cycle 9: a stopped session retains nothing []
+PASS cycle 9 clears construction, transients and claims
+PASS cycle 9 clears every score
+PASS cycle 9 clears readiness, results and the host ledger
+PASS cycle 9 clears the Lagsanay controller
+FAIL cycle 9 object count stays within five of the warmed baseline
+PASS cycle 9 static memory stays within 1 MiB of the warmed baseline
+P12_BARYA_OFFER match=10 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 10 starts a match
+NLB_P06_TERRAIN_COMMIT base=0 new=1 edits=1 parts=1
+PASS cycle 10 enters tied Sudden Death
+PASS Sudden Death resolves
+PASS cycle 10 reaches the final results
+PASS cycle 10: the client ledger and totals equal the host's
+PASS cycle 10: the ledger records the ending kind
+NLB_P09_REKEY match=2 peers=2 failed=0
+P12_BARYA_OFFER match=11 round=1 egg=egg_06
+P12_SCHEDULE round=1 now=KARERA next=
+PASS cycle 10: Replay mints a new match ID and epoch
+PASS cycle 10: every peer is re-keyed under the old epoch
+PASS cycle 10: Replay leaves pending_actions empty
+PASS cycle 10: Replay leaves placement_cache empty
+PASS cycle 10: Replay leaves placement_inflight empty
+PASS cycle 10: Replay leaves known_stage_entities empty
+PASS cycle 10: Replay leaves known_transients empty
+PASS cycle 10: Replay leaves result_action_cache empty
+PASS cycle 10: Replay leaves snapshot_receivers empty
+PASS cycle 10: Replay leaves tombstone_repeats empty
+PASS cycle 10: Replay leaves terrain_parts empty
+PASS cycle 10: Replay leaves pause_epoch empty
+PASS cycle 10: Replay leaves rekey_pending empty
+PASS cycle 10: only the live identities and at most two retired epochs remain
+PASS cycle 10 clears construction, transients and claims
+PASS cycle 10 clears every score
+PASS cycle 10 clears readiness, results and the host ledger
+PASS cycle 10 clears the Lagsanay controller
+FAIL cycle 10 object count stays within five of the warmed baseline
+PASS cycle 10 static memory stays within 1 MiB of the warmed baseline
+NLB_P09_CYCLE_LEDGER [{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":2,"nodes":2196.0,"objects":6129.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":170262885.0,"static_memory_peak_bytes":185492132.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":3167651153134971780,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":2},"agreed":true,"cycle":1,"ending":"score_target","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":2,"match_id_before":1,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":3167651153134971780,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":3,"nodes":2208.0,"objects":6215.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":174494899.0,"static_memory_peak_bytes":191056523.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":3,"match_lineage":3,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":2,"sequences":0,"session_epoch":4657660922257997880,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":3},"agreed":false,"cycle":2,"ending":"sudden_death","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":4,"match_id_before":2,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":3,"match_lineage":3,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":2,"sequences":0,"session_epoch":4657660922257997880,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":3,"nodes":2208.0,"objects":6215.0,"pending_claim_count":0,"phase":"0","round":0,"scores":{},"static_memory_bytes":174486409.0,"static_memory_peak_bytes":191118850.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":0,"host_input_state":0,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":1,"match_lineage":1,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":2,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":0,"sequences":0,"session_epoch":9057296454549535447,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":0,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":1},"agreed":false,"cycle":3,"ending":"score_target","epoch_changed":true,"exit":"lobby","ledger_revision_at_ending":2,"match_id_before":3,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":0,"host_input_state":0,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":1,"match_lineage":1,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":2,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":0,"sequences":0,"session_epoch":9057296454549535447,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":0,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":5,"nodes":2193.0,"objects":6216.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":175180725.0,"static_memory_peak_bytes":191791388.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":4756337670515700179,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":2},"agreed":true,"cycle":4,"ending":"sudden_death","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":4,"match_id_before":1,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":4756337670515700179,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":6,"nodes":2191.0,"objects":6218.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":175188241.0,"static_memory_peak_bytes":191796585.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":3,"match_lineage":3,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":2,"sequences":0,"session_epoch":461209941648037668,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":3},"agreed":false,"cycle":5,"ending":"score_target","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":2,"match_id_before":2,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":3,"match_lineage":3,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":2,"sequences":0,"session_epoch":461209941648037668,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":6,"nodes":2191.0,"objects":6220.0,"pending_claim_count":0,"phase":"0","round":0,"scores":{},"static_memory_bytes":175196531.0,"static_memory_peak_bytes":191797296.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":0,"host_input_state":0,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":1,"match_lineage":1,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":2,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":0,"sequences":0,"session_epoch":8213296512408341179,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":0,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":1},"agreed":false,"cycle":6,"ending":"sudden_death","epoch_changed":true,"exit":"lobby","ledger_revision_at_ending":4,"match_id_before":3,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":0,"host_input_state":0,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":1,"match_lineage":1,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":2,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":0,"sequences":0,"session_epoch":8213296512408341179,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":0,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":8,"nodes":2199.0,"objects":6232.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":175277313.0,"static_memory_peak_bytes":193460021.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":2318447243678044605,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":2},"agreed":true,"cycle":7,"ending":"score_target","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":2,"match_id_before":1,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":2318447243678044605,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":9,"nodes":2193.0,"objects":6229.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":175280591.0,"static_memory_peak_bytes":193460021.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":3,"match_lineage":3,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":2,"sequences":0,"session_epoch":5394223154255051728,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":3},"agreed":false,"cycle":8,"ending":"sudden_death","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":4,"match_id_before":2,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":3,"match_lineage":3,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":2,"sequences":0,"session_epoch":5394223154255051728,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":9,"nodes":2193.0,"objects":6229.0,"pending_claim_count":0,"phase":"0","round":0,"scores":{},"static_memory_bytes":175300511.0,"static_memory_peak_bytes":193460021.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":0,"host_input_state":0,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":1,"match_lineage":1,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":2,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":0,"sequences":0,"session_epoch":6558593540918326944,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":0,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":1},"agreed":false,"cycle":9,"ending":"score_target","epoch_changed":true,"exit":"lobby","ledger_revision_at_ending":2,"match_id_before":3,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":0,"host_input_state":0,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":1,"match_lineage":1,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":2,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":0,"sequences":0,"session_epoch":6558593540918326944,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":0,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}},{"after":{"actors":{"0":0,"1":0},"construction_signature":"","host_ledger_revision":0,"item_count":0,"label":"after-exit","match_run_id":11,"nodes":2193.0,"objects":6233.0,"pending_claim_count":0,"phase":"1","round":0,"scores":{"0":0,"1":0,"2":0,"3":0},"static_memory_bytes":175333425.0,"static_memory_peak_bytes":193515353.0,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":2925110201108891244,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0},"transient_count":0,"wire_match_id":2},"agreed":true,"cycle":10,"ending":"sudden_death","epoch_changed":true,"exit":"replay","ledger_revision_at_ending":4,"match_id_before":1,"teardown_counts":{"abuse_counters":0,"action_request_cache":0,"candidates":2,"client_ledger_revision":0,"client_live_seat_state":0,"client_replica":0,"edge_watermarks":4,"host_input_state":2,"host_ledger_revision":0,"idempotent_requests":0,"incoming_sequences":0,"known_stage_entities":0,"known_transients":0,"live_seat_state_sent":0,"match_active":1,"match_id":2,"match_lineage":2,"pause_epoch":0,"peer_abuse":0,"peer_family_times":0,"peers":0,"pending_actions":0,"pending_continuous":0,"pending_snapshot_peers":0,"placement_cache":0,"placement_inflight":0,"placement_new_id_times":0,"rekey_pending":0,"reservation_entries":2,"result_action_cache":0,"retired_epochs":1,"sequences":0,"session_epoch":2925110201108891244,"snapshot_receivers":0,"snapshot_retry_counts":0,"snapshot_sender":2,"terrain_parts":0,"terrain_shadow":0,"tombstone_repeats":0}}]
+NLB_P09_CYCLE_AUDIT cycles=10 failures=16 input=synthetic seats=4 transport=capture

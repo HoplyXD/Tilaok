@@ -1,8 +1,13 @@
 class_name P09MatchLifecycleRoom
 extends P07FirstPlayableMatchRoom
 
+## A committed ledger entry (round result, sudden-death entry/result, final result).
+signal result_committed(entry: Dictionary)
+
 const P09_BUILD_ID := "P09-match-lifecycle-dev"
 
+## The host's committed result ledger for this match (integer units and enums only).
+var result_ledger := ResultLedger.new()
 var lifecycle := MatchLifecycleCoordinator.new()
 var base_match_seed := 12345
 var original_seat_indices: Array[int] = []
@@ -31,11 +36,13 @@ var _sudden_death_round := -1
 var _sudden_death_attempt := -1
 var _last_taya_seat := -1
 var _spectator_state: Dictionary = {}
+var _pending_round_record: Dictionary = {}
 
 
 func _init() -> void:
 	super()
 	match_run_id = 0
+	result_ledger.committed.connect(_on_result_ledger_committed)
 
 
 func set_match_seed(value: int) -> void:
@@ -122,6 +129,8 @@ func start_match() -> bool:
 	if not started:
 		return false
 	lifecycle.begin(match_run_id)
+	result_ledger.reset(match_run_id)
+	_pending_round_record.clear()
 	original_seat_indices.clear()
 	for seat in input_router.registry.joined_seats():
 		original_seat_indices.append(int(seat.seat))
@@ -164,6 +173,7 @@ func _finish_race(reason: String) -> void:
 		race_round_controller.ledger.round_id, score_result
 	):
 		return
+	_stage_round_record(MatchResultTypes.ScoringFamily.RACE, score_result, outcome_rows)
 	_record_score_presentation(active_round, score_result)
 	_after_race_score_committed(score_result)
 	for seat_index in seat_indices:
@@ -200,6 +210,7 @@ func _conclude_round(
 	if int(decision.kind) == MatchLifecycleCoordinator.Decision.INVALID:
 		push_error("P09 rejected round termination decision for round %d." % active_round)
 		return
+	_commit_round_record(active_round, decision)
 	results_ready.clear()
 	for seat in input_router.registry.joined_seats():
 		input_router.registry.set_ready(int(seat.seat), false)
@@ -218,6 +229,44 @@ func _conclude_round(
 		_show_final_results(int(decision.winner_seat), false, _terminal_text(str(decision.reason)))
 		return
 	_start_sudden_death(decision)
+
+
+## Keeps the calculator result until the lifecycle decision for the round is known.
+func _stage_round_record(family: int, score_result: Dictionary, outcome_rows: Array) -> void:
+	_pending_round_record = {
+		"family": family,
+		"score_result": score_result.duplicate(true),
+		"outcome_rows": outcome_rows.duplicate(true),
+	}
+
+
+func _commit_round_record(active_round: int, decision: Dictionary) -> void:
+	if _pending_round_record.is_empty():
+		return
+	var staged := _pending_round_record
+	_pending_round_record = {}
+	if (
+		result_ledger
+		. commit_round(
+			active_round,
+			_ledger_attempt(),
+			int(staged.family),
+			staged.score_result,
+			staged.outcome_rows,
+			decision
+		)
+		. is_empty()
+	):
+		push_error("P09 could not commit the round %d result ledger entry." % active_round)
+
+
+## A stable, compact match-run discriminator for this match ledger.
+func _ledger_attempt() -> int:
+	return match_run_id & 0xffff
+
+
+func _on_result_ledger_committed(entry: Dictionary) -> void:
+	result_committed.emit(entry)
 
 
 func _start_sudden_death(decision: Dictionary) -> void:
@@ -258,6 +307,15 @@ func _start_sudden_death(decision: Dictionary) -> void:
 		return
 	items.director.active_round_id = sd_id
 	items.director.elimination_sink_exclusive = true
+	# Entry only: sudden death commits no score delta (the totals are frozen at the tie).
+	result_ledger.commit_sudden_death_entry(
+		_sudden_death_round,
+		_ledger_attempt(),
+		_sudden_death_attempt,
+		participants,
+		cumulative_score_units,
+		ResultLedger.terminal_code(lifecycle.terminal_reason)
+	)
 	_apply_sudden_death_roster(participants)
 	last_message = "Sudden death! The tied leaders enter Lagsanay on the persistent stage."
 	_update_diagnostics()
@@ -396,6 +454,9 @@ func _finish_sudden_death(
 		return
 	_sudden_death_active = false
 	items.end_play_attempt()
+	result_ledger.commit_sudden_death_result(
+		_sudden_death_round, _ledger_attempt(), _sudden_death_attempt, winner, last_cluck
+	)
 	final_last_cluck = last_cluck
 	final_last_cluck_explanation = str(result.get("explanation", ""))
 	final_outcome_text = (
@@ -417,6 +478,15 @@ func _show_final_results(winner_seat: int, last_cluck: bool, outcome_text: Strin
 	result_ready.clear()
 	for seat in input_router.registry.joined_seats():
 		input_router.registry.set_ready(int(seat.seat), false)
+	result_ledger.commit_final(
+		lifecycle.completed_round,
+		_ledger_attempt(),
+		winner_seat,
+		last_cluck,
+		lifecycle.sudden_death_attempt > 0,
+		ResultLedger.terminal_code(lifecycle.terminal_reason),
+		final_scores_units
+	)
 	phase_controller.enter(MatchPhaseController.Phase.RESULTS)
 	_set_input_phase()
 	var seats: Array[Dictionary] = []
@@ -591,9 +661,9 @@ func _try_commit_result_action() -> void:
 ## A match that ran on a non-default stage (the guided tutorial match) never carries that stage
 ## into the next match: the owner builds a fresh room instead of resetting this one.
 func _hands_back_for_fresh_stage(kind: StringName) -> bool:
-	if arena == null or arena.layout_id == ArenaDefinition.DEFAULT_LAYOUT_ID:
-		return false
 	if flow_requested.get_connections().is_empty():
+		return false
+	if arena == null or arena.layout_id == ArenaDefinition.DEFAULT_LAYOUT_ID:
 		return false
 	flow_requested.emit(kind)
 	return true
@@ -858,6 +928,8 @@ func reset_room() -> void:
 	result_menu_owner = -1
 	result_action = -1
 	result_ready.clear()
+	result_ledger.reset(0)
+	_pending_round_record.clear()
 	_modal_kind = ""
 	_modal_owner = -1
 	if _modal_overlay != null and is_instance_valid(_modal_overlay):

@@ -25,6 +25,10 @@ const DISTANCE_FIELDS: PackedStringArray = [
 	"wall_jump_recontact_separation_wu",
 	"sneak_height_wu",
 	"glide_fall_cap_wu_s",
+	"water_sink_cap_wu_s",
+	"water_buoyancy_wu_s2",
+	"water_stroke_wu_s",
+	"water_move_wu_s",
 	"block_box_push_speed_wu_s",
 	"block_box_friction_wu_s2",
 	"item_tulay_strip_thickness_wu",
@@ -99,7 +103,9 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var camera_hud_reservation_px: float = 64.0
 @export var camera_target_padding_wu: float = 128.0
 @export var camera_zoom_min: float = 0.5
-@export var camera_zoom_max: float = 0.7
+## 1.0 = normal, one world unit per screen pixel (user request, 2026-10-22). The camera opens here
+## and only zooms out, towards camera_zoom_min, as the chickens spread apart.
+@export var camera_zoom_max: float = 1.0
 @export var camera_ease_seconds: float = 0.20
 @export var camera_view_bounds := Rect2(Vector2(-128.0, -128.0), Vector2(2304.0, 1280.0))
 @export var support_normal_limit_degrees: float = 45.0
@@ -122,6 +128,18 @@ const DISTANCE_FIELDS: PackedStringArray = [
 ## Glide: hold jump while falling to cap descent; air steering is unchanged.
 @export var glide_enabled: bool = true
 @export var glide_fall_cap_wu_s: float = 180.0
+## Water (the Water terrain of a map's Blocks layer). PROTOTYPE — UNMEASURED. A chicken in water
+## floats: it sinks no faster than the sink cap, is pushed back up toward the surface, and may
+## stroke upward with jump. Horizontal speed is capped while submerged.
+@export var water_enabled: bool = true
+## Terminal sink speed while submerged (positive is downward).
+@export var water_sink_cap_wu_s: float = 90.0
+## Upward push applied while submerged; this is what makes a chicken rise and bob at the surface.
+@export var water_buoyancy_wu_s2: float = 900.0
+## Upward speed from a jump press while submerged.
+@export var water_stroke_wu_s: float = 240.0
+## Horizontal speed cap while submerged.
+@export var water_move_wu_s: float = 150.0
 ## Stage blocks (scenes/blocks). PROTOTYPE — UNMEASURED.
 @export var block_box_push_speed_wu_s: float = 160.0
 @export var block_box_friction_wu_s2: float = 2400.0
@@ -305,6 +323,10 @@ func validate() -> PackedStringArray:
 		"wall_normal_tolerance_degrees",
 		"sneak_height_wu",
 		"glide_fall_cap_wu_s",
+		"water_sink_cap_wu_s",
+		"water_buoyancy_wu_s2",
+		"water_stroke_wu_s",
+		"water_move_wu_s",
 		"block_box_push_speed_wu_s",
 		"block_box_friction_wu_s2",
 		"block_collapse_delay_s",
@@ -473,6 +495,10 @@ func _validate_sneak_glide_blocks() -> PackedStringArray:
 		errors.append("sneak height must be positive and no taller than the standing body")
 	if glide_fall_cap_wu_s <= 0.0 or glide_fall_cap_wu_s > fall_speed_cap_wu_s:
 		errors.append("glide cap must be positive and not exceed the fall speed cap")
+	if water_sink_cap_wu_s <= 0.0 or water_sink_cap_wu_s > fall_speed_cap_wu_s:
+		errors.append("water sink cap must be positive and not exceed the fall speed cap")
+	if water_buoyancy_wu_s2 <= 0.0 or water_stroke_wu_s <= 0.0 or water_move_wu_s <= 0.0:
+		errors.append("water buoyancy, stroke and move speed must be greater than zero")
 	if block_box_push_speed_wu_s < 0.0 or block_box_friction_wu_s2 < 0.0:
 		errors.append("box push speed and friction cannot be negative")
 	if stun_immunity_s < 0.0:

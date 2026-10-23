@@ -1,0 +1,122 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _ready (res://scripts/flow/game_flow.gd:87)
+       [4] _start (res://tests/run_nlb_p04_multi_process.gd:67)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _ready (res://scripts/flow/game_flow.gd:87)
+       [4] _start (res://tests/run_nlb_p04_multi_process.gd:67)
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+HOST_STATUS phase=-1 sync=0 seat=-1 router_phase=0 axis=0.00 actors=[] camera=0.0,0.0 peers=0 last_sequence=-1 timed_out=false
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:107)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] start_host (res://scripts/network/network_session_manager.gd:207)
+       [6] _start_host (res://tests/run_nlb_p04_multi_process.gd:92)
+       [7] _start (res://tests/run_nlb_p04_multi_process.gd:72)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _map_records (res://scripts/network/compatibility_manifest.gd:107)
+       [4] build (res://scripts/network/compatibility_manifest.gd:13)
+       [5] start_host (res://scripts/network/network_session_manager.gd:207)
+       [6] _start_host (res://tests/run_nlb_p04_multi_process.gd:92)
+       [7] _start (res://tests/run_nlb_p04_multi_process.gd:72)
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:112)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] start_host (res://scripts/network/network_session_manager.gd:207)
+       [4] _start_host (res://tests/run_nlb_p04_multi_process.gd:92)
+       [5] _start (res://tests/run_nlb_p04_multi_process.gd:72)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] layout_for (res://scripts/stage/map_catalog.gd:58)
+       [1] _map_records (res://scripts/network/compatibility_manifest.gd:112)
+       [2] build (res://scripts/network/compatibility_manifest.gd:13)
+       [3] start_host (res://scripts/network/network_session_manager.gd:207)
+       [4] _start_host (res://tests/run_nlb_p04_multi_process.gd:92)
+       [5] _start (res://tests/run_nlb_p04_multi_process.gd:72)
+P04_MULTIPROCESS_HOST address=192.168.254.100 port=29779 lobby_id=2631495514064744359
+HOST_STATUS phase=-1 sync=0 seat=-1 router_phase=0 axis=0.00 actors=[] camera=0.0,0.0 peers=0 last_sequence=-1 timed_out=false
+HOST_STATUS phase=-1 sync=0 seat=-1 router_phase=0 axis=0.00 actors=[] camera=0.0,0.0 peers=0 last_sequence=-1 timed_out=false
+APPROVAL_REQUEST peer=1 protocol=1.2
+APPROVAL_RESULT peer=1 approved=true
+WARNING: res://scenes/maps/Basic Map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _create_authoritative_match (res://scripts/flow/game_flow.gd:276)
+       [4] _enter_network_match (res://scripts/flow/game_flow.gd:244)
+       [5] start_network_match (res://scripts/network/network_session_manager.gd:512)
+       [6] _step_host (res://tests/run_nlb_p04_multi_process.gd:187)
+       [7] _process (res://tests/run_nlb_p04_multi_process.gd:55)
+WARNING: res://scenes/maps/sample_map.tscn:5 - ext_resource, invalid UID: uid://gl1ddotqvn6k - using text path instead: res://assets/tiles/blocks_tileset.tres
+   at: load (scene/resources/resource_format_text.cpp:501)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:81)
+       [1] entries (res://scripts/stage/map_catalog.gd:31)
+       [2] ids (res://scripts/stage/map_catalog.gd:41)
+       [3] _create_authoritative_match (res://scripts/flow/game_flow.gd:276)
+       [4] _enter_network_match (res://scripts/flow/game_flow.gd:244)
+       [5] start_network_match (res://scripts/network/network_session_manager.gd:512)
+       [6] _step_host (res://tests/run_nlb_p04_multi_process.gd:187)
+       [7] _process (res://tests/run_nlb_p04_multi_process.gd:55)
+P04_ITEM_LAB_READY families=19 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_4x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,explosive.bomb.main,explosive.dynamite.main,explosive.nuke.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+HOST_STATUS phase=1 sync=0 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=1024.0,512.0 peers=1 last_sequence=-1 timed_out=true
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=791.6,634.8 peers=1 last_sequence=29 timed_out=false
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=57 timed_out=false
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=87 timed_out=false
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=117 timed_out=false
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=148 timed_out=false
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=178 timed_out=false
+HOST_STATUS phase=1 sync=1 seat=1 router_phase=2 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=208 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,551.3 peers=1 last_sequence=238 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.6 peers=1 last_sequence=268 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=298 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=328 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=358 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=388 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=419 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=449 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=479 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=509 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=539 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=570 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=600 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=630 timed_out=false
+HOST_STATUS phase=2 sync=1 seat=1 router_phase=3 axis=0.00 actors=["0:192.0,900.0", "1:192.0,900.0"] camera=786.3,498.3 peers=1 last_sequence=660 timed_out=false
+HOST_STATUS phase=3 sync=1 seat=1 router_phase=4 axis=0.80 actors=["0:192.0,900.0", "1:193.3,899.9"] camera=786.3,600.1 peers=1 last_sequence=690 timed_out=false
+HOST_STATUS phase=3 sync=1 seat=1 router_phase=4 axis=0.80 actors=["0:192.0,900.0", "1:356.0,900.0"] camera=786.3,637.5 peers=1 last_sequence=720 timed_out=false
+HOST_STATUS phase=3 sync=1 seat=1 router_phase=4 axis=0.00 actors=["0:192.0,900.0", "1:356.0,900.0"] camera=786.3,637.7 peers=1 last_sequence=751 timed_out=false
+HOST_STATUS phase=-1 sync=0 seat=-1 router_phase=1 axis=0.00 actors=[] camera=0.0,0.0 peers=0 last_sequence=765 timed_out=false
+NLB_P04_MULTI_PROCESS PASSED host_owned_match=true client_snapshot=true remote_input=true

@@ -43,7 +43,7 @@ func _ready() -> void:
 	# Barya is enabled on the scheduled default route. `--barya-disabled` is the rollback switch;
 	# first_playable uses P07 and never enters this room.
 	if tuning != null:
-		tuning.barya_enabled = not OS.get_cmdline_user_args().has("--barya-disabled")
+		tuning.barya_enabled = not DevBuildFlags.dev_flag_present("--barya-disabled")
 	kangaroo_round = KangarooMainRound.new()
 	add_child(kangaroo_round)
 	kangaroo_round.setup(self)
@@ -114,7 +114,7 @@ func _begin_pugad() -> void:
 	if _schedule_match_id != match_run_id:
 		_schedule_match_id = match_run_id
 		var refusal := schedule.begin(
-			match_streams.event, available_modes, tuning.match_round_limit
+			match_streams.event, available_modes, tuning.match_round_limit, schedule_pairs()
 		)
 		if not refusal.is_empty():
 			_refuse_schedule(refusal)
@@ -139,6 +139,11 @@ func _begin_pugad() -> void:
 		)
 	)
 	_notify_presentation(&"eggs")
+
+
+## Stack rows enabled by the current offline event schedule.
+func schedule_pairs() -> Array[Dictionary]:
+	return EventSchedule.enabled_pairs()
 
 
 ## Eggs follow the item catalog's mode flags: a Lagsanay round deals only Lagsanay-approved
@@ -925,6 +930,15 @@ func _finish_event_round() -> void:
 		outcome_rows = kangaroo_round.controller.outcomes()
 		if not kangaroo_round.controller.commit_score_once(score_result):
 			return
+	_stage_round_record(
+		(
+			MatchResultTypes.ScoringFamily.LAGSANAY
+			if is_lagsanay
+			else MatchResultTypes.ScoringFamily.KANGAROO
+		),
+		score_result,
+		outcome_rows
+	)
 	_record_score_presentation(active_round, score_result)
 	last_resolution = score_result.duplicate(true)
 	for seat_index in score_result.totals_units:

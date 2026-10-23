@@ -16,24 +16,27 @@ static func reload() -> void:
 	_cache.clear()
 
 
-## [{map_id, name, path, order, description}] with the built-in default first, then maps by
-## map_order and name.
+## [{map_id, name, path, order, description}], by map_order then name.
+##
+## The built-in default stage is deliberately NOT listed (user request, 2026-10-22): it is not a
+## scene under MAPS_DIR, so offering it in the Lobby showed a map nobody could open or edit. It
+## stays reachable as a fallback through DEFAULT_ID and `layout_for()`, which still returns null
+## for it so ArenaDefinition builds the literal default stage.
 static func entries(directory: String = MAPS_DIR) -> Array[Dictionary]:
-	var result: Array[Dictionary] = [
-		{
-			"map_id": DEFAULT_ID,
-			"name": "Default stage",
-			"path": "",
-			"order": -1,
-			"description": "The built-in base stage."
-		}
-	]
+	var result: Array[Dictionary] = []
 	result.append_array(_scan(directory).entries)
 	return result
 
 
 static func errors(directory: String = MAPS_DIR) -> PackedStringArray:
 	return _scan(directory).errors
+
+
+## The id a fresh selection should start on: the first map in the folder, or the built-in default
+## when the folder holds no usable map (so a project with no maps still starts).
+static func first_id(directory: String = MAPS_DIR) -> String:
+	var all := ids(directory)
+	return all[0] if not all.is_empty() else DEFAULT_ID
 
 
 static func ids(directory: String = MAPS_DIR) -> PackedStringArray:

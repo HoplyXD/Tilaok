@@ -17,6 +17,19 @@ extends Resource
 @export var goal_trigger_tiles := Rect2(30.0, 10.0, 1.0, 2.0)
 ## Where a coach marker should point a builder. Empty means "no guidance zone".
 @export var build_here_zone_tiles := Rect2()
+## Water volumes in tiles (StageMap's Water terrain). Not solid: chickens float in them instead of
+## landing on them. Empty for every stage without water.
+@export var water_regions_tiles: Array[Rect2] = []
+## Kill volumes in tiles (StageMap's Border marker). Invisible in play: a chicken whose centre
+## enters one is eliminated. Empty for a stage that paints no Border, which then has no boundary
+## at all because the arena no longer closes itself with containment walls.
+@export var border_regions_tiles: Array[Rect2] = []
+## The stage's extent in tiles. Zero means "use the tuning default", which keeps every layout
+## authored before maps could be larger than 32x16 working unchanged.
+@export var stage_size_tiles := Vector2i.ZERO
+## The camera border in world units: the box the view may never leave. Empty means "derive it from
+## the stage extent", so only a map that wants a tighter frame has to author one.
+@export var camera_bounds := Rect2()
 ## Tile row of the floor top, used to describe how high the flag sits.
 @export var floor_top_tile := 15.0
 ## A map scene (scenes/maps/, StageMap root) whose Blocks layer is the stage picture. Set by

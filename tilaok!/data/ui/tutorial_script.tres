@@ -28,8 +28,16 @@ body = "You can't reach the flag yet: it is {ledge_tiles} tiles up and one jump 
 retry_body = "Nobody reached the flag. Put your piece inside BUILD HERE, above the platform and beside the flag wall, to make a step. Built pieces stay."
 glyph_action = "rotate"
 variants = {
-"timeout": "Time ran out, so an egg was picked for you. The flag is {ledge_tiles} tiles up: build a way up inside BUILD HERE, then confirm with {confirm} (no undo). {place_s} seconds."
+"timeout": "Time ran out, so an egg was picked for you. Keep moving while you build; your piece appears after {construction_s} seconds if the space is safe."
 }
+
+[sub_resource type="Resource" id="Step_9"]
+script = ExtResource("2")
+step_id = &"live_build"
+title = "Step 3 of 5 - Build during the race"
+body = "Press {build} to enter build mode; your chicken pauses. Use directional controls or {aim} to move the preview, then place with {live_confirm}. It appears after {construction_s} seconds if the space is still safe. Cancel with {cancel} to keep your item."
+retry_body = "Your chicken pauses while aiming. The footprint is only a preview until its {construction_s} second timer ends; then you can move again."
+glyph_action = "build_toggle"
 
 [sub_resource type="Resource" id="Step_3"]
 script = ExtResource("2")
@@ -81,6 +89,6 @@ glyph_action = "jump"
 
 [resource]
 script = ExtResource("1")
-steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8")])
+steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8"), SubResource("Step_9")])
 placeholder_tag = "PLACEHOLDER copy"
 skip_caption = "Pause > Skip tutorial"

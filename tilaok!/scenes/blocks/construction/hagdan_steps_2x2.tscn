@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cahdalcmiq7n"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
 
 [sub_resource type="RectangleShape2D" id="Step0"]
 size = Vector2(64, 64)
@@ -9,11 +9,11 @@ size = Vector2(64, 64)
 [sub_resource type="RectangleShape2D" id="Step1"]
 size = Vector2(64, 128)
 
-[node name="HagdanSteps2x2" type="AnimatableBody2D"]
+[node name="HagdanSteps2x2" type="AnimatableBody2D" unique_id=2126136222]
 sync_to_physics = false
 script = ExtResource("1_blk")
 
-[node name="BlockData" type="Node2D" parent="."]
+[node name="BlockData" type="Node2D" parent="." unique_id=1669278413]
 script = ExtResource("2_dat")
 block_name = "Hagdan ng Bahay"
 family_id = "build.house_stairs"
@@ -28,33 +28,33 @@ rotations = PackedInt32Array(0, 1, 2, 3)
 gated_rotations = PackedInt32Array()
 pool_weight = 20.0
 
-[node name="Step0" type="CollisionShape2D" parent="."]
+[node name="Step0" type="CollisionShape2D" parent="." unique_id=1457403748]
 position = Vector2(-32, 32)
 shape = SubResource("Step0")
 
-[node name="Step1" type="CollisionShape2D" parent="."]
+[node name="Step1" type="CollisionShape2D" parent="." unique_id=70711490]
 position = Vector2(32, 0)
 shape = SubResource("Step1")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="Node2D" parent="." unique_id=792010078]
 
-[node name="Fill" type="Polygon2D" parent="Visual"]
+[node name="Fill" type="Polygon2D" parent="Visual" unique_id=820050945]
 color = Color(0.62, 0.45, 0.28, 1)
 polygon = PackedVector2Array(-64, 64, -64, 0, 0, 0, 0, -64, 64, -64, 64, 64, -64, 64)
 
-[node name="Outline" type="Line2D" parent="Visual"]
+[node name="Outline" type="Line2D" parent="Visual" unique_id=601483154]
 points = PackedVector2Array(-64, 64, -64, 0, 0, 0, 0, -64, 64, -64, 64, 64, -64, 64)
 width = 3.0
 default_color = Color(0.25, 0.16, 0.08, 1)
 
-[node name="Label" type="Label" parent="Visual"]
-offset_left = -58
+[node name="Label" type="Label" parent="Visual" unique_id=942139878]
+offset_left = -58.0
 offset_top = -28.0
-offset_right = 58
+offset_right = 58.0
 offset_bottom = -6.0
-theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.1, 0.12, 1)
 theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
 text = "STEPS • DEBUG"
 horizontal_alignment = 1
