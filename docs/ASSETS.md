@@ -431,3 +431,11 @@ Read from frame `133:1205` "Library" of the team Figma file "UI-Tilaok-" through
 ## Settings screen from the Figma frame — 2026-10-24
 
 Built from frame `133:1336` "Settings" of the team Figma file "UI-Tilaok-", using the team's own 2x PNG export (`Downloads/Figma UI Screens/Settings.png`; the Figma connector was at its Starter plan limit). No new art file was added. The chevrons (Back, arrow boxes, row pointer) reuse `ui.library.icon_back`, tinted and mirrored, and the leaf divider reuses `ui.library.leaf_divider`. Rows, arrow boxes, slider track, knob and page are Theme StyleBoxes (`Settings*` and the Library's types). Whether the frame's chevrons are the same drawing as the Library's could not be confirmed without the frame's SVGs; in the export they match in size and position.
+
+### Title chicken — 2026-10-24
+
+The user supplied `assets/character/cyan_sprites.png` and asked for it on the title screen. It is a 6144 × 2048 transparent sheet of three 2048 px frames: two standing/stepping poses and one flying or dashing pose. `assets/character/cyan_chicken_frames.tres` cuts it into a `step` animation (frames 1–2, 3 fps, looping) and a `dash` animation (frame 3, unused for now). `title_screen.tscn` shows `step` on `ChickenSpot/Art_Chicken` (an `AnimatedSprite2D` at 0.16 scale, feet on `ChickenSpot`), over the menu art and under the card and quit dialog. The import generates mipmaps so the large frames shrink cleanly.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `character.cyan_chicken` | `assets/character/cyan_sprites.png` (SHA-256 `caf63087…2c2f2b65db`) | Sprite sheet; title screen chicken | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Slicing and placement only ([AI_USAGE](AI_USAGE.md#ui-and-placement-sound-effects--october-23-2026)) | Imported — creator confirmation open |
