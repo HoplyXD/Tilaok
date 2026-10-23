@@ -190,22 +190,26 @@ func _poll_map_selection() -> void:
 		elif input_router.consume_pressed(seat_index, "right"):
 			step = 1
 		if step != 0:
-			request_map_step(step)
+			# The row's arrow buttons already click on the mouse press; keys click here.
+			if request_map_step(step):
+				GameSfx.play_click()
 			return
 
 
 ## Lobby only: ask the flow for the next (+1) or previous (-1) map (keys or the row's arrows).
-func request_map_step(step: int) -> void:
+## True when the change was accepted.
+func request_map_step(step: int) -> bool:
 	if (
 		step == 0
 		or not map_selection_enabled
 		or phase_controller.phase != MatchPhaseController.Phase.LOBBY
 		or flow_requested.get_connections().is_empty()
 	):
-		return
+		return false
 	# Deferred: the flow frees this room, so never mid-frame.
 	map_selection_enabled = false
 	flow_requested.emit.call_deferred(&"map_next" if step > 0 else &"map_prev")
+	return true
 
 
 func _build_hud() -> void:
@@ -832,6 +836,8 @@ func _confirm_placement(seat_index: int) -> void:
 		return
 	place_notices.erase(seat_index)
 	placement_controller.set_confirmed(seat_index, true)
+	# Blocks land when the Place phase resolves; the sound marks this player's placement now.
+	GameSfx.play_place()
 	last_message = "P%d confirmed their placement." % (seat_index + 1)
 	_refresh_all_match_ghosts()
 	_refresh_match_ui()

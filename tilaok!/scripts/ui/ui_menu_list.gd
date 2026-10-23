@@ -68,6 +68,7 @@ func move(direction: String) -> bool:
 	var next_index := _next_selectable(selected, step)
 	if next_index < 0 or next_index == selected:
 		return false
+	GameSfx.play_switch()
 	selected = next_index
 	selection_changed.emit(selected)
 	_apply()
@@ -77,6 +78,8 @@ func move(direction: String) -> bool:
 func activate() -> bool:
 	if selected < 0 or selected >= items.size() or not _is_selectable(selected):
 		return false
+	# Also covers toggles and option rows, which never emit a button's pressed signal.
+	GameSfx.play_click()
 	var item := items[selected]
 	if item is BaseButton:
 		var button := item as BaseButton

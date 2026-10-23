@@ -140,6 +140,29 @@ func _exit_tree() -> void:
 	if get_tree() != null and simulation_authority != null and simulation_authority.can_commit():
 		get_tree().paused = false
 	PresentationApplier.reset()
+	GameSfx.set_menu_music(false)
+
+
+func _process(_delta: float) -> void:
+	GameSfx.set_menu_music(wants_menu_music())
+
+
+## The menu music plays everywhere except while a match is played (the GO countdown and Play)
+## and on its score screens (round results and the final results). A pause keeps the phase
+## under it, so pausing Play stays quiet.
+func wants_menu_music() -> bool:
+	if room == null or not is_instance_valid(room) or room.phase_controller == null:
+		return true
+	if room.get("final_results_visible") == true:
+		return false
+	return (
+		room.phase_controller.phase
+		in [
+			MatchPhaseController.Phase.LOBBY,
+			MatchPhaseController.Phase.PUGAD,
+			MatchPhaseController.Phase.PLACE,
+		]
+	)
 
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).

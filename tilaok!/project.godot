@@ -16,6 +16,10 @@ config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameSfx="res://scenes/audio/game_sfx.tscn"
+
 [display]
 
 window/size/viewport_width=1280
@@ -23,6 +27,10 @@ window/size/viewport_height=720
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/tilaok_qr_scanner/plugin.cfg")
 
 [global_group]
 
@@ -33,10 +41,6 @@ Flag=""
 [gui]
 
 theme/custom="res://assets/ui/theme/tilaok_theme.tres"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/tilaok_qr_scanner/plugin.cfg")
 
 [input]
 

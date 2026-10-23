@@ -41,6 +41,7 @@ func _ready() -> void:
 	items = ItemManager.new()
 	items.name = "ItemManager"
 	add_child(items)
+	items.item_placed.connect(func(_instance_id: String) -> void: GameSfx.play_place())
 	items.configure(tuning, arena, support_tracker, definitions, world_layer, simulation_authority)
 	items.actors_source = _actors_for_items
 	var enabled := _enabled_variant_keys()

@@ -231,9 +231,11 @@ func _show_state(index: int, ctx: UiContext) -> void:
 func _navigate(_seat_index: int, direction: String) -> bool:
 	if direction == "right" and zone == ZONE_CATEGORIES and _entry_list.selectable_count() > 0:
 		_set_zone(ZONE_ENTRIES)
+		GameSfx.play_switch()
 		return true
 	if direction == "left" and zone == ZONE_ENTRIES:
 		_set_zone(ZONE_CATEGORIES)
+		GameSfx.play_switch()
 		return true
 	if zone == ZONE_ENTRIES and direction in ["up", "down"]:
 		return _move_entries(direction)
@@ -276,6 +278,7 @@ func _move_entries(direction: String) -> bool:
 		target = 0
 	if target == current:
 		return false
+	GameSfx.play_switch()
 	_move_entries_to(target)
 	return true
 
