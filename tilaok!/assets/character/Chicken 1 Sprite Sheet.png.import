@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://i3d4ap0d67vy"
-path="res://.godot/imported/Blocks Sprite Sheet.png-cac44885794c2f6be64c0c1d9c4ed6a8.ctex"
+uid="uid://pg7vh322nh6w"
+path="res://.godot/imported/Chicken 1 Sprite Sheet.png-9796729a16385c305edb10ff2aaafd28.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/character/Blocks Sprite Sheet.png"
-dest_files=["res://.godot/imported/Blocks Sprite Sheet.png-cac44885794c2f6be64c0c1d9c4ed6a8.ctex"]
+source_file="res://assets/character/Chicken 1 Sprite Sheet.png"
+dest_files=["res://.godot/imported/Chicken 1 Sprite Sheet.png-9796729a16385c305edb10ff2aaafd28.ctex"]
 
 [params]
 
