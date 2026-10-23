@@ -1,0 +1,100 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS the Master bus exists
+PASS the Music bus exists
+PASS the Effects bus exists
+PASS the Crowd bus exists
+PASS the master slider sets the Master bus to -8.0 dB (-8.0)
+PASS the master slider leaves Music alone
+PASS the master slider leaves Effects alone
+PASS the master slider leaves Crowd alone
+PASS the music slider sets the Music bus to -8.0 dB (-8.0)
+PASS the music slider leaves Master alone
+PASS the music slider leaves Effects alone
+PASS the music slider leaves Crowd alone
+PASS the effects slider sets the Effects bus to -8.0 dB (-8.0)
+PASS the effects slider leaves Master alone
+PASS the effects slider leaves Music alone
+PASS the effects slider leaves Crowd alone
+PASS the crowd slider sets the Crowd bus to -8.0 dB (-8.0)
+PASS the crowd slider leaves Master alone
+PASS the crowd slider leaves Music alone
+PASS the crowd slider leaves Effects alone
+PASS a zero slider silences its bus
+PASS sound starts unmuted
+PASS the Mute switch mutes the Master bus and the setting
+PASS unmuting restores sound
+PASS Full shake is applied
+PASS Reduced shake scales down
+PASS Off shake scales to nothing
+PASS the settings stay valid
+WARNING: Volumetric fog is only available when using the Forward+ renderer.
+   at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:458)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:84)
+       [1] entries (res://scripts/stage/map_catalog.gd:27)
+       [2] ids (res://scripts/stage/map_catalog.gd:44)
+       [3] _ready (res://scripts/flow/game_flow.gd:85)
+       [4] _test_shake_through_settings (res://tests/run_p13_accessibility_tests.gd:112)
+       [5] _run (res://tests/run_p13_accessibility_tests.gd:30)
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3493043007
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3493043007 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3493043007
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3493043007 barya_enabled=true
+PASS the match room reads the same settings object the Settings screen edits
+PASS Full shakes more than Reduced, Reduced still shakes ({ 0: 6.38000202178955, 1: 1.66725790500641, 2: 0.0 })
+PASS Off never moves the camera
+PASS switching to Off mid-cue stops the shake at once
+PASS changing the setting never advances a simulation clock
+PASS stun brightness at shake 0 has 2.00 peaks per second (limit 3)
+PASS stun brightness at shake 0 never jumps (largest frame step 0.094)
+PASS stun never dims below its steady brightening
+PASS stun brightness at shake 1 has 2.00 peaks per second (limit 3)
+PASS stun brightness at shake 1 never jumps (largest frame step 0.047)
+PASS stun never dims below its steady brightening
+PASS stun brightness at shake 2 has 0.00 peaks per second (limit 3)
+PASS stun brightness at shake 2 never jumps (largest frame step 0.000)
+PASS stun never dims below its steady brightening
+PASS shake Off holds the stun tint steady
+PASS the Parol beam repeats every 3.0 s (well under 3 per second)
+PASS the Parol charge ramp lasts 0.6 s before the beam is solid
+PASS move.tire_spring: sounds ["sfx_launch"] have visual slots ["body", "body_compressed"] and a written tell
+PASS hazard.rail_trumpo: sounds ["sfx_pause"] have visual slots ["rail", "top"] and a written tell
+PASS hazard.parol_pulse: sounds ["sfx_charge", "sfx_on"] have visual slots ["post", "beam_on"] and a written tell
+PASS hazard.slipper_launcher: sounds ["sfx_charge", "sfx_fire"] have visual slots ["launcher", "launcher_charge", "projectile"] and a written tell
+PASS utility.walis_cleanup: sounds ["sfx_sweep"] have visual slots ["broom_outline"] and a written tell
+PASS hazard.bubble_planter: sounds ["sfx_emit", "sfx_capture", "sfx_pop"] have visual slots ["pot", "bubble", "captive_icon"] and a written tell
+PASS 6 families with sound were audited
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=12345
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=12345 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=12345
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=12345 barya_enabled=true
+P12_BARYA_OFFER match=1 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS the Kangaroo cue tone has a command card on screen
+PASS the card carries the pose name and its instruction as text
+P13_GLYPH_REPORT font=Handlee missing_filipino=[] missing_symbols=["●", "▲", "■", "◆", "→", "↑", "↔", "×"]
+PASS the default font covers the Filipino letters (missing [])
+PASS the symbol glyph gaps are reported (8 of 10 missing)
+P13_DISPLAY 1280x720 scale=1.000 content=1280x720 bars=0,0 hud=64px text=12/16px
+PASS 1280x720: the 1280x720 view fits (scale 1.000)
+PASS 1280x720: mid-round text 16 px and HUD 64 px are not below the 720p values
+P13_DISPLAY 1920x1080 scale=1.500 content=1920x1080 bars=0,0 hud=96px text=18/24px
+PASS 1920x1080: the 1280x720 view fits (scale 1.500)
+PASS 1920x1080: mid-round text 24 px and HUD 96 px are not below the 720p values
+P13_DISPLAY 1920x800 scale=1.111 content=1422x800 bars=249,-0 hud=71px text=13/18px
+PASS 1920x800: the 1280x720 view fits (scale 1.111)
+PASS 1920x800: mid-round text 18 px and HUD 71 px are not below the 720p values
+PASS the logical canvas is 1280x720 (documented supported base)
+PASS fresh presentation settings enable full shake and all sound buses
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+PASS settings applied while the flow runs
+PASS leaving the flow restores full volume, unmuted, full shake (no bus leak)
+P13_ACCESSIBILITY_TESTS checks=66 failures=0
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
