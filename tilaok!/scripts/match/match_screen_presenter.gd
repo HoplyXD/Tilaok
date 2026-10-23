@@ -703,7 +703,6 @@ func _control_hint_lines(
 			var place := ""
 			var rotate := ""
 			var close_preview := ""
-			var build_toggle := prompt_map.glyph("build_toggle", device)
 			if device == "gamepad":
 				aim = "D-pad/stick"
 				place = "A / RT"
@@ -729,18 +728,18 @@ func _control_hint_lines(
 				place = "Num 0"
 				rotate = "Num 5"
 				close_preview = "Num ."
+			# Two lines so the hint fits under its score card; CLOSE leaves build mode.
 			line = (
-				"P%d · %s BUILD %s\nAIM %s · PLACE %s\nROTATE %s · CLOSE %s"
-				% [player_number, device_tag, build_toggle, aim, place, rotate, close_preview]
+				"P%d · AIM %s · PLACE %s\nROTATE %s · CLOSE %s"
+				% [player_number, aim, place, rotate, close_preview]
 			)
 		else:
 			var movement := ""
 			var jump := ""
-			var build := ""
+			var build := prompt_map.glyph("build_toggle", device)
 			if device == "gamepad":
 				movement = "D-pad/Stick"
 				jump = "South"
-				build = "North"
 			elif device == "k2":
 				movement = "Left/Right"
 				jump = "Right Ctrl"
@@ -750,10 +749,9 @@ func _control_hint_lines(
 			else:
 				movement = prompt_map.glyph("run", device)
 				jump = prompt_map.glyph("jump", device)
-				build = prompt_map.glyph("build_toggle", device)
 			line = (
-				"P%d · %s\nMOVE %s · JUMP %s\nBUILD %s"
-				% [player_number, device_tag, movement, jump, build]
+				"P%d · %s · BUILD %s\nMOVE %s · JUMP %s"
+				% [player_number, device_tag, build, movement, jump]
 			)
 		hints[seat_index] = line
 	return hints

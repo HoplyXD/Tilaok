@@ -798,16 +798,17 @@ func _test_live_go_pause_and_commit() -> void:
 		var p2_hint := str(room.presenter.play_hud._control_hint_labels[1].text)
 		_check(
 			(
-				p1_hint.contains("AIM")
-				and p1_hint.contains("P1 · K1 KEYBOARD")
-				and p1_hint.contains("BUILD Q")
+				p1_hint.contains("P1 · AIM WASD")
 				and p1_hint.contains("AIM WASD · PLACE R")
 				and p1_hint.contains("ROTATE E · CLOSE F")
 				and p2_hint.contains("P2 · K2 KEYBOARD")
 				and p2_hint.contains("MOVE Left/Right")
 				and p2_hint.contains("JUMP Right Ctrl")
+				and p2_hint.contains("BUILD [")
+				and p1_hint.count("\n") == 1
+				and p2_hint.count("\n") == 1
 			),
-			"HUD shows each seat's keyboard controls and only switches the builder to build hints"
+			"HUD shows each seat's two-line controls and only switches the builder to build hints"
 		)
 		room._set_build_mode(0, false)
 		room._set_build_mode(1, true)
@@ -837,7 +838,7 @@ func _test_live_go_pause_and_commit() -> void:
 		)
 		_check(
 			(
-				pad_hint.contains("BUILD North")
+				pad_hint.contains("P3 · AIM D-pad/stick")
 				and pad_hint.contains("AIM D-pad/stick · PLACE A / RT")
 				and pad_hint.contains("ROTATE X / RB · CLOSE LB")
 			),

@@ -4,6 +4,9 @@ extends UiScreen
 ## Display-only HUD in the 64 px top reservation. Never takes input.
 
 const CHALLENGE_NAME := "Karera"
+## Each seat's control hint under its score card is at most this many lines. The labels do not
+## wrap (each hint carries its own line break), so their height is always those lines.
+const HINT_LINES := 2
 
 var score_rows: Array[UiScoreRow] = []
 
@@ -89,11 +92,25 @@ func _bind_control_hints(hints: PackedStringArray) -> void:
 		)
 		any_hint = any_hint or label.visible
 	_control_hints_bar.visible = any_hint
-	var hint_height := 58.0 if any_hint else 0.0
+	var hint_height := _control_hints_height() if any_hint else 0.0
 	_control_hints_bar.offset_bottom = 64.0 + hint_height
 	_notice_row.offset_top = 70.0 + hint_height
 	_notice_row.offset_bottom = _notice_row.offset_top + 79.0
 	call_deferred("_layout_control_hints")
+
+
+## The bar fits exactly HINT_LINES lines of the hint label's font plus the bar's own padding, so
+## the hints never spill onto the stage and the bar takes no more room than they need.
+func _control_hints_height() -> float:
+	var label := _control_hint_labels[0]
+	var font := label.get_theme_font("font")
+	var font_size := label.get_theme_font_size("font_size")
+	var text_height := (
+		font.get_height(font_size) * HINT_LINES
+		+ label.get_theme_constant("line_spacing") * (HINT_LINES - 1)
+	)
+	var panel := _control_hints_bar.get_theme_stylebox("panel")
+	return ceilf(text_height + panel.get_margin(SIDE_TOP) + panel.get_margin(SIDE_BOTTOM))
 
 
 func _layout_control_hints() -> void:
@@ -110,8 +127,12 @@ func _layout_control_hints() -> void:
 		var aligned_position: Vector2 = (
 			player_card.global_position - _control_hints_row.global_position
 		)
-		label.position = Vector2(aligned_position.x, 0.0)
-		label.size = Vector2(player_card.size.x, _control_hints_row.size.y)
+		# Each hint may use its card's width plus the gap to the next card (the longest line, a
+		# K2 build hint, is a little wider than a card), centred on the card so neighbours never
+		# overlap.
+		var gap := float(player_card.get_parent().get_theme_constant("separation"))
+		label.position = Vector2(aligned_position.x - gap * 0.5, 0.0)
+		label.size = Vector2(player_card.size.x + gap, _control_hints_row.size.y)
 
 
 func _notification(what: int) -> void:

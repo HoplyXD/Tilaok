@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/pugad_countdown.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://cvsnmqtrxsu4u" path="res://scenes/ui/components/egg_slot.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_chip.tscn" id="7"]
-[ext_resource type="Texture2D" uid="uid://c2x8y5dygj02l" path="res://assets/ui/pugad/ui.pugad.nest.png" id="8"]
+[ext_resource type="PackedScene" uid="uid://8vm3rr1bbp3h" path="res://scenes/ui/components/score_chip.tscn" id="7"]
+[ext_resource type="Texture2D" uid="uid://cf40mwympxxpj" path="res://assets/ui/pugad/nest.png" id="8"]
 
 [node name="PugadOverlay" type="Control" unique_id=1283793185]
 layout_mode = 3
@@ -136,13 +136,14 @@ theme_type_variation = &"ScoreChipPaper"
 
 [node name="Nest" type="TextureRect" parent="." unique_id=1703069186]
 layout_mode = 0
-offset_left = 298.8
-offset_top = 14.4
-offset_right = 968.4
-offset_bottom = 639.0
+offset_left = 276.0
+offset_top = 7.0
+offset_right = 1020.0
+offset_bottom = 678.0
 mouse_filter = 2
 texture = ExtResource("8")
 expand_mode = 1
+stretch_mode = 5
 metadata/asset_id = "ui.pugad.nest"
 
 [node name="Title" type="Control" parent="." unique_id=116641646]
@@ -296,7 +297,6 @@ offset_left = 565.0
 offset_top = 155.0
 offset_right = 741.4
 offset_bottom = 439.4
-rotation = 0.0
 mouse_filter = 2
 
 [node name="Pill" type="Control" parent="Spots/Spots5/Spot2" unique_id=407637217]
@@ -388,7 +388,6 @@ offset_left = 565.0
 offset_top = 155.0
 offset_right = 741.4
 offset_bottom = 439.4
-rotation = 0.0
 mouse_filter = 2
 
 [node name="Pill" type="Control" parent="Spots/Spots6/Spot2" unique_id=896806207]
@@ -441,7 +440,6 @@ offset_left = 565.0
 offset_top = 390.0
 offset_right = 741.4
 offset_bottom = 674.4
-rotation = 0.0
 mouse_filter = 2
 
 [node name="Pill" type="Control" parent="Spots/Spots6/Spot5" unique_id=814328704]
