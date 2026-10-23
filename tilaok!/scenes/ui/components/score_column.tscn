@@ -11,6 +11,7 @@ script = ExtResource("1_script")
 
 [node name="Chicken" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
+z_index = 1
 scale = Vector2(0.15, 0.15)
 sprite_frames = ExtResource("3_frames")
 animation = &"idle"

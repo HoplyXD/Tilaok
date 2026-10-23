@@ -41,6 +41,7 @@ visible = false
 [node name="TutorialPrompt" parent="." instance=ExtResource("11")]
 unique_name_in_owner = true
 visible = false
+z_index = 1
 
 [node name="Anchor" parent="TutorialPrompt" index="0"]
 anchors_preset = 0
@@ -56,10 +57,12 @@ theme_type_variation = &""
 
 [node name="PauseScreen" parent="." instance=ExtResource("7")]
 unique_name_in_owner = true
+z_index = 1
 
 [node name="ConfirmOverlay" type="Control" parent="."]
 unique_name_in_owner = true
 visible = false
+z_index = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -91,5 +94,7 @@ layout_mode = 2
 
 [node name="DebugOverlay" parent="." instance=ExtResource("8")]
 unique_name_in_owner = true
+z_index = 1
 
 [node name="FullscreenCountdown" parent="." instance=ExtResource("12")]
+z_index = 1

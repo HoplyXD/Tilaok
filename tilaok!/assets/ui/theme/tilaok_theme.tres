@@ -1076,6 +1076,282 @@ shadow_color = Color(0, 0, 0, 0.25)
 shadow_size = 4
 shadow_offset = Vector2(0, 4.5)
 
+[sub_resource type="StyleBoxFlat" id="sb_library_frame"]
+bg_color = Color(0.145098, 0.235294, 0.239216, 1)
+
+[sub_resource type="StyleBoxFlat" id="sb_library_parchment_mask"]
+bg_color = Color(0.866667, 0.733333, 0.533333, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Gradient" id="grad_library_parchment"]
+colors = PackedColorArray(0.929412, 0.827451, 0.654902, 1, 0.866667, 0.733333, 0.533333, 1)
+
+[sub_resource type="GradientTexture2D" id="tex_library_parchment"]
+gradient = SubResource("grad_library_parchment")
+width = 512
+height = 284
+fill = 1
+fill_from = Vector2(0.5, 0.4)
+fill_to = Vector2(1.24, 0.4)
+
+[sub_resource type="StyleBoxTexture" id="sb_library_parchment"]
+texture = SubResource("tex_library_parchment")
+
+[sub_resource type="StyleBoxFlat" id="sb_library_inset_rule"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.470588, 0.27451, 0.137255, 0.4)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_edge"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.470588, 0.27451, 0.137255, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_edge_selected"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.235294, 0.337255, 0.329412, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_shadow"]
+bg_color = Color(0.470588, 0.27451, 0.137255, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+expand_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_face"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_face_current"]
+bg_color = Color(0.533333, 0.352941, 0.223529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_face_selected"]
+bg_color = Color(0.145098, 0.235294, 0.239216, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_highlight"]
+bg_color = Color(1, 0.901961, 0.713725, 0.18)
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_rivet"]
+bg_color = Color(0.337255, 0.231373, 0.168627, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_library_tab_rivet_selected"]
+bg_color = Color(0.921569, 0.839216, 0.686275, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_library_panel_edge"]
+bg_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_library_panel_face"]
+bg_color = Color(0.964706, 0.905882, 0.803922, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="sb_library_panel_shadow"]
+draw_center = false
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.313725, 0.215686, 0.121569, 0.161)
+shadow_size = 25
+
+[sub_resource type="StyleBoxFlat" id="sb_library_binding"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 0.7)
+corner_radius_top_left = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_library_step_edge"]
+bg_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_library_step_face"]
+bg_color = Color(1, 0.952941, 0.854902, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_library_illustration"]
+bg_color = Color(0.921569, 0.839216, 0.686275, 1)
+corner_radius_top_left = 47
+corner_radius_top_right = 47
+corner_radius_bottom_right = 47
+corner_radius_bottom_left = 47
+corner_detail = 16
+
+[sub_resource type="StyleBoxFlat" id="sb_library_stage"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="sb_library_keycap"]
+content_margin_left = 7.0
+content_margin_top = 0.0
+content_margin_right = 7.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.952941, 0.854902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_library_figure"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 0.952941, 0.854902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_row_edge"]
+bg_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_row_edge_selected"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_row_face"]
+bg_color = Color(1, 0.952941, 0.854902, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_row_face_selected"]
+bg_color = Color(0.921569, 0.839216, 0.686275, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_arrow_box"]
+bg_color = Color(0.921569, 0.839216, 0.686275, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_track"]
+bg_color = Color(0.921569, 0.839216, 0.686275, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.470588, 0.27451, 0.137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_track_fill"]
+bg_color = Color(0.717647, 0.466667, 0.282353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.470588, 0.27451, 0.137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_knob"]
+bg_color = Color(1, 0.952941, 0.854902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.470588, 0.27451, 0.137255, 1)
+corner_radius_top_left = 13
+corner_radius_top_right = 13
+corner_radius_bottom_right = 13
+corner_radius_bottom_left = 13
+
+[sub_resource type="StyleBoxFlat" id="sb_settings_knob_tick"]
+bg_color = Color(0.768627, 0.627451, 0.454902, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+
 [resource]
 default_font = ExtResource("font_handlee")
 default_font_size = 16
@@ -1270,6 +1546,150 @@ LegendUna/base_type = &"Label"
 LegendUna/colors/font_color = Color(0.769, 0.569, 0.898, 1)
 LegendUna/font_sizes/font_size = 18
 LegendUna/fonts/font = ExtResource("font_margarine")
+LibraryArtNote/base_type = &"Label"
+LibraryArtNote/colors/font_color = Color(0.568627, 0.4, 0.184314, 1)
+LibraryArtNote/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryArtNote/font_sizes/font_size = 15
+LibraryArtNote/fonts/font = ExtResource("font_mansalva")
+LibraryBinding/base_type = &"Panel"
+LibraryBinding/styles/panel = SubResource("sb_library_binding")
+LibraryChapterBody/base_type = &"Label"
+LibraryChapterBody/colors/font_color = Color(0.337255, 0.231373, 0.168627, 1)
+LibraryChapterBody/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryChapterBody/constants/line_spacing = -6
+LibraryChapterBody/font_sizes/font_size = 20
+LibraryChapterBody/fonts/font = ExtResource("font_mansalva")
+LibraryChapterSummary/base_type = &"Label"
+LibraryChapterSummary/colors/font_color = Color(0.337255, 0.231373, 0.168627, 1)
+LibraryChapterSummary/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryChapterSummary/font_sizes/font_size = 21
+LibraryChapterSummary/fonts/font = ExtResource("font_mansalva")
+LibraryChapterTitle/base_type = &"Label"
+LibraryChapterTitle/colors/font_color = Color(0.470588, 0.27451, 0.137255, 1)
+LibraryChapterTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryChapterTitle/font_sizes/font_size = 42
+LibraryChapterTitle/fonts/font = ExtResource("font_mountains")
+LibraryFigure/base_type = &"PanelContainer"
+LibraryFigure/styles/panel = SubResource("sb_library_figure")
+LibraryFrame/base_type = &"Panel"
+LibraryFrame/styles/panel = SubResource("sb_library_frame")
+LibraryGrain/base_type = &"Panel"
+LibraryGrain/styles/panel = SubResource("sb_title_card_grain")
+LibraryHintText/base_type = &"Label"
+LibraryHintText/colors/font_color = Color(0.337255, 0.231373, 0.168627, 1)
+LibraryHintText/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryHintText/font_sizes/font_size = 16
+LibraryHintText/fonts/font = ExtResource("font_mansalva")
+LibraryIllustration/base_type = &"Panel"
+LibraryIllustration/styles/panel = SubResource("sb_library_illustration")
+LibraryInsetRule/base_type = &"Panel"
+LibraryInsetRule/styles/panel = SubResource("sb_library_inset_rule")
+LibraryKeyCap/base_type = &"PanelContainer"
+LibraryKeyCap/styles/panel = SubResource("sb_library_keycap")
+LibraryKeyText/base_type = &"Label"
+LibraryKeyText/colors/font_color = Color(0.470588, 0.27451, 0.137255, 1)
+LibraryKeyText/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryKeyText/font_sizes/font_size = 14
+LibraryKeyText/fonts/font = ExtResource("font_margarine")
+LibraryMotto/base_type = &"Label"
+LibraryMotto/colors/font_color = Color(0.470588, 0.27451, 0.137255, 1)
+LibraryMotto/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryMotto/font_sizes/font_size = 34
+LibraryMotto/fonts/font = ExtResource("font_mountains")
+LibraryMottoNote/base_type = &"Label"
+LibraryMottoNote/colors/font_color = Color(0.541176, 0.415686, 0.301961, 1)
+LibraryMottoNote/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryMottoNote/font_sizes/font_size = 17
+LibraryMottoNote/fonts/font = ExtResource("font_mansalva")
+LibraryPanel/base_type = &"Panel"
+LibraryPanel/styles/panel = SubResource("sb_library_panel_edge")
+LibraryPanelFace/base_type = &"Panel"
+LibraryPanelFace/styles/panel = SubResource("sb_library_panel_face")
+LibraryPanelShadow/base_type = &"Panel"
+LibraryPanelShadow/styles/panel = SubResource("sb_library_panel_shadow")
+LibraryParchment/base_type = &"Panel"
+LibraryParchment/styles/panel = SubResource("sb_library_parchment")
+LibraryParchmentMask/base_type = &"Panel"
+LibraryParchmentMask/styles/panel = SubResource("sb_library_parchment_mask")
+LibraryReviewNote/base_type = &"Label"
+LibraryReviewNote/colors/font_color = Color(0.568627, 0.4, 0.184314, 1)
+LibraryReviewNote/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryReviewNote/font_sizes/font_size = 16
+LibraryReviewNote/fonts/font = ExtResource("font_mansalva")
+LibraryStage/base_type = &"Panel"
+LibraryStage/styles/panel = SubResource("sb_library_stage")
+LibraryStepCard/base_type = &"Panel"
+LibraryStepCard/styles/panel = SubResource("sb_library_step_edge")
+LibraryStepFace/base_type = &"Panel"
+LibraryStepFace/styles/panel = SubResource("sb_library_step_face")
+LibraryStepName/base_type = &"Label"
+LibraryStepName/colors/font_color = Color(0.470588, 0.27451, 0.137255, 1)
+LibraryStepName/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryStepName/font_sizes/font_size = 20
+LibraryStepName/fonts/font = ExtResource("font_margarine")
+LibraryStepNote/base_type = &"Label"
+LibraryStepNote/colors/font_color = Color(0.541176, 0.415686, 0.301961, 1)
+LibraryStepNote/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryStepNote/font_sizes/font_size = 15
+LibraryStepNote/fonts/font = ExtResource("font_mansalva")
+LibraryTab/base_type = &"Button"
+LibraryTab/colors/font_color = Color(0, 0, 0, 0)
+LibraryTab/colors/font_disabled_color = Color(0, 0, 0, 0)
+LibraryTab/colors/font_focus_color = Color(0, 0, 0, 0)
+LibraryTab/colors/font_hover_color = Color(0, 0, 0, 0)
+LibraryTab/colors/font_hover_pressed_color = Color(0, 0, 0, 0)
+LibraryTab/colors/font_outline_color = Color(0, 0, 0, 0)
+LibraryTab/colors/font_pressed_color = Color(0, 0, 0, 0)
+LibraryTab/constants/outline_size = 0
+LibraryTab/font_sizes/font_size = 21
+LibraryTab/fonts/font = ExtResource("font_margarine")
+LibraryTab/styles/disabled = SubResource("sb_library_tab_edge")
+LibraryTab/styles/hover = SubResource("sb_library_tab_edge")
+LibraryTab/styles/hover_pressed = SubResource("sb_library_tab_edge")
+LibraryTab/styles/normal = SubResource("sb_library_tab_edge")
+LibraryTab/styles/pressed = SubResource("sb_library_tab_edge")
+LibraryTab/styles/focus = SubResource("sb_empty")
+LibraryTabFace/base_type = &"Panel"
+LibraryTabFace/styles/panel = SubResource("sb_library_tab_face")
+LibraryTabFaceCurrent/base_type = &"Panel"
+LibraryTabFaceCurrent/styles/panel = SubResource("sb_library_tab_face_current")
+LibraryTabFaceSelected/base_type = &"Panel"
+LibraryTabFaceSelected/styles/panel = SubResource("sb_library_tab_face_selected")
+LibraryTabHighlight/base_type = &"Panel"
+LibraryTabHighlight/styles/panel = SubResource("sb_library_tab_highlight")
+LibraryTabRivet/base_type = &"Panel"
+LibraryTabRivet/styles/panel = SubResource("sb_library_tab_rivet")
+LibraryTabRivetSelected/base_type = &"Panel"
+LibraryTabRivetSelected/styles/panel = SubResource("sb_library_tab_rivet_selected")
+LibraryTabSelected/base_type = &"Button"
+LibraryTabSelected/colors/font_color = Color(0, 0, 0, 0)
+LibraryTabSelected/colors/font_disabled_color = Color(0, 0, 0, 0)
+LibraryTabSelected/colors/font_focus_color = Color(0, 0, 0, 0)
+LibraryTabSelected/colors/font_hover_color = Color(0, 0, 0, 0)
+LibraryTabSelected/colors/font_hover_pressed_color = Color(0, 0, 0, 0)
+LibraryTabSelected/colors/font_outline_color = Color(0, 0, 0, 0)
+LibraryTabSelected/colors/font_pressed_color = Color(0, 0, 0, 0)
+LibraryTabSelected/constants/outline_size = 0
+LibraryTabSelected/font_sizes/font_size = 21
+LibraryTabSelected/fonts/font = ExtResource("font_margarine")
+LibraryTabSelected/styles/disabled = SubResource("sb_library_tab_edge_selected")
+LibraryTabSelected/styles/hover = SubResource("sb_library_tab_edge_selected")
+LibraryTabSelected/styles/hover_pressed = SubResource("sb_library_tab_edge_selected")
+LibraryTabSelected/styles/normal = SubResource("sb_library_tab_edge_selected")
+LibraryTabSelected/styles/pressed = SubResource("sb_library_tab_edge_selected")
+LibraryTabSelected/styles/focus = SubResource("sb_empty")
+LibraryTabShadow/base_type = &"Panel"
+LibraryTabShadow/styles/panel = SubResource("sb_library_tab_shadow")
+LibraryTabText/base_type = &"Label"
+LibraryTabText/colors/font_color = Color(1, 0.960784, 0.87451, 1)
+LibraryTabText/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryTabText/font_sizes/font_size = 21
+LibraryTabText/fonts/font = ExtResource("font_margarine")
+LibraryTitle/base_type = &"Label"
+LibraryTitle/colors/font_color = Color(0.470588, 0.27451, 0.137255, 1)
+LibraryTitle/colors/font_shadow_color = Color(0, 0, 0, 0)
+LibraryTitle/font_sizes/font_size = 66
+LibraryTitle/fonts/font = ExtResource("font_mountains")
 LobbyNote/base_type = &"Label"
 LobbyNote/colors/font_color = Color(0.471, 0.275, 0.137, 1)
 LobbyNote/colors/font_shadow_color = Color(0, 0, 0, 0)
@@ -1597,6 +2017,59 @@ ScreenTitle/font_sizes/font_size = 84
 ScreenTitle/fonts/font = ExtResource("font_mountains")
 Scrim/base_type = &"PanelContainer"
 Scrim/styles/panel = SubResource("sb_scrim")
+SettingsArrowBox/base_type = &"Panel"
+SettingsArrowBox/styles/panel = SubResource("sb_settings_arrow_box")
+SettingsFooterBuild/base_type = &"Label"
+SettingsFooterBuild/colors/font_color = Color(0.541176, 0.415686, 0.301961, 1)
+SettingsFooterBuild/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsFooterBuild/font_sizes/font_size = 14
+SettingsFooterBuild/fonts/font = ExtResource("font_mansalva")
+SettingsFooterHelp/base_type = &"Label"
+SettingsFooterHelp/colors/font_color = Color(0.337255, 0.231373, 0.168627, 1)
+SettingsFooterHelp/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsFooterHelp/font_sizes/font_size = 17
+SettingsFooterHelp/fonts/font = ExtResource("font_mansalva")
+SettingsFooterNote/base_type = &"Label"
+SettingsFooterNote/colors/font_color = Color(0.145098, 0.235294, 0.239216, 1)
+SettingsFooterNote/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsFooterNote/font_sizes/font_size = 17
+SettingsFooterNote/fonts/font = ExtResource("font_mansalva")
+SettingsFooterTag/base_type = &"Label"
+SettingsFooterTag/colors/font_color = Color(0.568627, 0.4, 0.184314, 1)
+SettingsFooterTag/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsFooterTag/font_sizes/font_size = 13
+SettingsFooterTag/fonts/font = ExtResource("font_mansalva")
+SettingsKnob/base_type = &"Panel"
+SettingsKnob/styles/panel = SubResource("sb_settings_knob")
+SettingsKnobTick/base_type = &"Panel"
+SettingsKnobTick/styles/panel = SubResource("sb_settings_knob_tick")
+SettingsRowEdge/base_type = &"Panel"
+SettingsRowEdge/styles/panel = SubResource("sb_settings_row_edge")
+SettingsRowEdgeSelected/base_type = &"Panel"
+SettingsRowEdgeSelected/styles/panel = SubResource("sb_settings_row_edge_selected")
+SettingsRowFace/base_type = &"Panel"
+SettingsRowFace/styles/panel = SubResource("sb_settings_row_face")
+SettingsRowFaceSelected/base_type = &"Panel"
+SettingsRowFaceSelected/styles/panel = SubResource("sb_settings_row_face_selected")
+SettingsRowLabel/base_type = &"Label"
+SettingsRowLabel/colors/font_color = Color(0.337255, 0.231373, 0.168627, 1)
+SettingsRowLabel/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsRowLabel/font_sizes/font_size = 21
+SettingsRowLabel/fonts/font = ExtResource("font_margarine")
+SettingsRowPercent/base_type = &"Label"
+SettingsRowPercent/colors/font_color = Color(0.470588, 0.27451, 0.137255, 1)
+SettingsRowPercent/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsRowPercent/font_sizes/font_size = 19
+SettingsRowPercent/fonts/font = ExtResource("font_margarine")
+SettingsRowValue/base_type = &"Label"
+SettingsRowValue/colors/font_color = Color(0.145098, 0.235294, 0.239216, 1)
+SettingsRowValue/colors/font_shadow_color = Color(0, 0, 0, 0)
+SettingsRowValue/font_sizes/font_size = 20
+SettingsRowValue/fonts/font = ExtResource("font_margarine")
+SettingsTrack/base_type = &"Panel"
+SettingsTrack/styles/panel = SubResource("sb_settings_track")
+SettingsTrackFill/base_type = &"Panel"
+SettingsTrackFill/styles/panel = SubResource("sb_settings_track_fill")
 SlotDevice/base_type = &"Label"
 SlotDevice/colors/font_color = Color(0.471, 0.275, 0.137, 1)
 SlotDevice/colors/font_shadow_color = Color(0, 0, 0, 0)

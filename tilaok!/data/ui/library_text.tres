@@ -1,14 +1,37 @@
-[gd_resource type="Resource" script_class="UiLibraryText" load_steps=32 format=3]
+[gd_resource type="Resource" script_class="UiLibraryText" load_steps=36 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_library_text.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_library_page.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/ui/ui_library_step.gd" id="3"]
+
+[sub_resource type="Resource" id="Step_1_1"]
+script = ExtResource("3")
+heading = "PUGAD"
+note = "about {pugad_s} s"
+body = "PUGAD: each player grabs an egg (about {pugad_s} s). The egg hatches into a piece."
+art = "pugad"
+
+[sub_resource type="Resource" id="Step_1_2"]
+script = ExtResource("3")
+heading = "PLACE"
+note = "about {place_s} s"
+body = "PLACE: put your piece on the shared stage (about {place_s} s) and confirm to lock it."
+art = "place"
+
+[sub_resource type="Resource" id="Step_1_3"]
+script = ExtResource("3")
+heading = "PLAY"
+note = "Run & jump"
+body = "PLAY: run and jump through the stage everyone built. The stage stays and grows every round."
+art = "play"
 
 [sub_resource type="Resource" id="Page_1"]
 script = ExtResource("2")
 category = "How to Play"
 title = "The round loop"
-body = "Every round has three steps.\nPUGAD: each player grabs an egg (about {pugad_s} s). The egg hatches into a piece.\nPLACE: put your piece on the shared stage (about {place_s} s) and confirm to lock it.\nPLAY: run and jump through the stage everyone built. The stage stays and grows every round."
+body = "Every round has three steps."
 requires = ""
+steps = Array[ExtResource("3")]([SubResource("Step_1_1"), SubResource("Step_1_2"), SubResource("Step_1_3")])
 
 [sub_resource type="Resource" id="Page_2"]
 script = ExtResource("2")

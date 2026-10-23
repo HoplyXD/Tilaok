@@ -50,10 +50,19 @@ var _cycle_time := 0.0
 @onready var _category_list: UiMenuList = %CategoryList
 @onready var _entry_list: UiMenuList = %EntryList
 @onready var _entry_title: Label = %EntryTitle
+@onready var _summary_row: Control = %SummaryRow
+@onready var _entry_summary: Label = %EntrySummary
 @onready var _entry_body: Label = %EntryBody
+@onready var _steps_gap: Control = %StepsGap
+@onready var _steps: Control = %Steps
+@onready var _motto: Control = %Motto
+@onready var _animation_frame: Control = %AnimationFrame
 @onready var _animation_host: Control = %AnimationHost
 @onready var _filter_button: Button = %ReleaseFilterButton
 @onready var _back_button: Button = %BackButton
+@onready var _choose_key: Label = %ChooseKey
+@onready var _read_key: Label = %ReadKey
+@onready var _back_key: Label = %BackKey
 
 
 static func dev_mode_requested() -> bool:
@@ -120,7 +129,17 @@ func choose_category(name: String) -> void:
 	_render_window()
 	_entry_list.select(0)
 	_show_entry(0)
+	_shade_current_category()
 	category_chosen.emit(name)
+
+
+## The open category's plank stays shaded while the cursor is on the chapters (or on another
+## category), so players can see which category the chapters belong to.
+func _shade_current_category() -> void:
+	for item in _category_list.items:
+		var plank := item as UiLibraryTabButton
+		if plank != null:
+			plank.current = plank != _filter_button and _category_of(plank) == category
 
 
 func set_release_filter(value: bool) -> void:
@@ -135,8 +154,23 @@ func category_names() -> PackedStringArray:
 	var result := PackedStringArray()
 	for item in _category_list.items:
 		if item is Button and item != _filter_button and item.visible:
-			result.append((item as Button).text)
+			result.append(_category_of(item as Button))
 	return result
+
+
+## Footer keycaps: the navigate / confirm / back keys of the device driving the Library.
+func bind_prompts(map: UiPromptMap, device_kind: String) -> void:
+	if map == null:
+		return
+	_choose_key.text = map.glyph("navigate", device_kind)
+	_read_key.text = map.glyph("confirm", device_kind)
+	_back_key.text = map.glyph("back", device_kind)
+
+
+## The page category a category button opens (its `category` metadata, else its text: the
+## buttons may read differently from the category names the pages use).
+func _category_of(button: Button) -> String:
+	return str(button.get_meta("category", button.text))
 
 
 func _refresh_conditional_categories() -> void:
@@ -144,7 +178,7 @@ func _refresh_conditional_categories() -> void:
 		var button := item as Button
 		if button == null or button == _filter_button:
 			continue
-		var name := button.text
+		var name := _category_of(button)
 		if name == ITEMS_CATEGORY:
 			continue
 		var pages := _text.pages_for(name, _context) if _text != null else []
@@ -214,6 +248,7 @@ func _apply_variant(entry: ItemLibraryEntry) -> void:
 
 func _show_state(index: int, ctx: UiContext) -> void:
 	bind_library(ctx.definitions, ctx.tuning, ctx.library_text, ctx.sample.long_name)
+	bind_prompts(ctx.prompt_map, ctx.device_kind)
 	_context = UiLibraryText.build_context(ctx.tuning, ctx.prompt_map)
 	zone = ZONE_CATEGORIES
 	set_release_filter(index == 5)
@@ -301,7 +336,7 @@ func _on_category_activated(index: int) -> void:
 	if item == _filter_button:
 		set_release_filter(_filter_button.button_pressed)
 		return
-	choose_category((item as Button).text)
+	choose_category(_category_of(item as Button))
 
 
 func _on_entry_activated(index: int) -> void:
@@ -311,7 +346,7 @@ func _on_entry_activated(index: int) -> void:
 	if str(rows[row_index].kind) == KIND_REPLAY:
 		replay_tutorial_requested.emit()
 		(_entry_list.items[index] as Button).text = REPLAY_DONE_LABEL
-		_entry_body.text = REPLAY_DONE_TEXT
+		_show_text(REPLAY_DONE_TEXT, [])
 		return
 	entry_chosen.emit(row_index)
 
@@ -338,7 +373,17 @@ func _rows_for(name: String) -> Array[Dictionary]:
 		return result
 	if _text != null:
 		for page in _text.pages_for(name, _context):
-			result.append({"title": page.title, "body": page.body, "kind": KIND_PAGE})
+			(
+				result
+				. append(
+					{
+						"title": page.title,
+						"body": page.body,
+						"kind": KIND_PAGE,
+						"steps": page.get("steps", []),
+					}
+				)
+			)
 		if result.is_empty():
 			var legacy := _text.body_for(name)
 			if not legacy.is_empty():
@@ -387,18 +432,18 @@ func _show_entry(slot: int) -> void:
 	_free_preview()
 	var row_index := window_offset + slot
 	if row_index < 0 or row_index >= rows.size():
-		_animation_host.get_parent().visible = false
+		_show_figure(false)
 		_entry_title.text = "No items enabled" if category == ITEMS_CATEGORY else category
-		_entry_body.text = ""
+		_show_text("", [])
 		return
 	var row := rows[row_index]
 	_entry_title.text = str(row.title)
-	_entry_body.text = str(row.body)
+	_show_text(UiLibraryText.display_body(str(row.body)), row.get("steps", []))
 	var entry := row.get("entry") as ItemLibraryEntry
 	_cycle_index = 0
 	_cycle_time = 0.0
-	# Only item entries have an animation; the frame stays out of the way on text pages.
-	_animation_host.get_parent().visible = entry != null
+	# Only item entries have an animation; it takes the field guide's motto spot.
+	_show_figure(entry != null)
 	if entry == null:
 		return
 	var egg := ItemEggPreview.new()
@@ -407,6 +452,37 @@ func _show_entry(slot: int) -> void:
 		_preview = egg
 	else:
 		egg.free()
+
+
+## A page with step cards shows its body as the one-line summary above them (Figma "Round step"
+## layout); any other row shows the body as running text.
+func _show_text(body: String, steps: Array) -> void:
+	var has_steps := not steps.is_empty()
+	_summary_row.visible = has_steps
+	_entry_summary.text = body if has_steps else ""
+	_entry_body.visible = not has_steps
+	_entry_body.text = "" if has_steps else body
+	_steps.visible = has_steps
+	_steps_gap.visible = has_steps
+	var cards := _steps.get_children()
+	for index in cards.size():
+		var card := cards[index] as UiLibraryStepCard
+		if card == null:
+			continue
+		card.visible = index < steps.size()
+		if card.visible:
+			var step: Dictionary = steps[index]
+			card.bind(
+				str(step.get("heading", "")),
+				str(step.get("note", "")),
+				str(step.get("body", "")),
+				str(step.get("art", ""))
+			)
+
+
+func _show_figure(value: bool) -> void:
+	_animation_frame.visible = value
+	_motto.visible = not value
 
 
 func _free_preview() -> void:

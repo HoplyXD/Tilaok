@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gdub16jvvq7i"
-path="res://.godot/imported/ui.title.emblem.svg-261755f79bc9799a9ed296108b0d6282.ctex"
+uid="uid://dfr11bk6s41yg"
+path="res://.godot/imported/ui.library.step_place.svg-9f7824c46cccc696a48029f78230ceb7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/title/ui.title.emblem.svg"
-dest_files=["res://.godot/imported/ui.title.emblem.svg-261755f79bc9799a9ed296108b0d6282.ctex"]
+source_file="res://assets/ui/library/ui.library.step_place.svg"
+dest_files=["res://.godot/imported/ui.library.step_place.svg-9f7824c46cccc696a48029f78230ceb7.ctex"]
 
 [params]
 
@@ -38,6 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=3.0
+svg/scale=2.4
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

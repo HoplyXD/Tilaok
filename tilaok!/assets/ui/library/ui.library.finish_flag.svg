@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="25" height="21" viewBox="0 0 25 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="stroke0_0_19" fill="white">
+<path d="M0 0L25 9L0 21V0Z"/>
+</mask>
+<path id="Finish flag" d="M0 57H1V0H0H-1V57H0ZM0 0L0.677439 -1.88177L-2 -2.84565V0H0ZM25 9L25.8655 10.803L30.1716 8.73611L25.6774 7.11823L25 9ZM0 21H-2V24.1785L0.865462 22.803L0 21ZM0 0L-0.677439 1.88177L24.3226 10.8818L25 9L25.6774 7.11823L0.677439 -1.88177L0 0ZM25 9L24.1345 7.19695L-0.865462 19.197L0 21L0.865462 22.803L25.8655 10.803L25 9ZM0 21H2V0H0H-2V21H0Z" fill="#784623" mask="url(#stroke0_0_19)"/>
+</svg>

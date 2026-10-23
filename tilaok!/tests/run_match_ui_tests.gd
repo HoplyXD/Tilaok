@@ -66,8 +66,8 @@ func _test_two_rounds_through_the_whole_flow() -> void:
 	var title := flow._screen as UiTitleScreen
 	_check(title != null and flow.state == GameFlow.State.TITLE, "boots to the Title")
 	_check(
-		title.get_node("%PressToJoinPrompt").visible and not title.get_node("%MenuList").visible,
-		"Title with nobody joined shows only the join prompt"
+		not title.get_node("%PressToJoinPrompt").visible and title.get_node("%MenuList").visible,
+		"Title with nobody joined shows the menu, not a join prompt"
 	)
 	_check(
 		(
@@ -927,9 +927,13 @@ func _finish_race_and_advance(room: P05MatchRoom, round_index: int) -> void:
 	await _claim_and_confirm(room, round_index + 1)
 
 
+## The Title menu shows with nobody joined; a first menu press joins and acts. Down then up joins
+## K1 and leaves Play selected without activating anything.
 func _join_title_k1() -> void:
-	_key("K1", KEY_E, true)
-	_key("K1", KEY_E, false)
+	_key("K1", KEY_S, true)
+	_key("K1", KEY_S, false)
+	_key("K1", KEY_W, true)
+	_key("K1", KEY_W, false)
 
 
 ## Each egg preview counts as one node: its contents are the rolled block's own Visual, which

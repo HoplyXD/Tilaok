@@ -1,139 +1,338 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_settings_screen.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/option_row.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/library_tab_button.tscn" id="5"]
+[ext_resource type="Texture2D" uid="uid://dnuh2m0y1qugp" path="res://assets/ui/library/ui.library.icon_back.svg" id="6"]
+[ext_resource type="Texture2D" uid="uid://c2fcksrojrei5" path="res://assets/ui/library/ui.library.leaf_divider.svg" id="7"]
 
 [node name="SettingsScreen" type="Control"]
 layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("2")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 standalone_theme = ExtResource("1")
+metadata/figma = "Settings (133:1336), a 1600 x 900 frame, built from the team's 2x PNG export (the Figma connector was at its plan limit). Everything is laid out in Figma px inside Frame, which is scaled by 0.8 to fill the 1280 x 720 canvas, like the Library."
 
-[node name="Backdrop" type="PanelContainer" parent="."]
+[node name="Frame" type="Panel" parent="."]
 layout_mode = 1
-theme_type_variation = &"Backdrop"
+offset_right = 1600.0
+offset_bottom = 900.0
+scale = Vector2(0.8, 0.8)
+theme_type_variation = &"LibraryFrame"
+metadata/note = "#253c3d behind the parchment (same as the Library). It also stops clicks reaching a match under Settings. Scaled 0.8: one unit here is one Figma px."
+
+[node name="Parchment" type="Panel" parent="Frame"]
+clip_children = 1
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Art_Background" type="TextureRect" parent="."]
-layout_mode = 1
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 6
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/asset_id = "ui.settings.panel"
+theme_type_variation = &"LibraryParchmentMask"
 
-[node name="Safe" type="MarginContainer" parent="."]
+[node name="Gradient" type="Panel" parent="Frame/Parchment"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"SafeAreaMargin"
+mouse_filter = 2
+theme_type_variation = &"LibraryParchment"
 
-[node name="Content" type="VBoxContainer" parent="Safe"]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="Grain" type="Control" parent="Frame/Parchment"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="Heading" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "SETTINGS"
-theme_type_variation = &"HeadingLabel"
+[node name="GrainPatch" type="Panel" parent="Frame/Parchment/Grain"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.2
+anchor_bottom = 1.2
+scale = Vector2(0.833333, 0.833333)
+mouse_filter = 2
+theme_type_variation = &"LibraryGrain"
+
+[node name="InsetRule" type="Panel" parent="Frame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryInsetRule"
+
+[node name="Heading" type="Label" parent="Frame"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 25.0
+offset_bottom = 117.0
+grow_horizontal = 2
+theme_type_variation = &"LibraryTitle"
+text = "Settings"
 horizontal_alignment = 1
+metadata/note = "Mountains of Christmas Bold 66, #784623 (export: \"S\" top at 45.5, 197 px wide)."
 
-[node name="MenuList" type="VBoxContainer" parent="Safe/Content"]
-layout_mode = 2
-script = ExtResource("3")
-theme_override_constants/separation = 8
-size_flags_horizontal = 4
-custom_minimum_size = Vector2(640, 0)
+[node name="Art_LeafDivider" type="TextureRect" parent="Frame"]
+texture_filter = 4
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -125.0
+offset_top = 116.0
+offset_right = 125.0
+offset_bottom = 132.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("7")
+expand_mode = 1
+metadata/asset_id = "ui.library.leaf_divider"
+metadata/note = "The Library's leaf divider, 250 x 16 at (675, 116)."
+
+[node name="Panel" type="Panel" parent="Frame"]
+layout_mode = 1
+offset_left = 330.0
+offset_top = 168.0
+offset_right = 1270.0
+offset_bottom = 720.0
+mouse_filter = 2
+theme_type_variation = &"LibraryPanel"
+metadata/note = "940 x 552 at (330, 168): the Library page (#f6e7cd, 1.5 px #c4a074 edge, 5 px binding, drop shadow, grain)."
+
+[node name="Shadow" type="Panel" parent="Frame/Panel"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.5
+offset_top = 20.5
+offset_right = -12.5
+offset_bottom = -4.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryPanelShadow"
+
+[node name="Face" type="Panel" parent="Frame/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_top = 1.5
+offset_right = -1.5
+offset_bottom = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryPanelFace"
+
+[node name="Binding" type="Panel" parent="Frame/Panel"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 5.0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryBinding"
+
+[node name="MenuList" type="VBoxContainer" parent="Frame/Panel"]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+script = ExtResource("3")
+metadata/note = "Rows 892 x 54, 10 px apart (the Gap nodes are not menu items), 18 px above the 48 px Back plank; 24 px padding."
 
-[node name="ShakeRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="ShakeRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Screen shake"
 choices = PackedStringArray("Full", "Reduced", "Off")
-unique_name_in_owner = true
+selected = true
 
-[node name="ResultRevealRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="Gap1" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ResultRevealRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Result reveal motion"
 choices = PackedStringArray("Normal", "Reduced", "Off")
-unique_name_in_owner = true
 
-[node name="MuteRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="Gap2" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MuteRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Sound"
 choices = PackedStringArray("On", "Muted")
-unique_name_in_owner = true
 
-[node name="MasterRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="Gap3" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MasterRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Master volume"
-unique_name_in_owner = true
 
-[node name="MusicRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="Gap4" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MusicRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Music volume"
-unique_name_in_owner = true
 
-[node name="EffectsRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="Gap5" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EffectsRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Effects volume"
-unique_name_in_owner = true
 
-[node name="CrowdRow" parent="Safe/Content/MenuList" instance=ExtResource("4")]
+[node name="Gap6" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CrowdRow" parent="Frame/Panel/MenuList" instance=ExtResource("4")]
+unique_name_in_owner = true
 layout_mode = 2
 row_title = "Crowd volume"
-unique_name_in_owner = true
 
-[node name="BackButton" type="Button" parent="Safe/Content/MenuList"]
+[node name="BackGap" type="Control" parent="Frame/Panel/MenuList"]
+custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
+mouse_filter = 2
+
+[node name="BackButton" parent="Frame/Panel/MenuList" instance=ExtResource("5")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+tooltip_text = "Back"
 text = "Back"
-unique_name_in_owner = true
+action_icon = ExtResource("6")
+metadata/icon_asset_id = "ui.library.icon_back"
+metadata/note = "The Library plank, 892 x 48, chevron and \"Back\" centred."
 
-[node name="ControlsHelp" type="Label" parent="Safe/Content"]
-layout_mode = 2
+[node name="Grain" type="Control" parent="Frame/Panel"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_top = 1.5
+offset_right = -1.5
+offset_bottom = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="GrainPatch" type="Panel" parent="Frame/Panel/Grain"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.2
+anchor_bottom = 1.2
+scale = Vector2(0.833333, 0.833333)
+mouse_filter = 2
+theme_type_variation = &"LibraryGrain"
+metadata/note = "Paper grain over the page and its rows, like the Library."
+
+[node name="ControlsHelp" type="Label" parent="Frame"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 734.4
+offset_bottom = 761.4
+grow_horizontal = 2
+theme_type_variation = &"SettingsFooterHelp"
 text = "Up/Down choose a row, Left/Right change it, Confirm activates, Back returns."
-theme_type_variation = &"CaptionLabel"
 horizontal_alignment = 1
-autowrap_mode = 3
-unique_name_in_owner = true
+metadata/note = "Mansalva, #563b2b, centred (17 here: this project's Mansalva is wider than Figma's)."
 
-[node name="AccessibilityNote" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "Every cue also has a shape, text or motion; colour is never the only signal."
-theme_type_variation = &"CaptionLabel"
+[node name="AccessibilityNote" type="Label" parent="Frame"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 762.4
+offset_bottom = 789.4
+grow_horizontal = 2
+theme_type_variation = &"SettingsFooterNote"
+text = "Every cue also has a shape, text or motion, colour is never the only signal."
 horizontal_alignment = 1
-autowrap_mode = 3
+metadata/note = "Mansalva, #253c3d, centred."
 
-[node name="Tag" type="Label" parent="Safe/Content"]
-layout_mode = 2
+[node name="Tag" type="Label" parent="Frame"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 793.1
+offset_bottom = 815.1
+grow_horizontal = 2
+theme_type_variation = &"SettingsFooterTag"
 text = "PLACEHOLDER settings"
-theme_type_variation = &"PlaceholderTag"
 horizontal_alignment = 1
 
-[node name="BuildAboutLabel" type="Label" parent="Safe/Content"]
+[node name="BuildAboutLabel" type="Label" parent="Frame"]
 unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"CaptionLabel"
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 816.8
+offset_bottom = 839.8
+grow_horizontal = 2
+theme_type_variation = &"SettingsFooterBuild"
+text = "tilaok! build"
 horizontal_alignment = 1
-
+metadata/note = "The build identity (BuildIdentity.about_line()), filled in at run time."

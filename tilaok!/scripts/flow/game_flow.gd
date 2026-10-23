@@ -37,8 +37,6 @@ const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
 const PLAYTEST_PROFILE := "karera_slice"
-## How long a score screen keeps the music before its bars have started rising.
-const SCORE_BARS_START_GRACE_MSEC := 250
 ## Guided first match: the Tutorial map (scenes/maps/tutorial.tscn), whose flag ledge needs a
 ## built piece. Its id is also the tutorial coach's layout id.
 const TUTORIAL_MAP_ID := TutorialCoordinator.TUTORIAL_LAYOUT_ID
@@ -66,8 +64,6 @@ var tutorial: TutorialCoordinator
 var selected_map_id := MapCatalog.DEFAULT_ID
 
 var _screen: UiScreen
-## When the current score screen opened (ticks msec), or -1 when none is showing.
-var _score_screen_since_msec := -1
 var _close_requested := false
 
 
@@ -97,6 +93,7 @@ func _ready() -> void:
 				"offline_live_build requires OFFLINE_AUTHORITY; keeping the scheduled route"
 			)
 	PresentationApplier.apply(settings)
+	GameSfx.set_music_track(music_track())
 	router = LocalInputRouter.new()
 	router.name = "FlowRouter"
 	add_child(router)
@@ -136,31 +133,25 @@ func _exit_tree() -> void:
 
 
 func _process(_delta: float) -> void:
-	GameSfx.set_menu_music(wants_menu_music())
+	GameSfx.set_music_track(music_track())
 
 
-## The music plays everywhere, including through the GO countdown and Play. On a score screen
-## (the round results or the final results) it keeps playing while the score bars rise, under the
-## progress sound, and fades out once they finish. It resumes with the next round.
-func wants_menu_music() -> bool:
-	if not _on_score_screen():
-		_score_screen_since_msec = -1
-		return true
-	if _score_screen_since_msec < 0:
-		_score_screen_since_msec = Time.get_ticks_msec()
-	if GameSfx.are_score_bars_rising():
-		return true
-	# The chart starts its bars a frame after the screen opens; do not dip the music meanwhile.
-	return Time.get_ticks_msec() - _score_screen_since_msec < SCORE_BARS_START_GRACE_MSEC
-
-
-func _on_score_screen() -> bool:
+## Music plays on every screen, results included. A Lagsanay round plays its own track while the
+## tag game runs (the GO countdown and Play, sudden death included); its results go back to the
+## main game track.
+func music_track() -> StringName:
 	if room == null or not is_instance_valid(room) or room.phase_controller == null:
-		return false
-	return (
-		room.get("final_results_visible") == true
-		or room.phase_controller.phase == MatchPhaseController.Phase.RESULTS
-	)
+		return GameSfx.MUSIC_MAIN
+	if room.phase_controller.phase not in [
+		MatchPhaseController.Phase.GO, MatchPhaseController.Phase.PLAY
+	]:
+		return GameSfx.MUSIC_MAIN
+	if not room.has_method("current_entry"):
+		return GameSfx.MUSIC_MAIN
+	var entry: Dictionary = room.call("current_entry")
+	if int(entry.get("main", -1)) == EventSchedule.Challenge.LAGSANAY:
+		return GameSfx.MUSIC_LAGSANAY
+	return GameSfx.MUSIC_MAIN
 
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).
@@ -195,6 +186,10 @@ func show_library() -> void:
 		reference = UiLibraryScreen.reference_definitions_for(tuning)
 	var context := UiLibraryText.build_context(tuning, prompt_map, settings.screen_shake)
 	library.bind_live(definitions, tuning, library_text, context, reference)
+	var seats := router.registry.joined_seats()
+	library.bind_prompts(
+		prompt_map, UiContext.device_for_seat(seats[0]) if not seats.is_empty() else "k1"
+	)
 	library.back_requested.connect(show_title)
 	_screen = library
 	_use_menu_screen(library)
@@ -222,6 +217,7 @@ func show_settings() -> void:
 
 ## Creates a fresh match room on the shared router; the room's own Lobby phase comes first.
 func _enter_match() -> void:
+	router.menu_join_enabled = false
 	if not simulation_authority.can_commit():
 		return
 	_create_authoritative_match()
@@ -373,12 +369,13 @@ func _refresh_title() -> void:
 	title.bind_live(label, seats.size(), prompt_map, device)
 
 
-## Title with nobody seated listens for a join press (router LOBBY phase); with a seat it is a
-## normal MENU. Both go through set_phase so a held press is consumed on the change.
+## Menu screens are always a MENU. With nobody seated, the first direction or confirm press from a
+## keyboard layout or gamepad joins it and acts on the menu (menu_join_enabled). set_phase still
+## consumes a held press on a phase change.
 func _use_menu_screen(screen: UiScreen) -> void:
 	bridge.screen = screen
-	var seated := not router.registry.joined_seats().is_empty()
-	router.set_phase(LocalInputRouter.Phase.MENU if seated else LocalInputRouter.Phase.LOBBY)
+	router.menu_join_enabled = router.registry.joined_seats().is_empty()
+	router.set_phase(LocalInputRouter.Phase.MENU)
 	# Title <-> Library <-> Settings stay in one router phase: consume the press that opened this
 	# screen so it cannot also act on it.
 	router.consume_held_presses()

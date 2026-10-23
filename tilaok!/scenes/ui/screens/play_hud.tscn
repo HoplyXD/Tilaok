@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" uid="uid://bjhjwikeft1t7" path="res://scripts/ui/ui_play_hud.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_chip.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://8vm3rr1bbp3h" path="res://scenes/ui/components/score_chip.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="4"]
 
 [node name="PlayHud" type="Control" unique_id=873868963]
@@ -140,9 +140,9 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-columns = 2
 theme_override_constants/h_separation = 12
 theme_override_constants/v_separation = 2
+columns = 2
 
 [node name="ControlHint1" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926022]
 unique_name_in_owner = true

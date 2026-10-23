@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bqk40qmvhipek" path="res://scripts/ui/ui_round_result_screen.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/award_line.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="5"]
+[ext_resource type="FontFile" uid="uid://dm41mxkfcm4la" path="res://assets/fonts/mountains_of_christmas/MountainsofChristmas-Bold.ttf" id="5_dlrfg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/countdown_bar.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/scoreboard_chart.tscn" id="8_chart"]
@@ -116,6 +117,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 theme_type_variation = &"ResultSubtitle"
+theme_override_fonts/font = ExtResource("5_dlrfg")
 horizontal_alignment = 2
 autowrap_mode = 3
 
@@ -221,6 +223,7 @@ mouse_filter = 2
 [node name="AwardsHeading" type="Label" parent="Safe/Content/Columns/Awards" unique_id=669517291]
 layout_mode = 2
 theme_type_variation = &"ResultHeading"
+theme_override_font_sizes/font_size = 37
 text = "Awards"
 
 [node name="Award1" parent="Safe/Content/Columns/Awards" unique_id=1342774724 instance=ExtResource("4")]

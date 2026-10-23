@@ -135,9 +135,16 @@ const CONTRACT := {
 		"CategoryList": "UiMenuList",
 		"EntryList": "UiMenuList",
 		"EntryTitle": "Label",
+		"EntrySummary": "Label",
 		"EntryBody": "Label",
+		"Steps": "VBoxContainer",
+		"AnimationFrame": "PanelContainer",
 		"AnimationHost": "Control",
 		"ReleaseFilterButton": "Button",
+		"BackButton": "UiLibraryTabButton",
+		"ChooseKey": "Label",
+		"ReadKey": "Label",
+		"BackKey": "Label",
 	},
 	"events_overlay":
 	{

@@ -31,21 +31,17 @@ func bind_live(
 ) -> void:
 	bind_build_label(build_text)
 	bind_joined(joined_count, map, device_kind)
-	if joined_count <= 0 and map != null:
-		var glyphs := PackedStringArray()
-		for kind in UiContext.DEVICE_KINDS:
-			glyphs.append(map.glyph("ready", kind))
-		_join_prompt.bind_text(" / ".join(glyphs), "to join")
 
 
 func bind_build_label(text: String) -> void:
 	_build_label.text = text
 
 
-## With nobody joined the menu is hidden and the join prompt is shown instead.
-func bind_joined(count: int, map: UiPromptMap, device_kind: String) -> void:
-	_menu.visible = count > 0
-	_join_prompt.visible = count <= 0
+## The menu always shows (Play, Library, Settings, Quit), even with nobody joined: the first menu
+## press joins that device. The old join prompt node stays in the scene, hidden.
+func bind_joined(_count: int, map: UiPromptMap, device_kind: String) -> void:
+	_menu.visible = true
+	_join_prompt.visible = false
 	_join_prompt.bind("ready", device_kind, map)
 	_menu.refresh_items()
 

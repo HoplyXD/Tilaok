@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://4fimcocji1ve" path="res://assets/music/391280_igor1998_dying-chicken (mp3cut.net).wav" id="5"]
 [ext_resource type="AudioStream" uid="uid://bdlynvsv881c6" path="res://assets/music/main_music.wav" id="6"]
 [ext_resource type="AudioStream" uid="uid://cofdysgx1fs17" path="res://assets/music/Progress Bar Loading Ui Sound Effects.mp3" id="7"]
+[ext_resource type="AudioStream" uid="uid://dum2edbjutlbg" path="res://assets/music/lagsanay.wav" id="8"]
 
 [node name="GameSfx" type="Node"]
 process_mode = 3
@@ -34,6 +35,10 @@ bus = &"Effects"
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6")
+bus = &"Music"
+
+[node name="LagsanayMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8")
 bus = &"Music"
 
 [node name="Progress" type="AudioStreamPlayer" parent="."]

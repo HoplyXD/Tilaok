@@ -1,0 +1,119 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_library_tab_button.gd" id="1"]
+
+[node name="LibraryTabButton" type="Button"]
+custom_minimum_size = Vector2(0, 56)
+offset_right = 266.0
+offset_bottom = 56.0
+focus_mode = 0
+theme_type_variation = &"LibraryTab"
+text = "Tab"
+clip_text = true
+script = ExtResource("1")
+metadata/asset_id = "ui.library.tab_button"
+metadata/figma = "Library 133:1205, \"Menu control\" (normal 133:1229, selected 133:1250), in Figma px: 56 px tall, 1.5 px edge, 6 px corners, solid 0 4 0 #784623 shadow. The Library draws it inside its 0.8-scaled frame."
+
+[node name="Shadow" type="Panel" parent="."]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryTabShadow"
+metadata/note = "Solid drop shadow (Figma 0 4 0 #784623): the stylebox reaches 4 px below the plank with expand_margin_bottom."
+
+[node name="Face" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_top = 1.5
+offset_right = -1.5
+offset_bottom = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryTabFace"
+metadata/note = "The plank fill (#b77748, selected #253c3d). The button's own stylebox around it is the 1.5 px edge."
+
+[node name="Highlight" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = 1.5
+offset_right = -6.0
+offset_bottom = 2.5
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryTabHighlight"
+metadata/note = "Figma inner shadow 0 2 0 #ffe6b6 36 %: only its last 0.5 px shows under the 1.5 px edge, so it is 1 px at 18 % (the same amount of light)."
+
+[node name="RivetLeft" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -2.5
+offset_right = 15.0
+offset_bottom = 2.5
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryTabRivet"
+metadata/note = "Figma \"Rivet\": a 5 px dot 10 px in from the plank's outer edge (#563b2b, selected #ebd6af)."
+
+[node name="RivetRight" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -2.5
+offset_right = -10.0
+offset_bottom = 2.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryTabRivet"
+
+[node name="Content" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+alignment = 1
+metadata/note = "Figma: 12 px between the icon and the text. The side margin is 20 px (Figma's 16 px padding plus room for the rivets) so trimmed long names stay clear of the rivets; centred text is unaffected."
+
+[node name="Icon" type="TextureRect" parent="Content"]
+visible = false
+texture_filter = 4
+custom_minimum_size = Vector2(19, 19)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"LibraryTabText"
+text = "Tab"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3

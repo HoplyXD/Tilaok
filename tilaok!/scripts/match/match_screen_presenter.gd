@@ -440,6 +440,14 @@ func _open_overlay(scene: PackedScene, seat_override: int = -1) -> void:
 			room.tuning, prompt_map, room.presentation_settings.screen_shake
 		)
 		library.bind_live(room.definitions, room.tuning, library_text, context, reference)
+		var registry := room.input_router.registry
+		var seats := registry.joined_seats()
+		var driver := (
+			registry.get_seat(screen.owner_seat)
+			if screen.owner_seat >= 0
+			else (seats[0] if not seats.is_empty() else {})
+		)
+		library.bind_prompts(prompt_map, UiContext.device_for_seat(driver))
 		if _tutorial != null:
 			library.replay_tutorial_enabled = true
 			library.replay_tutorial_requested.connect(_on_replay_tutorial_requested)

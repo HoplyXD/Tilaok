@@ -3,11 +3,15 @@
 [ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" uid="uid://bclft5ju38erl" path="res://scripts/ui/ui_title_screen.gd" id="2"]
 [ext_resource type="Script" uid="uid://df5wjjgm7jhcf" path="res://scripts/ui/ui_menu_list.gd" id="3"]
+[ext_resource type="Texture2D" uid="uid://dyedh7mygi2ts" path="res://scenes/ui/screens/Main menu art.jpeg" id="3_xijos"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/prompt_glyph.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://ld1es1fq5wgo" path="res://scenes/ui/components/confirm_dialog_paper.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/menu_action_button.tscn" id="6"]
 [ext_resource type="Texture2D" uid="uid://pkpif3rw7i75" path="res://assets/ui/common/ui.common.icon_play.svg" id="7"]
 [ext_resource type="Texture2D" uid="uid://bvwkm5lt0vxa" path="res://assets/ui/title/ui.title.ornament.svg" id="9"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bo64p"]
+bg_color = Color(0.24794078, 0.09971947, 4.813075e-08, 0.27058825)
 
 [node name="TitleScreen" type="Control" unique_id=1623043607]
 layout_mode = 3
@@ -20,15 +24,6 @@ mouse_filter = 2
 script = ExtResource("2")
 standalone_theme = ExtResource("1")
 
-[node name="Backdrop" type="PanelContainer" parent="." unique_id=1683584227]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_type_variation = &"Backdrop"
-
 [node name="Art_Background" type="TextureRect" parent="." unique_id=576695466]
 layout_mode = 1
 anchors_preset = 15
@@ -37,9 +32,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("3_xijos")
 expand_mode = 1
 stretch_mode = 6
 metadata/asset_id = "ui.title.background"
+
+[node name="Backdrop" type="PanelContainer" parent="Art_Background" unique_id=1683584227]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"Backdrop"
+theme_override_styles/panel = SubResource("StyleBoxFlat_bo64p")
 
 [node name="Card" type="Control" parent="." unique_id=1338016722]
 layout_mode = 1
@@ -48,10 +54,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -272.0
-offset_top = -326.0
-offset_right = 272.0
-offset_bottom = 326.0
+offset_left = -568.0
+offset_top = -325.0
+offset_right = -24.0
+offset_bottom = 327.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
