@@ -363,6 +363,18 @@ func _test_resolutions() -> void:
 
 
 func _test_applier_lifecycle() -> void:
+	var defaults := PresentationSettings.new()
+	_check(
+		(
+			defaults.screen_shake == PresentationApplier.SHAKE_FULL
+			and is_equal_approx(defaults.effects_volume, 1.0)
+			and is_equal_approx(defaults.master_volume, 1.0)
+			and is_equal_approx(defaults.music_volume, 1.0)
+			and is_equal_approx(defaults.crowd_volume, 1.0)
+			and not defaults.muted
+		),
+		"fresh presentation settings enable full shake and all sound buses"
+	)
 	var flow := FLOW_SCENE.instantiate() as GameFlow
 	flow.harness_mode = true
 	root.add_child(flow)
@@ -378,9 +390,9 @@ func _test_applier_lifecycle() -> void:
 		(
 			not PresentationApplier.bus_muted(&"Master")
 			and absf(PresentationApplier.bus_volume_db(&"Master")) < 0.01
-			and PresentationApplier.shake_mode == PresentationApplier.SHAKE_OFF
+			and PresentationApplier.shake_mode == PresentationApplier.SHAKE_FULL
 		),
-		"leaving the flow restores full volume, unmuted, shake off (no bus leak)"
+		"leaving the flow restores full volume, unmuted, full shake (no bus leak)"
 	)
 
 

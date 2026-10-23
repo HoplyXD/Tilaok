@@ -1,6 +1,6 @@
 # Tilaok! — Product Requirements Document
 
-**Current route (2026-10-22):** normal Play uses the local P12 schedule with Lobby → Pugad → shared 3-second GO → movement plus visible 2-second construction → results → next round. Construction pauses with gameplay, reserves a deterministic fixed footprint, and commits only after a completion-boundary safety recheck. Phone/LAN and Android/QR features are retired; historical specs and evidence remain in `archive/retired-networked-live-build/`.
+**Current route (2026-10-23):** normal Play uses the local P12 schedule with Lobby → Pugad → shared 10-second BUILD → shared 3-second GO → movement plus visible 2-second construction → results → next round. Each player receives one item and may place it during BUILD or save it for active play. Preparation jobs stay inert until PLAY; jobs progress through GO, pause with gameplay, reserve a deterministic fixed footprint, and commit only after a completion-boundary safety recheck. BUILD closes admission at its final fixed-step boundary after resolving queued confirmations; GO accepts no new placements. Phone/LAN and Android/QR features are retired; historical specs and evidence remain in `archive/retired-networked-live-build/`.
 
 **Version:** 1.0 · **Baseline date:** October 13, 2026 · **Status:** approved planning scope consolidated; P02 input/movement slice partially implemented and verified; full gameplay remains unimplemented.
 
@@ -112,7 +112,7 @@ Non-goals: networking, online accounts, servers/RPCs, paid gameplay licence, clo
 
 ## 4. Complete player journey
 
-Launch → Title → local Lobby → Pugad → shared 3-second GO → active event/race with movement and two-second construction jobs → round results → next round is the normal flow. It preserves P12 event/scoring outcomes, stage persistence, Barya and tied-player sudden death. The scheduled Place route is a developer fallback. Threshold/round limit → tied-player sudden death when needed → match results → replay or lobby. Title/lobby/pause provide Library/help access. Settings/pause/back/quit paths remain operable with supported local inputs.
+Launch → Title → local Lobby → Pugad → shared 10-second BUILD → shared 3-second GO → active event/race with movement and two-second construction jobs → round results → next round is the normal flow. Players may build their one item in BUILD or save it for active play. Preparation jobs remain inert until PLAY; sudden death has no new Pugad or placement. It preserves P12 event/scoring outcomes, stage persistence, Barya and tied-player sudden death. The scheduled Place route is a developer fallback. Threshold/round limit → tied-player sudden death when needed → match results → replay or lobby. Title/lobby/pause provide Library/help access. Settings/pause/back/quit paths remain operable with supported local inputs.
 
 | State | Player-visible information/actions |
 |---|---|

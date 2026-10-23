@@ -1,6 +1,6 @@
 # Prompt-writing rules — Tilaok!
 
-**Scope update (2026-10-22):** normal Play is local/offline live-build: Lobby → Pugad → shared GO → active play/build → results. Phone/LAN and Android features are retired; their specifications and evidence are historical records in `archive/retired-networked-live-build/`. Use the current phase tracker and this rules document for new work. Retirement does not mark network work complete.
+**Scope update (2026-10-23):** normal Play is local/offline live-build: Lobby → Pugad → shared 10-second BUILD → shared 3-second GO → active play/build → results. BUILD lets each player place their one assigned item early or save it for play; two-second preparation jobs stay inert until PLAY and progress through GO. Phone/LAN and Android features are retired; their specifications and evidence are historical records in `archive/retired-networked-live-build/`. Use the current phase tracker and this rules document for new work. Retirement does not mark network work complete.
 
 Standing user preferences consolidated on 2026-10-13. Read this document before drafting or revising any implementation or phase prompt. New explicit user decisions may supersede these preferences; record material changes here. This is reusable guidance, not a generated task prompt.
 

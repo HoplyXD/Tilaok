@@ -58,6 +58,19 @@ func _test_script_data() -> void:
 		pugad.variants.has("barya") and str(pugad.variants["barya"]).contains("Reach the flag"),
 		"the Pugad coach has a Barya pickup and scoring explanation"
 	)
+	var live_build := script.step(TutorialScript.STEP_LIVE_BUILD)
+	var preparation_copy := str(live_build.variants.get("preparation", ""))
+	_check(
+		(
+			preparation_copy.contains("Build now, or save your item for play")
+			and preparation_copy.contains("inactive until PLAY")
+		),
+		"preparation tutorial explains early build, saving the item and inert prepared hazards"
+	)
+	_check(
+		str(script.step(TutorialScript.STEP_PLACE).body).contains("During Place"),
+		"the scheduled developer Place route keeps its own tutorial copy"
+	)
 	var joined := ""
 	for step_id in TutorialScript.KANGAROO_STEPS:
 		joined += script.step(step_id).body

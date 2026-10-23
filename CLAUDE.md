@@ -1,6 +1,6 @@
 # CLAUDE.md — Tilaok!
 
-**Current route (2026-10-22):** normal Play is local/offline: Lobby → Pugad → shared 3-second GO → movement and construction together → results → next round. Phone/LAN, Android and QR support are retired; their specification, tracker and evidence remain as historical records under `docs/archive/retired-networked-live-build/`. The scheduled P12 Place route remains a developer fallback. See P20 in `docs/PHASETASK.md` for active acceptance and evidence status.
+**Current route (2026-10-23):** normal Play is local/offline: Lobby → Pugad → shared 10-second BUILD → shared 3-second GO → movement and construction together → results → next round. Each player has one item: place it in BUILD or save it for PLAY. Two-second jobs started in BUILD remain inert until PLAY and continue through GO. Sudden death has no new placement. Phone/LAN, Android and QR support are retired; their specification, tracker and evidence remain under `docs/archive/retired-networked-live-build/`. The scheduled P12 Place route remains a developer fallback. See P22 in `docs/PHASETASK.md` for active acceptance and evidence status.
 
 Context for Claude Code sessions in this repo.
 
@@ -18,7 +18,7 @@ Context for Claude Code sessions in this repo.
 ## Design summary
 - Inspired by the Ultimate Chicken Horse build-then-run loop. **Never copy UCH code, art, sounds, names, or characters**; only the mechanic is borrowed, with our own twist.
 - All characters are chickens (color skins), a wholesome reimagining of sabong.
-- Every round: **Pugad → Place → Play.** The Pugad is a nest of eggs; picking one hatches an item. The stage persists and grows.
+- Every round: **Pugad → BUILD (10 s) → GO (3 s) → Play.** The Pugad assigns each player one item. Build it in BUILD or save it for live placement; the stage persists and grows.
 - Most rounds race to the flag. Every **4th round**, a **laro ng lahi event** takes over the same stage (announced a round ahead).
 - **Lagsanay** (Ilonggo for tag): bomb-taya tag. Touch to pass; when the timer hits zero the taya is eliminated; repeat until one survivor. Trap deaths are eliminations.
 - **Scoring** (our own values; see GDD §5): Tapos 1.0, Una +0.25, Bayani +0.5, Patibong +0.25/kill, Bawi +0.75, Barya (coin) +0.5; ordinary Karera awards are suppressed if all or none reach the goal (no two-player waiver); eligible Barya still pays in all-finish rounds, and no finisher means no Barya points. Events map onto Tapos/Una. **Exception: Lagsanay uses placement** (1.0 / 0.5 / 0.25 / 0) plus Patibong and Bawi. First to 10 points, or highest after round 12.

@@ -239,7 +239,7 @@ func _kangaroo_jit_step() -> StringName:
 		MatchPhaseController.Phase.PUGAD:
 			if _kangaroo_near():
 				step = TutorialScript.STEP_KANGAROO_POSES
-		MatchPhaseController.Phase.PLACE:
+		MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.BUILD:
 			if _kangaroo_near():
 				step = TutorialScript.STEP_KANGAROO_SUPPORTS
 		MatchPhaseController.Phase.PLAY:
@@ -284,6 +284,8 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 			var level := 2 if _nobody_finished_last_round else 1
 			var place_variant := VARIANT_TIMEOUT if _timeout_assigned else &""
 			result = _view_for(TutorialScript.STEP_PLACE, place_variant, 3, level)
+		MatchPhaseController.Phase.BUILD:
+			result = _view_for(TutorialScript.STEP_LIVE_BUILD, &"preparation", 3)
 		MatchPhaseController.Phase.GO:
 			if room is OfflineLiveBuildMatchRoom:
 				result = _view_for(TutorialScript.STEP_LIVE_BUILD, VARIANT_GET_READY, 3)

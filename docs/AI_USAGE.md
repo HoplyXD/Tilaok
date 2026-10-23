@@ -747,3 +747,17 @@ At the user's request, OpenAI Codex adapted the supplied tire/spring/base sketch
 ### Longer timers, standalone scheduling and Kangaroo readability — 2026-10-23
 
 OpenAI Codex authored gameplay tuning, schedule/runtime changes, Rising Wave support selection, overhead life-marker presentation, focused test updates, and the related design/acceptance documentation under the user's explicit implementation and delivery request. This entry records actual AI assistance, not manual team authorship. Verification, integration and human review are recorded only when performed; at this update the requested rendered session and human playtest have not been completed. No final art or audio was generated.
+
+### Build-mode keyboard and controller rotation — October 23, 2026
+
+At the user's request, OpenAI Codex made K1 preview rotation accessible on keyboard and gamepad. During live build, K1 uses Q to toggle build mode, WASD to aim, E to rotate, R to place, and F to close the unconfirmed preview; Space remains an alternate placement input only in build mode. The gamepad's West/X face button now rotates the preview, with Right bumper retained as an alternate. The per-seat hint, prompt glyph map, tutorial guidance and focused regression were updated. Godot 4.7.2 headless focused offline live-build verification passed 84 checks with zero failures. No interactive, physical-controller, rendered or human review is claimed; no art or audio was generated.
+
+At the user's follow-up, OpenAI Codex applied the same familiar-direction-cluster approach to K2/K3/K4 build controls, updated their HUD/glyph/tutorial contracts and extended the focused regression. The Godot 4.7.2 headless live-build suite passed 87 checks with zero failures; no physical-keyboard session, rendered review or human review is claimed.
+
+### Settings presentation effects default — October 23, 2026
+
+At the user's request, OpenAI Codex changed fresh Settings defaults to Full screen shake, unmuted, with all four audio buses at 100%. Effects volume was already 100%; the code change makes visual effects such as camera shake active by default too. Reduced/Off shake and volume/mute controls remain. The change does not enable disabled gameplay item variants. Verification and limits are recorded in PLAYTEST; no art or audio was generated.
+
+### Shared 10-second preparation BUILD phase — October 23, 2026
+
+Under the user's approved implementation request, OpenAI Codex added a shared 10-second BUILD between Pugad and the existing three-second GO, using each player's existing single-item inventory and live-placement validation. Preparation jobs retain the existing two-second duration and remain inert until PLAY; the timer and jobs use gameplay simulation time. The match presenter, input context, tutorial and current-flow docs were updated, and synthetic 2/3/4-seat coverage was added. The installed Godot 4.6.3 focused offline live-build suite passed 123 checks with zero failures, including one, several and all players building early, invalid-placement retention, exact BUILD timing, final-boundary confirmation, GO rejection, preparation completion during GO and activation at PLAY. P12 tests passed 59/59, P13 tutorial tests passed 58/58, the updated ten-cycle reset audit passed, and named-file lint/format checks passed. The broader legacy tutorial suite reports 17 route-expectation failures; the tutorial gate script was stopped after it stalled. These are synthetic results only; rendered/physical/human review and performance remain open. No final art or audio was generated.

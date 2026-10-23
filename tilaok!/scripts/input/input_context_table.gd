@@ -8,10 +8,12 @@ extends RefCounted
 ## compares the two. Contexts: lobby, pugad, go, play (locomotion), build (play with build mode
 ## available), results, pause.
 
-const CONTEXTS := ["lobby", "pugad", "go", "play", "build", "results", "pause"]
+const CONTEXTS := ["lobby", "pugad", "preparation", "go", "play", "build", "results", "pause"]
 const DEVICES := ["k1", "k2", "k3", "k4", "gamepad"]
 ## Actions that may be reachable from more than one physical control (alternate keys).
-const MULTI_CONTROL_OK := ["jump", "ready", "claim", "confirm", "pause"]
+const MULTI_CONTROL_OK := [
+	"jump", "ready", "claim", "confirm", "pause", "live_rotate", "live_confirm"
+]
 ## Locomotion meanings that no build control may take over.
 const PROTECTED_ACTIONS := ["jump", "cheer", "rotate", "left", "right", "up", "down"]
 ## Build-mode actions, in the order the glyph map and the tutorial list them.
@@ -34,8 +36,9 @@ const KEYS := {
 		"aim_left": KEY_C,
 		"aim_down": KEY_V,
 		"aim_right": KEY_B,
-		"live_rotate": KEY_T,
-		"live_cancel": KEY_X,
+		"live_rotate": KEY_E,
+		"live_confirm": KEY_R,
+		"live_cancel": KEY_F,
 	},
 	"k2":
 	{
@@ -49,12 +52,12 @@ const KEYS := {
 		"back": KEY_BACKSPACE,
 		"rotate": KEY_SHIFT,
 		"build_toggle": KEY_BRACKETLEFT,
-		"aim_up": KEY_Y,
-		"aim_left": KEY_H,
-		"aim_down": KEY_N,
-		"aim_right": KEY_M,
-		"live_rotate": KEY_BRACKETRIGHT,
-		"live_cancel": KEY_BACKSLASH,
+		"aim_up": KEY_UP,
+		"aim_left": KEY_LEFT,
+		"aim_down": KEY_DOWN,
+		"aim_right": KEY_RIGHT,
+		"live_rotate": KEY_SHIFT,
+		"live_cancel": KEY_BACKSPACE,
 	},
 	"k3":
 	{
@@ -68,12 +71,12 @@ const KEYS := {
 		"back": KEY_U,
 		"rotate": KEY_P,
 		"build_toggle": KEY_MINUS,
-		"aim_up": KEY_7,
-		"aim_left": KEY_4,
-		"aim_down": KEY_8,
-		"aim_right": KEY_6,
-		"live_rotate": KEY_EQUAL,
-		"live_cancel": KEY_APOSTROPHE,
+		"aim_up": KEY_I,
+		"aim_left": KEY_J,
+		"aim_down": KEY_K,
+		"aim_right": KEY_L,
+		"live_rotate": KEY_P,
+		"live_cancel": KEY_U,
 	},
 	"k4":
 	{
@@ -87,12 +90,12 @@ const KEYS := {
 		"back": KEY_KP_PERIOD,
 		"rotate": KEY_KP_5,
 		"build_toggle": KEY_KP_ADD,
-		"aim_up": KEY_KP_7,
-		"aim_left": KEY_KP_1,
-		"aim_down": KEY_KP_3,
-		"aim_right": KEY_KP_9,
-		"live_rotate": KEY_KP_MULTIPLY,
-		"live_cancel": KEY_KP_SUBTRACT,
+		"aim_up": KEY_KP_8,
+		"aim_left": KEY_KP_4,
+		"aim_down": KEY_KP_2,
+		"aim_right": KEY_KP_6,
+		"live_rotate": KEY_KP_5,
+		"live_cancel": KEY_KP_PERIOD,
 	},
 }
 
@@ -113,6 +116,56 @@ static func _keyboard(device: String, context: String) -> Array:
 	var k: Dictionary = KEYS[device]
 	var rows: Array = [_row(KEY_ESCAPE, "pause")]
 	var moves := [_row(k.left, "left"), _row(k.right, "right"), _row(k.down, "down")]
+	if context in ["build", "preparation"]:
+		var build_bindings: Array = []
+		match device:
+			"k1":
+				build_bindings = [
+					_row(k.build_toggle, "build_toggle"),
+					_row(KEY_W, "aim_up"),
+					_row(KEY_A, "aim_left"),
+					_row(KEY_S, "aim_down"),
+					_row(KEY_D, "aim_right"),
+					_row(k.live_rotate, "live_rotate"),
+					_row(k.live_confirm, "live_confirm"),
+					_row(k.live_cancel, "live_cancel"),
+					_row(KEY_SPACE, "live_confirm"),
+				]
+			"k2":
+				build_bindings = [
+					_row(k.build_toggle, "build_toggle"),
+					_row(KEY_UP, "aim_up"),
+					_row(KEY_LEFT, "aim_left"),
+					_row(KEY_DOWN, "aim_down"),
+					_row(KEY_RIGHT, "aim_right"),
+					_row(k.live_rotate, "live_rotate"),
+					_row(k.south, "live_confirm"),
+					_row(k.live_cancel, "live_cancel"),
+				]
+			"k3":
+				build_bindings = [
+					_row(k.build_toggle, "build_toggle"),
+					_row(KEY_I, "aim_up"),
+					_row(KEY_J, "aim_left"),
+					_row(KEY_K, "aim_down"),
+					_row(KEY_L, "aim_right"),
+					_row(k.live_rotate, "live_rotate"),
+					_row(k.south, "live_confirm"),
+					_row(k.live_cancel, "live_cancel"),
+				]
+			"k4":
+				build_bindings = [
+					_row(k.build_toggle, "build_toggle"),
+					_row(KEY_KP_8, "aim_up"),
+					_row(KEY_KP_4, "aim_left"),
+					_row(KEY_KP_2, "aim_down"),
+					_row(KEY_KP_6, "aim_right"),
+					_row(k.live_rotate, "live_rotate"),
+					_row(k.south, "live_confirm"),
+					_row(k.live_cancel, "live_cancel"),
+				]
+		build_bindings.push_front(rows[0])
+		return build_bindings
 	match context:
 		"lobby":
 			rows.append_array(moves)
@@ -134,13 +187,13 @@ static func _keyboard(device: String, context: String) -> Array:
 		"go":
 			rows.append_array(moves)
 			rows.append_array([_row(k.up, "up"), _row(k.back, "back")])
-		"play", "build":
+		"play", "build", "preparation":
 			rows.append_array(moves)
 			rows.append_array([_row(k.up, "jump"), _row(k.rotate, "cheer"), _row(k.back, "back")])
 			if int(k.jump_alt) != 0:
 				rows.append(_row(k.jump_alt, "jump"))
 			rows.append(_row(k.build_toggle, "build_toggle"))
-			if context == "build":
+			if context in ["build", "preparation"]:
 				(
 					rows
 					. append_array(
@@ -179,15 +232,21 @@ static func _gamepad(context: String) -> Array:
 			rows.append_array([_row(JOY_BUTTON_A, "ready"), _row(JOY_BUTTON_X, "help")])
 		"pugad":
 			rows.append(_row(JOY_BUTTON_A, "claim"))
-		"play", "build":
+		"play", "build", "preparation":
 			rows.append_array(
 				[
-					_row(JOY_BUTTON_A, "live_confirm" if context == "build" else "jump"),
-					_row(JOY_BUTTON_X, "cheer"),
+					_row(
+						JOY_BUTTON_A,
+						"live_confirm" if context in ["build", "preparation"] else "jump"
+					),
+					_row(
+						JOY_BUTTON_X,
+						"live_rotate" if context in ["build", "preparation"] else "cheer"
+					),
 					_row(JOY_BUTTON_Y, "build_toggle")
 				]
 			)
-			if context == "build":
+			if context in ["build", "preparation"]:
 				# Left bumper is the live_cancel decision; B stays Back and never cancels a placement.
 				(
 					rows
@@ -228,7 +287,7 @@ static func audit() -> Array:
 					problems.append(
 						"%s/%s: action %s has several controls" % [device, context, action]
 					)
-			if context != "build":
+			if context not in ["build", "preparation"]:
 				for action in BUILD_ACTIONS:
 					if action != "build_toggle" and controls_for_action.has(action):
 						problems.append("%s/%s: %s outside build" % [device, context, action])

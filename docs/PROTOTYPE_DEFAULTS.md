@@ -6,6 +6,8 @@
 
 **Current timer/mode amendment — 2026-10-23 (provisional, no balance claim):** `GameplayTuning` defaults are Pugad 15 s, Karera hard cap 120 s and first-finisher window 30 s, Lagsanay taya 20/25/30 s with 2/3/4 live players, Kangaroo telegraph 2 s / response 6 s / reset 1.5 s. Acceleration uses centralized steps (0.5 s response, 0.15 s reset) with minimums 3 s / 0.75 s. Storm starts after 16 completed commands and uses 3 s response / 1.5 s landing interval. Only standalone Main modes are scheduled. See P21; timer changes do not scale physics or unrelated cooldowns.
 
+**Preparation phase amendment — 2026-10-23 (provisional, no balance claim):** normal Play inserts a shared 10-second BUILD after Pugad and before the independent shared 3-second GO. `OfflineLiveBuildMatchRoom.build_phase_seconds`, `go_countdown_seconds` and `construction_seconds` are independent values (10 / 3 / 2 seconds). BUILD and GO freeze gameplay and hazards; construction progress uses gameplay time and pauses with the room. See P22; no balance or human usability result is claimed.
+
 ## 1. Recommendation and evidence
 
 Start with responsive run/jump controls, a compact graybox, explicit device assignment, and Kaing Stack plus Tulay na Kawayan. Prove a two-player build/race round before adding Gulong Talon, then verify three/four players, Lagsanay, full-match ties/restart, Kangaroo, and finally the three required event stacks. Use an explicit surface-support property for Rising wave. Centralize tunables; keep art, new events, and extra obstacle families out of the first slice.
@@ -316,6 +318,8 @@ Tradeoffs/tests: digital sticks sacrifice fine speed control; all-ready resume a
 P02 uses the existing typed `tilaok!/scripts/config/gameplay_tuning.gd` resource and `configuration_snapshot.gd` run snapshot; values are editable centrally and validated. This document remains the provisional starting-value register; do not add parallel config files. No plugin, framework, live editor, public analytics or persistence is used.
 
 Separate simulation invariants (one outcome, pass-through bodies, atomic edits, scoring family), tunable data (movement, timers, bounds, weights), and presentation (markers, colors, shake/text). Gameplay values snapshot at match start. Changing them requires a new test match; never change collision, height bands, timers or weights mid-round. Presentation-only volume/shake may change in pause. Log the test profile, seed and build locally in human test notes, not the player HUD.
+
+**Presentation defaults (2026-10-23):** new settings start unmuted with Master, Music, Effects and Crowd at 100%, and Screen shake at Full. Reduced and Off remain available. This makes item/event audio and presentation cues active by default; it does not turn on gameplay variants that are separately disabled in a profile.
 
 | Keys/group | Label; default | Experimental range | Why / downside / change trigger | Confidence |
 |---|---|---|---|---|

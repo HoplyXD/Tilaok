@@ -14,7 +14,7 @@ signal navigation_step(seat_index: int, direction: String)
 signal disabled_action_cue(seat_index: int, action_name: String)
 signal phase_changed(previous_phase: Phase, next_phase: Phase)
 
-enum Phase { LOBBY, MENU, PUGAD, PLACE, PLAY, PAUSE, RESULTS, GO }
+enum Phase { LOBBY, MENU, PUGAD, BUILD, PLACE, PLAY, PAUSE, RESULTS, GO }
 
 const ONE_SHOT_ACTIONS := [
 	"join",
@@ -196,7 +196,7 @@ func _handle_joy_button(event: InputEventJoypadButton) -> void:
 			_blocked.erase(physical_key)
 		return
 	action_name = _gamepad_phase_action(event.button_index)
-	if phase == Phase.PLAY and is_build_mode(seat_index):
+	if phase in [Phase.PLAY, Phase.BUILD] and is_build_mode(seat_index):
 		action_name = _gamepad_build_action_for_joy_button(event.button_index, action_name)
 	_handle_action_edge(seat_index, action_name, physical_key, event.pressed)
 
@@ -235,7 +235,7 @@ func _handle_joy_axis(event: InputEventJoypadMotion) -> void:
 	var seat_index := registry.seat_for_gamepad(event.device)
 	if seat_index < 0:
 		return
-	if phase == Phase.PLAY and is_build_mode(seat_index):
+	if phase in [Phase.PLAY, Phase.BUILD] and is_build_mode(seat_index):
 		var current := event.axis_value
 		if absf(current) < tuning_neutral_threshold():
 			current = 0.0
@@ -769,9 +769,11 @@ func _gamepad_phase_action(button: int) -> String:
 		JOY_BUTTON_A:
 			if phase == Phase.PUGAD:
 				return "claim"
+			if phase == Phase.BUILD:
+				return "confirm"
 			if phase == Phase.PLAY:
 				return "jump"
-			if phase in [Phase.MENU, Phase.PLACE, Phase.PAUSE, Phase.RESULTS]:
+			if phase in [Phase.MENU, Phase.PLACE, Phase.BUILD, Phase.PAUSE, Phase.RESULTS]:
 				return "confirm"
 			return "ready" if phase == Phase.LOBBY else ""
 		JOY_BUTTON_B:
@@ -779,11 +781,11 @@ func _gamepad_phase_action(button: int) -> String:
 		JOY_BUTTON_X:
 			return "rotate"
 		JOY_BUTTON_Y:
-			return "build_toggle" if phase == Phase.PLAY else ""
+			return "build_toggle" if phase in [Phase.PLAY, Phase.BUILD] else ""
 		JOY_BUTTON_RIGHT_SHOULDER:
-			return "live_rotate" if phase == Phase.PLAY else ""
+			return "live_rotate" if phase in [Phase.PLAY, Phase.BUILD] else ""
 		JOY_BUTTON_LEFT_SHOULDER:
-			return "live_cancel" if phase == Phase.PLAY else ""
+			return "live_cancel" if phase in [Phase.PLAY, Phase.BUILD] else ""
 		JOY_BUTTON_START:
 			return "pause"
 	return ""
@@ -893,12 +895,38 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 
 
 func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
-	if phase == Phase.PLAY and is_build_mode(seat_index):
+	if phase in [Phase.PLAY, Phase.BUILD] and is_build_mode(seat_index):
 		if live_build_confirm_enabled and key == KEY_SPACE and layout == "K1":
 			return "confirm"
 		var build_direction := _build_aim_action_for_key(layout, key)
 		if not build_direction.is_empty():
 			return build_direction
+		if layout == "K1":
+			match key:
+				KEY_E:
+					return "live_rotate"
+				KEY_R:
+					return "confirm"
+				KEY_F:
+					return "live_cancel"
+		if layout == "K2":
+			match key:
+				KEY_SHIFT:
+					return "live_rotate"
+				KEY_BACKSPACE:
+					return "live_cancel"
+		if layout == "K3":
+			match key:
+				KEY_P:
+					return "live_rotate"
+				KEY_U:
+					return "live_cancel"
+		if layout == "K4":
+			match key:
+				KEY_KP_5:
+					return "live_rotate"
+				KEY_KP_PERIOD:
+					return "live_cancel"
 	if layout == "K1":
 		match key:
 			KEY_Q:
@@ -1084,8 +1112,11 @@ func _build_aim_action_for_joy_button(button: int, fallback: String) -> String:
 
 
 func _gamepad_build_action_for_joy_button(button: int, fallback: String) -> String:
-	if button == JOY_BUTTON_A:
-		return "confirm"
+	match button:
+		JOY_BUTTON_A:
+			return "confirm"
+		JOY_BUTTON_X:
+			return "live_rotate"
 	return _build_aim_action_for_joy_button(button, fallback)
 
 
@@ -1102,6 +1133,6 @@ func _keyboard_south_action() -> String:
 		return "claim"
 	if phase in [Phase.MENU, Phase.PLACE, Phase.PAUSE, Phase.RESULTS]:
 		return "confirm"
-	if phase == Phase.PLAY and live_build_confirm_enabled:
+	if phase in [Phase.PLAY, Phase.BUILD] and live_build_confirm_enabled:
 		return "confirm"
 	return ""

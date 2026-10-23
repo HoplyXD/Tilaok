@@ -1,6 +1,6 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
-**Current onboarding (2026-10-22):** teach local join, Pugad selection, shared GO, movement while building, preview warnings, the two-second completion delay, obstruction rejection and cancellation. Phone/LAN help content is retired; historical NLB records are archived.
+**Current onboarding (2026-10-23):** teach local join, Pugad selection, shared 10-second BUILD and 3-second GO, movement while building, preview warnings, the two-second completion delay, obstruction rejection and cancellation. Explain that skipping BUILD saves the assigned item for live placement. Phone/LAN help content is retired; historical NLB records are archived.
 
 
 ## Experience goals
@@ -17,7 +17,7 @@ flowchart LR
   Title[Title] --> Lobby[Local join lobby]
   Title --> Library[Library]
   Lobby --> Tutorial[Guided first Karera]
-  Tutorial --> Match[Pugad → GO → move and build → results]
+  Tutorial --> Match[Pugad → BUILD → GO → move and build → results]
   Match --> Round[Round result]
   Round --> Match
   Match --> Results[Match result]
@@ -59,7 +59,7 @@ The Library is available from the title screen, lobby, and pause/settings menu. 
 
 | Section | Contents |
 |---|---|
-| How to Play | Pugad → shared GO → move and build → results, local controls, safety checks, stage persistence, and match end. |
+| How to Play | Pugad → shared BUILD (place now or save item) → GO → move and build → results, local controls, safety checks, stage persistence, and match end. |
 | Karera | Flag objective, Tapos, first-finisher Una, no second/third-place points, Bayani, Bawi, Barya, and too-easy/too-hard outcomes. |
 | Lagsanay | Taya, passing, timer, eliminations, Last Cluck, and survival placement scoring (first eliminated in four-player play is fourth for zero placement points). |
 | Kangaroo | Slipper poses, Freeze, Rising wave, Hug pairs, misses, Slipper Storm, and player-built wave supports. |
@@ -85,6 +85,10 @@ The Library displays only enabled release content by default. Backlog entries ca
 - A rejected placement explains the actionable cause: protected zone, player clearance, world bound, solid conflict, or item-specific restriction.
 - Walis Cleanup previews its exact target set and protected exclusions before confirmation.
 - The transition to Play gives a short readable activation grace; no item should cause a first-frame surprise.
+
+### Live-build keyboard and gamepad controls — October 23, 2026
+
+Keyboard layouts keep each player's controls in a familiar cluster: K1 uses **Q** to toggle, **WASD** to aim, **E** to rotate, **R** to place and **F** to close; K2 uses **[**, the **arrow keys**, **Right Shift**, **Enter** and **Backspace**; K3 uses **-**, **IJKL**, **P**, **O** and **U**; K4 uses **Num +**, **numpad 8/4/2/6**, **Num 5**, **Num 0** and **Num .** in the same order. The chicken pauses during aiming and resumes when the preview is confirmed or closed. K1 Space remains an alternate place key. On a gamepad, the West/X face button rotates the preview and RB remains an alternate. The live HUD repeats the active bindings. These build-mode bindings do not change ordinary movement/jump behavior outside build mode.
 
 ## Karera communication
 
@@ -113,7 +117,7 @@ The giant background slipper is a non-colliding presenter. Every command needs a
 | Sole up/facing down | Rising wave | Wave icon/text, target line, distinct audio, timing ring. |
 | Sideways | Hug | Pair icon/text, distinct audio, timing ring. |
 
-- Screen shake has full, reduced, and off settings. The command remains legible without screen shake or colour.
+- Screen shake defaults to Full, with Reduced and Off available. The command remains legible without screen shake or colour.
 - Rising wave shows its world-space target line before the wave rises. A player-built support above the line is required; base platforms do not qualify.
 - Hug shows the evaluation moment clearly. Pairing is evaluated only at that instant, and each chicken can have one partner.
 - A sideways slipper rerolls at two survivors; communicate the reroll before the next telegraph.
@@ -137,7 +141,7 @@ Tutorial prompts must be skippable after a player has completed them in the curr
 
 ## Guided first match — live-build onboarding
 
-The guided first match teaches Pugad → shared GO/build while moving → Karera. It uses the normal live-build route and a tutorial layout that makes a completed build useful for reaching the flag. The coach stays on Step 3 during Play until every active player has built or is out, so the instructions remain available after the GO countdown. Explain that a started construction job completes automatically during active play; the cancel control only closes an unconfirmed preview. Skip and replay are session-only.
+The guided first match teaches Pugad → shared BUILD → GO/build while moving → Karera. In BUILD, teach “Build now, or save your item for play.” The same single assigned item is available throughout BUILD and PLAY; waiting does not place or consume it. The coach stays on the preparation/build step until every active player has built or is out, so instructions remain available after GO. Explain that a started construction job completes automatically during BUILD/GO/PLAY; the cancel control only closes an unconfirmed preview. Skip and replay are session-only.
 
 | Step | Shown during | Advances when |
 |---|---|---|
@@ -192,7 +196,7 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 ## Verification links
 
 `PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity and P09 live match-end, sudden-death, result and restart behavior passed synthetic engineering checks. P11's standalone command cues and event checks also have synthetic engineering evidence; see [P08 evidence](evidence/p08/README.md), [P09 evidence](evidence/p09/README.md) and [P11 evidence](evidence/p11/README.md). The guided tutorial, final visual treatment, player comprehension/readability, physical-device validation and P13 product UI remain open.
-**Status (updated 2026-10-22):** the normal onboarding route teaches Pugad → shared GO/build while running → Karera → results. The guidance here defines what players must understand and operate; it does not prescribe final visual style. The UI shell inventory and P05/P06/P09 implementation details below are dated historical notes. The scheduled Place route is now a developer fallback. No human novice, spectator or QA session is claimed; related acceptance remains open (see [P13 evidence](evidence/p13/README.md)).
+**Status (updated 2026-10-23):** the normal onboarding route teaches Pugad → shared BUILD (build now or save item) → GO/build while running → Karera → results. The guidance here defines what players must understand and operate; it does not prescribe final visual style. The UI shell inventory and P05/P06/P09 implementation details below are dated historical notes. The scheduled Place route is now a developer fallback. No human novice, spectator or QA session is claimed; related acceptance remains open (see [P13 evidence](evidence/p13/README.md)).
 # Current Play readability amendment — 2026-10-23
 
 Tutorial and Library content describes standalone Karera, standalone Lagsanay/Bomb-Taya, and standalone Kangaroo. It no longer teaches a mixed Twist route. Runtime timer tokens use `GameplayTuning`; current starting values are Pugad 15 s, Karera 120/30 s, Lagsanay 20/25/30 s, and Kangaroo 2/6/1.5 s with explicit acceleration floors. The Kangaroo guide identifies the overhead KANG / GA / ROO segments and the selected Rising target line. Values are provisional and do not claim balance approval.

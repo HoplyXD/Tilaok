@@ -1,0 +1,450 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+WARNING: Volumetric fog is only available when using the Forward+ renderer.
+   at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:458)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:84)
+       [1] entries (res://scripts/stage/map_catalog.gd:27)
+       [2] ids (res://scripts/stage/map_catalog.gd:44)
+       [3] _run (res://tests/run_tutorial_tests.gd:47)
+PASS TutorialScript has every step
+PASS welcome has a title and body
+PASS pugad has a title and body
+PASS place has a title and body
+PASS karera has a title and body
+PASS results has a title and body
+PASS lagsanay has a title and body
+PASS Place has a stronger retry hint
+PASS live copy is tagged PLACEHOLDER
+PASS a new session is active
+PASS the Lagsanay prompt is due in a new session
+PASS the Lagsanay prompt is not due twice
+PASS skip ends the tutorial
+PASS replay clears the whole session set
+PASS completion ends the tutorial
+PASS replay after completion restarts
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2737864750
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2737864750 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2737864750
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2737864750 barya_enabled=true
+PASS the first match uses the tutorial layout
+PASS Lobby shows the welcome step
+PASS welcome names each seat's number and shape (You are 1 CIRCLE, 2 TRIANGLE. Look for your number and shape above your chicken. Run: A / D / Left / Right. Jump: Space / Right Ctrl.)
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS Pugad shows the Pugad step
+ERROR: TUTORIAL FAIL: Pugad copy carries the tuned 8 s
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:155)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+PASS a claim switches the Pugad copy to 'claimed'
+OFFLINE_LIVE_PUGAD seed=1354230631 assignments={"0":"egg_01","1":"egg_02"}
+ERROR: TUTORIAL FAIL: both seats claimed
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:169)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: Place shows the build step
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:170)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: Place copy carries ledge height, jump height and Place seconds (Build now, or save your item for play. Use BUILD to aim and rotate; your chicken stays safe and still. CONFIRM starts a visible 2s build that finishes before the race begins. Prepared hazards stay inactive until PLAY. If you wait, use BUILD during active play. Red preview = invalid spot.)
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:172)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+PASS Place requests the BUILD HERE marker
+PASS the BUILD HERE marker sits on the layout's zone
+PASS the first Place round uses the normal hint
+ERROR: TUTORIAL FAIL: confirms start Play
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:188)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: Play shows the Karera step
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:189)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: Karera copy carries the 60 s cap and 15 s finish window (Build now, or save your item for play. Use BUILD to aim and rotate; your chicken stays safe and still. CONFIRM starts a visible 2s build that finishes before the race begins. Prepared hazards stay inactive until PLAY. If you wait, use BUILD during active play. Red preview = invalid spot.)
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:191)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: the BUILD HERE marker hides after Place
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:195)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: round ends
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:198)
+       [2] _teleport_all_to_goal (res://tests/run_tutorial_tests.gd:663)
+       [3] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: Results shows the results step
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:199)
+       [2] _teleport_all_to_goal (res://tests/run_tutorial_tests.gd:663)
+       [3] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+SCRIPT ERROR: Invalid access to property or key 'suppression_reason' on a base object of type 'Nil'.
+   at: _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:201)
+   GDScript backtrace (most recent call first):
+       [0] _test_steps_through_a_round (res://tests/run_tutorial_tests.gd:201)
+       [1] _teleport_all_to_goal (res://tests/run_tutorial_tests.gd:663)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=1426878487
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=1426878487 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=1426878487
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=1426878487 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+OFFLINE_LIVE_PUGAD seed=1168904092 assignments={"0":"egg_01","1":"egg_02"}
+PASS round ends
+PASS everyone finished: text matches the real no-score reason (Everyone reached the flag: normal race awards are 0, even with 2 players; Barya still counts if carried. Next round in 8 seconds. Everyone reached the goal; normal awards are zero, but Barya still counts.)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2856240037
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2856240037 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2856240037
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2856240037 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+OFFLINE_LIVE_PUGAD seed=258139922 assignments={"0":"egg_01","1":"egg_02","2":"egg_03","3":"egg_04"}
+PASS round ends
+PASS everyone finished: text matches the real no-score reason (Everyone reached the flag: normal race awards are 0, even with 2 players; Barya still counts if carried. Next round in 8 seconds. Everyone reached the goal; normal awards are zero, but Barya still counts.)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3619905592
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3619905592 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3619905592
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3619905592 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+OFFLINE_LIVE_PUGAD seed=1161845673 assignments={"0":"egg_01","1":"egg_02","2":"egg_03"}
+PASS round ends
+PASS everyone finished: text matches the real no-score reason (Everyone reached the flag: normal race awards are 0, even with 2 players; Barya still counts if carried. Next round in 8 seconds. Everyone reached the goal; normal awards are zero, but Barya still counts.)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2051270941
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2051270941 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2051270941
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2051270941 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_03
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS one seat claimed, one idle
+OFFLINE_LIVE_PUGAD seed=634284842 assignments={"0":"egg_01","1":"egg_03"}
+ERROR: TUTORIAL FAIL: the timer assigned the idle seat an egg
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_pugad_and_place_timeouts (res://tests/run_tutorial_tests.gd:250)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: the Place step says an egg was assigned (Build now, or save your item for play. Use BUILD to aim and rotate; your chicken stays safe and still. CONFIRM starts a visible 2s build that finishes before the race begins. Prepared hazards stay inactive until PLAY. If you wait, use BUILD during active play. Red preview = invalid spot.)
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_pugad_and_place_timeouts (res://tests/run_tutorial_tests.gd:257)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: one confirmation does not end Place
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_pugad_and_place_timeouts (res://tests/run_tutorial_tests.gd:267)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: Place timeout starts Play on the Karera step
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_pugad_and_place_timeouts (res://tests/run_tutorial_tests.gd:274)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=814673583
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=814673583 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=814673583
+PASS the box is visible before any overlay
+PASS the box hides under the Settings overlay
+PASS the box hides under the Library overlay
+PASS the box returns after the overlays close
+PASS the box hides on the final match result
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3886987808
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3886987808 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3886987808
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3886987808 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+OFFLINE_LIVE_PUGAD seed=860509041 assignments={"0":"egg_01","1":"egg_02"}
+PASS cap ends the round
+ERROR: TUTORIAL FAIL: nobody finished
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_nobody_finished_retry (res://tests/run_tutorial_tests.gd:330)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+ERROR: TUTORIAL FAIL: nobody finished: text matches the real result (Everyone reached the flag: normal race awards are 0, even with 2 players; Barya still counts if carried. Next round in 8 seconds. Everyone reached the goal; normal awards are zero, but Barya still counts.)
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_nobody_finished_retry (res://tests/run_tutorial_tests.gd:332)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+PASS an unsolved round does not complete it
+P12_SCHEDULE round=2 now=KARERA next=KARERA
+P07_RESET_AUDIT {"actors_reset":true,"after":{"actor_statuses":{"0":"ACTIVE","1":"ACTIVE"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"before":{"actor_statuses":{"0":"SECURED","1":"SECURED"},"item_count":0,"item_ids":[],"pending_claims":0,"race_candidates":0,"round":1,"scores":{"0":0,"1":0},"signature":"","transients":0},"construction_preserved":true,"scores_preserved":true,"signature_preserved":true,"transients_cleared":true,"transition":1}
+OFFLINE_LIVE_PUGAD seed=860509041 assignments={"0":"egg_01","1":"egg_02"}
+ERROR: TUTORIAL FAIL: step 3 repeats with the stronger hint
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/run_tutorial_tests.gd:732)
+       [1] _test_nobody_finished_retry (res://tests/run_tutorial_tests.gd:345)
+       [2] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+SCRIPT ERROR: Invalid access to property or key 'body' on a base object of type 'Dictionary'.
+   at: _test_nobody_finished_retry (res://tests/run_tutorial_tests.gd:349)
+   GDScript backtrace (most recent call first):
+       [0] _test_nobody_finished_retry (res://tests/run_tutorial_tests.gd:349)
+       [1] _wait_frames (res://tests/run_tutorial_tests.gd:720)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=494548999
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=494548999 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=494548999
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=494548999 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KANGAROO
+PASS changing match_pugad_seconds changes the copy (Point at an egg and press E / F / Enter; after 11 seconds you get one. The coin egg is Barya, not a build piece: its picker places it, touch to carry, elimination drops it. Reach the flag carrying it for +0.5.)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2799218019
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2799218019 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2799218019
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2799218019 barya_enabled=true
+PASS one K1 seat shows K1 glyphs only (A / D)
+PASS K1 + K2 shows both devices' glyphs (A / D / Left / Right)
+PASS a gamepad seat adds its glyph (A / D / Left / Right / D-pad / Left stick)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=283884353
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=283884353 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=283884353
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=283884353 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_04
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS the box is visible in Pugad
+PASS the box is bound live
+PASS the box is never attached to the input bridge (display only)
+PASS the box ignores the mouse
+PASS Back does nothing on a live box (no skip, no double activation)
+PASS Back did not skip the tutorial
+PASS the box hides while paused
+PASS the marker hides while paused
+PASS the box hides under a confirmation
+PASS the box returns after the confirmation
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=727477743
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=727477743 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=727477743
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=727477743 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KANGAROO
+PASS Skip hides the box
+PASS skipping mid-match keeps the stage
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=40249719
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=40249719 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=40249719
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=40249719 barya_enabled=true
+PASS after a skip the next match uses the default stage signature
+PASS no coach box in the skipped session
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3851068821
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3851068821 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3851068821
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3851068821 barya_enabled=true
+PASS replay makes the next match a tutorial match
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3645742483
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3645742483 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3645742483
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3645742483 barya_enabled=true
+PASS replay -> skip -> replay ends guided again
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3031466684
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3031466684 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3031466684
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3031466684 barya_enabled=true
+PASS match 1 is the tutorial match
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=1808529082
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=1808529082 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=1808529082
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=1808529082 barya_enabled=true
+PASS match 2 starts fresh on the default layout
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=4049593111
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=4049593111 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=4049593111
+PASS lifecycle route uses the layout
+PASS a piece is built in the BUILD HERE zone before Lagsanay
+PASS no prompt in a completed Karera round
+PASS the first Lagsanay round shows the Lagsanay prompt
+PASS Lagsanay / sudden death play on the same stage
+PASS the prompt carries the tuned head start
+PASS the built pieces are unchanged in the Lagsanay round (same map, same construction)
+PASS the prompt is not marked seen while it is showing
+PASS the prompt is marked seen when Lagsanay ends
+PASS it will not show again this session
+TILAOK_FLOW_READY state=title profile=karera_slice route=lifecycle
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=1630552002
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=1630552002 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=1630552002
+PASS the lifecycle match starts on the tutorial stage
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=974053033
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=974053033 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=974053033
+PASS Replay from the tutorial stage builds a fresh room
+PASS the replay room follows the session (tutorial still active here)
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=1339026738
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=1339026738 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=1339026738
+PASS after completion, Replay starts a fresh match at once on the default stage
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2847326049
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2847326049 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2847326049
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2847326049 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3074456743
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3074456743 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3074456743
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3074456743 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2228139206
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2228139206 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2228139206
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2228139206 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=947657403
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=947657403 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=947657403
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=947657403 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_02
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=1809730688
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=1809730688 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=1809730688
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=1809730688 barya_enabled=true
+P12_BARYA_OFFER match=2 round=1 egg=egg_01
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3059907370
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3059907370 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3059907370
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3059907370 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=669994956
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=669994956 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=669994956
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=669994956 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=957973650
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=957973650 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=957973650
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=957973650 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2157916587
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2157916587 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2157916587
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2157916587 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KANGAROO
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=2722217202
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=2722217202 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=2722217202
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=2722217202 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=KARERA
+PASS 10 match + skip/replay cycles do not leak nodes (4660 -> 4660)
+PASS tutorial_session.gd has no Control.new(
+PASS tutorial_session.gd has no add_theme_
+PASS tutorial_session.gd has no FileAccess
+PASS tutorial_session.gd has no ConfigFile
+PASS tutorial_session.gd has no DirAccess
+PASS tutorial_session.gd has no user://
+PASS tutorial_session.gd has no ResourceSaver
+PASS tutorial_script.gd has no Control.new(
+PASS tutorial_script.gd has no add_theme_
+PASS tutorial_script.gd has no FileAccess
+PASS tutorial_script.gd has no ConfigFile
+PASS tutorial_script.gd has no DirAccess
+PASS tutorial_script.gd has no user://
+PASS tutorial_script.gd has no ResourceSaver
+PASS tutorial_step_def.gd has no Control.new(
+PASS tutorial_step_def.gd has no add_theme_
+PASS tutorial_step_def.gd has no FileAccess
+PASS tutorial_step_def.gd has no ConfigFile
+PASS tutorial_step_def.gd has no DirAccess
+PASS tutorial_step_def.gd has no user://
+PASS tutorial_step_def.gd has no ResourceSaver
+PASS tutorial_coordinator.gd has no Control.new(
+PASS tutorial_coordinator.gd has no add_theme_
+PASS tutorial_coordinator.gd has no FileAccess
+PASS tutorial_coordinator.gd has no ConfigFile
+PASS tutorial_coordinator.gd has no DirAccess
+PASS tutorial_coordinator.gd has no user://
+PASS tutorial_coordinator.gd has no ResourceSaver
+PASS build_here_marker.gd has no Control.new(
+PASS build_here_marker.gd has no add_theme_
+PASS build_here_marker.gd has no FileAccess
+PASS build_here_marker.gd has no ConfigFile
+PASS build_here_marker.gd has no DirAccess
+PASS build_here_marker.gd has no user://
+PASS build_here_marker.gd has no ResourceSaver
+PASS ui_tutorial_prompt.gd has no Control.new(
+PASS ui_tutorial_prompt.gd has no add_theme_
+PASS ui_tutorial_prompt.gd has no FileAccess
+PASS ui_tutorial_prompt.gd has no ConfigFile
+PASS ui_tutorial_prompt.gd has no DirAccess
+PASS ui_tutorial_prompt.gd has no user://
+PASS ui_tutorial_prompt.gd has no ResourceSaver
+PASS nothing was created or changed under user://
+TUTORIAL_TESTS checks=135 failures=17
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+   at: cleanup (core/object/object.cpp:2663)
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:810)

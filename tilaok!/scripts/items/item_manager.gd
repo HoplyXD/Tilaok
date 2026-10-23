@@ -169,6 +169,49 @@ func place_live(
 	return committed
 
 
+## Preparation placement uses the same validator and materializer while keeping the stage inert.
+## The caller owns the BUILD/GO admission boundary; PLAY still uses place_live().
+func place_prepared_live(
+	variant_key: String,
+	origin_cell: Vector2i,
+	quarter_turns: int,
+	owner_seat: int,
+	actor_rects: Array[Rect2] = [],
+	advance_version: bool = true
+) -> Dictionary:
+	if not _can_mutate():
+		return {"allowed": false, "code": "authority_denied", "reason": "Not authoritative."}
+	if in_play:
+		return {
+			"allowed": false,
+			"code": "wrong_phase",
+			"reason": "Preparation placement is closed.",
+		}
+	var result := validate_placement(
+		variant_key, origin_cell, quarter_turns, owner_seat_clearance(actor_rects)
+	)
+	if not bool(result.get("allowed", false)):
+		return result
+	if bool(result.get("one_shot", false)):
+		return {
+			"allowed": false,
+			"code": "one_shot_unsupported",
+			"reason": "This item uses a round objective path."
+		}
+	var committed := _materialize_placement(
+		variant_key, origin_cell, quarter_turns, owner_seat, result
+	)
+	if not bool(committed.get("allowed", false)):
+		return committed
+	var instance_id := str(committed.get("instance_id", ""))
+	live_commit_boundary[instance_id] = live_boundary
+	if advance_version:
+		stage_version += 1
+	committed["stage_version"] = stage_version
+	committed["activation_after_seconds"] = 0.0
+	return committed
+
+
 ## Live one-shot commit (Walis Cleanup and explosive removals) derives its target
 ## set again from the current world. Every surface is preflighted before support invalidation or
 ## removal, so a stale preview cannot remove new pieces. There is no shared Place batch on the live
@@ -177,9 +220,12 @@ func place_live(
 ## and requests still pending are never touched. Protected base/spawn/goal geometry is never a
 ## target; as offline, it is excluded from the edit rather than refusing it.
 func apply_live_one_shot(
-	verdict: Dictionary, owner_seat: int, advance_version: bool = false
+	verdict: Dictionary,
+	owner_seat: int,
+	advance_version: bool = false,
+	allow_preparation: bool = false
 ) -> Dictionary:
-	if not _can_mutate() or not in_play:
+	if not _can_mutate() or (not in_play and not allow_preparation):
 		return {"allowed": false, "code": "wrong_phase", "reason": "Live cleanup is closed."}
 	if not bool(verdict.get("allowed", false)) or not bool(verdict.get("one_shot", false)):
 		return {
