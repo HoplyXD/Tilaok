@@ -32,9 +32,9 @@ func _test_tuning_and_seed_stream() -> void:
 		tuning.lagsanay_opening_head_start_seconds == 3.0,
 		"opening head start defaults to 3 seconds"
 	)
-	_check(tuning.lagsanay_taya_seconds_2p == 7.0, "2-player timer defaults to 7 seconds")
-	_check(tuning.lagsanay_taya_seconds_3p == 10.0, "3-player timer defaults to 10 seconds")
-	_check(tuning.lagsanay_taya_seconds_4p == 15.0, "4-player timer defaults to 15 seconds")
+	_check(tuning.lagsanay_taya_seconds_2p == 20.0, "2-player timer defaults to 20 seconds")
+	_check(tuning.lagsanay_taya_seconds_3p == 25.0, "3-player timer defaults to 25 seconds")
+	_check(tuning.lagsanay_taya_seconds_4p == 30.0, "4-player timer defaults to 30 seconds")
 	var streams_a := STREAMS.new()
 	var streams_b := STREAMS.new()
 	streams_a.seed_all(481)
@@ -62,7 +62,7 @@ func _test_head_start_passing_and_immunity() -> void:
 	)
 	_check(not opening_step.tagged, "opening taya cannot pass during head start")
 	_check(
-		is_equal_approx(controller.countdown_remaining, 15.0),
+		is_equal_approx(controller.countdown_remaining, 30.0),
 		"bomb countdown does not run during head start"
 	)
 	var end_opening := controller.advance_step(
@@ -76,6 +76,7 @@ func _test_head_start_passing_and_immunity() -> void:
 	for seat in [0, 1, 2, 3]:
 		if seat != opening:
 			candidates.append({"seat_index": seat, "distance_squared": 9.0})
+	var countdown_before_pass := controller.countdown_remaining
 	var pass_result := controller.advance_step(0.1, 3, candidates, {})
 	var expected_receiver := _lowest_other(opening, [0, 1, 2, 3])
 	_check(bool(pass_result.tagged), "eligible overlap transfers exactly once")
@@ -83,7 +84,10 @@ func _test_head_start_passing_and_immunity() -> void:
 		controller.taya_seat == expected_receiver,
 		"equal-distance contacts use the lowest stable seat slot"
 	)
-	_check(is_equal_approx(controller.countdown_remaining, 14.9), "passing preserves the countdown")
+	_check(
+		is_equal_approx(controller.countdown_remaining, countdown_before_pass - 0.1),
+		"passing preserves the countdown"
+	)
 	var old_taya := opening
 	var others: Array[Dictionary] = [{"seat_index": old_taya, "distance_squared": 1.0}]
 	var immunity := controller.advance_step(0.2, 4, others, {})
@@ -97,7 +101,7 @@ func _test_head_start_passing_and_immunity() -> void:
 		"expired immunity permits the previous taya to receive it again"
 	)
 	_check(
-		is_equal_approx(controller.countdown_remaining, 13.7),
+		is_equal_approx(controller.countdown_remaining, countdown_before_pass - 1.3),
 		"second pass also preserves remaining time"
 	)
 
@@ -146,10 +150,10 @@ func _test_timeout_hazard_and_batch_order() -> void:
 	standard_timers.advance_step(0.02, 25, [], {})
 	_check(
 		(
-			is_equal_approx(standard_timers.countdown_seconds, 7.0)
-			and is_equal_approx(standard_timers.countdown_remaining, 7.0)
+			is_equal_approx(standard_timers.countdown_seconds, 20.0)
+			and is_equal_approx(standard_timers.countdown_remaining, 20.0)
 		),
-		"taya reassignment from three to two survivors receives the standard seven-second timer"
+		"taya reassignment from three to two survivors receives the configured 20-second timer"
 	)
 	var competing := _begin([0, 1, 2], "competing-source", _rng(28), 0.1, 8.0, 8.0, 8.0)
 	competing.advance_step(0.1, 25, [], {})
@@ -424,9 +428,9 @@ func _begin(
 	round: String,
 	rng: RandomNumberGenerator,
 	head_start: float = 0.1,
-	timeout_2p: float = 7.0,
-	timeout_3p: float = 10.0,
-	timeout_4p: float = 15.0
+	timeout_2p: float = 20.0,
+	timeout_3p: float = 25.0,
+	timeout_4p: float = 30.0
 ) -> LagsanayRoundController:
 	var controller := CONTROLLER.new() as LagsanayRoundController
 	_check(

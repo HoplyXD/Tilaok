@@ -941,3 +941,8 @@ This section records authored source, config and tests only. It is not a playtes
 | Windows / Android release export, hashes, install | COULD-NOT-RUN | Deferred; signing material and a human required |
 | 10-minute host/phone profiles, 30-minute thermal sample | COULD-NOT-RUN | Deferred; phone profiles need physical devices |
 | Physical/human release matrix (NLB-P11-T03) | COULD-NOT-RUN | Needs real phones, participants and an actual reviewer; never simulated |
+# P21 longer timers, standalone modes and Kangaroo readability — 2026-10-23
+
+Headless production-path checks on Godot 4.7.2: P06 102/0, P08 86/0, P11 78/0, P12 59/0, P13 HUD 145/0, P13 Library 407/0, P13 tutorial 56/0. P12 covered 500 seeded schedules, stale compatibility rows and complete 2/3/4-seat matches. Rising tests included the default plus `tutorial`, `map1`, and `map2`; the movement-response reach estimate does not account for obstruction or trajectory. The offline live-build suite was 72/78: construction timing/control checks passed, while six existing per-seat control-hint checks failed. Named GDScript lint/format checks and Godot import/parse passed; see the P21 logs in `evidence/p21_balance_readability/`.
+
+**Rendered/physical evidence:** COULD-NOT-RUN at initial implementation. No approved rendered session, second/four-seat close/wide camera capture, physical input session or human reviewer evidence is recorded yet. Required budgets remain provisional targets: 60 FPS / 16.67 ms at 1080p, 512 MiB memory, 0 B/s gameplay networking. These are targets, not measurements. See `evidence/p21_balance_readability/README.md` for dated status and exact gaps.

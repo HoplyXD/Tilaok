@@ -82,21 +82,28 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var taya_pass_back_seconds: float = 1.0
 ## P08 provisional active-simulation settings, copied into each round snapshot.
 @export var lagsanay_opening_head_start_seconds: float = 3.0
-@export var lagsanay_taya_seconds_2p: float = 7.0
-@export var lagsanay_taya_seconds_3p: float = 10.0
-@export var lagsanay_taya_seconds_4p: float = 15.0
+@export var lagsanay_taya_seconds_2p: float = 20.0
+@export var lagsanay_taya_seconds_3p: float = 25.0
+@export var lagsanay_taya_seconds_4p: float = 30.0
 @export var lagsanay_last_cluck_freeze_seconds: float = 0.75
 ## P11 independent Kangaroo. Gameplay values are copied into the match snapshot.
-@export var kangaroo_telegraph_seconds: float = 1.0
-@export var kangaroo_response_seconds: float = 3.0
-@export var kangaroo_reset_seconds: float = 0.75
+@export var kangaroo_telegraph_seconds: float = 2.0
+@export var kangaroo_response_seconds: float = 6.0
+@export var kangaroo_reset_seconds: float = 1.5
+@export var kangaroo_response_acceleration_step_seconds: float = 0.5
+@export var kangaroo_response_min_seconds: float = 3.0
+@export var kangaroo_reset_acceleration_step_seconds: float = 0.15
+@export var kangaroo_reset_min_seconds: float = 0.75
 @export var kangaroo_freeze_release_seconds: float = 0.10
 @export var kangaroo_wave_middle_low_y_wu: float = 768.0
 @export var kangaroo_wave_middle_y_wu: float = 576.0
 @export var kangaroo_wave_middle_high_y_wu: float = 384.0
-@export var kangaroo_storm_after_commands: int = 8
-@export var kangaroo_storm_landing_seconds: float = 0.5
-@export var kangaroo_storm_active_seconds: float = 1.0
+@export var kangaroo_storm_after_commands: int = 16
+@export var kangaroo_storm_landing_seconds: float = 1.5
+@export var kangaroo_storm_active_seconds: float = 3.0
+@export var kangaroo_storm_min_after_commands: int = 16
+@export var kangaroo_storm_min_landing_seconds: float = 1.5
+@export var kangaroo_storm_min_active_seconds: float = 3.0
 @export var kangaroo_storm_max_active: int = 2
 @export var camera_virtual_width_px: float = 1280.0
 @export var camera_virtual_height_px: float = 720.0
@@ -210,7 +217,7 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var item_collapsing_block_weight: float = 50.0
 ## P05 match-loop prototype values; copied into the match configuration snapshot.
 @export var match_pugad_extra_eggs: int = 2
-@export var match_pugad_seconds: float = 8.0
+@export var match_pugad_seconds: float = 15.0
 ## Barya is an optional P12 round objective. Other match routes leave it off.
 @export var barya_enabled := false
 @export_range(0.0, 1.0, 0.01) var barya_offer_probability := 1.0 / 3.0
@@ -220,8 +227,8 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export_range(1, 10000, 1) var match_target_score_units: int = 80
 @export_range(1, 1000, 1) var match_round_limit: int = 12
 ## P06 provisional active-simulation race deadlines; frozen with the match snapshot.
-@export var match_race_hard_cap_seconds: float = 60.0
-@export var match_race_after_first_finish_seconds: float = 15.0
+@export var match_race_hard_cap_seconds: float = 120.0
+@export var match_race_after_first_finish_seconds: float = 30.0
 ## Variant keys allowed into the Pugad pool. Defaults to every main-game block scene marked
 ## "enabled by default" (BlockCatalog), so a new scene in scenes/blocks/ joins with no edit here.
 @export var item_enabled_variants: PackedStringArray = PackedStringArray()
@@ -298,12 +305,18 @@ func validate() -> PackedStringArray:
 		"kangaroo_telegraph_seconds",
 		"kangaroo_response_seconds",
 		"kangaroo_reset_seconds",
+		"kangaroo_response_acceleration_step_seconds",
+		"kangaroo_response_min_seconds",
+		"kangaroo_reset_acceleration_step_seconds",
+		"kangaroo_reset_min_seconds",
 		"kangaroo_freeze_release_seconds",
 		"kangaroo_wave_middle_low_y_wu",
 		"kangaroo_wave_middle_y_wu",
 		"kangaroo_wave_middle_high_y_wu",
 		"kangaroo_storm_landing_seconds",
 		"kangaroo_storm_active_seconds",
+		"kangaroo_storm_min_landing_seconds",
+		"kangaroo_storm_min_active_seconds",
 		"camera_virtual_width_px",
 		"camera_virtual_height_px",
 		"camera_hud_reservation_px",
@@ -447,12 +460,21 @@ func validate() -> PackedStringArray:
 		kangaroo_telegraph_seconds <= 0.0
 		or kangaroo_response_seconds < 1.0
 		or kangaroo_reset_seconds < 0.0
+		or kangaroo_response_acceleration_step_seconds < 0.0
+		or kangaroo_response_min_seconds <= 0.0
+		or kangaroo_reset_acceleration_step_seconds < 0.0
+		or kangaroo_reset_min_seconds < 0.0
 		or kangaroo_storm_after_commands <= 0
+		or kangaroo_storm_min_after_commands < 16
 		or kangaroo_storm_landing_seconds <= 0.0
 		or kangaroo_storm_active_seconds <= 0.0
+		or kangaroo_storm_min_landing_seconds < 1.5
+		or kangaroo_storm_min_active_seconds < 3.0
 		or kangaroo_storm_max_active != 2
 	):
 		errors.append("Kangaroo cadence and Storm values are outside their valid range")
+	if kangaroo_response_min_seconds < 3.0 or kangaroo_reset_min_seconds < 0.75:
+		errors.append("Kangaroo acceleration floors cannot be shorter than 3.0/0.75 seconds")
 	if not (
 		kangaroo_wave_middle_high_y_wu < kangaroo_wave_middle_y_wu
 		and kangaroo_wave_middle_y_wu < kangaroo_wave_middle_low_y_wu

@@ -6,6 +6,8 @@
 
 **Product owner:** Producer, name TBD. **Development leads:** Francis (lead developer) and Carlos (co-lead developer); both use AI-assisted programming. **Human production roles:** Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets without AI generation. Registration status, capacity, audio backup, individual task owners and review completion remain unrecorded. This document was prepared with disclosed AI assistance; it is not evidence of a completed game.
 
+**Current decision amendment (2026-10-23):** normal rounds contain exactly one standalone Main; mixed-mode Twists are disabled and stale compatibility rows cannot activate a second controller. Provisional longer timers, map-aware Rising selection/fallback and overhead Kangaroo strikes are specified in the current GDD amendment and P21 tracker. Earlier stack requirements below remain dated source history and are superseded for normal Play; the historical pair-test record is not current schedule evidence.
+
 ## Contents
 
 - [1. Authority, baseline and ownership](#1-authority-baseline-and-ownership)

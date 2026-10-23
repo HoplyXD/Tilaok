@@ -116,7 +116,14 @@ func _test_pages(text: UiLibraryText, tuning: GameplayTuning, context: Dictionar
 	tuning.match_target_score_units = 80
 	tuning.match_round_limit = 12
 	var taya := _body(text, context, "Lagsanay", "Taya, pass and timer")
-	_check(taya.contains("15 s with 4") and taya.contains("7 s with 2"), "taya countdowns")
+	_check(
+		(
+			taya.contains("30 s with 4")
+			and taya.contains("25 s with 3")
+			and taya.contains("20 s with 2")
+		),
+		"taya countdowns follow live 4/3/2-player tuning"
+	)
 	_check(
 		_body(text, context, "Lagsanay", "Placement points").contains("2nd 0.5"),
 		"placement values come from the resolver"
@@ -142,16 +149,30 @@ func _test_gating(text: UiLibraryText, tuning: GameplayTuning, map: UiPromptMap)
 	var bare := UiLibraryText.build_context(tuning, map, 2, none)
 	_check(
 		_title_present(text, bare, "Karera", "Karera + Bomb-Taya") == false,
-		"a stack page is absent while its row is disabled"
+		"retired mixed-mode pages are absent from the standalone Library"
 	)
 	_check(
 		_title_present(text, bare, "Lagsanay", "As a Twist: Bomb-Taya") == false,
 		"the Bomb-Taya Twist page is absent while no row uses it"
 	)
-	var full := UiLibraryText.build_context(tuning, map, 2)
-	for title in ["Karera + Bomb-Taya", "Karera + Kangaroo"]:
-		_check(_title_present(text, full, "Karera", title), "%s is listed when enabled" % title)
-	_check(_title_present(text, full, "Kangaroo", "As a Twist"), "Kangaroo Twist page when enabled")
+	var forced_pairs: Array[Dictionary] = [
+		{"main": "KARERA", "twist": "LAGSANAY"},
+		{"main": "KARERA", "twist": "KANGAROO"},
+	]
+	var full := UiLibraryText.build_context(tuning, map, 2, forced_pairs)
+	_check(
+		(
+			(full.get("stacks", []) as Array).is_empty()
+			and not _title_present(text, full, "Karera", "Karera + Bomb-Taya")
+			and not _title_present(text, full, "Karera", "Karera + Kangaroo")
+			and not _title_present(text, full, "Kangaroo", "As a Twist")
+		),
+		"stale/forced compatibility rows cannot re-enable mixed-mode Library pages"
+	)
+	_check(
+		_title_present(text, full, "Lagsanay", "Bomb-Taya is standalone Lagsanay"),
+		"standalone Bomb-Taya is explained under Lagsanay"
+	)
 	var no_kangaroo := UiLibraryText.build_context(
 		tuning, map, 2, EventSchedule.enabled_pairs(), ["KARERA", "LAGSANAY"]
 	)

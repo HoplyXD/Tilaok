@@ -30,11 +30,11 @@ func _test_tuning_and_formatting() -> void:
 	var tuning := GameplayTuning.new()
 	_check(tuning.validate().is_empty(), "P06 deadline defaults validate")
 	_check(
-		tuning.match_race_hard_cap_seconds == 60.0, "race hard cap defaults to 60 active seconds"
+		tuning.match_race_hard_cap_seconds == 120.0, "race hard cap defaults to 120 active seconds"
 	)
 	_check(
-		tuning.match_race_after_first_finish_seconds == 15.0,
-		"finish grace defaults to 15 active seconds"
+		tuning.match_race_after_first_finish_seconds == 30.0,
+		"finish grace defaults to 30 active seconds"
 	)
 	tuning.match_race_hard_cap_seconds = 0.0
 	_check(not tuning.validate().is_empty(), "zero race hard cap is rejected by tuning validation")

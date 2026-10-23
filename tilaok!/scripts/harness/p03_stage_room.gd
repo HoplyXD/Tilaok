@@ -74,6 +74,7 @@ func _ready() -> void:
 	arena = ArenaDefinition.new(tuning, arena_layout)
 	arena.authority = simulation_authority
 	support_tracker.configure(tuning)
+	support_tracker.playable_bounds = arena.arena_bounds
 	support_tracker.authority = simulation_authority
 	input_router.tuning = tuning
 	input_router.set_shared_keyboard_enabled(true)
@@ -433,7 +434,7 @@ func _build_actor(seat_index: int) -> ChickenController:
 ## `with_visual` false leaves the drawing to the stage TileMapLayer (collision only).
 func _add_static_surface(spec: Dictionary, with_visual: bool = true) -> StaticBody2D:
 	var metadata := spec.metadata as SupportSurfaceMetadata
-	if not support_tracker.register_surface(metadata):
+	if not support_tracker.register_surface(metadata, spec.rect):
 		push_error("Rejected arena support metadata for %s" % spec.id)
 	var rect: Rect2 = spec.rect
 	var body := StaticBody2D.new()

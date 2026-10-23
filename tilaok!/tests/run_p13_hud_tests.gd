@@ -1,9 +1,9 @@
 extends SceneTree
 
-## P13-T03 HUD cue table on the P12 scheduled route: every cue is bound to live room state for
-## each Main (Karera, Lagsanay, Kangaroo) and each stack (Karera + Bomb-Taya, Karera + Kangaroo,
-## Kangaroo + Bomb-Taya) at 2 and 4 seats; number/shape, totals, deadlines, taya, secured /
-## eliminated, KANG -> GA -> ROO, next-round selection, no-score reason and Last Cluck. Text size,
+## Current standalone mode HUD checks on the P12 scheduled route; historical stack cases remain
+## below as dated source evidence but are not invoked. KANG / GA / ROO are checked overhead.
+## Number/shape, totals, deadlines, taya, secured/eliminated, next-round selection, no-score
+## reason and Last Cluck are also checked. Text size,
 ## the 64 px reservation and the absence of internal ids are checked on what is actually visible.
 ## Synthetic seats and input only; this is not a spectator comprehension result.
 
@@ -47,9 +47,6 @@ func _run() -> void:
 		await _karera_main(seat_count)
 		await _lagsanay_main(seat_count)
 		await _kangaroo_main(seat_count)
-		await _karera_bomb_taya(seat_count)
-		await _karera_kangaroo(seat_count)
-		await _kangaroo_bomb_taya(seat_count)
 	await _final_round_and_sudden_death()
 	await _barya_has_a_text_cue()
 	print("P13_HUD_TESTS checks=%d failures=%d" % [checks, failures])
@@ -153,37 +150,82 @@ func _kangaroo_main(seat_count: int) -> void:
 		card.phase_text() in ["GET READY", "NOW"] and not card.instruction_text().is_empty(),
 		tag + ": the card says when and what to do"
 	)
-	var rows := kangaroo_hud.marker_texts()
-	_check(rows.size() == seat_count, tag + ": a KANG GA ROO row per seat (%d)" % rows.size())
 	_check(
-		rows[0].contains("KANG") and rows[0].contains("GA") and rows[0].contains("ROO"),
-		tag + ": the row spells KANG GA ROO (%s)" % rows[0]
+		room.kangaroo_round._life_markers.size() == seat_count,
+		tag + ": one overhead life marker is bound to each chicken"
 	)
-	# One miss: a live seat reads MISS 1/3 and the first step is bracketed.
+	_check(kangaroo_hud.marker_texts().is_empty(), tag + ": side-panel miss rows are removed")
+	for seat in seats:
+		(room.actors[seat] as ChickenController).global_position = Vector2(800.0, 600.0)
+	room.kangaroo_round.update_view(0.0)
+	await _frames(1)
+	var close_lanes: Dictionary = {}
+	var ownership_ok := true
+	for seat in seats:
+		var marker := room.kangaroo_round._life_markers[seat] as KangarooLifeMarker
+		close_lanes[marker.overlap_lane] = true
+		ownership_ok = ownership_ok and marker.actor == room.actors[seat]
+	_check(
+		close_lanes.size() == seat_count and ownership_ok,
+		tag + ": close chickens get separate lanes and retain the correct actor ownership"
+	)
+	for seat in seats:
+		(room.actors[seat] as ChickenController).global_position = Vector2(
+			500.0 + seat * 500.0, 600.0
+		)
+	room.camera_rig.zoom = Vector2(0.5, 0.5)
+	room.kangaroo_round.update_view(0.0)
+	await _frames(1)
+	var wide_layout_ok := true
+	for seat in seats:
+		var marker := room.kangaroo_round._life_markers[seat] as KangarooLifeMarker
+		wide_layout_ok = wide_layout_ok and marker.overlap_lane == 0
+		wide_layout_ok = (
+			wide_layout_ok
+			and marker.global_scale.is_equal_approx(Vector2.ONE / room.camera_rig.zoom.x)
+		)
+	_check(
+		wide_layout_ok,
+		(
+			tag
+			+ (
+				": separated chickens use the base lane and marker scale compensates camera zoom (%s / %s)"
+				% [
+					str(room.camera_rig.zoom),
+					str(room.kangaroo_round._life_markers[seats[0]].global_scale)
+				]
+			)
+		)
+	)
+	# One miss: the existing player score row has no duplicate miss indicator; overhead marker changes.
 	room.kangaroo_round.controller.marker_counts[seats[0]] = 1
 	await _frames(3)
 	_check(
-		hud.score_rows[seats[0]].state_text() == "MISS 1/3",
-		tag + ": one miss reads MISS 1/3 (%s)" % hud.score_rows[seats[0]].state_text()
-	)
-	_check(
 		(
-			kangaroo_hud.marker_texts()[0].contains("[KANG]")
-			and not kangaroo_hud.marker_texts()[0].contains("[GA]")
+			(room.kangaroo_round._life_markers[seats[0]] as KangarooLifeMarker).failure_count == 1
+			and kangaroo_hud.marker_texts().is_empty()
 		),
-		tag + ": the first step is bracketed, the others are not"
+		tag + ": first strike changes the owned overhead marker with no side duplicate"
 	)
 	room.kangaroo_round.controller.marker_counts[seats[0]] = 2
 	await _frames(3)
 	_check(
-		(
-			hud.score_rows[seats[0]].state_text() == "MISS 2/3"
-			and kangaroo_hud.marker_texts()[0].contains("[GA]")
-		),
-		tag + ": two misses read MISS 2/3 with GA bracketed"
+		(room.kangaroo_round._life_markers[seats[0]] as KangarooLifeMarker).failure_count == 2,
+		tag + ": second strike is shown above its chicken"
+	)
+	room.kangaroo_round.controller.marker_counts[seats[0]] = 3
+	await _frames(3)
+	_check(
+		(room.kangaroo_round._life_markers[seats[0]] as KangarooLifeMarker).failure_count == 3,
+		tag + ": the final strike remains visible in the overhead indicator"
 	)
 	_check_text_rules(tag, room.presenter)
 	_check_kangaroo_hud_text(tag, kangaroo_hud)
+	room.kangaroo_round.clear_view()
+	_check(
+		room.kangaroo_round._life_markers.is_empty(),
+		tag + ": round-view teardown clears every overhead marker binding"
+	)
 	await _close()
 
 
@@ -409,10 +451,8 @@ func _check_kangaroo_layout(tag: String, kangaroo_hud: UiKangarooHud) -> void:
 	var toast := play_hud.get_node("%NoticeToast") as Control
 	var bar := play_hud.hud_bar.get_global_rect().end.y
 	var below := toast.get_global_rect().end.y if toast.is_visible_in_tree() else bar
-	var markers := (kangaroo_hud.get_node("%Markers") as Control).get_global_rect()
 	_check(
-		markers.position.y >= below - LAYOUT_TOLERANCE,
-		tag + ": the miss grid is below the HUD bar and any notice (%s vs %.1f)" % [markers, below]
+		kangaroo_hud.get_node_or_null("%Markers") == null, tag + ": no duplicate miss panel exists"
 	)
 	var cards: Array[Rect2] = []
 	for card in kangaroo_hud.cards:
@@ -423,7 +463,6 @@ func _check_kangaroo_layout(tag: String, kangaroo_hud: UiKangarooHud) -> void:
 			rect.position.y >= below - LAYOUT_TOLERANCE,
 			tag + ": a command card is below the notice (%s vs %.1f)" % [rect, below]
 		)
-		_check(not rect.intersects(markers), tag + ": a command card never overlaps the miss grid")
 	for first in cards.size():
 		for second in range(first + 1, cards.size()):
 			_check(

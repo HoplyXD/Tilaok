@@ -69,15 +69,10 @@ static func build_context(
 	tuning: GameplayTuning,
 	prompt_map: UiPromptMap = null,
 	shake_mode: int = 2,
-	pair_rows: Array[Dictionary] = EventSchedule.enabled_pairs(),
+	_pair_rows: Array[Dictionary] = EventSchedule.enabled_pairs(),
 	available_modes: Array = ALL_MODES
 ) -> Dictionary:
 	var stacks: Array[String] = []
-	for row in pair_rows:
-		var main_name := EventSchedule.main_name(int(row.main))
-		var twist_name := EventSchedule.main_name(int(row.twist))
-		if main_name in available_modes and twist_name in available_modes:
-			stacks.append("%s+%s" % [main_name, twist_name])
 	var four := PlacementScoreResolver.table_for_players(4)
 	var tokens := {
 		"tapos": ScoreFormat.format_units(RaceScoreCalculator.TAPOS_UNITS),
@@ -101,6 +96,26 @@ static func build_context(
 		"telegraph": "%s" % snappedf(tuning.kangaroo_telegraph_seconds, 0.1),
 		"response": "%s" % snappedf(tuning.kangaroo_response_seconds, 0.1),
 		"storm_after": str(tuning.kangaroo_storm_after_commands),
+		"storm_response":
+		(
+			"%s"
+			% snappedf(
+				maxf(
+					tuning.kangaroo_storm_active_seconds, tuning.kangaroo_storm_min_active_seconds
+				),
+				0.1
+			)
+		),
+		"storm_landing":
+		(
+			"%s"
+			% snappedf(
+				maxf(
+					tuning.kangaroo_storm_landing_seconds, tuning.kangaroo_storm_min_landing_seconds
+				),
+				0.1
+			)
+		),
 		"place_1st": ScoreFormat.format_units(four[0]),
 		"place_2nd": ScoreFormat.format_units(four[1]),
 		"place_3rd": ScoreFormat.format_units(four[2]),

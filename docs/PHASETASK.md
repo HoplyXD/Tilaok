@@ -1,6 +1,6 @@
 # Tilaok! — Phased Implementation Tracker
 
-**History:** P00–P19 records remain intact. Phone/LAN work was retired on 2026-10-22; its specifications, tracker and evidence are preserved under `archive/retired-networked-live-build/` and do not define active scope. P20 is the active local live-build phase.
+**History:** P00–P19 records remain intact. Phone/LAN work was retired on 2026-10-22; its specifications, tracker and evidence are preserved under `archive/retired-networked-live-build/` and do not define active scope. P20 retains the offline live-build acceptance; P21 tracks the 2026-10-23 balance/readability amendment.
 
 **Version:** 1.0 · **Baseline:** October 13, 2026 · **Owner:** Producer (name TBD).
 
@@ -38,7 +38,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 
 ## Phase summary and counts
 
-**20 phases · 415 tasks · 120 requirements.** Initial checked tasks: **0**. Required release/submission: **209**; Should: **44**; conditional finals: **4**; expansion: **158**. Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
+**Current (2026-10-23): 21 phases · 420 task records · 120 requirements.** P00–P20 remain a dated historical baseline of 20 phases / 415 tasks; P21 adds five records. Initial checked tasks: **0**. Required release/submission: **209**; Should: **44**; conditional finals: **4**; expansion: **158** (these are the historical pre-P21 scope counts; P21 is a required balance/readability slice). Counts come from the actual task records below, not effort estimates. Documentation completion is reported separately at the end.
 
 **Path note (2026-10-14):** evidence recorded before P02-T27 cites `tilaok!/data/items/*.tres`, `scenes/items/*_piece.tscn`, `ItemApprovedVariants.TABLE` and the stage-block scripts. Those were migrated region-for-region into one scene per variant under `tilaok!/scenes/blocks/` (parity check: 0 differences) and removed; the historical references are kept as recorded.
 
@@ -68,6 +68,7 @@ October 21 feature freeze; October 22–23 stabilization; October 24 final media
 | [P18](#p18--conditional-finals) — Conditional finals | Represent the qualified game with prepared hardware and materials. | 4 | Conditional finals |
 | [P19](#p19--optional-scope-and-expansion) — Optional scope and expansion | Keep every additional idea visible without inflating submission completion. | 182 | Should and expansion |
 | [P20](#p20--offline-live-build-and-network-retirement) — Offline live-build and network retirement | Make local live-build the normal Play route and verify timed construction and cleanup. | 8 | Active local scope |
+| [P21](#p21--longer-timers-standalone-rounds-and-kangaroo-readability) — Longer timers, standalone rounds and Kangaroo readability | Lengthen decision windows, keep one mode per round, select reachable Rising lines and put lives overhead. | 5 | Active local scope |
 
 ## P00 — Baseline and production readiness
 
@@ -5149,7 +5150,7 @@ This dated scope change records the user's approval of the separate Should-scope
 
 **Status:** IN PROGRESS (2026-10-22). **Goal / player-visible result:** normal Play is Lobby → Pugad → shared 3-second GO → active event/race with movement and safe construction → results → next round. Phone/LAN, Android and QR code are retired. Historical NLB IDs and evidence remain preserved in `archive/retired-networked-live-build/`; retirement is not completion.
 
-**Scope:** keep P12 schedule, local 2–4 seat keyboard/gamepad input, scoring, Barya, persistent stage, sudden death and recovery. Keep scheduled Place and first-playable routes as developer fallbacks. Construction jobs last `construction_seconds = 2.0` gameplay seconds, reserve a stable footprint, show a non-gameplay preview, and commit only after terminal resolution and a current-world safety check. Missing item definitions fail closed. On 2026-10-23, the owner explicitly requested that the eight previously fail-closed coded variants be selectable despite their recorded failures/incomplete audit; this does not count as verification.
+**Scope:** keep P12 schedule, local 2–4 seat keyboard/gamepad input, scoring, Barya, persistent stage, sudden death and recovery. Keep scheduled Place and first-playable routes as developer fallbacks. Construction jobs last `construction_seconds = 2.0` gameplay seconds, reserve a stable footprint, and show a non-gameplay preview. A started job completes automatically; shots/bubbles in flight and nearby players neither reject it nor hold the completed hazard inactive. Completion still follows terminal events and checks current geometry, support, eligibility and mover/fall-path safety. Missing item definitions fail closed. On 2026-10-23, the owner explicitly requested that the eight previously fail-closed coded variants be selectable despite their recorded failures/incomplete audit; this does not count as verification.
 
 **Owner roles:** Gameplay + Integration + QA; person assignments remain TBD. **Systems touched:** GameFlow, local input/seat registry, P12, item manager, live placement, tutorial and project/docs.
 
@@ -5161,13 +5162,13 @@ This dated scope change records the user's approval of the separate Should-scope
   - **Acceptance:** active navigation, screens, transport, codecs, Android/QR presets/plugins and network-only runners are removed; local seats, authority, readiness, pause/reclaim, input edges and placement remain. NLB specs/evidence remain archived with retired status and original IDs.
   - **Evidence:** source inventory, project parse and reference scan; no networked work is marked complete.
 - [x] **P20-T02 — Promote the offline live-build route and teach it** (REQ-LOCAL-FLOW-01)
-  - **Acceptance:** default Play is Lobby → Pugad → shared 3-second GO → active play/build → results → next round; developer fallback route remains selectable. Build mode pauses the builder's direct movement and directional input steers the preview; successful confirmation restores movement during the visible construction timer. Tutorial and controls explain warnings, completion and cancellation.
+  - **Acceptance:** default Play is Lobby → Pugad → shared 3-second GO → active play/build → results → next round; developer fallback route remains selectable. Build mode pauses the builder's direct movement and directional input steers the preview; successful confirmation restores movement during the visible construction timer. A started job completes automatically; the pre-confirm preview can be closed. Live-built hazards activate immediately at completion without proximity warnings or shot/bubble-crossing rejection.
   - **Evidence:** route selection, tutorial/resource load and synthetic 2/3/4-seat checks; build-mode lock/aim/confirm, one placement per player per round, non-canceling occupied-footprint completion with chicken movement, and per-player HUD: [76-check regression log](evidence/p20_offline_live_build/build-occupancy-tests-20261023.log) and [verification notes](evidence/p20_offline_live_build/README.md); human onboarding remains separate.
 - [x] **P20-T03 — Build visible, deterministic construction jobs** (REQ-CONSTRUCTION-01)
   - **Acceptance:** editable 2.0-second gameplay clock; stable IDs; one job/player, four/match; at most one completed placement per player per round; unused Pugad items do not carry over; fixed rotation/footprint reservation in receipt order; duplicate confirm cannot restart; overlap rejects visibly and retains item. An occupying chicken does not cancel construction and is moved onto the completed solid's top surface. Preview has no collision, support, damage, pickup or score effects.
-  - **Evidence:** 0/1/just-under-2-second behavior, completion boundary, render-FPS independence, pause, duplicate, overlap, cancel/restart and cleanup checks.
+  - **Evidence:** 0/1/just-under-2-second behavior, completion boundary, render-FPS independence, pause, duplicate, overlap and cleanup checks. Manual cancellation of an active job and transient-path/proximity rejection are removed; focused regression evidence for these changes is pending.
 - [ ] **P20-T04 — Recheck construction safety and lifecycle effects** (REQ-CONSTRUCTION-02)
-  - **Acceptance:** fixed-step completion resolves terminal events first, then rechecks phase, eligibility, inventory, actors, movers, hazards and support. Cancellation restores only eligible players; elimination discards; round end/replay/reset/quit cleans pending previews/jobs; completed items persist after builder elimination. Barya, Walis and hazards preserve their own lifecycle. Missing definitions fail closed with a reason; the eight user-requested restored behaviors remain unverified until focused checks pass.
+  - **Acceptance:** fixed-step completion resolves terminal events first, then rechecks phase, eligibility, inventory, geometry, movers/fall paths and support. A started job cannot be manually canceled; a shot/bubble crossing or nearby chicken does not reject the placement or hold a live-built hazard inactive. Ineligible-builder and round end/replay/reset/quit cleanup still follow lifecycle rules; completed items persist after builder elimination. Barya, Walis and hazards preserve their own lifecycle. Missing definitions fail closed with a reason; the eight user-requested restored behaviors remain unverified until focused checks pass.
   - **Evidence:** content manifest and focused actor/mover/terminal/Barya/hazard/scoring/P12/replay/ten-cycle checks.
 - [ ] **P20-T05 — Verify local gameplay and compatibility regressions** (REQ-LOCAL-QA-01)
   - **Acceptance:** run the approved sequential import/parse, focused tests, relevant regressions, named-file lint/format, diff check and missing-reference/runtime inventory. Clearly separate synthetic evidence from physical controller/human evidence.
@@ -5183,3 +5184,32 @@ This dated scope change records the user's approval of the separate Should-scope
   - **Evidence:** commit/push verification and Desktop status or precise sync blocker.
 
 **Current P20 status:** 5/8 checked (T01, T02, T03, T06, T07). The offline live-build route, visible two-second jobs, local-only runtime, documentation and export are implemented. Synthetic construction/reset evidence and the failed legacy item interactions are recorded in [P20 evidence](evidence/p20_offline_live_build/README.md). By the 2026-10-23 owner request, spring, Parol, launcher and cannon variants are now selectable; their previously recorded failures/incomplete audit remain unresolved. P20-T04 remains open for the broader safety/lifecycle audit; T05 has item-suite failures and legacy lint findings; T08 awaits task-only delivery. Physical-controller/human checks remain open. Check the preservation bundle before any delivery step that touches overlapping staged paths.
+
+## P21 — Longer timers, standalone rounds and Kangaroo readability
+
+**Status:** IN PROGRESS (2026-10-23). **Goal / player-visible result:** longer decision windows, exactly one challenge per round, map-aware and reachable Rising targets, and KANG / GA / ROO strikes above each chicken. This is a provisional balance/readability slice; no final balance claim is made. The GDD's earlier Twist contract is explicitly superseded for normal Play; historical P12 pair test evidence remains unchanged and does not prove the current standalone schedule.
+
+**Scope:** timer defaults only (no physics/cooldown scaling); standalone Karera, Lagsanay/Bomb-Taya, and Kangaroo; actual map bounds and completed eligible construction for Rising; world-relative target presentation and exact current-support evaluation; overhead marker presentation. Preserve offline loop, construction, scores, Barya, terminal precedence, and all three Kangaroo commands.
+
+- [ ] **P21-T01 — Tune longer active windows** (REQ-BALANCE-TIMERS-01)
+  - **Implementation:** [x] defaults are Pugad 15 s; Karera 120/30 s; Lagsanay 20/25/30 s for 2/3/4 alive; Kangaroo 2/6/1.5 s, centralized acceleration steps and 3/0.75 s floors; Storm 16 commands, at least 3 s response and 1.5 s landing.
+  - **Verification:** [x] normal scheduled runtime snapshot values; [x] 2/3/4-player durations, transfer without reset, survivor repick and one-shot timeout; [x] paused-room clock freeze through a real coordinator pause/resume; [x] acceleration and Storm floors.
+  - **Evidence:** Godot suites P06 (102/0), P08 (86/0), P11 (78/0), P12 runtime suite (59/0); see [P21 evidence](evidence/p21_balance_readability/README.md).
+- [ ] **P21-T02 — Schedule one standalone Main per round** (REQ-STANDALONE-MODES-01)
+  - **Implementation:** [x] schedule ignores stale compatibility rows; announcements and egg eligibility use only the Main; retired mixed-mode controller starters and predicates cannot start a second mode.
+  - **Verification:** [x] 500 deterministic tables plus 100 stale-row seeds contain no Twist; [x] normal Play has no second controller and stale entry helpers normalize to Main; [x] standalone scoring, Barya and terminal precedence across 2/3/4 seats. [x] forced stale mixed-entry runtime fixture cannot start a second controller.
+  - **Evidence:** P12 suite 59 checks / 0 failures. Historical pair suites remain source history, not current schedule acceptance.
+- [ ] **P21-T03 — Select fair map-aware Rising targets** (REQ-RISING-FAIR-01)
+  - **Implementation:** [x] deterministic bounded choice inside playable map bounds from completed eligible player-built support, with movement/width/current-position filters; no fair target issues one alternate command without hidden failure or pressure credit.
+  - **Verification:** [x] default and all selectable MapCatalog maps at low/middle/high offset heights; [x] absent/unreachable/usable support and bounded fallback; [x] evaluation rechecks fresh grounded support, base exclusion and removed/stale contact. [ ] live item completion path and trajectory/obstruction review; [ ] target-line rendered capture.
+  - **Evidence:** P11 suite 78 checks / 0 failures. The current reach estimate uses movement range, jump rise, support width and player position; it does not ray/path-test obstruction.
+- [ ] **P21-T04 — Move Kangaroo strikes overhead** (REQ-KANGAROO-OVERHEAD-01)
+  - **Implementation:** [x] KANG / GA / ROO segments follow their actor, use distinct used/unused shapes and outline, include player number, inverse-scale against camera zoom, and replace side-panel miss rows.
+  - **Verification:** [x] 0/1/2/3 states, strike ownership and no duplicate HUD rows; [x] marker binding cleanup, close-player overlap layout, two/four seats at wide and close camera scale (headless layout); [ ] rendered capture.
+  - **Evidence:** P13 HUD suite 145 checks / 0 failures for 2/4 players, close/wide camera scale and overlap lanes; cleanup by binding reset is covered. Rendered readability remains unverified.
+- [ ] **P21-T05 — Complete regression and rendered evidence** (REQ-BALANCE-REGRESSION-01)
+  - **Implementation:** [x] P20 two-second construction/control contract is covered and unchanged; scoring, Barya and terminal precedence remain covered by P06/P12. Evidence records revision, engine, date, profile/seed, maps, player/input setup, procedure and actual output.
+  - **Verification:** [x] Godot 4.7.2 import/parse; [x] P06/P08/P11/P12/P13 focused suites pass. [ ] offline live-build suite clean (72/78 passed; six per-seat HUD control-hint checks failed); [x] named-file lint/format (30 scripts pass); [x] diff check; [ ] approved rendered/physical session (COULD-NOT-RUN).
+  - **Evidence:** provisional budgets remain 60 FPS / 16.67 ms at 1080p, 512 MiB and 0 B/s gameplay networking; not measured. No human reviewer is claimed.
+
+**Current P21 status:** 0/5 tasks fully complete because rendered/physical and regression acceptance remains open; individual passed checks are marked above. Route obstruction review, live construction-to-support path, complete offline suite and rendered/physical readability remain open. P21 adds 5 records to the historical P00–P20 baseline of 415, for 420 records over 21 phases; dated historical totals above are retained.

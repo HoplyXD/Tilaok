@@ -4,6 +4,8 @@
 
 **PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, or establish competition eligibility. The wall-movement extension below was approved October 13, 2026; its rule choices are active design direction, while numeric starting values remain untested. Other proposed rule changes remain inactive until explicitly accepted.
 
+**Current timer/mode amendment — 2026-10-23 (provisional, no balance claim):** `GameplayTuning` defaults are Pugad 15 s, Karera hard cap 120 s and first-finisher window 30 s, Lagsanay taya 20/25/30 s with 2/3/4 live players, Kangaroo telegraph 2 s / response 6 s / reset 1.5 s. Acceleration uses centralized steps (0.5 s response, 0.15 s reset) with minimums 3 s / 0.75 s. Storm starts after 16 completed commands and uses 3 s response / 1.5 s landing interval. Only standalone Main modes are scheduled. See P21; timer changes do not scale physics or unrelated cooldowns.
+
 ## 1. Recommendation and evidence
 
 Start with responsive run/jump controls, a compact graybox, explicit device assignment, and Kaing Stack plus Tulay na Kawayan. Prove a two-player build/race round before adding Gulong Talon, then verify three/four players, Lagsanay, full-match ties/restart, Kangaroo, and finally the three required event stacks. Use an explicit surface-support property for Rising wave. Centralize tunables; keep art, new events, and extra obstacle families out of the first slice.
