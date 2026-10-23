@@ -9,7 +9,7 @@ extends Node
 ## - Place: a player places a block.
 ## - Death: a chicken is eliminated (the moment it shows its "dead" sprite).
 ## It also holds the looping menu music on the Music bus. GameFlow says when it should play; it
-## fades out and in, and picks up where it stopped.
+## fades in over 0.6 s and out over 0.15 s, and picks up where it stopped.
 ## - Progress: the score bars filling on a results screen (ScoreboardChart reports when its bars
 ##   are rising). It plays once from the start while any chart is revealing, and stops when the
 ##   last one finishes, settles, hides or leaves the tree.
@@ -37,6 +37,8 @@ const CONFIRM_CLICK_PHASES := [
 
 const PROGRESS_STOP_FADE_SECONDS := 0.15
 const MUSIC_FADE_SECONDS := 0.6
+## Quick fade-out, so the score-bar progress sound on the results screen is heard clearly.
+const MUSIC_FADE_OUT_SECONDS := 0.15
 ## Fade floor as a linear gain (about -80 dB), so the fade never reaches log(0).
 const MUSIC_SILENT_GAIN := 0.0001
 
@@ -130,7 +132,9 @@ func _set_music(on: bool) -> void:
 		_music.stream_paused = false
 		_music_tween.tween_method(_set_music_gain, from, 1.0, MUSIC_FADE_SECONDS)
 	else:
-		_music_tween.tween_method(_set_music_gain, from, MUSIC_SILENT_GAIN, MUSIC_FADE_SECONDS)
+		_music_tween.tween_method(
+			_set_music_gain, from, MUSIC_SILENT_GAIN, MUSIC_FADE_OUT_SECONDS
+		)
 		# Paused, not stopped, so it picks up where it left off.
 		_music_tween.tween_callback(func() -> void: _music.stream_paused = true)
 
