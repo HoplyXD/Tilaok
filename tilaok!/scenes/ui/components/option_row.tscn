@@ -1,39 +1,246 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_option_row.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://dnuh2m0y1qugp" path="res://assets/ui/library/ui.library.icon_back.svg" id="2"]
 
-[node name="OptionRow" type="PanelContainer"]
-layout_mode = 3
+[node name="OptionRow" type="Panel"]
+custom_minimum_size = Vector2(0, 54)
+offset_right = 892.0
+offset_bottom = 54.0
+mouse_filter = 2
+theme_type_variation = &"SettingsRowEdge"
 script = ExtResource("1")
-theme_type_variation = &"RowPanel"
-custom_minimum_size = Vector2(0, 48)
 row_title = "Option"
+metadata/figma = "Settings frame (133:1336), \"Screen shake\" row, in Figma px: 892 x 54, 6 px corners. Normal: 1 px #c4a074 edge on #fff3da. Selected: 2.5 px #b77748 edge on #ebd6af and a pointer that moves the name 22 px right. This stylebox is the edge colour; Face / FaceSelected are the fill."
 
-[node name="Row" type="HBoxContainer" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 12
+[node name="Face" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsRowFace"
 
-[node name="NameLabel" type="Label" parent="Row"]
+[node name="FaceSelected" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.5
+offset_top = 2.5
+offset_right = -2.5
+offset_bottom = -2.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsRowFaceSelected"
+
+[node name="NameRow" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = 480.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+metadata/note = "Name 20 px in. When selected, PointerBox (14 px) and the 8 px gap move the name to 42 px, as in the frame."
+
+[node name="PointerBox" type="Control" parent="NameRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(14, 0)
 layout_mode = 2
-text = "Option"
-theme_type_variation = &"BodyLabel"
-custom_minimum_size = Vector2(220, 0)
+mouse_filter = 2
+
+[node name="Pointer" type="TextureRect" parent="NameRow/PointerBox"]
+self_modulate = Color(0.470588, 0.286, 0.157, 1)
+texture_filter = 4
+layout_mode = 0
+offset_left = -3.0
+offset_top = 19.0
+offset_right = 13.0
+offset_bottom = 35.0
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+flip_h = true
+metadata/asset_id = "ui.library.icon_back"
+metadata/note = "The Library chevron (cream) tinted to #784623 and mirrored: a 16 px chevron-right 17 px from the row's left edge."
+
+[node name="NameLabel" type="Label" parent="NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
 size_flags_horizontal = 3
-unique_name_in_owner = true
+theme_type_variation = &"SettingsRowLabel"
+text = "Option"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
 
-[node name="Bar" type="ProgressBar" parent="Row"]
-layout_mode = 2
-custom_minimum_size = Vector2(200, 16)
-size_flags_vertical = 4
-show_percentage = false
-value = 100.0
+[node name="Choice" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -206.0
+offset_top = -15.0
+offset_right = -20.0
+offset_bottom = 15.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+metadata/note = "Two 30 px arrow boxes around a 126 px value, 20 px from the right edge."
 
-[node name="ValueLabel" type="Label" parent="Row"]
+[node name="LeftBox" type="Panel" parent="Choice"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = ""
-theme_type_variation = &"BodyLabel"
+mouse_filter = 2
+theme_type_variation = &"SettingsArrowBox"
+
+[node name="Icon" type="TextureRect" parent="Choice/LeftBox"]
+self_modulate = Color(0.470588, 0.286, 0.157, 1)
+texture_filter = 4
+layout_mode = 0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 23.0
+offset_bottom = 23.0
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+
+[node name="ValueLabel" type="Label" parent="Choice"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(126, 0)
+layout_mode = 2
+theme_type_variation = &"SettingsRowValue"
+text = "Off"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightBox" type="Panel" parent="Choice"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsArrowBox"
+
+[node name="Icon" type="TextureRect" parent="Choice/RightBox"]
+self_modulate = Color(0.470588, 0.286, 0.157, 1)
+texture_filter = 4
+layout_mode = 0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 23.0
+offset_bottom = 23.0
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+flip_h = true
+
+[node name="Slider" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -378.0
+offset_top = -5.0
+offset_right = -121.0
+offset_bottom = 5.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+metadata/note = "Track 257 x 10 (514 px from the row's left edge). Fill and Knob follow the level through their anchors; 0 % puts the knob at the track's left end. The empty part's #ebd6af is not in the frame (it only shows 100 %)."
+
+[node name="Track" type="Panel" parent="Slider"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsTrack"
+
+[node name="Fill" type="Panel" parent="Slider"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 9
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsTrackFill"
+
+[node name="Knob" type="Control" parent="Slider"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -13.0
+offset_top = -13.0
+offset_right = 13.0
+offset_bottom = 13.0
+mouse_filter = 2
+metadata/note = "26 px knob: #fff3da, 2 px #784623 ring, 2 x 12 #c4a074 tick."
+
+[node name="Disc" type="Panel" parent="Slider/Knob"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsKnob"
+
+[node name="Tick" type="Panel" parent="Slider/Knob"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -6.0
+offset_right = 1.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"SettingsKnobTick"
+
+[node name="PercentLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -90.0
+offset_right = -20.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"SettingsRowPercent"
+text = "100%"
 horizontal_alignment = 2
-custom_minimum_size = Vector2(120, 0)
-unique_name_in_owner = true
-
+vertical_alignment = 1

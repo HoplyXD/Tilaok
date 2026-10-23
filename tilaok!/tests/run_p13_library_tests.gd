@@ -34,7 +34,9 @@ func _run() -> void:
 	var map := load(UiContext.PROMPT_MAP_PATH) as UiPromptMap
 	var context := UiLibraryText.build_context(tuning, map, 2)
 	_test_pages(text, tuning, context)
+	_test_round_loop_steps(text, context)
 	_test_gating(text, tuning, map)
+	await _test_figma_layout(text, tuning, context, map)
 	await _test_barya_category_gate(text, tuning)
 	await _test_items_and_scrolling(text, tuning, context)
 	await _test_dev_reference_rows(text, tuning, context)
@@ -142,6 +144,145 @@ func _test_pages(text: UiLibraryText, tuning: GameplayTuning, context: Dictionar
 	)
 	var shake := _body(text, context, "Accessibility", "Screen shake")
 	_check(shake.contains("Current setting: Off"), "the shake page reflects the setting")
+
+
+## The round loop page of the Figma frame (133:1205): a summary line and three step cards whose
+## seconds come from tuning.
+func _test_round_loop_steps(text: UiLibraryText, context: Dictionary) -> void:
+	var loop: Dictionary = {}
+	for page in text.pages_for("How to Play", context):
+		if str(page.title) == "The round loop":
+			loop = page
+	var steps: Array = loop.get("steps", [])
+	_check(steps.size() == 3, "The round loop has three step cards (%d)" % steps.size())
+	if steps.size() != 3:
+		return
+	var headings := PackedStringArray()
+	var arts := PackedStringArray()
+	for step in steps:
+		headings.append(str(step.heading))
+		arts.append(str(step.art))
+		_check(
+			not str(step.note).contains("{") and not str(step.body).contains("{"),
+			"%s step has no unfilled token" % step.heading
+		)
+	_check(
+		(
+			headings == PackedStringArray(["PUGAD", "PLACE", "PLAY"])
+			and arts == PackedStringArray(["pugad", "place", "play"])
+		),
+		"step cards are PUGAD, PLACE, PLAY with their pictures %s %s" % [headings, arts]
+	)
+	var tokens: Dictionary = context.tokens
+	_check(
+		(
+			str(steps[0].note) == "about %s s" % tokens.pugad_s
+			and str(steps[1].note) == "about %s s" % tokens.place_s
+			and str(steps[0].body).contains("(about %s s)" % tokens.pugad_s)
+		),
+		"step notes quote the tuned Pugad and Place seconds"
+	)
+	_check(
+		UiLibraryText.display_body(str(loop.body)) == "Every round has three steps.",
+		"the round loop summary is shown without the PLACEHOLDER line"
+	)
+
+
+## Library screen from Figma frame 133:1205: plank labels vs page categories, summary + step
+## cards vs running text, the item egg in the field guide spot, and device-aware footer keys.
+func _test_figma_layout(
+	text: UiLibraryText, tuning: GameplayTuning, context: Dictionary, map: UiPromptMap
+) -> void:
+	var definitions := ItemDefinitions.load_for_profile(tuning, "karera_slice")
+	var screen := LIBRARY_SCENE.instantiate() as UiLibraryScreen
+	root.add_child(screen)
+	await process_frame
+	screen.bind_live(definitions, tuning, text, context)
+	var category_list := screen.get_node("%CategoryList") as Control
+	var first := category_list.get_child(0) as UiLibraryTabButton
+	var second := category_list.get_child(1) as UiLibraryTabButton
+	_check(
+		first.text == "How to play" and screen.category == "How to Play",
+		"the 'How to play' plank opens the How to Play pages"
+	)
+	screen._set_zone(UiLibraryScreen.ZONE_ENTRIES)
+	await process_frame
+	_check(
+		(
+			first.current
+			and not first.selected
+			and (first.get_node("Face") as Control).theme_type_variation == &"LibraryTabFaceCurrent"
+			and not second.current
+		),
+		"the open category stays shaded while the cursor is on the chapters"
+	)
+	screen.choose_category("Karera")
+	await process_frame
+	_check(
+		second.current and not first.current,
+		"choosing another category moves the shading to its plank"
+	)
+	screen.choose_category("How to Play")
+	screen._set_zone(UiLibraryScreen.ZONE_CATEGORIES)
+	screen._set_zone(UiLibraryScreen.ZONE_ENTRIES)
+	var steps := screen.get_node("%Steps") as Control
+	var summary := screen.get_node("%EntrySummary") as Label
+	var body := screen.get_node("%EntryBody") as Label
+	var placeholder := UiLibraryText.PLACEHOLDER_NOTE
+	_check(
+		(
+			steps.visible
+			and summary.is_visible_in_tree()
+			and summary.text == "Every round has three steps."
+			and not body.visible
+		),
+		"the round loop shows its summary over three step cards"
+	)
+	var cards := steps.get_children()
+	_check(
+		(
+			cards.size() == 3
+			and (cards[0] as UiLibraryStepCard).heading == "PUGAD"
+			and (cards[2] as UiLibraryStepCard).art == "play"
+		),
+		"the step cards are bound from the page"
+	)
+	screen._set_zone(UiLibraryScreen.ZONE_ENTRIES)
+	screen.navigate(0, "down")
+	_check(
+		(
+			screen.current_row().title == "Controls"
+			and not steps.visible
+			and not summary.is_visible_in_tree()
+			and body.visible
+			and body.text.contains("Keyboard WASD")
+			and not body.text.contains(placeholder)
+		),
+		"a page without steps shows running text; the PLACEHOLDER line has its own label"
+	)
+	var frame := screen.get_node("%AnimationFrame") as Control
+	var motto := screen.get_node("%Motto") as Control
+	_check(not frame.visible and motto.visible, "text pages keep the field guide motto")
+	screen.choose_category("Items")
+	_check(
+		frame.visible and not motto.visible and screen._preview != null,
+		"an item entry shows its animated egg in place of the motto"
+	)
+	var expected := {
+		"k1": ["W A S D", "E / F", "G"],
+		"k2": ["Arrow keys", "Enter", "Backspace"],
+		"gamepad": ["D-pad / Left stick", "South", "East"],
+	}
+	for device in expected:
+		screen.bind_prompts(map, device)
+		var shown := [
+			(screen.get_node("%ChooseKey") as Label).text,
+			(screen.get_node("%ReadKey") as Label).text,
+			(screen.get_node("%BackKey") as Label).text,
+		]
+		_check(shown == expected[device], "%s footer keys %s" % [device, shown])
+	screen.queue_free()
+	await process_frame
 
 
 func _test_gating(text: UiLibraryText, tuning: GameplayTuning, map: UiPromptMap) -> void:
@@ -377,9 +518,10 @@ func _test_controller_navigation() -> void:
 	flow.harness_mode = true
 	root.add_child(flow)
 	await _frames(3)
-	_pad(JOY_BUTTON_A)
-	await _frames(2)
+	# The Title menu shows with nobody joined: the first press (down) joins the pad and moves to
+	# Library, then A opens it.
 	_pad(JOY_BUTTON_DPAD_DOWN)
+	await _frames(2)
 	_pad(JOY_BUTTON_A)
 	await _frames(2)
 	_check(flow.state == GameFlow.State.LIBRARY, "a gamepad opens the Library from the Title")

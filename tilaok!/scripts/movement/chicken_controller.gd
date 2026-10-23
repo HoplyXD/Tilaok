@@ -20,6 +20,9 @@ const WATER_DRAG := 0.86
 ## False when the scene supplies a sprite (scenes/characters/chicken.tscn); the code-drawn DEBUG
 ## body is then skipped, but the number/shape identity marker above the head is still drawn.
 @export var draw_debug_body := true
+## False hides the number/shape marker above the head (the lobby preview chickens, whose card
+## already names the player with its shape).
+@export var draw_identity_marker := true
 
 var simulation_authority := SimulationAuthority.offline()
 var support_tracker: SupportTracker
@@ -803,8 +806,9 @@ func _draw() -> void:
 	draw_set_transform(Vector2(0.0, drop), 0.0, Vector2(draw_scale * widen, draw_scale * squash))
 	if draw_debug_body:
 		_draw_debug_body()
-		_draw_identity_marker(Vector2(0.0, -27.0))
-	else:
+		if draw_identity_marker:
+			_draw_identity_marker(Vector2(0.0, -27.0))
+	elif draw_identity_marker:
 		# Sprite body: unsquashed marker just above the head, lowered with the sneaking body.
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * draw_scale)
 		_draw_identity_marker(Vector2(0.0, -30.0 + drop / draw_scale))

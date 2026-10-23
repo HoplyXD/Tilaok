@@ -30,8 +30,10 @@ const MOVE_THRESHOLD_WU_S := 20.0
 	&"stun": Vector2(0, -16),
 	&"dead": Vector2(0, 109),
 }
+const DEFAULT_TINT_STRENGTH := 2.1
+
 ## Multiplier on the seat colour so the mid-grey placeholder reads as that colour.
-@export var tint_strength := 2.1
+@export var tint_strength := DEFAULT_TINT_STRENGTH
 ## Stunned chickens brighten and dim smoothly at this rate (Hz). Never a hard on/off flash, and
 ## never above the 3 flashes per second photosensitivity limit; Screen shake Off holds it steady.
 @export var stun_pulse_hz := 2.0
@@ -59,7 +61,7 @@ func _process(_delta: float) -> void:
 		play(next)
 	offset = animation_offsets.get(next, Vector2.ZERO)
 	var base := Color.WHITE if chicken.lifecycle.is_terminal() else chicken.marker_color
-	modulate = Color(base.r * tint_strength, base.g * tint_strength, base.b * tint_strength, base.a)
+	modulate = seat_tint(base, tint_strength)
 	if next == &"stun":
 		var level := stun_brightness(
 			Time.get_ticks_msec() / 1000.0,
@@ -69,6 +71,12 @@ func _process(_delta: float) -> void:
 			stun_peak_brightness
 		)
 		modulate = Color(level, level, level, base.a)
+
+
+## The modulate that makes the grey chicken art read as `color` (brightened, alpha kept). The
+## results chart uses it too, so its chickens match the ones in the game.
+static func seat_tint(color: Color, strength: float = DEFAULT_TINT_STRENGTH) -> Color:
+	return Color(color.r * strength, color.g * strength, color.b * strength, color.a)
 
 
 ## Brightness multiplier of a stunned chicken at `time_seconds`: a steady brightening plus, unless

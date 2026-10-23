@@ -43,8 +43,9 @@ func title_for(category: String) -> String:
 	return titles[index] if index >= 0 and index < titles.size() else category
 
 
-## Resolved pages of a category as {title, body} rows, in authored order. `context` is
-## build_context(); an empty context keeps every page and leaves tokens untouched.
+## Resolved pages of a category as {title, body, steps} rows, in authored order. `steps` holds
+## {heading, note, body, art} for each step card. `context` is build_context(); an empty context
+## keeps every page and leaves tokens untouched.
 func pages_for(category: String, context: Dictionary = {}) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
 	for page in pages:
@@ -52,16 +53,37 @@ func pages_for(category: String, context: Dictionary = {}) -> Array[Dictionary]:
 			continue
 		if not context.is_empty() and not _is_available(page.requires, context):
 			continue
+		var steps: Array[Dictionary] = []
+		for step in page.steps:
+			if step == null:
+				continue
+			(
+				steps
+				. append(
+					{
+						"heading": _fill(step.heading, context),
+						"note": _fill(step.note, context),
+						"body": _fill(step.body, context),
+						"art": step.art,
+					}
+				)
+			)
 		(
 			rows
 			. append(
 				{
 					"title": _fill(page.title, context),
 					"body": _fill(page.body, context) + "\n\n" + PLACEHOLDER_NOTE,
+					"steps": steps,
 				}
 			)
 		)
 	return rows
+
+
+## A page body as the Library shows it: the PLACEHOLDER note has its own line on the page.
+static func display_body(body: String) -> String:
+	return body.trim_suffix("\n\n" + PLACEHOLDER_NOTE)
 
 
 ## The tokens a page may use, from live tuning, the score calculators and the prompt map.

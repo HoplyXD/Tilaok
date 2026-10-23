@@ -64,6 +64,9 @@ var _aim_y: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
 var _system_paused := false
+## On the Title while nobody is seated (GameFlow sets it): in MENU, the first direction or confirm
+## press from an unjoined keyboard layout or gamepad joins it and that same press acts on the menu.
+var menu_join_enabled := false
 
 
 func _ready() -> void:
@@ -179,6 +182,11 @@ func _handle_joy_button(event: InputEventJoypadButton) -> void:
 	var action_name := _joy_action(event.button_index)
 	if action_name.is_empty():
 		return
+	var menu_action := _gamepad_phase_action(event.button_index)
+	if seat_index < 0 and event.pressed and _is_menu_join_press(menu_action):
+		seat_index = registry.join_gamepad(event.device)
+		if seat_index >= 0:
+			seat_joined.emit(seat_index)
 	if seat_index < 0:
 		if event.pressed and event.button_index == JOY_BUTTON_A:
 			if _held.has(physical_key):
@@ -355,9 +363,21 @@ func _handle_key(event: InputEventKey) -> void:
 			_held[join_key] = "join"
 			_blocked[join_key] = true
 			return
+	if seat_index < 0 and event.pressed and _is_menu_join_press(action_name):
+		seat_index = registry.join_keyboard(layout)
+		if seat_index >= 0:
+			seat_joined.emit(seat_index)
 	if seat_index < 0:
 		return
 	_handle_action_edge(seat_index, action_name, physical_key, event.pressed)
+
+
+func _is_menu_join_press(action_name: String) -> bool:
+	return (
+		menu_join_enabled
+		and phase == Phase.MENU
+		and action_name in ["up", "down", "left", "right", "confirm"]
+	)
 
 
 func _handle_action_edge(

@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/arrow_plank_button.tscn" id="12"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/menu_action_button.tscn" id="13"]
 [ext_resource type="Texture2D" uid="uid://pkpif3rw7i75" path="res://assets/ui/common/ui.common.icon_play.svg" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/library_tab_button.tscn" id="15"]
 
 [node name="ComponentSheet" type="Control" unique_id=1216811618]
 layout_mode = 3
@@ -169,6 +170,32 @@ layout_mode = 2
 
 [node name="Arrow" parent="Safe/Columns/Left/MapArrows/MapNext" index="4"]
 scale = Vector2(-1, 1)
+
+[node name="LibraryPlanks" type="Control" parent="Safe/Columns/Left"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+mouse_filter = 2
+metadata/note = "Library planks (Figma 133:1205 \"Menu control\"): normal and selected, in Figma px inside a 0.8-scaled holder like the Library's frame. The Library's step card (library_step_card.tscn) is too wide for this sheet; it shows on the Library screen."
+
+[node name="Scaled" type="HBoxContainer" parent="Safe/Columns/Left/LibraryPlanks"]
+layout_mode = 0
+offset_right = 548.0
+offset_bottom = 56.0
+scale = Vector2(0.8, 0.8)
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="LibraryNormal" parent="Safe/Columns/Left/LibraryPlanks/Scaled" instance=ExtResource("15")]
+custom_minimum_size = Vector2(266, 56)
+layout_mode = 2
+text = "Library plank"
+
+[node name="LibrarySelected" parent="Safe/Columns/Left/LibraryPlanks/Scaled" instance=ExtResource("15")]
+custom_minimum_size = Vector2(266, 56)
+layout_mode = 2
+theme_type_variation = &"LibraryTabSelected"
+text = "Selected"
+selected = true
 
 [node name="Right" type="VBoxContainer" parent="Safe/Columns" unique_id=1239600712]
 layout_mode = 2

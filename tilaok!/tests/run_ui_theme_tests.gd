@@ -117,6 +117,8 @@ func _run() -> void:
 	await _test_tutorial_card()
 	await _test_final_result_frame()
 	await _test_title_card()
+	await _test_library_frame()
+	await _test_settings_frame()
 	print("UI_THEME_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -1471,16 +1473,315 @@ func _test_title_card() -> void:
 	var join_label := join.get_node("%ActionLabel") as Label
 	_check(
 		(
-			join.visible
-			and not menu.visible
+			not join.visible
+			and menu.visible
 			and join_label.theme_type_variation == &"TitleCardPromptAction"
-			and _near(join_label.get_theme_color("font_color"), Color.html("#684127"))
-			and card_rect.encloses(join.get_global_rect())
 		),
-		"nobody joined: a brown join prompt replaces the menu on the card"
+		"nobody joined: the menu shows and the join prompt stays hidden"
 	)
 	holder.queue_free()
 	await process_frame
+
+
+## Library built from Figma frame 133:1205 (1600 x 900; 1 Figma px = 0.8 canvas px): the frame's
+## layout, colours, plank looks and step cards, bound to live pages and K2 prompts.
+func _test_library_frame() -> void:
+	var holder := Control.new()
+	holder.size = Vector2(1280, 720)
+	root.add_child(holder)
+	var library := (
+		(load("res://scenes/ui/screens/library_screen.tscn") as PackedScene).instantiate()
+		as UiLibraryScreen
+	)
+	holder.add_child(library)
+	library.replay_tutorial_enabled = true
+	library.show_state(0, UiContext.make(2, "k2"))
+	library._set_zone(UiLibraryScreen.ZONE_ENTRIES)
+	for i in 3:
+		await process_frame
+	# Node, Figma rect. Whole-px separations make planks and cards 0.2 px off at most.
+	var rects := [
+		["%BackButton", Rect2(64, 56, 166, 56)],
+		["Frame/Detail", Rect2(648, 178, 888, 620)],
+		["Frame/Art_LeafDivider", Rect2(675, 119, 250, 16)],
+		["Frame/Navigation/FieldGuide", Rect2(64, 626, 552, 172)],
+		["Frame/Footer", Rect2(64, 822, 1472, 38)],
+	]
+	for spec in rects:
+		var node := library.get_node(str(spec[0])) as Control
+		var want := _figma_rect(spec[1])
+		_check(
+			_rect_near(node.get_global_rect(), want, 0.25),
+			"library %s sits at the frame's %s (%s)" % [spec[0], want, node.get_global_rect()]
+		)
+	var categories := library.get_node("%CategoryList") as Control
+	var entries := library.get_node("%EntryList") as Control
+	for column in [[categories, 64.0], [entries, 350.0]]:
+		var list := column[0] as Control
+		for index in 6:
+			var plank := list.get_child(index) as Control
+			var want := _figma_rect(Rect2(column[1], 178.0 + 72.0 * index, 266, 56))
+			_check(
+				_rect_near(plank.get_global_rect(), want, 0.25),
+				"library plank %s %d at %s (%s)" % [list.name, index, want, plank.get_global_rect()]
+			)
+	var open := categories.get_child(0) as UiLibraryTabButton
+	var normal := categories.get_child(1) as UiLibraryTabButton
+	var chosen := entries.get_child(0) as UiLibraryTabButton
+	_check(
+		(
+			open.text == "How to play"
+			and library.category == "How to Play"
+			and chosen.text == "The round loop"
+			and chosen.selected
+			and not open.selected
+			and open.current
+		),
+		"library opens on How to play (shaded) / The round loop (highlighted)"
+	)
+	var plank_specs := [
+		[normal, "#b77748", "#784623", "#563b2b"],
+		[open, "#885a39", "#784623", "#563b2b"],
+		[chosen, "#253c3d", "#3c5654", "#ebd6af"],
+	]
+	for spec in plank_specs:
+		var plank := spec[0] as UiLibraryTabButton
+		var face := (plank.get_node("Face") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+		var edge := plank.get_theme_stylebox("normal") as StyleBoxFlat
+		var rivet := (
+			(plank.get_node("RivetLeft") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+		)
+		var shadow := (
+			(plank.get_node("Shadow") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+		)
+		var text := plank.get_node("Content/Label") as Label
+		_check(
+			(
+				_near(face.bg_color, Color.html(spec[1]))
+				and _near(edge.bg_color, Color.html(spec[2]))
+				and _near(rivet.bg_color, Color.html(spec[3]))
+				and _near(shadow.bg_color, Color.html("#784623"))
+				and is_equal_approx(shadow.expand_margin_bottom, 4.0)
+				and _near(text.get_theme_color("font_color"), Color.html("#fff5df"))
+				and text.get_theme_font_size("font_size") == 21
+				and text.text == plank.text
+			),
+			"library plank %s: %s face, %s edge, %s rivets, solid 4 px shadow" % spec.slice(0)
+		)
+	var back := library.get_node("%BackButton") as UiLibraryTabButton
+	_check(
+		(
+			(back.get_node("Content/Icon") as TextureRect).visible
+			and (back.get_node("Content/Label") as Label).text == "Back"
+		),
+		"library Back plank shows the chevron and its label"
+	)
+	var detail := library.get_node("Frame/Detail") as Control
+	var face_box := (detail.get_node("Face") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+	var edge_box := detail.get_theme_stylebox("panel") as StyleBoxFlat
+	var binding := (
+		(detail.get_node("Binding") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+	)
+	var shadow_node := detail.get_node("Shadow") as Control
+	var shadow_box := shadow_node.get_theme_stylebox("panel") as StyleBoxFlat
+	var shadow_shift := (
+		shadow_node.get_global_rect().get_center() - detail.get_global_rect().get_center()
+	)
+	_check(
+		(
+			_near(face_box.bg_color, Color.html("#f6e7cd"))
+			and _near(edge_box.bg_color, Color.html("#c4a074"))
+			and _near(binding.bg_color, Color.html("#b77748"))
+			and is_equal_approx(binding.bg_color.a, 0.7)
+			and _near(Color(shadow_box.shadow_color, 1.0), Color.html("#50371f"))
+			and is_equal_approx(shadow_box.shadow_color.a, 0.161)
+			and shadow_box.shadow_size == 25
+			and shadow_node.show_behind_parent
+			and shadow_shift.distance_to(Vector2(0, 6.4)) < 0.01
+		),
+		"library page: #f6e7cd, #c4a074 edge, 70 % binding, 0 8 16 shadow (%s)" % shadow_shift
+	)
+	var grain := detail.get_node("Grain") as Control
+	_check(
+		grain.get_index() > detail.get_node("Content").get_index(),
+		"library page grain covers the page content, like Figma's frame noise"
+	)
+	var gradient := (
+		(library.get_node("Frame/Parchment/Gradient") as Control).get_theme_stylebox("panel")
+		as StyleBoxTexture
+	)
+	var gradient_tex := gradient.texture as GradientTexture2D
+	_check(
+		(
+			gradient_tex.fill == GradientTexture2D.FILL_RADIAL
+			and _near(gradient_tex.gradient.get_color(0), Color.html("#edd3a7"))
+			and _near(gradient_tex.gradient.get_color(1), Color.html("#ddbb88"))
+			and _near(
+				(library.get_node("Frame") as Control).get_theme_stylebox("panel").bg_color,
+				Color.html("#253c3d")
+			)
+		),
+		"library parchment: radial #edd3a7 -> #ddbb88 on the #253c3d frame"
+	)
+	var label_specs := [
+		["Frame/TitleLabel", &"LibraryTitle", "Library", "#784623", 66],
+		["%EntryTitle", &"LibraryChapterTitle", "The round loop", "#784623", 42],
+		["%EntrySummary", &"LibraryChapterSummary", "Every round has three steps.", "#563b2b", 21],
+	]
+	for spec in label_specs:
+		var label := library.get_node(str(spec[0])) as Label
+		_check(
+			(
+				label.theme_type_variation == spec[1]
+				and label.text == spec[2]
+				and _near(label.get_theme_color("font_color"), Color.html(spec[3]))
+				and label.get_theme_font_size("font_size") == spec[4]
+			),
+			"library %s reads '%s' in %s at %d px" % [spec[0], spec[2], spec[3], spec[4]]
+		)
+	var steps := library.get_node("%Steps") as Control
+	var arts := PackedStringArray()
+	for index in steps.get_child_count():
+		var card := steps.get_child(index) as UiLibraryStepCard
+		arts.append(card.art)
+		var want := _figma_rect(Rect2(678, 312 + 138 * index, 828, 124))
+		var card_face := (
+			(card.get_node("Face") as Control).get_theme_stylebox("panel") as StyleBoxFlat
+		)
+		_check(
+			(
+				card.visible
+				and _rect_near(card.get_global_rect(), want, 0.5)
+				and _near(card_face.bg_color, Color.html("#fff3da"))
+				and _near(card.get_theme_stylebox("panel").bg_color, Color.html("#c4a074"))
+			),
+			"library step card %d at %s, #fff3da with a #c4a074 edge" % [index + 1, want]
+		)
+	_check(arts == PackedStringArray(["pugad", "place", "play"]), "step art %s" % [arts])
+	var keys := PackedStringArray()
+	for key in ["%ChooseKey", "%ReadKey", "%BackKey"]:
+		keys.append((library.get_node(key) as Label).text)
+	_check(
+		keys == PackedStringArray(["Arrow keys", "Enter", "Backspace"]),
+		"library footer keys come from the prompt map for K2 %s" % [keys]
+	)
+	holder.queue_free()
+	await process_frame
+
+
+## Settings built from Figma frame 133:1336 (1600 x 900, measured from the team's 2x PNG export):
+## the frame's layout and colours, choice and slider rows, and the selected row's look.
+func _test_settings_frame() -> void:
+	var holder := Control.new()
+	holder.size = Vector2(1280, 720)
+	root.add_child(holder)
+	var settings := (
+		(load("res://scenes/ui/screens/settings_screen.tscn") as PackedScene).instantiate()
+		as UiSettingsScreen
+	)
+	holder.add_child(settings)
+	settings.show_state(1, UiContext.make(2, "k1"))
+	for i in 3:
+		await process_frame
+	var row_names := [
+		"ShakeRow", "ResultRevealRow", "MuteRow", "MasterRow", "MusicRow", "EffectsRow", "CrowdRow"
+	]
+	for index in row_names.size():
+		var row := settings.get_node("%" + str(row_names[index])) as UiOptionRow
+		var want := _figma_rect(Rect2(354, 192 + 64 * index, 892, 54))
+		_check(
+			_rect_near(row.get_global_rect(), want, 0.01),
+			"settings %s at %s (%s)" % [row_names[index], want, row.get_global_rect()]
+		)
+	var back := settings.get_node("%BackButton") as UiLibraryTabButton
+	var panel := settings.get_node("Frame/Panel") as Control
+	_check(
+		(
+			_rect_near(back.get_global_rect(), _figma_rect(Rect2(354, 648, 892, 48)), 0.01)
+			and _rect_near(panel.get_global_rect(), _figma_rect(Rect2(330, 168, 940, 552)), 0.01)
+			and back.text == "Back"
+			and back.action_icon != null
+		),
+		"settings page 940 x 552 at (330, 168), Back plank 892 x 48 at (354, 648)"
+	)
+	var shake := settings.get_node("%ShakeRow") as UiOptionRow
+	var reveal := settings.get_node("%ResultRevealRow") as UiOptionRow
+	var shake_face := (shake.get_node("FaceSelected") as Control)
+	var reveal_face := (reveal.get_node("Face") as Control)
+	_check(
+		(
+			shake.selected
+			and shake.theme_type_variation == &"SettingsRowEdgeSelected"
+			and _near(shake.get_theme_stylebox("panel").bg_color, Color.html("#b77748"))
+			and shake_face.visible
+			and _near(shake_face.get_theme_stylebox("panel").bg_color, Color.html("#ebd6af"))
+			and is_equal_approx(shake_face.offset_left, 2.5)
+			and (shake.get_node("%PointerBox") as Control).visible
+			and not reveal.selected
+			and _near(reveal.get_theme_stylebox("panel").bg_color, Color.html("#c4a074"))
+			and _near(reveal_face.get_theme_stylebox("panel").bg_color, Color.html("#fff3da"))
+			and is_equal_approx(reveal_face.offset_left, 1.0)
+			and not (reveal.get_node("%PointerBox") as Control).visible
+		),
+		"settings selected row: 2.5 px #b77748 edge on #ebd6af, pointer; others 1 px #c4a074"
+	)
+	var name_label := shake.get_node("%NameLabel") as Label
+	var value_label := shake.get_node("%ValueLabel") as Label
+	_check(
+		(
+			name_label.text == "Screen shake"
+			and _near(name_label.get_theme_color("font_color"), Color.html("#563b2b"))
+			and name_label.get_theme_font_size("font_size") == 21
+			and shake.value_text() == "Off"
+			and _near(value_label.get_theme_color("font_color"), Color.html("#253c3d"))
+			and value_label.get_theme_font_size("font_size") == 20
+			and (shake.get_node("%Choice") as Control).visible
+			and not (shake.get_node("%Slider") as Control).visible
+		),
+		"settings choice row: Margarine 21 #563b2b name, Margarine 20 #253c3d value"
+	)
+	var music := settings.get_node("%MusicRow") as UiOptionRow
+	var knob := music.get_node("%Knob") as Control
+	var track := music.get_node("%Slider") as Control
+	var knob_x := knob.get_global_rect().get_center().x
+	var expected_x := (868.0 + 257.0 * 0.4) * 0.8
+	_check(
+		(
+			music.value_text() == "40%"
+			and track.visible
+			and _rect_near(track.get_global_rect(), _figma_rect(Rect2(868, 470, 257, 10)), 0.01)
+			and absf(knob_x - expected_x) < 0.01
+			and is_equal_approx((music.get_node("%Fill") as Control).anchor_right, 0.4)
+		),
+		"settings slider: 257 x 10 track at x 868, knob and fill at 40 %% (knob x %.2f)" % knob_x
+	)
+	var footer := [
+		["%ControlsHelp", "#563b2b"],
+		["Frame/AccessibilityNote", "#253c3d"],
+		["Frame/Tag", "#91662f"],
+		["%BuildAboutLabel", "#8a6a4d"],
+	]
+	for spec in footer:
+		var label := settings.get_node(str(spec[0])) as Label
+		_check(
+			(
+				_near(label.get_theme_color("font_color"), Color.html(spec[1]))
+				and not label.text.is_empty()
+			),
+			"settings footer %s in %s" % [spec[0], spec[1]]
+		)
+	holder.queue_free()
+	await process_frame
+
+
+func _figma_rect(rect: Rect2) -> Rect2:
+	return Rect2(rect.position * 0.8, rect.size * 0.8)
+
+
+func _rect_near(a: Rect2, b: Rect2, tolerance: float) -> bool:
+	return (
+		a.position.distance_to(b.position) <= tolerance and a.end.distance_to(b.end) <= tolerance
+	)
 
 
 func _check(condition: bool, label: String) -> void:

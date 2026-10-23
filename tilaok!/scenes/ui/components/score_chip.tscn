@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://8vm3rr1bbp3h"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/components/score_row.tscn" id="1"]
+[ext_resource type="FontFile" uid="uid://2i1hklmi0b4g" path="res://assets/fonts/road_rage/RoadRage-Regular.ttf" id="2_8yfuw"]
 
-[node name="ScoreChip" instance=ExtResource("1")]
+[node name="ScoreChip" unique_id=584799261 instance=ExtResource("1")]
 custom_minimum_size = Vector2(192.6, 39.6)
 theme_type_variation = &"ScoreChip"
 
@@ -56,10 +57,10 @@ theme_type_variation = &"ChipName"
 
 [node name="StateLabel" parent="Row" index="1"]
 theme_type_variation = &"ChipState"
+theme_override_fonts/font = ExtResource("2_8yfuw")
 
 [node name="ScoreLabel" parent="Row" index="2"]
 custom_minimum_size = Vector2(0, 0)
 theme_type_variation = &"ChipLabel"
-horizontal_alignment = 2
 
 [editable path="Row/Badge"]

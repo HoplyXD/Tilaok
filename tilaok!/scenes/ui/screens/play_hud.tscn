@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" uid="uid://bjhjwikeft1t7" path="res://scripts/ui/ui_play_hud.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/score_chip.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://8vm3rr1bbp3h" path="res://scenes/ui/components/score_chip.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/toast_line.tscn" id="4"]
 
 [node name="PlayHud" type="Control" unique_id=873868963]

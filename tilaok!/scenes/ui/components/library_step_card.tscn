@@ -1,0 +1,187 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_library_step_card.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://dt5vknyvbo551" path="res://assets/ui/library/ui.library.step_pugad.svg" id="2"]
+[ext_resource type="Texture2D" uid="uid://dfr11bk6s41yg" path="res://assets/ui/library/ui.library.step_place.svg" id="3"]
+[ext_resource type="Texture2D" uid="uid://duduv1o8pjm6i" path="res://assets/ui/library/ui.library.finish_flag.svg" id="4"]
+[ext_resource type="Texture2D" uid="uid://nwnf0fwe3m52" path="res://assets/ui/library/ui.library.step_play_chick.png" id="5"]
+
+[node name="LibraryStepCard" type="Panel"]
+custom_minimum_size = Vector2(0, 124)
+offset_right = 828.0
+offset_bottom = 124.0
+mouse_filter = 2
+theme_type_variation = &"LibraryStepCard"
+script = ExtResource("1")
+body = "PUGAD: each player grabs an egg (about 8 s). The egg hatches into a piece."
+metadata/asset_id = "ui.library.step_card"
+metadata/figma = "Library 133:1205, \"Round step\" (133:1286 / 133:1296 / 133:1308), in Figma px: 828 x 124, 1 px #c4a074 edge, #fff3da fill, 6 px corners, 14 / 12 px padding, 20 px gap."
+
+[node name="Face" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryStepFace"
+metadata/note = "The card fill. The card's own stylebox around it is the 1 px edge."
+
+[node name="Illustration" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 14.0
+offset_top = -47.0
+offset_right = 114.0
+offset_bottom = 47.0
+grow_vertical = 2
+mouse_filter = 2
+metadata/note = "Figma \"Round illustration\": 100 x 94, 14 px from the left, centred."
+
+[node name="Art_Pugad" type="TextureRect" parent="Illustration"]
+texture_filter = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+metadata/asset_id = "ui.library.step_pugad"
+
+[node name="Art_Place" type="TextureRect" parent="Illustration"]
+visible = false
+texture_filter = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+metadata/asset_id = "ui.library.step_place"
+
+[node name="Art_Play" type="Panel" parent="Illustration"]
+visible = false
+clip_children = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryIllustration"
+metadata/note = "Figma 133:1309: #ebd6af round backing (47 px corners) clipping the flag, the stage and the chick."
+
+[node name="Art_Flag" type="TextureRect" parent="Illustration/Art_Play"]
+texture_filter = 4
+layout_mode = 0
+offset_left = 66.0
+offset_top = 17.0
+offset_right = 91.0
+offset_bottom = 38.0
+mouse_filter = 2
+texture = ExtResource("4")
+expand_mode = 1
+metadata/asset_id = "ui.library.finish_flag"
+metadata/note = "Figma \"Finish flag\" (133:1311) at (66, 17). Its pole is masked out in the frame too, so only the 25 x 21 pennant shows."
+
+[node name="Stage" type="Panel" parent="Illustration/Art_Play"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 73.0
+offset_right = 92.0
+offset_bottom = 83.0
+mouse_filter = 2
+theme_type_variation = &"LibraryStage"
+metadata/note = "Figma \"Stage\" (133:1310): 84 x 10 at (8, 73), #b77748, 2 px corners."
+
+[node name="Art_Chick" type="TextureRect" parent="Illustration/Art_Play"]
+texture_filter = 4
+layout_mode = 0
+offset_left = 8.0
+offset_top = 22.0
+offset_right = 60.0
+offset_bottom = 74.0
+mouse_filter = 2
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 6
+metadata/asset_id = "ui.library.step_play_chick"
+metadata/note = "Figma \"image 20\" (136:9): 52 x 52 at (8, 22), cover fit."
+
+[node name="Explanation" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 134.0
+offset_top = 12.0
+offset_right = -14.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 7
+alignment = 1
+metadata/note = "Figma \"Step explanation\": fills the card after the illustration and its 20 px gap; name row, then 7 px, then the explanation, centred as a block."
+
+[node name="Heading" type="Control" parent="Explanation"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+mouse_filter = 2
+metadata/note = "Figma \"Step heading\" is 27 px tall (the name's line); fixed here because Godot's line boxes are taller than Figma's."
+
+[node name="StepName" type="Label" parent="Explanation/Heading"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.5
+offset_bottom = 1.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"LibraryStepName"
+text = "PUGAD"
+vertical_alignment = 1
+
+[node name="StepNote" type="Label" parent="Explanation/Heading"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"LibraryStepNote"
+text = "about 8 s"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="BodyMargin" type="MarginContainer" parent="Explanation"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
+metadata/note = "This project's Mansalva sets some lines a few px narrower than Figma's; 10 px less width keeps Figma's line breaks (PLACE wraps \"it.\", PUGAD stays on one line)."
+
+[node name="StepBody" type="Label" parent="Explanation/BodyMargin"]
+layout_mode = 2
+theme_type_variation = &"LibraryChapterBody"
+text = "PUGAD: each player grabs an egg (about 8 s). The egg hatches into a piece."
+autowrap_mode = 3

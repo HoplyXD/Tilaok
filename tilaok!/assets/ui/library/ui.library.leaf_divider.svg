@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="250" height="16" viewBox="0 0 250 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Leaf divider" clip-path="url(#clip0_0_21)">
+<rect id="Rule" y="7.5" width="85" height="1" fill="#C4A074"/>
+<path id="Leaf sprig" d="M97 11.9748C105.209 9.08345 113.419 7.46368 121.628 7.11552M121.628 7.11552C132.086 6.67203 142.543 8.29181 153 11.9748M121.628 7.11552C121.751 6.8623 121.875 6.60367 122 6.33962M121.628 7.11552C116.512 17.6707 113.302 18.8208 112 10.566M113 7.74843C105.667 -1.64361 103.667 -1.174 107 9.15723M132 6.33962C128 -2.11321 125.333 -2.11321 124 6.33962M142 9.15723C139.333 17.6101 136 17.1405 132 7.74843" stroke-width="1.3" stroke="#784623"/>
+<rect id="Rule_2" x="165" y="7.5" width="85" height="1" fill="#C4A074"/>
+</g>
+<defs>
+<clipPath id="clip0_0_21">
+<rect width="250" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>

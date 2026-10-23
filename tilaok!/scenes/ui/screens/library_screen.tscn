@@ -1,266 +1,652 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=9 format=3]
 
-[ext_resource type="Theme" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
+[ext_resource type="Theme" uid="uid://bxkguhvcjbcdo" path="res://assets/ui/theme/tilaok_theme.tres" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/ui_library_screen.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/ui/ui_menu_list.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/library_tab_button.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/library_step_card.tscn" id="5"]
+[ext_resource type="Texture2D" uid="uid://dnuh2m0y1qugp" path="res://assets/ui/library/ui.library.icon_back.svg" id="6"]
+[ext_resource type="Texture2D" uid="uid://c2fcksrojrei5" path="res://assets/ui/library/ui.library.leaf_divider.svg" id="7"]
+[ext_resource type="Texture2D" uid="uid://53n38grrrqx0" path="res://assets/ui/library/ui.library.leaf_divider_small.svg" id="8"]
 
 [node name="LibraryScreen" type="Control"]
 layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("2")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 standalone_theme = ExtResource("1")
+metadata/figma = "Library (133:1205), a 1600 x 900 frame. Everything is laid out in Figma px inside Frame, which is scaled by 0.8 to fill the 1280 x 720 canvas, so positions, sizes and Margarine / Mountains font sizes are the frame's own values."
 
-[node name="Backdrop" type="PanelContainer" parent="."]
+[node name="Frame" type="Panel" parent="."]
 layout_mode = 1
-theme_type_variation = &"Backdrop"
+offset_right = 1600.0
+offset_bottom = 900.0
+scale = Vector2(0.8, 0.8)
+theme_type_variation = &"LibraryFrame"
+metadata/note = "Figma \"Parchment backdrop\" (133:1206): #253c3d behind the parchment. It also stops clicks reaching a match under the Library. Scaled 0.8: one unit here is one Figma px."
+
+[node name="Parchment" type="Panel" parent="Frame"]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryParchmentMask"
+metadata/note = "Figma \"Parchment\" (133:1207): 16 px in from the frame, 4 px corners. This panel only masks its children to that shape."
+
+[node name="Gradient" type="Panel" parent="Frame/Parchment"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="Art_Background" type="TextureRect" parent="."]
-layout_mode = 1
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 6
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/asset_id = "ui.library.panel"
+theme_type_variation = &"LibraryParchment"
+metadata/note = "Radial #edd3a7 -> #ddbb88 centred at (50 %, 40 %). Figma's ellipse is 1111 x 674 px turned 5 degrees; this one is 1160 x 642 and upright, at most half a colour step different."
 
-[node name="Safe" type="MarginContainer" parent="."]
+[node name="Grain" type="Control" parent="Frame/Parchment"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"SafeAreaMargin"
-
-[node name="Content" type="VBoxContainer" parent="Safe"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Heading" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "LIBRARY"
-theme_type_variation = &"HeadingLabel"
-horizontal_alignment = 1
-
-[node name="Columns" type="HBoxContainer" parent="Safe/Content"]
-layout_mode = 2
-theme_override_constants/separation = 16
-size_flags_vertical = 3
-
-[node name="CategoryList" type="VBoxContainer" parent="Safe/Content/Columns"]
-layout_mode = 2
-script = ExtResource("3")
-theme_override_constants/separation = 6
-custom_minimum_size = Vector2(240, 0)
-unique_name_in_owner = true
-
-[node name="Cat1" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "How to Play"
-
-[node name="Cat2" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Karera"
-
-[node name="Cat3" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Lagsanay"
-
-[node name="Cat4" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Kangaroo"
-
-[node name="Cat5" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Items"
-
-[node name="Cat6" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Accessibility"
-
-[node name="Cat7" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Barya"
-
-[node name="ReleaseFilterButton" type="Button" parent="Safe/Content/Columns/CategoryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Release filter: OFF"
-toggle_mode = true
-unique_name_in_owner = true
-
-[node name="EntryList" type="VBoxContainer" parent="Safe/Content/Columns"]
-layout_mode = 2
-script = ExtResource("3")
-theme_override_constants/separation = 6
-custom_minimum_size = Vector2(240, 0)
-unique_name_in_owner = true
-
-[node name="Entry1" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 1"
-visible = false
-
-[node name="Entry2" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 2"
-visible = false
-
-[node name="Entry3" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 3"
-visible = false
-
-[node name="Entry4" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 4"
-visible = false
-
-[node name="Entry5" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 5"
-visible = false
-
-[node name="Entry6" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 6"
-visible = false
-
-[node name="Entry7" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 7"
-visible = false
-
-[node name="Entry8" type="Button" parent="Safe/Content/Columns/EntryList"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 44)
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "Entry 8"
-visible = false
-
-[node name="Detail" type="PanelContainer" parent="Safe/Content/Columns"]
-layout_mode = 2
-theme_type_variation = &"Card"
-size_flags_horizontal = 3
-
-[node name="Art_EntryFrame" type="TextureRect" parent="Safe/Content/Columns/Detail"]
-layout_mode = 2
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 6
-metadata/asset_id = "ui.library.entry_frame"
 
-[node name="Col" type="VBoxContainer" parent="Safe/Content/Columns/Detail"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="EntryTitle" type="Label" parent="Safe/Content/Columns/Detail/Col"]
-layout_mode = 2
-text = "Title"
-theme_type_variation = &"HeadingLabel"
-autowrap_mode = 3
-max_lines_visible = 2
-unique_name_in_owner = true
-
-[node name="AnimationFrame" type="PanelContainer" parent="Safe/Content/Columns/Detail/Col"]
-layout_mode = 2
-theme_type_variation = &"EggFrame"
-size_flags_horizontal = 0
-
-[node name="Art_AnimationFrame" type="TextureRect" parent="Safe/Content/Columns/Detail/Col/AnimationFrame"]
-layout_mode = 2
+[node name="GrainPatch" type="Panel" parent="Frame/Parchment/Grain"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.2
+anchor_bottom = 1.2
+scale = Vector2(0.833333, 0.833333)
 mouse_filter = 2
-expand_mode = 1
-stretch_mode = 6
-metadata/asset_id = "ui.library.animation_frame"
+theme_type_variation = &"LibraryGrain"
+metadata/note = "Paper grain (Figma noise effect, multitone 17 %): the title card's grain, drawn 1.2x denser so one grain texel is one 1080p pixel inside the 0.8-scaled frame."
 
-[node name="AnimationHost" type="Control" parent="Safe/Content/Columns/Detail/Col/AnimationFrame"]
-layout_mode = 2
-custom_minimum_size = Vector2(96, 116)
+[node name="InsetRule" type="Panel" parent="Frame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryInsetRule"
+metadata/note = "Figma \"Inset rule\" (133:1208): 1 px #784623 at 40 %, 32 px in."
+
+[node name="BackButton" parent="Frame" instance=ExtResource("4")]
 unique_name_in_owner = true
-
-[node name="EntryBody" type="Label" parent="Safe/Content/Columns/Detail/Col"]
-layout_mode = 2
-text = "Body"
-theme_type_variation = &"BodyLabel"
-autowrap_mode = 3
-size_flags_vertical = 3
-max_lines_visible = 9
-custom_minimum_size = Vector2(0, 80)
-unique_name_in_owner = true
-
-[node name="Tag" type="Label" parent="Safe/Content"]
-layout_mode = 2
-text = "PLACEHOLDER art; copy pending Filipino / Hiligaynon review"
-theme_type_variation = &"PlaceholderTag"
-horizontal_alignment = 1
-
-[node name="BackButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 20.0
-offset_right = 184.0
-offset_bottom = 64.0
-focus_mode = 0
-theme_type_variation = &"TilaokMenuButton"
-text = "◀  Back"
+layout_mode = 1
+offset_left = 64.0
+offset_top = 56.0
+offset_right = 230.0
+offset_bottom = 112.0
 tooltip_text = "Back"
+text = "Back"
+action_icon = ExtResource("6")
+metadata/icon_asset_id = "ui.library.icon_back"
+metadata/note = "Figma \"Back action\" (133:1211): 166 x 56 at (64, 56), chevron-left 19 px."
+
+[node name="TitleLabel" type="Label" parent="Frame"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 31.4
+offset_bottom = 123.4
+grow_horizontal = 2
+theme_type_variation = &"LibraryTitle"
+text = "Library"
+horizontal_alignment = 1
+metadata/note = "Figma 133:1216: Mountains of Christmas Bold 66, #784623, 110 % lines, top at 42. Godot's line box is taller, so the label starts higher to keep Figma's baseline."
+
+[node name="Art_LeafDivider" type="TextureRect" parent="Frame"]
+texture_filter = 4
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -125.0
+offset_top = 119.0
+offset_right = 125.0
+offset_bottom = 135.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("7")
+expand_mode = 1
+metadata/asset_id = "ui.library.leaf_divider"
+metadata/note = "Figma \"Leaf divider\" (133:1217): 250 x 16 under the title."
+
+[node name="Navigation" type="VBoxContainer" parent="Frame"]
+layout_mode = 1
+offset_left = 64.0
+offset_top = 178.0
+offset_right = 616.0
+offset_bottom = 798.0
+mouse_filter = 2
+theme_override_constants/separation = 0
+metadata/note = "Figma \"Library navigation\" (133:1222): 552 x 620 at (64, 178). The two plank columns, a 32 px gap, then the field guide in the space left."
+
+[node name="Topics" type="HBoxContainer" parent="Frame/Navigation"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="CategoryList" type="VBoxContainer" parent="Frame/Navigation/Topics"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(266, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+script = ExtResource("3")
+metadata/note = "Figma \"Categories\" (133:1224): 266 px wide, 56 px planks 16 px apart."
+
+[node name="Cat1" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "How to play"
+current = true
+metadata/category = "How to Play"
+
+[node name="Cat2" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Karera"
+metadata/category = "Karera"
+
+[node name="Cat3" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Lagsanay"
+metadata/category = "Lagsanay"
+
+[node name="Cat4" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Kangaroo"
+metadata/category = "Kangaroo"
+
+[node name="Cat5" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Items"
+metadata/category = "Items"
+
+[node name="Cat6" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Accessibility"
+metadata/category = "Accessibility"
+
+[node name="Cat7" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+visible = false
+layout_mode = 2
+text = "Barya"
+metadata/category = "Barya"
+metadata/note = "Not in the frame: shown only while the Barya objective is enabled."
+
+[node name="ReleaseFilterButton" parent="Frame/Navigation/Topics/CategoryList" instance=ExtResource("4")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+toggle_mode = true
+text = "Release filter: OFF"
+metadata/note = "Development builds only (--library-dev)."
+
+[node name="EntryList" type="VBoxContainer" parent="Frame/Navigation/Topics"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(266, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+script = ExtResource("3")
+metadata/note = "Figma \"Chapters\" (133:1249): the pages of the chosen category. Six planks; longer categories scroll through them."
+
+[node name="Entry1" parent="Frame/Navigation/Topics/EntryList" instance=ExtResource("4")]
+layout_mode = 2
+theme_type_variation = &"LibraryTabSelected"
+text = "The round loop"
+selected = true
+
+[node name="Entry2" parent="Frame/Navigation/Topics/EntryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Controls"
+
+[node name="Entry3" parent="Frame/Navigation/Topics/EntryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Placing a piece"
+
+[node name="Entry4" parent="Frame/Navigation/Topics/EntryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "The stage grows"
+
+[node name="Entry5" parent="Frame/Navigation/Topics/EntryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Winning"
+
+[node name="Entry6" parent="Frame/Navigation/Topics/EntryList" instance=ExtResource("4")]
+layout_mode = 2
+text = "Replay tutorial"
+
+[node name="NavGap" type="Control" parent="Frame/Navigation"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FieldGuide" type="Control" parent="Frame/Navigation"]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+metadata/note = "Figma \"Field guide detail\" (133:1274): the space under the planks, its contents centred. Item entries show their animated egg here."
+
+[node name="Guide" type="VBoxContainer" parent="Frame/Navigation/FieldGuide"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Art_LeafSmall" type="TextureRect" parent="Frame/Navigation/FieldGuide/Guide"]
+texture_filter = 4
+custom_minimum_size = Vector2(180, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("8")
+expand_mode = 1
+metadata/asset_id = "ui.library.leaf_divider_small"
+metadata/note = "Figma \"Leaf divider\" (133:1275): 180 x 16."
+
+[node name="LeafGap" type="Control" parent="Frame/Navigation/FieldGuide/Guide"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Motto" type="VBoxContainer" parent="Frame/Navigation/FieldGuide/Guide"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MottoRow" type="Control" parent="Frame/Navigation/FieldGuide/Guide/Motto"]
+custom_minimum_size = Vector2(0, 47)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GuideMotto" type="Label" parent="Frame/Navigation/FieldGuide/Guide/Motto/MottoRow"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -2.6
+offset_bottom = 45.4
+grow_horizontal = 2
+theme_type_variation = &"LibraryMotto"
+text = "A new story, every round."
+horizontal_alignment = 1
+metadata/copy = "PLACEHOLDER copy from the frame (133:1279): Mountains of Christmas Bold 34, #784623."
+
+[node name="MottoGap" type="Control" parent="Frame/Navigation/FieldGuide/Guide/Motto"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NoteRow" type="Control" parent="Frame/Navigation/FieldGuide/Guide/Motto"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GuideNote" type="Label" parent="Frame/Navigation/FieldGuide/Guide/Motto/NoteRow"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -5.0
+offset_bottom = 22.0
+grow_horizontal = 2
+theme_type_variation = &"LibraryMottoNote"
+text = "Pick a chapter. Find your footing."
+horizontal_alignment = 1
+metadata/copy = "PLACEHOLDER copy from the frame (133:1280): Mansalva 18, #8a6a4d (17 here: this project's Mansalva is wider than Figma's)."
+
+[node name="AnimationFrame" type="PanelContainer" parent="Frame/Navigation/FieldGuide/Guide"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_type_variation = &"LibraryFigure"
+metadata/note = "Not in the frame: an item entry's animated egg takes the motto's place."
+
+[node name="AnimationBox" type="Control" parent="Frame/Navigation/FieldGuide/Guide/AnimationFrame"]
+custom_minimum_size = Vector2(105, 130)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AnimationHost" type="Control" parent="Frame/Navigation/FieldGuide/Guide/AnimationFrame/AnimationBox"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 84.0
+offset_bottom = 104.0
+scale = Vector2(1.25, 1.25)
+mouse_filter = 2
+metadata/note = "Scaled 1.25 so the code-drawn egg (84 x 104 canvas px) keeps its game size inside the 0.8-scaled frame."
+
+[node name="Detail" type="Panel" parent="Frame"]
+layout_mode = 1
+offset_left = 648.0
+offset_top = 178.0
+offset_right = 1536.0
+offset_bottom = 798.0
+mouse_filter = 2
+theme_type_variation = &"LibraryPanel"
+metadata/note = "Figma \"Parchment panel\" (133:1281): 888 x 620 at (648, 178). This stylebox is the 1.5 px #c4a074 edge; Face is the fill."
+
+[node name="Shadow" type="Panel" parent="Frame/Detail"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.5
+offset_top = 20.5
+offset_right = -12.5
+offset_bottom = -4.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryPanelShadow"
+metadata/note = "Figma drop shadow 0 8 16 #50371f 16 % (left out of Figma's code output). Godot's shadow fades linearly, so this panel sits 12.5 px inside the page and its 25 px fade (3.09 x the blur's sigma of 8) is centred on the edge, 8 px lower."
+
+[node name="Face" type="Panel" parent="Frame/Detail"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_top = 1.5
+offset_right = -1.5
+offset_bottom = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryPanelFace"
+
+[node name="Binding" type="Panel" parent="Frame/Detail"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 5.0
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryBinding"
+metadata/note = "Figma \"Binding edge\" (133:1282): 5 px of #b77748 at 70 % down the left edge, over the outline."
+
+[node name="Content" type="VBoxContainer" parent="Frame/Detail"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+metadata/note = "Figma: 30 px padding, 7 px under the chapter title, 14 px between blocks. Rows have Figma's heights because Godot's line boxes are taller."
+
+[node name="TitleRow" type="Control" parent="Frame/Detail/Content"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EntryTitle" type="Label" parent="Frame/Detail/Content/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 1.6
+offset_bottom = 60.6
+grow_horizontal = 2
+theme_type_variation = &"LibraryChapterTitle"
+text = "The round loop"
+clip_text = true
+text_overrun_behavior = 3
+metadata/note = "Figma \"Chapter title\" (133:1284): Mountains of Christmas Bold 42, #784623."
+
+[node name="TitleGap" type="Control" parent="Frame/Detail/Content"]
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SummaryRow" type="Control" parent="Frame/Detail/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EntrySummary" type="Label" parent="Frame/Detail/Content/SummaryRow"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -4.3
+offset_bottom = 29.7
+grow_horizontal = 2
+theme_type_variation = &"LibraryChapterSummary"
+text = "Every round has three steps."
+clip_text = true
+text_overrun_behavior = 3
+metadata/note = "Figma \"Chapter summary\" (133:1285): Mansalva 23, #563b2b (21 here: this project's Mansalva is wider than Figma's). Shown on pages with step cards."
+
+[node name="EntryBody" type="Label" parent="Frame/Detail/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"LibraryChapterBody"
+text = "Body"
+autowrap_mode = 3
+clip_text = true
+text_overrun_behavior = 3
+metadata/note = "Running text for pages without step cards and for items, in the step explanation style (Figma Mansalva 21 with 130 % lines; 20 here)."
+
+[node name="StepsGap" type="Control" parent="Frame/Detail/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Steps" type="VBoxContainer" parent="Frame/Detail/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+metadata/note = "Figma \"Round step\" cards, 124 px tall and 14 px apart."
+
+[node name="Step1" parent="Frame/Detail/Content/Steps" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="Step2" parent="Frame/Detail/Content/Steps" instance=ExtResource("5")]
+layout_mode = 2
+heading = "PLACE"
+note = "about 15 s"
+body = "PLACE: put your piece on the shared stage (about 15 s) and confirm to lock it."
+art = "place"
+
+[node name="Step3" parent="Frame/Detail/Content/Steps" instance=ExtResource("5")]
+layout_mode = 2
+heading = "PLAY"
+note = "Run & jump"
+body = "PLAY: run and jump through the stage everyone built. The stage stays and grows every round."
+art = "play"
+
+[node name="NoteGap" type="Control" parent="Frame/Detail/Content"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NoteRow" type="Control" parent="Frame/Detail/Content"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ReviewNote" type="Label" parent="Frame/Detail/Content/NoteRow"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -5.4
+offset_bottom = 20.6
+grow_horizontal = 2
+theme_type_variation = &"LibraryReviewNote"
+text = "PLACEHOLDER copy, pending Filipino / Hiligaynon review."
+metadata/note = "Figma \"Copy review note\" (133:1319): Mansalva 16, #91662f."
+
+[node name="BottomGap" type="Control" parent="Frame/Detail/Content"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Grain" type="Control" parent="Frame/Detail"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5
+offset_top = 1.5
+offset_right = -1.5
+offset_bottom = -1.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="GrainPatch" type="Panel" parent="Frame/Detail/Grain"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.2
+anchor_bottom = 1.2
+scale = Vector2(0.833333, 0.833333)
+mouse_filter = 2
+theme_type_variation = &"LibraryGrain"
+metadata/note = "Paper grain (Figma noise effect, multitone 16 %). Drawn over the page content: a Figma frame effect covers its children too, so the step cards are grained as well."
+
+[node name="Footer" type="Control" parent="Frame"]
+layout_mode = 1
+offset_left = 64.0
+offset_top = 822.0
+offset_right = 1536.0
+offset_bottom = 860.0
+mouse_filter = 2
+metadata/note = "Figma \"Library footer\" (133:1320): 1472 x 38 at (64, 822)."
+
+[node name="Hints" type="HBoxContainer" parent="Frame/Footer"]
+layout_mode = 1
+offset_top = 5.0
+offset_right = 500.0
+offset_bottom = 33.0
+mouse_filter = 2
+theme_override_constants/separation = 24
+metadata/note = "Figma \"Navigation hints\": keycap + action, 24 px apart. The keys come from the prompt map for the device driving the Library (the frame shows Esc for Back, which is the pause key here)."
+
+[node name="ChooseHint" type="HBoxContainer" parent="Frame/Footer/Hints"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="KeyCap" type="PanelContainer" parent="Frame/Footer/Hints/ChooseHint"]
+custom_minimum_size = Vector2(30, 28)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryKeyCap"
+
+[node name="ChooseKey" type="Label" parent="Frame/Footer/Hints/ChooseHint/KeyCap"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"LibraryKeyText"
+text = "↑ ↓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChooseAction" type="Label" parent="Frame/Footer/Hints/ChooseHint"]
+layout_mode = 2
+theme_type_variation = &"LibraryHintText"
+text = "Choose"
+vertical_alignment = 1
+
+[node name="ReadHint" type="HBoxContainer" parent="Frame/Footer/Hints"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="KeyCap" type="PanelContainer" parent="Frame/Footer/Hints/ReadHint"]
+custom_minimum_size = Vector2(30, 28)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryKeyCap"
+
+[node name="ReadKey" type="Label" parent="Frame/Footer/Hints/ReadHint/KeyCap"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"LibraryKeyText"
+text = "Enter"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ReadAction" type="Label" parent="Frame/Footer/Hints/ReadHint"]
+layout_mode = 2
+theme_type_variation = &"LibraryHintText"
+text = "Read"
+vertical_alignment = 1
+
+[node name="BackHint" type="HBoxContainer" parent="Frame/Footer/Hints"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="KeyCap" type="PanelContainer" parent="Frame/Footer/Hints/BackHint"]
+custom_minimum_size = Vector2(30, 28)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"LibraryKeyCap"
+
+[node name="BackKey" type="Label" parent="Frame/Footer/Hints/BackHint/KeyCap"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"LibraryKeyText"
+text = "Backspace"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackAction" type="Label" parent="Frame/Footer/Hints/BackHint"]
+layout_mode = 2
+theme_type_variation = &"LibraryHintText"
+text = "Back"
+vertical_alignment = 1
+
+[node name="ArtNote" type="Label" parent="Frame/Footer"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 6.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_type_variation = &"LibraryArtNote"
+text = "PLACEHOLDER art, copy pending Filipino / Hiligaynon review"
+horizontal_alignment = 2
+metadata/note = "Figma \"Art review note\" (133:1334): Mansalva 15, #91662f, right-aligned."

@@ -53,6 +53,8 @@ var _motion_mode := MOTION_OFF
 var _elapsed := 0.0
 var _reveal_count := 0
 
+## The chicken draws one z level up (set in the scene) so the chalkboard grain, drawn over the
+## chart, does not darken it; the match HUD overlays sit at the same level, later, to cover it.
 @onready var _chicken: AnimatedSprite2D = %Chicken
 @onready var _score_label: Label = %ScoreLabel
 @onready var _delta_label: Label = %DeltaLabel
@@ -97,7 +99,7 @@ func bind_row(
 		"joined": true,
 	}
 	badge.bind_seat(seat)
-	_chicken.modulate = _row.get("color", Color.WHITE)
+	_chicken.modulate = ChickenSpriteAnimator.seat_tint(_row.get("color", Color.WHITE))
 	_refresh_labels()
 	_layout_marker()
 	queue_redraw()
