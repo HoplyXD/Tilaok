@@ -528,6 +528,7 @@ func _add_region_overlay(rect: Rect2, color: Color, label: String) -> void:
 		world_layer, rect, Color(color, 0.14), "%sFill" % label.replace(" ", "_")
 	)
 	fill.z_index = -2
+	fill.add_to_group(DEBUG_WORLD_GROUP)
 	var outline := Line2D.new()
 	outline.points = PackedVector2Array(
 		[
@@ -540,6 +541,7 @@ func _add_region_overlay(rect: Rect2, color: Color, label: String) -> void:
 	)
 	outline.width = 2.0
 	outline.default_color = color
+	outline.add_to_group(DEBUG_WORLD_GROUP)
 	world_layer.add_child(outline)
 	var stripe_x := rect.position.x
 	while stripe_x < rect.end.x:
@@ -554,6 +556,7 @@ func _add_region_overlay(rect: Rect2, color: Color, label: String) -> void:
 		)
 		stripe.width = 1.0 * world_scale
 		stripe.default_color = Color(color, 0.7)
+		stripe.add_to_group(DEBUG_WORLD_GROUP)
 		world_layer.add_child(stripe)
 		stripe_x += 48.0 * world_scale
 	_add_world_label(label, rect.position + Vector2(4.0, 4.0) * world_scale)
@@ -588,6 +591,7 @@ func _add_world_label(text_value: String, world_position: Vector2) -> Label:
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.add_theme_color_override("font_outline_color", Color("#14232a"))
 	label.add_theme_constant_override("outline_size", roundi(3 * world_scale))
+	label.add_to_group(DEBUG_WORLD_GROUP)
 	world_layer.add_child(label)
 	return label
 

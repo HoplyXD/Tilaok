@@ -35,6 +35,7 @@ func bind_live(
 
 func bind_build_label(text: String) -> void:
 	_build_label.text = text
+	_build_label.visible = false
 
 
 ## The menu always shows (Play, Library, Settings, Quit), even with nobody joined: the first menu

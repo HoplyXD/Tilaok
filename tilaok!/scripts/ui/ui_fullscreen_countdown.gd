@@ -11,5 +11,11 @@ func show_countdown(seconds: float, caption: String) -> void:
 	_caption.text = caption
 
 
+func show_message(message: String) -> void:
+	visible = true
+	_number.text = message
+	_caption.text = ""
+
+
 func hide_countdown() -> void:
 	visible = false

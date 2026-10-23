@@ -302,8 +302,8 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 
 
 ## Keep the build lesson up until each player has built or is out of the round. Showing it only
-## during GO would hide the instructions before anyone can use them; showing it while a build is
-## pending also reinforces that movement resumes immediately after confirmation.
+## before the BUILD countdown ends would hide the instructions before anyone can use them; keeping
+## it while a build is pending also reinforces that movement resumes immediately after confirmation.
 func _live_build_tutorial_complete() -> bool:
 	var live_room := room as OfflineLiveBuildMatchRoom
 	if live_room == null:
