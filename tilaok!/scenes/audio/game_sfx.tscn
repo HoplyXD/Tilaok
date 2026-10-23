@@ -38,4 +38,5 @@ bus = &"Music"
 
 [node name="Progress" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7")
+volume_db = -6.0
 bus = &"Music"

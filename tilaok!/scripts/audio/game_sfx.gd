@@ -9,7 +9,8 @@ extends Node
 ## - Place: a player places a block.
 ## - Death: a chicken is eliminated (the moment it shows its "dead" sprite).
 ## It also holds the looping menu music on the Music bus. GameFlow says when it should play; it
-## fades in over 0.6 s and out over 0.15 s, and picks up where it stopped.
+## fades in and out over 0.6 s, and picks up where it stopped. On a score screen it keeps
+## playing under the progress sound while the bars rise.
 ## - Progress: the score bars filling on a results screen (ScoreboardChart reports when its bars
 ##   are rising). It plays once from the start while any chart is revealing, and stops when the
 ##   last one finishes, settles, hides or leaves the tree.
@@ -37,8 +38,7 @@ const CONFIRM_CLICK_PHASES := [
 
 const PROGRESS_STOP_FADE_SECONDS := 0.15
 const MUSIC_FADE_SECONDS := 0.6
-## Quick fade-out, so the score-bar progress sound on the results screen is heard clearly.
-const MUSIC_FADE_OUT_SECONDS := 0.15
+const MUSIC_FADE_OUT_SECONDS := 0.6
 ## Fade floor as a linear gain (about -80 dB), so the fade never reaches log(0).
 const MUSIC_SILENT_GAIN := 0.0001
 
@@ -52,6 +52,8 @@ var _music_full_db := 0.0
 ## Instance ids of the charts whose bars are rising right now.
 var _progress_owners: Dictionary = {}
 var _progress_tween: Tween
+## The Progress player's volume in the scene is its level (set a little below the music).
+var _progress_full_db := 0.0
 
 ## Process frame each sound last started on. One action can reach two hooks in the same frame
 ## (for example a confirm that also lands a block, or several chickens out at a deadline), and it
@@ -90,6 +92,13 @@ static func set_menu_music(on: bool) -> void:
 static func set_progress_sound(chart: Object, rising: bool) -> void:
 	if _instance != null and is_instance_valid(_instance) and _instance.is_node_ready():
 		_instance._set_progress(chart.get_instance_id(), rising)
+
+
+## True while any score chart's bars are rising.
+static func are_score_bars_rising() -> bool:
+	return (
+		_instance != null and is_instance_valid(_instance) and not _instance._progress_owners.is_empty()
+	)
 
 
 static func is_progress_sound_playing() -> bool:
@@ -151,7 +160,7 @@ func _set_progress(owner_id: int, rising: bool) -> void:
 	if _progress_tween != null:
 		_progress_tween.kill()
 		_progress_tween = null
-	_progress.volume_db = 0.0
+	_progress.volume_db = _progress_full_db
 	if active:
 		_progress.play()
 	else:
@@ -181,6 +190,7 @@ func _ready() -> void:
 	# chicken the death sound, including ones added later. The button hooks use button_down and
 	# mouse_entered so each button's pressed signal keeps only its own action callbacks.
 	_music_full_db = _music.volume_db
+	_progress_full_db = _progress.volume_db
 	get_tree().node_added.connect(_on_node_added)
 	for node in get_tree().root.find_children("*", "", true, false):
 		_on_node_added(node)

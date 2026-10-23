@@ -37,6 +37,8 @@ const HARNESS_SCENE_PATH := "res://scenes/harness/foundation_harness.tscn"
 const HARNESS_FLAG := "--harness"
 const OPEN_ROOM_PREFIX := "--open-room="
 const PLAYTEST_PROFILE := "karera_slice"
+## How long a score screen keeps the music before its bars have started rising.
+const SCORE_BARS_START_GRACE_MSEC := 250
 ## Guided first match: the Tutorial map (scenes/maps/tutorial.tscn), whose flag ledge needs a
 ## built piece. Its id is also the tutorial coach's layout id.
 const TUTORIAL_MAP_ID := TutorialCoordinator.TUTORIAL_LAYOUT_ID
@@ -64,6 +66,8 @@ var tutorial: TutorialCoordinator
 var selected_map_id := MapCatalog.DEFAULT_ID
 
 var _screen: UiScreen
+## When the current score screen opened (ticks msec), or -1 when none is showing.
+var _score_screen_since_msec := -1
 var _close_requested := false
 
 
@@ -135,14 +139,28 @@ func _process(_delta: float) -> void:
 	GameSfx.set_menu_music(wants_menu_music())
 
 
-## The music plays everywhere, including through the GO countdown and Play, and stops only on
-## the score screens (the round results and the final results). It resumes with the next round.
+## The music plays everywhere, including through the GO countdown and Play. On a score screen
+## (the round results or the final results) it keeps playing while the score bars rise, under the
+## progress sound, and fades out once they finish. It resumes with the next round.
 func wants_menu_music() -> bool:
-	if room == null or not is_instance_valid(room) or room.phase_controller == null:
+	if not _on_score_screen():
+		_score_screen_since_msec = -1
 		return true
-	if room.get("final_results_visible") == true:
+	if _score_screen_since_msec < 0:
+		_score_screen_since_msec = Time.get_ticks_msec()
+	if GameSfx.are_score_bars_rising():
+		return true
+	# The chart starts its bars a frame after the screen opens; do not dip the music meanwhile.
+	return Time.get_ticks_msec() - _score_screen_since_msec < SCORE_BARS_START_GRACE_MSEC
+
+
+func _on_score_screen() -> bool:
+	if room == null or not is_instance_valid(room) or room.phase_controller == null:
 		return false
-	return room.phase_controller.phase != MatchPhaseController.Phase.RESULTS
+	return (
+		room.get("final_results_visible") == true
+		or room.phase_controller.phase == MatchPhaseController.Phase.RESULTS
+	)
 
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).
