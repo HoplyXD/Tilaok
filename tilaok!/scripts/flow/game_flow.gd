@@ -135,22 +135,14 @@ func _process(_delta: float) -> void:
 	GameSfx.set_menu_music(wants_menu_music())
 
 
-## The menu music plays everywhere except while a match is played (the GO countdown and Play)
-## and on its score screens (round results and the final results). A pause keeps the phase
-## under it, so pausing Play stays quiet.
+## The music plays everywhere, including through the GO countdown and Play, and stops only on
+## the score screens (the round results and the final results). It resumes with the next round.
 func wants_menu_music() -> bool:
 	if room == null or not is_instance_valid(room) or room.phase_controller == null:
 		return true
 	if room.get("final_results_visible") == true:
 		return false
-	return (
-		room.phase_controller.phase
-		in [
-			MatchPhaseController.Phase.LOBBY,
-			MatchPhaseController.Phase.PUGAD,
-			MatchPhaseController.Phase.PLACE,
-		]
-	)
+	return room.phase_controller.phase != MatchPhaseController.Phase.RESULTS
 
 
 ## Title menu. clear_seats returns every seat to the open join state (a fresh session).
