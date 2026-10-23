@@ -1,7 +1,7 @@
 extends SceneTree
 
-## P12-T01 / P12-T02: event schedule, compatibility pool and prior-Pugad announcement.
-## Seeded schedule tables (all 12 rounds, guaranteed-round precedence, Twist rules, zero/one
+## Current P12 schedule contract: standalone modes only; historical pair runs are separate.
+## Seeded schedule tables (all 12 rounds, guaranteed-round precedence, zero/one
 ## compatible options, required missing-mode refusal) and full scheduled matches in the real P12
 ## room with 2, 3 and 4 synthetic seats: every round plays the Main Challenge announced in the
 ## Pugad before it, scores through its own family and ends through the match lifecycle.
@@ -27,7 +27,7 @@ func _run() -> void:
 	_test_guaranteed_rounds_and_table()
 	_test_determinism_and_lock_order()
 	_test_main_distribution()
-	_test_twist_rules()
+	_test_no_mixed_modes()
 	_test_required_mode_refusal()
 	_test_kangaroo_storm_drain_resumes()
 	_test_kangaroo_reset_keeps_room_actors()
@@ -82,7 +82,6 @@ func _table(schedule: EventSchedule) -> Array[Dictionary]:
 func _test_guaranteed_rounds_and_table() -> void:
 	var violations := PackedStringArray()
 	var mains_seen := {}
-	var twists_seen := 0
 	for seed_value in range(1, 501):
 		var rows := _table(_schedule(seed_value, _all_modes(), EventSchedule.enabled_pairs()))
 		for row in rows:
@@ -95,29 +94,23 @@ func _test_guaranteed_rounds_and_table() -> void:
 				violations.append("seed %d round %d is %d" % [seed_value, round_number, main])
 			if bool(row.guaranteed) != (round_number in [1, 4, 8, 12]):
 				violations.append("seed %d round %d guaranteed flag" % [seed_value, round_number])
-			var twist := int(row.twist)
-			if twist != NONE:
-				twists_seen += 1
-			var valid_pair := (
-				(main == KARERA and twist in [LAGSANAY, KANGAROO])
-				or (main == KANGAROO and twist == LAGSANAY)
-			)
-			if twist != NONE and (not valid_pair or round_number < 5 or bool(row.guaranteed)):
-				violations.append("seed %d round %d Twist %d" % [seed_value, round_number, twist])
+			if int(row.twist) != NONE:
+				violations.append(
+					(
+						"seed %d round %d unexpectedly stacks %d"
+						% [seed_value, round_number, int(row.twist)]
+					)
+				)
 			if main not in [KARERA, LAGSANAY, KANGAROO]:
 				violations.append("seed %d round %d main %d" % [seed_value, round_number, main])
 	_check(
 		violations.is_empty(),
 		(
-			"500 seeded 12-round tables: round 1 Karera, 4/8/12 Lagsanay; Twists come only from "
-			+ (
-				"the three GDD pairs, from round 5, never on guaranteed rounds: %s"
-				% [violations.slice(0, 5)]
-			)
+			"500 seeded 12-round tables preserve guaranteed standalone rounds and contain no Twists: %s"
+			% [violations.slice(0, 5)]
 		)
 	)
 	_check(mains_seen.size() == 3, "every Main Challenge appears across the seeded tables")
-	_check(twists_seen > 0, "the enabled Twists do roll (%d times)" % twists_seen)
 	var sample := _table(_schedule(12345, _all_modes(), EventSchedule.enabled_pairs()))
 	var described := PackedStringArray()
 	for row in sample:
@@ -126,27 +119,15 @@ func _test_guaranteed_rounds_and_table() -> void:
 	_check(sample.size() == 12, "the seeded table covers all 12 rounds")
 	var enabled_rows := EventSchedule.enabled_pairs()
 	_check(
-		EventSchedule.COMPATIBILITY.size() == 3 and enabled_rows.size() == 3,
-		"the registry lists the three GDD pairs and all three are enabled (P12-T06/T08/T10)"
+		EventSchedule.COMPATIBILITY.is_empty() and enabled_rows.is_empty(),
+		"normal schedule exposes no mixed-mode compatibility rows"
 	)
 	var sudden := EventSchedule.sudden_death_entry()
 	_check(
 		int(sudden.main) == LAGSANAY and int(sudden.twist) == NONE,
 		"sudden death is standalone Lagsanay with no Twist"
 	)
-	_check(
-		(
-			EventSchedule.twist_chance(1) == 0.0
-			and EventSchedule.twist_chance(4) == 0.0
-			and EventSchedule.twist_chance(5) == 0.10
-			and EventSchedule.twist_chance(7) == 0.10
-			and EventSchedule.twist_chance(8) == 0.20
-			and EventSchedule.twist_chance(10) == 0.20
-			and EventSchedule.twist_chance(11) == 0.30
-			and EventSchedule.twist_chance(12) == 0.30
-		),
-		"Twist chance is 0 / .10 / .20 / .30 by round band"
-	)
+	_check(EventSchedule.twist_chance(12) == 0.0, "Twist chance remains disabled for all rounds")
 
 
 func _test_determinism_and_lock_order() -> void:
@@ -303,6 +284,27 @@ func _test_twist_rules() -> void:
 	)
 
 
+func _test_no_mixed_modes() -> void:
+	var stale_pairs: Array[Dictionary] = [
+		{"main": KARERA, "twist": LAGSANAY, "enabled": true},
+		{"main": KANGAROO, "twist": LAGSANAY, "enabled": true},
+	]
+	var no_mixed := true
+	for seed_value in range(1, 101):
+		for row in _table(_schedule(seed_value, _all_modes(), stale_pairs)):
+			no_mixed = no_mixed and int(row.twist) == NONE
+	_check(no_mixed, "100 seeds ignore stale compatibility rows and never schedule a Twist")
+	var forced := {"main": KARERA, "twist": LAGSANAY}
+	_check(
+		EventSchedule.mode_ids(forced) == PackedStringArray(["karera"]),
+		"stale mixed entry item eligibility normalizes to its standalone Main"
+	)
+	_check(EventSchedule.describe(forced) == "KARERA", "stale mixed entry labels only its Main")
+	_check(
+		EventSchedule.enabled_pairs().is_empty(), "the normal runtime has no enabled mixed pairs"
+	)
+
+
 func _test_required_mode_refusal() -> void:
 	var no_lagsanay: Array[int] = [KARERA, KANGAROO]
 	var refused := _schedule(1, no_lagsanay, EventSchedule.enabled_pairs())
@@ -338,7 +340,7 @@ func _test_kangaroo_storm_drain_resumes() -> void:
 	tuning.kangaroo_telegraph_seconds = 0.1
 	tuning.kangaroo_response_seconds = 1.0
 	tuning.kangaroo_reset_seconds = 0.05
-	tuning.kangaroo_storm_after_commands = 2
+	tuning.kangaroo_storm_after_commands = 16
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 41
 	var controller := KangarooRoundController.new()
@@ -347,7 +349,7 @@ func _test_kangaroo_storm_drain_resumes() -> void:
 	_check(controller.begin("p12:storm-drain", seats, {}, rng, tuning, 0.0), "storm fixture begins")
 	var now := 0.0
 	var tick := 1
-	while now < 30.0 and not (controller.storm_active and _pending_storms(controller) >= 1):
+	while now < 180.0 and not (controller.storm_active and _pending_storms(controller) >= 1):
 		now += 0.05
 		tick += 1
 		controller.advance_to(now, tick, {}, null, no_contacts)
@@ -458,6 +460,37 @@ func _speed_up_tuning() -> void:
 func _test_full_scheduled_match(players: int) -> void:
 	var seats := await _open_room(players)
 	_check(room.start_match(), "%dp: the scheduled match starts" % players)
+	if players == 2:
+		var runtime_tuning := room.tuning as GameplayTuning
+		_check(
+			(
+				runtime_tuning.match_pugad_seconds == 15.0
+				and runtime_tuning.match_race_hard_cap_seconds == 120.0
+				and runtime_tuning.match_race_after_first_finish_seconds == 30.0
+				and runtime_tuning.lagsanay_taya_seconds_2p == 20.0
+				and runtime_tuning.lagsanay_taya_seconds_3p == 25.0
+				and runtime_tuning.lagsanay_taya_seconds_4p == 30.0
+				and runtime_tuning.kangaroo_telegraph_seconds == 2.0
+				and runtime_tuning.kangaroo_response_seconds == 6.0
+				and runtime_tuning.kangaroo_reset_seconds == 1.5
+				and runtime_tuning.kangaroo_storm_after_commands == 16
+				and runtime_tuning.kangaroo_response_min_seconds == 3.0
+				and runtime_tuning.kangaroo_reset_min_seconds == 0.75
+				and runtime_tuning.kangaroo_storm_min_after_commands == 16
+				and runtime_tuning.kangaroo_storm_min_active_seconds == 3.0
+				and runtime_tuning.kangaroo_storm_min_landing_seconds == 1.5
+				and runtime_tuning.kangaroo_storm_active_seconds >= 3.0
+				and runtime_tuning.kangaroo_storm_landing_seconds == 1.5
+			),
+			(
+				"2p: normal scheduled runtime snapshot uses the provisional timer defaults "
+				+ "before test acceleration"
+			)
+		)
+		_check(
+			not room.bomb_taya.active and not room.kangaroo_round.controller.twist_role,
+			"2p: a started match has no secondary mixed-mode controller"
+		)
 	_speed_up_tuning()
 	var announced := {}
 	var played := PackedStringArray()
@@ -466,6 +499,8 @@ func _test_full_scheduled_match(players: int) -> void:
 	var twist_rounds := 0
 	var scoring_ok := true
 	var lifecycle_ok := true
+	var pause_taya_checked := false
+	var pause_kangaroo_checked := false
 	for active_round in range(1, 13):
 		if room.phase_controller.phase != MatchPhaseController.Phase.PUGAD:
 			mismatches.append("round %d did not reach Pugad" % active_round)
@@ -527,7 +562,51 @@ func _test_full_scheduled_match(players: int) -> void:
 			await _finish_race_round([seats[0]])
 		else:
 			_check_goal_live(active_round, false, mismatches)
+			if players == 2 and main == LAGSANAY and not pause_taya_checked:
+				await physics_frame
+				var taya_clock := room.lagsanay_controller.simulation_clock
+				var taya_head_start := room.lagsanay_controller.head_start_remaining
+				var taya_countdown := room.lagsanay_controller.countdown_remaining
+				room.pause_coordinator.set_paused("P21 timer pause check", -1)
+				await process_frame
+				var taya_paused := room.get_tree().paused
+				await room.get_tree().create_timer(0.12, true).timeout
+				_check(
+					(
+						taya_paused
+						and room.lagsanay_controller.simulation_clock == taya_clock
+						and room.lagsanay_controller.head_start_remaining == taya_head_start
+						and room.lagsanay_controller.countdown_remaining == taya_countdown
+					),
+					"2p: pause freezes the Lagsanay active clock, head start and taya countdown"
+				)
+				room.pause_coordinator.external_menu = true
+				room.pause_coordinator.resume_countdown_seconds = 0.0
+				_check(room.pause_coordinator.request_resume(), "P21: Lagsanay pause can resume")
+				room.pause_coordinator._process(0.0)
+				pause_taya_checked = true
 			if main == KANGAROO:
+				if players == 2 and not pause_kangaroo_checked:
+					await physics_frame
+					var command_clock := room.kangaroo_round.controller.active_time()
+					room.pause_coordinator.set_paused("P21 timer pause check", -1)
+					await process_frame
+					var kangaroo_paused := room.get_tree().paused
+					await room.get_tree().create_timer(0.12, true).timeout
+					_check(
+						(
+							kangaroo_paused
+							and room.kangaroo_round.controller.active_time() == command_clock
+						),
+						"2p: pause freezes the Kangaroo command clock"
+					)
+					room.pause_coordinator.external_menu = true
+					room.pause_coordinator.resume_countdown_seconds = 0.0
+					_check(
+						room.pause_coordinator.request_resume(), "P21: Kangaroo pause can resume"
+					)
+					room.pause_coordinator._process(0.0)
+					pause_kangaroo_checked = true
 				_hold_run_input(seats.slice(0, seats.size() - 1))
 			var frames := 0
 			while (
@@ -581,8 +660,8 @@ func _test_full_scheduled_match(players: int) -> void:
 		"%dp: round 12 ends the match (final results or sudden death)" % players
 	)
 	_check(
-		twist_rounds >= 1,
-		"%dp: %d Karera round(s) ran the Bomb-Taya Twist end to end" % [players, twist_rounds]
+		twist_rounds == 0,
+		"%dp: no Karera round starts the retired Bomb-Taya Twist controller" % [players]
 	)
 	room.queue_free()
 	await process_frame

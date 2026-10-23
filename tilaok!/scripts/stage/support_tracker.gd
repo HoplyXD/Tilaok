@@ -2,10 +2,12 @@ class_name SupportTracker
 extends RefCounted
 
 var surfaces: Dictionary = {}
+var surface_bounds: Dictionary = {}
 var contacts_by_actor: Dictionary = {}
 var finalized_step := -1
 var validation_errors := PackedStringArray()
 var tuning: GameplayTuning
+var playable_bounds := Rect2()
 var authority := SimulationAuthority.offline()
 
 
@@ -13,7 +15,7 @@ func configure(source_tuning: GameplayTuning) -> void:
 	tuning = source_tuning if source_tuning != null else GameplayTuning.new()
 
 
-func register_surface(metadata: SupportSurfaceMetadata) -> bool:
+func register_surface(metadata: SupportSurfaceMetadata, bounds: Rect2 = Rect2()) -> bool:
 	if not _can_mutate():
 		return false
 	if metadata == null:
@@ -27,6 +29,8 @@ func register_surface(metadata: SupportSurfaceMetadata) -> bool:
 		validation_errors.append("duplicate support surface ID '%s'" % metadata.surface_id)
 		return false
 	surfaces[metadata.surface_id] = metadata
+	if bounds.has_area():
+		surface_bounds[metadata.surface_id] = bounds
 	return true
 
 
@@ -111,6 +115,7 @@ func invalidate_surface(surface_id: String) -> void:
 	if not _can_mutate():
 		return
 	surfaces.erase(surface_id)
+	surface_bounds.erase(surface_id)
 	for actor_id in contacts_by_actor.keys():
 		var kept: Array[SupportContact] = []
 		for contact in contacts_by_actor[actor_id]:
@@ -123,6 +128,7 @@ func clear() -> void:
 	if not _can_mutate():
 		return
 	surfaces.clear()
+	surface_bounds.clear()
 	contacts_by_actor.clear()
 	validation_errors.clear()
 	finalized_step = -1

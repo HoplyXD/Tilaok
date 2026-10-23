@@ -423,7 +423,7 @@ At that documentation-only review, no team milestone was marked complete. The cu
 
 ## P07-T01 playtest kit — live match UI build (2026-10-14)
 
-**Status: ready for a human session; no session has been run and none is claimed.** The build starts at the Title and plays Lobby → Pugad → Place → Karera → Round result → next round with the scene-based screens bound to live P05/P06 data, in the P07 first-playable room (the three-variant allowlist verified above). Evidence for the build itself: [docs/evidence/match-ui/](evidence/match-ui/README.md); the device matrix and the session sheet from the engineering pass are in [docs/evidence/p07/README.md](evidence/p07/README.md). Synthetic input is not physical-device evidence.
+**Status: ready for a human session; no session has been run and none is claimed.** The normal build route is Lobby → Pugad → shared 10-second BUILD → GO → Karera/Lagsanay/Kangaroo → Round result → next round. During BUILD, players may place their one item or save it for active play; preparation jobs remain inert until PLAY. P22 adds focused synthetic checks for assignment, early placement, retained inventory, the timer and phase handoff. Human novice comprehension, rendered readability and physical-device use remain open. Synthetic input is not physical-device evidence.
 
 ### Launch
 
@@ -941,3 +941,35 @@ This section records authored source, config and tests only. It is not a playtes
 | Windows / Android release export, hashes, install | COULD-NOT-RUN | Deferred; signing material and a human required |
 | 10-minute host/phone profiles, 30-minute thermal sample | COULD-NOT-RUN | Deferred; phone profiles need physical devices |
 | Physical/human release matrix (NLB-P11-T03) | COULD-NOT-RUN | Needs real phones, participants and an actual reviewer; never simulated |
+# P21 longer timers, standalone modes and Kangaroo readability — 2026-10-23
+
+Headless production-path checks on Godot 4.7.2: P06 102/0, P08 86/0, P11 78/0, P12 59/0, P13 HUD 145/0, P13 Library 407/0, P13 tutorial 56/0. P12 covered 500 seeded schedules, stale compatibility rows and complete 2/3/4-seat matches. Rising tests included the default plus `tutorial`, `map1`, and `map2`; the movement-response reach estimate does not account for obstruction or trajectory. The offline live-build suite was 72/78: construction timing/control checks passed, while six existing per-seat control-hint checks failed. Named GDScript lint/format checks and Godot import/parse passed; see the P21 logs in `evidence/p21_balance_readability/`.
+
+**Rendered/physical evidence:** COULD-NOT-RUN at initial implementation. No approved rendered session, second/four-seat close/wide camera capture, physical input session or human reviewer evidence is recorded yet. Required budgets remain provisional targets: 60 FPS / 16.67 ms at 1080p, 512 MiB memory, 0 B/s gameplay networking. These are targets, not measurements. See `evidence/p21_balance_readability/README.md` for dated status and exact gaps.
+
+## K1 build controls follow-up — 2026-10-23
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Focused offline live-build production-path suite | PASSED | Godot 4.7.2, headless, fixed 60 FPS, current checkout `036ad32` plus uncommitted control edits; synthetic 2/3/4-seat fixtures; `run_offline_live_build_tests.gd`: 84 checks, 0 failures. Covers K1 Q/WASD/E/R/F behavior, normal jump/movement restoration, gamepad West/X rotate and RB alternate, displayed control hints, and existing two-second construction checks. Log: `evidence/p21_balance_readability/live-controls-tests.log`. |
+| Physical keyboard/controller and rendered HUD inspection | COULD-NOT-RUN | No interactive game launched; no physical input session or approved rendered capture. |
+
+## Shared-keyboard build controls follow-up — 2026-10-23
+
+K2/K3/K4 build mode now aims with each layout's familiar movement cluster, and uses that layout's existing confirm key plus a simpler rotate/close pair: arrows / Right Shift / Enter / Backspace; IJKL / P / O / U; numpad 8-4-2-6 / Num 5 / Num 0 / Num .. Distinct existing build-toggle keys remain `[`, `-`, and Num +.
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Focused offline live-build production-path suite | PASSED | Godot 4.7.2, headless, fixed 60 FPS, current checkout `036ad32` plus uncommitted control edits; synthetic fixtures; `run_offline_live_build_tests.gd`: 87 checks, 0 failures. Includes K1–K4 build routing and binding audit, HUD hint strings and construction regressions. Log: `evidence/p21_balance_readability/live-controls-tests.log`. |
+| General controls suite and input-map collision audit | PASSED | `run_controls_tests.gd`: 13 checks, 0 failures; `InputContextTable.audit()` is also asserted by the live-build suite. Log: `evidence/p21_balance_readability/controls-tests.log`. |
+| Godot editor import/parse | PASSED | Godot 4.7.2 headless editor exited 0; log: `evidence/p21_balance_readability/input-controls-import-parse.log`. |
+| Physical shared-keyboard rollover and rendered HUD inspection | COULD-NOT-RUN | No interactive game launched; no physical keyboard session or approved rendered capture. |
+
+## Settings effects defaults follow-up — 2026-10-23
+
+Fresh settings are intended to start unmuted, with Master / Music / Effects / Crowd at 100% and Screen shake Full. This enables the Effects audio bus and visual presentation effects by default; players can still reduce/disable shake or lower/mute sound. Gameplay variant enablement remains a separate tuning profile.
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| P13 accessibility/settings production-path suite | PASSED | Godot 4.7.2, headless, fixed 60 FPS, checkout `036ad32` plus uncommitted settings edits; 66 checks, 0 failures. Verifies new settings defaults (all four buses 100%, unmuted, Full shake) and fresh-flow reset. Log: `evidence/p21_balance_readability/settings-effects-tests.log`. |
+| Interactive Settings screen / item-effect visual review | COULD-NOT-RUN | No visible game launched; no rendered or human review. |

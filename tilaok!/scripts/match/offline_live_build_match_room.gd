@@ -12,14 +12,11 @@ signal live_placement_boundary_resolved(results: Array)
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
 const JOB_PREVIEW := preload("res://scripts/match/construction_job_preview.gd")
 @export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
+@export_range(1.0, 30.0, 0.25) var build_phase_seconds := 10.0
 @export_range(0.1, 10.0, 0.1) var construction_seconds := 2.0
-@export_range(0.1, 5.0, 0.1) var live_item_grace_seconds := 1.0
 @export_range(1.0, 32.0, 1.0) var live_cursor_cells_per_second := 8.0
 @export_range(0.0, 1.0, 0.05) var live_cursor_initial_delay := 0.25
 @export_range(0.0, 64.0, 1.0) var live_actor_clearance_wu := 32.0
-## Extra reach kept clear around live chickens for lethal hazards, projectile lanes and capture
-## paths, so construction never creates an unavoidable immediate hit.
-@export_range(0.0, 256.0, 1.0) var live_lethal_clearance_wu := 64.0
 ## Rows of cells below a movable block that must be free of chickens (fall path; never crush).
 @export_range(0, 8, 1) var live_fall_check_cells := 2
 
@@ -31,10 +28,11 @@ var construction_jobs: Dictionary = {}
 var _aim_repeat: Dictionary = {}
 var _request_serial := 0
 var _go_remaining := 0.0
+var _go_start_pending := false
+var _live_admission_open := false
 var _edge_layer: CanvasLayer
 var _edge_root: Control
 var _edge_markers: Dictionary = {}
-var _activation_warning_cache := ""
 var _reserved_footprints: Dictionary = {}
 var _construction_clock := 0.0
 
@@ -71,20 +69,12 @@ func _process(delta: float) -> void:
 	super._process(delta)
 	if get_tree().paused or not _simulation_can_commit():
 		return
-	if phase_controller.phase == MatchPhaseController.Phase.GO:
-		var go_finished := phase_controller.advance(delta)
-		_go_remaining = phase_controller.remaining_seconds
-		last_message = "GO • %d" % ceili(_go_remaining)
-		_notify_presentation(&"live_build")
-		if go_finished:
-			_start_live_play()
-	elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
+	if (
+		phase_controller.phase
+		in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
+	):
 		_advance_live_aim(delta)
 		_update_edge_markers()
-		var warning := items.live_activation_warning_text()
-		if warning != _activation_warning_cache:
-			_activation_warning_cache = warning
-			_notify_presentation(&"live_build")
 
 
 func _physics_process(delta: float) -> void:
@@ -97,13 +87,46 @@ func _physics_process(delta: float) -> void:
 	# evaluation sees exactly the edits accepted before its tick; a removal invalidates support at
 	# once (P12 table C8). Build aim/rotate/confirm are not movement edges, so they never become
 	# Freeze intent, and building never changes a chicken's eligibility or Hug contacts.
-	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
+	if (
+		phase_controller.phase
+		in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
+	):
 		_resolve_live_placement_boundary()
 		_advance_construction_jobs(delta)
-	elif phase_controller.phase != MatchPhaseController.Phase.GO:
+		if phase_controller.phase == MatchPhaseController.Phase.BUILD:
+			_advance_preparation_phase(delta)
+		elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
+			return
+	elif phase_controller.phase == MatchPhaseController.Phase.GO:
+		_advance_construction_jobs(delta)
+		var go_finished := phase_controller.advance(delta)
+		_go_remaining = phase_controller.remaining_seconds
+		last_message = "GO • %d" % ceili(_go_remaining)
+		_notify_presentation(&"live_build")
+		if go_finished and not _go_start_pending:
+			_go_start_pending = true
+			_start_live_play.call_deferred()
+	else:
 		# The terminal round result (resolved in super) closes admission before any queued edit.
 		_close_live_attempt()
 		_cancel_all_construction_jobs(false)
+
+
+func _advance_preparation_phase(delta: float) -> void:
+	if phase_controller.advance(delta):
+		_close_live_admission()
+		phase_controller.enter(MatchPhaseController.Phase.GO, go_countdown_seconds)
+		_go_remaining = go_countdown_seconds
+		input_router.set_phase(LocalInputRouter.Phase.GO)
+		for seat_variant in build_mode.keys():
+			_set_live_ghost_visible(int(seat_variant), false)
+		last_message = "GO • movement and live building begin after the countdown."
+		_notify_presentation(&"live_build")
+		_refresh_match_ui()
+
+
+func _close_live_admission() -> void:
+	_live_admission_open = false
 
 
 func _enter_place() -> void:
@@ -127,22 +150,26 @@ func _enter_place() -> void:
 	placement_controller.start_anchor_tile = _build_start_anchor_tile()
 	placement_controller.setup(claimed_variants, definitions, tuning)
 	for seat_index in seats:
-		_set_build_mode(seat_index, false)
+		_set_build_mode(seat_index, true)
 		inventory_used[seat_index] = false
 		live_notices.erase(seat_index)
 		_aim_repeat[seat_index] = {"elapsed": 0.0, "first": true, "direction": Vector2.ZERO}
 	input_router.set_rotation_supported(false)
-	# Keyboard south keys (E/F, Enter, O, Num 0) confirm live placement only in live-build rooms.
+	# Keyboard south keys (R, Enter, O, Num 0) confirm in the preparation and live-build phases.
 	input_router.live_build_confirm_enabled = true
-	_go_remaining = go_countdown_seconds
-	phase_controller.enter(MatchPhaseController.Phase.GO, go_countdown_seconds)
-	input_router.set_phase(LocalInputRouter.Phase.GO)
+	phase_controller.enter(MatchPhaseController.Phase.BUILD, build_phase_seconds)
+	input_router.set_phase(LocalInputRouter.Phase.BUILD)
 	current_context = BoundedStageCamera.Context.PLAY
 	camera_rig.set_context(current_context)
 	_free_match_ghosts()
+	for seat_index in seats:
+		_add_match_ghost(seat_index)
+		_create_edge_marker(seat_index)
+		_set_live_ghost_visible(seat_index, true)
 	request_pipeline.begin_attempt(match_run_id, items.round_number + 1, items.stage_version)
+	_live_admission_open = true
 	print("OFFLINE_LIVE_PUGAD seed=%d assignments=%s" % [match_seed, JSON.stringify(assignments)])
-	last_message = "Get ready • movement and building begin at GO."
+	last_message = "BUILD • place now, or save your item for play."
 	_notify_presentation(&"live_build")
 	_refresh_match_ui()
 
@@ -155,16 +182,45 @@ func _start_live_play() -> void:
 	if phase_controller.phase != MatchPhaseController.Phase.PLAY:
 		return
 	for seat_index in placement_controller.cursors.keys():
-		_add_match_ghost(int(seat_index))
+		_set_build_mode(int(seat_index), false)
+		if bool(inventory_used.get(int(seat_index), false)):
+			continue
+		if not _ghosts.has(int(seat_index)):
+			_add_match_ghost(int(seat_index))
 		(_ghosts[int(seat_index)] as ItemGhost).visible = false
 		_create_edge_marker(int(seat_index))
+	_live_admission_open = true
+	_go_start_pending = false
 	_refresh_match_ui()
+
+
+func _start_sudden_death(decision: Dictionary) -> void:
+	_live_admission_open = false
+	for seat_variant in build_mode.keys():
+		var seat_index := int(seat_variant)
+		_set_build_mode(seat_index, false)
+		_set_live_ghost_visible(seat_index, false)
+	super._start_sudden_death(decision)
 
 
 func _on_match_navigation_step(seat_index: int, direction: String) -> void:
 	if phase_controller.phase == MatchPhaseController.Phase.PUGAD:
 		super._on_match_navigation_step(seat_index, direction)
 		return
+	if phase_controller.phase == MatchPhaseController.Phase.BUILD:
+		if bool(build_mode.get(seat_index, false)):
+			var step := Vector2i.ZERO
+			match direction:
+				"left":
+					step = Vector2i.LEFT
+				"right":
+					step = Vector2i.RIGHT
+				"up":
+					step = Vector2i.UP
+				"down":
+					step = Vector2i.DOWN
+			if step != Vector2i.ZERO:
+				_move_live_cursor(seat_index, step)
 
 
 func _advance_live_aim(delta: float) -> void:
@@ -236,9 +292,13 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 		return
 	if phase_controller.phase == MatchPhaseController.Phase.GO:
 		return
-	if phase_controller.phase == MatchPhaseController.Phase.PLAY:
+	if (
+		phase_controller.phase
+		in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
+	):
 		if (
-			_sudden_death_active
+			phase_controller.phase == MatchPhaseController.Phase.PLAY
+			and _sudden_death_active
 			and action_name in ["build_toggle", "live_rotate", "live_cancel", "confirm"]
 		):
 			if bool(build_mode.get(seat_index, false)) or action_name != "confirm":
@@ -267,8 +327,7 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 				if action_name == "live_cancel":
 					var active_job_id := _job_id_for_seat(seat_index)
 					if not active_job_id.is_empty():
-						_cancel_construction_job(active_job_id, true)
-						live_notices[seat_index] = "Construction cancelled • item returned."
+						live_notices[seat_index] = "Build is underway • it will finish automatically."
 						_notify_presentation(&"live_build")
 						return
 				if bool(build_mode.get(seat_index, false)):
@@ -297,9 +356,19 @@ func _set_build_mode(seat_index: int, enabled: bool) -> void:
 	build_mode[seat_index] = enabled
 	if input_router != null:
 		input_router.set_build_mode(seat_index, enabled)
+	_sync_actor_build_lock(seat_index)
+
+
+func _sync_actor_build_lock(seat_index: int) -> void:
 	var actor := actors.get(seat_index) as ChickenController
 	if actor != null and is_instance_valid(actor):
-		actor.build_input_locked = enabled
+		actor.build_input_locked = (
+			(
+				phase_controller.phase
+				in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.GO]
+			)
+			or bool(build_mode.get(seat_index, false))
+		)
 
 
 func _create_edge_marker(seat_index: int) -> void:
@@ -328,7 +397,10 @@ func _update_edge_markers() -> void:
 		var seat_index := int(seat_variant)
 		var marker := _edge_markers[seat_index] as Label
 		var shown := (
-			phase_controller.phase == MatchPhaseController.Phase.PLAY
+			(
+				phase_controller.phase
+				in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
+			)
 			and bool(build_mode.get(seat_index, false))
 			and not bool(inventory_used.get(seat_index, false))
 			and placement_controller.cursors.has(seat_index)
@@ -359,7 +431,13 @@ func _update_edge_markers() -> void:
 
 func _submit_live_placement(seat_index: int) -> void:
 	if (
-		bool(inventory_used.get(seat_index, false))
+		not _live_admission_open
+		or (
+			phase_controller.phase
+			not in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
+		)
+		or not bool(build_mode.get(seat_index, false))
+		or bool(inventory_used.get(seat_index, false))
 		or not placement_controller.cursors.has(seat_index)
 	):
 		live_notices[seat_index] = "Your assigned item has already been used."
@@ -552,7 +630,11 @@ func _advance_construction_jobs(delta: float) -> void:
 			continue
 		items.live_boundary = Engine.get_physics_frames()
 		var result := _commit_live_intent(
-			seat_index, job.intent, Engine.get_physics_frames(), true, true
+			seat_index,
+			job.intent,
+			Engine.get_physics_frames(),
+			true,
+			phase_controller.phase == MatchPhaseController.Phase.PLAY
 		)
 		if bool(result.get("allowed", false)):
 			inventory_used[seat_index] = true
@@ -577,7 +659,7 @@ func _advance_construction_jobs(delta: float) -> void:
 		else:
 			inventory_used[seat_index] = false
 			live_notices[seat_index] = (
-				"Build cancelled • %s" % str(result.get("reason", "placement changed"))
+				"Build could not complete • %s" % str(result.get("reason", "placement changed"))
 			)
 		_finish_construction_job(job_id)
 		if bool(result.get("terrain_mutated", false)):
@@ -605,8 +687,15 @@ func _displace_actors_to_completed_footprint_top(footprint: Rect2) -> void:
 func _seat_can_keep_job(seat_index: int) -> bool:
 	var actor := actors.get(seat_index) as ChickenController
 	return (
-		phase_controller.phase == MatchPhaseController.Phase.PLAY
-		and items.in_play
+		(
+			phase_controller.phase
+			in [
+				MatchPhaseController.Phase.BUILD,
+				MatchPhaseController.Phase.GO,
+				MatchPhaseController.Phase.PLAY
+			]
+		)
+		and (items.in_play == (phase_controller.phase == MatchPhaseController.Phase.PLAY))
 		and bool(input_router.registry.get_seat(seat_index).get("joined", false))
 		and actor != null
 		and not actor.lifecycle.is_terminal()
@@ -644,9 +733,9 @@ func _cancel_construction_job(job_id: String, restore_item: bool) -> void:
 	else:
 		inventory_used[seat_index] = true
 	var reason := (
-		"Construction cancelled • item returned."
+		"Build ended • item returned."
 		if restored
-		else "Construction cancelled because the builder is no longer eligible."
+		else "Build ended • builder is no longer eligible."
 	)
 	request_pipeline.resolve_result(
 		job_id,
@@ -683,7 +772,20 @@ func _commit_live_intent(
 		"commit_boundary": boundary,
 		"stage_version": items.stage_version,
 	}
-	if phase_controller.phase != MatchPhaseController.Phase.PLAY or not items.in_play:
+	var preparation_phase := (
+		phase_controller.phase in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.GO]
+	)
+	if (
+		(
+			phase_controller.phase
+			not in [
+				MatchPhaseController.Phase.BUILD,
+				MatchPhaseController.Phase.PLAY,
+				MatchPhaseController.Phase.GO
+			]
+		)
+		or items.in_play == preparation_phase
+	):
 		return _live_result(base, false, "wrong_phase", "Live placement is closed.")
 	if not bool(input_router.registry.get_seat(seat_index).get("joined", false)):
 		return _live_result(base, false, "seat_unregistered", "The input seat is no longer joined.")
@@ -797,7 +899,7 @@ func _commit_live_intent(
 			var preview_result := base.duplicate(true)
 			preview_result["footprint"] = verdict.footprint
 			return _live_result(preview_result, true, "preview", "Walis removal area reserved.")
-		var cleanup := items.apply_live_one_shot(verdict, seat_index, false)
+		var cleanup := items.apply_live_one_shot(verdict, seat_index, false, preparation_phase)
 		var cleanup_result := _live_result(
 			base,
 			bool(cleanup.get("allowed", false)),
@@ -820,22 +922,21 @@ func _commit_live_intent(
 	var effect_actor_rects: Array[Rect2] = []
 	if materialize:
 		effect_actor_rects = actor_rects
-	var effect_check := _live_effect_check(
-		str(cursor.variant_key),
-		turns,
-		verdict,
-		effect_actor_rects,
-		materialize and allow_actor_displacement
-	)
+	var effect_check := _live_effect_check(str(cursor.variant_key), verdict, effect_actor_rects)
 	if not effect_check.is_empty():
 		return _live_result(base, false, str(effect_check.code), str(effect_check.reason))
 	if not materialize:
 		var preview_result := base.duplicate(true)
 		preview_result["footprint"] = verdict.footprint
 		return _live_result(preview_result, true, "preview", "Placement area is clear.")
-	items.live_activation_grace_seconds = live_item_grace_seconds
-	var committed := items.place_live(
-		str(cursor.variant_key), cell, turns, seat_index, placement_actor_rects, false
+	var committed := (
+		items.place_prepared_live(
+			str(cursor.variant_key), cell, turns, seat_index, placement_actor_rects, false
+		)
+		if preparation_phase
+		else items.place_live(
+			str(cursor.variant_key), cell, turns, seat_index, placement_actor_rects, false
+		)
 	)
 	if not bool(committed.get("allowed", false)):
 		return _live_result(
@@ -849,7 +950,7 @@ func _commit_live_intent(
 	result["actor_relocations"] = actor_relocations
 	result["cell"] = cell
 	result["quarter_turns"] = turns
-	result["activation_after_seconds"] = live_item_grace_seconds
+	result["activation_after_seconds"] = 0.0
 	result["terrain_mutated"] = true
 	return result
 
@@ -965,51 +1066,16 @@ func _on_live_one_shot_committed(area: Rect2, _seat_index: int) -> void:
 
 ## Live safety checks after the shared validator accepts a persistent placement. Returns
 ## {} or {code, reason}. All inputs are host state; nothing here mutates the stage.
-## - lethal hazards, projectile lanes and capture paths: live-build jobs may overlap chickens;
-##   directly touching chickens move to the item's top and get the existing activation grace;
-## - every persistent item: no in-flight projectile or bubble inside its footprint or regions;
-## - movable blocks: no chicken in the fall path below (a live solid never crushes or pins).
+## Transient shots and bubbles do not reject a build, and hazards are active immediately at commit.
+## Movable blocks still cannot be placed over a chicken in their fall path.
 func _live_effect_check(
-	variant_key: String,
-	turns: int,
-	verdict: Dictionary,
-	actor_rects: Array[Rect2],
-	allow_occupied_hazard: bool = false
+	variant_key: String, verdict: Dictionary, actor_rects: Array[Rect2]
 ) -> Dictionary:
 	var found := definitions.find_variant(variant_key)
 	if found.is_empty():
 		return {}
 	var family := found.family as ItemFamilyDefinition
 	var footprint: Rect2 = verdict.footprint
-	var effect_rects: Array[Rect2] = [footprint]
-	var variant := found.variant as ItemVariantDefinition
-	var regions := ItemGeometry.clip_to_stage(
-		ItemGeometry.resolve_regions(variant, ItemGeometry.normalized_turns(turns), tuning),
-		footprint,
-		arena
-	)
-	for region in regions:
-		var world_rect: Rect2 = region.rect
-		world_rect.position += footprint.position
-		effect_rects.append(world_rect)
-	var kind := str(family.behavior_kind)
-	if kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"] and not allow_occupied_hazard:
-		for actor_rect in actor_rects:
-			var reach := actor_rect.grow(live_actor_clearance_wu + live_lethal_clearance_wu)
-			for effect_rect in effect_rects:
-				if reach.intersects(effect_rect, false):
-					return {
-						"code": "lethal_clearance",
-						"reason": "A chicken is too close to that hazard's reach."
-					}
-	for transient_rect in _live_effect_rects_in_flight():
-		for effect_rect in effect_rects:
-			if transient_rect.intersects(effect_rect, false):
-				return {
-					"code":
-					"projectile_lane" if kind in ["launcher", "bubble"] else "live_effect_path",
-					"reason": "A shot or bubble is crossing that spot."
-				}
 	if family.safe_start == ItemFamilyDefinition.SAFE_START_RESET_TO_PLACED:
 		var fall := footprint
 		fall.size.y += float(live_fall_check_cells) * tuning.grid_cell_wu
@@ -1026,25 +1092,6 @@ func _live_effect_check(
 	return {}
 
 
-## Host rects of every in-flight projectile and live bubble (shared item runtime).
-func _live_effect_rects_in_flight() -> Array[Rect2]:
-	var result: Array[Rect2] = []
-	for instance_id in items.pieces.keys():
-		var piece := items.piece_for(str(instance_id)) as HazardPiece
-		if piece == null or piece.behavior == null:
-			continue
-		if piece.behavior is LauncherBehavior:
-			var size := Vector2.ONE * tuning.item_launcher_projectile_size_wu
-			for projectile in (piece.behavior as LauncherBehavior).projectiles:
-				var center: Vector2 = projectile.center
-				result.append(Rect2(center - size * 0.5, size).grow(live_actor_clearance_wu))
-		elif piece.behavior is BubbleBehavior and (piece.behavior as BubbleBehavior).has_bubble():
-			var radius := tuning.item_bubble_radius_wu
-			var bubble_center := (piece.behavior as BubbleBehavior).bubble_center
-			result.append(Rect2(bubble_center - Vector2.ONE * radius, Vector2.ONE * radius * 2.0))
-	return result
-
-
 func _live_result(base: Dictionary, allowed: bool, code: String, reason: String) -> Dictionary:
 	var result := base.duplicate(true)
 	result["status"] = "accepted" if allowed else "rejected"
@@ -1055,9 +1102,16 @@ func _live_result(base: Dictionary, allowed: bool, code: String, reason: String)
 
 
 func play_status_text() -> String:
-	if phase_controller.phase == MatchPhaseController.Phase.GO:
-		return "GO • %d" % ceili(_go_remaining)
 	var notices: Array[String] = []
+	if phase_controller.phase == MatchPhaseController.Phase.BUILD:
+		notices.append(
+			(
+				"BUILD • Build now, or save your item for play. %d s"
+				% ceili(phase_controller.remaining_seconds)
+			)
+		)
+	elif phase_controller.phase == MatchPhaseController.Phase.GO:
+		notices.append("GO • %d" % ceili(_go_remaining))
 	for job in construction_jobs.values():
 		var remaining := maxf(
 			0.0, construction_seconds - (_construction_clock - float(job.started_at))
@@ -1069,15 +1123,15 @@ func play_status_text() -> String:
 			notices.append("P%d BUILD • aim • confirm • chicken paused" % (seat_index + 1))
 		elif live_notices.has(seat_index) and not str(live_notices[seat_index]).is_empty():
 			notices.append("P%d %s" % [seat_index + 1, str(live_notices[seat_index])])
-	var activation_warning := items.live_activation_warning_text()
-	if not activation_warning.is_empty():
-		notices.append(activation_warning)
 	return "  ·  ".join(notices)
 
 
 func is_seat_in_build_mode(seat_index: int) -> bool:
 	return (
-		phase_controller.phase == MatchPhaseController.Phase.PLAY
+		(
+			phase_controller.phase
+			in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
+		)
 		and bool(build_mode.get(seat_index, false))
 	)
 
@@ -1099,4 +1153,6 @@ func reset_room() -> void:
 	_aim_repeat.clear()
 	_request_serial = 0
 	_construction_clock = 0.0
+	_live_admission_open = false
+	_go_start_pending = false
 	super.reset_room()

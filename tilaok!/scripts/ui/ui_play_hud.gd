@@ -15,7 +15,7 @@ var score_rows: Array[UiScoreRow] = []
 @onready var _timer_label: Label = %TimerLabel
 @onready var _next_event_label: Label = %NextEventLabel
 @onready var _control_hints_bar: PanelContainer = %ControlHintsBar
-@onready var _control_hints_grid: GridContainer = %ControlHintsRow
+@onready var _control_hints_row: Control = %ControlHintsRow
 @onready var _notice_row: MarginContainer = %NoticeRow
 @onready var _control_hint_labels: Array[Label] = [
 	%ControlHint1, %ControlHint2, %ControlHint3, %ControlHint4
@@ -30,7 +30,7 @@ func up_next_text() -> String:
 
 
 func state_names() -> PackedStringArray:
-	return PackedStringArray(["Normal", "Twist", "Taya", "Eliminated", "No timer"])
+	return PackedStringArray(["Normal", "Taya", "Eliminated", "No timer"])
 
 
 func router_phase() -> int:
@@ -81,21 +81,42 @@ func bind_control_hints(control_hints: PackedStringArray) -> void:
 
 func _bind_control_hints(hints: PackedStringArray) -> void:
 	var any_hint := false
-	var visible_count := 0
 	for index in _control_hint_labels.size():
 		var label := _control_hint_labels[index]
 		label.text = hints[index] if index < hints.size() else ""
-		label.visible = not label.text.is_empty()
+		label.visible = (
+			not label.text.is_empty() and index < score_rows.size() and score_rows[index].visible
+		)
 		any_hint = any_hint or label.visible
-		if label.visible:
-			visible_count += 1
 	_control_hints_bar.visible = any_hint
-	_control_hints_grid.columns = 2
-	var hint_rows := ceili(float(visible_count) / 2.0) if any_hint else 0
-	var hint_height := hint_rows * 48
+	var hint_height := 58.0 if any_hint else 0.0
 	_control_hints_bar.offset_bottom = 64.0 + hint_height
 	_notice_row.offset_top = 70.0 + hint_height
 	_notice_row.offset_bottom = _notice_row.offset_top + 79.0
+	call_deferred("_layout_control_hints")
+
+
+func _layout_control_hints() -> void:
+	if not is_node_ready():
+		return
+	for index in _control_hint_labels.size():
+		var label := _control_hint_labels[index]
+		if not label.visible or index >= score_rows.size():
+			continue
+		var player_card := score_rows[index]
+		if not player_card.visible:
+			label.visible = false
+			continue
+		var aligned_position: Vector2 = (
+			player_card.global_position - _control_hints_row.global_position
+		)
+		label.position = Vector2(aligned_position.x, 0.0)
+		label.size = Vector2(player_card.size.x, _control_hints_row.size.y)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED and is_node_ready():
+		call_deferred("_layout_control_hints")
 
 
 func bind_scores(

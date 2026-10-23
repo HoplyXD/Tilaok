@@ -3,7 +3,8 @@ extends SceneTree
 ## P13-T07 just-in-time Kangaroo prompts on the scheduled route: poses in the Pugad and built
 ## supports in the Place of the round before (or of) the first Kangaroo round, the three misses once
 ## its commands run, once per session, replayable, skippable, never saved to disk, and sharing the
-## coach box with the Bomb-Taya prompt on a stacked round. Synthetic seats and input only.
+## coach box for standalone modes and ignores stale forced mixed entries.
+## Synthetic seats and input only.
 
 const FLOW_SCENE := preload("res://scenes/flow/game_flow.tscn")
 const KARERA := EventSchedule.Challenge.KARERA
@@ -31,7 +32,7 @@ func _run() -> void:
 	_test_script_data()
 	await _test_barya_pugad_prompt()
 	await _test_main_kangaroo_sequence()
-	await _test_twist_and_stack()
+	await _test_standalone_and_mixed_rejection()
 	await _test_skip_and_replay()
 	await _test_guided_match_keeps_its_steps()
 	_test_no_disk_io()
@@ -50,13 +51,25 @@ func _test_script_data() -> void:
 		)
 	var lagsanay := script.step(TutorialScript.STEP_LAGSANAY)
 	_check(
-		lagsanay.variants.has("twist") and str(lagsanay.variants["twist"]).contains("Bomb-Taya"),
-		"the taya step has a Bomb-Taya Twist wording"
+		lagsanay.variants.is_empty(), "the standalone taya step has no retired mixed-mode variant"
 	)
 	var pugad := script.step(TutorialScript.STEP_PUGAD)
 	_check(
 		pugad.variants.has("barya") and str(pugad.variants["barya"]).contains("Reach the flag"),
 		"the Pugad coach has a Barya pickup and scoring explanation"
+	)
+	var live_build := script.step(TutorialScript.STEP_LIVE_BUILD)
+	var preparation_copy := str(live_build.variants.get("preparation", ""))
+	_check(
+		(
+			preparation_copy.contains("Build now, or save your item for play")
+			and preparation_copy.contains("inactive until PLAY")
+		),
+		"preparation tutorial explains early build, saving the item and inert prepared hazards"
+	)
+	_check(
+		str(script.step(TutorialScript.STEP_PLACE).body).contains("During Place"),
+		"the scheduled developer Place route keeps its own tutorial copy"
 	)
 	var joined := ""
 	for step_id in TutorialScript.KANGAROO_STEPS:
@@ -134,24 +147,25 @@ func _test_main_kangaroo_sequence() -> void:
 	await _free()
 
 
-# --- Twist and stacked rounds ------------------------------------------------------------------
+# --- standalone modes and stale mixed entries -------------------------------------------------
 
 
-func _test_twist_and_stack() -> void:
+func _test_standalone_and_mixed_rejection() -> void:
 	await _open(true)
 	_force(1, KANGAROO, LAGSANAY)
 	var coach := flow.tutorial
 	_goto_place()
 	_goto_play()
-	_check(room.bomb_taya.active and room.kangaroo_round.controller.active, "K + Bomb-Taya runs")
 	_check(
-		_step(coach) == "lagsanay" and str(coach.view.body).contains("Bomb-Taya"),
-		"the taya prompt (Twist wording) shows first on a stacked round"
+		(
+			room.event_main == KANGAROO
+			and room.kangaroo_round.controller.active
+			and not room.bomb_taya.active
+		),
+		"a stale Kangaroo + Lagsanay entry starts only its standalone Main"
 	)
-	coach._on_taya_prompt_timeout()
 	_check(
-		_step(coach) == "kangaroo_misses",
-		"after the hand-over the Kangaroo prompt takes its turn (%s)" % _step(coach)
+		_step(coach) == "kangaroo_misses", "stale mixed input does not show a second taya prompt"
 	)
 	await _free()
 	# A Lagsanay Main round: the taya prompt hands the stage back after its time.
@@ -166,25 +180,34 @@ func _test_twist_and_stack() -> void:
 		"the taya prompt hands over after its time and counts as seen"
 	)
 	await _free()
-	# Karera + Kangaroo Twist: the Twist triggers the same prompts.
+	# Karera + Kangaroo is normalized to the Karera Main.
 	await _open(true)
 	_force(1, KARERA, KANGAROO)
 	_goto_place()
 	_goto_play()
-	_check(room.kangaroo_round.controller.twist_role, "Kangaroo runs as a Twist on Karera")
 	_check(
-		_step(flow.tutorial) == "kangaroo_misses",
-		"a Kangaroo Twist shows the misses prompt (supports shown in its Place)"
+		(
+			room.event_main == KARERA
+			and not room.kangaroo_round.controller.active
+			and not room.kangaroo_round.controller.twist_role
+		),
+		"a stale Karera + Kangaroo entry cannot start a secondary controller"
 	)
 	await _free()
-	# Karera + Bomb-Taya: the taya prompt appears for a Twist (it could not before).
+	# Karera + Bomb-Taya cannot start the tag controller or its tutorial.
 	await _open(true)
 	_force(1, KARERA, LAGSANAY)
 	_goto_place()
 	_goto_play()
 	_check(
-		_step(flow.tutorial) == "lagsanay" and str(flow.tutorial.view.body).contains("flag"),
-		"a Bomb-Taya Twist teaches the taya rules with the flag still winning"
+		(
+			room.event_main == KARERA
+			and not room.lagsanay_controller.active
+			and not room.bomb_taya.active
+			and room.play_twist_text().is_empty()
+			and _step(flow.tutorial) != "lagsanay"
+		),
+		"a stale Karera + Bomb-Taya entry cannot start a second controller or prompt"
 	)
 	await _free()
 

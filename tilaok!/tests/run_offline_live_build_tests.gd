@@ -25,6 +25,10 @@ func _run() -> void:
 	await _test_live_safety_manifest()
 	await _test_live_hazard_occupant_moves_not_cancels()
 	await _test_live_assignment_seat_layouts()
+	await _test_preparation_mixed_choices()
+	await _test_all_players_build_early()
+	await _test_final_build_boundary_handoff()
+	await _test_ten_second_build_boundary()
 	await _test_pugad_timeout_and_impossible_pool()
 	await _test_live_go_pause_and_commit()
 	await _test_live_barya_placement()
@@ -162,13 +166,15 @@ func _test_live_controls_are_isolated() -> void:
 		),
 		"K1 movement keys steer the preview while build mode owns the controls"
 	)
+	_check(router._key_action("K1", KEY_E, 0) == "live_rotate", "K1 E rotates the live preview")
+	_check(router._key_action("K1", KEY_R, 0) == "confirm", "K1 R places the live preview")
 	_check(
-		router._key_action("K1", KEY_E, 0) == "confirm",
-		"build mode preserves the live placement confirm action"
+		router._key_action("K1", KEY_F, 0) == "live_cancel",
+		"K1 F closes an unconfirmed live preview"
 	)
 	_check(
 		router._key_action("K1", KEY_SPACE, 0) == "confirm",
-		"K1 Space confirms placement while build mode pauses the chicken"
+		"K1 Space remains an alternate placement confirm while build mode pauses the chicken"
 	)
 	_check(
 		router._build_aim_action_for_joy_button(JOY_BUTTON_DPAD_RIGHT, "right") == "aim_right",
@@ -204,8 +210,60 @@ func _test_live_controls_are_isolated() -> void:
 	)
 	_check(
 		router._gamepad_phase_action(JOY_BUTTON_RIGHT_SHOULDER) == "live_rotate",
-		"gamepad right bumper rotates the live preview"
+		"gamepad right bumper remains an alternate live-rotate control"
 	)
+	_check(
+		router._gamepad_build_action_for_joy_button(JOY_BUTTON_X, "cheer") == "live_rotate",
+		"gamepad West/X rotates the live preview in build mode"
+	)
+	_check(
+		InputContextTable.audit().is_empty(),
+		"the revised build control map has no collisions outside declared alternate controls"
+	)
+	var keyboard_build := InputContextTable.bindings("k1", "build")
+	var keyboard_preparation := InputContextTable.bindings("k1", "preparation")
+	_check(
+		(
+			_has_binding(keyboard_build, KEY_Q, "build_toggle")
+			and _has_binding(keyboard_build, KEY_W, "aim_up")
+			and _has_binding(keyboard_build, KEY_A, "aim_left")
+			and _has_binding(keyboard_build, KEY_S, "aim_down")
+			and _has_binding(keyboard_build, KEY_D, "aim_right")
+			and _has_binding(keyboard_build, KEY_E, "live_rotate")
+			and _has_binding(keyboard_build, KEY_R, "live_confirm")
+			and _has_binding(keyboard_build, KEY_F, "live_cancel")
+		),
+		"K1 build guide shows WASD, Q, E, R and F in the correct roles"
+	)
+	_check(
+		keyboard_preparation == keyboard_build,
+		"preparation uses the same validated placement bindings as live building"
+	)
+	var gamepad_build := InputContextTable.bindings("gamepad", "build")
+	_check(
+		_has_binding(gamepad_build, JOY_BUTTON_X, "live_rotate"),
+		"gamepad build guide exposes the West/X rotate button"
+	)
+	router.set_live_build_mode(0, true)
+	for layout_check in [
+		{"layout": "K2", "rotate": KEY_SHIFT, "close": KEY_BACKSPACE, "up": KEY_UP},
+		{"layout": "K3", "rotate": KEY_P, "close": KEY_U, "up": KEY_I},
+		{"layout": "K4", "rotate": KEY_KP_5, "close": KEY_KP_PERIOD, "up": KEY_KP_8},
+	]:
+		var layout_name := str(layout_check.layout)
+		var bindings := InputContextTable.bindings(layout_name.to_lower(), "build")
+		_check(
+			(
+				router._key_action(layout_name, int(layout_check.up), 0).begins_with("aim_")
+				and router._key_action(layout_name, int(layout_check.rotate), 0) == "live_rotate"
+				and router._key_action(layout_name, int(layout_check.close), 0) == "live_cancel"
+				and _has_binding(bindings, int(layout_check.up), "aim_up")
+				and _has_binding(bindings, int(layout_check.rotate), "live_rotate")
+				and _has_binding(bindings, int(layout_check.close), "live_cancel")
+			),
+			"%s uses its familiar direction cluster and reachable rotate/close keys" % layout_name
+		)
+	router.set_live_build_mode(0, false)
 	_check(
 		router._phase_alias(router._gamepad_phase_action(JOY_BUTTON_X)) == "cheer",
 		"gamepad cheer remains on X during Play"
@@ -298,23 +356,295 @@ func _test_live_assignment_seat_layouts() -> void:
 		_check(
 			(
 				started
-				and room.phase_controller.phase == MatchPhaseController.Phase.GO
+				and room.phase_controller.phase == MatchPhaseController.Phase.BUILD
 				and room.assignments.size() == seat_count
 				and room.placement_controller.cursors.size() == seat_count
+				and not room.items.in_play
+				and room.inventory_used.size() == seat_count
+				and room.inventory_used.values().all(
+					func(used: Variant) -> bool: return not bool(used)
+				)
 				and assigned_ids.size() == seat_count
 				and assigned_ids.size() == _unique_count(assigned_ids)
 			),
-			"%d-seat live layout assigns one distinct item per player and enters GO" % seat_count
+			"%d-seat live layout assigns one distinct item per player and enters BUILD" % seat_count
 		)
 		_check(
 			(
-				is_equal_approx(room.go_countdown_seconds, 3.0)
-				and is_equal_approx(room.phase_controller.remaining_seconds, 3.0)
+				is_equal_approx(room.build_phase_seconds, 10.0)
+				and is_equal_approx(room.go_countdown_seconds, 3.0)
+				and is_equal_approx(room.phase_controller.remaining_seconds, 10.0)
 			),
-			"%d-seat GO begins at the shared three-second default" % seat_count
+			(
+				"%d-seat BUILD uses a separate ten-second window before the three-second GO"
+				% seat_count
+			)
 		)
 		room.queue_free()
 		await process_frame
+
+
+func _test_preparation_mixed_choices() -> void:
+	for seat_count in [2, 3, 4]:
+		var room := LIVE_ROOM.instantiate() as OfflineLiveBuildMatchRoom
+		root.add_child(room)
+		await process_frame
+		for seat_index in range(seat_count):
+			room.join_keyboard("K%d" % (seat_index + 1))
+			room.input_router.registry.set_ready(seat_index, true)
+		room.tuning.match_target_score_units = 100000
+		_check(room.start_match(), "%d-seat mixed-choice fixture starts" % seat_count)
+		for seat_index in range(seat_count):
+			var egg: Dictionary = room.egg_pool[seat_index]
+			egg.variant_key = CELL_1X1
+			room.egg_pool[seat_index] = egg
+			room._queue_claim(seat_index, str(egg.egg_id))
+		room._flush_claims()
+		var safe_cell := _safe_cell(room, 0, CELL_1X1)
+		var cursor: Dictionary = room.placement_controller.cursors[0]
+		cursor.cell = Vector2i(-1, -1)
+		room.placement_controller.cursors[0] = cursor
+		room._submit_live_placement(0)
+		for _frame in range(3):
+			if room.request_pipeline.pending.is_empty():
+				break
+			await physics_frame
+		_check(
+			not bool(room.inventory_used.get(0, false)) and bool(room.build_mode.get(0, false)),
+			"P%d invalid BUILD placement retains the item and preview" % seat_count
+		)
+		cursor.cell = safe_cell
+		room.placement_controller.cursors[0] = cursor
+		room._submit_live_placement(0)
+		var request_ids: Array = room.request_pipeline.request_records.keys()
+		for _frame in range(3):
+			if not request_ids.is_empty() and room.construction_jobs.has(str(request_ids.back())):
+				break
+			await physics_frame
+		var job_id := str(request_ids.back()) if not request_ids.is_empty() else ""
+		room._advance_construction_jobs(room.construction_seconds)
+		var early_piece: PlacedItem = (
+			room.items.pieces.values()[0] if not room.items.pieces.is_empty() else null
+		)
+		var early_block := early_piece.node as StageBlock if early_piece != null else null
+		_check(
+			(
+				room.phase_controller.phase == MatchPhaseController.Phase.BUILD
+				and bool(room.inventory_used.get(0, false))
+				and room.items.persistent_count() == 1
+				and room.construction_jobs.is_empty()
+				and not room.items.in_play
+				and early_block != null
+				and not early_block.active
+			),
+			"P%d early placement completes as inert preparation construction" % seat_count
+		)
+		var saved_items := true
+		for seat_index in range(1, seat_count):
+			saved_items = saved_items and not bool(room.inventory_used.get(seat_index, false))
+		_check(saved_items, "P%d other players keep their item during BUILD" % seat_count)
+		var requests_before_duplicate := room.request_pipeline.request_records.size()
+		room._set_build_mode(0, true)
+		room._submit_live_placement(0)
+		_check(
+			room.request_pipeline.request_records.size() == requests_before_duplicate,
+			"P%d early builder cannot spend a second item" % seat_count
+		)
+		await _advance_to_play(room)
+		_check(
+			(
+				room.phase_controller.phase == MatchPhaseController.Phase.PLAY
+				and room.items.in_play
+				and room.items.persistent_count() == 1
+				and early_piece != null
+				and early_piece.node is StageBlock
+				and (early_piece.node as StageBlock).active
+			),
+			"P%d PLAY activates the same prepared piece once" % seat_count
+		)
+		if seat_count > 1:
+			var saved_cell := _safe_cell(room, 1, CELL_1X1)
+			cursor = room.placement_controller.cursors[1]
+			cursor.cell = saved_cell
+			room.placement_controller.cursors[1] = cursor
+			room._set_build_mode(1, true)
+			room._submit_live_placement(1)
+			for _frame in range(3):
+				await physics_frame
+				if not room._job_id_for_seat(1).is_empty():
+					break
+		_check(
+			(
+				seat_count == 1
+				or (
+					not bool(room.inventory_used.get(1, false))
+					or not room._job_id_for_seat(1).is_empty()
+				)
+			),
+			"P%d saved item remains available for live placement" % seat_count
+		)
+		room.queue_free()
+		await process_frame
+
+
+func _test_final_build_boundary_handoff() -> void:
+	var room := LIVE_ROOM.instantiate() as OfflineLiveBuildMatchRoom
+	root.add_child(room)
+	await process_frame
+	_join_two_ready(room)
+	room.tuning.match_target_score_units = 100000
+	room.start_match()
+	var egg: Dictionary = room.egg_pool[0]
+	egg.variant_key = CELL_1X1
+	room.egg_pool[0] = egg
+	room._queue_claim(0, str(egg.egg_id))
+	var other_egg: Dictionary = room.egg_pool[1]
+	other_egg.variant_key = CELL_1X1
+	room.egg_pool[1] = other_egg
+	room._queue_claim(1, str(other_egg.egg_id))
+	room._flush_claims()
+	var cell := _safe_cell(room, 0, CELL_1X1)
+	var cursor: Dictionary = room.placement_controller.cursors[0]
+	cursor.cell = cell
+	room.placement_controller.cursors[0] = cursor
+	room._set_build_mode(0, true)
+	var request_id := "final-boundary-confirm"
+	var intent := _intent(request_id, cell, room.request_pipeline)
+	intent.observed_stage_version = room.items.stage_version
+	room.request_pipeline.submit(
+		intent, 0, Time.get_ticks_usec(), Engine.get_physics_frames(), [0, 1]
+	)
+	room.phase_controller.remaining_seconds = 1.0 / 60.0
+	room._physics_process(1.0 / 60.0)
+	_check(
+		(
+			room.phase_controller.phase == MatchPhaseController.Phase.GO
+			and room.inventory_used.get(0, false)
+			and room.construction_jobs.has(request_id)
+			and (
+				str(room.request_pipeline.cached_result(request_id).get("code", ""))
+				== "construction_started"
+			)
+		),
+		"a confirmation queued for BUILD's final boundary resolves before GO"
+	)
+	var request_count := room.request_pipeline.request_records.size()
+	room._set_build_mode(1, true)
+	room._submit_live_placement(1)
+	_check(
+		(
+			room.request_pipeline.request_records.size() == request_count
+			and not room.inventory_used.get(1, false)
+		),
+		"a fresh confirmation during GO is rejected and retains inventory"
+	)
+	room._advance_construction_jobs(room.construction_seconds)
+	var piece: PlacedItem = (
+		room.items.pieces.values()[0] if not room.items.pieces.is_empty() else null
+	)
+	_check(
+		(
+			room.phase_controller.phase == MatchPhaseController.Phase.GO
+			and room.construction_jobs.is_empty()
+			and piece != null
+			and piece.node is StageBlock
+			and not (piece.node as StageBlock).active
+			and not room.items.in_play
+		),
+		"a preparation job can finish during GO while its piece remains inert"
+	)
+	await _advance_to_play(room)
+	_check(
+		(
+			room.phase_controller.phase == MatchPhaseController.Phase.PLAY
+			and piece != null
+			and (piece.node as StageBlock).active
+		),
+		"GO activates the already completed preparation piece once at PLAY"
+	)
+	room.queue_free()
+	await process_frame
+
+
+func _test_all_players_build_early() -> void:
+	var room := LIVE_ROOM.instantiate() as OfflineLiveBuildMatchRoom
+	root.add_child(room)
+	await process_frame
+	for seat_index in range(4):
+		room.join_keyboard("K%d" % (seat_index + 1))
+		room.input_router.registry.set_ready(seat_index, true)
+	room.tuning.match_target_score_units = 100000
+	room.start_match()
+	for seat_index in range(4):
+		var egg: Dictionary = room.egg_pool[seat_index]
+		egg.variant_key = CELL_1X1
+		room.egg_pool[seat_index] = egg
+		room._queue_claim(seat_index, str(egg.egg_id))
+	room._flush_claims()
+	for seat_index in range(4):
+		var cell := _safe_cell(room, seat_index, CELL_1X1)
+		var cursor: Dictionary = room.placement_controller.cursors[seat_index]
+		cursor.cell = cell
+		room.placement_controller.cursors[seat_index] = cursor
+		room._set_build_mode(seat_index, true)
+		room._submit_live_placement(seat_index)
+		for _frame in range(3):
+			if not room._job_id_for_seat(seat_index).is_empty():
+				break
+			await physics_frame
+		room._advance_construction_jobs(room.construction_seconds)
+		_check(
+			bool(room.inventory_used.get(seat_index, false)) and room.construction_jobs.is_empty(),
+			"P%d of four completes their preparation item without creating another job" % seat_index
+		)
+	var all_inert := room.items.persistent_count() == 4 and not room.items.in_play
+	for piece_variant in room.items.pieces.values():
+		var piece := piece_variant as PlacedItem
+		var block := piece.node as StageBlock if piece != null else null
+		all_inert = all_inert and block != null and not block.active
+	_check(
+		all_inert and room.inventory_used.size() == 4,
+		"all four players can spend exactly one item during BUILD while every piece stays inert"
+	)
+	await _advance_to_play(room)
+	var all_activated := room.items.persistent_count() == 4 and room.items.in_play
+	for piece_variant in room.items.pieces.values():
+		var piece := piece_variant as PlacedItem
+		var block := piece.node as StageBlock if piece != null else null
+		all_activated = all_activated and block != null and block.active
+	_check(all_activated, "PLAY activates all four early pieces once")
+	room.queue_free()
+	await process_frame
+
+
+func _test_ten_second_build_boundary() -> void:
+	var room := LIVE_ROOM.instantiate() as OfflineLiveBuildMatchRoom
+	root.add_child(room)
+	await process_frame
+	_join_two_ready(room)
+	room.tuning.match_target_score_units = 100000
+	room.start_match()
+	for seat_index in range(2):
+		var egg: Dictionary = room.egg_pool[seat_index]
+		egg.variant_key = CELL_1X1
+		room.egg_pool[seat_index] = egg
+		room._queue_claim(seat_index, str(egg.egg_id))
+	room._flush_claims()
+	var tick := 1.0 / 60.0
+	for _frame in range(599):
+		room._physics_process(tick)
+	var before_expiry := room.phase_controller.phase == MatchPhaseController.Phase.BUILD
+	room._physics_process(tick)
+	_check(
+		(
+			before_expiry
+			and room.phase_controller.phase == MatchPhaseController.Phase.GO
+			and is_equal_approx(room.phase_controller.remaining_seconds, room.go_countdown_seconds)
+		),
+		"BUILD lasts 600 gameplay simulation ticks and transitions on its tenth-second boundary"
+	)
+	room.queue_free()
+	await process_frame
 
 
 func _test_pugad_timeout_and_impossible_pool() -> void:
@@ -331,11 +661,11 @@ func _test_pugad_timeout_and_impossible_pool() -> void:
 		timeout_ids.append(str(egg_id_variant))
 	_check(
 		(
-			timeout_room.phase_controller.phase == MatchPhaseController.Phase.GO
+			timeout_room.phase_controller.phase == MatchPhaseController.Phase.BUILD
 			and timeout_room.assignments.size() == 2
 			and timeout_ids.size() == _unique_count(timeout_ids)
 		),
-		"Pugad timeout resolves remaining seats to distinct eggs before GO"
+		"Pugad timeout resolves remaining seats to distinct eggs before BUILD"
 	)
 	print(
 		(
@@ -358,7 +688,7 @@ func _test_pugad_timeout_and_impossible_pool() -> void:
 			failure_room.phase_controller.phase == MatchPhaseController.Phase.LOBBY
 			and failure_room.last_message.contains("assignment failed")
 		),
-		"Impossible egg assignment explains failure and returns to Lobby without GO"
+		"Impossible egg assignment explains failure and returns to Lobby without BUILD"
 	)
 	failure_room.queue_free()
 	await process_frame
@@ -387,6 +717,7 @@ func _test_live_go_pause_and_commit() -> void:
 	room.input_router.registry.set_ready(0, true)
 	room.input_router.registry.set_ready(1, true)
 	room.tuning.match_target_score_units = 100000
+	room.build_phase_seconds = 0.1
 	room.go_countdown_seconds = 0.1
 	_check(room.start_match(), "normal live-build route starts through the two-seat Lobby gate")
 	for seat_index in range(2):
@@ -396,22 +727,27 @@ func _test_live_go_pause_and_commit() -> void:
 		room._queue_claim(seat_index, str(egg.egg_id))
 	room._flush_claims()
 	_check(
-		room.phase_controller.phase == MatchPhaseController.Phase.GO,
-		"every seat assignment enters shared GO without a Place phase"
+		(
+			room.phase_controller.phase == MatchPhaseController.Phase.BUILD
+			and not room.items.in_play
+			and room.build_mode.size() == 2
+		),
+		"every seat assignment enters shared BUILD without a Place phase"
 	)
+	var build_hints := room.presenter._control_hint_lines(
+		room.input_router.registry.joined_seats(), MatchPhaseController.Phase.BUILD
+	)
+	var visible_build_hints := 0
+	for hint in build_hints:
+		if not hint.is_empty():
+			visible_build_hints += 1
 	_check(
 		(
-			(
-				room
-				. presenter
-				. _control_hint_lines(
-					room.input_router.registry.joined_seats(), MatchPhaseController.Phase.GO
-				)
-				. size()
-			)
-			== 2
+			visible_build_hints == 2
+			and build_hints[0].contains("AIM WASD · PLACE R")
+			and build_hints[1].contains("AIM Arrow keys · PLACE Enter")
 		),
-		"per-seat controls are visible during the shared GO countdown"
+		"per-seat build controls are visible during the shared BUILD window"
 	)
 	_check(
 		(
@@ -422,16 +758,33 @@ func _test_live_go_pause_and_commit() -> void:
 	)
 	var remaining := room.phase_controller.remaining_seconds
 	paused = true
-	room._process(0.5)
+	room._physics_process(0.5)
+	_check(
+		(
+			room.phase_controller.phase == MatchPhaseController.Phase.BUILD
+			and is_equal_approx(room.phase_controller.remaining_seconds, remaining)
+		),
+		"pause freezes the shared BUILD countdown"
+	)
+	paused = false
+	room._physics_process(0.2)
+	_check(
+		room.phase_controller.phase == MatchPhaseController.Phase.GO,
+		"BUILD expiry enters the shared GO exactly once"
+	)
+	var go_remaining := room.phase_controller.remaining_seconds
+	paused = true
+	room._physics_process(0.5)
 	_check(
 		(
 			room.phase_controller.phase == MatchPhaseController.Phase.GO
-			and is_equal_approx(room.phase_controller.remaining_seconds, remaining)
+			and is_equal_approx(room.phase_controller.remaining_seconds, go_remaining)
 		),
 		"pause freezes the shared GO countdown"
 	)
 	paused = false
-	room._process(0.2)
+	room._physics_process(0.2)
+	await process_frame
 	_check(
 		room.phase_controller.phase == MatchPhaseController.Phase.PLAY and room.items.in_play,
 		"GO releases movement and item lifecycle together"
@@ -447,10 +800,12 @@ func _test_live_go_pause_and_commit() -> void:
 			(
 				p1_hint.contains("AIM")
 				and p1_hint.contains("P1 · K1 KEYBOARD")
-				and p1_hint.contains("PLACE E, F or Space")
+				and p1_hint.contains("BUILD Q")
+				and p1_hint.contains("AIM WASD · PLACE R")
+				and p1_hint.contains("ROTATE E · CLOSE F")
 				and p2_hint.contains("P2 · K2 KEYBOARD")
-				and p2_hint.contains("RUN: Left/Right")
-				and p2_hint.contains("JUMP: Right Ctrl")
+				and p2_hint.contains("MOVE Left/Right")
+				and p2_hint.contains("JUMP Right Ctrl")
 			),
 			"HUD shows each seat's keyboard controls and only switches the builder to build hints"
 		)
@@ -460,38 +815,39 @@ func _test_live_go_pause_and_commit() -> void:
 		p1_hint = str(room.presenter.play_hud._control_hint_labels[0].text)
 		p2_hint = str(room.presenter.play_hud._control_hint_labels[1].text)
 		_check(
-			p1_hint.contains("RUN") and p2_hint.contains("AIM"),
+			p1_hint.contains("MOVE") and p2_hint.contains("AIM"),
 			"HUD control hints follow the player who enters build mode"
 		)
 		var pad_seat := {"seat": 2, "identity": 3, "joined": true, "device_kind": "gamepad"}
 		var pad_hint := str(
-			room.presenter._control_hint_lines([pad_seat], MatchPhaseController.Phase.PLAY)[0]
+			room.presenter._control_hint_lines([pad_seat], MatchPhaseController.Phase.PLAY)[2]
 		)
 		_check(
 			(
 				pad_hint.contains("P3 · GAMEPAD")
-				and pad_hint.contains("MOVE: D-pad or Left stick")
-				and pad_hint.contains("JUMP: South (bottom) button")
-				and pad_hint.contains("BUILD: North (top) button")
+				and pad_hint.contains("MOVE D-pad/Stick")
+				and pad_hint.contains("JUMP South")
+				and pad_hint.contains("BUILD North")
 			),
 			"HUD shows the connected gamepad's own running controls"
 		)
 		room.build_mode[2] = true
 		pad_hint = str(
-			room.presenter._control_hint_lines([pad_seat], MatchPhaseController.Phase.PLAY)[0]
+			room.presenter._control_hint_lines([pad_seat], MatchPhaseController.Phase.PLAY)[2]
 		)
 		_check(
 			(
-				pad_hint.contains("AIM D-pad / Left or Right stick")
-				and pad_hint.contains("PLACE Bottom button (A / Cross) or Right trigger")
-				and pad_hint.contains("ROTATE Right bumper")
-				and pad_hint.contains("CANCEL Left bumper")
+				pad_hint.contains("BUILD North")
+				and pad_hint.contains("AIM D-pad/stick · PLACE A / RT")
+				and pad_hint.contains("ROTATE X / RB · CLOSE LB")
 			),
 			"HUD switches a gamepad seat to its live-build controls"
 		)
 		room.build_mode.erase(2)
+		var four_player_seats := UiContext.sample_seats(4)
+		room.presenter._apply_hud(four_player_seats, MatchPhaseController.Phase.PLAY)
 		var four_player_hints := room.presenter._control_hint_lines(
-			UiContext.sample_seats(4), MatchPhaseController.Phase.PLAY
+			four_player_seats, MatchPhaseController.Phase.PLAY
 		)
 		room.presenter.play_hud._bind_control_hints(four_player_hints)
 		_check(
@@ -781,6 +1137,7 @@ func _test_live_hazard_occupant_moves_not_cancels() -> void:
 	_join_two_ready(room)
 	room.set_match_seed(173)
 	room.tuning.match_target_score_units = 100000
+	room.build_phase_seconds = 0.1
 	room.go_countdown_seconds = 0.1
 	var hazard_key := ""
 	for family in room.definitions.families:
@@ -800,7 +1157,7 @@ func _test_live_hazard_occupant_moves_not_cancels() -> void:
 			room.egg_pool[seat_index] = egg
 			room._queue_claim(seat_index, str(egg.egg_id))
 		room._flush_claims()
-		room._process(0.2)
+		await _advance_to_play(room)
 		var cursor: Dictionary = room.placement_controller.cursors.get(0, {})
 		var safe_cell := Vector2i(-1, -1)
 		if not cursor.is_empty():
@@ -917,10 +1274,10 @@ func _test_live_barya_placement() -> void:
 		room._queue_claim(0, barya_egg_id)
 		room._queue_claim(1, ordinary_egg_id)
 		room._flush_claims()
-		room.go_countdown_seconds = 0.1
-		room._go_remaining = 0.1
-		room.phase_controller.remaining_seconds = 0.1
-		room._process(0.2)
+		_check(
+			room.phase_controller.phase == MatchPhaseController.Phase.BUILD,
+			"Barya placement is available during the shared preparation phase"
+		)
 		var cursor: Dictionary = room.placement_controller.cursors.get(0, {})
 		var persistent_before := room.items.persistent_count()
 		var safe_cell := Vector2i(-1, -1)
@@ -998,6 +1355,33 @@ func _intent(request_id: String, cell: Vector2i, pipeline) -> Dictionary:
 	}
 
 
+func _advance_to_play(room: OfflineLiveBuildMatchRoom) -> void:
+	if room.phase_controller.phase == MatchPhaseController.Phase.BUILD:
+		room.phase_controller.remaining_seconds = 0.0
+		room._physics_process(1.0 / 60.0)
+	if room.phase_controller.phase == MatchPhaseController.Phase.GO:
+		room.phase_controller.remaining_seconds = 0.0
+		room._go_remaining = 0.0
+		room._physics_process(1.0 / 60.0)
+		await process_frame
+
+
+func _safe_cell(room: OfflineLiveBuildMatchRoom, seat_index: int, variant_key: String) -> Vector2i:
+	if not room.placement_controller.cursors.has(seat_index):
+		return Vector2i(-1, -1)
+	var clearance := room.items.owner_seat_clearance(room._live_actor_swept_rects())
+	for y in range(1, 12):
+		for x in range(1, 24):
+			var cell := Vector2i(x, y)
+			var verdict: Dictionary = room.items.validate_placement(variant_key, cell, 0, clearance)
+			if (
+				bool(verdict.get("allowed", false))
+				and not room._live_mover_sweep_intersects(verdict.get("footprint", Rect2()))
+			):
+				return cell
+	return Vector2i(-1, -1)
+
+
 func _check(condition: bool, label: String) -> void:
 	checks += 1
 	if condition:
@@ -1005,3 +1389,11 @@ func _check(condition: bool, label: String) -> void:
 	else:
 		failures += 1
 		push_error("FAIL " + label)
+
+
+func _has_binding(rows: Array, control: Variant, action: String) -> bool:
+	for row_variant in rows:
+		var row: Dictionary = row_variant
+		if row.control == control and str(row.action) == action:
+			return true
+	return false

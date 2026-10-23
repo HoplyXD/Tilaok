@@ -5,6 +5,8 @@ extends HBoxContainer
 ## Art_<Shape> slot; it replaces the placeholder polygon for that shape.
 
 const SHAPE_NAMES := ["CIRCLE", "TRIANGLE", "SQUARE", "DIAMOND"]
+const CHICKEN_HEAD_SHEET := preload("res://assets/character/Chicken Placeholder Sprite Sheet.png")
+const CHICKEN_HEAD_REGION := Rect2(60.0, 16.0, 370.0, 255.0)
 
 ## Text before the number while a seat is joined ("P" reads "P1", "Player " reads "Player 1").
 @export var prefix_text := ""
@@ -13,12 +15,16 @@ const SHAPE_NAMES := ["CIRCLE", "TRIANGLE", "SQUARE", "DIAMOND"]
 ## False paints the shape plain_tint (for badges sitting on a seat-coloured pill).
 @export var use_seat_tint := true
 @export var plain_tint := Color(0.965, 0.906, 0.804, 1.0)
+## Score chips can use the team's chicken head instead of a geometric seat mark.
+@export var use_chicken_head := false
+@export_range(0.5, 3.0, 0.1) var chicken_head_tint_strength := 2.1
 
 var seat_number := 0
 var shape_name := ""
 
 @onready var _prefix_label: Label = %PrefixLabel
 @onready var _number_label: Label = %NumberLabel
+@onready var _chicken_head: TextureRect = %ChickenHeadIcon
 @onready var _polygons: Dictionary = {
 	"CIRCLE": %ShapeCircle,
 	"TRIANGLE": %ShapeTriangle,
@@ -31,6 +37,13 @@ var shape_name := ""
 	"SQUARE": %Art_Square,
 	"DIAMOND": %Art_Diamond,
 }
+
+
+func _ready() -> void:
+	var head_texture := AtlasTexture.new()
+	head_texture.atlas = CHICKEN_HEAD_SHEET
+	head_texture.region = CHICKEN_HEAD_REGION
+	_chicken_head.texture = head_texture
 
 
 func bind_seat(seat: Dictionary) -> void:
@@ -46,14 +59,21 @@ func bind_seat(seat: Dictionary) -> void:
 	)
 	var tint: Color = seat.get("color", Color.WHITE)
 	tint = tint.darkened(tint_darken) if use_seat_tint else plain_tint
+	_chicken_head.visible = joined and use_chicken_head
+	_chicken_head.modulate = Color(
+		tint.r * chicken_head_tint_strength,
+		tint.g * chicken_head_tint_strength,
+		tint.b * chicken_head_tint_strength,
+		tint.a
+	)
 	for key in SHAPE_NAMES:
 		var polygon := _polygons[key] as Polygon2D
 		var art := _art[key] as TextureRect
 		var active: bool = joined and key == shape_name
 		var has_art := art.texture != null
-		polygon.visible = active and not has_art
+		polygon.visible = active and not has_art and not use_chicken_head
 		polygon.color = tint
-		art.visible = active and has_art
+		art.visible = active and has_art and not use_chicken_head
 		art.modulate = tint
 
 
@@ -71,6 +91,8 @@ func bind_preview(seat: Dictionary) -> void:
 
 ## Name of the shape currently visible (placeholder polygon or designer art), "" when empty.
 func visible_shape() -> String:
+	if _chicken_head.visible:
+		return shape_name
 	for key in SHAPE_NAMES:
 		if (_polygons[key] as Polygon2D).visible or (_art[key] as TextureRect).visible:
 			return key

@@ -58,7 +58,7 @@ func _draw() -> void:
 			draw_string(
 				font,
 				Vector2(-88.0, -172.0),
-				"DEBUG SLIPPER POSE",
+				"KANGAROO COMMAND",
 				HORIZONTAL_ALIGNMENT_LEFT,
 				-1,
 				14,
@@ -71,8 +71,6 @@ func _draw_wave_targets() -> void:
 		if int(command.get("command", -1)) != KangarooRoundController.Command.RISING:
 			continue
 		var target_y := float(command.get("wave_y", -1.0))
-		if target_y < 0.0:
-			continue
 		var start := float(command.get("response_start_at", simulation_time))
 		var end := float(command.get("response_end_at", start + 1.0))
 		var progress := clampf((simulation_time - start) / maxf(end - start, 0.001), 0.0, 1.0)
@@ -123,7 +121,7 @@ func _draw_wave_targets() -> void:
 			draw_string(
 				ThemeDB.fallback_font,
 				Vector2(world_bounds.position.x - camera_position.x + 12.0, local_target_y - 8.0),
-				"DEBUG RISING WAVE • %.0f wu" % target_y,
+				"WAVE TARGET • %.0f wu" % target_y,
 				HORIZONTAL_ALIGNMENT_LEFT,
 				-1,
 				13,

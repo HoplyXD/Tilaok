@@ -22,6 +22,7 @@ func _run() -> void:
 	room.join_keyboard("K1")
 	room.join_keyboard("K2")
 	room.go_countdown_seconds = 0.001
+	room.build_phase_seconds = 0.001
 	room.tuning.match_target_score_units = 100000
 	for cycle in range(1, 11):
 		room.input_router.registry.set_ready(0, true)
@@ -29,10 +30,15 @@ func _run() -> void:
 		_check(room.start_match(), "cycle %d starts from Lobby" % cycle)
 		_claim_distinct_eggs()
 		_check(
-			room.phase_controller.phase == MatchPhaseController.Phase.GO,
-			"cycle %d resolves Pugad into GO" % cycle
+			room.phase_controller.phase == MatchPhaseController.Phase.BUILD,
+			"cycle %d resolves Pugad into shared BUILD" % cycle
 		)
-		room._process(0.01)
+		room._physics_process(0.01)
+		_check(
+			room.phase_controller.phase == MatchPhaseController.Phase.GO,
+			"cycle %d resolves BUILD into GO" % cycle
+		)
+		room._physics_process(0.01)
 		await process_frame
 		_check(
 			room.phase_controller.phase == MatchPhaseController.Phase.PLAY and room.items.in_play,

@@ -15,6 +15,8 @@ signal skip_requested
 ## the seat slots (top at y 196) and left of the map arrows (x 452), even with four players.
 @export var lobby_offset_top := 24.0
 @export var lobby_width := 400.0
+## The live-build lesson has a short action list, so give it enough width to read during Play.
+@export var live_build_width := 320.0
 ## Left edge for the Results step: inside the strip the Round result screen keeps free, so the
 ## box never covers an outcome row or an award line. The 263 px card ends at x 1210.
 @export var results_offset_left := 947.0
@@ -35,7 +37,7 @@ var _match_right := 0.0
 
 
 func state_names() -> PackedStringArray:
-	return PackedStringArray(["Move and jump", "Claim an egg", "Place and rotate"])
+	return PackedStringArray(["Move and jump", "Claim an egg", "Build while playing"])
 
 
 func _on_screen_ready() -> void:
@@ -66,7 +68,11 @@ func bind_live(view: Dictionary) -> void:
 	if not shown:
 		return
 	var step_id := str(view.get("step_id", ""))
-	var width := lobby_width if step_id == "welcome" else _match_right - _match_left
+	var width := _match_right - _match_left
+	if step_id == "welcome":
+		width = lobby_width
+	elif step_id == "live_build":
+		width = live_build_width
 	var left := results_offset_left if step_id == "results" else _match_left
 	_anchor.offset_left = left
 	_anchor.offset_right = left + width
@@ -94,9 +100,13 @@ func _show_state(index: int, ctx: UiContext) -> void:
 		],
 		["Step 2 of 5 - Pugad", ctx.sample.tutorial_body, "claim"],
 		[
-			"Step 3 of 5 - Build a way up",
-			"Move the piece, rotate it, then confirm. Red outline means it cannot go there.",
-			"rotate"
+			"Step 3 of 5 - Build while you play",
+			(
+				"Enter BUILD to aim (your chicken pauses). Confirm: move again while the visible build "
+				+ "finishes. Started builds complete automatically; hazards activate immediately. "
+				+ "Cancel closes an unconfirmed preview."
+			),
+			"build_toggle"
 		],
 	]
 	var step: Array = steps[clampi(index, 0, steps.size() - 1)]

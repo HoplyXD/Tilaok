@@ -6,7 +6,7 @@
 
 ## Purpose
 
-The stage must support the full **Pugad → Place → Play** loop across a persistent 12-round match. It begins as a readable race course, then becomes shared player-built terrain that helps and harms later rounds and events.
+The stage must support the full **Pugad → shared 10-second BUILD → GO → Play** loop across a persistent 12-round match. Each player may place their single assigned item during BUILD or save it for active play. Preparation jobs take the same two gameplay seconds as active jobs, may finish during GO, and remain inert until PLAY. BUILD admits confirmations through its final simulation boundary, then closes admission for GO. It begins as a readable race course, then becomes shared player-built terrain that helps and harms later rounds and events.
 
 The design allows a stage to become unsolvable. Players are responsible for the risks created through placement. The base geometry, spawn safety, and Karera goal must remain usable.
 
@@ -166,7 +166,7 @@ Start centered over the full arena at zoom 1.0 below the HUD. Padded arena =1152
 
 **P03 camera result — 2026-10-13:** Play targets include each live body and identity badge; secured/eliminated targets drop individually. Place targets include each unconfirmed pointer's rotated preview extents; confirmed pointers drop individually. Identity badges use stable per-seat anchors so actor movement no longer changes their vertical bounds based on proximity. A live easing regression also found and fixed a second HUD reservation being subtracted from the already-adjusted camera position each frame; the camera now eases the camera center directly and applies HUD compensation only when fitting the target. Tests cover movement across the former 80-wu pair-separation boundary, the HUD easing path, 2/3/4 targets, opposite-corner extents, the highest legal build-region preview (y=96), and a real controller launched at the 900-wu/s upward cap. At 1080p, the rendered pair-separation reproduction measured 0.033 wu vertical camera change between 78- and 82-wu separation after settling. See the [camera jitter regression record](evidence/p03/2026-10-13_camera_jitter_fix.md), including screenshots and the earlier off-screen drift measurement. Rendered Play/Place captures are 1920×1080 at zoom 1.0. A 1920×800 window preserved the 1280×720 logical view (1422×800 game image), so extra window width does not reveal additional world. Captures and performance data are linked from [P03 verification](evidence/p03/2026-10-13_p03_verification.md). The graybox tests are not late-game stress or final-art readability evidence.
 
-Shared spawn has simultaneous input unlock, no slot-based x offset or physical pushing. Fan number/shape labels with leader lines until chickens separate. Lagsanay keeps its documented opening head start. Prototype baseline shake is off. Change geometry/camera only after testing maximum separation, topmost construction and launch trajectories with all supported player counts.
+Shared spawn has simultaneous input unlock, no slot-based x offset or physical pushing. Fan number/shape labels with leader lines until chickens separate. Lagsanay keeps its documented opening head start. Screen shake defaults to Full since 2026-10-23; Reduced and Off remain user-selectable. Change geometry/camera only after testing maximum separation, topmost construction and launch trajectories with all supported player counts.
 
 ## Rising-wave eligibility handoff
 

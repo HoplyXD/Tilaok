@@ -31,6 +31,7 @@ const VARIANT_LABELS := {
 const PHASE_TO_INPUT := {
 	MatchPhaseController.Phase.LOBBY: LocalInputRouter.Phase.LOBBY,
 	MatchPhaseController.Phase.PUGAD: LocalInputRouter.Phase.PUGAD,
+	MatchPhaseController.Phase.BUILD: LocalInputRouter.Phase.BUILD,
 	MatchPhaseController.Phase.PLACE: LocalInputRouter.Phase.PLACE,
 	MatchPhaseController.Phase.PLAY: LocalInputRouter.Phase.PLAY,
 	MatchPhaseController.Phase.RESULTS: LocalInputRouter.Phase.RESULTS,

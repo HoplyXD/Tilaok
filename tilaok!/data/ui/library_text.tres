@@ -85,16 +85,16 @@ requires = ""
 [sub_resource type="Resource" id="Page_9"]
 script = ExtResource("2")
 category = "Karera"
-title = "Karera + Bomb-Taya"
-body = "TWIST: BOMB-TAYA. The flag stays live while a taya countdown runs. A finisher is secured and can no longer be tagged. If the taya reaches the flag, the bomb moves to a random chicken still running and keeps the countdown. Only race scoring applies."
-requires = "stack:KARERA+LAGSANAY"
+title = "One challenge per round"
+body = "Every round runs one standalone challenge: Karera, Lagsanay or Kangaroo. Lagsanay is the Bomb-Taya tag game; it is not combined with a race."
+requires = ""
 
 [sub_resource type="Resource" id="Page_10"]
 script = ExtResource("2")
 category = "Karera"
-title = "Karera + Kangaroo"
-body = "TWIST: KANGAROO. The flag stays live while slipper commands run. A missed command adds KANG, then GA, then ROO; the third is out. A finisher is secured and gets no more commands. Only race scoring applies."
-requires = "stack:KARERA+KANGAROO"
+title = "Kangaroo is standalone"
+body = "Kangaroo is its own round. Answer Freeze, Rising Wave and Hug commands; three failed commands eliminate you."
+requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_11"]
 script = ExtResource("2")
@@ -120,9 +120,9 @@ requires = ""
 [sub_resource type="Resource" id="Page_14"]
 script = ExtResource("2")
 category = "Lagsanay"
-title = "As a Twist: Bomb-Taya"
-body = "As a Twist, Lagsanay is called Bomb-Taya. The taya countdown runs on top of the Main Challenge, and a timeout is an elimination (never a Patibong). The Main Challenge alone decides how the round ends and how points are scored."
-requires = "stack:KARERA+LAGSANAY|KANGAROO+LAGSANAY"
+title = "Bomb-Taya is standalone Lagsanay"
+body = "Lagsanay is the Bomb-Taya tag game. The taya countdown runs in its own round; a timeout is an elimination (never a Patibong). Lagsanay uses survival placement scoring."
+requires = ""
 
 [sub_resource type="Resource" id="Page_15"]
 script = ExtResource("2")
@@ -170,15 +170,15 @@ requires = "main:KANGAROO"
 script = ExtResource("2")
 category = "Kangaroo"
 title = "Slipper Storm"
-body = "After {storm_after} commands with no one eliminated, commands come faster and up to two can be active at once, each shown on its own card. Any elimination ends the Storm. With two chickens left, a Storm pair is always one Freeze and one Rising wave."
+body = "After {storm_after} commands with no one eliminated, up to two commands can overlap. Each landing is {storm_landing} s apart and each response lasts at least {storm_response} s. Any elimination ends the Storm. With two chickens left, a Storm pair is Freeze and Rising when a fair Rising target is available; otherwise Rising is deferred."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_22"]
 script = ExtResource("2")
 category = "Kangaroo"
-title = "As a Twist"
-body = "Kangaroo can run beside Karera (finishers are secured and get no more commands) or as the Main Challenge with Bomb-Taya on top. As a Twist it never starts a Slipper Storm and never ends the round by itself."
-requires = "stack:KARERA+KANGAROO|KANGAROO+LAGSANAY"
+title = "Lives above your chicken"
+body = "KANG, GA and ROO appear directly above your chicken. Each failed command strikes one segment; the third strike is out. Player number and shape still identify whose marker it is."
+requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_23"]
 script = ExtResource("2")
@@ -233,5 +233,5 @@ requires = "feature:barya"
 script = ExtResource("1")
 categories = PackedStringArray("How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility")
 titles = PackedStringArray("How to Play", "Karera (race)", "Lagsanay (tag)", "Kangaroo", "Items", "Accessibility")
-bodies = PackedStringArray("The round loop, controls and winning.", "Reach the flag. Scoring and Twists.", "Tag with a countdown. Placement points.", "Match the slipper. Three misses.", "Every piece you can be dealt.", "Markers, cues, shake, sound and display.")
+bodies = PackedStringArray("The round loop, controls and winning.", "Reach the flag and score.", "Tag with a countdown. Placement points.", "Match the slipper. Three strikes.", "Every piece you can be dealt.", "Markers, cues, shake, sound and display.")
 pages = Array[ExtResource("2")]([SubResource("Page_1"), SubResource("Page_2"), SubResource("Page_3"), SubResource("Page_4"), SubResource("Page_5"), SubResource("Page_6"), SubResource("Page_7"), SubResource("Page_8"), SubResource("Page_9"), SubResource("Page_10"), SubResource("Page_11"), SubResource("Page_12"), SubResource("Page_13"), SubResource("Page_14"), SubResource("Page_15"), SubResource("Page_16"), SubResource("Page_17"), SubResource("Page_18"), SubResource("Page_19"), SubResource("Page_20"), SubResource("Page_21"), SubResource("Page_22"), SubResource("Page_23"), SubResource("Page_24"), SubResource("Page_25"), SubResource("Page_26"), SubResource("Page_27"), SubResource("Page_28"), SubResource("Page_29")])

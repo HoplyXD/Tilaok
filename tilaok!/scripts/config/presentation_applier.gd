@@ -16,8 +16,8 @@ const SHAKE_REDUCED := 1
 const SHAKE_OFF := 2
 const REDUCED_SCALE := 0.34
 
-## The Screen shake level every presentation-only effect reads (default Off, like the setting).
-static var shake_mode := SHAKE_OFF
+## The Screen shake level every presentation-only effect reads (default Full, like the setting).
+static var shake_mode := SHAKE_FULL
 
 
 static func apply(settings: PresentationSettings) -> void:
@@ -30,7 +30,7 @@ static func apply(settings: PresentationSettings) -> void:
 	_set_bus(BUS_CROWD, settings.crowd_volume, false)
 
 
-## Back to the defaults a fresh launch has: full volume, unmuted, shake off.
+## Back to the defaults a fresh launch has: full volume, unmuted, full screen shake.
 static func reset() -> void:
 	apply(PresentationSettings.new())
 

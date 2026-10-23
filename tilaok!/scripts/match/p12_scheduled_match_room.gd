@@ -2,13 +2,9 @@
 class_name P12ScheduledMatchRoom
 extends P09MatchLifecycleRoom
 
-## P12-T01: the full match with the event schedule. Each round's Main Challenge (and any Twist)
-## comes from EventSchedule, is locked during the preceding Pugad and is announced there. Karera
-## rounds run the P09 race; Lagsanay and Kangaroo Main rounds reuse the verified P08/P11 round
-## controllers and their placement scoring, then end through the same match lifecycle (score
-## target, round limit, sudden death). Twist pairs: Karera + Bomb-Taya (T05), Karera + Kangaroo
-## (T07) and Kangaroo + Bomb-Taya (T09). Same-step ordering follows the owner-approved table in
-## docs/evidence/p12/p12_terminal_order_decision_table.md.
+## P12-T01: the full match with one standalone Main Challenge per round. The Main comes from
+## EventSchedule, is locked during the preceding Pugad and is announced there. Historical Twist
+## compatibility code remains unreachable; only standalone Lagsanay runs Bomb-Taya.
 
 const P12_BUILD_ID := "P12-scheduled-match-dev"
 const BARYA_COIN_SCENE := preload("res://scenes/match/barya_coin.tscn")
@@ -382,23 +378,17 @@ func round_announcement() -> Dictionary:
 	if upcoming.is_empty():
 		return {
 			"title": "FINAL ROUND %d: %s" % [active_round, EventSchedule.main_name(int(now.main))],
-			"detail": _twist_line(now, "No Twist"),
+			"detail": "One standalone challenge",
 		}
 	return {
 		"title":
 		"NEXT • ROUND %d: %s" % [active_round + 1, EventSchedule.main_name(int(upcoming.main))],
-		"detail":
-		"%s  ·  This round: %s" % [_twist_line(upcoming, "No Twist"), EventSchedule.describe(now)],
+		"detail": "This round: %s" % EventSchedule.describe(now),
 	}
 
 
-func _twist_line(entry: Dictionary, none_text: String) -> String:
-	var twist := int(entry.get("twist", EventSchedule.Challenge.NONE))
-	return (
-		"TWIST: " + EventSchedule.twist_name(twist)
-		if twist != EventSchedule.Challenge.NONE
-		else none_text
-	)
+func _twist_line(_entry: Dictionary, none_text: String) -> String:
+	return none_text
 
 
 func _enter_play() -> void:
@@ -410,11 +400,6 @@ func _enter_play() -> void:
 		_set_goal_visible(true)
 		bomb_taya.reset()
 		super._enter_play()
-		var twist := int(entry.get("twist", EventSchedule.Challenge.NONE))
-		if twist == EventSchedule.Challenge.LAGSANAY:
-			_begin_bomb_taya()
-		elif twist == EventSchedule.Challenge.KANGAROO:
-			_begin_kangaroo_twist()
 		return
 	_free_match_ghosts()
 	input_router.set_rotation_supported(false)
@@ -442,14 +427,6 @@ func _enter_play() -> void:
 		return
 	items.director.active_round_id = round_id
 	items.director.elimination_sink_exclusive = true
-	if (
-		event_main == EventSchedule.Challenge.KANGAROO
-		and (
-			int(entry.get("twist", EventSchedule.Challenge.NONE))
-			== EventSchedule.Challenge.LAGSANAY
-		)
-	):
-		_begin_bomb_taya_for(round_id, seats)
 	last_message = (
 		"Lagsanay: pass the taya before the countdown expires."
 		if event_main == EventSchedule.Challenge.LAGSANAY
@@ -481,76 +458,23 @@ func _begin_lagsanay_main(round_id: String, seats: Array[int]) -> bool:
 
 
 func _begin_bomb_taya() -> void:
-	if race_round_controller == null:
-		return
-	var seats: Array[int] = []
-	for seat in input_router.registry.joined_seats():
-		seats.append(int(seat.seat))
-	_begin_bomb_taya_for(race_round_controller.ledger.round_id, seats)
-	last_message = "Karera with a Bomb-Taya Twist: reach the flag and pass the taya before it blows."
-	_refresh_match_ui()
+	# Retired mixed-mode entry point. Lagsanay's standalone controller owns Bomb-Taya now.
+	return
 
 
-## Karera + Kangaroo (P12-T07): Kangaroo runs beside the race as a Twist. Karera keeps the end
-## and the one race score; a third failure is an elimination with no Patibong.
 func _begin_kangaroo_twist() -> void:
-	if race_round_controller == null:
-		return
-	var seats: Array[int] = []
-	for seat in input_router.registry.joined_seats():
-		seats.append(int(seat.seat))
-	var round_id := "%s:kangaroo" % race_round_controller.ledger.round_id
-	if not kangaroo_round.begin(round_id, seats, round_start_score_units):
-		push_error("P12 could not begin the Kangaroo Twist.")
-		return
-	kangaroo_round.controller.twist_role = true
-	items.director.active_round_id = round_id
-	items.director.elimination_sink_exclusive = true
-	last_message = "Karera with a Kangaroo Twist: reach the flag; three failed commands eliminate."
-	_refresh_match_ui()
-
-
-func _begin_bomb_taya_for(round_id: String, seats: Array[int]) -> void:
-	if not bomb_taya.begin(
-		"%s:bomb-taya" % round_id,
-		seats,
-		match_streams.taya,
-		tuning.lagsanay_opening_head_start_seconds,
-		tuning.taya_pass_back_seconds,
-		tuning.lagsanay_taya_seconds_2p,
-		tuning.lagsanay_taya_seconds_3p,
-		tuning.lagsanay_taya_seconds_4p
-	):
-		push_error("P12 could not begin the Bomb-Taya Twist.")
-		return
-	_last_taya_seat = bomb_taya.taya_seat
-	var opening := actors.get(bomb_taya.opening_taya_seat) as ChickenController
-	if opening != null:
-		opening.set_opening_freeze(true)
-	_update_taya_marker()
+	# Retired mixed-mode entry point; forced or stale mixed entries cannot start a second mode.
+	return
 
 
 ## Bomb-Taya beside a Karera Main (its timeouts become race ledger eliminations).
 func _bomb_taya_on_karera() -> bool:
-	return (
-		bomb_taya.active
-		and not _sudden_death_active
-		and event_main == EventSchedule.Challenge.KARERA
-		and race_round_controller != null
-		and not race_round_controller.ended
-		and phase_controller.phase == MatchPhaseController.Phase.PLAY
-	)
+	return false
 
 
 ## Bomb-Taya beside a Kangaroo Main (its timeouts are fed to Kangaroo's batch).
 func _bomb_taya_on_kangaroo() -> bool:
-	return (
-		bomb_taya.active
-		and not _sudden_death_active
-		and event_main == EventSchedule.Challenge.KANGAROO
-		and kangaroo_round.controller.active
-		and phase_controller.phase == MatchPhaseController.Phase.PLAY
-	)
+	return false
 
 
 func _bomb_taya_running() -> bool:
@@ -558,16 +482,7 @@ func _bomb_taya_running() -> bool:
 
 
 func _kangaroo_twist_running() -> bool:
-	return (
-		kangaroo_round != null
-		and kangaroo_round.controller.active
-		and kangaroo_round.controller.twist_role
-		and not _sudden_death_active
-		and event_main == EventSchedule.Challenge.KARERA
-		and race_round_controller != null
-		and not race_round_controller.ended
-		and phase_controller.phase == MatchPhaseController.Phase.PLAY
-	)
+	return false
 
 
 func _advance_bomb_taya(delta: float) -> void:
@@ -1106,11 +1021,7 @@ func play_challenge_text() -> String:
 
 
 func play_twist_text() -> String:
-	var entry := current_entry()
-	var twist := int(entry.get("twist", EventSchedule.Challenge.NONE))
-	return (
-		"TWIST: " + EventSchedule.twist_name(twist) if twist != EventSchedule.Challenge.NONE else ""
-	)
+	return ""
 
 
 ## "NEXT R6 KANGAROO + BOMB-TAYA" (or "FINAL ROUND") beside the clock; the locked next round.
@@ -1121,11 +1032,7 @@ func hud_up_next_text() -> String:
 	var upcoming := schedule.entry_for(active_round + 1)
 	if upcoming.is_empty():
 		return "FINAL ROUND" if active_round >= tuning.match_round_limit else ""
-	var text := "NEXT R%d %s" % [active_round + 1, EventSchedule.main_name(int(upcoming.main))]
-	var twist := int(upcoming.get("twist", EventSchedule.Challenge.NONE))
-	if twist != EventSchedule.Challenge.NONE:
-		text += " + " + EventSchedule.twist_name(twist)
-	return text
+	return "NEXT R%d %s" % [active_round + 1, EventSchedule.main_name(int(upcoming.main))]
 
 
 ## The round on screen: the one in Play, or the one a Results screen is explaining.
@@ -1136,14 +1043,7 @@ func _displayed_round() -> int:
 
 
 func results_twist_text() -> String:
-	if items == null or _sudden_death_active:
-		return ""
-	var twist := int(
-		schedule.entry_for(items.round_number).get("twist", EventSchedule.Challenge.NONE)
-	)
-	return (
-		"TWIST: " + EventSchedule.twist_name(twist) if twist != EventSchedule.Challenge.NONE else ""
-	)
+	return ""
 
 
 func play_clock_seconds() -> float:
@@ -1274,22 +1174,8 @@ func seat_state_text(seat_index: int) -> String:
 
 ## "MISS 2/3" for a live chicken that has failed a Kangaroo command (a Main or a Twist); the
 ## third miss is the elimination, shown as OUT by the lifecycle. Text, never colour.
-func _kangaroo_miss_text(seat_index: int) -> String:
-	var kangaroo_active := (
-		kangaroo_round != null
-		and kangaroo_round.controller.active
-		and (
-			(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
-			or _kangaroo_twist_running()
-		)
-	)
-	if not kangaroo_active:
-		return ""
-	var actor := actors.get(seat_index) as ChickenController
-	if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
-		return ""
-	var misses := int(kangaroo_round.controller.marker_counts.get(seat_index, 0))
-	return "MISS %d/3" % misses if misses > 0 and misses < 3 else ""
+func _kangaroo_miss_text(_seat_index: int) -> String:
+	return ""
 
 
 func debug_status_text() -> String:

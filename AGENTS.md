@@ -1,6 +1,6 @@
 # AGENTS.md — Tilaok!
 
-**Current route (2026-10-23):** normal Play is local/offline: Lobby → Pugad → shared 3-second GO → active movement/building → results → next round. Entering build mode pauses that player's controls and routes directional input to the item preview; confirming starts the 2-second construction job and restores movement. Phone/LAN code and Android/QR support are retired; the NLB specification, tracker and evidence are retained as retired history under `docs/archive/retired-networked-live-build/`. The scheduled P12 Place route remains a developer fallback. See P20 in `docs/PHASETASK.md` for active acceptance and evidence status.
+**Current route (2026-10-23):** normal Play is local/offline: Lobby → Pugad (15 s) → shared BUILD (10 s) → GO (3 s) → one standalone Main (Karera, Lagsanay/Bomb-Taya, or Kangaroo) → results → next round. BUILD lets each player start their one assigned item or save it for play. Construction remains a two-gameplay-second job, pauses with simulation, may progress through GO, and remains inert until PLAY. Sudden death gives no new placement. Mixed-mode Twists are retired from normal scheduling. Provisional active windows: Karera 120 s hard cap / 30 s after first finisher; Lagsanay taya 20/25/30 s for 2/3/4 alive; Kangaroo telegraph 2 s, base response 6 s, reset 1.5 s, with 3 s / 0.75 s acceleration floors; Storm at 16 completed commands, 3 s response and 1.5 s landing interval. Rising lines use completed eligible player-built support and map bounds, with a bounded alternate-command fallback. Kangaroo KANG/GA/ROO strikes appear overhead. Values are provisional, not playtest-approved. Phone/LAN code and Android/QR support are retired; history stays under `docs/archive/retired-networked-live-build/`. See P22 in `docs/PHASETASK.md` for acceptance and evidence status.
 
 Context for Codex sessions in this repo.
 
@@ -18,7 +18,7 @@ Context for Codex sessions in this repo.
 ## Design summary
 - Inspired by the Ultimate Chicken Horse build-then-run loop. **Never copy UCH code, art, sounds, names, or characters**; only the mechanic is borrowed, with our own twist.
 - All characters are chickens (color skins), a wholesome reimagining of sabong.
-- Every round: **Pugad → shared GO → active play/build → results.** The Pugad is a nest of eggs; picking one hatches an item. The stage persists and grows.
+- Every round: **Pugad → shared BUILD (10 s) → GO → active play/build → results.** The Pugad is a nest of eggs; picking one assigns an item. Build it in BUILD or save it for live placement; the stage persists and grows.
 - Most rounds race to the flag. Every **4th round**, a **laro ng lahi event** takes over the same stage (announced a round ahead).
 - **Lagsanay** (Ilonggo for tag): bomb-taya tag. Touch to pass; when the timer hits zero the taya is eliminated; repeat until one survivor. Trap deaths are eliminations.
 - **Scoring** (our own values; see GDD §5): Tapos 1.0, Una +0.25, Bayani +0.5, Patibong +0.25/kill, Bawi +0.75, Barya (coin) +0.5; ordinary Karera awards are suppressed if all or none reach the goal (no two-player waiver); eligible Barya still pays in all-finish rounds, and no finisher means no Barya points. Events map onto Tapos/Una. **Exception: Lagsanay uses placement** (1.0 / 0.5 / 0.25 / 0) plus Patibong and Bawi. First to 10 points, or highest after round 12.

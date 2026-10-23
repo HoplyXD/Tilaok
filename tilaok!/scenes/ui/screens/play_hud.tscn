@@ -135,20 +135,15 @@ grow_horizontal = 2
 mouse_filter = 2
 theme_type_variation = &"HudBar"
 
-[node name="ControlHintsRow" type="GridContainer" parent="ControlHintsBar" unique_id=1715926021]
+[node name="ControlHintsRow" type="Control" parent="ControlHintsBar" unique_id=1715926021]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/h_separation = 12
-theme_override_constants/v_separation = 2
-columns = 2
 
 [node name="ControlHint1" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926022]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+layout_mode = 0
 theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
@@ -157,9 +152,7 @@ autowrap_mode = 3
 
 [node name="ControlHint2" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926023]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+layout_mode = 0
 theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
@@ -168,9 +161,7 @@ autowrap_mode = 3
 
 [node name="ControlHint3" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926024]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+layout_mode = 0
 theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
@@ -179,9 +170,7 @@ autowrap_mode = 3
 
 [node name="ControlHint4" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926025]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+layout_mode = 0
 theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1

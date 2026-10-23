@@ -1,3 +1,4 @@
+# gdlint: disable=max-file-lines
 class_name KangarooRoundController
 extends RefCounted
 
@@ -374,14 +375,26 @@ func advance_to(
 		_apply_hazards_at(event_time, simulation_time)
 		if completed_here > 0 and not _step_had_elimination:
 			if (
-				_step_provisional_count >= _tuning.kangaroo_storm_after_commands
+				(
+					_step_provisional_count
+					>= maxi(
+						_tuning.kangaroo_storm_min_after_commands,
+						_tuning.kangaroo_storm_after_commands
+					)
+				)
 				and not storm_active
 				and not twist_role
 			):
 				storm_active = true
 				_next_base_launch = -1.0
 				_step_storm_trigger_at = event_time
-				_next_storm_landing = event_time + _tuning.kangaroo_storm_landing_seconds
+				_next_storm_landing = (
+					event_time
+					+ maxf(
+						_tuning.kangaroo_storm_min_landing_seconds,
+						_tuning.kangaroo_storm_landing_seconds
+					)
+				)
 		_process_launches_at(event_time)
 		_maybe_resume_base_after_drain(event_time)
 	if iterations >= 4096:
@@ -636,7 +649,7 @@ func _evaluate_commands_at(event_time: float) -> int:
 			0.0
 			if bool(command.is_storm)
 			else (
-				_tuning.kangaroo_reset_seconds
+				_base_reset_seconds()
 				if _step_had_elimination
 				else _reset_for_count(_step_provisional_count)
 			)
@@ -708,7 +721,7 @@ func _schedule_after_command(command: Dictionary, evaluated_at: float) -> void:
 		if _step_had_elimination:
 			storm_active = false
 			if _active_storm_count() == 0 and live_seats.size() > 1:
-				_next_base_launch = evaluated_at + _tuning.kangaroo_reset_seconds
+				_next_base_launch = evaluated_at + _base_reset_seconds()
 			return
 		if storm_landing_pending and _active_storm_count() < _tuning.kangaroo_storm_max_active:
 			storm_landing_pending = false
@@ -718,7 +731,7 @@ func _schedule_after_command(command: Dictionary, evaluated_at: float) -> void:
 		var adjusted_reset := _reset_for_count(_step_provisional_count)
 		_next_base_launch = evaluated_at + adjusted_reset
 	else:
-		_next_base_launch = evaluated_at + _tuning.kangaroo_reset_seconds
+		_next_base_launch = evaluated_at + _base_reset_seconds()
 
 
 func _process_launches_at(event_time: float) -> void:
@@ -757,13 +770,91 @@ func _select_for_live() -> int:
 	return select_command(_rng, count)
 
 
+## Select from completed, explicitly eligible player construction only. The list is sorted before
+## the seeded choice so resource registration order cannot change the same-seed result.
+func _choose_fair_wave() -> Dictionary:
+	if _step_support_tracker == null or not _step_support_tracker.playable_bounds.has_area():
+		return {}
+	var candidates: Array[Dictionary] = []
+	var ids: Array = _step_support_tracker.surface_bounds.keys()
+	ids.sort()
+	var budget := _tuning.kangaroo_telegraph_seconds + _tuning.kangaroo_response_seconds
+	for surface_id in ids:
+		var metadata := _step_support_tracker.surfaces.get(surface_id) as SupportSurfaceMetadata
+		var bounds: Rect2 = _step_support_tracker.surface_bounds[surface_id]
+		if (
+			metadata == null
+			or not metadata.player_built
+			or metadata.wave_support_eligibility != SupportSurfaceMetadata.Eligibility.ELIGIBLE
+			or bounds.size.x < _tuning.body_width_wu * 0.75
+			or not _step_support_tracker.playable_bounds.encloses(bounds)
+		):
+			continue
+		var reachable := false
+		for seat in live_seats:
+			var actor := _step_actors.get(seat) as ChickenController
+			if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+				continue
+			var feet_y := actor.global_position.y + _tuning.body_height_wu * 0.5
+			var horizontal_distance := maxf(
+				0.0,
+				maxf(
+					bounds.position.x - actor.global_position.x,
+					actor.global_position.x - bounds.end.x
+				)
+			)
+			var rise := feet_y - bounds.position.y
+			var jump_fraction := clampf(
+				maxf(0.0, rise) / maxf(_tuning.jump_height_wu, 1.0), 0.0, 1.0
+			)
+			var jump_time := _tuning.jump_apex_seconds * sqrt(jump_fraction)
+			var route_time := horizontal_distance / maxf(_tuning.run_speed_wu_s, 1.0) + jump_time
+			if (
+				rise >= -_tuning.body_height_wu * 0.25
+				and rise <= _tuning.jump_height_wu + _tuning.wall_jump_recontact_separation_wu
+				and route_time <= budget
+			):
+				reachable = true
+				break
+		if reachable:
+			candidates.append(
+				{"line_y": bounds.position.y + _tuning.support_height_epsilon_wu + 8.0}
+			)
+	if candidates.is_empty():
+		return {}
+	var pick := _rng.randi_range(0, candidates.size() - 1)
+	var chosen := candidates[pick]
+	chosen["band"] = pick
+	return chosen
+
+
+## Rising is deferred by issuing one other eligible command. This bounded fallback does not
+## create a hidden failed command or advance pressure for the skipped Rising selection.
+func _fallback_without_rising() -> int:
+	if live_seats.size() == 2:
+		return Command.FREEZE
+	var alternatives := [Command.FREEZE, Command.HUG]
+	return int(alternatives[_rng.randi_range(0, alternatives.size() - 1)])
+
+
 func _launch_base(at_time: float) -> void:
 	var selected := _select_for_live()
 	if selected < 0:
 		return
-	var band := _rng.randi_range(0, 2) if selected == Command.RISING else -1
 	var response := _response_for_count(_step_provisional_count)
-	_create_command(selected, band, at_time, false, response)
+	var wave := _choose_fair_wave() if selected == Command.RISING else {}
+	if selected == Command.RISING and wave.is_empty():
+		selected = _fallback_without_rising()
+	if selected < 0:
+		return
+	_create_command(
+		selected,
+		int(wave.get("band", -1)),
+		at_time,
+		false,
+		response,
+		float(wave.get("line_y", -1.0))
+	)
 
 
 func _launch_storm(at_time: float) -> void:
@@ -781,13 +872,31 @@ func _launch_storm(at_time: float) -> void:
 	else:
 		_storm_pair_next = -1
 		selected = _rng.randi_range(Command.FREEZE, Command.HUG)
-	var band := _rng.randi_range(0, 2) if selected == Command.RISING else -1
-	_create_command(selected, band, at_time, true, _tuning.kangaroo_storm_active_seconds)
-	_next_storm_landing = at_time + _tuning.kangaroo_storm_landing_seconds
+	var wave := _choose_fair_wave() if selected == Command.RISING else {}
+	if selected == Command.RISING and wave.is_empty():
+		selected = _fallback_without_rising()
+	if selected >= 0:
+		_create_command(
+			selected,
+			int(wave.get("band", -1)),
+			at_time,
+			true,
+			maxf(_tuning.kangaroo_storm_min_active_seconds, _tuning.kangaroo_storm_active_seconds),
+			float(wave.get("line_y", -1.0))
+		)
+	_next_storm_landing = (
+		at_time
+		+ maxf(_tuning.kangaroo_storm_min_landing_seconds, _tuning.kangaroo_storm_landing_seconds)
+	)
 
 
 func _create_command(
-	selected: int, band: int, at_time: float, is_storm: bool, response: float
+	selected: int,
+	band: int,
+	at_time: float,
+	is_storm: bool,
+	response: float,
+	selected_wave_y: float = -1.0
 ) -> void:
 	var telegraph := _tuning.kangaroo_telegraph_seconds if not is_storm else 0.0
 	var response_start := at_time + telegraph
@@ -799,7 +908,7 @@ func _create_command(
 		command_name(selected),
 		is_storm,
 		band,
-		wave_y_for_band(_tuning, band),
+		selected_wave_y if selected == Command.RISING else -1.0,
 		at_time,
 		response_start,
 		response_end
@@ -811,7 +920,7 @@ func _create_command(
 		"command_name": command_name(selected),
 		"is_storm": is_storm,
 		"band": band,
-		"wave_y": wave_y_for_band(_tuning, band),
+		"wave_y": selected_wave_y if selected == Command.RISING else -1.0,
 		"telegraph_start_at": at_time,
 		"response_start_at": response_start,
 		"response_end_at": response_end,
@@ -857,17 +966,33 @@ func _maybe_resume_base_after_drain(event_time: float) -> void:
 	for command in command_history:
 		if not bool(command.evaluated):
 			return
-	_next_base_launch = event_time + _tuning.kangaroo_reset_seconds
+		_next_base_launch = event_time + _base_reset_seconds()
 
 
 func _response_for_count(completed_count: int) -> float:
 	var reductions := floori(float(completed_count) / 2.0)
-	return maxf(1.0, _tuning.kangaroo_response_seconds - 0.5 * reductions)
+	return maxf(
+		_tuning.kangaroo_response_min_seconds,
+		(
+			_tuning.kangaroo_response_seconds
+			- _tuning.kangaroo_response_acceleration_step_seconds * reductions
+		)
+	)
 
 
 func _reset_for_count(completed_count: int) -> float:
 	var reductions := floori(float(completed_count) / 2.0)
-	return maxf(0.0, _tuning.kangaroo_reset_seconds - 0.15 * reductions)
+	return maxf(
+		_tuning.kangaroo_reset_min_seconds,
+		(
+			_tuning.kangaroo_reset_seconds
+			- _tuning.kangaroo_reset_acceleration_step_seconds * reductions
+		)
+	)
+
+
+func _base_reset_seconds() -> float:
+	return maxf(_tuning.kangaroo_reset_min_seconds, _tuning.kangaroo_reset_seconds)
 
 
 func _end_round() -> void:

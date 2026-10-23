@@ -14,12 +14,10 @@ const GLYPH_SEPARATOR := " / "
 const VARIANT_CLAIMED := &"claimed"
 const VARIANT_LOST := &"lost"
 const VARIANT_TIMEOUT := &"timeout"
+const VARIANT_GET_READY := &"get_ready"
 const VARIANT_NOBODY := &"nobody"
 const VARIANT_EVERYONE := &"everyone"
-const VARIANT_TWIST := &"twist"
-## The taya prompt (Lagsanay Main or Bomb-Taya Twist) sits over the stage's left edge and shares
-## the box with the other just-in-time prompts, so it hands over after this long: the chickens
-## are uncovered and the next due prompt (Kangaroo) takes its turn.
+## The standalone Lagsanay taya prompt shares the coach box with just-in-time event prompts.
 const TAYA_PROMPT_SECONDS := 12.0
 
 var room: P05MatchRoom
@@ -36,7 +34,6 @@ var _assigned_snapshot := 0
 var _nobody_finished_last_round := false
 var _completion_pending := false
 var _lagsanay_showing := false
-var _lagsanay_as_twist := false
 var _taya_prompt_expired := false
 ## The Kangaroo prompt shown during the current phase; marked seen when that phase ends.
 var _kangaroo_step: StringName = &""
@@ -194,15 +191,7 @@ func _lagsanay_running() -> bool:
 	if room.phase_controller.phase != MatchPhaseController.Phase.PLAY:
 		return false
 	var controller: Variant = room.get("lagsanay_controller")
-	if controller != null and bool(controller.get("active")):
-		_lagsanay_as_twist = false
-		return true
-	# Bomb-Taya (Lagsanay as a Twist) teaches the same taya rules with Twist wording.
-	var bomb: Variant = room.get("bomb_taya")
-	if bomb != null and bool(bomb.get("active")):
-		_lagsanay_as_twist = true
-		return true
-	return false
+	return controller != null and bool(controller.get("active"))
 
 
 func _update_lagsanay_flag() -> void:
@@ -226,12 +215,11 @@ func _compute_view() -> Dictionary:
 	if session.skipped or suppressed or room.shows_final_results():
 		return hidden
 	if _lagsanay_showing:
-		var variant: StringName = VARIANT_TWIST if _lagsanay_as_twist else &""
-		return _view_for(TutorialScript.STEP_LAGSANAY, variant, 0)
+		return _view_for(TutorialScript.STEP_LAGSANAY, &"", 0)
 	var guided := is_tutorial_stage() and not session.completed
 	var phase := room.phase_controller.phase
 	var kangaroo_step := _kangaroo_jit_step()
-	# The guided Pugad / Place / Results steps keep the box; the Kangaroo prompt takes Play.
+	# Guided phase steps keep the box; just-in-time event prompts can take over during Play.
 	if kangaroo_step != &"" and (not guided or phase == MatchPhaseController.Phase.PLAY):
 		_kangaroo_step = kangaroo_step
 		return _view_for(kangaroo_step, &"", 0)
@@ -241,7 +229,7 @@ func _compute_view() -> Dictionary:
 
 
 ## The Kangaroo just-in-time step due in this phase, or &"". Poses in the Pugad and supports in
-## the Place of a round that is, or precedes, a Kangaroo Main or Twist round (so players can build
+## the Place of a round that is, or precedes, a Kangaroo Main round (so players can build
 ## for it); the three misses once its commands are running.
 func _kangaroo_jit_step() -> StringName:
 	if session.skipped or room.shows_final_results():
@@ -251,7 +239,7 @@ func _kangaroo_jit_step() -> StringName:
 		MatchPhaseController.Phase.PUGAD:
 			if _kangaroo_near():
 				step = TutorialScript.STEP_KANGAROO_POSES
-		MatchPhaseController.Phase.PLACE:
+		MatchPhaseController.Phase.PLACE, MatchPhaseController.Phase.BUILD:
 			if _kangaroo_near():
 				step = TutorialScript.STEP_KANGAROO_SUPPORTS
 		MatchPhaseController.Phase.PLAY:
@@ -280,10 +268,7 @@ func _kangaroo_near() -> bool:
 	if upcoming is Dictionary:
 		entries.append(upcoming)
 	for entry in entries:
-		if (
-			int(entry.get("main", -1)) == EventSchedule.Challenge.KANGAROO
-			or int(entry.get("twist", -1)) == EventSchedule.Challenge.KANGAROO
-		):
+		if int(entry.get("main", -1)) == EventSchedule.Challenge.KANGAROO:
 			return true
 	return false
 
@@ -299,13 +284,46 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 			var level := 2 if _nobody_finished_last_round else 1
 			var place_variant := VARIANT_TIMEOUT if _timeout_assigned else &""
 			result = _view_for(TutorialScript.STEP_PLACE, place_variant, 3, level)
+		MatchPhaseController.Phase.BUILD:
+			result = _view_for(TutorialScript.STEP_LIVE_BUILD, &"preparation", 3)
 		MatchPhaseController.Phase.GO:
-			result = _view_for(TutorialScript.STEP_LIVE_BUILD, &"", 3)
+			if room is OfflineLiveBuildMatchRoom:
+				result = _view_for(TutorialScript.STEP_LIVE_BUILD, VARIANT_GET_READY, 3)
+			else:
+				result = _view_for(TutorialScript.STEP_KARERA, &"", 4)
 		MatchPhaseController.Phase.PLAY:
-			result = _view_for(TutorialScript.STEP_KARERA, &"", 4)
+			if room is OfflineLiveBuildMatchRoom and not _live_build_tutorial_complete():
+				result = _view_for(TutorialScript.STEP_LIVE_BUILD, &"", 3)
+			else:
+				result = _view_for(TutorialScript.STEP_KARERA, &"", 4)
 		MatchPhaseController.Phase.RESULTS:
 			result = _view_for(TutorialScript.STEP_RESULTS, _results_variant(), 5)
 	return result
+
+
+## Keep the build lesson up until each player has built or is out of the round. Showing it only
+## during GO would hide the instructions before anyone can use them; showing it while a build is
+## pending also reinforces that movement resumes immediately after confirmation.
+func _live_build_tutorial_complete() -> bool:
+	var live_room := room as OfflineLiveBuildMatchRoom
+	if live_room == null:
+		return true
+	var seats := room.input_router.registry.joined_seats()
+	if seats.is_empty():
+		return false
+	for seat in seats:
+		var seat_index := int(seat.seat)
+		var actor := room.actors.get(seat_index) as ChickenController
+		if actor == null:
+			return false
+		if actor.lifecycle.is_terminal():
+			continue
+		if not bool(live_room.inventory_used.get(seat_index, false)):
+			return false
+		for job in live_room.construction_jobs.values():
+			if int(job.get("seat_index", -1)) == seat_index:
+				return false
+	return true
 
 
 ## Claim feedback first: a new player must always see "claimed" / "lost" and the timer. The
@@ -350,7 +368,8 @@ func _view_for(step_id: StringName, variant: StringName, number: int, level: int
 		"glyph": glyph,
 		"action": action_label,
 		"hint_level": level,
-		"build_here": step_id == TutorialScript.STEP_PLACE,
+		"build_here":
+		step_id == TutorialScript.STEP_PLACE or step_id == TutorialScript.STEP_LIVE_BUILD,
 		"skip_caption": tutorial_script.skip_caption,
 		"tag": tutorial_script.placeholder_tag,
 	}
@@ -391,6 +410,8 @@ func _fill(text: String) -> String:
 		"finish_s": _number(tuning.match_race_after_first_finish_seconds),
 		"advance_s": _number(tuning.match_results_advance_seconds),
 		"head_start_s": _number(tuning.lagsanay_opening_head_start_seconds),
+		"telegraph_s": _number(tuning.kangaroo_telegraph_seconds),
+		"response_s": _number(tuning.kangaroo_response_seconds),
 		"ledge_tiles": _number(room.arena.flag_height_tiles()),
 		"jump_tiles": _number(tuning.jump_height_wu / cell),
 		"result_reason": reason,

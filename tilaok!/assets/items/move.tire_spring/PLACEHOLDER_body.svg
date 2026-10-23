@@ -1,1 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#2f3438" stroke="#1d2930" stroke-width="3"/><circle cx="32" cy="32" r="17" fill="none" stroke="#b9b19a" stroke-width="4"/><circle cx="32" cy="32" r="7" fill="#b9b19a"/><path d="M32 3V13M32 51V61M3 32H13M51 32H61" stroke="#b9b19a" stroke-width="3"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 128 128">
+  <!-- Temporary visual adapted from the player's tire-and-spring sketch; final art is team-owned. -->
+  <defs>
+    <linearGradient id="rubber" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#59636a"/>
+      <stop offset=".48" stop-color="#343b40"/>
+      <stop offset="1" stop-color="#20272b"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8e9da1"/>
+      <stop offset=".48" stop-color="#e4e1d5"/>
+      <stop offset="1" stop-color="#78878c"/>
+    </linearGradient>
+  </defs>
+  <!-- Broad tire lying across the spring, with tread grooves instead of a debug outline. -->
+  <rect x="8" y="8" width="112" height="43" rx="19" fill="#182126"/>
+  <rect x="11" y="8" width="106" height="39" rx="17" fill="url(#rubber)"/>
+  <path d="M22 13 Q64 6 106 13" fill="none" stroke="#a8b0ac" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  <path d="M17 21v14m12-21v29m12-31v32m12-33v34m12-34v34m12-34v34m12-33v32m12-30v28m12-24v19" fill="none" stroke="#1b2328" stroke-width="4" stroke-linecap="round" opacity=".86"/>
+  <path d="M20 24v9m12-13v16m12-18v19m12-20v21m12-21v21m12-21v21m12-20v19m12-17v15" fill="none" stroke="#748087" stroke-width="1.5" stroke-linecap="round" opacity=".68"/>
+  <path d="M14 40q50 8 100 0" fill="none" stroke="#11181c" stroke-width="3" opacity=".75"/>
+  <!-- Mounts connect the tire to a visible metal coil and a sturdy floor plate. -->
+  <path d="M53 46h22v10H53z" fill="#68757a"/>
+  <path d="M56 49h16v7H56z" fill="#aeb8b4"/>
+  <path d="M64 55 C64 58 43 58 43 64 S85 69 85 75 S43 80 43 86 S85 91 85 97 S64 101 64 104" fill="none" stroke="#263137" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M64 55 C64 58 43 58 43 64 S85 69 85 75 S43 80 43 86 S85 91 85 97 S64 101 64 104" fill="none" stroke="url(#steel)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="51" y="101" width="26" height="7" rx="2" fill="#49545a"/>
+  <path d="M32 108h64l5 8H27z" fill="#b47b38"/>
+  <path d="M33 108h62" stroke="#f0c879" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 116h56" stroke="#70471f" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="38" cy="112" r="2" fill="#4d3824"/>
+  <circle cx="90" cy="112" r="2" fill="#4d3824"/>
+</svg>

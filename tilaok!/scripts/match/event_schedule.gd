@@ -1,10 +1,10 @@
 class_name EventSchedule
 extends RefCounted
 
-## P12-T01 event schedule (GDD §3 "Event cadence and stacking", PRD REQ-EVENT-001).
+## P12 event schedule, revised 2026-10-23: every scheduled round is one standalone Main.
 ## Round 1 is Karera and rounds 4/8/12 are standalone Lagsanay. Every other round draws its Main
 ## Challenge from the available pool (Karera 70, Lagsanay 20, Kangaroo 10, with unavailable modes
-## zeroed before normalizing) and, from round 5, may roll one compatible Twist. Each round is
+## zeroed before normalizing). Mixed-mode Twists are retired from normal Play. Each round is
 ## locked once, in order, from the match's seeded event stream: the room locks round N+1 during
 ## round N's Pugad, so the announcement and the round that plays always agree.
 
@@ -17,15 +17,9 @@ const GUARANTEED := {
 	8: Challenge.LAGSANAY,
 	12: Challenge.LAGSANAY,
 }
-## The GDD's compatible stacks. A row enters the Twist pool only after its pair is integrated and
-## verified (the listed P12 task); until then `enabled` stays false and no Twist is rolled for it.
-## Karera + Lagsanay (Bomb-Taya) passed P12-T05/T06, Karera + Kangaroo P12-T07/T08 and
-## Kangaroo + Lagsanay (Bomb-Taya) P12-T09/T10 on 2026-10-15 (tests/run_p12_pairs_tests.gd).
-const COMPATIBILITY: Array[Dictionary] = [
-	{"main": Challenge.KARERA, "twist": Challenge.LAGSANAY, "task": "P12-T05", "enabled": true},
-	{"main": Challenge.KARERA, "twist": Challenge.KANGAROO, "task": "P12-T07", "enabled": true},
-	{"main": Challenge.KANGAROO, "twist": Challenge.LAGSANAY, "task": "P12-T09", "enabled": true},
-]
+## Historical compatibility rows are intentionally absent from normal scheduling. Earlier P12
+## stack integration tests remain source-history evidence, not current schedule acceptance.
+const COMPATIBILITY: Array[Dictionary] = []
 
 var available: Array[int] = []
 var pairs: Array[Dictionary] = []
@@ -46,14 +40,8 @@ static func enabled_pairs() -> Array[Dictionary]:
 	return result
 
 
-static func twist_chance(round_number: int) -> float:
-	if round_number <= 4:
-		return 0.0
-	if round_number <= 7:
-		return 0.10
-	if round_number <= 10:
-		return 0.20
-	return 0.30
+static func twist_chance(_round_number: int) -> float:
+	return 0.0
 
 
 static func main_name(challenge: int) -> String:
@@ -91,13 +79,14 @@ func begin(
 	stream: RandomNumberGenerator,
 	available_modes: Array[int],
 	limit: int,
-	compatible_pairs: Array[Dictionary] = enabled_pairs()
+	_compatible_pairs: Array[Dictionary] = enabled_pairs()
 ) -> String:
 	if not _can_mutate():
 		return "Event schedule is not authoritative."
 	_stream = stream
 	available = available_modes.duplicate()
-	pairs = compatible_pairs.duplicate(true)
+	# Ignore caller-supplied legacy rows: stale configuration cannot re-enable mixed rounds.
+	pairs.clear()
 	round_limit = limit
 	locked.clear()
 	error = _validate()
@@ -150,10 +139,6 @@ func lock_round(round_number: int) -> Dictionary:
 		entry.main = int(GUARANTEED[round_number])
 	else:
 		entry.main = _draw_main()
-		var options := twist_options(int(entry.main))
-		entry.twist_options = options.size()
-		if _stream.randf() < twist_chance(round_number) and not options.is_empty():
-			entry.twist = options[_stream.randi_range(0, options.size() - 1)]
 	locked[round_number] = entry
 	return entry
 
@@ -191,9 +176,6 @@ static func mode_ids(entry: Dictionary) -> PackedStringArray:
 	if entry.is_empty():
 		return result
 	result.append(mode_id(int(entry.main)))
-	var twist := int(entry.get("twist", Challenge.NONE))
-	if twist != Challenge.NONE and not result.has(mode_id(twist)):
-		result.append(mode_id(twist))
 	return result
 
 
@@ -201,10 +183,7 @@ static func mode_ids(entry: Dictionary) -> PackedStringArray:
 static func describe(entry: Dictionary) -> String:
 	if entry.is_empty():
 		return ""
-	var text := main_name(int(entry.main))
-	if int(entry.get("twist", Challenge.NONE)) != Challenge.NONE:
-		text += " / TWIST: " + twist_name(int(entry.twist))
-	return text
+	return main_name(int(entry.main))
 
 
 func _main_pool_weight() -> int:

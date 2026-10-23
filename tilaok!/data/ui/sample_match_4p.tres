@@ -6,7 +6,7 @@
 script = ExtResource("1")
 round_number = 5
 main_challenge = "Karera"
-twist = "TWIST: Wind"
+twist = ""
 timer_text = "0:42"
 next_event = "R8: Lagsanay"
 scores = PackedFloat32Array(4.5, 3.0, 2.25, 1.0)

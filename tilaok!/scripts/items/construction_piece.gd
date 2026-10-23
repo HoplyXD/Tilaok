@@ -1,13 +1,12 @@
 class_name ConstructionPiece
 extends AnimatableBody2D
 
-## One placed construction piece: collision plus a code-drawn graybox silhouette.
-## Visuals are labeled DEBUG placeholders; final art belongs to the human art team.
+## One placed construction piece: collision plus its current placeholder silhouette.
+## Final production visuals belong to the human art team.
 
 enum Style { CRATE, BAMBOO }
 
 ## Drawing constants are authored on the historical 32 wu grid; _k() scales them to cell_wu.
-const DEBUG_LABEL_MIN_WIDTH_WU := 96.0
 const BAMBOO_NODE_SPACING_WU := 16.0
 const CHEVRON_SPACING_WU := 32.0
 
@@ -108,22 +107,6 @@ func _draw() -> void:
 		_draw_crate()
 	else:
 		_draw_bamboo()
-	var font := ThemeDB.fallback_font
-	if font != null and footprint_size.x >= DEBUG_LABEL_MIN_WIDTH_WU * _k():
-		var text := "KAING • DEBUG" if style == Style.CRATE else "TULAY • DEBUG"
-		draw_string(
-			font,
-			(
-				Vector2(4.0, footprint_size.y / _k() - 5.0) * _k()
-				if style == Style.CRATE
-				else Vector2(4.0, 26.0) * _k()
-			),
-			text,
-			HORIZONTAL_ALIGNMENT_LEFT,
-			footprint_size.x - 8.0 * _k(),
-			roundi(10 * _k()),
-			Color.WHITE
-		)
 
 
 func _k() -> float:

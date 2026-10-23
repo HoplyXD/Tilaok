@@ -9,10 +9,7 @@ const MAX_CARDS := 2
 const MORE_TEXT := "+%d more command"
 
 var cards: Array[UiKangarooCommandCard] = []
-var markers: Array[Label] = []
-
 @onready var _more_label: Label = %MoreLabel
-@onready var _marker_panel: Control = %Markers
 
 
 func router_phase() -> int:
@@ -25,7 +22,6 @@ func state_names() -> PackedStringArray:
 
 func _on_screen_ready() -> void:
 	cards = [%Card1, %Card2]
-	markers = [%Marker1, %Marker2, %Marker3, %Marker4]
 	clear()
 
 
@@ -41,22 +37,10 @@ func bind_commands(commands: Array[Dictionary], active_time: float) -> void:
 	_more_label.text = MORE_TEXT % maxi(extra, 0)
 
 
-## One text row per joined seat ("P2 ▲  [KANG]  GA  ROO"); fewer rows hide the rest.
-func bind_markers(rows: PackedStringArray) -> void:
-	_marker_panel.visible = not rows.is_empty()
-	for index in markers.size():
-		markers[index].visible = index < rows.size()
-		if index < rows.size():
-			markers[index].text = rows[index]
-
-
 func clear() -> void:
 	for card in cards:
 		card.visible = false
 	_more_label.visible = false
-	_marker_panel.visible = false
-	for marker in markers:
-		marker.visible = false
 
 
 func command_count() -> int:
@@ -68,8 +52,4 @@ func command_count() -> int:
 
 
 func marker_texts() -> PackedStringArray:
-	var result := PackedStringArray()
-	for marker in markers:
-		if marker.visible:
-			result.append(marker.text)
-	return result
+	return PackedStringArray()

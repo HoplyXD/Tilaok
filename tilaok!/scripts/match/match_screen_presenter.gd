@@ -17,7 +17,7 @@ const NOTICE_SECONDS := 5.0
 const DEBUG_REFRESH_SECONDS := 0.25
 const DEBUG_OVERLAY_FLAG := "--debug-overlay"
 const LIST_SEPARATOR := "   •   "
-const PHASE_NAMES := ["LOBBY", "PUGAD", "PLACE", "PLAY", "RESULTS"]
+const PHASE_NAMES := ["LOBBY", "PUGAD", "BUILD", "PLACE", "PLAY", "RESULTS", "GO"]
 const CHEER_STATE_TEXT := "CHEER!"
 ## HUD chip words during Place (Figma "Obstacle Place").
 const PLACE_STATE_PLACING := "Placing"
@@ -503,6 +503,7 @@ func _apply() -> void:
 		and (
 			phase
 			in [
+				MatchPhaseController.Phase.BUILD,
 				MatchPhaseController.Phase.PLACE,
 				MatchPhaseController.Phase.PLAY,
 				MatchPhaseController.Phase.GO
@@ -540,6 +541,10 @@ func _update_fullscreen_countdown() -> void:
 	var coordinator := room.pause_coordinator
 	if coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN:
 		fullscreen_countdown.show_countdown(coordinator.countdown_remaining, "GET READY")
+	elif phase == MatchPhaseController.Phase.BUILD:
+		fullscreen_countdown.show_countdown(
+			room.phase_controller.remaining_seconds, "BUILD NOW • SAVE ITEM FOR PLAY"
+		)
 	elif phase == MatchPhaseController.Phase.GO:
 		fullscreen_countdown.show_countdown(room._go_remaining, "GET READY")
 	else:
@@ -633,7 +638,11 @@ func _apply_hud(seats: Array[Dictionary], phase: MatchPhaseController.Phase) -> 
 	var timer_text := ""
 	var window_text := ""
 	var notice := ""
-	if phase == MatchPhaseController.Phase.PLAY:
+	if phase == MatchPhaseController.Phase.BUILD:
+		timer_text = _clock_text(_phase_seconds(phase))
+		window_text = "BUILD • SAVE YOUR ITEM FOR PLAY"
+		notice = room.play_status_text()
+	elif phase == MatchPhaseController.Phase.PLAY:
 		timer_text = _clock_text(room.play_clock_seconds())
 		window_text = room.play_tag_text()
 		notice = room.play_status_text()
@@ -664,71 +673,89 @@ func _apply_hud(seats: Array[Dictionary], phase: MatchPhaseController.Phase) -> 
 func _control_hint_lines(
 	seats: Array[Dictionary], phase: MatchPhaseController.Phase
 ) -> PackedStringArray:
-	var hints := PackedStringArray()
-	if phase not in [MatchPhaseController.Phase.GO, MatchPhaseController.Phase.PLAY]:
+	var hints := PackedStringArray(["", "", "", ""])
+	if (
+		phase
+		not in [
+			MatchPhaseController.Phase.BUILD,
+			MatchPhaseController.Phase.GO,
+			MatchPhaseController.Phase.PLAY
+		]
+	):
 		return hints
 	for seat in seats:
 		if not bool(seat.get("joined", false)):
 			continue
 		var seat_index := int(seat.get("seat", hints.size()))
+		if seat_index < 0 or seat_index >= hints.size():
+			continue
 		var player_number := int(seat.get("identity", seat_index + 1))
 		var device := UiContext.device_for_seat(seat)
-		var device_name := "GAMEPAD" if device == "gamepad" else "%s KEYBOARD" % device.to_upper()
+		var device_tag := "GAMEPAD" if device == "gamepad" else "%s KEYBOARD" % device.to_upper()
 		var line := ""
-		if room.is_seat_in_build_mode(seat_index):
+		if phase == MatchPhaseController.Phase.BUILD and not room.is_seat_in_build_mode(seat_index):
+			var build_toggle := prompt_map.glyph("build_toggle", device)
+			line = (
+				"P%d · %s\nITEM SAVED · %s TO BUILD NOW" % [player_number, device_tag, build_toggle]
+			)
+		elif room.is_seat_in_build_mode(seat_index):
 			var aim := ""
 			var place := ""
 			var rotate := ""
-			var cancel := ""
+			var close_preview := ""
+			var build_toggle := prompt_map.glyph("build_toggle", device)
 			if device == "gamepad":
-				aim = "D-pad / Left or Right stick"
-				place = "Bottom button (A / Cross) or Right trigger"
-				rotate = "Right bumper"
-				cancel = "Left bumper"
+				aim = "D-pad/stick"
+				place = "A / RT"
+				rotate = "X / RB"
+				close_preview = "LB"
 			elif device == "k1":
-				aim = "WASD + ZCVB"
-				place = "E, F or Space"
-				rotate = "T"
-				cancel = "X"
+				aim = "WASD"
+				place = "R"
+				rotate = "E"
+				close_preview = "F"
 			elif device == "k2":
-				aim = "Arrow keys + YHNM"
+				aim = "Arrow keys"
 				place = "Enter"
-				rotate = "Right bracket [ ]"
-				cancel = "Backslash"
+				rotate = "Right Shift"
+				close_preview = "Backspace"
 			elif device == "k3":
-				aim = "IJKL + num-row 7/4/8/6"
-				place = "O key"
-				rotate = "="
-				cancel = "Apostrophe"
+				aim = "I J K L"
+				place = "O"
+				rotate = "P"
+				close_preview = "U"
 			else:
-				aim = "Numpad 8/4/2/6 + 7/1/3/9"
-				place = "Numpad 0"
-				rotate = "Numpad *"
-				cancel = "Numpad -"
+				aim = "Num 8/4/2/6"
+				place = "Num 0"
+				rotate = "Num 5"
+				close_preview = "Num ."
 			line = (
-				"P%d · %s BUILD\nAIM %s · PLACE %s · ROTATE %s · CANCEL %s"
-				% [player_number, device_name, aim, place, rotate, cancel]
+				"P%d · %s BUILD %s\nAIM %s · PLACE %s\nROTATE %s · CLOSE %s"
+				% [player_number, device_tag, build_toggle, aim, place, rotate, close_preview]
 			)
 		else:
-			var movement := "MOVE %s" % prompt_map.glyph("run", device)
-			var jump := "JUMP %s" % prompt_map.glyph("jump", device)
-			var build := "BUILD %s" % prompt_map.glyph("build_toggle", device)
+			var movement := ""
+			var jump := ""
+			var build := ""
 			if device == "gamepad":
-				movement = "MOVE: D-pad or Left stick"
-				jump = "JUMP: South (bottom) button"
-				build = "BUILD: North (top) button"
+				movement = "D-pad/Stick"
+				jump = "South"
+				build = "North"
 			elif device == "k2":
-				movement = "RUN: Left/Right"
-				jump = "JUMP: Right Ctrl"
+				movement = "Left/Right"
+				jump = "Right Ctrl"
 			elif device == "k4":
-				movement = "RUN: Numpad 4/6"
-				jump = "JUMP: Numpad 8"
+				movement = "Num 4/6"
+				jump = "Num 8"
 			else:
-				movement = "RUN: %s" % prompt_map.glyph("run", device)
-				jump = "JUMP: %s" % prompt_map.glyph("jump", device)
-				build = "BUILD: %s" % prompt_map.glyph("build_toggle", device)
-			line = "P%d · %s\n%s · %s · %s" % [player_number, device_name, movement, jump, build]
-		hints.append(line)
+				movement = prompt_map.glyph("run", device)
+				jump = prompt_map.glyph("jump", device)
+				build = prompt_map.glyph("build_toggle", device)
+			line = (
+				"P%d · %s\nMOVE %s · JUMP %s\nBUILD %s"
+				% [player_number, device_tag, movement, jump, build]
+			)
+		hints[seat_index] = line
 	return hints
 
 
@@ -841,6 +868,8 @@ func _lost_claim_text(seats: Array[Dictionary]) -> String:
 
 
 func _state_text(seat_index: int, phase: MatchPhaseController.Phase) -> String:
+	if phase == MatchPhaseController.Phase.BUILD:
+		return "ITEM USED" if bool(room.inventory_used.get(seat_index, false)) else "ITEM READY"
 	if phase == MatchPhaseController.Phase.PLACE:
 		return _place_state_text(seat_index)
 	if phase != MatchPhaseController.Phase.PLAY:

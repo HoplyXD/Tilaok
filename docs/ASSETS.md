@@ -188,8 +188,8 @@ P10 added 23 **temporary placeholder** files so every first-batch item is visibl
 
 | File | Type | Slot | Status | Final owner |
 |---|---|---|---|---|
-| `assets/items/move.tire_spring/PLACEHOLDER_body.svg` | SVG | `body` | PLACEHOLDER — replace | Jorge/Ivie |
-| `assets/items/move.tire_spring/PLACEHOLDER_body_compressed.svg` | SVG | `body_compressed` | PLACEHOLDER — replace | Jorge/Ivie |
+| `assets/items/move.tire_spring/PLACEHOLDER_body.svg` | SVG | `body` | Temporary tire, spring and base placeholder adapted from the player's sketch; replace with final art | Jorge/Ivie |
+| `assets/items/move.tire_spring/PLACEHOLDER_body_compressed.svg` | SVG | `body_compressed` | Temporary compressed tire, spring and base placeholder adapted from the player's sketch; replace with final art | Jorge/Ivie |
 | `assets/items/move.tire_spring/PLACEHOLDER_sfx_launch.wav` | WAV | `sfx_launch` | PLACEHOLDER — replace | Shanti |
 | `assets/items/hazard.rail_trumpo/PLACEHOLDER_rail.svg` | SVG | `rail` | PLACEHOLDER — replace | Jorge/Ivie |
 | `assets/items/hazard.rail_trumpo/PLACEHOLDER_top.svg` | SVG | `top` | PLACEHOLDER — replace | Jorge/Ivie |

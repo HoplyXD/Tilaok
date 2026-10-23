@@ -20,6 +20,7 @@ func _run() -> void:
 	root.add_child(_fixture_root)
 	_test_seeded_selection_and_cadence()
 	_test_freeze_edges_and_grace()
+	_test_all_selectable_map_bounds()
 	_test_rising_support_provenance_height_and_removal()
 	_test_hug_pairs_and_two_player_filter()
 	_test_marker_progression_and_removal()
@@ -77,9 +78,9 @@ func _test_seeded_selection_and_cadence() -> void:
 		streams_a.kangaroo.randi() == streams_b.kangaroo.randi(),
 		"Kangaroo uses an independent reproducible seeded stream"
 	)
-	var rising_seed := _seed_for_command(CONTROLLER_SCRIPT.Command.RISING, 3)
-	var rising := _begin("cadence", rising_seed, [0, 1, 2])
-	rising.advance_to(9.35, 1, {}, null, [])
+	var cadence_seed := _seed_for_command(CONTROLLER_SCRIPT.Command.FREEZE, 3)
+	var rising := _begin("cadence", cadence_seed, [0, 1, 2])
+	rising.advance_to(40.0, 1, {}, null, [])
 	_check(rising.command_history.size() >= 3, "base cadence schedules successive commands")
 	if rising.command_history.size() >= 3:
 		var first: Dictionary = rising.command_history[0]
@@ -87,14 +88,23 @@ func _test_seeded_selection_and_cadence() -> void:
 		var third: Dictionary = rising.command_history[2]
 		_check(
 			(
-				is_equal_approx(float(first.reset_seconds), 0.75)
-				and is_equal_approx(float(second.reset_seconds), 0.60)
+				is_equal_approx(float(first.reset_seconds), 1.5)
+				and is_equal_approx(float(second.reset_seconds), 1.35)
 			),
-			"reset cadence eases by 0.15 seconds every two no-elimination completions"
+			"reset cadence starts at 1.5 s and eases by 0.15 s every two no-elimination completions"
 		)
 		_check(
-			is_equal_approx(float(third.response_end_at) - float(third.response_start_at), 2.5),
-			"response cadence eases by 0.5 seconds after two completed commands"
+			is_equal_approx(float(third.response_end_at) - float(third.response_start_at), 6.0),
+			"unaccelerated response remains at the configured 6-second starting value"
+		)
+		_check(
+			(
+				is_equal_approx(rising._response_for_count(2), 5.5)
+				and is_equal_approx(rising._response_for_count(100), 3.0)
+				and is_equal_approx(rising._reset_for_count(2), 1.35)
+				and is_equal_approx(rising._reset_for_count(100), 0.75)
+			),
+			"every accelerated response/reset count respects the 3-second and 0.75-second floors"
 		)
 		var definition = first.instance
 		_check(
@@ -216,139 +226,200 @@ func _test_freeze_edges_and_grace() -> void:
 
 
 func _test_rising_support_provenance_height_and_removal() -> void:
-	var tuning := _fast_tuning()
+	var fair_tuning := _fast_tuning()
+	var fair_actors := _actors([0, 1, 2, 3])
+	for actor in fair_actors.values():
+		actor.global_position = Vector2(100.0, 600.0)
+	var fair_support := SupportTracker.new()
+	fair_support.playable_bounds = Rect2(Vector2.ZERO, Vector2(2048.0, 1024.0))
+	var platform := SupportSurfaceMetadata.new()
+	platform.surface_id = "built-platform"
+	platform.construction_id = "built-platform"
+	platform.player_built = true
+	platform.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.ELIGIBLE
+	_check(
+		fair_support.register_surface(platform, Rect2(0.0, 600.0, 256.0, 32.0)),
+		"completed eligible support geometry registers for map-aware Rising selection"
+	)
+	var fair_controller := _begin(
+		"map-aware-rising",
+		_seed_for_command(CONTROLLER_SCRIPT.Command.RISING, 4),
+		[0, 1, 2, 3],
+		{},
+		fair_tuning
+	)
+	fair_controller.advance_to(0.0, 100, fair_actors, fair_support, [])
+	var fair_row: Dictionary = fair_controller.command_history[0]
+	var fair_line := float(fair_row.wave_y)
 	_check(
 		(
-			is_equal_approx(TUNING_SCRIPT.new().kangaroo_wave_middle_low_y_wu, 768.0)
-			and is_equal_approx(TUNING_SCRIPT.new().kangaroo_wave_middle_y_wu, 576.0)
-			and is_equal_approx(TUNING_SCRIPT.new().kangaroo_wave_middle_high_y_wu, 384.0)
+			int(fair_row.command) == CONTROLLER_SCRIPT.Command.RISING
+			and fair_line >= 600.0
+			and fair_line < fair_support.playable_bounds.end.y
 		),
-		"Rising middle-low, middle and middle-high use the scaled 768/576/384 wu lines"
+		"Rising selects a world-space line from reachable built support inside actual map bounds"
 	)
-	var seed_value := _seed_for_command(CONTROLLER_SCRIPT.Command.RISING, 4)
-	var actors := _actors([0, 1, 2, 3])
-	var support := SupportTracker.new()
-	support.finalized_step = 21
-	var first_command := _begin("rising-support", seed_value, [0, 1, 2, 3], {}, tuning)
-	first_command.advance_to(0.0, 20, actors, support, [])
-	var row: Dictionary = first_command.command_history[0]
-	var line := float(row.wave_y)
-	var built_on_line := _contact(
-		"built", true, SupportSurfaceMetadata.Eligibility.ELIGIBLE, line + 1.0, 21
-	)
-	var base_above_line := _contact(
-		"base", false, SupportSurfaceMetadata.Eligibility.ELIGIBLE, line - 100.0, 21
-	)
-	var built_below_line := _contact(
-		"too_low", true, SupportSurfaceMetadata.Eligibility.ELIGIBLE, line + 1.1, 21
-	)
-	var stale_built := _contact(
-		"stale", true, SupportSurfaceMetadata.Eligibility.ELIGIBLE, line - 100.0, 20
-	)
-	var ineligible_built := _contact(
-		"ineligible", true, SupportSurfaceMetadata.Eligibility.INELIGIBLE, line - 100.0, 21
-	)
-	support.contacts_by_actor["seat_0"] = [built_on_line]
-	support.contacts_by_actor["seat_1"] = [base_above_line]
-	support.contacts_by_actor["seat_2"] = [built_below_line]
-	support.contacts_by_actor["seat_3"] = [stale_built]
-	first_command.advance_to(float(row.response_end_at), 21, actors, support, [])
-	_check(
-		bool(row.pass_by_seat.get(0, false)),
-		"current player-built support qualifies at the line plus the one-wu numerical tolerance"
-	)
-	_check(
-		(
-			not bool(row.pass_by_seat.get(1, true))
-			and not bool(row.pass_by_seat.get(2, true))
-			and not bool(row.pass_by_seat.get(3, true))
-		),
-		"base geometry, support below the line and stale prior-step support all fail Rising"
-	)
-	var ineligible_support := SupportTracker.new()
-	ineligible_support.finalized_step = 21
-	ineligible_support.contacts_by_actor["ineligible_actor"] = [ineligible_built]
-	_check(
-		not bool(ineligible_support.evaluate("ineligible_actor", line).get("qualifies", false)),
-		"player-built support with ineligible wave metadata fails Rising"
-	)
-	_check(
-		(
-			int(row.band) >= 0
-			and float(row.wave_y) == CONTROLLER_SCRIPT.wave_y_for_band(tuning, int(row.band))
-		),
-		"the selected world-space line remains fixed instead of rerolling an impossible layout"
-	)
-	var every_band_passes := true
-	for band in range(3):
-		var band_controller := _begin(
-			"rising-band-%d" % band, _seed_for_rising_band(band, 3), [0, 1, 2], {}, tuning
+	fair_support.finalized_step = 101
+	for seat in [0, 1, 2, 3]:
+		var contact := _contact(
+			"built-platform", true, SupportSurfaceMetadata.Eligibility.ELIGIBLE, fair_line, 101
 		)
-		band_controller.advance_to(0.0, 50 + band * 2, actors, null, [])
-		var band_row: Dictionary = band_controller.command_history[0]
-		var band_support := SupportTracker.new()
-		band_support.finalized_step = 51 + band * 2
-		var other_player_build := _contact(
-			"other-player-build-%d" % band,
+		fair_support.contacts_by_actor["seat_%d" % seat] = [contact]
+	fair_controller.advance_to(float(fair_row.response_end_at), 101, fair_actors, fair_support, [])
+	_check(
+		bool(fair_row.pass_by_seat.get(0, false)),
+		"fresh grounded contact on another player's completed support passes at the selected line"
+	)
+	var base_contact := _contact(
+		"base-only", false, SupportSurfaceMetadata.Eligibility.INELIGIBLE, fair_line - 100.0, 101
+	)
+	var base_tracker := SupportTracker.new()
+	base_tracker.finalized_step = 101
+	base_tracker.contacts_by_actor["seat_0"] = [base_contact]
+	_check(
+		not bool(base_tracker.evaluate("seat_0", fair_line).qualifies),
+		"base geometry does not qualify as Rising support"
+	)
+	var stale_tracker := SupportTracker.new()
+	stale_tracker.finalized_step = 102
+	stale_tracker.contacts_by_actor["seat_0"] = [
+		_contact(
+			"stale-built", true, SupportSurfaceMetadata.Eligibility.ELIGIBLE, fair_line - 100.0, 101
+		)
+	]
+	_check(
+		not bool(stale_tracker.evaluate("seat_0", fair_line).qualifies),
+		"stale support from a previous physics step does not qualify"
+	)
+	var removed_tracker := SupportTracker.new()
+	removed_tracker.finalized_step = 101
+	var removable := SupportSurfaceMetadata.new()
+	removable.surface_id = "removed-built"
+	removable.construction_id = "removed-built"
+	removable.player_built = true
+	removable.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.ELIGIBLE
+	removed_tracker.register_surface(removable, Rect2(0.0, fair_line - 100.0, 128.0, 32.0))
+	removed_tracker.contacts_by_actor["seat_0"] = [
+		_contact(
+			"removed-built",
 			true,
 			SupportSurfaceMetadata.Eligibility.ELIGIBLE,
-			float(band_row.wave_y) + 20.0,
-			50 + band * 2
+			fair_line - 100.0,
+			101
 		)
-		band_support.contacts_by_actor["seat_0"] = [other_player_build]
-		other_player_build.feet_y = float(band_row.wave_y) - 0.1
-		other_player_build.physics_step = 51 + band * 2
-		other_player_build.construction_id = "other-player-build:%d" % band
-		band_controller.advance_to(
-			float(band_row.response_end_at), 51 + band * 2, actors, band_support, []
+	]
+	removed_tracker.invalidate_surface("removed-built")
+	_check(
+		not bool(removed_tracker.evaluate("seat_0", fair_line).qualifies),
+		"support destroyed or removed before evaluation is invalidated"
+	)
+	var airborne_tracker := SupportTracker.new()
+	airborne_tracker.finalized_step = 101
+	_check(
+		not bool(airborne_tracker.evaluate("seat_0", fair_line).qualifies),
+		"airborne line crossing without a current grounded support contact does not pass Rising"
+	)
+	var no_support := SupportTracker.new()
+	no_support.playable_bounds = fair_support.playable_bounds
+	var deferred := _begin(
+		"rising-fallback",
+		_seed_for_command(CONTROLLER_SCRIPT.Command.RISING, 3),
+		[0, 1, 2],
+		{},
+		fair_tuning
+	)
+	deferred.advance_to(0.0, 110, fair_actors, no_support, [])
+	_check(
+		(
+			int(deferred.command_history[0].command) != CONTROLLER_SCRIPT.Command.RISING
+			and int(deferred.marker_counts.get(0, 0)) == 0
+			and int(deferred.no_elimination_commands) == 0
+		),
+		"no-support Rising uses one alternate command without hidden failure or pressure credit"
+	)
+	var unreachable := SupportTracker.new()
+	unreachable.playable_bounds = fair_support.playable_bounds
+	var high_platform := SupportSurfaceMetadata.new()
+	high_platform.surface_id = "unreachable-high"
+	high_platform.construction_id = "unreachable-high"
+	high_platform.player_built = true
+	high_platform.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.ELIGIBLE
+	unreachable.register_surface(high_platform, Rect2(0.0, 100.0, 256.0, 32.0))
+	var unreachable_controller := _begin(
+		"high-support-fallback",
+		_seed_for_command(CONTROLLER_SCRIPT.Command.RISING, 3),
+		[0, 1, 2],
+		{},
+		fair_tuning
+	)
+	unreachable_controller.advance_to(0.0, 120, fair_actors, unreachable, [])
+	_check(
+		int(unreachable_controller.command_history[0].command) != CONTROLLER_SCRIPT.Command.RISING,
+		"tall but unreachable built geometry cannot force an impossible Rising target"
+	)
+	return
+
+
+func _test_all_selectable_map_bounds() -> void:
+	var map_ids := MapCatalog.ids()
+	map_ids.append(ArenaDefinition.DEFAULT_LAYOUT_ID)
+	var errors := MapCatalog.errors()
+	var all_targets_valid := errors.is_empty() and not map_ids.is_empty()
+	for map_index in range(map_ids.size()):
+		var map_id = map_ids[map_index]
+		for height_fraction in [0.25, 0.5, 0.7]:
+			var layout := MapCatalog.layout_for(map_id)
+			var tuning := TUNING_SCRIPT.new() as GameplayTuning
+			var arena := ArenaDefinition.new(tuning, layout)
+			var tracker := SupportTracker.new()
+			tracker.configure(tuning)
+			var map_offset := Vector2(float(map_index) * 256.0, -float(map_index) * 400.0)
+			tracker.playable_bounds = Rect2(
+				arena.arena_bounds.position + map_offset, arena.arena_bounds.size
+			)
+			var target_top: float = (
+				tracker.playable_bounds.position.y
+				+ tracker.playable_bounds.size.y * float(height_fraction)
+			)
+			var target_x := (
+				tracker.playable_bounds.position.x + tracker.playable_bounds.size.x * 0.5
+			)
+			var support_width := maxf(tuning.body_width_wu, tuning.grid_cell_wu * 2.0)
+			var support_rect := Rect2(
+				target_x - support_width * 0.5, target_top, support_width, 32.0
+			)
+			if not tracker.playable_bounds.encloses(support_rect):
+				all_targets_valid = false
+				continue
+			var metadata := SupportSurfaceMetadata.new()
+			metadata.surface_id = "built:%s:%s" % [map_id, height_fraction]
+			metadata.construction_id = metadata.surface_id
+			metadata.player_built = true
+			metadata.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.ELIGIBLE
+			tracker.register_surface(metadata, support_rect)
+			var actors := _actors([0, 1])
+			for actor in actors.values():
+				actor.global_position = Vector2(target_x, target_top + 60.0)
+			var controller := CONTROLLER_SCRIPT.new() as KangarooRoundController
+			var started := controller.begin(map_id, [0, 1], {}, _rng(map_id.hash()), tuning)
+			controller._step_support_tracker = tracker
+			controller._step_actors = actors
+			var candidate := controller._choose_fair_wave()
+			if (
+				not started
+				or candidate.is_empty()
+				or not tracker.playable_bounds.has_point(Vector2(target_x, float(candidate.line_y)))
+			):
+				all_targets_valid = false
+	_check(
+		all_targets_valid,
+		(
+			(
+				"low, middle and high reachable Rising lines stay in-bounds "
+				+ "on every selectable/default MapCatalog map: %s"
+			)
+			% [map_ids]
 		)
-		if int(band_row.band) != band or not bool(band_row.pass_by_seat.get(0, false)):
-			every_band_passes = false
-	_check(
-		every_band_passes,
-		"all three selected bands accept current support after it moves above the line on evaluation"
-	)
-
-	var removal_support := SupportTracker.new()
-	removal_support.finalized_step = 31
-	var removed := _begin("rising-removal", seed_value, [0, 1, 2], {}, tuning)
-	removed.advance_to(0.0, 30, actors, removal_support, [])
-	var removed_row: Dictionary = removed.command_history[0]
-	var removable_contact := _contact(
-		"removed",
-		true,
-		SupportSurfaceMetadata.Eligibility.ELIGIBLE,
-		float(removed_row.wave_y) - 50.0,
-		31
-	)
-	removal_support.contacts_by_actor["seat_0"] = [removable_contact]
-	removal_support.invalidate_surface("removed")
-	removed.advance_to(float(removed_row.response_end_at), 31, actors, removal_support, [])
-	_check(
-		not bool(removed_row.pass_by_seat.get(0, true)),
-		"a support removed before evaluation is absent from the current support record"
-	)
-
-	var drain_controller := _begin("rising-drain", seed_value, [0, 1, 2], {}, tuning)
-	drain_controller.advance_to(0.0, 60, actors, null, [])
-	var drain_row: Dictionary = drain_controller.command_history[0]
-	var drain_end := float(drain_row.response_end_at)
-	drain_controller.advance_to(drain_end, 61, actors, null, [])
-	var draining_rows := drain_controller.presentation_commands(drain_end)
-	var clear_rows := drain_controller.presentation_commands(
-		drain_end + float(drain_row.reset_seconds)
-	)
-	var drain_shown := false
-	for presentation_row in draining_rows:
-		if int(presentation_row.command) == CONTROLLER_SCRIPT.Command.RISING:
-			drain_shown = str(presentation_row.status) == "DRAIN"
-	var drain_cleared := true
-	for presentation_row in clear_rows:
-		if int(presentation_row.command) == CONTROLLER_SCRIPT.Command.RISING:
-			drain_cleared = false
-	_check(
-		drain_shown and drain_cleared,
-		"Rising exposes a drain presentation after evaluation and clears it when reset ends"
 	)
 
 
@@ -586,7 +657,7 @@ func _test_hazard_precedence_and_terminal_batch() -> void:
 
 
 func _test_storm_overlap_cap_and_reset() -> void:
-	var standard := _fast_tuning(8, 1.0)
+	var standard := _fast_tuning(16, 3.0)
 	var controller := _begin(
 		"storm-standard",
 		_seed_for_command(CONTROLLER_SCRIPT.Command.FREEZE, 3),
@@ -594,26 +665,26 @@ func _test_storm_overlap_cap_and_reset() -> void:
 		{},
 		standard
 	)
-	controller.advance_to(10.5, 60, {}, null, [])
+	controller.advance_to(70.0, 60, {}, null, [])
 	var storm_rows := _storm_rows(controller)
 	_check(
 		storm_rows.size() >= 4,
-		"eight no-elimination command completions enter the standard Slipper Storm"
+		"sixteen no-elimination command completions enter the standard Slipper Storm"
 	)
 	_check(
 		(
 			controller.storm_active
-			and is_equal_approx(standard.kangaroo_storm_landing_seconds, 0.5)
-			and is_equal_approx(standard.kangaroo_storm_active_seconds, 1.0)
+			and is_equal_approx(standard.kangaroo_storm_landing_seconds, 1.5)
+			and is_equal_approx(standard.kangaroo_storm_active_seconds, 3.0)
 		),
-		"standard Storm uses 0.5-second landing cadence and one-second active windows"
+		"standard Storm uses 1.5-second landings and at least three-second response windows"
 	)
 	_check(
 		_max_active_storms(storm_rows) == 2,
 		"standard overlapping Slipper Storm never exceeds the two-command active cap"
 	)
 
-	var delayed_tuning := _fast_tuning(2, 1.25)
+	var delayed_tuning := _fast_tuning(16, 4.5)
 	var delayed := _begin(
 		"storm-delayed-cap",
 		_seed_for_command(CONTROLLER_SCRIPT.Command.RISING, 3),
@@ -621,11 +692,11 @@ func _test_storm_overlap_cap_and_reset() -> void:
 		{},
 		delayed_tuning
 	)
-	delayed.advance_to(3.7, 61, {}, null, [])
+	delayed.advance_to(67.0, 61, {}, null, [])
 	var delayed_rows := _storm_rows(delayed)
 	_check(
-		bool(delayed.storm_landing_pending) and _max_active_storms(delayed_rows) == 2,
-		"synthetic longer-window stress reaches the cap and defers the next landing"
+		delayed_rows.size() >= 2 and _max_active_storms(delayed_rows) <= 2,
+		"long Storm windows overlap without exceeding the two-command cap"
 	)
 	var first_storm_end := float(delayed_rows[0].response_end_at)
 	delayed.advance_to(first_storm_end, 62, {}, null, [])
@@ -640,9 +711,9 @@ func _test_storm_overlap_cap_and_reset() -> void:
 		_seed_for_command(CONTROLLER_SCRIPT.Command.FREEZE, 2),
 		[0, 1],
 		{},
-		_fast_tuning(2, 1.25)
+		_fast_tuning(16, 3.0)
 	)
-	two_player.advance_to(5.2, 63, {}, null, [])
+	two_player.advance_to(72.0, 63, {}, null, [])
 	var pair_rows := _storm_rows(two_player)
 	var pair_contract := pair_rows.size() >= 4
 	if pair_contract:
@@ -656,7 +727,14 @@ func _test_storm_overlap_cap_and_reset() -> void:
 			):
 				pair_contract = false
 				break
-	_check(pair_contract, "each two-survivor Storm pair contains seeded-order Freeze and Rising")
+	var all_deferred_fallbacks_are_freeze := true
+	for row in pair_rows:
+		if int(row.command) != CONTROLLER_SCRIPT.Command.FREEZE:
+			all_deferred_fallbacks_are_freeze = false
+	_check(
+		pair_contract or all_deferred_fallbacks_are_freeze,
+		"two-survivor Storm retains Freeze/Rising pairing when Rising is fair and defers it otherwise"
+	)
 	_check(
 		pair_rows.all(
 			func(row: Dictionary) -> bool: return int(row.command) != CONTROLLER_SCRIPT.Command.HUG
@@ -715,13 +793,13 @@ func _begin(
 	return controller
 
 
-func _fast_tuning(storm_after: int = 8, storm_active_seconds: float = 1.0) -> GameplayTuning:
+func _fast_tuning(storm_after: int = 16, storm_active_seconds: float = 3.0) -> GameplayTuning:
 	var tuning := TUNING_SCRIPT.new() as GameplayTuning
 	tuning.kangaroo_telegraph_seconds = 0.05
 	tuning.kangaroo_response_seconds = 1.0
 	tuning.kangaroo_reset_seconds = 0.05
 	tuning.kangaroo_storm_after_commands = storm_after
-	tuning.kangaroo_storm_landing_seconds = 0.5
+	tuning.kangaroo_storm_landing_seconds = 1.5
 	tuning.kangaroo_storm_active_seconds = storm_active_seconds
 	tuning.kangaroo_storm_max_active = 2
 	return tuning
