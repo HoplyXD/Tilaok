@@ -1,7 +1,7 @@
 class_name ItemSilhouettePainter
 extends RefCounted
 
-## Code-drawn DEBUG presentation for the six first-batch families, in piece-local world units
+## Code-drawn placeholder presentation for the six first-batch families, in piece-local world units
 ## (footprint top-left is the origin). Every part first asks the family's `ItemVisualSet` for a
 ## replaceable slot and only falls back to a graybox shape when the slot is missing, so artists
 ## swap files without code. All shapes are PLACEHOLDER; nothing here is final art.
@@ -84,16 +84,6 @@ static func _draw_tag(canvas: CanvasItem, text: String, bounds: Rect2) -> void:
 	)
 
 
-static func _arrow(
-	canvas: CanvasItem, from: Vector2, direction: Vector2, length: float, color: Color
-) -> void:
-	var tip := from + direction * length
-	var side := Vector2(-direction.y, direction.x)
-	canvas.draw_line(from, tip, color, 3.0)
-	canvas.draw_line(tip, tip - direction * 7.0 + side * 5.0, color, 3.0)
-	canvas.draw_line(tip, tip - direction * 7.0 - side * 5.0, color, 3.0)
-
-
 static func _dotted(
 	canvas: CanvasItem, from: Vector2, to: Vector2, color: Color, width: float, dash: float
 ) -> void:
@@ -120,45 +110,27 @@ static func _draw_tire(
 	seconds: float
 ) -> void:
 	var bodies := _rects(regions, ItemRegionSpec.Kind.SOLID)
-	var faces := _rects(regions, ItemRegionSpec.Kind.TRIGGER)
 	var compress := float(state.get("compress", 0.0))
-	var normal := ItemGeometry.rotate_vector(Vector2.UP, turns)
 	for body in bodies:
 		var frames: Texture2D = _texture(
 			visual, "body_compressed" if compress > 0.5 else "body", seconds
 		)
 		if frames != null:
-			canvas.draw_texture_rect(frames, body, false)
+			canvas.draw_set_transform(body.get_center(), float(turns) * PI * 0.5, Vector2.ONE)
+			canvas.draw_texture_rect(frames, Rect2(-body.size * 0.5, body.size), false)
+			canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		else:
+			# Keep a clean silhouette if an art slot is missing; no debug footprint box or arrow.
 			var center := body.get_center()
-			var radius := minf(body.size.x, body.size.y) * 0.5 - 2.0
-			canvas.draw_circle(center, radius, RUBBER)
-			canvas.draw_arc(center, radius * 0.62, 0.0, TAU, 24, HUB, 3.0)
-			canvas.draw_circle(center, radius * 0.25, HUB)
-			for index in range(8):
-				var angle := TAU * float(index) / 8.0
-				var inner := center + Vector2.from_angle(angle) * radius * 0.82
-				var outer := center + Vector2.from_angle(angle) * radius
-				canvas.draw_line(inner, outer, HUB, 2.0)
-			canvas.draw_rect(body, INK, false, 2.0)
-	for face in faces:
-		var squash := compress * 6.0
-		var strip := Rect2(face)
-		if absf(normal.y) > 0.5:
-			strip.size.y = 6.0
-			strip.position.y = face.position.y if normal.y < 0.0 else face.end.y - 6.0
-		else:
-			strip.size.x = 6.0
-			strip.position.x = face.position.x if normal.x < 0.0 else face.end.x - 6.0
-		strip.position -= normal * squash
-		canvas.draw_rect(strip, AMBER)
-		canvas.draw_rect(strip, INK, false, 2.0)
-		var mid := (
-			face.get_center()
-			+ normal * (face.size.y * 0.5 if absf(normal.y) > 0.5 else face.size.x * 0.5)
-		)
-		_arrow(canvas, mid, normal, 12.0 + 6.0 * compress, Color.WHITE)
-		_arrow(canvas, mid + normal * 1.0, normal, 12.0 + 6.0 * compress, INK)
+			var tire := Rect2(Vector2(-54.0, -42.0), Vector2(108.0, 38.0))
+			var base := Rect2(Vector2(-31.0, 39.0), Vector2(62.0, 9.0))
+			canvas.draw_set_transform(center, float(turns) * PI * 0.5, Vector2.ONE)
+			canvas.draw_rect(tire, RUBBER, true)
+			for coil in range(3):
+				var y := 5.0 + float(coil) * 13.0
+				canvas.draw_line(Vector2(-18.0, y), Vector2(18.0, y + 6.0), HUB, 5.0)
+			canvas.draw_rect(base, Color("#b47b38"), true)
+			canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 # ---------------- Trumpo sa Riles

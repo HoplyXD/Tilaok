@@ -13,13 +13,9 @@ const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.g
 const JOB_PREVIEW := preload("res://scripts/match/construction_job_preview.gd")
 @export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
 @export_range(0.1, 10.0, 0.1) var construction_seconds := 2.0
-@export_range(0.1, 5.0, 0.1) var live_item_grace_seconds := 1.0
 @export_range(1.0, 32.0, 1.0) var live_cursor_cells_per_second := 8.0
 @export_range(0.0, 1.0, 0.05) var live_cursor_initial_delay := 0.25
 @export_range(0.0, 64.0, 1.0) var live_actor_clearance_wu := 32.0
-## Extra reach kept clear around live chickens for lethal hazards, projectile lanes and capture
-## paths, so construction never creates an unavoidable immediate hit.
-@export_range(0.0, 256.0, 1.0) var live_lethal_clearance_wu := 64.0
 ## Rows of cells below a movable block that must be free of chickens (fall path; never crush).
 @export_range(0, 8, 1) var live_fall_check_cells := 2
 
@@ -34,7 +30,6 @@ var _go_remaining := 0.0
 var _edge_layer: CanvasLayer
 var _edge_root: Control
 var _edge_markers: Dictionary = {}
-var _activation_warning_cache := ""
 var _reserved_footprints: Dictionary = {}
 var _construction_clock := 0.0
 
@@ -81,10 +76,6 @@ func _process(delta: float) -> void:
 	elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
 		_advance_live_aim(delta)
 		_update_edge_markers()
-		var warning := items.live_activation_warning_text()
-		if warning != _activation_warning_cache:
-			_activation_warning_cache = warning
-			_notify_presentation(&"live_build")
 
 
 func _physics_process(delta: float) -> void:
@@ -267,8 +258,7 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 				if action_name == "live_cancel":
 					var active_job_id := _job_id_for_seat(seat_index)
 					if not active_job_id.is_empty():
-						_cancel_construction_job(active_job_id, true)
-						live_notices[seat_index] = "Construction cancelled • item returned."
+						live_notices[seat_index] = "Build is underway • it will finish automatically."
 						_notify_presentation(&"live_build")
 						return
 				if bool(build_mode.get(seat_index, false)):
@@ -577,7 +567,7 @@ func _advance_construction_jobs(delta: float) -> void:
 		else:
 			inventory_used[seat_index] = false
 			live_notices[seat_index] = (
-				"Build cancelled • %s" % str(result.get("reason", "placement changed"))
+				"Build could not complete • %s" % str(result.get("reason", "placement changed"))
 			)
 		_finish_construction_job(job_id)
 		if bool(result.get("terrain_mutated", false)):
@@ -644,9 +634,9 @@ func _cancel_construction_job(job_id: String, restore_item: bool) -> void:
 	else:
 		inventory_used[seat_index] = true
 	var reason := (
-		"Construction cancelled • item returned."
+		"Build ended • item returned."
 		if restored
-		else "Construction cancelled because the builder is no longer eligible."
+		else "Build ended • builder is no longer eligible."
 	)
 	request_pipeline.resolve_result(
 		job_id,
@@ -820,20 +810,13 @@ func _commit_live_intent(
 	var effect_actor_rects: Array[Rect2] = []
 	if materialize:
 		effect_actor_rects = actor_rects
-	var effect_check := _live_effect_check(
-		str(cursor.variant_key),
-		turns,
-		verdict,
-		effect_actor_rects,
-		materialize and allow_actor_displacement
-	)
+	var effect_check := _live_effect_check(str(cursor.variant_key), verdict, effect_actor_rects)
 	if not effect_check.is_empty():
 		return _live_result(base, false, str(effect_check.code), str(effect_check.reason))
 	if not materialize:
 		var preview_result := base.duplicate(true)
 		preview_result["footprint"] = verdict.footprint
 		return _live_result(preview_result, true, "preview", "Placement area is clear.")
-	items.live_activation_grace_seconds = live_item_grace_seconds
 	var committed := items.place_live(
 		str(cursor.variant_key), cell, turns, seat_index, placement_actor_rects, false
 	)
@@ -849,7 +832,7 @@ func _commit_live_intent(
 	result["actor_relocations"] = actor_relocations
 	result["cell"] = cell
 	result["quarter_turns"] = turns
-	result["activation_after_seconds"] = live_item_grace_seconds
+	result["activation_after_seconds"] = 0.0
 	result["terrain_mutated"] = true
 	return result
 
@@ -965,51 +948,16 @@ func _on_live_one_shot_committed(area: Rect2, _seat_index: int) -> void:
 
 ## Live safety checks after the shared validator accepts a persistent placement. Returns
 ## {} or {code, reason}. All inputs are host state; nothing here mutates the stage.
-## - lethal hazards, projectile lanes and capture paths: live-build jobs may overlap chickens;
-##   directly touching chickens move to the item's top and get the existing activation grace;
-## - every persistent item: no in-flight projectile or bubble inside its footprint or regions;
-## - movable blocks: no chicken in the fall path below (a live solid never crushes or pins).
+## Transient shots and bubbles do not reject a build, and hazards are active immediately at commit.
+## Movable blocks still cannot be placed over a chicken in their fall path.
 func _live_effect_check(
-	variant_key: String,
-	turns: int,
-	verdict: Dictionary,
-	actor_rects: Array[Rect2],
-	allow_occupied_hazard: bool = false
+	variant_key: String, verdict: Dictionary, actor_rects: Array[Rect2]
 ) -> Dictionary:
 	var found := definitions.find_variant(variant_key)
 	if found.is_empty():
 		return {}
 	var family := found.family as ItemFamilyDefinition
 	var footprint: Rect2 = verdict.footprint
-	var effect_rects: Array[Rect2] = [footprint]
-	var variant := found.variant as ItemVariantDefinition
-	var regions := ItemGeometry.clip_to_stage(
-		ItemGeometry.resolve_regions(variant, ItemGeometry.normalized_turns(turns), tuning),
-		footprint,
-		arena
-	)
-	for region in regions:
-		var world_rect: Rect2 = region.rect
-		world_rect.position += footprint.position
-		effect_rects.append(world_rect)
-	var kind := str(family.behavior_kind)
-	if kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"] and not allow_occupied_hazard:
-		for actor_rect in actor_rects:
-			var reach := actor_rect.grow(live_actor_clearance_wu + live_lethal_clearance_wu)
-			for effect_rect in effect_rects:
-				if reach.intersects(effect_rect, false):
-					return {
-						"code": "lethal_clearance",
-						"reason": "A chicken is too close to that hazard's reach."
-					}
-	for transient_rect in _live_effect_rects_in_flight():
-		for effect_rect in effect_rects:
-			if transient_rect.intersects(effect_rect, false):
-				return {
-					"code":
-					"projectile_lane" if kind in ["launcher", "bubble"] else "live_effect_path",
-					"reason": "A shot or bubble is crossing that spot."
-				}
 	if family.safe_start == ItemFamilyDefinition.SAFE_START_RESET_TO_PLACED:
 		var fall := footprint
 		fall.size.y += float(live_fall_check_cells) * tuning.grid_cell_wu
@@ -1024,25 +972,6 @@ func _live_effect_check(
 			if actor_rect.grow(live_actor_clearance_wu).intersects(fall, false):
 				return {"code": "crush_risk", "reason": "A chicken is below that spot."}
 	return {}
-
-
-## Host rects of every in-flight projectile and live bubble (shared item runtime).
-func _live_effect_rects_in_flight() -> Array[Rect2]:
-	var result: Array[Rect2] = []
-	for instance_id in items.pieces.keys():
-		var piece := items.piece_for(str(instance_id)) as HazardPiece
-		if piece == null or piece.behavior == null:
-			continue
-		if piece.behavior is LauncherBehavior:
-			var size := Vector2.ONE * tuning.item_launcher_projectile_size_wu
-			for projectile in (piece.behavior as LauncherBehavior).projectiles:
-				var center: Vector2 = projectile.center
-				result.append(Rect2(center - size * 0.5, size).grow(live_actor_clearance_wu))
-		elif piece.behavior is BubbleBehavior and (piece.behavior as BubbleBehavior).has_bubble():
-			var radius := tuning.item_bubble_radius_wu
-			var bubble_center := (piece.behavior as BubbleBehavior).bubble_center
-			result.append(Rect2(bubble_center - Vector2.ONE * radius, Vector2.ONE * radius * 2.0))
-	return result
 
 
 func _live_result(base: Dictionary, allowed: bool, code: String, reason: String) -> Dictionary:
@@ -1069,9 +998,6 @@ func play_status_text() -> String:
 			notices.append("P%d BUILD • aim • confirm • chicken paused" % (seat_index + 1))
 		elif live_notices.has(seat_index) and not str(live_notices[seat_index]).is_empty():
 			notices.append("P%d %s" % [seat_index + 1, str(live_notices[seat_index])])
-	var activation_warning := items.live_activation_warning_text()
-	if not activation_warning.is_empty():
-		notices.append(activation_warning)
 	return "  ·  ".join(notices)
 
 

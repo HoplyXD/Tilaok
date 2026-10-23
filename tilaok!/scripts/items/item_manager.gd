@@ -28,9 +28,8 @@ var in_play := false
 var grace_remaining := 0.0
 ## Advances only when persistent terrain changes; objectives and rejected previews do not count.
 var stage_version := 0
-## instance_id -> {remaining, held}; newly placed live items activate independently.
+## Kept as an empty reset-audit surface for older offline-live-build evidence readers.
 var live_activation: Dictionary = {}
-var live_activation_grace_seconds := 1.0
 var live_actor_clearance_wu := 32.0
 ## Live route entity age: the physics boundary being
 ## resolved, and the boundary each live piece was committed at. A one-shot edit only affects
@@ -77,7 +76,6 @@ func _physics_process(delta: float) -> void:
 		return
 	if grace_remaining > 0.0:
 		grace_remaining = maxf(0.0, grace_remaining - delta)
-	_advance_live_activation(delta)
 	budget.advance(delta)
 
 
@@ -163,23 +161,11 @@ func place_live(
 	if not bool(committed.get("allowed", false)):
 		return committed
 	var instance_id := str(committed.instance_id)
-	var piece := piece_for(instance_id)
-	var family := definitions.find_variant(variant_key).get("family") as ItemFamilyDefinition
-	var needs_hazard_protection := (
-		family != null
-		and family.behavior_kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"]
-	)
-	if needs_hazard_protection:
-		if piece != null and piece.has_method("set_block_active"):
-			piece.call("set_block_active", false)
-		live_activation[instance_id] = {"remaining": live_activation_grace_seconds, "held": false}
 	live_commit_boundary[instance_id] = live_boundary
 	if advance_version:
 		stage_version += 1
 	committed["stage_version"] = stage_version
-	committed["activation_after_seconds"] = (
-		live_activation_grace_seconds if needs_hazard_protection else 0.0
-	)
+	committed["activation_after_seconds"] = 0.0
 	return committed
 
 
@@ -424,7 +410,7 @@ func _materialize_placement(
 	)
 	if not arena.register_player_construction(record.instance_id):
 		return {"allowed": false, "code": "duplicate", "reason": "Duplicate construction ID."}
-	if not support_tracker.register_surface(metadata):
+	if not support_tracker.register_surface(metadata, record.footprint_rect):
 		arena.unregister_player_construction(record.instance_id)
 		return {"allowed": false, "code": "metadata", "reason": "Support metadata rejected."}
 	_serial += 1
@@ -493,7 +479,6 @@ func remove(instance_id: String, reason: String, force: bool = false) -> Diction
 	support_tracker.invalidate_surface(instance_id)
 	arena.unregister_player_construction(instance_id)
 	pieces.erase(instance_id)
-	live_activation.erase(instance_id)
 	live_commit_boundary.erase(instance_id)
 	budget.release_emitter(instance_id)
 	var node := record.node
@@ -514,7 +499,6 @@ func enter_place() -> void:
 		return
 	in_play = false
 	grace_remaining = 0.0
-	live_activation.clear()
 	_set_blocks_active(false)
 
 
@@ -524,7 +508,6 @@ func begin_play() -> PackedStringArray:
 		return PackedStringArray()
 	in_play = true
 	grace_remaining = tuning.item_activation_grace_s
-	live_activation.clear()
 	director.release_all_captives()
 	var released := budget.clear_all()
 	director.reset_for_play()
@@ -553,7 +536,6 @@ func end_play_attempt() -> PackedStringArray:
 		return PackedStringArray()
 	in_play = false
 	grace_remaining = 0.0
-	live_activation.clear()
 	director.release_all_captives()
 	for instance_id in _sorted_ids():
 		var piece := (pieces[instance_id] as PlacedItem).node as HazardPiece
@@ -576,7 +558,6 @@ func reset_match() -> PackedStringArray:
 	grace_remaining = 0.0
 	round_number = 0
 	stage_version = 0
-	live_activation.clear()
 	live_commit_boundary.clear()
 	live_boundary = -1
 	_serial = 1
@@ -620,91 +601,9 @@ func _set_blocks_active(enabled: bool) -> void:
 		piece.call("set_block_active", enabled)
 
 
-func item_activation_ready(instance_id: String) -> bool:
-	return not live_activation.has(instance_id)
-
-
-func live_activation_warning_text() -> String:
-	for state_variant in live_activation.values():
-		if bool((state_variant as Dictionary).get("held", false)):
-			return "Placement warning • area occupied; item remains inactive."
-	return ""
-
-
-func _advance_live_activation(delta: float) -> void:
-	if live_activation.is_empty():
-		return
-	var actors: Dictionary = actors_source.call() if actors_source.is_valid() else {}
-	for instance_id_variant in live_activation.keys():
-		var instance_id := str(instance_id_variant)
-		if not pieces.has(instance_id):
-			live_activation.erase(instance_id)
-			continue
-		var record := pieces[instance_id] as PlacedItem
-		var danger := record.footprint_rect.grow(live_actor_clearance_wu)
-		var found := definitions.find_variant(record.variant_key)
-		if not found.is_empty():
-			var variant := found.variant as ItemVariantDefinition
-			var regions := ItemGeometry.clip_to_stage(
-				ItemGeometry.resolve_regions(variant, record.quarter_turns, tuning),
-				record.footprint_rect,
-				arena
-			)
-			for region in regions:
-				var effect_rect: Rect2 = region.rect
-				effect_rect.position += record.footprint_rect.position
-				danger = danger.merge(effect_rect.grow(live_actor_clearance_wu))
-		var occupied := false
-		for actor_variant in actors.values():
-			var actor := actor_variant as ChickenController
-			if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
-				continue
-			if danger.intersects(actor.hit_rect(), false):
-				occupied = true
-				break
-		if not occupied:
-			occupied = _live_mover_occupies_danger(instance_id, danger)
-		var state: Dictionary = live_activation[instance_id]
-		if occupied:
-			state.remaining = live_activation_grace_seconds
-			state.held = true
-		else:
-			if bool(state.held):
-				state.held = false
-				state.remaining = live_activation_grace_seconds
-			state.remaining = maxf(0.0, float(state.remaining) - delta)
-			if float(state.remaining) <= 0.0:
-				var piece := record.node
-				if piece != null and piece.has_method("set_block_active"):
-					piece.call("set_block_active", true)
-				live_activation.erase(instance_id)
-				continue
-		live_activation[instance_id] = state
-
-
-func _live_mover_occupies_danger(activating_id: String, danger: Rect2) -> bool:
-	for other_id_variant in pieces.keys():
-		var other_id := str(other_id_variant)
-		if other_id == activating_id:
-			continue
-		var other_record := pieces[other_id] as PlacedItem
-		var mover := other_record.node as StageBlock if other_record.node is StageBlock else null
-		if mover == null or (not mover.is_dynamic() and not mover.is_pushable()):
-			continue
-		var colliders := mover.find_children("*", "CollisionShape2D", true, false)
-		if colliders.is_empty():
-			# Fail closed while a mover's live collision geometry cannot be inspected.
-			return true
-		for collider_variant in colliders:
-			var collider := collider_variant as CollisionShape2D
-			if collider.disabled or collider.shape == null:
-				continue
-			var live_rect: Rect2 = collider.global_transform * collider.shape.get_rect()
-			var swept_rect := live_rect
-			swept_rect.position += mover.velocity * 0.5
-			if danger.intersects(live_rect.merge(swept_rect), false):
-				return true
-	return false
+func item_activation_ready(_instance_id: String) -> bool:
+	# Live-built items become active on the same fixed-step boundary they are committed.
+	return true
 
 
 func _sorted_ids() -> Array:

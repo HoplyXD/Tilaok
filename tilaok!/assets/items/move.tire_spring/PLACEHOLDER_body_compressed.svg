@@ -1,1 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><ellipse cx="32" cy="36" rx="30" ry="25" fill="#2f3438" stroke="#1d2930" stroke-width="3"/><ellipse cx="32" cy="36" rx="17" ry="13" fill="none" stroke="#b9b19a" stroke-width="4"/><circle cx="32" cy="36" r="7" fill="#b9b19a"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 128 128">
+  <!-- Temporary compressed pose of the player-sketch placeholder; final art is team-owned. -->
+  <defs>
+    <linearGradient id="rubber" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#59636a"/>
+      <stop offset=".48" stop-color="#343b40"/>
+      <stop offset="1" stop-color="#20272b"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8e9da1"/>
+      <stop offset=".48" stop-color="#e4e1d5"/>
+      <stop offset="1" stop-color="#78878c"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="17" width="112" height="39" rx="18" fill="#182126"/>
+  <rect x="11" y="16" width="106" height="34" rx="16" fill="url(#rubber)"/>
+  <path d="M22 20q42-7 84 0" fill="none" stroke="#a8b0ac" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  <path d="M17 27v14m12-20v26m12-27v27m12-29v29m12-29v29m12-29v29m12-27v27m12-25v23m12-19v15" fill="none" stroke="#1b2328" stroke-width="4" stroke-linecap="round" opacity=".86"/>
+  <path d="M20 44q50 7 100 0" fill="none" stroke="#11181c" stroke-width="3" opacity=".75"/>
+  <path d="M53 49h22v9H53z" fill="#68757a"/>
+  <path d="M56 51h16v7H56z" fill="#aeb8b4"/>
+  <path d="M64 57 C64 59 43 59 43 64 S85 67 85 72 S43 75 43 80 S85 83 85 88 S64 91 64 94" fill="none" stroke="#263137" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M64 57 C64 59 43 59 43 64 S85 67 85 72 S43 75 43 80 S85 83 85 88 S64 91 64 94" fill="none" stroke="url(#steel)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="51" y="92" width="26" height="7" rx="2" fill="#49545a"/>
+  <path d="M32 99h64l5 8H27z" fill="#b47b38"/>
+  <path d="M33 99h62" stroke="#f0c879" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 107h56" stroke="#70471f" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="38" cy="103" r="2" fill="#4d3824"/>
+  <circle cx="90" cy="103" r="2" fill="#4d3824"/>
+</svg>

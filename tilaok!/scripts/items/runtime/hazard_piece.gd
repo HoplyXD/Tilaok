@@ -9,7 +9,8 @@ var family: ItemFamilyDefinition
 var variant: ItemVariantDefinition
 var tuning_ref: GameplayTuning
 var visual_time := 0.0
-var show_owner_tag := true
+## Owner tags can be enabled inside the Item Visualizer harness; hidden in normal play.
+var show_owner_tag := false
 ## Only a running piece redraws every frame; Place-mode pieces redraw on change.
 var animating := false
 var _players: Dictionary = {}
@@ -83,10 +84,3 @@ func _draw() -> void:
 	ItemSilhouettePainter.draw_variant(
 		self, family, variant, placed.quarter_turns, tuning_ref, state, tag
 	)
-	if OS.is_debug_build() and behavior != null:
-		var font := ThemeDB.fallback_font
-		if font != null:
-			var status := str(state.get("state", ""))
-			draw_string(
-				font, Vector2(2.0, -4.0), status, HORIZONTAL_ALIGNMENT_LEFT, 160.0, 9, Color.WHITE
-			)

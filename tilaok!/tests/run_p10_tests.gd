@@ -52,6 +52,7 @@ func _run() -> void:
 	_test_baseline_isolation()
 	_test_geometry_and_regions()
 	await _test_gulong()
+	await _test_gulong_landing_no_autojump()
 	await _test_trumpo()
 	await _test_parol()
 	await _test_launcher()
@@ -96,6 +97,82 @@ func _fresh(seat_layout: String = "K1") -> void:
 	await _wait(3)
 	var seat := room.join_keyboard(seat_layout)
 	actor = room.actors[seat] as ChickenController
+
+
+func _test_gulong_landing_no_autojump() -> void:
+	await _fresh()
+	var placed := _place(SPRING, Vector2i(16, 13), 0, 0)
+	var behavior := _piece(str(placed.instance_id)).behavior as SpringBehavior
+	await _arm()
+	var top_y := 13.0 * CELL
+	var half := room.tuning.body_height_wu * 0.5
+	var face_center := _feet_to_center(Vector2(1088.0, top_y))
+	_hold(Vector2(1088.0, top_y - half - 24.0))
+	var boost_pressed := false
+	for _frame in range(100):
+		var gap := top_y - (actor.global_position.y + half)
+		if not boost_pressed and gap <= 8.0:
+			_key(KEY_SPACE, true)
+			boost_pressed = true
+		await physics_frame
+		if boost_pressed and behavior.launch_count > 0:
+			_key(KEY_SPACE, false)
+			break
+	if boost_pressed:
+		_key(KEY_SPACE, false)
+	var initial_launches := behavior.launch_count
+	var launch_cleared_jump_buffer := is_zero_approx(actor.jump_buffer_remaining)
+	_key(KEY_D, true)
+	for _frame in range(60):
+		await physics_frame
+		if actor.global_position.x >= 1220.0:
+			break
+	_key(KEY_D, false)
+	var landed_on_floor := false
+	for _frame in range(180):
+		await physics_frame
+		if actor.is_on_floor():
+			landed_on_floor = true
+			break
+	var launches_at_landing := behavior.launch_count
+	await _wait(12)
+	_row(
+		"T03 Gulong launch leaves no jump buffered without input",
+		"buffer remains empty",
+		"buffer=%.3f" % actor.jump_buffer_remaining,
+		is_zero_approx(actor.jump_buffer_remaining)
+	)
+	_row(
+		"T03 chicken leaves Gulong and lands on ordinary floor",
+		"floor contact outside launch face",
+		"landed=%s x=%.1f" % [landed_on_floor, actor.global_position.x],
+		landed_on_floor and actor.global_position.x >= 1176.0
+	)
+	_row(
+		"T03 ordinary landing does not auto-jump",
+		"no upward jump impulse without a fresh press",
+		(
+			"vy=%.1f (positive=down) launches=%d→%d buffer=%.3f"
+			% [
+				actor.locomotion_velocity.y,
+				launches_at_landing,
+				behavior.launch_count,
+				actor.jump_buffer_remaining
+			]
+		),
+		(
+			actor.locomotion_velocity.y >= 0.0
+			and behavior.launch_count == launches_at_landing
+			and is_zero_approx(actor.jump_buffer_remaining)
+		)
+	)
+	_check(initial_launches >= 1, "T03 initial Gulong contact launches before ordinary landing")
+	_check(boost_pressed, "T03 synthetic jump press was made on the Gulong approach")
+	_check(
+		launch_cleared_jump_buffer,
+		"T03 Gulong launch consumes the timed-jump press instead of preserving a jump"
+	)
+	await _dispose()
 
 
 func _dispose() -> void:
@@ -539,14 +616,15 @@ func _test_gulong_cooldown() -> void:
 	_row(
 		"T03 spring cooldown holds 0.20 s", "1 launch in first 10 frames", "%d" % early, early == 1
 	)
-	# A chicken that comes to rest on the tire is never bounced again: the spring fires on the
-	# rising edge of contact, so the cooldown expiring on its own launches nothing.
+	# Persistent contact requests another launch as soon as the spring cooldown permits it.
 	_row(
-		"T03 resting on the spring never relaunches",
-		"still 1 launch at frame 40",
+		"T03 persistent spring contact relaunches after cooldown",
+		">=2 launches by frame 40",
 		"%d" % late,
-		late == 1
+		late >= 2
 	)
+	var before_relanding := behavior.launch_count
+	# Leaving and landing again remains a fresh launch-face contact.
 	# Leaving and landing again is a fresh contact, so the spring still works.
 	for _frame in range(10):
 		_hold(face_center - Vector2(0.0, 512.0))
@@ -558,7 +636,7 @@ func _test_gulong_cooldown() -> void:
 		"T03 landing on the spring again relaunches",
 		">=2 launches after re-landing",
 		"%d" % behavior.launch_count,
-		behavior.launch_count >= 2
+		behavior.launch_count > before_relanding
 	)
 	await _dispose()
 

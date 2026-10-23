@@ -12,10 +12,11 @@ theme_override_constants/separation = 9
 [node name="Badge" parent="Row" index="0"]
 size_flags_vertical = 4
 theme_override_constants/separation = 9
-tint_darken = 0.45
+tint_darken = 0.0
+use_chicken_head = true
 
 [node name="ShapeHolder" parent="Row/Badge" index="0"]
-custom_minimum_size = Vector2(18, 18)
+custom_minimum_size = Vector2(22, 22)
 size_flags_vertical = 4
 
 [node name="ShapeCircle" parent="Row/Badge/ShapeHolder" index="0"]
