@@ -280,12 +280,11 @@ func _test_library_blocked_during_countdown() -> void:
 	room.pause_coordinator.resume_countdown_seconds = 5.0
 	room.input_router.pause_requested.emit(0)
 	await _wait_frames(2)
-	room.pause_coordinator.mark_ready(1)
 	room.pause_coordinator.mark_ready(0)
 	await _wait_frames(2)
 	_check(
 		room.pause_coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN,
-		"both seats ready starts the resume countdown"
+		"one player's Resume action starts the resume countdown"
 	)
 	room.presenter._open_overlay(LIBRARY_SCENE)
 	_check(room.presenter._overlay == null, "Library cannot open during the resume countdown")

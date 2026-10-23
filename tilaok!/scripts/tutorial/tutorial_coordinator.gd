@@ -374,6 +374,7 @@ func _fill(text: String) -> String:
 		"confirm": _glyphs("confirm"),
 		"build": _glyphs("build_toggle"),
 		"aim": _glyphs("aim"),
+		"live_confirm": _glyphs("live_confirm"),
 		"rotate_live": _glyphs("live_rotate"),
 		"cancel": _glyphs("live_cancel"),
 		"pugad_s": _number(tuning.match_pugad_seconds),

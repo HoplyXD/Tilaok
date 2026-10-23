@@ -146,13 +146,12 @@ func _test_theme_tokens() -> void:
 				small.append(str(type_name))
 	_check(small.is_empty(), "no Theme text type is below %d px %s" % [label_minimum, small])
 	for state in ["normal", "hover", "pressed", "disabled"]:
-		_check(
-			theme.has_stylebox(state, "TilaokMenuButton"),
-			"plank button has a %s look" % state
-		)
+		_check(theme.has_stylebox(state, "TilaokMenuButton"), "plank button has a %s look" % state)
 	_check(
-		theme.get_stylebox("normal", "MenuButtonSelected")
-		== theme.get_stylebox("hover", "TilaokMenuButton"),
+		(
+			theme.get_stylebox("normal", "MenuButtonSelected")
+			== theme.get_stylebox("hover", "TilaokMenuButton")
+		),
 		"router-selected menu entry uses the Hovered plank look"
 	)
 
@@ -190,10 +189,12 @@ func _test_plank_button() -> void:
 		var box := theme.get_stylebox(state, "TilaokMenuButton") as StyleBoxFlat
 		var fill := Color.html(str(spec[0]))
 		_check(
-			box != null
-			and _near(box.bg_color, fill)
-			and box.shadow_size == 0
-			and box.shadow_offset == Vector2.ZERO,
+			(
+				box != null
+				and _near(box.bg_color, fill)
+				and box.shadow_size == 0
+				and box.shadow_offset == Vector2.ZERO
+			),
 			"plank %s fill is the Figma #%s with no drop shadow" % [state, fill.to_html(false)]
 		)
 		_check(
@@ -204,15 +205,19 @@ func _test_plank_button() -> void:
 	var stroke_gradient := plank.get_node("Stroke/Gradient") as Control
 	var pressed_look := plank.get_node("PressedLook") as Control
 	_check(
-		stroke.clip_children == CanvasItem.CLIP_CHILDREN_ONLY
-		and pressed_look.clip_children == CanvasItem.CLIP_CHILDREN_ONLY,
+		(
+			stroke.clip_children == CanvasItem.CLIP_CHILDREN_ONLY
+			and pressed_look.clip_children == CanvasItem.CLIP_CHILDREN_ONLY
+		),
 		"outline gradient and pressed shadow are clipped to the rounded plank shape"
 	)
 	var rivet := plank.get_node("RivetLeft") as Control
 	_check(
-		not pressed_look.visible
-		and rivet.theme_type_variation == &"Rivet"
-		and stroke_gradient.theme_type_variation == &"PlankStroke",
+		(
+			not pressed_look.visible
+			and rivet.theme_type_variation == &"Rivet"
+			and stroke_gradient.theme_type_variation == &"PlankStroke"
+		),
 		"Normal plank: normal outline gradient, no pressed shadow, dark rivets"
 	)
 	plank.toggle_mode = true
@@ -228,10 +233,12 @@ func _test_plank_button() -> void:
 	await process_frame
 	await process_frame
 	_check(
-		not pressed_look.visible
-		and stroke_gradient.theme_type_variation == &"PlankStrokeDisabled"
-		and rivet.theme_type_variation == &"RivetDisabled"
-		and (plank.get_node("RivetRight") as Control).theme_type_variation == &"RivetDisabled",
+		(
+			not pressed_look.visible
+			and stroke_gradient.theme_type_variation == &"PlankStrokeDisabled"
+			and rivet.theme_type_variation == &"RivetDisabled"
+			and (plank.get_node("RivetRight") as Control).theme_type_variation == &"RivetDisabled"
+		),
 		"Disabled plank uses the grey outline gradient and fades both rivets"
 	)
 	_check(
@@ -295,15 +302,19 @@ func _test_menu_action_button() -> void:
 	var shadow := theme.get_stylebox("panel", "MenuActionShadow") as StyleBoxFlat
 	var shadow_selected := theme.get_stylebox("panel", "MenuActionShadowSelected") as StyleBoxFlat
 	_check(
-		shadow.get_expand_margin(SIDE_BOTTOM) == 3.0
-		and shadow_selected.get_expand_margin(SIDE_BOTTOM) == 4.0,
+		(
+			shadow.get_expand_margin(SIDE_BOTTOM) == 3.0
+			and shadow_selected.get_expand_margin(SIDE_BOTTOM) == 4.0
+		),
 		"menu action drop shadows reach 3 px (normal) and 4 px (selected) below, as Figma 0 3 0 / 0 4 0"
 	)
 	_check(
 		(
 			_near(theme.get_color("font_color", "MenuActionText"), Color.html("#684127"))
 			and theme.get_font_size("font_size", "MenuActionText") == 22
-			and _near(theme.get_color("font_color", "MenuActionTextSelected"), Color.html("#fff8e8"))
+			and _near(
+				theme.get_color("font_color", "MenuActionTextSelected"), Color.html("#fff8e8")
+			)
 			and theme.get_font_size("font_size", "MenuActionTextSelected") == 31
 			and theme.get_constant("separation", "MenuActionRow") == 13
 		),
@@ -346,7 +357,10 @@ func _test_menu_action_button() -> void:
 			and label.theme_type_variation == &"MenuActionTextSelected"
 			and button.get_node("Face").theme_type_variation == &"MenuActionFaceSelected"
 			and button.get_node("Inset").theme_type_variation == &"MenuActionInsetSelected"
-			and button.get_node("FasteningLeft").theme_type_variation == &"MenuActionFasteningSelected"
+			and (
+				button.get_node("FasteningLeft").theme_type_variation
+				== &"MenuActionFasteningSelected"
+			)
 		),
 		"selected menu action is 388 x 72, brown, icon and pointer shown (%s)" % button.size
 	)
@@ -432,8 +446,10 @@ func _test_badge_variants() -> void:
 		"score chip keeps number and shape"
 	)
 	_check(
-		(chip.badge.get_node("%PrefixLabel") as Label).text == "P"
-		and (chip.badge.get_node("%PrefixLabel") as Label).visible,
+		(
+			(chip.badge.get_node("%PrefixLabel") as Label).text == "P"
+			and (chip.badge.get_node("%PrefixLabel") as Label).visible
+		),
 		"score chip reads P3"
 	)
 	_check(
@@ -449,8 +465,7 @@ func _test_badge_variants() -> void:
 		"seat pill paints the shape plain so it shows on the seat-coloured pill"
 	)
 	_check(
-		(pill.badge.get_node("%PrefixLabel") as Label).text == "Player ",
-		"seat pill reads Player 3"
+		(pill.badge.get_node("%PrefixLabel") as Label).text == "Player ", "seat pill reads Player 3"
 	)
 	chip.queue_free()
 	pill.queue_free()
@@ -510,6 +525,30 @@ func _test_lobby_open_slot() -> void:
 	_check(open_slot.badge.modulate.a < 1.0, "the preview is faded")
 	_check(open_slot.state_text() == "Open slot", "open slot says so in text")
 	_check(screen.slots[0].badge.modulate.a == 1.0, "a joined seat's badge is not faded")
+	var joined_seats := UiContext.sample_seats(2)
+	for index in screen.slots.size():
+		var chicken := screen.slots[index].get_node("%PreviewChicken") as ChickenController
+		var seat: Dictionary = joined_seats[index]
+		if bool(seat.get("joined", false)):
+			_check(
+				(
+					chicken != null
+					and chicken.marker_color == seat.color
+					and chicken.identity_shape == seat.shape
+					and is_equal_approx(chicken.modulate.a, 1.0)
+				),
+				"joined Lobby player %d sees their own chicken color and shape" % (index + 1)
+			)
+		else:
+			_check(
+				(
+					chicken != null
+					and chicken.modulate.a < 0.5
+					and absf(chicken.marker_color.r - chicken.marker_color.g) < 0.01
+					and absf(chicken.marker_color.g - chicken.marker_color.b) < 0.01
+				),
+				"empty Lobby slot %d shows a faded grey chicken" % (index + 1)
+			)
 	screen.queue_free()
 	await process_frame
 
@@ -537,7 +576,8 @@ func _test_component_sheet() -> void:
 ## the live states (shared / owner, quiet reason, countdown, reclaim pill) still working.
 func _test_pause_frame() -> void:
 	var pause := (
-		(load("res://scenes/ui/screens/pause_screen.tscn") as PackedScene).instantiate() as UiPauseScreen
+		(load("res://scenes/ui/screens/pause_screen.tscn") as PackedScene).instantiate()
+		as UiPauseScreen
 	)
 	root.add_child(pause)
 	await process_frame
@@ -559,40 +599,59 @@ func _test_pause_frame() -> void:
 	)
 	var backing := pause.get_node("Center/Panel/Decor/Backing") as Control
 	_check(
-		absf(rad_to_deg(backing.rotation) + 2.344) < 0.01
-		and _near(theme.get_stylebox("panel", "PauseBacking").bg_color, Color.html("#9e6941")),
+		(
+			absf(rad_to_deg(backing.rotation) + 2.344) < 0.01
+			and _near(theme.get_stylebox("panel", "PauseBacking").bg_color, Color.html("#9e6941"))
+		),
 		"backing is the Figma #9e6941 sheet turned 2.344 degrees"
 	)
 	var title := pause.get_node("Center/Panel/Content/TitleRow/PausedLabel") as Label
 	_check(
-		title.text == "Paused"
-		and title.get_theme_font_size("font_size") == 43
-		and _near(title.get_theme_color("font_color"), Color.html("#784623")),
+		(
+			title.text == "Paused"
+			and title.get_theme_font_size("font_size") == 43
+			and _near(title.get_theme_color("font_color"), Color.html("#784623"))
+		),
 		"title is Mountains of Christmas 24 -> 43 px #784623"
 	)
 	var owner_label := pause.get_node("%OwnerLabel") as Label
 	var heading := pause.get_node("%RosterHeading") as Label
 	_check(
-		owner_label.text == "shared pause · any player can take the menu"
-		and heading.text == "everyone must be ready to resume"
-		and heading.visible
-		and _near(owner_label.get_theme_color("font_color"), Color.BLACK)
-		and owner_label.get_theme_font_size("font_size") == 18,
+		(
+			owner_label.text == "shared pause · any player can take the menu"
+			and heading.text == "any one player can resume"
+			and heading.visible
+			and _near(owner_label.get_theme_color("font_color"), Color.BLACK)
+			and owner_label.get_theme_font_size("font_size") == 18
+		),
 		"shared pause shows the frame's two Mansalva lines in black"
 	)
-	_check(not (pause.get_node("%ReasonRow") as Control).visible, "a plain pause adds no reason line")
+	_check(
+		not (pause.get_node("%ReasonRow") as Control).visible, "a plain pause adds no reason line"
+	)
 	for index in 4:
 		var pill := pause.rosters[index]
 		var pill_color := (pill.get_theme_stylebox("panel") as StyleBoxFlat).bg_color
-		var shape := pill.badge.get_node("ShapeHolder/Shape" + str(seats[index].shape).capitalize()) as Polygon2D
+		var shape := (
+			pill.badge.get_node("ShapeHolder/Shape" + str(seats[index].shape).capitalize())
+			as Polygon2D
+		)
 		_check(
-			pill.visible
-			and pill_color.is_equal_approx(
-				(theme.get_stylebox("panel", "PillSeat%d" % (index + 1)) as StyleBoxFlat).bg_color
+			(
+				pill.visible
+				and pill_color.is_equal_approx(
+					(
+						(theme.get_stylebox("panel", "PillSeat%d" % (index + 1)) as StyleBoxFlat)
+						. bg_color
+					)
+				)
+				and shape.color.is_equal_approx(pill_color)
+				and (shape.get_node("Outline") as Line2D).visible
+			),
+			(
+				"pill %d keeps the game colour; its shape is pill-coloured with a cream outline"
+				% (index + 1)
 			)
-			and shape.color.is_equal_approx(pill_color)
-			and (shape.get_node("Outline") as Line2D).visible,
-			"pill %d keeps the game colour; its shape is pill-coloured with a cream outline" % (index + 1)
 		)
 	_check(
 		pause.rosters[0].get_node("Glass/GlassPatch") is NinePatchRect,
@@ -603,12 +662,16 @@ func _test_pause_frame() -> void:
 		var button := pause.get_node("%" + name) as Button
 		texts.append(button.text)
 		_check(
-			button.get_theme_font_size("font_size") == 14
-			and button.get_node_or_null("Icon") is TextureRect
-			and (button.get_node("DropShadow") as Control).show_behind_parent,
+			(
+				button.get_theme_font_size("font_size") == 14
+				and button.get_node_or_null("Icon") is TextureRect
+				and (button.get_node("DropShadow") as Control).show_behind_parent
+			),
 			"%s: 14 px label, Figma icon and group drop shadow" % name
 		)
-	_check(texts == ["Resume", "Settings", "Library", "Leave Match"], "button labels follow the frame")
+	_check(
+		texts == ["Resume", "Settings", "Library", "Leave Match"], "button labels follow the frame"
+	)
 	# Owner, informative reason and countdown.
 	for seat in seats:
 		seat.ready = true
@@ -619,48 +682,68 @@ func _test_pause_frame() -> void:
 		"owner pause reads 'paused by' with the owner badge"
 	)
 	_check(
-		(pause.get_node("%ReasonRow") as Control).visible
-		and (pause.get_node("%ReasonLabel") as Label).text == "The game window lost focus",
+		(
+			(pause.get_node("%ReasonRow") as Control).visible
+			and (pause.get_node("%ReasonLabel") as Label).text == "The game window lost focus"
+		),
 		"an informative reason gets its own line"
 	)
 	_check(
-		(pause.get_node("%CountdownLabel") as Label).visible
-		and (pause.get_node("%CountdownLabel") as Label).text == "resuming in 3"
-		and not heading.visible,
+		(
+			(pause.get_node("%CountdownLabel") as Label).visible
+			and (pause.get_node("%CountdownLabel") as Label).text == "resuming in 3"
+			and not heading.visible
+		),
 		"the countdown takes the 'everyone must be ready' line"
 	)
 	# Reclaim: seat 3 lost, then a second missing seat.
 	seats[2].connected = false
 	pause.bind_state(
-		UiPauseScreen.reason_text("assigned device disconnected"), -1, 0.0, seats, {"reclaim_seat": 2}
+		UiPauseScreen.reason_text("assigned device disconnected"),
+		-1,
+		0.0,
+		seats,
+		{"reclaim_seat": 2}
 	)
 	await process_frame
 	var reclaim := pause.get_node("%ReclaimPanel") as PanelContainer
 	var reclaim_label := pause.get_node("%ReclaimLabel") as Label
 	_check(
-		reclaim.visible
-		and not pause.rosters[2].visible
-		and reclaim.get_index() == pause.rosters[2].get_index() - 1
-		and reclaim.theme_type_variation == &"PillSeat3"
-		and not (pause.get_node("%ReasonRow") as Control).visible,
+		(
+			reclaim.visible
+			and not pause.rosters[2].visible
+			and reclaim.get_index() == pause.rosters[2].get_index() - 1
+			and reclaim.theme_type_variation == &"PillSeat3"
+			and not (pause.get_node("%ReasonRow") as Control).visible
+		),
 		"the lost seat's pill becomes the tall reclaim pill in its place and colour"
 	)
 	_check(
-		reclaim_label.text.begins_with("Player 3 has lost its controller. Press South on the new")
-		and not reclaim_label.text.contains("Left/Right"),
+		(
+			reclaim_label.text.begins_with(
+				"Player 3 has lost its controller. Press South on the new"
+			)
+			and not reclaim_label.text.contains("Left/Right")
+		),
 		"reclaim pill uses the frame's wording (%s)" % reclaim_label.text
 	)
 	seats[1].connected = false
 	pause.bind_state(
-		UiPauseScreen.reason_text("assigned device disconnected"), -1, 0.0, seats, {"reclaim_seat": 1}
+		UiPauseScreen.reason_text("assigned device disconnected"),
+		-1,
+		0.0,
+		seats,
+		{"reclaim_seat": 1}
 	)
 	await process_frame
 	_check(
-		reclaim_label.text.begins_with("Player 2 has lost")
-		and reclaim_label.text.ends_with("Left/Right picks another missing seat.")
-		and pause.rosters[2].visible
-		and pause.rosters[2].state_text() == "DEVICE LOST"
-		and reclaim.theme_type_variation == &"PillSeat2",
+		(
+			reclaim_label.text.begins_with("Player 2 has lost")
+			and reclaim_label.text.ends_with("Left/Right picks another missing seat.")
+			and pause.rosters[2].visible
+			and pause.rosters[2].state_text() == "DEVICE LOST"
+			and reclaim.theme_type_variation == &"PillSeat2"
+		),
 		"with two missing seats the pill follows the chosen seat and mentions Left/Right"
 	)
 	pause.queue_free()
@@ -670,15 +753,19 @@ func _test_pause_frame() -> void:
 ## Round result details read from Figma frame 36:221 (exact paints and effects).
 func _test_round_result_frame() -> void:
 	_check(
-		_near(theme.get_color("font_outline_color", "ResultTitle"), Color.html("#624a39"))
-		and theme.get_constant("outline_size", "ResultTitle") == 6,
+		(
+			_near(theme.get_color("font_outline_color", "ResultTitle"), Color.html("#624a39"))
+			and theme.get_constant("outline_size", "ResultTitle") == 6
+		),
 		"result title has the Figma 1 px #624a39 outline (measured 3.96 vs 3.87 px at 1080p)"
 	)
 	var board := theme.get_stylebox("panel", "ChalkboardPanel") as StyleBoxFlat
 	_check(
-		_near(board.bg_color, Color.html("#022c02"))
-		and _near(board.border_color, Color.WHITE)
-		and board.corner_radius_top_left == 0,
+		(
+			_near(board.bg_color, Color.html("#022c02"))
+			and _near(board.border_color, Color.WHITE)
+			and board.corner_radius_top_left == 0
+		),
 		"chalkboard is #022c02 with a square white frame"
 	)
 	var fill := theme.get_stylebox("fill", "CountdownBar") as StyleBoxTexture
@@ -686,10 +773,12 @@ func _test_round_result_frame() -> void:
 	var w := fill_image.get_width()
 	var h := fill_image.get_height()
 	_check(
-		fill.texture.resource_path.ends_with("ui.round_result.countdown_fill.svg")
-		and fill.texture_margin_right == 33.0
-		and fill_image.get_pixel(w - 4, 0).a > 0.9
-		and fill_image.get_pixel(w - 4, h - 1).a < 0.05,
+		(
+			fill.texture.resource_path.ends_with("ui.round_result.countdown_fill.svg")
+			and fill.texture_margin_right == 33.0
+			and fill_image.get_pixel(w - 4, 0).a > 0.9
+			and fill_image.get_pixel(w - 4, h - 1).a < 0.05
+		),
 		"countdown fill is the Figma trapezoid (slanted right end kept by a 33 px margin)"
 	)
 	var screen := (
@@ -704,9 +793,11 @@ func _test_round_result_frame() -> void:
 	var grain := screen.get_node("Safe/Content/Columns/Chalkboard/Grain/GrainPatch") as Control
 	var grain_rect := Rect2(grain.global_position, grain.size * grain.scale)
 	_check(
-		grain.theme_type_variation == &"ChalkGrain"
-		and grain_rect.position.distance_to(chalk.global_position) < 0.5
-		and grain_rect.size.distance_to(chalk.size) < 0.5,
+		(
+			grain.theme_type_variation == &"ChalkGrain"
+			and grain_rect.position.distance_to(chalk.global_position) < 0.5
+			and grain_rect.size.distance_to(chalk.size) < 0.5
+		),
 		"the Figma grain covers the whole chalkboard, frame included"
 	)
 	_check(screen.get_node_or_null("Safe/Content/Tag") == null, "no PLACEHOLDER tag on the result")
@@ -732,26 +823,32 @@ func _test_round_result_frame() -> void:
 func _test_place_frame() -> void:
 	var hud_box := theme.get_stylebox("panel", "HudBar") as StyleBoxFlat
 	_check(
-		_near(hud_box.bg_color, Color.html("#2d2920"))
-		and _near(hud_box.border_color, Color.html("#607477"))
-		and hud_box.border_width_bottom == 2,
+		(
+			_near(hud_box.bg_color, Color.html("#2d2920"))
+			and _near(hud_box.border_color, Color.html("#607477"))
+			and hud_box.border_width_bottom == 2
+		),
 		"HUD rail is the Figma #2d2920 with a #607477 bottom line"
 	)
 	var chip_box := theme.get_stylebox("panel", "ScoreChip") as StyleBoxFlat
 	_check(
-		_near(chip_box.bg_color, Color.html("#f6e8ce"))
-		and _near(chip_box.border_color, Color.html("#9d5c00"))
-		and _near(theme.get_color("font_color", "ChipState"), Color.html("#784623"))
-		and theme.get_font("font", "ChipState").resource_path.ends_with("Mansalva-Regular.ttf")
-		and _near(theme.get_color("font_color", "ChipName"), Color.html("#483934"))
-		and theme.get_font_size("font_size", "ChipLabel") == 18,
+		(
+			_near(chip_box.bg_color, Color.html("#f6e8ce"))
+			and _near(chip_box.border_color, Color.html("#9d5c00"))
+			and _near(theme.get_color("font_color", "ChipState"), Color.html("#784623"))
+			and theme.get_font("font", "ChipState").resource_path.ends_with("Mansalva-Regular.ttf")
+			and _near(theme.get_color("font_color", "ChipName"), Color.html("#483934"))
+			and theme.get_font_size("font_size", "ChipLabel") == 18
+		),
 		"score chips use the frame's cream, outline, Mansalva state and Margarine name / score"
 	)
 	var place := (
 		(load("res://scenes/ui/screens/place_overlay.tscn") as PackedScene).instantiate()
 		as UiPlaceOverlay
 	)
-	var hud := (load("res://scenes/ui/screens/play_hud.tscn") as PackedScene).instantiate() as Control
+	var hud := (
+		(load("res://scenes/ui/screens/play_hud.tscn") as PackedScene).instantiate() as Control
+	)
 	root.add_child(hud)
 	root.add_child(place)
 	var ctx := UiContext.make(4, "k1")
@@ -760,9 +857,11 @@ func _test_place_frame() -> void:
 	await process_frame
 	var guide := place.get_node("%PhaseBanner") as UiPhaseBanner
 	_check(
-		guide.theme_type_variation == &"GuideCard"
-		and guide.title_text() == "Guide"
-		and guide.get_node("Rivets").get_child_count() == 4,
+		(
+			guide.theme_type_variation == &"GuideCard"
+			and guide.title_text() == "Guide"
+			and guide.get_node("Rivets").get_child_count() == 4
+		),
 		"Place guide is the riveted Guide card"
 	)
 	var tabs := {
@@ -776,24 +875,33 @@ func _test_place_frame() -> void:
 		var spec: Array = tabs[tab_name]
 		var strip := tab.get_node("Col/Strip") as Panel
 		_check(
-			_near((tab.get_theme_stylebox("panel") as StyleBoxFlat).bg_color, Color.html(spec[0]))
-			and _near(
-				(strip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color, Color.html(spec[1])
-			)
-			and (tab.get_node("Col/Text") as Label).text == spec[2],
+			(
+				_near(
+					(tab.get_theme_stylebox("panel") as StyleBoxFlat).bg_color, Color.html(spec[0])
+				)
+				and _near(
+					(strip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color,
+					Color.html(spec[1])
+				)
+				and (tab.get_node("Col/Text") as Label).text == spec[2]
+			),
 			"%s tab matches the frame (%s / %s)" % [tab_name, spec[0], spec[1]]
 		)
 	var timer := place.get_node("%Countdown") as UiCountdownRing
 	timer.set_time(8.0, 15.0)
 	_check(
-		timer.seconds_text() == "8 secs"
-		and (timer.get_node("%Bar") as ProgressBar).theme_type_variation == &"PlaceTimerBar",
+		(
+			timer.seconds_text() == "8 secs"
+			and (timer.get_node("%Bar") as ProgressBar).theme_type_variation == &"PlaceTimerBar"
+		),
 		"Place timer reads '8 secs' on the slanted blue bar"
 	)
 	_check(
-		place.get_node_or_null("Bottom/Col/Tag") == null
-		and not (place.get_node("%GhostStatus") as Control).visible
-		and not (place.get_node("Bottom/Col/StatusRow") as Control).visible,
+		(
+			place.get_node_or_null("Bottom/Col/Tag") == null
+			and not (place.get_node("%GhostStatus") as Control).visible
+			and not (place.get_node("Bottom/Col/StatusRow") as Control).visible
+		),
 		"no placeholder tag; the old locked count and status rows stay hidden"
 	)
 	_check(
@@ -809,11 +917,13 @@ func _test_place_frame() -> void:
 ## description on eggs, per the GDD; players + 2 eggs with two extra card spots).
 func _test_pugad_frame() -> void:
 	_check(
-		_near(theme.get_color("font_color", "PugadTitle"), Color.html("#784623"))
-		and theme.get_font_size("font_size", "PugadTitle") == 45
-		and _near(
-			(theme.get_stylebox("panel", "ScoreChipPaper") as StyleBoxFlat).border_color,
-			Color.html("#d6ba87")
+		(
+			_near(theme.get_color("font_color", "PugadTitle"), Color.html("#784623"))
+			and theme.get_font_size("font_size", "PugadTitle") == 45
+			and _near(
+				(theme.get_stylebox("panel", "ScoreChipPaper") as StyleBoxFlat).border_color,
+				Color.html("#d6ba87")
+			)
 		),
 		"Pick title is Mountains of Christmas 45 #784623; Pugad chips use the paper outline"
 	)
@@ -830,8 +940,10 @@ func _test_pugad_frame() -> void:
 	var spot := pugad.get_node("%Spots").get_node("Spots4/Spot1") as Control
 	var egg1 := pugad.egg_slots[0]
 	_check(
-		egg1.position.is_equal_approx(Vector2(329.4, 250.4))
-		and is_equal_approx(egg1.rotation, spot.rotation),
+		(
+			egg1.position.is_equal_approx(Vector2(329.4, 250.4))
+			and is_equal_approx(egg1.rotation, spot.rotation)
+		),
 		"egg 1 sits on the frame's first card spot (329.4, 250.4, -11.84 degrees)"
 	)
 	var labels := egg1.find_children("*", "Label", true, false)
@@ -849,17 +961,35 @@ func _test_pugad_frame() -> void:
 		egg1.pill_text() == "✓ Picked" and pugad.egg_slots[1].pill_text() == "Choosing…",
 		"the pick pill reads ✓ Picked for the owner and Choosing… for a chooser"
 	)
+	var many_keys := PackedStringArray()
+	for _index in 6:
+		many_keys.append(egg1.variant_key)
+	var nest_rect := (pugad.get_node("Nest") as Control).get_global_rect()
+	for count in [5, 6]:
+		var shown_keys := PackedStringArray()
+		for index in count:
+			shown_keys.append(many_keys[index])
+		pugad.bind_eggs(ctx.definitions, shown_keys, ctx.tuning)
+		var contained := true
+		for index in count:
+			if not nest_rect.encloses(pugad.egg_slots[index].get_global_rect()):
+				contained = false
+		_check(contained, "%d egg cards stay inside the nest artwork" % count)
 	var dim := pugad.get_node("Dim") as ColorRect
 	_check(
-		dim.color.is_equal_approx(Color(0.09804, 0.09412, 0.09412, 0.41))
-		and (pugad.get_node("Nest") as TextureRect).texture != null,
+		(
+			dim.color.is_equal_approx(Color(0.09804, 0.09412, 0.09412, 0.41))
+			and (pugad.get_node("Nest") as TextureRect).texture != null
+		),
 		"the frame's 41 % #191818 dim and the nest art are in place"
 	)
 	_check(
-		(pugad.get_node("%HudRound") as Label).text == "Round 1"
-		and pugad.hud_chips[0].state_text() == "Picked"
-		and pugad.count_text() == "2 / 2 picked"
-		and (pugad.get_node("%PickHint") as Label).text == "South / Enter  Pick",
+		(
+			(pugad.get_node("%HudRound") as Label).text == "Round 1"
+			and pugad.hud_chips[0].state_text() == "Picked"
+			and pugad.count_text() == "2 / 2 picked"
+			and (pugad.get_node("%PickHint") as Label).text == "South / Enter  Pick"
+		),
 		"Pugad HUD, chip state, picked count and hint follow the frame"
 	)
 	pugad.queue_free()
@@ -917,8 +1047,7 @@ func _test_tutorial_card() -> void:
 		(
 			step.text == "Step 5 of 5 - Results"
 			and step.theme_type_variation == &"TutorialCardCaption"
-			and (prompt.get_node("%BodyLabel") as Label).theme_type_variation
-			== &"TutorialCardBody"
+			and (prompt.get_node("%BodyLabel") as Label).theme_type_variation == &"TutorialCardBody"
 			and skip.text == "Pause > Skip tutorial"
 			and skip.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT
 		),
@@ -1085,8 +1214,15 @@ func _test_final_result_frame() -> void:
 			cluck.visible
 			and not (cluck.get_node("%PhaseLabel") as Control).visible
 			and (cluck.get_node("%DetailLabel") as Label).text.begins_with("Last Cluck!")
-			and absf((screen.get_node("%ReplayButton") as Control).get_global_rect().position.y - 664.2)
-			< 1.0
+			and (
+				absf(
+					(
+						(screen.get_node("%ReplayButton") as Control).get_global_rect().position.y
+						- 664.2
+					)
+				)
+				< 1.0
+			)
 		),
 		"Last Cluck line shows under the winner without moving the plank row"
 	)
@@ -1149,7 +1285,10 @@ func _test_title_card() -> void:
 			and backing_br.x > card_rect.end.x + 6.0
 			and backing_br.y < card_rect.end.y
 		),
-		"backing peeks out top-left and bottom-right like the frame (%s, %s)" % [backing_tl, backing_br]
+		(
+			"backing peeks out top-left and bottom-right like the frame (%s, %s)"
+			% [backing_tl, backing_br]
+		)
 	)
 	var backing_centre := backing_xf * (backing.size / 2.0)
 	_check(
@@ -1167,8 +1306,7 @@ func _test_title_card() -> void:
 		var box := shadow.get_theme_stylebox("panel") as StyleBoxFlat
 		var xf := shadow.get_global_transform()
 		var shift: Vector2 = (
-			xf * (shadow.size / 2.0)
-			- owner_box.get_global_transform() * (owner_box.size / 2.0)
+			xf * (shadow.size / 2.0) - owner_box.get_global_transform() * (owner_box.size / 2.0)
 		)
 		var inset: float = spec[4]
 		_check(
@@ -1259,7 +1397,10 @@ func _test_title_card() -> void:
 				and is_equal_approx(label.get_rect().position.y, float(spec[4]))
 				and label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER
 			),
-			"%s is %s %d %s, %.1f px below the card top" % [path, spec[1], spec[2], spec[3], spec[4]]
+			(
+				"%s is %s %d %s, %.1f px below the card top"
+				% [path, spec[1], spec[2], spec[3], spec[4]]
+			)
 		)
 	_check(
 		(title.get_node("%TitleLabel") as Label).text == "Tilaok!",
@@ -1296,7 +1437,10 @@ func _test_title_card() -> void:
 				and slot.get_rect().is_equal_approx(box_rect)
 				and absf(float(tex.get_width()) / tex.get_height() - box_rect.size.aspect()) < 0.01
 			),
-			"%s shows %s.svg undistorted at the frame's box %s" % [path.get_file(), spec[0], box_rect]
+			(
+				"%s shows %s.svg undistorted at the frame's box %s"
+				% [path.get_file(), spec[0], box_rect]
+			)
 		)
 	_check(
 		card.find_child("Ornaments", false, false) == null,

@@ -182,7 +182,7 @@ static func _gamepad(context: String) -> Array:
 		"play", "build":
 			rows.append_array(
 				[
-					_row(JOY_BUTTON_A, "jump"),
+					_row(JOY_BUTTON_A, "live_confirm" if context == "build" else "jump"),
 					_row(JOY_BUTTON_X, "cheer"),
 					_row(JOY_BUTTON_Y, "build_toggle")
 				]
@@ -196,7 +196,6 @@ static func _gamepad(context: String) -> Array:
 							_row(JOY_BUTTON_RIGHT_SHOULDER, "live_rotate"),
 							_row(JOY_BUTTON_LEFT_SHOULDER, "live_cancel"),
 							_row("right_stick", "aim"),
-							_row("right_trigger", "live_confirm"),
 						]
 					)
 				)

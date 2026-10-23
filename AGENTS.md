@@ -1,6 +1,6 @@
 # AGENTS.md — Tilaok!
 
-**Current route (2026-10-22):** normal Play is local/offline: Lobby → Pugad → shared 3-second GO → movement and construction together → results → next round. Phone/LAN code and Android/QR support are retired; the NLB specification, tracker and evidence are retained as retired history under `docs/archive/retired-networked-live-build/`. The scheduled P12 Place route remains a developer fallback. See P20 in `docs/PHASETASK.md` for active acceptance and evidence status.
+**Current route (2026-10-23):** normal Play is local/offline: Lobby → Pugad → shared 3-second GO → active movement/building → results → next round. Entering build mode pauses that player's controls and routes directional input to the item preview; confirming starts the 2-second construction job and restores movement. Phone/LAN code and Android/QR support are retired; the NLB specification, tracker and evidence are retained as retired history under `docs/archive/retired-networked-live-build/`. The scheduled P12 Place route remains a developer fallback. See P20 in `docs/PHASETASK.md` for active acceptance and evidence status.
 
 Context for Codex sessions in this repo.
 

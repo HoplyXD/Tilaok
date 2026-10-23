@@ -8,6 +8,8 @@ signal wall_kicked(side: int)
 signal sneak_changed(is_sneaking: bool)
 signal stunned(seconds: float)
 
+const WATER_DRAG := 0.86
+
 @export var seat_index := 0
 @export var tuning: GameplayTuning
 @export var input_router: LocalInputRouter
@@ -29,6 +31,9 @@ var coyote_remaining := 0.0
 var jump_buffer_remaining := 0.0
 var jump_was_held := false
 var intentional_input := false
+## Build mode suppresses direct player movement while leaving gravity, collisions and external
+## forces active. The live-build room owns this per-seat lock.
+var build_input_locked := false
 var containment_outcome_reported := false
 ## Wall slide/jump state (REQ-MOVE-004). Side: -1 wall on the left, +1 on the right, 0 none.
 var wall_side := 0
@@ -56,7 +61,6 @@ var in_water := false
 var water_jumping := false
 ## Per-physics-step velocity retained while floating. Below 1.0 it damps the rise/fall overshoot so
 ## a chicken settles at the waterline; it is a feel constant, not a tuned magnitude.
-const WATER_DRAG := 0.86
 var _water_surface_y := 0.0
 var _ascent_gravity := 1875.0
 var _fall_gravity := 2531.25
@@ -113,19 +117,21 @@ func _physics_process(delta: float) -> void:
 	if not in_play:
 		_clear_support()
 	# In build mode the movement keys drive the block cursor, so the chicken holds still.
-	var building := in_play and input_router.is_build_mode(seat_index)
-	var axis := input_router.movement_axis(seat_index) if in_play and not building else 0.0
-	var jump_down := in_play and not building and input_router.is_action_held(seat_index, "jump")
+	var building := in_play and (input_router.is_build_mode(seat_index) or build_input_locked)
+	var controls_active := in_play and not building
+	var axis := input_router.movement_axis(seat_index) if controls_active else 0.0
+	var jump_down := controls_active and input_router.is_action_held(seat_index, "jump")
 	var next_intent := (
-		in_play
-		and not building
+		controls_active
 		and (input_router.has_direction_intent(seat_index) or absf(axis) > 0.0 or jump_down)
 	)
 	if intentional_input != next_intent:
 		intentional_input = next_intent
 		intentional_input_changed.emit(intentional_input)
-	if in_play and input_router.consume_pressed(seat_index, "jump") and not building:
+	if controls_active and input_router.consume_pressed(seat_index, "jump"):
 		jump_buffer_remaining = tuning.jump_buffer_seconds
+	elif building:
+		jump_buffer_remaining = 0.0
 	else:
 		jump_buffer_remaining = maxf(0.0, jump_buffer_remaining - delta)
 	if not in_play:
@@ -140,6 +146,11 @@ func _physics_process(delta: float) -> void:
 		return
 	stun_immunity_remaining = maxf(0.0, stun_immunity_remaining - delta)
 	var stunned_now := stun_remaining > 0.0
+	if building:
+		# Entering build mode stops player-driven horizontal motion immediately. Gravity and
+		# external motion from hazards remain part of the live simulation.
+		locomotion_velocity.x = 0.0
+		jump_was_held = false
 	if stunned_now:
 		# Stunned: no walking, jumping, gliding or sneaking until the timer runs out.
 		stun_remaining = maxf(0.0, stun_remaining - delta)

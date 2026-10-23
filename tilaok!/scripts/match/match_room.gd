@@ -298,6 +298,11 @@ func play_status_text() -> String:
 	return ""
 
 
+## True only when this room lets the seat control a live-build preview instead of its chicken.
+func is_seat_in_build_mode(_seat_index: int) -> bool:
+	return false
+
+
 ## Per-seat state override for the HUD score row ("" keeps RUN / SECURED / OUT).
 func seat_state_text(_seat_index: int) -> String:
 	return ""

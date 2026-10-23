@@ -34,9 +34,9 @@ variants = {
 [sub_resource type="Resource" id="Step_9"]
 script = ExtResource("2")
 step_id = &"live_build"
-title = "Step 3 of 5 - Build while running"
-body = "Keep moving while you build. Press {build} to aim, move the footprint, and confirm. It appears after {construction_s} seconds if the space is still safe. Cancel with {cancel} to keep your item."
-retry_body = "Keep moving while you build. The footprint is only a preview until its {construction_s} second timer ends."
+title = "Step 3 of 5 - Build during the race"
+body = "Press {build} to enter build mode; your chicken pauses. Use directional controls or {aim} to move the preview, then place with {live_confirm}. It appears after {construction_s} seconds if the space is still safe. Cancel with {cancel} to keep your item."
+retry_body = "Your chicken pauses while aiming. The footprint is only a preview until its {construction_s} second timer ends; then you can move again."
 glyph_action = "build_toggle"
 
 [sub_resource type="Resource" id="Step_3"]

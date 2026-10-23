@@ -56,6 +56,7 @@ var _cheer_player: AudioStreamPlayer
 @onready var confirm_dialog: UiConfirmDialog = %ConfirmDialog
 @onready var debug_overlay: UiDebugOverlay = %DebugOverlay
 @onready var tutorial_prompt: UiTutorialPrompt = %TutorialPrompt
+@onready var fullscreen_countdown: UiFullscreenCountdown = %FullscreenCountdown
 
 
 func _ready() -> void:
@@ -166,6 +167,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if room == null:
 		return
+	_update_fullscreen_countdown()
 	if _notice_left > 0.0 and not get_tree().paused:
 		_notice_left -= delta
 		if _notice_left <= 0.0:
@@ -345,8 +347,7 @@ func _on_reclaim_prompted(_device_id: int, missing_seats: Array[int]) -> void:
 
 func _on_resume_requested() -> void:
 	var coordinator := room.pause_coordinator
-	if coordinator.menu_owner >= 0:
-		coordinator.mark_ready(coordinator.menu_owner)
+	coordinator.request_resume()
 	_dirty = true
 
 
@@ -513,13 +514,28 @@ func _apply() -> void:
 				_apply_results(seats)
 	if play_hud.visible:
 		_apply_hud(seats, phase)
-	pause_screen.visible = paused and _overlay == null
+	var resuming := room.pause_coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN
+	pause_screen.visible = paused and not resuming and _overlay == null
 	_set_game_input_suspended(paused)
-	if paused:
+	if paused and not resuming:
 		pause_screen.refresh_live()
 	_apply_bridge(phase, paused)
 	_apply_debug(phase, paused)
 	_apply_tutorial(paused, final_results)
+	_update_fullscreen_countdown()
+
+
+func _update_fullscreen_countdown() -> void:
+	if room == null or not is_instance_valid(fullscreen_countdown):
+		return
+	var phase := room.phase_controller.phase
+	var coordinator := room.pause_coordinator
+	if coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN:
+		fullscreen_countdown.show_countdown(coordinator.countdown_remaining, "GET READY")
+	elif phase == MatchPhaseController.Phase.GO:
+		fullscreen_countdown.show_countdown(room._go_remaining, "GET READY")
+	else:
+		fullscreen_countdown.hide_countdown()
 
 
 func _apply_tutorial(paused: bool, final_results: bool) -> void:
@@ -634,6 +650,78 @@ func _apply_hud(seats: Array[Dictionary], phase: MatchPhaseController.Phase) -> 
 		room.play_twist_text(),
 		room.hud_up_next_text() if phase == MatchPhaseController.Phase.PLAY else ""
 	)
+	play_hud.bind_control_hints(_control_hint_lines(seats, phase))
+
+
+func _control_hint_lines(
+	seats: Array[Dictionary], phase: MatchPhaseController.Phase
+) -> PackedStringArray:
+	var hints := PackedStringArray()
+	if phase not in [MatchPhaseController.Phase.GO, MatchPhaseController.Phase.PLAY]:
+		return hints
+	for seat in seats:
+		if not bool(seat.get("joined", false)):
+			continue
+		var seat_index := int(seat.get("seat", hints.size()))
+		var player_number := int(seat.get("identity", seat_index + 1))
+		var device := UiContext.device_for_seat(seat)
+		var device_name := "GAMEPAD" if device == "gamepad" else "%s KEYBOARD" % device.to_upper()
+		var line := ""
+		if room.is_seat_in_build_mode(seat_index):
+			var aim := ""
+			var place := ""
+			var rotate := ""
+			var cancel := ""
+			if device == "gamepad":
+				aim = "D-pad / Left or Right stick"
+				place = "Bottom button (A / Cross) or Right trigger"
+				rotate = "Right bumper"
+				cancel = "Left bumper"
+			elif device == "k1":
+				aim = "WASD + ZCVB"
+				place = "E, F or Space"
+				rotate = "T"
+				cancel = "X"
+			elif device == "k2":
+				aim = "Arrow keys + YHNM"
+				place = "Enter"
+				rotate = "Right bracket [ ]"
+				cancel = "Backslash"
+			elif device == "k3":
+				aim = "IJKL + num-row 7/4/8/6"
+				place = "O key"
+				rotate = "="
+				cancel = "Apostrophe"
+			else:
+				aim = "Numpad 8/4/2/6 + 7/1/3/9"
+				place = "Numpad 0"
+				rotate = "Numpad *"
+				cancel = "Numpad -"
+			line = (
+				"P%d · %s BUILD\nAIM %s · PLACE %s · ROTATE %s · CANCEL %s"
+				% [player_number, device_name, aim, place, rotate, cancel]
+			)
+		else:
+			var movement := "MOVE %s" % prompt_map.glyph("run", device)
+			var jump := "JUMP %s" % prompt_map.glyph("jump", device)
+			var build := "BUILD %s" % prompt_map.glyph("build_toggle", device)
+			if device == "gamepad":
+				movement = "MOVE: D-pad or Left stick"
+				jump = "JUMP: South (bottom) button"
+				build = "BUILD: North (top) button"
+			elif device == "k2":
+				movement = "RUN: Left/Right"
+				jump = "JUMP: Right Ctrl"
+			elif device == "k4":
+				movement = "RUN: Numpad 4/6"
+				jump = "JUMP: Numpad 8"
+			else:
+				movement = "RUN: %s" % prompt_map.glyph("run", device)
+				jump = "JUMP: %s" % prompt_map.glyph("jump", device)
+				build = "BUILD: %s" % prompt_map.glyph("build_toggle", device)
+			line = "P%d · %s\n%s · %s · %s" % [player_number, device_name, movement, jump, build]
+		hints.append(line)
+	return hints
 
 
 func _apply_results(seats: Array[Dictionary]) -> void:
@@ -656,7 +744,9 @@ func _apply_results(seats: Array[Dictionary]) -> void:
 
 func _apply_bridge(phase: MatchPhaseController.Phase, paused: bool) -> void:
 	var target: UiScreen = null
-	if room.is_confirmation_open():
+	if room.pause_coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN:
+		target = null
+	elif room.is_confirmation_open():
 		target = null
 	elif _overlay != null:
 		target = _overlay

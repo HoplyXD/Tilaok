@@ -123,12 +123,78 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HudLabel"
 
-[node name="NoticeRow" type="MarginContainer" parent="." unique_id=509076002]
+[node name="ControlHintsBar" type="PanelContainer" parent="." unique_id=1715926020]
+unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 72.0
-offset_bottom = 151.0
+offset_top = 64.0
+offset_bottom = 112.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_type_variation = &"HudBar"
+
+[node name="ControlHintsRow" type="GridContainer" parent="ControlHintsBar" unique_id=1715926021]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 2
+
+[node name="ControlHint1" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926022]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"HudLabel"
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ControlHint2" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926023]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"HudLabel"
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ControlHint3" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926024]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"HudLabel"
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ControlHint4" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926025]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"HudLabel"
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="NoticeRow" type="MarginContainer" parent="." unique_id=509076002]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 102.0
+offset_bottom = 181.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_type_variation = &"SafeAreaMargin"

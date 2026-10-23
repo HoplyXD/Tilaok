@@ -43,6 +43,7 @@ func _initialize() -> void:
 func _run() -> void:
 	await _test_two_rounds_through_the_whole_flow()
 	await _test_pause_menu_ownership_and_resume()
+	await _test_lobby_resume_is_immediate()
 	await _test_shared_pause_first_confirm()
 	await _test_pause_menu_input_is_not_game_input()
 	await _test_disconnect_and_reclaim("pugad")
@@ -382,11 +383,11 @@ func _test_pause_menu_ownership_and_resume() -> void:
 	_key("K1", KEY_E, true)
 	_key("K1", KEY_E, false)
 	await process_frame
-	_check(bool(room.input_router.registry.get_seat(0).ready), "a non-owner confirm only readies")
+	_check(not bool(room.input_router.registry.get_seat(0).ready), "a non-owner cannot ready or resume")
 	await process_frame
 	_check(
-		pause.rosters[0].state_text() == "READY",
-		"the pause roster shows seat 1 READY as soon as it readies"
+		pause.rosters[0].state_text() == "IN GAME",
+		"pause roster stays informational until the owner resumes"
 	)
 	_check(room.pause_coordinator.state == PauseRecoveryCoordinator.State.PAUSED, "still paused")
 	# Game input is not acted on while the pause menu owns the keys.
@@ -421,7 +422,14 @@ func _test_pause_menu_ownership_and_resume() -> void:
 	await process_frame
 	_check(
 		room.pause_coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN,
-		"Resume from the owner plus every ready seat starts the resume countdown"
+		"one Resume action starts the shared countdown"
+	)
+	_check(
+		room.presenter.fullscreen_countdown.visible
+		and (room.presenter.fullscreen_countdown.get_node("Center/Stack/Number") as Label).text
+		== "1"
+		and not pause.visible,
+		"Resume replaces the pause menu with the full-screen shared countdown"
 	)
 	_check(room.get_tree().paused, "the simulation stays frozen during the countdown")
 	await _wait_frames(3)
@@ -438,6 +446,7 @@ func _test_pause_menu_ownership_and_resume() -> void:
 		"the countdown resumes the game"
 	)
 	_check(not pause.visible, "the pause screen closes on resume")
+	_check(not room.presenter.fullscreen_countdown.visible, "the full-screen countdown clears on resume")
 	_check(
 		room.input_router.phase == LocalInputRouter.Phase.PLAY,
 		"input returns to the phase before the pause"
@@ -538,6 +547,35 @@ func _test_shared_pause_first_confirm() -> void:
 		"that confirm only takes ownership: it does not also Resume"
 	)
 	_check(pause.owner_seat == 0, "the pause screen follows the new owner")
+	await _free_flow()
+
+
+func _test_lobby_resume_is_immediate() -> void:
+	await _new_flow()
+	_join_title_k1()
+	await process_frame
+	_key("K1", KEY_E, true)
+	await process_frame
+	_key("K1", KEY_E, false)
+	await process_frame
+	_key("K1", KEY_E, true)
+	_key("K1", KEY_E, false)
+	await _wait_frames(3)
+	var room := flow.room
+	_check(
+		room.phase_controller.phase == MatchPhaseController.Phase.LOBBY,
+		"the immediate-resume regression starts in the Lobby"
+	)
+	room.input_router.pause_requested.emit(0)
+	await _wait_frames(2)
+	room.presenter.pause_screen.resume_requested.emit()
+	await process_frame
+	_check(
+		room.pause_coordinator.state == PauseRecoveryCoordinator.State.RUNNING
+		and not room.get_tree().paused
+		and not room.presenter.fullscreen_countdown.visible,
+		"Resume in the Lobby unpauses immediately without the round countdown"
+	)
 	await _free_flow()
 
 

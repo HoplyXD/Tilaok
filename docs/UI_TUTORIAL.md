@@ -121,12 +121,12 @@ The giant background slipper is a non-colliding presenter. Every command needs a
 
 ## Tutorial sequence
 
-The first match begins with a guided Karera. It teaches the normal live-build loop, including building while moving; it does not require a player to learn Lagsanay or Kangaroo before playing.
+The first match begins with a guided Karera. It teaches the normal live-build loop; it does not require a player to learn Lagsanay or Kangaroo before playing.
 
 1. **Welcome:** identify the player’s chicken number/shape and explain the local join display.
 2. **Move and jump:** reach short, safe markers on the base stage.
 3. **Pugad:** point out that each egg shows the item inside; claim one egg.
-4. **Shared GO / build while running:** show the preview, footprint warning and progress timer; keep moving, then explain safe completion at 2.0 seconds and cancellation.
+4. **Shared GO / build mode:** show that the chicken pauses while aiming, directional controls move the preview, and confirming starts a visible 2.0-second job after which movement resumes; explain the footprint warning and cancellation.
 5. **Karera:** run, jump and reach the flag.
 6. **Results:** explain Tapos and first-finisher Una with the actual Karera result; explain that second and third finishers get no rank bonus.
 7. **Later just-in-time prompts:** before the first Lagsanay, explain taya, pass, timer, and last-survivor objective. Before the first Kangaroo, explain the three slipper poses, three misses, and player-built Rising wave supports.
@@ -143,7 +143,7 @@ The guided first match teaches Pugad → shared GO/build while moving → Karera
 |---|---|---|
 | 1 Welcome | Lobby | the match leaves the Lobby (number + shape of every seat; run/jump glyphs per device) |
 | 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout; claim feedback wins over the Barya note, which repeats the claim key and timer — 2026-10-16) |
-| 3 Shared GO / build | active race | a construction job completes or the round ends; teach moving during the visible progress and footprint warning |
+| 3 Shared GO / build | active race | a construction job completes or the round ends; teach the control lock while aiming, movement resuming after confirm, and the visible progress/footprint warning |
 | 4 Karera | active race | the round ends |
 | 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody); all-finish suppresses ordinary awards even with two players, while Barya still counts |
 | Lagsanay | first Lagsanay or sudden death of a session | Lagsanay ends; shown once per session (only reachable on the lifecycle route today) |

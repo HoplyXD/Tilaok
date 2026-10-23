@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/match/match_screen_presenter.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/lobby_screen.tscn" id="2"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/confirm_dialog.tscn" id="10"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/screens/tutorial_prompt.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/ui/screens/fullscreen_countdown.tscn" id="12"]
 
 [node name="MatchHud" type="CanvasLayer"]
 process_mode = 3
@@ -90,3 +91,5 @@ layout_mode = 2
 
 [node name="DebugOverlay" parent="." instance=ExtResource("8")]
 unique_name_in_owner = true
+
+[node name="FullscreenCountdown" parent="." instance=ExtResource("12")]

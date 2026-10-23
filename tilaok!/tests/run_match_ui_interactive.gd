@@ -274,7 +274,7 @@ func _pause_resume_and_leave(room: P05MatchRoom) -> void:
 	await _wait_frames(8)
 	_check(
 		room.pause_coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN,
-		"the owner's Resume plus three ready seats starts the 3 s countdown"
+		"the pause owner starts the 3 s countdown with one Resume action"
 	)
 	await _capture("18_pause_resume_countdown")
 	await create_timer(RESUME_WAIT_SECONDS, true, false, true).timeout

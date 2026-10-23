@@ -14,6 +14,12 @@ var score_rows: Array[UiScoreRow] = []
 @onready var _twist_tag: Label = %TwistTag
 @onready var _timer_label: Label = %TimerLabel
 @onready var _next_event_label: Label = %NextEventLabel
+@onready var _control_hints_bar: PanelContainer = %ControlHintsBar
+@onready var _control_hints_grid: GridContainer = %ControlHintsRow
+@onready var _notice_row: MarginContainer = %NoticeRow
+@onready var _control_hint_labels: Array[Label] = [
+	%ControlHint1, %ControlHint2, %ControlHint3, %ControlHint4
+]
 ## "NEXT R6 KANGAROO": the locked next-round selection. (NextEventLabel keeps its historical
 ## name but carries the live tag: taya countdown, finish window or the current command.)
 @onready var _up_next_label: Label = %UpNextLabel
@@ -67,6 +73,29 @@ func bind_live(
 			seat, int(score_units.get(index, 0)), str(states.get(index, ""))
 		)
 	_notice_toast.show_text(notice)
+
+
+func bind_control_hints(control_hints: PackedStringArray) -> void:
+	_bind_control_hints(control_hints)
+
+
+func _bind_control_hints(hints: PackedStringArray) -> void:
+	var any_hint := false
+	var visible_count := 0
+	for index in _control_hint_labels.size():
+		var label := _control_hint_labels[index]
+		label.text = hints[index] if index < hints.size() else ""
+		label.visible = not label.text.is_empty()
+		any_hint = any_hint or label.visible
+		if label.visible:
+			visible_count += 1
+	_control_hints_bar.visible = any_hint
+	_control_hints_grid.columns = 2
+	var hint_rows := ceili(float(visible_count) / 2.0) if any_hint else 0
+	var hint_height := hint_rows * 48
+	_control_hints_bar.offset_bottom = 64.0 + hint_height
+	_notice_row.offset_top = 70.0 + hint_height
+	_notice_row.offset_bottom = _notice_row.offset_top + 79.0
 
 
 func bind_scores(

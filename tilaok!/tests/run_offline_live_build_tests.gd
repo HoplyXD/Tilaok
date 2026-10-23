@@ -1,3 +1,4 @@
+# gdlint: disable=max-file-lines
 extends SceneTree
 
 ## Focused regressions for the normal offline live-build route and its construction jobs.
@@ -22,6 +23,7 @@ func _run() -> void:
 	_test_request_limits()
 	_test_live_controls_are_isolated()
 	await _test_live_safety_manifest()
+	await _test_live_hazard_occupant_moves_not_cancels()
 	await _test_live_assignment_seat_layouts()
 	await _test_pugad_timeout_and_impossible_pool()
 	await _test_live_go_pause_and_commit()
@@ -147,6 +149,44 @@ func _test_live_controls_are_isolated() -> void:
 	router.set_phase(LocalInputRouter.Phase.PLAY)
 	_check(router._key_action("K1", KEY_Q) == "build_toggle", "K1 Q toggles live build mode")
 	_check(router._key_action("K1", KEY_Z) == "aim_up", "K1 aim is separate from movement")
+	_check(
+		router._key_action("K1", KEY_SPACE) == "jump",
+		"K1 Space remains jump while the chicken is running"
+	)
+	router.set_live_build_mode(0, true)
+	router.live_build_confirm_enabled = true
+	_check(
+		(
+			router._key_action("K1", KEY_A, 0) == "aim_left"
+			and router._key_action("K1", KEY_W, 0) == "aim_up"
+		),
+		"K1 movement keys steer the preview while build mode owns the controls"
+	)
+	_check(
+		router._key_action("K1", KEY_E, 0) == "confirm",
+		"build mode preserves the live placement confirm action"
+	)
+	_check(
+		router._key_action("K1", KEY_SPACE, 0) == "confirm",
+		"K1 Space confirms placement while build mode pauses the chicken"
+	)
+	_check(
+		router._build_aim_action_for_joy_button(JOY_BUTTON_DPAD_RIGHT, "right") == "aim_right",
+		"gamepad D-pad steers the preview while build mode is active"
+	)
+	_check(
+		router._gamepad_build_action_for_joy_button(JOY_BUTTON_A, "jump") == "confirm",
+		"gamepad South/A confirms a live placement while build mode is active"
+	)
+	router.set_live_build_mode(0, false)
+	_check(
+		router._key_action("K1", KEY_A, 0) == "left",
+		"K1 movement controls resume after build mode closes"
+	)
+	_check(
+		router._key_action("K1", KEY_SPACE, 0) == "jump",
+		"K1 Space returns to jump when build mode closes"
+	)
 	_check(
 		router._key_action("K1", KEY_T) == "live_rotate", "K1 live rotate is separate from cheer"
 	)
@@ -368,6 +408,27 @@ func _test_live_go_pause_and_commit() -> void:
 		room.phase_controller.phase == MatchPhaseController.Phase.GO,
 		"every seat assignment enters shared GO without a Place phase"
 	)
+	_check(
+		(
+			(
+				room
+				. presenter
+				. _control_hint_lines(
+					room.input_router.registry.joined_seats(), MatchPhaseController.Phase.GO
+				)
+				. size()
+			)
+			== 2
+		),
+		"per-seat controls are visible during the shared GO countdown"
+	)
+	_check(
+		(
+			room.placement_controller.build_region_tiles == room._build_region_tiles()
+			and room.placement_controller.start_anchor_tile == room._build_start_anchor_tile()
+		),
+		"offline live-build cursors initialize from the active map build area and spawn"
+	)
 	var remaining := room.phase_controller.remaining_seconds
 	paused = true
 	room._process(0.5)
@@ -386,7 +447,88 @@ func _test_live_go_pause_and_commit() -> void:
 	)
 	if room.phase_controller.phase == MatchPhaseController.Phase.PLAY:
 		room.inventory_used[0] = false
-		room.build_mode[0] = true
+		room._set_build_mode(0, true)
+		var joined_seats := room.input_router.registry.joined_seats()
+		room.presenter._apply_hud(joined_seats, MatchPhaseController.Phase.PLAY)
+		var p1_hint := str(room.presenter.play_hud._control_hint_labels[0].text)
+		var p2_hint := str(room.presenter.play_hud._control_hint_labels[1].text)
+		_check(
+			(
+				p1_hint.contains("AIM")
+				and p1_hint.contains("P1 · K1 KEYBOARD")
+				and p1_hint.contains("PLACE E, F or Space")
+				and p2_hint.contains("P2 · K2 KEYBOARD")
+				and p2_hint.contains("RUN: Left/Right")
+				and p2_hint.contains("JUMP: Right Ctrl")
+			),
+			"HUD shows each seat's keyboard controls and only switches the builder to build hints"
+		)
+		room._set_build_mode(0, false)
+		room._set_build_mode(1, true)
+		room.presenter._apply_hud(joined_seats, MatchPhaseController.Phase.PLAY)
+		p1_hint = str(room.presenter.play_hud._control_hint_labels[0].text)
+		p2_hint = str(room.presenter.play_hud._control_hint_labels[1].text)
+		_check(
+			p1_hint.contains("RUN") and p2_hint.contains("AIM"),
+			"HUD control hints follow the player who enters build mode"
+		)
+		var pad_seat := {"seat": 2, "identity": 3, "joined": true, "device_kind": "gamepad"}
+		var pad_hint := str(
+			room.presenter._control_hint_lines([pad_seat], MatchPhaseController.Phase.PLAY)[0]
+		)
+		_check(
+			(
+				pad_hint.contains("P3 · GAMEPAD")
+				and pad_hint.contains("MOVE: D-pad or Left stick")
+				and pad_hint.contains("JUMP: South (bottom) button")
+				and pad_hint.contains("BUILD: North (top) button")
+			),
+			"HUD shows the connected gamepad's own running controls"
+		)
+		room.build_mode[2] = true
+		pad_hint = str(
+			room.presenter._control_hint_lines([pad_seat], MatchPhaseController.Phase.PLAY)[0]
+		)
+		_check(
+			(
+				pad_hint.contains("AIM D-pad / Left or Right stick")
+				and pad_hint.contains("PLACE Bottom button (A / Cross) or Right trigger")
+				and pad_hint.contains("ROTATE Right bumper")
+				and pad_hint.contains("CANCEL Left bumper")
+			),
+			"HUD switches a gamepad seat to its live-build controls"
+		)
+		room.build_mode.erase(2)
+		var four_player_hints := room.presenter._control_hint_lines(
+			UiContext.sample_seats(4), MatchPhaseController.Phase.PLAY
+		)
+		room.presenter.play_hud._bind_control_hints(four_player_hints)
+		_check(
+			(
+				four_player_hints.size() == 4
+				and room.presenter.play_hud._control_hint_labels[0].visible
+				and room.presenter.play_hud._control_hint_labels[1].visible
+				and room.presenter.play_hud._control_hint_labels[2].visible
+				and room.presenter.play_hud._control_hint_labels[3].visible
+				and four_player_hints[2].contains("P3 · GAMEPAD")
+				and four_player_hints[3].contains("P4 · GAMEPAD")
+			),
+			"the HUD gives all four players visible, device-specific control cards"
+		)
+		room._set_build_mode(0, true)
+		room._set_build_mode(1, false)
+		var actor := room.actors[0] as ChickenController
+		if actor != null:
+			actor.locomotion_velocity.x = 240.0
+			actor._physics_process(1.0 / 60.0)
+		_check(
+			(
+				actor != null
+				and actor.build_input_locked
+				and is_zero_approx(actor.locomotion_velocity.x)
+			),
+			"build mode stops direct chicken movement while leaving the match in Play"
+		)
 		var cursor: Dictionary = room.placement_controller.cursors[0]
 		var found_cell := Vector2i(-1, -1)
 		for y in range(room.tuning.arena_height_tiles):
@@ -416,13 +558,56 @@ func _test_live_go_pause_and_commit() -> void:
 				),
 				"rejected preview leaves terrain, inventory and stage version unchanged"
 			)
+			cursor.cell = Vector2i(-1, -1)
+			room.placement_controller.cursors[0] = cursor
+			room._submit_live_placement(0)
+			var rejected_ids: Array = room.request_pipeline.request_records.keys()
+			for _frame in range(4):
+				await physics_frame
+			var rejected_result := (
+				room.request_pipeline.cached_result(str(rejected_ids.back()))
+				if not rejected_ids.is_empty()
+				else {}
+			)
+			_check(
+				(
+					not bool(rejected_result.get("allowed", false))
+					and bool(room.build_mode.get(0, false))
+					and not bool(room.inventory_used.get(0, false))
+					and actor != null
+					and actor.build_input_locked
+				),
+				"rejected live placement keeps build mode active so the player can correct the preview"
+			)
+			cursor.cell = found_cell
+			room.placement_controller.cursors[0] = cursor
+			var occupied_preview_verdict := room.items.validate_placement(
+				CELL_1X1, found_cell, 0, []
+			)
+			var occupied_preview_rect: Rect2 = occupied_preview_verdict.get("footprint", Rect2())
+			var occupied_blocker := room.actors[1] as ChickenController
+			if occupied_blocker != null:
+				occupied_blocker.global_position = occupied_preview_rect.get_center()
+			var occupied_preview := _intent("occupied_preview", found_cell, room.request_pipeline)
+			_check(
+				bool(
+					(
+						room
+						. _commit_live_intent(
+							0, occupied_preview, Engine.get_physics_frames(), false
+						)
+						. get("allowed", false)
+					)
+				),
+				"a solid placement preview is accepted while a chicken occupies its footprint"
+			)
 			room._submit_live_placement(0)
 			var ids: Array = room.request_pipeline.request_records.keys()
 			for _frame in range(4):
 				if not room.construction_jobs.is_empty():
 					break
 				await physics_frame
-			var job_id := str(ids[0]) if not ids.is_empty() else ""
+			var job_id := str(ids.back()) if not ids.is_empty() else ""
 			_check(
 				(
 					room.construction_jobs.size() == 1
@@ -509,6 +694,7 @@ func _test_live_go_pause_and_commit() -> void:
 					and bool(completed.get("allowed", false))
 					and room.items.pieces.size() == 1
 					and room.items.stage_version == 1
+					and bool(room.inventory_used.get(0, false))
 				),
 				"job commits once at the first fixed-step boundary after two seconds and releases reservation"
 			)
@@ -516,24 +702,47 @@ func _test_live_go_pause_and_commit() -> void:
 				room.items.live_activation.is_empty(),
 				"ordinary solid has no extra generic activation delay"
 			)
-			var second_cell := Vector2i(-1, -1)
+			_check(
+				actor != null and not actor.build_input_locked,
+				"successful confirmation releases the chicken while construction runs"
+			)
+			var repeat_attempt := room._commit_live_intent(
+				0,
+				_intent("repeat_after_complete", Vector2i(20, 6), room.request_pipeline),
+				Engine.get_physics_frames(),
+				false
+			)
+			_check(
+				(
+					not bool(repeat_attempt.get("allowed", false))
+					and str(repeat_attempt.get("code", "")) == "inventory_used"
+					and room.items.pieces.size() == 1
+					and bool(room.inventory_used.get(0, false))
+				),
+				"a player can place their assigned item only once per round"
+			)
+			var third_cell := Vector2i(-1, -1)
 			for y in range(room.tuning.arena_height_tiles):
 				for x in range(room.tuning.arena_width_tiles):
-					var actor_rects := room._live_actor_swept_rects()
-					var verdict := room.items.validate_placement(
-						CELL_1X1, Vector2i(x, y), 0, room.items.owner_seat_clearance(actor_rects)
+					var intent := _intent(
+						"actor_probe_%d_%d" % [x, y], Vector2i(x, y), room.request_pipeline
 					)
-					if bool(verdict.get("allowed", false)):
-						second_cell = Vector2i(x, y)
+					var verdict := room._commit_live_intent(
+						1, intent, Engine.get_physics_frames(), false
+					)
+					if bool(verdict.allowed):
+						third_cell = Vector2i(x, y)
 						break
-				if second_cell.x >= 0:
+				if third_cell.x >= 0:
 					break
-			if second_cell.x >= 0:
+			if third_cell.x < 0:
+				_check(false, "a second safe cell exists for occupied-footprint completion")
+			else:
 				var second_cursor: Dictionary = room.placement_controller.cursors[1]
 				second_cursor.variant_key = CELL_1X1
-				second_cursor.cell = second_cell
+				second_cursor.cell = third_cell
 				room.placement_controller.cursors[1] = second_cursor
-				room.build_mode[1] = true
+				room._set_build_mode(1, true)
 				room._submit_live_placement(1)
 				var second_ids: Array = room.request_pipeline.request_records.keys()
 				for _frame in range(4):
@@ -543,31 +752,156 @@ func _test_live_go_pause_and_commit() -> void:
 				var second_job_id := str(second_ids.back())
 				var second_job: Dictionary = room.construction_jobs.get(second_job_id, {})
 				var blocker := room.actors[1] as ChickenController
+				var reserved: Rect2 = second_job.get("footprint", Rect2())
 				if blocker != null and not second_job.is_empty():
-					blocker.global_position = (
-						(Vector2(second_cell) + Vector2(0.5, 0.5)) * room.tuning.grid_cell_wu
+					blocker.global_position = Vector2(
+						reserved.get_center().x,
+						reserved.position.y - room.tuning.body_height_wu * 0.5 + 20.0
 					)
 				room._advance_construction_jobs(room.construction_seconds)
 				var second_result := room.request_pipeline.cached_result(second_job_id)
 				_check(
 					(
-						room.items.pieces.size() == 1
+						room.items.pieces.size() == 2
 						and room.construction_jobs.is_empty()
 						and room._reserved_footprints.is_empty()
-						and not bool(second_result.get("allowed", false))
-						and not bool(room.inventory_used.get(1, false))
+						and bool(second_result.get("allowed", false))
+						and bool(room.inventory_used.get(1, false))
+						and blocker != null
+						and is_equal_approx(
+							blocker.global_position.y,
+							reserved.position.y - room.tuning.body_height_wu * 0.5
+						)
 					),
-					(
-						"an actor entering the footprint before completion fails the job safely and "
-						+ "returns the item"
-					)
+					"an occupied build completes and moves the chicken onto the new top surface"
 				)
-			else:
-				_check(false, "a second safe cell exists for actor-entry revalidation")
 		else:
 			_check(false, "live room finds a safe open construction cell")
 	else:
 		_check(false, "live route transitions from GO to active Play")
+	room.queue_free()
+	await process_frame
+
+
+func _test_live_hazard_occupant_moves_not_cancels() -> void:
+	var room := LIVE_ROOM.instantiate() as OfflineLiveBuildMatchRoom
+	root.add_child(room)
+	await process_frame
+	_join_two_ready(room)
+	room.set_match_seed(173)
+	room.tuning.match_target_score_units = 100000
+	room.go_countdown_seconds = 0.1
+	var hazard_key := ""
+	for family in room.definitions.families:
+		if str(family.behavior_kind) not in ["hitbox", "trumpo", "bubble"]:
+			continue
+		for variant in family.variants:
+			var candidate_key := family.variant_key(variant)
+			if room.tuning.item_enabled_variants.has(candidate_key):
+				hazard_key = candidate_key
+				break
+		if not hazard_key.is_empty():
+			break
+	if not hazard_key.is_empty() and room.start_match():
+		for seat_index in range(2):
+			var egg: Dictionary = room.egg_pool[seat_index]
+			egg.variant_key = CELL_1X1
+			room.egg_pool[seat_index] = egg
+			room._queue_claim(seat_index, str(egg.egg_id))
+		room._flush_claims()
+		room._process(0.2)
+		var cursor: Dictionary = room.placement_controller.cursors.get(0, {})
+		var safe_cell := Vector2i(-1, -1)
+		if not cursor.is_empty():
+			cursor.variant_key = hazard_key
+			room.placement_controller.cursors[0] = cursor
+			for y in range(room.tuning.arena_height_tiles):
+				for x in range(room.tuning.arena_width_tiles):
+					var cell := Vector2i(x, y)
+					var intent := _intent(
+						"hazard_probe_%d_%d" % [x, y], cell, room.request_pipeline
+					)
+					intent.variant_key = hazard_key
+					var probe := room._commit_live_intent(
+						0, intent, Engine.get_physics_frames(), false
+					)
+					if bool(probe.get("allowed", false)):
+						safe_cell = cell
+						break
+				if safe_cell.x >= 0:
+					break
+		if safe_cell.x >= 0:
+			cursor.cell = safe_cell
+			room.placement_controller.cursors[0] = cursor
+			var hazard_preview_intent := _intent(
+				"hazard_occupied_preview", safe_cell, room.request_pipeline
+			)
+			hazard_preview_intent.variant_key = hazard_key
+			var hazard_verdict := room._commit_live_intent(
+				0, hazard_preview_intent, Engine.get_physics_frames(), false
+			)
+			var blocker := room.actors[1] as ChickenController
+			var hazard_footprint: Rect2 = hazard_verdict.get("footprint", Rect2())
+			if blocker != null:
+				blocker.global_position = hazard_footprint.get_center()
+			var occupied_hazard_preview := _intent(
+				"hazard_occupied_confirm", safe_cell, room.request_pipeline
+			)
+			occupied_hazard_preview.variant_key = hazard_key
+			_check(
+				(
+					bool(hazard_verdict.get("allowed", false))
+					and bool(
+						(
+							room
+							. _commit_live_intent(
+								0, occupied_hazard_preview, Engine.get_physics_frames(), false
+							)
+							. get("allowed", false)
+						)
+					)
+				),
+				"a lethal hazard preview is accepted while a chicken occupies its footprint"
+			)
+			room._set_build_mode(0, true)
+			room._submit_live_placement(0)
+			var ids: Array = room.request_pipeline.request_records.keys()
+			for _frame in range(4):
+				if not ids.is_empty() and room.construction_jobs.has(str(ids.back())):
+					break
+				await physics_frame
+			var job_id := str(ids.back()) if not ids.is_empty() else ""
+			var job: Dictionary = room.construction_jobs.get(job_id, {})
+			var footprint: Rect2 = job.get("footprint", Rect2())
+			var untouched := room.actors[0] as ChickenController
+			if blocker != null and not job.is_empty():
+				blocker.global_position = footprint.get_center()
+			var before := blocker.global_position if blocker != null else Vector2.ZERO
+			var untouched_before := untouched.global_position if untouched != null else Vector2.ZERO
+			room._advance_construction_jobs(room.construction_seconds)
+			var result := room.request_pipeline.cached_result(job_id)
+			_check(
+				(
+					bool(result.get("allowed", false))
+					and room.items.pieces.size() == 1
+					and room.construction_jobs.is_empty()
+					and blocker != null
+					and is_equal_approx(blocker.global_position.x, before.x)
+					and is_equal_approx(
+						blocker.global_position.y,
+						footprint.position.y - room.tuning.body_height_wu * 0.5
+					)
+					and untouched != null
+					and untouched.global_position == untouched_before
+				),
+				"a touching chicken gets a small top nudge, while a non-touching chicken stays put"
+			)
+		else:
+			_check(false, "enabled, live-safe hazard has a constructible placement cell")
+	else:
+		_check(
+			false, "an enabled hitbox, trumpo or bubble variant is available for relocation test"
+		)
 	room.queue_free()
 	await process_frame
 

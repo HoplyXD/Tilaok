@@ -135,10 +135,13 @@ func _enter_place() -> void:
 	items.enter_place()
 	var claimed_variants := _claimed_variants_by_seat()
 	_on_place_assignments_ready(claimed_variants)
+	# Initialize map-derived cursor bounds and the spawn anchor, as the scheduled Place route does.
+	# The fixed fallback can be outside a custom map's build region and make every confirm fail.
+	placement_controller.build_region_tiles = _build_region_tiles()
+	placement_controller.start_anchor_tile = _build_start_anchor_tile()
 	placement_controller.setup(claimed_variants, definitions, tuning)
 	for seat_index in seats:
-		build_mode[seat_index] = false
-		input_router.set_build_mode(int(seat_index), false)
+		_set_build_mode(seat_index, false)
 		inventory_used[seat_index] = false
 		live_notices.erase(seat_index)
 		_aim_repeat[seat_index] = {"elapsed": 0.0, "first": true, "direction": Vector2.ZERO}
@@ -185,6 +188,12 @@ func _advance_live_aim(delta: float) -> void:
 			not bool(build_mode.get(seat_index, false))
 			or bool(inventory_used.get(seat_index, false))
 		):
+			continue
+		var actor := actors.get(seat_index) as ChickenController
+		if actor == null or actor.lifecycle.is_terminal():
+			_set_build_mode(seat_index, false)
+			_set_live_ghost_visible(seat_index, false)
+			live_notices[seat_index] = "Build mode closed • this chicken is out."
 			continue
 		var direction := input_router.live_aim_vector(seat_index)
 		if direction == Vector2.ZERO:
@@ -251,16 +260,15 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 		match action_name:
 			"build_toggle":
 				if not bool(inventory_used.get(seat_index, false)):
-					build_mode[seat_index] = not bool(build_mode.get(seat_index, false))
+					_set_build_mode(seat_index, not bool(build_mode.get(seat_index, false)))
 					input_router.consume_held_presses_for_seat(seat_index)
-					# The movement keys now steer the block cursor, and the block appears on a tile
-					# beside this player instead of wherever the cursor was last left.
-					input_router.set_build_mode(seat_index, bool(build_mode[seat_index]))
 					if bool(build_mode[seat_index]):
 						_snap_cursor_to_seat(seat_index)
 					_set_live_ghost_visible(seat_index, bool(build_mode[seat_index]))
 					live_notices[seat_index] = (
-						"Build mode on." if bool(build_mode[seat_index]) else "Build mode off."
+						"Build mode on • chicken paused."
+						if bool(build_mode[seat_index])
+						else "Build mode off."
 					)
 					_notify_presentation(&"live_build")
 			"live_rotate":
@@ -278,8 +286,7 @@ func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 						_notify_presentation(&"live_build")
 						return
 				if bool(build_mode.get(seat_index, false)):
-					build_mode[seat_index] = false
-					input_router.set_build_mode(seat_index, false)
+					_set_build_mode(seat_index, false)
 					_set_live_ghost_visible(seat_index, false)
 					live_notices[seat_index] = "Build preview closed."
 					_notify_presentation(&"live_build")
@@ -298,6 +305,15 @@ func _set_live_ghost_visible(seat_index: int, shown: bool) -> void:
 		if shown:
 			_refresh_match_ghost(seat_index)
 	_update_edge_markers()
+
+
+func _set_build_mode(seat_index: int, enabled: bool) -> void:
+	build_mode[seat_index] = enabled
+	if input_router != null:
+		input_router.set_build_mode(seat_index, enabled)
+	var actor := actors.get(seat_index) as ChickenController
+	if actor != null and is_instance_valid(actor):
+		actor.build_input_locked = enabled
 
 
 func _create_edge_marker(seat_index: int) -> void:
@@ -403,12 +419,21 @@ func _resolve_live_placement_boundary() -> void:
 		var result := _start_construction_job(seat_index, intent, boundary)
 		resolved.append({"request_id": request_id, "result": result})
 		inventory_used[seat_index] = bool(result.get("allowed", false))
-		build_mode[seat_index] = false
-		input_router.set_build_mode(int(seat_index), false)
-		_set_live_ghost_visible(seat_index, false)
 		live_notices[seat_index] = str(result.get("reason", "Placement resolved."))
 		if bool(result.get("allowed", false)):
+			_set_build_mode(seat_index, false)
+			_set_live_ghost_visible(seat_index, false)
 			live_notices[seat_index] = "Building • %.1f s remaining." % construction_seconds
+		else:
+			# Keep build mode active after a rejected placement so players can reposition and retry.
+			var actor := actors.get(seat_index) as ChickenController
+			var still_eligible := (
+				actor != null
+				and not actor.lifecycle.is_terminal()
+				and actor.lifecycle.status != PlayerLifecycleState.Status.CAPTURED
+			)
+			_set_build_mode(seat_index, still_eligible)
+			_set_live_ghost_visible(seat_index, still_eligible)
 	var boundary_results: Array = []
 	for resolved_row in resolved:
 		var result: Dictionary = resolved_row.result
@@ -560,9 +585,29 @@ func _advance_construction_jobs(delta: float) -> void:
 			live_notices[seat_index] = "Building • %.1f s remaining." % remaining
 			continue
 		items.live_boundary = Engine.get_physics_frames()
-		var result := _commit_live_intent(seat_index, job.intent, Engine.get_physics_frames(), true)
+		var result := _commit_live_intent(
+			seat_index, job.intent, Engine.get_physics_frames(), true, true
+		)
 		if bool(result.get("allowed", false)):
-			live_notices[seat_index] = "Construction complete."
+			inventory_used[seat_index] = true
+			for relocation in result.get("actor_relocations", []):
+				var relocated_actor := actors.get(int(relocation.seat_index)) as ChickenController
+				if relocated_actor != null and is_instance_valid(relocated_actor):
+					relocated_actor.global_position = relocation.position
+					relocated_actor.locomotion_velocity.y = minf(
+						relocated_actor.locomotion_velocity.y, 0.0
+					)
+					relocated_actor.velocity.y = minf(relocated_actor.velocity.y, 0.0)
+			if (
+				not str(result.get("entity_id", "")).is_empty()
+				and result.get("actor_relocations", []).is_empty()
+			):
+				_displace_actors_to_completed_footprint_top(job.footprint)
+			live_notices[seat_index] = (
+				"Build complete • this round's item is used."
+				if not _is_round_objective_variant(str(job.intent.get("variant_key", "")))
+				else "Objective complete."
+			)
 		else:
 			inventory_used[seat_index] = false
 			live_notices[seat_index] = (
@@ -576,6 +621,19 @@ func _advance_construction_jobs(delta: float) -> void:
 		request_pipeline.resolve_result(job_id, result)
 		_notify_presentation(&"live_build")
 		_refresh_match_ui()
+
+
+func _displace_actors_to_completed_footprint_top(footprint: Rect2) -> void:
+	for actor_variant in actors.values():
+		var actor := actor_variant as ChickenController
+		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+			continue
+		var current := actor.hit_rect()
+		if current.intersects(footprint, true):
+			# Only touchers move; preserve their lane and nudge them onto the new top surface.
+			actor.global_position.y = footprint.position.y - tuning.body_height_wu * 0.5
+			actor.locomotion_velocity.y = minf(actor.locomotion_velocity.y, 0.0)
+			actor.velocity.y = minf(actor.velocity.y, 0.0)
 
 
 func _seat_can_keep_job(seat_index: int) -> bool:
@@ -647,7 +705,11 @@ func _cancel_all_construction_jobs(restore_items: bool) -> void:
 
 
 func _commit_live_intent(
-	seat_index: int, intent: Dictionary, boundary: int, materialize: bool = true
+	seat_index: int,
+	intent: Dictionary,
+	boundary: int,
+	materialize: bool = true,
+	allow_actor_displacement: bool = false
 ) -> Dictionary:
 	var base := {
 		"request_id": str(intent.get("request_id", "")),
@@ -723,9 +785,35 @@ func _commit_live_intent(
 		return objective_result
 	var actor_rects := _live_actor_swept_rects()
 	items.live_actor_clearance_wu = live_actor_clearance_wu
-	var verdict := items.validate_placement(
-		str(cursor.variant_key), cell, turns, items.owner_seat_clearance(actor_rects)
-	)
+	var verdict: Dictionary
+	var placement_actor_rects := actor_rects
+	var actor_relocations: Array[Dictionary] = []
+	var hazard_actor_clearance := false
+	if materialize and allow_actor_displacement:
+		# Resolve without chicken clearance. Only chickens physically touching a completed item are
+		# nudged onto its top; nearby players stay where they are.
+		verdict = items.validate_placement(str(cursor.variant_key), cell, turns, [])
+		if bool(verdict.get("allowed", false)):
+			placement_actor_rects = []
+			if not bool(verdict.get("one_shot", false)):
+				var found := definitions.find_variant(str(cursor.variant_key))
+				var family := found.get("family") as ItemFamilyDefinition
+				if family != null and str(family.behavior_kind) in ["hitbox", "trumpo", "bubble"]:
+					hazard_actor_clearance = true
+					actor_relocations = _plan_hazard_actor_relocations(verdict.footprint)
+			verdict = items.validate_placement(
+				str(cursor.variant_key),
+				cell,
+				turns,
+				items.owner_seat_clearance(placement_actor_rects)
+			)
+	else:
+		var validation_actor_rects: Array[Rect2] = []
+		if materialize:
+			validation_actor_rects = items.owner_seat_clearance(actor_rects)
+		verdict = items.validate_placement(
+			str(cursor.variant_key), cell, turns, validation_actor_rects
+		)
 	if not bool(verdict.get("allowed", false)):
 		return _live_result(
 			base,
@@ -733,13 +821,12 @@ func _commit_live_intent(
 			str(verdict.get("code", "invalid_placement")),
 			str(verdict.get("reason", "The item cannot be placed there."))
 		)
+	if materialize and allow_actor_displacement and not bool(verdict.get("one_shot", false)):
+		if actor_relocations.is_empty() and not hazard_actor_clearance:
+			actor_rects = _live_actor_swept_rects_to_top(verdict.footprint)
+		else:
+			actor_rects = _live_actor_swept_rects_excluding_relocations(actor_relocations)
 	if bool(verdict.get("one_shot", false)):
-		for actor_rect_variant in items.owner_seat_clearance(actor_rects):
-			var actor_rect: Rect2 = actor_rect_variant
-			if actor_rect.intersects(verdict.footprint, false):
-				return _live_result(
-					base, false, "player_clearance", "A chicken is too close to that cleanup area."
-				)
 		if not materialize:
 			var preview_result := base.duplicate(true)
 			preview_result["footprint"] = verdict.footprint
@@ -764,7 +851,16 @@ func _commit_live_intent(
 		return _live_result(
 			base, false, "mover_sweep", "A moving piece can cross that placement area."
 		)
-	var effect_check := _live_effect_check(str(cursor.variant_key), turns, verdict, actor_rects)
+	var effect_actor_rects: Array[Rect2] = []
+	if materialize:
+		effect_actor_rects = actor_rects
+	var effect_check := _live_effect_check(
+		str(cursor.variant_key),
+		turns,
+		verdict,
+		effect_actor_rects,
+		materialize and allow_actor_displacement
+	)
 	if not effect_check.is_empty():
 		return _live_result(base, false, str(effect_check.code), str(effect_check.reason))
 	if not materialize:
@@ -773,7 +869,7 @@ func _commit_live_intent(
 		return _live_result(preview_result, true, "preview", "Placement area is clear.")
 	items.live_activation_grace_seconds = live_item_grace_seconds
 	var committed := items.place_live(
-		str(cursor.variant_key), cell, turns, seat_index, actor_rects, false
+		str(cursor.variant_key), cell, turns, seat_index, placement_actor_rects, false
 	)
 	if not bool(committed.get("allowed", false)):
 		return _live_result(
@@ -784,6 +880,7 @@ func _commit_live_intent(
 		)
 	var result := _live_result(base, true, "committed", "Placement accepted.")
 	result["entity_id"] = str(committed.get("instance_id", ""))
+	result["actor_relocations"] = actor_relocations
 	result["cell"] = cell
 	result["quarter_turns"] = turns
 	result["activation_after_seconds"] = live_item_grace_seconds
@@ -801,6 +898,74 @@ func _live_actor_swept_rects() -> Array[Rect2]:
 		var future := current
 		future.position += actor.velocity * 0.25
 		result.append(current.merge(future))
+	return result
+
+
+func _live_actor_swept_rects_to_top(footprint: Rect2) -> Array[Rect2]:
+	var result: Array[Rect2] = []
+	for actor_variant in actors.values():
+		var actor := actor_variant as ChickenController
+		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+			continue
+		var current := actor.hit_rect()
+		if current.intersects(footprint, true):
+			result.append(
+				Rect2(
+					Vector2(
+						actor.global_position.x - tuning.body_width_wu * 0.5,
+						footprint.position.y - tuning.body_height_wu
+					),
+					Vector2(tuning.body_width_wu, tuning.body_height_wu)
+				)
+			)
+		else:
+			var previous := current
+			previous.position -= actor.velocity * 0.25
+			result.append(current.merge(previous))
+	return result
+
+
+func _plan_hazard_actor_relocations(footprint: Rect2) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var seats: Array[int] = []
+	for seat_variant in actors:
+		seats.append(int(seat_variant))
+	seats.sort()
+	for seat_index in seats:
+		var actor := actors.get(seat_index) as ChickenController
+		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+			continue
+		var actor_rect := actor.hit_rect()
+		if not actor_rect.intersects(footprint, true):
+			continue
+		result.append(
+			{
+				"seat_index": seat_index,
+				"position":
+				Vector2(actor.global_position.x, footprint.position.y - tuning.body_height_wu * 0.5)
+			}
+		)
+	return result
+
+
+func _live_actor_swept_rects_excluding_relocations(relocations: Array[Dictionary]) -> Array[Rect2]:
+	var relocated: Dictionary = {}
+	for relocation in relocations:
+		relocated[int(relocation.seat_index)] = relocation.position
+	var result: Array[Rect2] = []
+	for seat_variant in actors:
+		var seat_index := int(seat_variant)
+		var actor := actors.get(seat_index) as ChickenController
+		if actor == null or not is_instance_valid(actor) or actor.lifecycle.is_terminal():
+			continue
+		var current := actor.hit_rect()
+		if relocated.has(seat_index):
+			current.position += relocated[seat_index] - actor.global_position
+			result.append(current)
+		else:
+			var previous := current
+			previous.position -= actor.velocity * 0.25
+			result.append(current.merge(previous))
 	return result
 
 
@@ -834,12 +999,16 @@ func _on_live_one_shot_committed(area: Rect2, _seat_index: int) -> void:
 
 ## Live safety checks after the shared validator accepts a persistent placement. Returns
 ## {} or {code, reason}. All inputs are host state; nothing here mutates the stage.
-## - lethal hazards, projectile lanes and capture paths: no live chicken within the extra lethal
-##   clearance of the footprint or any effect region (no unavoidable immediate hit);
+## - lethal hazards, projectile lanes and capture paths: live-build jobs may overlap chickens;
+##   directly touching chickens move to the item's top and get the existing activation grace;
 ## - every persistent item: no in-flight projectile or bubble inside its footprint or regions;
 ## - movable blocks: no chicken in the fall path below (a live solid never crushes or pins).
 func _live_effect_check(
-	variant_key: String, turns: int, verdict: Dictionary, actor_rects: Array[Rect2]
+	variant_key: String,
+	turns: int,
+	verdict: Dictionary,
+	actor_rects: Array[Rect2],
+	allow_occupied_hazard: bool = false
 ) -> Dictionary:
 	var found := definitions.find_variant(variant_key)
 	if found.is_empty():
@@ -858,7 +1027,7 @@ func _live_effect_check(
 		world_rect.position += footprint.position
 		effect_rects.append(world_rect)
 	var kind := str(family.behavior_kind)
-	if kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"]:
+	if kind in ["hitbox", "trumpo", "parol", "launcher", "bubble"] and not allow_occupied_hazard:
 		for actor_rect in actor_rects:
 			var reach := actor_rect.grow(live_actor_clearance_wu + live_lethal_clearance_wu)
 			for effect_rect in effect_rects:
@@ -879,6 +1048,13 @@ func _live_effect_check(
 		var fall := footprint
 		fall.size.y += float(live_fall_check_cells) * tuning.grid_cell_wu
 		for actor_rect in actor_rects:
+			var standing_on_new_top := (
+				absf(actor_rect.end.y - footprint.position.y) <= 1.0
+				and actor_rect.position.x < footprint.end.x
+				and actor_rect.end.x > footprint.position.x
+			)
+			if standing_on_new_top:
+				continue
 			if actor_rect.grow(live_actor_clearance_wu).intersects(fall, false):
 				return {"code": "crush_risk", "reason": "A chicken is below that spot."}
 	return {}
@@ -924,7 +1100,7 @@ func play_status_text() -> String:
 	for seat_variant in input_router.registry.joined_seats():
 		var seat_index := int(seat_variant.seat)
 		if bool(build_mode.get(seat_index, false)):
-			notices.append("P%d BUILD • aim • confirm" % (seat_index + 1))
+			notices.append("P%d BUILD • aim • confirm • chicken paused" % (seat_index + 1))
 		elif live_notices.has(seat_index) and not str(live_notices[seat_index]).is_empty():
 			notices.append("P%d %s" % [seat_index + 1, str(live_notices[seat_index])])
 	var activation_warning := items.live_activation_warning_text()
@@ -933,11 +1109,24 @@ func play_status_text() -> String:
 	return "  ·  ".join(notices)
 
 
+func is_seat_in_build_mode(seat_index: int) -> bool:
+	return (
+		phase_controller.phase == MatchPhaseController.Phase.PLAY
+		and bool(build_mode.get(seat_index, false))
+	)
+
+
 func reset_room() -> void:
 	_cancel_all_construction_jobs(false)
 	_close_live_attempt()
 	if input_router != null:
 		input_router.live_build_confirm_enabled = false
+		for seat_variant in build_mode.keys():
+			input_router.set_live_build_mode(int(seat_variant), false)
+	for actor_variant in actors.values():
+		var actor := actor_variant as ChickenController
+		if actor != null and is_instance_valid(actor):
+			actor.build_input_locked = false
 	build_mode.clear()
 	inventory_used.clear()
 	live_notices.clear()

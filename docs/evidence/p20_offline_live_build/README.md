@@ -41,3 +41,19 @@
 6. Finish the round, review results, and replay into the next Pugad.
 
 Synthetic test evidence is not a substitute for this physical-controller or human-play check. P20 checkboxes remain open until the full acceptance review records the failed and unavailable checks accurately.
+
+## Build-mode movement and placement fix — October 23, 2026
+
+This follow-up fixes the reported Play-mode build interaction. While build mode is open, that seat's chicken stops receiving player movement/jump input and its player-driven horizontal velocity is cleared; gravity and external forces remain active. The same seat's WASD/arrows/IJKL/numpad directions or gamepad left stick/D-pad steer the placement preview. A successful confirm closes build mode and restores chicken controls while the separate two-second job runs. A rejected placement keeps build mode open so its player can reposition and retry. The offline room now initializes preview bounds and spawn anchor from the active map, which was missing and could make every confirm reject.
+
+Verification on October 23 used the installed Godot `4.6.3.stable.official.7d41c59c4` (the project plan's 4.7.2 target was not installed in this checkout): headless editor import/parse passed; the focused offline live-build runner passed **75 checks, 0 failures**, including local movement lock, preview steering, rejected-placement retry, all-seat keyboard/gamepad HUD cards, repeat construction of completed normal items, and immediate cancellation/item return when a chicken enters an unfinished footprint; `gdlint` and `gdformat --check` passed for the five changed GDScript files; `git diff --check` passed. Logs: [build-mode-import-20261023.log](build-mode-import-20261023.log) and [build-mode-tests-20261023.log](build-mode-tests-20261023.log). The imported revision was `1c570ee` plus the local working-tree changes. No GUI game launch, physical-controller session or human playtest was performed. This follow-up does not verify the 4.7.2 export or the broader P20 regression suite.
+
+The earlier 75-check record above describes an intermediate behavior and is superseded by the user's later clarification below: a chicken does not cancel construction, a player gets one completed placement per round, and unused items do not carry into later rounds.
+
+### Gamepad confirm repair — October 23, 2026
+
+The South face button (A on Xbox-style pads / Cross on PlayStation-style pads) now confirms a placement during build mode. The Right trigger remains an alternate confirm. The per-player build hint and the active input map show the bottom button, so the prompt corresponds to a usable face button. The Godot 4.6.3 headless live-build suite passed **76 checks, 0 failures**; the final result is recorded in [gamepad-confirm-tests-20261023.log](gamepad-confirm-tests-20261023.log). This synthetic check does not claim a physical gamepad was tested.
+
+### Occupied builds and per-round item use — October 23, 2026
+
+When a chicken enters a construction footprint, the job continues. At completion, a chicken intersecting the new solid is moved to its top surface. Successful completion consumes the assigned item for the rest of that round; each new round assigns a fresh item, and unused items are not carried over. The installed Godot 4.6.3 headless suite passed **76 checks, 0 failures**, including an occupied-footprint completion and the one-placement-per-round limit: [build-occupancy-tests-20261023.log](build-occupancy-tests-20261023.log). No physical/human play session was performed.
