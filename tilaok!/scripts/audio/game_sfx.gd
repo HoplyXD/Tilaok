@@ -10,6 +10,9 @@ extends Node
 ## - Death: a chicken is eliminated (the moment it shows its "dead" sprite).
 ## It also holds the looping menu music on the Music bus. GameFlow says when it should play; it
 ## fades out and in, and picks up where it stopped.
+## - Progress: the score bars filling on a results screen (ScoreboardChart reports when its bars
+##   are rising). It plays once from the start while any chart is revealing, and stops when the
+##   last one finishes, settles, hides or leaves the tree.
 ## Presentation only: it never reads or writes a rule, a clock or a score.
 ##
 ## res://scenes/audio/game_sfx.tscn is an autoload, so one copy sits under the root from startup:
@@ -32,6 +35,7 @@ const CONFIRM_CLICK_PHASES := [
 	LocalInputRouter.Phase.RESULTS,
 ]
 
+const PROGRESS_STOP_FADE_SECONDS := 0.15
 const MUSIC_FADE_SECONDS := 0.6
 ## Fade floor as a linear gain (about -80 dB), so the fade never reaches log(0).
 const MUSIC_SILENT_GAIN := 0.0001
@@ -43,6 +47,9 @@ var _music_started := false
 var _music_tween: Tween
 ## The Music player's volume in the scene is its full level; fades scale below it.
 var _music_full_db := 0.0
+## Instance ids of the charts whose bars are rising right now.
+var _progress_owners: Dictionary = {}
+var _progress_tween: Tween
 
 ## Process frame each sound last started on. One action can reach two hooks in the same frame
 ## (for example a confirm that also lands a block, or several chickens out at a deadline), and it
@@ -51,6 +58,7 @@ var _played_frame: Dictionary = {}
 
 @onready var _players := {CLICK: $Click, SWITCH: $Switch, PLACE: $Place, DEATH: $Death}
 @onready var _music: AudioStreamPlayer = $Music
+@onready var _progress: AudioStreamPlayer = $Progress
 
 
 static func play_click() -> void:
@@ -73,6 +81,17 @@ static func play_death() -> void:
 static func set_menu_music(on: bool) -> void:
 	if _instance != null and is_instance_valid(_instance) and _instance.is_node_ready():
 		_instance._set_music(on)
+
+
+## A score chart says whether its bars are rising. The progress sound plays while any chart's are.
+## Safe to call every frame: it only acts when the answer changes.
+static func set_progress_sound(chart: Object, rising: bool) -> void:
+	if _instance != null and is_instance_valid(_instance) and _instance.is_node_ready():
+		_instance._set_progress(chart.get_instance_id(), rising)
+
+
+static func is_progress_sound_playing() -> bool:
+	return _instance != null and is_instance_valid(_instance) and _instance._progress.playing
 
 
 static func is_menu_music_on() -> bool:
@@ -114,6 +133,30 @@ func _set_music(on: bool) -> void:
 		_music_tween.tween_method(_set_music_gain, from, MUSIC_SILENT_GAIN, MUSIC_FADE_SECONDS)
 		# Paused, not stopped, so it picks up where it left off.
 		_music_tween.tween_callback(func() -> void: _music.stream_paused = true)
+
+
+func _set_progress(owner_id: int, rising: bool) -> void:
+	var was_active := not _progress_owners.is_empty()
+	if rising:
+		_progress_owners[owner_id] = true
+	else:
+		_progress_owners.erase(owner_id)
+	var active := not _progress_owners.is_empty()
+	if active == was_active or _progress.stream == null:
+		return
+	if _progress_tween != null:
+		_progress_tween.kill()
+		_progress_tween = null
+	_progress.volume_db = 0.0
+	if active:
+		_progress.play()
+	else:
+		# A short fade, so cutting the clip short does not click.
+		_progress_tween = create_tween()
+		_progress_tween.tween_property(
+			_progress, "volume_db", linear_to_db(MUSIC_SILENT_GAIN), PROGRESS_STOP_FADE_SECONDS
+		)
+		_progress_tween.tween_callback(_progress.stop)
 
 
 func _set_music_gain(gain: float) -> void:

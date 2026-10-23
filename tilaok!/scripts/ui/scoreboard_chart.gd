@@ -83,6 +83,7 @@ func bind_rows(
 
 func settle() -> void:
 	_elapsed = _reveal_duration
+	GameSfx.set_progress_sound(self, false)
 	_fade_elapsed = 0.18
 	_is_revealing = false
 	modulate.a = 1.0
@@ -121,12 +122,15 @@ func reveal_elapsed_seconds() -> float:
 
 
 func _process(delta: float) -> void:
+	# The bars are rising only while a reveal runs on a chart that is on screen.
+	GameSfx.set_progress_sound(self, _is_revealing and is_visible_in_tree())
 	if _is_revealing:
 		_elapsed = minf(_elapsed + delta, _reveal_duration)
 		for index in _active_column_count:
 			_columns[index].set_reveal_elapsed(_elapsed)
 		if _elapsed >= _reveal_duration:
 			_is_revealing = false
+			GameSfx.set_progress_sound(self, false)
 	if _motion_mode == PresentationSettings.RESULT_REVEAL_REDUCED and _fade_elapsed < 0.18:
 		_fade_elapsed = minf(_fade_elapsed + delta, 0.18)
 		modulate.a = lerpf(0.7, 1.0, _fade_elapsed / 0.18)
@@ -240,6 +244,8 @@ func _start_reveal() -> void:
 		for index in _active_column_count:
 			_columns[index].settle()
 		set_process(false)
+	if not _is_revealing:
+		GameSfx.set_progress_sound(self, false)
 
 
 func _seat_for(seats: Array[Dictionary], seat_index: int) -> Dictionary:
@@ -264,4 +270,5 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_is_revealing = false
+	GameSfx.set_progress_sound(self, false)
 	set_process(false)
