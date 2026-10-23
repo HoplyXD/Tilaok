@@ -364,6 +364,7 @@ theme_type_variation = &"TitleCardPromptAction"
 
 [node name="BuildLabel" type="Label" parent="Card" unique_id=574187507]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0

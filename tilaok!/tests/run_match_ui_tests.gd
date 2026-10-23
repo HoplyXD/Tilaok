@@ -70,11 +70,8 @@ func _test_two_rounds_through_the_whole_flow() -> void:
 		"Title with nobody joined shows the menu, not a join prompt"
 	)
 	_check(
-		(
-			(title.get_node("%BuildLabel") as Label).text.contains("karera_slice")
-			and not (title.get_node("%BuildLabel") as Label).text.contains("12345")
-		),
-		"build label names the profile and never the seed"
+		not (title.get_node("%BuildLabel") as Label).visible,
+		"title hides development build identity from the recording view"
 	)
 	_key("K1", KEY_E, true)
 	await process_frame
@@ -163,8 +160,10 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 	_check(
 		(
 			not presenter.play_hud.visible
-			and (presenter.pugad_overlay.get_node("%HudRound") as Label).text
-			== "Round %d" % round_number
+			and (
+				(presenter.pugad_overlay.get_node("%HudRound") as Label).text
+				== "Round %d" % round_number
+			)
 		),
 		"round %d: the Pugad HUD names the round" % round_number
 	)
@@ -177,8 +176,10 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		"round %d: Pugad countdown starts at the tuned 8 s" % round_number
 	)
 	_check(
-		presenter.pugad_overlay.hud_chips[0].state_text() == "Choosing"
-		and presenter.pugad_overlay.count_text() == "0 / 2 picked",
+		(
+			presenter.pugad_overlay.hud_chips[0].state_text() == "Choosing"
+			and presenter.pugad_overlay.count_text() == "0 / 2 picked"
+		),
 		"round %d: chips read Choosing and the count reads 0 / 2 picked" % round_number
 	)
 	# Both seats point at egg 0 and claim on the same tick: one wins, one sees a lost-claim cue.
@@ -248,8 +249,10 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 			)
 		)
 		_check(
-			presenter.play_hud.visible
-			and presenter.play_hud.score_rows[index].state_text() == "Placing",
+			(
+				presenter.play_hud.visible
+				and presenter.play_hud.score_rows[index].state_text() == "Placing"
+			),
 			"round %d: seat %d HUD chip reads Placing" % [round_number, index + 1]
 		)
 	_check(
@@ -383,7 +386,9 @@ func _test_pause_menu_ownership_and_resume() -> void:
 	_key("K1", KEY_E, true)
 	_key("K1", KEY_E, false)
 	await process_frame
-	_check(not bool(room.input_router.registry.get_seat(0).ready), "a non-owner cannot ready or resume")
+	_check(
+		not bool(room.input_router.registry.get_seat(0).ready), "a non-owner cannot ready or resume"
+	)
 	await process_frame
 	_check(
 		pause.rosters[0].state_text() == "IN GAME",
@@ -425,10 +430,14 @@ func _test_pause_menu_ownership_and_resume() -> void:
 		"one Resume action starts the shared countdown"
 	)
 	_check(
-		room.presenter.fullscreen_countdown.visible
-		and (room.presenter.fullscreen_countdown.get_node("Center/Stack/Number") as Label).text
-		== "1"
-		and not pause.visible,
+		(
+			room.presenter.fullscreen_countdown.visible
+			and (
+				(room.presenter.fullscreen_countdown.get_node("Center/Stack/Number") as Label).text
+				== "1"
+			)
+			and not pause.visible
+		),
 		"Resume replaces the pause menu with the full-screen shared countdown"
 	)
 	_check(room.get_tree().paused, "the simulation stays frozen during the countdown")
@@ -446,7 +455,10 @@ func _test_pause_menu_ownership_and_resume() -> void:
 		"the countdown resumes the game"
 	)
 	_check(not pause.visible, "the pause screen closes on resume")
-	_check(not room.presenter.fullscreen_countdown.visible, "the full-screen countdown clears on resume")
+	_check(
+		not room.presenter.fullscreen_countdown.visible,
+		"the full-screen countdown clears on resume"
+	)
 	_check(
 		room.input_router.phase == LocalInputRouter.Phase.PLAY,
 		"input returns to the phase before the pause"
@@ -571,9 +583,11 @@ func _test_lobby_resume_is_immediate() -> void:
 	room.presenter.pause_screen.resume_requested.emit()
 	await process_frame
 	_check(
-		room.pause_coordinator.state == PauseRecoveryCoordinator.State.RUNNING
-		and not room.get_tree().paused
-		and not room.presenter.fullscreen_countdown.visible,
+		(
+			room.pause_coordinator.state == PauseRecoveryCoordinator.State.RUNNING
+			and not room.get_tree().paused
+			and not room.presenter.fullscreen_countdown.visible
+		),
 		"Resume in the Lobby unpauses immediately without the round countdown"
 	)
 	await _free_flow()

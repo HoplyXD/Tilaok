@@ -123,15 +123,6 @@ func _draw() -> void:
 				13,
 				Color("#fff6cf")
 			)
-			draw_string(
-				font,
-				center + Vector2(-13.0, 34.0),
-				"DEBUG",
-				HORIZONTAL_ALIGNMENT_CENTER,
-				26.0,
-				7,
-				Color("#fff6cf")
-			)
 		return
 	if _variant == null:
 		return

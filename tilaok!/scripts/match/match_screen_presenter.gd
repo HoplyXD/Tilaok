@@ -38,6 +38,7 @@ var _overlay: UiScreen
 var _bridge_target: UiScreen
 var _debug_accum := 0.0
 var _game_input_suspended := false
+var _go_flash_remaining := 0.0
 var _tutorial: TutorialCoordinator
 var _lobby_leave_seat := -1
 ## Spectator cheer: cooldowns, the HUD marks being shown and the soft crowd cue (presentation only).
@@ -167,6 +168,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if room == null:
 		return
+	if not get_tree().paused and _go_flash_remaining > 0.0:
+		_go_flash_remaining = maxf(0.0, _go_flash_remaining - delta)
 	_update_fullscreen_countdown()
 	if _notice_left > 0.0 and not get_tree().paused:
 		_notice_left -= delta
@@ -200,6 +203,11 @@ func _on_phase_changed(
 	previous_phase: MatchPhaseController.Phase, next_phase: MatchPhaseController.Phase
 ) -> void:
 	_dirty = true
+	if (
+		previous_phase == MatchPhaseController.Phase.BUILD
+		and next_phase == MatchPhaseController.Phase.PLAY
+	):
+		_go_flash_remaining = 0.85
 	if next_phase == MatchPhaseController.Phase.PUGAD:
 		_eggs_dirty = true
 	if (
@@ -542,11 +550,14 @@ func _update_fullscreen_countdown() -> void:
 	if coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN:
 		fullscreen_countdown.show_countdown(coordinator.countdown_remaining, "GET READY")
 	elif phase == MatchPhaseController.Phase.BUILD:
-		fullscreen_countdown.show_countdown(
-			room.phase_controller.remaining_seconds, "BUILD NOW • SAVE ITEM FOR PLAY"
-		)
+		if room.phase_controller.remaining_seconds <= 3.0:
+			fullscreen_countdown.show_countdown(room.phase_controller.remaining_seconds, "GO!")
+		else:
+			fullscreen_countdown.hide_countdown()
 	elif phase == MatchPhaseController.Phase.GO:
-		fullscreen_countdown.show_countdown(room._go_remaining, "GET READY")
+		fullscreen_countdown.show_countdown(room.phase_controller.remaining_seconds, "GET READY")
+	elif _go_flash_remaining > 0.0:
+		fullscreen_countdown.show_message("GO!")
 	else:
 		fullscreen_countdown.hide_countdown()
 
@@ -706,8 +717,8 @@ func _control_hint_lines(
 			var build_toggle := prompt_map.glyph("build_toggle", device)
 			if device == "gamepad":
 				aim = "D-pad/stick"
-				place = "A / RT"
-				rotate = "X / RB"
+				place = "B0"
+				rotate = "B2"
 				close_preview = "LB"
 			elif device == "k1":
 				aim = "WASD"

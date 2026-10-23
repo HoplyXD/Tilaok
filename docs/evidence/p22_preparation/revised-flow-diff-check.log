@@ -1,0 +1,4 @@
+warning: in the working copy of 'docs/evidence/p22_preparation/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/match_screen_presenter.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/scripts/match/offline_live_build_match_room.gd', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tilaok!/tests/run_offline_live_build_tests.gd', CRLF will be replaced by LF the next time Git touches it

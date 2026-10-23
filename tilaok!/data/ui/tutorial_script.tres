@@ -38,8 +38,8 @@ title = "Step 3 of 5 - Build while you play"
 body = "Use the controls above each P# score.\nBUILD: your chicken pauses while aiming.\nAIM / ROTATE with the shown controls.\nCONFIRM: movement resumes while the visible {construction_s}s build finishes. A started build completes automatically.\nHazards activate as soon as they finish, even near a chicken. CANCEL closes the preview before confirming. Red preview = invalid spot."
 glyph_action = "build_toggle"
 variants = {
-	"get_ready": "GO starts in 3 seconds. Keep your item saved or prepare to run. You can still BUILD during active play, where hazards work as soon as a build finishes.\nBUILD: your chicken pauses while aiming. AIM / ROTATE with the shown controls. CONFIRM starts a visible {construction_s}s build. CANCEL closes the preview. Red preview = invalid spot.",
-	"preparation": "Build now, or save your item for play. Use BUILD to aim and rotate; your chicken stays safe and still. CONFIRM starts a visible {construction_s}s build that finishes before the race begins. Prepared hazards stay inactive until PLAY. If you wait, use BUILD during active play. Red preview = invalid spot."
+	"get_ready": "The BUILD timer stays in the side HUD. Final 3–2–1, then GO starts play. Keep your item saved or prepare to run. You can still BUILD during active play, where hazards work as soon as a build finishes.\nBUILD: your chicken pauses while aiming. AIM / ROTATE with the shown controls. CONFIRM starts a visible {construction_s}s build. CANCEL closes the preview. Red preview = invalid spot.",
+	"preparation": "Build now, or save your item for play. Use BUILD to aim and rotate; your chicken stays safe and still. CONFIRM starts a visible {construction_s}s build. Prepared hazards stay inactive until PLAY. If you wait, use BUILD during active play. The final 3–2–1 leads directly to GO. Red preview = invalid spot."
 }
 
 [sub_resource type="Resource" id="Step_3"]

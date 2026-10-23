@@ -11,7 +11,7 @@ signal live_placement_boundary_resolved(results: Array)
 
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
 const JOB_PREVIEW := preload("res://scripts/match/construction_job_preview.gd")
-@export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
+const CONSTRUCTION_TIME_EPSILON := 0.000001
 @export_range(1.0, 30.0, 0.25) var build_phase_seconds := 10.0
 @export_range(0.1, 10.0, 0.1) var construction_seconds := 2.0
 @export_range(1.0, 32.0, 1.0) var live_cursor_cells_per_second := 8.0
@@ -27,8 +27,6 @@ var live_notices: Dictionary = {}
 var construction_jobs: Dictionary = {}
 var _aim_repeat: Dictionary = {}
 var _request_serial := 0
-var _go_remaining := 0.0
-var _go_start_pending := false
 var _live_admission_open := false
 var _edge_layer: CanvasLayer
 var _edge_root: Control
@@ -97,15 +95,6 @@ func _physics_process(delta: float) -> void:
 			_advance_preparation_phase(delta)
 		elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
 			return
-	elif phase_controller.phase == MatchPhaseController.Phase.GO:
-		_advance_construction_jobs(delta)
-		var go_finished := phase_controller.advance(delta)
-		_go_remaining = phase_controller.remaining_seconds
-		last_message = "GO • %d" % ceili(_go_remaining)
-		_notify_presentation(&"live_build")
-		if go_finished and not _go_start_pending:
-			_go_start_pending = true
-			_start_live_play.call_deferred()
 	else:
 		# The terminal round result (resolved in super) closes admission before any queued edit.
 		_close_live_attempt()
@@ -115,14 +104,12 @@ func _physics_process(delta: float) -> void:
 func _advance_preparation_phase(delta: float) -> void:
 	if phase_controller.advance(delta):
 		_close_live_admission()
-		phase_controller.enter(MatchPhaseController.Phase.GO, go_countdown_seconds)
-		_go_remaining = go_countdown_seconds
-		input_router.set_phase(LocalInputRouter.Phase.GO)
 		for seat_variant in build_mode.keys():
-			_set_live_ghost_visible(int(seat_variant), false)
-		last_message = "GO • movement and live building begin after the countdown."
+			var seat_index := int(seat_variant)
+			_set_build_mode(seat_index, false)
+			_set_live_ghost_visible(seat_index, false)
 		_notify_presentation(&"live_build")
-		_refresh_match_ui()
+		_start_live_play()
 
 
 func _close_live_admission() -> void:
@@ -175,7 +162,7 @@ func _enter_place() -> void:
 
 
 func _start_live_play() -> void:
-	if phase_controller.phase != MatchPhaseController.Phase.GO:
+	if phase_controller.phase != MatchPhaseController.Phase.BUILD:
 		return
 	# P12 starts the locked Main/Twist here. Its existing taya freeze and immunity stay authoritative.
 	super._enter_play()
@@ -190,7 +177,6 @@ func _start_live_play() -> void:
 		(_ghosts[int(seat_index)] as ItemGhost).visible = false
 		_create_edge_marker(int(seat_index))
 	_live_admission_open = true
-	_go_start_pending = false
 	_refresh_match_ui()
 
 
@@ -363,10 +349,7 @@ func _sync_actor_build_lock(seat_index: int) -> void:
 	var actor := actors.get(seat_index) as ChickenController
 	if actor != null and is_instance_valid(actor):
 		actor.build_input_locked = (
-			(
-				phase_controller.phase
-				in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.GO]
-			)
+			(phase_controller.phase == MatchPhaseController.Phase.BUILD)
 			or bool(build_mode.get(seat_index, false))
 		)
 
@@ -625,7 +608,7 @@ func _advance_construction_jobs(delta: float) -> void:
 		if not _seat_can_keep_job(seat_index):
 			_cancel_construction_job(job_id, false)
 			continue
-		if remaining > 0.0:
+		if elapsed + CONSTRUCTION_TIME_EPSILON < construction_seconds:
 			live_notices[seat_index] = "Building • %.1f s remaining." % remaining
 			continue
 		items.live_boundary = Engine.get_physics_frames()
@@ -689,11 +672,7 @@ func _seat_can_keep_job(seat_index: int) -> bool:
 	return (
 		(
 			phase_controller.phase
-			in [
-				MatchPhaseController.Phase.BUILD,
-				MatchPhaseController.Phase.GO,
-				MatchPhaseController.Phase.PLAY
-			]
+			in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
 		)
 		and (items.in_play == (phase_controller.phase == MatchPhaseController.Phase.PLAY))
 		and bool(input_router.registry.get_seat(seat_index).get("joined", false))
@@ -772,17 +751,11 @@ func _commit_live_intent(
 		"commit_boundary": boundary,
 		"stage_version": items.stage_version,
 	}
-	var preparation_phase := (
-		phase_controller.phase in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.GO]
-	)
+	var preparation_phase := phase_controller.phase == MatchPhaseController.Phase.BUILD
 	if (
 		(
 			phase_controller.phase
-			not in [
-				MatchPhaseController.Phase.BUILD,
-				MatchPhaseController.Phase.PLAY,
-				MatchPhaseController.Phase.GO
-			]
+			not in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
 		)
 		or items.in_play == preparation_phase
 	):
@@ -1110,8 +1083,6 @@ func play_status_text() -> String:
 				% ceili(phase_controller.remaining_seconds)
 			)
 		)
-	elif phase_controller.phase == MatchPhaseController.Phase.GO:
-		notices.append("GO • %d" % ceili(_go_remaining))
 	for job in construction_jobs.values():
 		var remaining := maxf(
 			0.0, construction_seconds - (_construction_clock - float(job.started_at))
@@ -1154,5 +1125,4 @@ func reset_room() -> void:
 	_request_serial = 0
 	_construction_clock = 0.0
 	_live_admission_open = false
-	_go_start_pending = false
 	super.reset_room()

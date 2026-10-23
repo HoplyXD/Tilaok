@@ -35,6 +35,12 @@ const ONE_SHOT_ACTIONS := [
 ## only meaningful in Place, so neither alias takes anything from the placement rules.
 const ROTATE_ALIAS_LOBBY := "help"
 const ROTATE_ALIAS_PLAY := "cheer"
+
+# Generic USB Joystick (VID 0079, PID 0006) reports raw button numbers. Keep
+# these bindings explicit so the un-mapped device does not depend on a
+# controller-layout translation to reach BUILD actions.
+const GENERIC_USB_PLACE_BUTTON := 0
+const GENERIC_USB_ROTATE_BUTTON := 2
 const STICK_KEY_PREFIX := "stick_"
 const STICK_DIRECTIONS := {
 	JOY_AXIS_LEFT_X: ["left", "right"],
@@ -51,6 +57,9 @@ var rotation_supported := false
 var live_build_confirm_enabled := false
 ## Seats currently in build mode. Their movement keys steer the block cursor instead of the chicken.
 var build_mode_seats: Dictionary = {}
+## On the Title while nobody is seated (GameFlow sets it): in MENU, the first direction or confirm
+## press from an unjoined keyboard layout or gamepad joins it and that same press acts on the menu.
+var menu_join_enabled := false
 var _held: Dictionary = {}
 var _pressed: Dictionary = {}
 var _blocked: Dictionary = {}
@@ -64,9 +73,6 @@ var _aim_y: Dictionary = {}
 ## Digital menu direction (-1 / 0 / +1) per "seat:axis" derived from the left stick outside Play.
 var _stick_sign: Dictionary = {}
 var _system_paused := false
-## On the Title while nobody is seated (GameFlow sets it): in MENU, the first direction or confirm
-## press from an unjoined keyboard layout or gamepad joins it and that same press acts on the menu.
-var menu_join_enabled := false
 
 
 func _ready() -> void:
@@ -1133,9 +1139,9 @@ func _build_aim_action_for_joy_button(button: int, fallback: String) -> String:
 
 func _gamepad_build_action_for_joy_button(button: int, fallback: String) -> String:
 	match button:
-		JOY_BUTTON_A:
+		GENERIC_USB_PLACE_BUTTON:
 			return "confirm"
-		JOY_BUTTON_X:
+		GENERIC_USB_ROTATE_BUTTON:
 			return "live_rotate"
 	return _build_aim_action_for_joy_button(button, fallback)
 

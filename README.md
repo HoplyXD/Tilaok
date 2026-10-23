@@ -1,6 +1,6 @@
 # Tilaok!
 
-**Current build:** local/offline 2–4 player play. Normal Play follows **Lobby → Pugad → shared 10-second BUILD → shared 3-second GO → active race/event with movement and construction → results → next round**. Each player has one assigned item per round and may build during BUILD or save it for live placement. Construction is a visible, non-gameplay job for 2.0 gameplay seconds, freezes while paused, reserves its fixed footprint, and remains inert until PLAY when started during BUILD/GO. The P12 scheduled Place route remains a developer fallback. Phone/LAN, Android and QR features are retired; NLB specs and evidence are preserved as retired history in `docs/archive/retired-networked-live-build/`.
+**Current build:** local/offline 2–4 player play. Normal Play follows **Lobby → Pugad → shared 10-second BUILD → final 3–2–1/GO cue → active race/event with movement and construction → results → next round**. BUILD’s countdown stays in the side HUD; a full-screen countdown appears only in its final 3 seconds. BUILD expiry starts active play immediately; the separate 3-second GET READY countdown is used when resuming from pause. Each player has one assigned item per round and may build during BUILD or save it for live placement. Construction is a visible, non-gameplay job for 2.0 gameplay seconds, freezes while paused, reserves its fixed footprint, and remains inert until PLAY when started during BUILD. The P12 scheduled Place route remains a developer fallback. Phone/LAN, Android and QR features are retired; NLB specs and evidence are preserved as retired history in `docs/archive/retired-networked-live-build/`.
 
 > A Filipino party platformer where chickens build the level, then try to survive it.
 
@@ -14,7 +14,7 @@ From the repository root, launch with Godot 4.7.2:
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'
 ```
 
-Join with a local keyboard or gamepad, ready up in the Lobby, pick an egg in Pugad, then build during the shared 10-second BUILD window or save your one item for play. Movement starts after the shared three-second GO. The in-game tutorial and Controls screen describe each seat's bindings. Developer-only alternatives: `-- --match-route=lifecycle` opens the scheduled Place flow; `-- --match-route=first_playable` opens the first-playable slice.
+Join with a local keyboard or gamepad, ready up in the Lobby, pick an egg in Pugad, then build during the shared 10-second BUILD window or save your one item for play. The final 3 seconds show `3–2–1`, then `GO!` starts play immediately. The in-game tutorial and Controls screen describe each seat's bindings. Developer-only alternatives: `-- --match-route=lifecycle` opens the scheduled Place flow; `-- --match-route=first_playable` opens the first-playable slice.
 
 ## Project documents
 

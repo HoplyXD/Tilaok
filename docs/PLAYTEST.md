@@ -423,7 +423,7 @@ At that documentation-only review, no team milestone was marked complete. The cu
 
 ## P07-T01 playtest kit — live match UI build (2026-10-14)
 
-**Status: ready for a human session; no session has been run and none is claimed.** The normal build route is Lobby → Pugad → shared 10-second BUILD → GO → Karera/Lagsanay/Kangaroo → Round result → next round. During BUILD, players may place their one item or save it for active play; preparation jobs remain inert until PLAY. P22 adds focused synthetic checks for assignment, early placement, retained inventory, the timer and phase handoff. Human novice comprehension, rendered readability and physical-device use remain open. Synthetic input is not physical-device evidence.
+**Status: ready for a human session; no session has been run and none is claimed.** The normal build route is Lobby → Pugad → shared 10-second BUILD → final 3–2–1/GO cue → Karera/Lagsanay/Kangaroo → Round result → next round. During BUILD, the timer stays in the side HUD and the full-screen cue appears only during the final three seconds; expiry starts active play immediately. Pause resume retains its separate 3-second GET READY countdown. Players may place their one item during BUILD or save it for active play; preparation jobs remain inert until PLAY. Revised synthetic verification passed on Godot 4.6.3: the focused offline suite passed 123 checks, P12 passed 59, P13 tutorial passed 58 and the ten-cycle reset audit passed 10/10; see [P22 follow-up logs](evidence/p22_preparation/README.md). Human novice comprehension, rendered readability and physical-device use remain open. Synthetic input is not physical-device evidence.
 
 ### Launch
 

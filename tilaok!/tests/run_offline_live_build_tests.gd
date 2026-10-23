@@ -181,8 +181,8 @@ func _test_live_controls_are_isolated() -> void:
 		"gamepad D-pad steers the preview while build mode is active"
 	)
 	_check(
-		router._gamepad_build_action_for_joy_button(JOY_BUTTON_A, "jump") == "confirm",
-		"gamepad South/A confirms a live placement while build mode is active"
+		router._gamepad_build_action_for_joy_button(0, "jump") == "confirm",
+		"generic gamepad B0 confirms a live placement while build mode is active"
 	)
 	router.set_live_build_mode(0, false)
 	_check(
@@ -213,8 +213,8 @@ func _test_live_controls_are_isolated() -> void:
 		"gamepad right bumper remains an alternate live-rotate control"
 	)
 	_check(
-		router._gamepad_build_action_for_joy_button(JOY_BUTTON_X, "cheer") == "live_rotate",
-		"gamepad West/X rotates the live preview in build mode"
+		router._gamepad_build_action_for_joy_button(2, "cheer") == "live_rotate",
+		"generic gamepad B2 rotates the live preview in build mode"
 	)
 	_check(
 		InputContextTable.audit().is_empty(),
@@ -241,8 +241,8 @@ func _test_live_controls_are_isolated() -> void:
 	)
 	var gamepad_build := InputContextTable.bindings("gamepad", "build")
 	_check(
-		_has_binding(gamepad_build, JOY_BUTTON_X, "live_rotate"),
-		"gamepad build guide exposes the West/X rotate button"
+		_has_binding(gamepad_build, 2, "live_rotate"),
+		"gamepad build guide exposes raw button B2 for rotate"
 	)
 	router.set_live_build_mode(0, true)
 	for layout_check in [
@@ -372,13 +372,9 @@ func _test_live_assignment_seat_layouts() -> void:
 		_check(
 			(
 				is_equal_approx(room.build_phase_seconds, 10.0)
-				and is_equal_approx(room.go_countdown_seconds, 3.0)
 				and is_equal_approx(room.phase_controller.remaining_seconds, 10.0)
 			),
-			(
-				"%d-seat BUILD uses a separate ten-second window before the three-second GO"
-				% seat_count
-			)
+			"%d-seat BUILD starts with the shared ten-second timer" % seat_count
 		)
 		room.queue_free()
 		await process_frame
@@ -518,7 +514,7 @@ func _test_final_build_boundary_handoff() -> void:
 	room._physics_process(1.0 / 60.0)
 	_check(
 		(
-			room.phase_controller.phase == MatchPhaseController.Phase.GO
+			room.phase_controller.phase == MatchPhaseController.Phase.PLAY
 			and room.inventory_used.get(0, false)
 			and room.construction_jobs.has(request_id)
 			and (
@@ -526,17 +522,17 @@ func _test_final_build_boundary_handoff() -> void:
 				== "construction_started"
 			)
 		),
-		"a confirmation queued for BUILD's final boundary resolves before GO"
+		"a confirmation queued for BUILD's final boundary resolves before PLAY starts"
 	)
 	var request_count := room.request_pipeline.request_records.size()
 	room._set_build_mode(1, true)
 	room._submit_live_placement(1)
 	_check(
 		(
-			room.request_pipeline.request_records.size() == request_count
+			room.request_pipeline.request_records.size() == request_count + 1
 			and not room.inventory_used.get(1, false)
 		),
-		"a fresh confirmation during GO is rejected and retains inventory"
+		"a player who saved their item can still place it during active play"
 	)
 	room._advance_construction_jobs(room.construction_seconds)
 	var piece: PlacedItem = (
@@ -544,14 +540,14 @@ func _test_final_build_boundary_handoff() -> void:
 	)
 	_check(
 		(
-			room.phase_controller.phase == MatchPhaseController.Phase.GO
+			room.phase_controller.phase == MatchPhaseController.Phase.PLAY
 			and room.construction_jobs.is_empty()
 			and piece != null
 			and piece.node is StageBlock
-			and not (piece.node as StageBlock).active
-			and not room.items.in_play
+			and (piece.node as StageBlock).active
+			and room.items.in_play
 		),
-		"a preparation job can finish during GO while its piece remains inert"
+		"a preparation job crossing the BUILD boundary completes once during active play"
 	)
 	await _advance_to_play(room)
 	_check(
@@ -560,7 +556,7 @@ func _test_final_build_boundary_handoff() -> void:
 			and piece != null
 			and (piece.node as StageBlock).active
 		),
-		"GO activates the already completed preparation piece once at PLAY"
+		"the already completed preparation piece stays active through PLAY"
 	)
 	room.queue_free()
 	await process_frame
@@ -638,10 +634,10 @@ func _test_ten_second_build_boundary() -> void:
 	_check(
 		(
 			before_expiry
-			and room.phase_controller.phase == MatchPhaseController.Phase.GO
-			and is_equal_approx(room.phase_controller.remaining_seconds, room.go_countdown_seconds)
+			and room.phase_controller.phase == MatchPhaseController.Phase.PLAY
+			and room.items.in_play
 		),
-		"BUILD lasts 600 gameplay simulation ticks and transitions on its tenth-second boundary"
+		"BUILD lasts 600 gameplay simulation ticks then starts PLAY on its tenth-second boundary"
 	)
 	room.queue_free()
 	await process_frame
@@ -718,7 +714,6 @@ func _test_live_go_pause_and_commit() -> void:
 	room.input_router.registry.set_ready(1, true)
 	room.tuning.match_target_score_units = 100000
 	room.build_phase_seconds = 0.1
-	room.go_countdown_seconds = 0.1
 	_check(room.start_match(), "normal live-build route starts through the two-seat Lobby gate")
 	for seat_index in range(2):
 		var egg: Dictionary = room.egg_pool[seat_index]
@@ -734,6 +729,28 @@ func _test_live_go_pause_and_commit() -> void:
 		),
 		"every seat assignment enters shared BUILD without a Place phase"
 	)
+	room.phase_controller.remaining_seconds = 10.0
+	room.presenter._update_fullscreen_countdown()
+	var full_build_overlay_hidden := not room.presenter.fullscreen_countdown.visible
+	room.presenter._apply_hud(
+		room.input_router.registry.joined_seats(), MatchPhaseController.Phase.BUILD
+	)
+	var side_timer_visible := (
+		room.presenter.play_hud._timer_label.visible
+		and room.presenter.play_hud._timer_label.text == "0:10"
+	)
+	room.phase_controller.remaining_seconds = 3.0
+	room.presenter._update_fullscreen_countdown()
+	_check(
+		(
+			full_build_overlay_hidden
+			and side_timer_visible
+			and room.presenter.fullscreen_countdown.visible
+			and room.presenter.fullscreen_countdown._number.text == "3"
+		),
+		"BUILD keeps its timer in the side HUD and shows the screen count only at three seconds"
+	)
+	room.phase_controller.remaining_seconds = room.build_phase_seconds
 	var build_hints := room.presenter._control_hint_lines(
 		room.input_router.registry.joined_seats(), MatchPhaseController.Phase.BUILD
 	)
@@ -769,25 +786,13 @@ func _test_live_go_pause_and_commit() -> void:
 	paused = false
 	room._physics_process(0.2)
 	_check(
-		room.phase_controller.phase == MatchPhaseController.Phase.GO,
-		"BUILD expiry enters the shared GO exactly once"
+		room.phase_controller.phase == MatchPhaseController.Phase.PLAY,
+		"BUILD expiry starts active play immediately without a separate GO wait"
 	)
-	var go_remaining := room.phase_controller.remaining_seconds
-	paused = true
-	room._physics_process(0.5)
-	_check(
-		(
-			room.phase_controller.phase == MatchPhaseController.Phase.GO
-			and is_equal_approx(room.phase_controller.remaining_seconds, go_remaining)
-		),
-		"pause freezes the shared GO countdown"
-	)
-	paused = false
-	room._physics_process(0.2)
 	await process_frame
 	_check(
 		room.phase_controller.phase == MatchPhaseController.Phase.PLAY and room.items.in_play,
-		"GO releases movement and item lifecycle together"
+		"BUILD expiry releases movement and item lifecycle together"
 	)
 	if room.phase_controller.phase == MatchPhaseController.Phase.PLAY:
 		room.inventory_used[0] = false
@@ -838,8 +843,8 @@ func _test_live_go_pause_and_commit() -> void:
 		_check(
 			(
 				pad_hint.contains("BUILD North")
-				and pad_hint.contains("AIM D-pad/stick · PLACE A / RT")
-				and pad_hint.contains("ROTATE X / RB · CLOSE LB")
+				and pad_hint.contains("AIM D-pad/stick · PLACE B0")
+				and pad_hint.contains("ROTATE B2 · CLOSE LB")
 			),
 			"HUD switches a gamepad seat to its live-build controls"
 		)
@@ -1125,7 +1130,7 @@ func _test_live_go_pause_and_commit() -> void:
 		else:
 			_check(false, "live room finds a safe open construction cell")
 	else:
-		_check(false, "live route transitions from GO to active Play")
+		_check(false, "live route transitions directly from BUILD to active Play")
 	room.queue_free()
 	await process_frame
 
@@ -1138,7 +1143,6 @@ func _test_live_hazard_occupant_moves_not_cancels() -> void:
 	room.set_match_seed(173)
 	room.tuning.match_target_score_units = 100000
 	room.build_phase_seconds = 0.1
-	room.go_countdown_seconds = 0.1
 	var hazard_key := ""
 	for family in room.definitions.families:
 		if str(family.behavior_kind) not in ["hitbox", "trumpo", "bubble"]:
@@ -1359,11 +1363,7 @@ func _advance_to_play(room: OfflineLiveBuildMatchRoom) -> void:
 	if room.phase_controller.phase == MatchPhaseController.Phase.BUILD:
 		room.phase_controller.remaining_seconds = 0.0
 		room._physics_process(1.0 / 60.0)
-	if room.phase_controller.phase == MatchPhaseController.Phase.GO:
-		room.phase_controller.remaining_seconds = 0.0
-		room._go_remaining = 0.0
-		room._physics_process(1.0 / 60.0)
-		await process_frame
+	await process_frame
 
 
 func _safe_cell(room: OfflineLiveBuildMatchRoom, seat_index: int, variant_key: String) -> Vector2i:

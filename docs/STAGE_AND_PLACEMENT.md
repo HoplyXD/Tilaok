@@ -6,7 +6,7 @@
 
 ## Purpose
 
-The stage must support the full **Pugad → shared 10-second BUILD → GO → Play** loop across a persistent 12-round match. Each player may place their single assigned item during BUILD or save it for active play. Preparation jobs take the same two gameplay seconds as active jobs, may finish during GO, and remain inert until PLAY. BUILD admits confirmations through its final simulation boundary, then closes admission for GO. It begins as a readable race course, then becomes shared player-built terrain that helps and harms later rounds and events.
+The stage must support the full **Pugad → shared 10-second BUILD → final 3–2–1/GO cue → Play** loop across a persistent 12-round match. BUILD’s countdown stays in the side HUD; the full-screen cue appears only during its final three seconds. BUILD expiry starts active play immediately. Each player may place their single assigned item during BUILD or save it for active play. Preparation jobs take the same two gameplay seconds as active jobs and remain inert until PLAY begins; any remaining construction time then advances during active play. BUILD admits confirmations through its final simulation boundary, then closes BUILD admission. The 3-second GET READY countdown remains reserved for pause resume. The stage begins as a readable race course, then becomes shared player-built terrain that helps and harms later rounds and events.
 
 The design allows a stage to become unsolvable. Players are responsible for the risks created through placement. The base geometry, spawn safety, and Karera goal must remain usable.
 

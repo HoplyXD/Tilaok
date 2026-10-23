@@ -132,10 +132,11 @@ func _test_standalone_count(count: int) -> void:
 		var first_panel: Dictionary = room._command_panels.values()[0]
 		_check(
 			(
-				str(first_panel.pose.text).begins_with("DEBUG POSE")
-				and str(first_panel.note.text).begins_with("DEBUG •")
+				not str(first_panel.pose.text).contains("DEBUG")
+				and not str(first_panel.steps.text).contains("DEBUG")
+				and not str(first_panel.note.text).contains("DEBUG")
 			),
-			"muted audio retains the visible command and timing instructions"
+			"muted audio retains clean command and timing instructions without debug labels"
 		)
 		for mode in [0, 1]:
 			room._screen_shake_mode = mode
