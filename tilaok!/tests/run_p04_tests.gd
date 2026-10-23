@@ -156,21 +156,24 @@ func _test_tuning_and_definitions() -> void:
 	_check(
 		(
 			definitions.enabled_variant_keys("build.hollow_blocks")
-			== PackedStringArray([KAING_1X1, KAING_2X3])
+			== PackedStringArray([KAING_1X1, KAING_1X3, KAING_2X3])
 		),
-		"prototype Kaing subset is exactly 1x1 and 2x3"
-	)
-	_check(
-		definitions.enabled_variant_keys("build.bamboo_bridge") == PackedStringArray([TULAY_4X1]),
-		"prototype Tulay subset is exactly horizontal 4x1"
+		"all three Kaing variants are enabled"
 	)
 	_check(
 		(
-			not definitions.is_variant_enabled(KAING_1X3)
-			and not definitions.is_variant_enabled(TULAY_3X1)
-			and not definitions.is_variant_enabled(TULAY_5X1)
+			definitions.enabled_variant_keys("build.bamboo_bridge")
+			== PackedStringArray([TULAY_3X1, TULAY_4X1, TULAY_5X1])
 		),
-		"1x3 column and 3x1/5x1 Tulay are defined but not enabled"
+		"all three Tulay variants are enabled"
+	)
+	_check(
+		(
+			definitions.is_variant_enabled(KAING_1X3)
+			and definitions.is_variant_enabled(TULAY_3X1)
+			and definitions.is_variant_enabled(TULAY_5X1)
+		),
+		"1x3 column and 3x1/5x1 Tulay join the default egg pool"
 	)
 	var kaing_solid_only := true
 	for variant in kaing.variants:

@@ -2,6 +2,8 @@
 
 **Date:** 2026-10-22. **Source revision before task changes:** `c97f94ea5b30b5be7b5edb8665e6021fb30eb074`. **Engine:** Godot `4.7.2.stable.official.ed1daf0bf`. The game executable was not launched, and no physical-controller or human-play evidence is claimed.
 
+**Later owner decision (2026-10-23):** the owner requested that the eight spring, Parol, launcher and cannon variants named below be restored to normal live-build offers and construction despite the failures/incomplete audit recorded in this report. The historical results below remain unchanged; this later re-enablement has not been verified and is not full-pool acceptance.
+
 ## Results
 
 | Check | Status | Result |

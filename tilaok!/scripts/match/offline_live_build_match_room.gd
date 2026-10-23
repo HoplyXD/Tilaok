@@ -11,14 +11,6 @@ signal live_placement_boundary_resolved(results: Array)
 
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
 const JOB_PREVIEW := preload("res://scripts/match/construction_job_preview.gd")
-const LIVE_SAFE_BEHAVIORS := ["", "hitbox", "trumpo", "bubble"]
-const LIVE_BLOCKED_BEHAVIOR_REASONS := {
-	"spring": "P10 T03 failed: 1 launch after 40 held-contact frames.",
-	"parol": "P10 T20 failed: solid cover did not shorten the beam (384 wu vs 128 wu).",
-	"launcher": "P10 T30 failed: the projectile crossed a solid cover.",
-	"cannon": "No P20 interaction audit covers cannon projectile and live-build overlaps.",
-}
-
 @export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
 @export_range(0.1, 10.0, 0.1) var construction_seconds := 2.0
 @export_range(0.1, 5.0, 0.1) var live_item_grace_seconds := 1.0
@@ -52,13 +44,7 @@ func _init() -> void:
 
 
 func pugad_excluded_variant_keys() -> PackedStringArray:
-	var excluded := PackedStringArray()
-	for variant_key in tuning.item_enabled_variants:
-		var found := definitions.find_variant(str(variant_key))
-		var family := found.get("family") as ItemFamilyDefinition
-		if family == null or str(family.behavior_kind) not in LIVE_SAFE_BEHAVIORS:
-			excluded.append(str(variant_key))
-	return excluded
+	return PackedStringArray()
 
 
 func _ready() -> void:
@@ -505,26 +491,6 @@ func _start_construction_job(seat_index: int, intent: Dictionary, boundary: int)
 				false,
 				"content_unverified",
 				"This item is not verified for live construction."
-			)
-		var behavior := str(family.behavior_kind)
-		if not behavior in LIVE_SAFE_BEHAVIORS:
-			var reason := str(
-				LIVE_BLOCKED_BEHAVIOR_REASONS.get(
-					behavior, "No live-construction safety audit is recorded for this behavior."
-				)
-			)
-			return _live_result(
-				{
-					"request_id": str(intent.get("request_id", "")),
-					"seat_index": seat_index,
-					"commit_boundary": boundary
-				},
-				false,
-				"content_unverified",
-				(
-					"Live construction is disabled for %s (%s): %s"
-					% [family.family_id, behavior, reason]
-				)
 			)
 	var validation := _commit_live_intent(seat_index, intent, boundary, false)
 	if not bool(validation.get("allowed", false)):

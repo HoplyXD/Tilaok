@@ -864,7 +864,9 @@ func _test_parol_contact_and_occlusion() -> void:
 	# Occlusion by a real solid between the posts.
 	await _fresh()
 	var parol := _place(PAROL_5, Vector2i(13, 8), 0, 0)
-	var block := _place(KAING_1, Vector2i(15, 8), 0, 0)
+	# The 1x1 Kaing block is intentionally pushable and falls out of the beam
+	# during warmup. Use an anchored column for persistent cover.
+	var block := _place(KAING_3, Vector2i(15, 7), 0, 0)
 	_check(
 		bool(block.allowed), "T20 a block may sit between the posts (posts reserve only two cells)"
 	)
@@ -995,7 +997,8 @@ func _test_launcher_hit_cover_and_spawn_safety() -> void:
 	# Cover: a block in the lane stops the slipper; a chicken behind it is safe.
 	await _fresh()
 	var launcher := _place(LANE_6, Vector2i(8, 8), 0, 0)
-	var cover := _place(KAING_1, Vector2i(10, 8), 0, 0)
+	# Keep the cover anchored in the firing lane for the full warmup and test.
+	var cover := _place(KAING_3, Vector2i(10, 7), 0, 0)
 	_check(bool(cover.allowed), "T30 a block can sit in the lane (lanes are not footprints)")
 	var behavior := _piece(str(launcher.instance_id)).behavior as LauncherBehavior
 	await _arm()

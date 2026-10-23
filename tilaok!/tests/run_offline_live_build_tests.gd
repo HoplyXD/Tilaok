@@ -217,44 +217,35 @@ func _test_live_safety_manifest() -> void:
 	var room := LIVE_ROOM.instantiate() as OfflineLiveBuildMatchRoom
 	root.add_child(room)
 	await process_frame
-	var audited := 0
-	var rejected: Array[String] = []
-	var fail_closed: Array[String] = []
+	var missing_definitions: Array[String] = []
 	for variant_key in room.tuning.item_enabled_variants:
 		var found := room.definitions.find_variant(str(variant_key))
 		var family := found.get("family") as ItemFamilyDefinition
-		if family == null or str(family.behavior_kind) not in room.LIVE_SAFE_BEHAVIORS:
-			rejected.append(str(variant_key))
-			if family != null and room.LIVE_BLOCKED_BEHAVIOR_REASONS.has(str(family.behavior_kind)):
-				fail_closed.append(str(variant_key))
-		else:
-			audited += 1
-	rejected.sort()
-	fail_closed.sort()
-	var expected_fail_closed := [
-		"block.cannon.main",
-		"hazard.parol_pulse.span_3x1",
-		"hazard.parol_pulse.span_4x1",
-		"hazard.parol_pulse.span_5x1",
-		"hazard.parol_pulse.span_6x1",
-		"hazard.slipper_launcher.lane_4x1",
-		"hazard.slipper_launcher.lane_6x1",
-		"move.tire_spring.tire_2x2",
-	]
-	_check(
-		(
-			rejected == expected_fail_closed
-			and fail_closed == expected_fail_closed
-			and audited + rejected.size() == room.tuning.item_enabled_variants.size()
-		),
-		(
-			"every enabled variant is safety-audited or explicitly fail-closed "
-			+ "(rejected=%s expected=%s)" % [rejected, expected_fail_closed]
-		)
+		if family == null:
+			missing_definitions.append(str(variant_key))
+	var restored_variants := PackedStringArray(
+		[
+			"block.cannon.main",
+			"hazard.parol_pulse.span_3x1",
+			"hazard.parol_pulse.span_4x1",
+			"hazard.parol_pulse.span_5x1",
+			"hazard.parol_pulse.span_6x1",
+			"hazard.slipper_launcher.lane_4x1",
+			"hazard.slipper_launcher.lane_6x1",
+			"move.tire_spring.tire_2x2",
+		]
 	)
+	var not_enabled: Array[String] = []
+	for variant_key in restored_variants:
+		if not room.tuning.item_enabled_variants.has(variant_key):
+			not_enabled.append(variant_key)
 	_check(
-		room.LIVE_BLOCKED_BEHAVIOR_REASONS.size() == 4,
-		"spring, Parol, launcher, and cannon remain fail-closed with recorded reasons"
+		(
+			missing_definitions.is_empty()
+			and room.pugad_excluded_variant_keys().is_empty()
+			and not_enabled.is_empty()
+		),
+		"all enabled variants, including the eight restored items, are eligible for live-build offers"
 	)
 	_check(
 		BaryaObjectiveDefinition.is_variant(BaryaObjectiveDefinition.VARIANT_ID),
@@ -285,11 +276,11 @@ func _test_live_assignment_seat_layouts() -> void:
 				and (
 					not room.tuning.item_enabled_variants.has(variant_key)
 					or family == null
-					or str(family.behavior_kind) not in room.LIVE_SAFE_BEHAVIORS
+					or not PugadEggPoolGenerator.allows_modes(family, room.pugad_mode_ids())
 				)
 			):
 				unsupported_variant = (
-					"%s (%s)" % [variant_key, family.behavior_kind if family != null else "missing"]
+					"%s (%s)" % [variant_key, family.family_id if family != null else "missing"]
 				)
 		_check(
 			unsupported_variant.is_empty(),

@@ -203,8 +203,11 @@ func _create_authoritative_match() -> void:
 		router.registry.set_ready(int(seat.seat), false)
 	room = match_scene.instantiate() as P05MatchRoom
 	var requested_seed := seed_from_args(DevBuildFlags.dev_user_args())
-	if requested_seed >= 0:
-		room.set_match_seed(requested_seed)
+	if requested_seed < 0:
+		var session_random := RandomNumberGenerator.new()
+		session_random.randomize()
+		requested_seed = session_random.randi()
+	room.set_match_seed(requested_seed)
 	room.input_router = router
 	room.simulation_authority = simulation_authority
 	room.auto_start_on_ready = true

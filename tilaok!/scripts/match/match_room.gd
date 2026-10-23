@@ -486,7 +486,8 @@ func _begin_pugad() -> void:
 		match_streams,
 		seat_indices.size() + tuning.match_pugad_extra_eggs,
 		mode_ids,
-		pugad_excluded_variant_keys()
+		pugad_excluded_variant_keys(),
+		true
 	)
 	_augment_pugad_egg_pool(seat_indices.size())
 	for seat_index in seat_indices:

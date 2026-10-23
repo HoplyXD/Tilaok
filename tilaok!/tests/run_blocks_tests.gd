@@ -12,6 +12,7 @@ const COLLAPSE := "build.collapsing_block.cell_1x1"
 const SPIKES := "block.spikes.main"
 const CANNON := "block.cannon.main"
 const KAING_1X1 := "build.hollow_blocks.cell_1x1"
+const KAING_1X3 := "build.hollow_blocks.column_1x3"
 const BLOCK_SCENES := {
 	SOLID: "res://scenes/blocks/construction/solid_block.tscn",
 	BOX: "res://scenes/blocks/construction/wood_box.tscn",
@@ -283,7 +284,9 @@ func _test_cannon() -> void:
 	)
 	# Cover: a Kaing block in the path stops the ball.
 	_revive()
-	ids = _arm([[CANNON, Vector2i(12, 14)], [KAING_1X1, Vector2i(14, 14)]], 1)
+	# A 1x1 Kaing is pushable and falls away before the Cannon fires. Use the
+	# anchored column variant to test projectile occlusion by stable cover.
+	ids = _arm([[CANNON, Vector2i(12, 14)], [KAING_1X3, Vector2i(14, 12)]], 1)
 	cannon = room.items.piece_for(ids[0]) as StageBlock
 	behavior = cannon.behavior as LauncherBehavior
 	for _frame in range(240):
