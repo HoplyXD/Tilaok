@@ -63,6 +63,36 @@ func _exit_tree() -> void:
 	super._exit_tree()
 
 
+func _update_camera_targets() -> void:
+	if phase_controller == null or phase_controller.phase != MatchPhaseController.Phase.BUILD:
+		super._update_camera_targets()
+		return
+	if camera_rig == null:
+		return
+	_camera_targets.clear()
+	for seat_variant in placement_controller.cursors:
+		var seat_index := int(seat_variant)
+		if bool(inventory_used.get(seat_index, false)):
+			continue
+		var cursor: Dictionary = placement_controller.cursors[seat_index]
+		var target := _cached_camera_target("preparation_cursor_%d" % seat_index)
+		target.world_rect = _preparation_cursor_rect(cursor)
+		_camera_targets.append(target)
+	camera_rig.set_targets(_camera_targets)
+
+
+func _preparation_cursor_rect(cursor: Dictionary) -> Rect2:
+	var origin := Vector2(cursor.cell) * tuning.grid_cell_wu
+	if BaryaObjectiveDefinition.is_variant(str(cursor.variant_key)):
+		return Rect2(origin, Vector2.ONE * tuning.grid_cell_wu)
+	var found := definitions.find_variant(str(cursor.variant_key))
+	if found.is_empty():
+		return Rect2(origin, Vector2.ONE * tuning.grid_cell_wu)
+	return ItemPlacementValidator.footprint_rect_for(
+		found.variant as ItemVariantDefinition, cursor.cell, int(cursor.quarter_turns), tuning
+	)
+
+
 func _process(delta: float) -> void:
 	super._process(delta)
 	if get_tree().paused or not _simulation_can_commit():
@@ -146,7 +176,7 @@ func _enter_place() -> void:
 	input_router.live_build_confirm_enabled = true
 	phase_controller.enter(MatchPhaseController.Phase.BUILD, build_phase_seconds)
 	input_router.set_phase(LocalInputRouter.Phase.BUILD)
-	current_context = BoundedStageCamera.Context.PLAY
+	current_context = BoundedStageCamera.Context.PLACE
 	camera_rig.set_context(current_context)
 	_free_match_ghosts()
 	for seat_index in seats:
@@ -168,6 +198,7 @@ func _start_live_play() -> void:
 	super._enter_play()
 	if phase_controller.phase != MatchPhaseController.Phase.PLAY:
 		return
+	_update_camera_targets()
 	for seat_index in placement_controller.cursors.keys():
 		_set_build_mode(int(seat_index), false)
 		if bool(inventory_used.get(int(seat_index), false)):
@@ -459,18 +490,34 @@ func _resolve_live_placement_boundary() -> void:
 	if requests.is_empty():
 		return
 	var resolved: Array[Dictionary] = []
+	var preparation_phase := phase_controller.phase == MatchPhaseController.Phase.BUILD
 	for receipt in requests:
 		var request_id := str(receipt.request_id)
 		var seat_index := int(receipt.seat_index)
 		var intent: Dictionary = receipt.intent
-		var result := _start_construction_job(seat_index, intent, boundary)
+		var result: Dictionary
+		if preparation_phase:
+			# BUILD is a preparation placement, so materialize the inert piece immediately. The
+			# separate two-second construction job applies only to placements during active PLAY.
+			items.live_boundary = boundary
+			result = _commit_live_intent(seat_index, intent, boundary, true, false)
+			if bool(result.get("terrain_mutated", false)):
+				items.stage_version += 1
+				request_pipeline.stage_version = items.stage_version
+			result.stage_version = items.stage_version
+		else:
+			result = _start_construction_job(seat_index, intent, boundary)
 		resolved.append({"request_id": request_id, "result": result})
 		inventory_used[seat_index] = bool(result.get("allowed", false))
 		live_notices[seat_index] = str(result.get("reason", "Placement resolved."))
 		if bool(result.get("allowed", false)):
 			_set_build_mode(seat_index, false)
 			_set_live_ghost_visible(seat_index, false)
-			live_notices[seat_index] = "Building • %.1f s remaining." % construction_seconds
+			live_notices[seat_index] = (
+				"Placed during prep • this round's item is used."
+				if preparation_phase
+				else "Building • %.1f s remaining." % construction_seconds
+			)
 		else:
 			# Keep build mode active after a rejected placement so players can reposition and retry.
 			var actor := actors.get(seat_index) as ChickenController
