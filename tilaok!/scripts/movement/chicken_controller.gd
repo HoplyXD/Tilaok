@@ -9,6 +9,12 @@ signal sneak_changed(is_sneaking: bool)
 signal stunned(seconds: float)
 
 const WATER_DRAG := 0.86
+const IDENTITY_MARKER_TEXTURES := {
+	"CIRCLE": preload("res://assets/ui/common/identity_circle.svg"),
+	"TRIANGLE": preload("res://assets/ui/common/identity_triangle.svg"),
+	"SQUARE": preload("res://assets/ui/common/identity_square.svg"),
+	"DIAMOND": preload("res://assets/ui/common/identity_diamond.svg"),
+}
 ## Hitbox children of scenes/characters/chicken.tscn. Exactly one is ever enabled: the state
 ## below picks it, and ChickenSpriteAnimator picks its animation from that same state, so the
 ## pose on screen and the body in the physics world never disagree. The first unnamed rectangle
@@ -97,6 +103,7 @@ var _contact_sensor: ChickenContactSensor
 
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	add_to_group("chickens")
 	if tuning == null:
 		tuning = GameplayTuning.new()
@@ -949,40 +956,22 @@ func _draw_debug_body() -> void:
 
 
 func _draw_identity_marker(marker: Vector2) -> void:
-	match identity_shape:
-		"TRIANGLE":
-			draw_colored_polygon(
-				PackedVector2Array(
-					[marker + Vector2(0, -7), marker + Vector2(-7, 6), marker + Vector2(7, 6)]
-				),
-				Color.WHITE
-			)
-		"SQUARE":
-			draw_rect(Rect2(marker - Vector2(5, 5), Vector2(10, 10)), Color.WHITE)
-		"DIAMOND":
-			draw_colored_polygon(
-				PackedVector2Array(
-					[
-						marker + Vector2(0, -7),
-						marker + Vector2(7, 0),
-						marker + Vector2(0, 7),
-						marker + Vector2(-7, 0)
-					]
-				),
-				Color.WHITE
-			)
-		_:
-			draw_circle(marker, 6.0, Color.WHITE)
+	var texture := (
+		IDENTITY_MARKER_TEXTURES.get(identity_shape, IDENTITY_MARKER_TEXTURES["CIRCLE"]) as Texture2D
+	)
+	draw_texture_rect(
+		texture, Rect2(marker - Vector2(11.0, 11.0), Vector2(22.0, 22.0)), false, marker_color
+	)
 	var font := ThemeDB.fallback_font
 	if font != null:
 		draw_string(
 			font,
-			marker + Vector2(-4, 4),
+			marker + Vector2(-11.0, 5.0),
 			str(identity_number),
-			HORIZONTAL_ALIGNMENT_LEFT,
-			10.0,
-			9,
-			Color.BLACK
+			HORIZONTAL_ALIGNMENT_CENTER,
+			22.0,
+			14,
+			Color("#15242b")
 		)
 
 

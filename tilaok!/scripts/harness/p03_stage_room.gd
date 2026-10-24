@@ -11,7 +11,6 @@ const WALL_FIXTURE_ORIGIN := Vector2(352.0, 112.0)
 const STAGE_TILES_SCENE := preload("res://scenes/stage/stage_tiles.tscn")
 ## Editable chicken scene: ChickenController + body shape + animated PLACEHOLDER sprite.
 const CHICKEN_SCENE := preload("res://scenes/characters/chicken.tscn")
-const PLAYER_BADGE_FONT := preload("res://assets/fonts/margarine/Margarine-Regular.ttf")
 ## Pure diagnostics (the support test line); the player flow hides this group.
 const DEBUG_WORLD_GROUP := &"debug_world"
 const PREVIEW_COLORS := [Color("#f5c95b"), Color("#74c8d6"), Color("#ef8b74"), Color("#a8d782")]
@@ -105,7 +104,6 @@ func _exit_tree() -> void:
 func _process(_delta: float) -> void:
 	if get_tree().paused:
 		return
-	_update_identity_badges()
 	_update_camera_targets()
 	_update_diagnostics()
 
@@ -407,25 +405,8 @@ func _build_actor(seat_index: int) -> ChickenController:
 	# `actor.tuning` is already set, so the controller resizes its own authored hitboxes to the
 	# tuning body on _ready (ChickenController._apply_body_tuning).
 	world_layer.add_child(actor)
-	var badge := Label.new()
-	badge.name = "IdentityBadge"
-	badge.text = "%d • %s" % [seat.identity, seat.shape]
-	badge.add_theme_font_override("font", PLAYER_BADGE_FONT)
-	badge.add_theme_font_size_override("font_size", roundi(16 * world_scale))
-	badge.add_theme_color_override("font_color", seat.color)
-	badge.add_theme_color_override("font_outline_color", Color("#15242b"))
-	badge.add_theme_constant_override("outline_size", roundi(4 * world_scale))
-	badge.add_theme_color_override("font_shadow_color", Color("#14232a", 0.75))
-	badge.add_theme_constant_override("shadow_offset_x", roundi(2 * world_scale))
-	badge.add_theme_constant_override("shadow_offset_y", roundi(2 * world_scale))
-	badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	badge.size = Vector2(150.0, 30.0) * world_scale
-	world_layer.add_child(badge)
-	actor.set_meta("identity_badge", badge)
 	actors[seat_index] = actor
 	actor_created.emit(actor)
-	_update_identity_badges()
 	return actor
 
 
@@ -646,13 +627,14 @@ func _update_camera_targets() -> void:
 				),
 				Vector2(tuning.body_width_wu, tuning.body_height_wu)
 			)
-			var badge := actor.get_meta("identity_badge") as Label
-			var badge_rect := (
-				Rect2(badge.global_position, badge.size) if badge != null else body_rect
+			var marker_scale := tuning.body_height_wu / 48.0
+			var marker_rect := Rect2(
+				actor.global_position + Vector2(-11.0, -41.0) * marker_scale,
+				Vector2(22.0, 22.0) * marker_scale
 			)
 			var target_id := "seat_%d" % seat_index
 			var target := _cached_camera_target(target_id)
-			target.world_rect = body_rect.merge(badge_rect)
+			target.world_rect = body_rect.merge(marker_rect)
 			_camera_targets.append(target)
 	else:
 		for pointer in pointers:
@@ -668,19 +650,6 @@ func _cached_camera_target(target_id: String) -> StageCameraTarget:
 	if not _camera_target_cache.has(target_id):
 		_camera_target_cache[target_id] = StageCameraTarget.new(target_id)
 	return _camera_target_cache[target_id] as StageCameraTarget
-
-
-func _update_identity_badges() -> void:
-	for seat_index in actors:
-		var actor := actors[seat_index] as ChickenController
-		if actor == null or not is_instance_valid(actor):
-			continue
-		var badge := actor.get_meta("identity_badge") as Label
-		var badge_offset := Vector2(
-			-badge.size.x * 0.5, -tuning.body_height_wu * 0.5 - 34.0 * world_scale
-		)
-		var badge_position := actor.global_position + badge_offset
-		badge.global_position = badge_position
 
 
 func _update_diagnostics() -> void:
