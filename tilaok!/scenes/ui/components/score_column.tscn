@@ -12,7 +12,6 @@ script = ExtResource("1_script")
 unique_name_in_owner = true
 z_index = 1
 scale = Vector2(0.0375, 0.0375)
-animation = &"idle"
 
 [node name="IdentityBadge" parent="." instance=ExtResource("2_badge")]
 prefix_text = "P"

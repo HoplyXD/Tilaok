@@ -1,14 +1,14 @@
 class_name ItemSilhouettePainter
 extends RefCounted
 
-## Code-drawn placeholder presentation for the six first-batch families, in piece-local world units
-## (footprint top-left is the origin). Every part first asks the family's `ItemVisualSet` for a
-## replaceable slot and only falls back to a graybox shape when the slot is missing, so artists
-## swap files without code. All shapes are PLACEHOLDER; nothing here is final art.
-##
-## `static_parts = false` draws only what moves or changes with state (the trumpo top, parol beam,
-## slipper lane and projectiles, sweeping broom, bubble), for scene blocks whose Visual node
-## already authors the fixed art (bodies, rails, posts, pots, paths, the cleanup area).
+## Visual shell is intentionally larger than the gameplay capture radius so the crouched chicken
+## reads as fully contained without expanding the hazard's capture or rise footprint.
+const BUBBLE_VISUAL_RADIUS_WU := 64.0
+
+## Item presentation for the first-batch families, in piece-local world units (footprint top-left
+## is the origin). Parts use `ItemVisualSet` slots and code-drawn fallbacks when a slot is missing.
+## `static_parts = false` draws only moving/state-driven parts when fixed art is authored in a
+## block's Visual node. Egg and Library previews draw the complete item.
 
 const INK := Color("#1d2930")
 const PAPER := Color("#f6efd8")
@@ -152,6 +152,14 @@ static func _draw_tire(
 # ---------------- Trumpo sa Riles
 
 
+static func _draw_rail_module(
+	canvas: CanvasItem, texture: Texture2D, rect: Rect2, rotation: float
+) -> void:
+	canvas.draw_set_transform(rect.get_center(), rotation, Vector2.ONE)
+	canvas.draw_texture_rect(texture, Rect2(-rect.size * 0.5, rect.size), false)
+	canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
 static func _draw_rail(
 	canvas: CanvasItem,
 	regions: Array[Dictionary],
@@ -164,9 +172,35 @@ static func _draw_rail(
 	var hit := tuning.item_trumpo_hit_wu
 	for sweep in _static_rects(regions, ItemRegionSpec.Kind.SWEEP, static_parts):
 		var horizontal := sweep.size.x >= sweep.size.y
-		var rail_tex: Texture2D = _texture(visual, "rail", seconds)
-		if rail_tex != null:
-			canvas.draw_texture_rect(rail_tex, sweep, false)
+		var rail_end: Texture2D = _texture(visual, "rail_end", seconds)
+		var rail_mid: Texture2D = _texture(visual, "rail_mid", seconds)
+		if rail_end != null and rail_mid != null:
+			var cell := tuning.grid_cell_wu
+			var rail_length := sweep.size.x if horizontal else sweep.size.y
+			var cell_count := maxi(1, roundi(rail_length / cell))
+			for index in range(cell_count):
+				var is_end := index == 0 or index == cell_count - 1
+				var texture := rail_end if is_end else rail_mid
+				var rect: Rect2
+				var rotation := 0.0
+				if horizontal:
+					rect = Rect2(
+						Vector2(sweep.position.x + index * cell, sweep.position.y),
+						Vector2(cell, sweep.size.y)
+					)
+					if index == cell_count - 1:
+						rotation = PI
+				else:
+					rect = Rect2(
+						Vector2(sweep.position.x, sweep.position.y + index * cell),
+						Vector2(sweep.size.x, cell)
+					)
+					rotation = (
+						PI * 0.5
+						if index == 0
+						else -PI * 0.5 if index == cell_count - 1 else PI * 0.5
+					)
+				_draw_rail_module(canvas, texture, rect, rotation)
 		else:
 			var center := sweep.get_center()
 			var half := hit * 0.5 + 2.0
@@ -246,34 +280,43 @@ static func _draw_parol(
 	var phase := str(state.get("phase", "inactive"))
 	var charge_t := float(state.get("charge_t", 0.0))
 	var width := tuning.item_parol_beam_width_wu
-	for beam in _rects(regions, ItemRegionSpec.Kind.EFFECT):
-		var horizontal := beam.size.x >= beam.size.y
-		var center := beam.get_center()
+	var segments: Array = state.get("segments", [])
+	for segment in segments:
+		var rect: Rect2 = segment
+		if rect.size.x <= 0.0 or rect.size.y <= 0.0:
+			continue
+		var horizontal := rect.size.x >= rect.size.y
+		var center := rect.get_center()
 		var from := (
-			Vector2(beam.position.x, center.y) if horizontal else Vector2(center.x, beam.position.y)
+			Vector2(rect.position.x, center.y) if horizontal else Vector2(center.x, rect.position.y)
 		)
-		var to := Vector2(beam.end.x, center.y) if horizontal else Vector2(center.x, beam.end.y)
+		var to := Vector2(rect.end.x, center.y) if horizontal else Vector2(center.x, rect.end.y)
 		match phase:
 			"inactive":
-				_dotted(canvas, from, to, Color(BEAM, 0.45), 2.0, 4.0)
+				_dotted(canvas, from, to, Color(BEAM, 0.45), 2.0, 6.0)
 			"charge":
-				var line_width := lerpf(2.0, width * 0.7, charge_t)
-				_dotted(canvas, from, to, Color(BEAM, lerpf(0.5, 0.9, charge_t)), line_width, 8.0)
+				var charge_tex: Texture2D = _texture(visual, "beam_charge", seconds)
+				if charge_tex != null:
+					_draw_beam_strip(canvas, charge_tex, rect, width, tuning.grid_cell_wu)
+				else:
+					var line_width := lerpf(2.0, width * 0.7, charge_t)
+					_dotted(
+						canvas, from, to, Color(BEAM, lerpf(0.5, 0.9, charge_t)), line_width, 8.0
+					)
 			_:
-				pass
-	if phase == "active":
-		var tex: Texture2D = _texture(visual, "beam_on", seconds)
-		for segment in state.get("segments", []):
-			var rect: Rect2 = segment
-			if rect.size.x <= 0.0 or rect.size.y <= 0.0:
-				continue
-			if tex != null:
-				canvas.draw_texture_rect(tex, rect, true)
-			else:
-				canvas.draw_rect(rect, Color(BEAM, 0.85))
-				canvas.draw_rect(rect, INK, false, 2.0)
+				var active_tex: Texture2D = _texture(visual, "beam_active", seconds)
+				if active_tex != null:
+					_draw_beam_strip(canvas, active_tex, rect, width, tuning.grid_cell_wu)
+				else:
+					canvas.draw_rect(rect, Color(BEAM, 0.85))
+					canvas.draw_rect(rect, INK, false, 2.0)
 	for post in _static_rects(regions, ItemRegionSpec.Kind.SOLID, static_parts):
-		var post_tex: Texture2D = _texture(visual, "post", seconds)
+		var post_slot := "post_inactive"
+		if phase == "charge":
+			post_slot = "post_charge"
+		elif phase == "active":
+			post_slot = "post_active"
+		var post_tex: Texture2D = _texture(visual, post_slot, seconds)
 		if post_tex != null:
 			canvas.draw_texture_rect(post_tex, post, false)
 			continue
@@ -292,6 +335,32 @@ static func _draw_parol(
 			BEAM if phase != "inactive" else PAPER
 		)
 		canvas.draw_rect(post, SLATE, false, 2.0)
+
+
+static func _draw_beam_strip(
+	canvas: CanvasItem, texture: Texture2D, segment: Rect2, beam_width: float, cell_width: float
+) -> void:
+	var horizontal := segment.size.x >= segment.size.y
+	var length := segment.size.x if horizontal else segment.size.y
+	var center := segment.get_center()
+	var offset := 0.0
+	while offset < length:
+		var chunk := minf(cell_width, length - offset)
+		if horizontal:
+			var tile := Rect2(
+				segment.position.x + offset, center.y - beam_width * 0.5, chunk, beam_width
+			)
+			canvas.draw_texture_rect(texture, tile, false)
+		else:
+			var tile_center := Vector2(center.x, segment.position.y + offset + chunk * 0.5)
+			canvas.draw_set_transform(tile_center, PI * 0.5, Vector2.ONE)
+			canvas.draw_texture_rect(
+				texture,
+				Rect2(Vector2(-chunk * 0.5, -beam_width * 0.5), Vector2(chunk, beam_width)),
+				false
+			)
+			canvas.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		offset += chunk
 
 
 # ---------------- Tsinelas Launcher
@@ -440,7 +509,7 @@ static func _draw_flower(
 			canvas.draw_circle(head, 4.0, AMBER)
 	if bool(state.get("has_bubble", false)):
 		var center: Vector2 = state.get("bubble_pos", Vector2.ZERO)
-		var radius := tuning.item_bubble_radius_wu
+		var radius := BUBBLE_VISUAL_RADIUS_WU
 		var bubble_tex: Texture2D = _texture(visual, "bubble", seconds)
 		if bubble_tex != null:
 			canvas.draw_texture_rect(
@@ -455,3 +524,10 @@ static func _draw_flower(
 				float(state.get("capture_left", 0.0)) / tuning.item_bubble_capture_s, 0.0, 1.0
 			)
 			canvas.draw_arc(center, radius + 5.0, -PI * 0.5, -PI * 0.5 + TAU * left, 24, AMBER, 3.0)
+			var capture_icon: Texture2D = _texture(visual, "captive_icon", seconds)
+			if capture_icon != null:
+				var icon_size := Vector2.ONE * 16.0
+				var icon_center := center + Vector2(radius * 0.55, -radius * 0.55)
+				canvas.draw_texture_rect(
+					capture_icon, Rect2(icon_center - icon_size * 0.5, icon_size), false
+				)

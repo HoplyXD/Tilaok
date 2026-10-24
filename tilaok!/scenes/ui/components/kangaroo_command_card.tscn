@@ -21,16 +21,17 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="Art_PoseIcon" type="TextureRect" parent="Content/Header"]
+[node name="Art_PoseIcon" type="TextureRect" parent="Content/Header" unique_id=740018046]
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 custom_minimum_size = Vector2(48, 48)
 visible = false
+unique_name_in_owner = true
 metadata/asset_id = "ui.events.kang_pose"
 
-[node name="Icon" type="Label" parent="Content/Header"]
+[node name="Icon" type="Label" parent="Content/Header" unique_id=740018047]
 layout_mode = 2
 text = "●"
 theme_type_variation = &"TitleLabel"
@@ -43,12 +44,6 @@ layout_mode = 2
 text = "FREEZE"
 theme_type_variation = &"HeadingLabel"
 size_flags_horizontal = 3
-unique_name_in_owner = true
-
-[node name="StormLabel" type="Label" parent="Content/Header"]
-layout_mode = 2
-text = "STORM"
-theme_type_variation = &"HudLabel"
 unique_name_in_owner = true
 
 [node name="PhaseLabel" type="Label" parent="Content/Header"]
@@ -65,6 +60,6 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Freeze: stop running and jumping."
 theme_type_variation = &"BodyLabel"
-autowrap_mode = 0
-text_overrun_behavior = 3
+autowrap_mode = 3
+text_overrun_behavior = 0
 unique_name_in_owner = true

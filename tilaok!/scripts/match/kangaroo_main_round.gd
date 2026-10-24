@@ -43,6 +43,7 @@ func setup(room: P05MatchRoom) -> void:
 	_presenter = KangarooSlipperPresenter.new()
 	_presenter.name = "KangarooMainPresenter"
 	_presenter.z_index = 30
+	_presenter.use_illustrated_art = true
 	_presenter.visible = false
 	room.world_layer.add_child(_presenter)
 
@@ -132,7 +133,8 @@ func update_view(delta: float) -> void:
 			_room.arena.arena_bounds,
 			_room.arena.spawn_feet.y,
 			active_time,
-			_room.camera_rig.global_position
+			_room.camera_rig.global_position,
+			_hug_contact_visuals()
 		)
 	_update_shake(delta)
 
@@ -203,6 +205,25 @@ func _hug_contacts_snapshot() -> Array[Dictionary]:
 				)
 			)
 	return contacts
+
+
+func _hug_contact_visuals() -> Array[Dictionary]:
+	var links: Array[Dictionary] = []
+	for contact in _hug_contacts_snapshot():
+		var actor_a := _room.actors.get(int(contact.seat_a)) as ChickenController
+		var actor_b := _room.actors.get(int(contact.seat_b)) as ChickenController
+		if actor_a == null or actor_b == null:
+			continue
+		(
+			links
+			. append(
+				{
+					"position_a": actor_a.global_position,
+					"position_b": actor_b.global_position,
+				}
+			)
+		)
+	return links
 
 
 func _play_cue(command: int) -> void:

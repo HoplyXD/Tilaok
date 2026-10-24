@@ -103,6 +103,13 @@ func bind_row(
 	}
 	badge.bind_seat(seat)
 	_chicken.sprite_frames = ChickenSpriteAnimator.frames_for_color(_row.get("color", Color.WHITE))
+	if _chicken.sprite_frames != null and _chicken.sprite_frames.has_animation(&"idle"):
+		_chicken.visible = true
+		_chicken.play(&"idle")
+	else:
+		# Never display the first frame set's `dead` animation when a skin is unavailable.
+		_chicken.stop()
+		_chicken.visible = false
 	_refresh_labels()
 	_layout_marker()
 	queue_redraw()

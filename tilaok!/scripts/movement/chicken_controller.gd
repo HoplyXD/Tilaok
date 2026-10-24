@@ -17,6 +17,7 @@ const IDENTITY_MARKER_TEXTURES := {
 	"SQUARE": preload("res://assets/ui/common/identity_square.svg"),
 	"DIAMOND": preload("res://assets/ui/common/identity_diamond.svg"),
 }
+const KANGAROO_FREEZE_ACCENT := preload("res://assets/events/kangaroo/kangaroo_freeze_sparkles.png")
 ## Hitbox children of scenes/characters/chicken.tscn. Exactly one is ever enabled: the state
 ## below picks it, and ChickenSpriteAnimator picks its animation from that same state, so the
 ## pose on screen and the body in the physics world never disagree. The first unnamed rectangle
@@ -108,10 +109,19 @@ var _standing_offset := Vector2.ZERO
 ## a chicken that lands with no headroom keeps the small body until it fits again.
 var _airborne_body := false
 var _contact_sensor: ChickenContactSensor
+var _kangaroo_freeze_art: Sprite2D
 
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_kangaroo_freeze_art = Sprite2D.new()
+	_kangaroo_freeze_art.name = "KangarooFreezeAccent"
+	_kangaroo_freeze_art.texture = KANGAROO_FREEZE_ACCENT
+	_kangaroo_freeze_art.position = Vector2(18.0, -58.0)
+	_kangaroo_freeze_art.scale = Vector2(0.14, 0.14)
+	_kangaroo_freeze_art.z_index = 5
+	_kangaroo_freeze_art.visible = false
+	add_child(_kangaroo_freeze_art)
 	add_to_group("chickens")
 	if tuning == null:
 		tuning = GameplayTuning.new()
@@ -344,7 +354,8 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 		lifecycle.status = PlayerLifecycleState.Status.CAPTURED
 		_clear_support()
 		reset_wall_state()
-		reset_sneak()
+		auto_sneaking = true
+		_set_sneak_shape(true)
 		lifecycle.capture_source_id = source_id
 		locomotion_velocity = Vector2.ZERO
 		coyote_remaining = 0.0
@@ -354,6 +365,7 @@ func set_captured(captured: bool, source_id: String = "") -> void:
 			return
 		lifecycle.status = PlayerLifecycleState.Status.ACTIVE
 		lifecycle.capture_source_id = ""
+		reset_sneak()
 
 
 ## Moves a captured chicken with its bubble. Only a CAPTURED chicken may be carried, so a bubble
@@ -506,6 +518,8 @@ func _set_freeze_tint(enabled: bool) -> void:
 	var sprite := get_node_or_null("ChickenAnimation") as CanvasItem
 	if sprite != null:
 		sprite.modulate = Color(0.48, 0.76, 1.0, 0.68) if enabled else Color.WHITE
+	if is_instance_valid(_kangaroo_freeze_art):
+		_kangaroo_freeze_art.visible = enabled
 
 
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:

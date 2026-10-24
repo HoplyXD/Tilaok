@@ -82,17 +82,18 @@ func _table(schedule: EventSchedule) -> Array[Dictionary]:
 func _test_guaranteed_rounds_and_table() -> void:
 	var violations := PackedStringArray()
 	var mains_seen := {}
+	var opening := {1: KARERA, 2: LAGSANAY, 3: KANGAROO}
 	for seed_value in range(1, 501):
 		var rows := _table(_schedule(seed_value, _all_modes(), EventSchedule.enabled_pairs()))
 		for row in rows:
 			var round_number := int(row.round)
 			var main := int(row.main)
 			mains_seen[main] = true
-			if round_number == 1 and main != KARERA:
-				violations.append("seed %d round 1 is %d" % [seed_value, main])
-			if round_number in [4, 8, 12] and main != LAGSANAY:
-				violations.append("seed %d round %d is %d" % [seed_value, round_number, main])
-			if bool(row.guaranteed) != (round_number in [1, 4, 8, 12]):
+			if opening.has(round_number) and main != int(opening[round_number]):
+				violations.append(
+					"seed %d opening round %d is %d" % [seed_value, round_number, main]
+				)
+			if bool(row.guaranteed) != opening.has(round_number):
 				violations.append("seed %d round %d guaranteed flag" % [seed_value, round_number])
 			if int(row.twist) != NONE:
 				violations.append(
@@ -106,7 +107,7 @@ func _test_guaranteed_rounds_and_table() -> void:
 	_check(
 		violations.is_empty(),
 		(
-			"500 seeded 12-round tables preserve guaranteed standalone rounds and contain no Twists: %s"
+			"500 seeded tables preserve the fixed opening and contain no Twists: %s"
 			% [violations.slice(0, 5)]
 		)
 	)
@@ -165,12 +166,12 @@ func _test_main_distribution() -> void:
 	var kangaroo := float(counts[KANGAROO]) / total
 	_check(
 		(
-			absf(karera - 0.70) < 0.02
-			and absf(lagsanay - 0.20) < 0.02
-			and absf(kangaroo - 0.10) < 0.015
+			absf(karera - 0.40) < 0.02
+			and absf(lagsanay - 0.30) < 0.02
+			and absf(kangaroo - 0.30) < 0.02
 		),
 		(
-			"non-guaranteed rounds draw Karera/Lagsanay/Kangaroo near 70/20/10 (%.3f/%.3f/%.3f, n=%d)"
+			"rounds 4+ draw Karera/Lagsanay/Kangaroo near 40/30/30 (%.3f/%.3f/%.3f, n=%d)"
 			% [karera, lagsanay, kangaroo, total]
 		)
 	)
@@ -178,18 +179,21 @@ func _test_main_distribution() -> void:
 	var no_kangaroo := 0
 	var karera_only := 0
 	var samples := 0
-	for seed_value in range(1, 1001):
-		for row in _table(_schedule(seed_value, without, EventSchedule.enabled_pairs())):
-			if bool(row.guaranteed):
-				continue
-			samples += 1
-			no_kangaroo += 1 if int(row.main) == KANGAROO else 0
-			karera_only += 1 if int(row.main) == KARERA else 0
+	var sampler := EventSchedule.new()
+	var sampler_stream := RandomNumberGenerator.new()
+	sampler_stream.seed = 7654
+	sampler.available = without
+	sampler._stream = sampler_stream
+	for _sample in range(30000):
+		var drawn := sampler._draw_main()
+		samples += 1
+		no_kangaroo += 1 if drawn == KANGAROO else 0
+		karera_only += 1 if drawn == KARERA else 0
 	var renormalized := float(karera_only) / samples
 	_check(
-		no_kangaroo == 0 and absf(renormalized - 70.0 / 90.0) < 0.025,
+		no_kangaroo == 0 and absf(renormalized - 40.0 / 70.0) < 0.015,
 		(
-			"an unavailable mode's weight is zeroed, the rest renormalized (Karera %.3f of 0.778)"
+			"an unavailable mode's weight is zeroed, the rest renormalized (Karera %.3f of 0.571)"
 			% renormalized
 		)
 	)
@@ -236,8 +240,8 @@ func _test_twist_rules() -> void:
 				continue
 			bands[band][0] += 1
 			bands[band][1] += 1 if twist != NONE else 0
-	_check(early_twists == 0, "rounds 1–4 never roll a Twist")
-	_check(guaranteed_twists == 0, "guaranteed rounds 4/8/12 stay standalone")
+	_check(early_twists == 0, "opening rounds 1–3 never roll a Twist")
+	_check(guaranteed_twists == 0, "the fixed opening rounds stay standalone")
 	_check(self_stacks == 0 and illegal == 0, "a Twist is always a different, listed partner")
 	_check(
 		lagsanay_main_twists == 0,
@@ -320,12 +324,25 @@ func _test_required_mode_refusal() -> void:
 	_check(refused_karera.error.contains("KARERA"), "a missing Karera refuses round 1")
 	var short_match := _schedule(1, no_lagsanay, EventSchedule.enabled_pairs(), 3)
 	_check(
-		short_match.error.contains("sudden death"),
-		"even a 3-round match needs Lagsanay for sudden death: %s" % short_match.error
+		short_match.error.contains("round 2 requires LAGSANAY"),
+		"round 2's fixed Lagsanay requires the mode: %s" % short_match.error
+	)
+	var sudden_death_lagsanay: Array[int] = [KARERA, KANGAROO]
+	var no_sudden_death_mode := _schedule(
+		1, sudden_death_lagsanay, EventSchedule.enabled_pairs(), 1
+	)
+	_check(
+		no_sudden_death_mode.error.contains("sudden death"),
+		"Lagsanay remains required for sudden death: %s" % no_sudden_death_mode.error
 	)
 	var no_kangaroo: Array[int] = [KARERA, LAGSANAY]
-	var optional := _schedule(1, no_kangaroo, EventSchedule.enabled_pairs())
-	_check(optional.error.is_empty(), "Kangaroo is optional for the schedule")
+	var short_without_kangaroo := _schedule(1, no_kangaroo, EventSchedule.enabled_pairs(), 2)
+	_check(short_without_kangaroo.error.is_empty(), "Kangaroo is optional before its opening round")
+	var missing_opening_kangaroo := _schedule(1, no_kangaroo, EventSchedule.enabled_pairs(), 3)
+	_check(
+		missing_opening_kangaroo.error.contains("round 3 requires KANGAROO"),
+		"round 3's fixed Kangaroo requires the mode: %s" % missing_opening_kangaroo.error
+	)
 	var no_stream := EventSchedule.new()
 	_check(
 		not no_stream.begin(null, _all_modes(), 12).is_empty(), "a schedule needs a seeded stream"
@@ -525,6 +542,18 @@ func _test_full_scheduled_match(players: int) -> void:
 		var empty_edits: Array[Dictionary] = []
 		room._resolve_place_edits(empty_edits)
 		var main := int(now.main)
+		var opening := {1: KARERA, 2: LAGSANAY, 3: KANGAROO}
+		if opening.has(active_round) and main != int(opening[active_round]):
+			mismatches.append(
+				(
+					"opening round %d ran %s, expected %s"
+					% [
+						active_round,
+						EventSchedule.main_name(main),
+						EventSchedule.main_name(opening[active_round])
+					]
+				)
+			)
 		mode_counts[main] += 1
 		if int(now.get("twist", NONE)) != NONE:
 			twist_rounds += 1
@@ -631,9 +660,14 @@ func _test_full_scheduled_match(players: int) -> void:
 		)
 	)
 	_check(
-		int(mode_counts[LAGSANAY]) >= 3 and int(mode_counts[KANGAROO]) >= 1,
 		(
-			"%dp: the match ran Karera %d, Lagsanay %d, Kangaroo %d rounds"
+			played.size() == 12
+			and played[0] == "R1 KARERA"
+			and played[1] == "R2 LAGSANAY"
+			and played[2] == "R3 KANGAROO"
+		),
+		(
+			"%dp: fixed opening played (Karera %d, Lagsanay %d, Kangaroo %d)"
 			% [players, mode_counts[KARERA], mode_counts[LAGSANAY], mode_counts[KANGAROO]]
 		)
 	)

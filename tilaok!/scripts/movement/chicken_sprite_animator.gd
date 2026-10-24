@@ -22,6 +22,11 @@ extends AnimatedSprite2D
 ## chicken knocked or drifting left falls, glides and lands facing left whatever key is held.
 
 const CHICKEN_SCENE := "res://scenes/characters/chicken.tscn"
+## The sprite sheets' crouch art sits below the controller origin; raise only the captive artwork
+## so its visual center aligns with the bubble center. This is a local-world-unit offset.
+const CAPTURED_CROUCH_CENTER_OFFSET := Vector2(0.0, -20.0)
+## skin_color -> SpriteFrames of every colour sprite in the chicken scene, read on first use.
+static var _skin_frames := {}
 
 ## Lobby slot previews should hold a standing idle pose independent of gameplay state.
 @export var force_idle_preview := false
@@ -48,10 +53,8 @@ const CHICKEN_SCENE := "res://scenes/characters/chicken.tscn"
 ## A steady brightening while stunned so the state never depends on motion.
 @export var stun_base_brightness := 1.5
 
-## skin_color -> SpriteFrames of every colour sprite in the chicken scene, read on first use.
-static var _skin_frames := {}
-
 var chicken: ChickenController
+var _authored_position := Vector2.ZERO
 
 var _was_on_floor := true
 var _was_sneaking := false
@@ -80,6 +83,7 @@ var _replay := false
 
 func _ready() -> void:
 	chicken = _owning_chicken()
+	_authored_position = position
 	animation_finished.connect(_on_animation_finished)
 	if chicken != null:
 		_was_on_floor = chicken.is_on_floor()
@@ -91,6 +95,12 @@ func _process(delta: float) -> void:
 		return
 	visible = _wears_this_skin()
 	_track_transitions(delta)
+	var captured := chicken.lifecycle.status == PlayerLifecycleState.Status.CAPTURED
+	if captured:
+		# Bula capture is an immediate held crouch; do not play the ordinary sneak intro.
+		_sneak_held = true
+		_standing_up = false
+	position = _authored_position + (CAPTURED_CROUCH_CENTER_OFFSET if captured else Vector2.ZERO)
 	var next := &"idle" if force_idle_preview else pose_for_state()
 	# A pose the sheet has no frames for yet holds the current one instead of erroring out.
 	if sprite_frames == null or not sprite_frames.has_animation(next):

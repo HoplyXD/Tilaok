@@ -1,0 +1,6 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=items_lab
+P10_ITEM_VISUALIZER_READY build=P10-item-visualizer-dev families=16 variants=31 profile=items_lab
+P24_IN_GAME_CAPTURE failures=0 captured_chicken=true output=C:/Users/roman/Desktop/Vscode Projects/Tilaok/docs/evidence/p24_item_art

@@ -1,5 +1,7 @@
 # P12 slice 1 — event schedule, compatibility registry and announced Main rounds (2026-10-15)
 
+**Historical schedule note:** this evidence records the earlier 70/20/10 schedule with Lagsanay guaranteed in rounds 4/8/12. On 2026-10-25 the active scheduler was revised to fixed opening rounds R1 Karera, R2 Lagsanay, R3 Kangaroo, followed by seeded 40/30/30 draws from R4 onward. Historical captures, logs and results below are preserved and are not current schedule acceptance.
+
 Build: working tree on `c024c9d`, plus the uncommitted Effect rename/match-kill fix and this work. Godot 4.7.stable.official (console build); Windows 11. Headless suites ran with `--fixed-fps 60`; rendered suites and captures used a 1920×1080 window. Seats and input are synthetic. Reviewer: Claude (AI, automated). No human reviewer, player session or physical device.
 
 Covers P12-T01 (implement) and P12-T02 (verify). The Twist pairs (P12-T05–T10) and the terminal-order table (T03/T04) are **not** covered: all three compatibility rows are registered but disabled, so no Twist runs.

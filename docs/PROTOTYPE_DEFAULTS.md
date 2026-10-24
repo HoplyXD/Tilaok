@@ -311,10 +311,10 @@ Separate simulation invariants (one outcome, pass-through bodies, atomic edits, 
 | `place.seconds` | C/P: 15 s | 12–25 s | Fast rounds; extend if understood placement still times out often | Low |
 | `race.cap_s`, `after_first_s` | C/P: 60 s, 15 s; end at earlier deadline | 45–75 s; 10–20 s | Limits stalling; revise from finish/stall logs | Low |
 | `items.activation_grace_s` | P: 1.0 s after Play begins | 0.5–1.5 s | Readable hazard start; delays pressure. Test reset-on-player scenarios; preserve opening taya's longer immunity | Low |
-| `events.main_weights` | C: Karera 70, Lagsanay 20, Kangaroo 10 | Fixed baseline; experiments only in named test profile | Preserve contract; disabling content must remove its weight before normalization | Contract only |
-| `events.twist_chance` | C: rounds 1–4: 0; 5–7: .10; 8–10: .20; 11–12: .30 | Fixed baseline | Guaranteed rounds 4/8/12 still standalone; chance table never overrides that | Contract only |
-| `events.twist_weights` | P: equal among verified compatible Twists | Compare equal vs one explicit weighted profile later | Small predictable pool; no eligible pair means no Twist | Low |
-| `events.stack_*` (P12 owner decision 2026-10-15) | C/P: a taya who finishes hands the bomb on with the remaining countdown and no opening freeze; the fresh timer after a taya timeout is for the unfinished live runners remaining (one left: the 2-alive 7 s); Storm is off when Kangaroo is a Twist; commands continue for the last unfinished runner (no Hug below two) | n/a (rules; see the table) | [P12 decision table](evidence/p12/p12_terminal_order_decision_table.md) | Low |
+| `events.main_weights` | C: fixed R1 Karera / R2 Lagsanay / R3 Kangaroo; then Karera 40, Lagsanay 30, Kangaroo 30 from R4 onward | Fixed baseline; experiments only in named test profile | Seeded independent draws; unavailable modes are removed before normalization | Contract only |
+| `events.twist_chance` | C: 0 in all rounds; mixed-mode Twists retired from normal Play under P23 | Historical P12 bands only | Do not schedule a second mode in normal Play | Contract only |
+| `events.twist_weights` | C: no normal-play Twist pool | Historical P12 compatibility rows remain evidence | Do not enable a pair without a new approved design decision | Contract only |
+| `events.stack_*` (P12 historical) | No mixed-mode stacks in current normal Play; Twists retired under P23 | No change without an approved new design | Preserve old ordering/compatibility work as historical evidence | Historical |
 | `lagsanay.timer_by_alive_s` | C/P: 4→15, 3→10, 2→7 s | 12–18, 8–12, 6–10 s | Shorter endgame; test evasion/pass opportunity at each count | Low |
 | `lagsanay.open_freeze_s`, `speed_multiplier` | C/P: 3 s; P: 1.05× run speed for taya | 2–3 s; 1.00–1.10× | Head start plus chase advantage; revise on pursuit trials, not win-rate equalization | Low |
 | `kangaroo.telegraph_s`, `response_s`, `reset_s` | C/P: 1 / 3 / .75 s | .8–1.5 / 2.5–4 / .5–1 s outside locked baseline | Readable commands; preserve acceleration rule unless R3 approved | Low |
@@ -337,7 +337,7 @@ Caps: at the initial 48-item cap, ordinary 12-round play cannot overrun the limi
 
 Named profiles: `movement_room` (no score/events), `karera_slice` (Kaing/Tulay only), `karera_spring` (adds verified spring), `lagsanay_lab`, `kangaroo_contract_lab`, `stack_lab`, `release_candidate`. Debug seed starts at 12345 and is user-settable before a test. Separate seeded streams for egg selection, event selection and exact-tie lotteries so cosmetic randomness cannot affect results. Keep all R policies off in contract profiles; proposed-policy comparison runs need explicit team acceptance first.
 
-Only implemented AND verified modes/items/pairs enter a profile's pool. Disabled weights are zeroed then positive eligible weights normalized; an empty required pool is a configuration error, not a random fallback. Production schedule still requires Lagsanay rounds 4/8/12 and sudden death. `karera_slice` is an explicitly labeled development override with races only; it may display tied leaders and pending sudden-death coverage but must not claim a complete competition-ready match. `release_candidate` refuses to start if required scheduled/sudden-death modes are missing. Do not silently reschedule unavailable release content as Karera.
+Only implemented AND verified modes enter a profile's pool. Disabled weights are zeroed then positive eligible weights normalized; an empty required pool is a configuration error, not a random fallback. The current production schedule requires Karera/Lagsanay/Kangaroo for its fixed R1/R2/R3 opening and Lagsanay for sudden death. `karera_slice` is an explicitly labeled development override with races only; it may display tied leaders and pending sudden-death coverage but must not claim a complete competition-ready match. `release_candidate` refuses to start if required scheduled/sudden-death modes are missing. Do not silently reschedule unavailable release content as Karera.
 
 No scored tutorial bonus, new save format, network service, or new obstacle family is introduced.
 
@@ -422,6 +422,8 @@ All live in `GameplayTuning` and are validated. Values marked *doc* come from th
 | `item_spring_weight` / `item_trumpo_weight` / `item_parol_weight` / `item_launcher_weight` / `item_walis_weight` / `item_bubble_weight` | 15 / 50 each | spring 15 *doc* (Kaing 45 / Tulay 40 / spring 15 in `karera_spring`); `items_lab` applies equal 50 weights, labelled provisional |
 
 `items_lab` is a development profile applied by the Visualizer and `MatchRoomItemsLab` (`ItemEnabledProfiles`); it is not a `ProfileRegistry` profile, and `release_candidate` is unchanged. Measured stress at 48 persistent items, 16 projectiles and 4 bubbles: median 3.25 ms, p95 4.57 ms, worst 5.70 ms, 80.85 MiB at 1080p.
+
+**Bula visual fit (October 25, 2026):** the historical P10 row above records its then-current 14 wu gameplay radius. The current `GameplayTuning.item_bubble_radius_wu` remains 28 wu; the shell texture alone is rendered with a 64 wu radius to contain the crouched chicken. The visual change does not change capture/rise geometry or timing; see [Bula follow-up verification](evidence/p24_item_art/bula_crouch_shell_followup_2026-10-25.log).
 
 ## P09 match lifecycle defaults — October 14, 2026
 

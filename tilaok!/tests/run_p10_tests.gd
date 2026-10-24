@@ -1728,10 +1728,31 @@ func _test_visualizer() -> void:
 	_check(seat_b >= -1 and seat_c >= -1, "Visualizer spawn is bounded")
 	var report := room.slot_report()
 	_check(report.size() >= 20, "Visualizer lists every replaceable slot (%d)" % report.size())
-	var all_placeholder := true
+	var final_visuals := true
+	var placeholder_audio := true
+	var final_art_slots := {
+		"hazard.bubble_planter": ["pot", "bubble", "captive_icon"],
+		"hazard.rail_trumpo": ["rail_end", "rail_mid", "top"],
+		"hazard.parol_pulse":
+		["post_inactive", "post_charge", "post_active", "beam_charge", "beam_active"],
+	}
 	for line in report:
-		all_placeholder = all_placeholder and line.contains("PLACEHOLDER")
-	_check(all_placeholder, "every shipped slot is labelled PLACEHOLDER")
+		var columns := line.split(" • ")
+		if columns.size() < 4:
+			continue
+		var family_id: String = columns[0]
+		var slot_id: String = columns[1]
+		if final_art_slots.has(family_id) and slot_id in final_art_slots[family_id]:
+			final_visuals = final_visuals and columns[2] == "FINAL"
+			final_art_slots[family_id].erase(slot_id)
+		elif family_id in ["hazard.bubble_planter", "hazard.rail_trumpo", "hazard.parol_pulse"]:
+			placeholder_audio = placeholder_audio and columns[2] == "PLACEHOLDER"
+	_check(final_visuals, "the three requested families expose their final visual slots")
+	_check(
+		final_art_slots.values().all(func(slots: Array) -> bool: return slots.is_empty()),
+		"the visualizer lists every P24 art slot"
+	)
+	_check(placeholder_audio, "unmodified audio slots remain marked PLACEHOLDER")
 	room.toggle_overlays()
 	room.toggle_owner_tags()
 	await _dispose()
@@ -1743,7 +1764,10 @@ func _test_placeholder_audit() -> void:
 	var definitions := ItemDefinitions.load_for_profile(tuning, "items_lab")
 	var rows := PlaceholderAudit.slot_rows(definitions)
 	var files := PlaceholderAudit.placeholder_files()
-	_check(rows.size() >= 20, "audit lists every placeholder slot (%d)" % rows.size())
+	_check(
+		rows.size() >= 16,
+		"audit lists remaining placeholder slots after P24 art (%d)" % rows.size()
+	)
 	_check(files.size() >= 23, "audit finds every PLACEHOLDER_* file (%d)" % files.size())
 	_check(
 		PlaceholderAudit.release_violations(definitions).is_empty(),

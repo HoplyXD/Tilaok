@@ -38,13 +38,10 @@ Event and stacked rounds deal only families approved for every active mode ([int
 
 ### Modes and stacks
 
-- **Main Challenges:** Karera, Lagsanay and Kangaroo (weights 70 / 20 / 10).
-  - Round 1 is always Karera.
-  - Rounds 4, 8 and 12 are always standalone Lagsanay.
-- **Twists from round 5** (10% / 20% / 30% by round band):
-  - Karera + Bomb-Taya;
-  - Karera + Kangaroo;
-  - Kangaroo + Bomb-Taya.
+- **Main Challenges:** Karera, Lagsanay and Kangaroo (weights 40 / 30 / 30 on non-guaranteed rounds).
+  - Fixed opening: Round 1 Karera, Round 2 Lagsanay, Round 3 Kangaroo.
+  - From Round 4 onward, use seeded 40 / 30 / 30 draws; unavailable modes are removed and remaining weights renormalized.
+- **Twists:** none in normal Play; mixed-mode Twists were retired under P23. The old compatibility list is historical evidence, not release content.
 - **Match end:** first to 10 points or the highest score after round 12. A tie goes to Lagsanay sudden death, which never takes a Twist.
 
 ### Maps (`scenes/maps/`)

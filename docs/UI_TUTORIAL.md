@@ -109,19 +109,19 @@ Keyboard layouts keep each player's controls in a familiar cluster: K1 uses **Q*
 
 ## Kangaroo communication
 
-The giant background slipper is a non-colliding presenter. Every command needs all of these cues:
+The giant background slipper is a non-colliding presenter. The scheduled P23 route uses a separate illustrated texture for each pose; the command card repeats the corresponding silhouette beside a command name and instruction. Every command needs all of these cues:
 
 | Slipper pose | Command | Required cue |
 |---|---|---|
-| Normal, sole down | Freeze | Freeze icon/text, distinct audio, timing ring. |
-| Sole up/facing down | Rising wave | Wave icon/text, target line, distinct audio, timing ring. |
-| Sideways | Hug | Contact icon/text, distinct audio, timing ring. |
+| Top view with strap/footbed | Freeze | Illustrated slipper pose, distinct command icon/text, Freeze accent, distinct audio, timing ring. |
+| Outsole view with tread | Rising wave | Illustrated slipper pose, distinct command icon/text, live water surface and final-height line, distinct audio, timing ring. |
+| Side profile | Hug | Illustrated slipper pose, distinct command icon/text, compact current-contact links, distinct audio, timing ring. |
 
 - Screen shake defaults to Full, with Reduced and Off available. The command remains legible without screen shake or colour.
 - Rising shows its world-space target line before a slow rise. At response end, the current chicken hitbox bottom must clear the line with 1 wu tolerance; support is not required, and submersion during the rise is safe.
 - Hug shows the response-end evaluation clearly. Any contact group passes, including pairs, groups and chains; isolated chickens fail. Hug may occur with two players and is skipped for a sole unfinished runner.
 - Commands are independent equal-probability draws; repeats are allowed. Only one command may be active at a time.
-- Freeze strikes lock movement, jump and build controls for 2 s. Gravity and hazards continue; the blue translucent body tint clears on thaw.
+- Freeze strikes lock movement, jump and build controls for 2 s. Gravity and hazards continue; the blue translucent body tint and compact frost accent clear on thaw. Current generated presentation assets still need human art/readability approval; see [P23 presentation evidence](evidence/p23_presentation/README.md).
 
 ## Tutorial sequence
 

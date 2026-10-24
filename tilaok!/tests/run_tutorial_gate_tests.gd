@@ -60,6 +60,7 @@ func _run() -> void:
 	_test_tutorial_layout_contract()
 	room = _make_room(tutorial_layout)
 	root.add_child(room)
+	_test_stage_art_order()
 	for _frame in range(3):
 		await physics_frame
 	seat = room.join_keyboard("K1")
@@ -98,6 +99,20 @@ func _make_room(layout: ArenaLayout) -> ItemLabRoom:
 	var created := ROOM_SCENE.instantiate() as ItemLabRoom
 	created.arena_layout = layout
 	return created
+
+
+func _test_stage_art_order() -> void:
+	var stage_map := room.world_layer.get_node_or_null("StageMap") as StageMap
+	var blocks := stage_map.blocks_layer() if stage_map != null else null
+	_check(
+		(
+			blocks != null
+			and blocks.visible
+			and blocks.get_used_cells().size() > 0
+			and blocks.z_index == 1
+		),
+		"runtime map artwork is populated and raised above the scene sky"
+	)
 
 
 # --- parity and layout contract -------------------------------------------------------------

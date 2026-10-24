@@ -1,21 +1,20 @@
 class_name EventSchedule
 extends RefCounted
 
-## P12 event schedule, revised 2026-10-23: every scheduled round is one standalone Main.
-## Round 1 is Karera and rounds 4/8/12 are standalone Lagsanay. Every other round draws its Main
-## Challenge from the available pool (Karera 70, Lagsanay 20, Kangaroo 10, with unavailable modes
-## zeroed before normalizing). Mixed-mode Twists are retired from normal Play. Each round is
-## locked once, in order, from the match's seeded event stream: the room locks round N+1 during
-## round N's Pugad, so the announcement and the round that plays always agree.
+## P12 event schedule: every scheduled round is one standalone Main. The opening sequence is
+## guaranteed: Round 1 Karera, Round 2 Lagsanay, Round 3 Kangaroo. From Round 4 onward, Main
+## Challenges are drawn from the available pool (Karera 40, Lagsanay 30, Kangaroo 30, with
+## unavailable modes zeroed before normalizing). Mixed-mode Twists are retired from normal Play.
+## Each round is locked once, in order, from the match's seeded event stream: the room locks
+## round N+1 during round N's Pugad, so the announcement and the round that plays always agree.
 
 enum Challenge { NONE = -1, KARERA, LAGSANAY, KANGAROO }
 
-const MAIN_WEIGHTS := {Challenge.KARERA: 70, Challenge.LAGSANAY: 20, Challenge.KANGAROO: 10}
+const MAIN_WEIGHTS := {Challenge.KARERA: 40, Challenge.LAGSANAY: 30, Challenge.KANGAROO: 30}
 const GUARANTEED := {
 	1: Challenge.KARERA,
-	4: Challenge.LAGSANAY,
-	8: Challenge.LAGSANAY,
-	12: Challenge.LAGSANAY,
+	2: Challenge.LAGSANAY,
+	3: Challenge.KANGAROO,
 }
 ## Historical compatibility rows are intentionally absent from normal scheduling. Earlier P12
 ## stack integration tests remain source-history evidence, not current schedule acceptance.

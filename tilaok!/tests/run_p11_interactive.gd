@@ -117,7 +117,8 @@ func _test_standalone_count(count: int) -> void:
 		(
 			room._presenter != null
 			and not room._presenter.has_method("get_collision_layer")
-			and room._presenter.get_child_count() == 0
+			and room._presenter.get_child_count() == 1
+			and room._presenter.get_node_or_null("RisingWaterBody") is ColorRect
 		),
 		"debug presenter remains a visual-only non-colliding layer"
 	)

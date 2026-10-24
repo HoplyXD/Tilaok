@@ -486,6 +486,30 @@ func _test_bubble(entry: Array) -> void:
 		await physics_frame
 		frames += 1
 	var captured := bubble.capture_count >= 1
+	if captured:
+		await process_frame
+	var captive := _victim()
+	var captive_is_crouched := captured and captive.sneaking
+	var captive_animators := captive.find_children("*", "ChickenSpriteAnimator", true, false)
+	var captive_plays_sneak := false
+	var captive_visual_is_centered := false
+	for animator in captive_animators:
+		if animator is ChickenSpriteAnimator and animator.visible:
+			captive_plays_sneak = animator.animation == &"sneak_hold"
+			captive_visual_is_centered = (
+				animator.position.distance_to(
+					(
+						animator._authored_position
+						+ ChickenSpriteAnimator.CAPTURED_CROUCH_CENTER_OFFSET
+					)
+				)
+				<= 0.01
+			)
+			break
+	var visual_shell_fits_crouch := (
+		ItemSilhouettePainter.BUBBLE_VISUAL_RADIUS_WU * 2.0
+		>= maxf(room.tuning.body_width_wu, room.tuning.sneak_height_wu)
+	)
 	var released_frames := 0
 	while released_frames < 400 and bubble.release_count == 0:
 		await physics_frame
@@ -494,12 +518,17 @@ func _test_bubble(entry: Array) -> void:
 	_check(
 		(
 			captured
+			and captive_is_crouched
+			and captive_plays_sneak
+			and captive_visual_is_centered
+			and visual_shell_fits_crouch
 			and bubble.release_count >= 1
+			and not _victim().sneaking
 			and not _victim().lifecycle.is_terminal()
 			and _outcome(entry).is_empty()
 		),
 		(
-			"%s: Bula captures P2 and releases it (%d / %d) with no elimination or credit"
+			"%s: Bula centers immediate crouch inside shell and releases it (%d / %d)"
 			% [entry[0], bubble.capture_count, bubble.release_count]
 		)
 	)
