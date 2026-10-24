@@ -9,6 +9,10 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/menu_action_button.tscn" id="6"]
 [ext_resource type="Texture2D" uid="uid://pkpif3rw7i75" path="res://assets/ui/common/ui.common.icon_play.svg" id="7"]
 [ext_resource type="Texture2D" uid="uid://bvwkm5lt0vxa" path="res://assets/ui/title/ui.title.ornament.svg" id="9"]
+[ext_resource type="SpriteFrames" uid="uid://bacutva2saabq" path="res://assets/character/cyan_chicken_frames.tres" id="cyan_chicken_frames"]
+[ext_resource type="SpriteFrames" uid="uid://crnithf40cr1h" path="res://assets/character/default_chicken_frames.tres" id="default_chicken_frames"]
+[ext_resource type="SpriteFrames" uid="uid://2jul11em0vpy" path="res://assets/character/green_chicken_frames.tres" id="green_chicken_frames"]
+[ext_resource type="SpriteFrames" uid="uid://gxdagy5v7inm" path="res://assets/character/pink_chicken_frames.tres" id="pink_chicken_frames"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bo64p"]
 bg_color = Color(0.24794078, 0.09971947, 4.813075e-08, 0.27058825)
@@ -46,6 +50,87 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"Backdrop"
 theme_override_styles/panel = SubResource("StyleBoxFlat_bo64p")
+
+[node name="ChickenSpot" type="Control" parent="." unique_id=1600466236]
+layout_mode = 1
+anchor_left = 0.74
+anchor_top = 0.84
+anchor_right = 0.74
+anchor_bottom = 0.84
+mouse_filter = 2
+
+[node name="Art_Chicken" type="AnimatedSprite2D" parent="ChickenSpot" unique_id=1314957597]
+texture_filter = 4
+position = Vector2(-131.19998, -194.79999)
+scale = Vector2(0.058378905, 0.058378905)
+sprite_frames = ExtResource("cyan_chicken_frames")
+animation = &"step"
+autoplay = "step"
+frame_progress = 0.44192392
+offset = Vector2(-12, -785)
+flip_h = true
+metadata/asset_id = "character.cyan_chicken"
+
+[node name="GreenChickenSpot" type="Control" parent="." unique_id=111397628]
+layout_mode = 1
+anchor_left = 0.66
+anchor_top = 0.72
+anchor_right = 0.66
+anchor_bottom = 0.72
+mouse_filter = 2
+
+[node name="Art_GreenChicken" type="AnimatedSprite2D" parent="GreenChickenSpot" unique_id=1470505023]
+texture_filter = 4
+position = Vector2(129.19998, 21.599987)
+scale = Vector2(0.08724609, 0.08724609)
+sprite_frames = ExtResource("green_chicken_frames")
+animation = &"walk"
+autoplay = "walk"
+frame_progress = 0.55221933
+centered = false
+offset = Vector2(-1024, -1893)
+flip_h = true
+metadata/asset_id = "character.green_chicken"
+
+[node name="PinkChickenSpot" type="Control" parent="." unique_id=2012203734]
+layout_mode = 1
+anchor_left = 0.79
+anchor_top = 0.24
+anchor_right = 0.79
+anchor_bottom = 0.24
+mouse_filter = 2
+
+[node name="Art_PinkChicken" type="AnimatedSprite2D" parent="PinkChickenSpot" unique_id=1900224116]
+texture_filter = 4
+position = Vector2(-288.19998, 145.19998)
+scale = Vector2(0.05, 0.05)
+sprite_frames = ExtResource("pink_chicken_frames")
+animation = &"fly"
+autoplay = "fly"
+frame_progress = 0.7309082
+centered = false
+offset = Vector2(-1024, -935)
+metadata/asset_id = "character.pink_chicken"
+
+[node name="DefaultChickenSpot" type="Control" parent="." unique_id=690173870]
+layout_mode = 1
+anchor_left = 0.78
+anchor_top = 0.9
+anchor_right = 0.78
+anchor_bottom = 0.9
+mouse_filter = 2
+
+[node name="Art_DefaultChicken" type="AnimatedSprite2D" parent="DefaultChickenSpot" unique_id=1740667855]
+texture_filter = 4
+position = Vector2(-174.39995, 28.999985)
+scale = Vector2(0.11384767, 0.11384767)
+sprite_frames = ExtResource("default_chicken_frames")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.6790195
+centered = false
+offset = Vector2(-1024, -1874)
+metadata/asset_id = "character.default_chicken"
 
 [node name="Card" type="Control" parent="." unique_id=1338016722]
 layout_mode = 1
@@ -345,6 +430,7 @@ theme_type_variation = &"TitleCardPromptAction"
 
 [node name="BuildLabel" type="Label" parent="Card" unique_id=574187507]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0

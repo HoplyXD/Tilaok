@@ -9,6 +9,7 @@ export_credentials.cfg
 # Builds
 build/
 exports/
+.gradle/
 
 # OS
 .DS_Store

@@ -1,0 +1,41 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://crnithf40cr1h"]
+
+[ext_resource type="Texture2D" uid="uid://synf4g4cbcik" path="res://assets/character/title_screen_default_chicken.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Atlas_neutral"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 2048, 2048)
+
+[sub_resource type="AtlasTexture" id="Atlas_tilt_a"]
+atlas = ExtResource("1")
+region = Rect2(4096, 0, 2048, 2048)
+margin = Rect2(0, 22, 0, 22)
+
+[sub_resource type="AtlasTexture" id="Atlas_neutral_b"]
+atlas = ExtResource("1")
+region = Rect2(2048, 0, 2048, 2048)
+
+[sub_resource type="AtlasTexture" id="Atlas_tilt_b"]
+atlas = ExtResource("1")
+region = Rect2(6144, 0, 2048, 2048)
+margin = Rect2(0, 17, 0, 17)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.5,
+"texture": SubResource("Atlas_neutral")
+}, {
+"duration": 1.5,
+"texture": SubResource("Atlas_tilt_a")
+}, {
+"duration": 1.5,
+"texture": SubResource("Atlas_neutral_b")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_tilt_b")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 3.0
+}]

@@ -21,7 +21,6 @@ func _run() -> void:
 	await process_frame
 	room.join_keyboard("K1")
 	room.join_keyboard("K2")
-	room.go_countdown_seconds = 0.001
 	room.build_phase_seconds = 0.001
 	room.tuning.match_target_score_units = 100000
 	for cycle in range(1, 11):
@@ -35,14 +34,8 @@ func _run() -> void:
 		)
 		room._physics_process(0.01)
 		_check(
-			room.phase_controller.phase == MatchPhaseController.Phase.GO,
-			"cycle %d resolves BUILD into GO" % cycle
-		)
-		room._physics_process(0.01)
-		await process_frame
-		_check(
 			room.phase_controller.phase == MatchPhaseController.Phase.PLAY and room.items.in_play,
-			"cycle %d starts active Play" % cycle
+			"cycle %d starts active Play directly after BUILD" % cycle
 		)
 		var item_result := _place_one_item()
 		_check(

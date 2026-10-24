@@ -1,0 +1,37 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://bacutva2saabq"]
+
+[ext_resource type="Texture2D" uid="uid://dfofgb2klja1m" path="res://assets/character/cyan_sprites.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Atlas_dash"]
+atlas = ExtResource("1")
+region = Rect2(4096, 0, 2048, 2048)
+
+[sub_resource type="AtlasTexture" id="Atlas_step_a"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 2048, 2048)
+
+[sub_resource type="AtlasTexture" id="Atlas_step_b"]
+atlas = ExtResource("1")
+region = Rect2(2048, 0, 2048, 2048)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_dash")
+}],
+"loop": 1,
+"name": &"dash",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_step_a")
+}, {
+"duration": 0.6,
+"texture": SubResource("Atlas_step_b")
+}],
+"loop": 1,
+"name": &"step",
+"speed": 3.0
+}]

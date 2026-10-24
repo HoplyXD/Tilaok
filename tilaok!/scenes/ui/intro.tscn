@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://c12qqvl7gkjlc"]
+
+[ext_resource type="Texture2D" uid="uid://b4beo0rpdpura" path="res://assets/ui/intro/Cyfer Logo.png" id="1_i8df0"]
+[ext_resource type="Script" uid="uid://dopveehav3tst" path="res://scenes/ui/intro.gd" id="1_j6b1i"]
+[ext_resource type="Texture2D" uid="uid://cx7gepjri81dm" path="res://assets/ui/intro/WVSU-MinLogo-2.png" id="3_i5xbi"]
+
+[sub_resource type="Animation" id="Animation_i2slu"]
+length = 6.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Overlay:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5, 3, 4.5, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0), Color(0, 0, 0, 1), Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CyferLogo:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.06666672, 2.99),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("WvsuMinLogo2:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.06666672, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CyferLogo:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.12614815, 0.12614815), Vector2(0.2, 0.2)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("WvsuMinLogo2:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(3.01, 6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.072, 1.0719999), Vector2(1.572, 1.572)]
+}
+
+[sub_resource type="Animation" id="Animation_j6b1i"]
+resource_name = "new_animation"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Overlay:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5, 3, 4.5, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0), Color(0, 0, 0, 1), Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CyferLogo:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0009999999, 2.99),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_i5xbi"]
+_data = {
+&"RESET": SubResource("Animation_i2slu"),
+&"new_animation": SubResource("Animation_j6b1i")
+}
+
+[node name="Control" type="Control" unique_id=1193671891]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_j6b1i")
+
+[node name="Background" type="ColorRect" parent="." unique_id=580067038]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CyferLogo" type="Sprite2D" parent="." unique_id=1649392525]
+visible = false
+position = Vector2(639.00006, 344)
+scale = Vector2(0.12614815, 0.12614815)
+texture = ExtResource("1_i8df0")
+
+[node name="WvsuMinLogo2" type="Sprite2D" parent="." unique_id=244070109]
+position = Vector2(641, 340.99997)
+scale = Vector2(1.072, 1.0719999)
+texture = ExtResource("3_i5xbi")
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=848937603]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=60521747]
+libraries/ = SubResource("AnimationLibrary_i5xbi")
+autoplay = &"RESET"
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

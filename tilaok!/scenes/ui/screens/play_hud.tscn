@@ -148,7 +148,6 @@ theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="ControlHint2" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926023]
 unique_name_in_owner = true
@@ -157,7 +156,6 @@ theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="ControlHint3" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926024]
 unique_name_in_owner = true
@@ -166,7 +164,6 @@ theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="ControlHint4" type="Label" parent="ControlHintsBar/ControlHintsRow" unique_id=1715926025]
 unique_name_in_owner = true
@@ -175,7 +172,6 @@ theme_type_variation = &"HudLabel"
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="NoticeRow" type="MarginContainer" parent="." unique_id=509076002]
 unique_name_in_owner = true

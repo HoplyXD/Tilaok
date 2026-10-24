@@ -73,4 +73,3 @@ func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	if font != null:
 		draw_string(font, Vector2(-5.0, 5.0), "B", HORIZONTAL_ALIGNMENT_CENTER, 10.0, 13, MARK)
-		draw_string(font, Vector2(-14.0, 31.0), "DEBUG", HORIZONTAL_ALIGNMENT_CENTER, 28.0, 7, MARK)

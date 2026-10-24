@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://gxdagy5v7inm"]
+
+[ext_resource type="Texture2D" uid="uid://dek2e1f680st6" path="res://assets/character/spritesheet (2).png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Atlas_fly_a"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 2048, 2048)
+
+[sub_resource type="AtlasTexture" id="Atlas_fly_b"]
+atlas = ExtResource("1")
+region = Rect2(2048, 0, 2048, 2048)
+margin = Rect2(0, 390, 0, 390)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_fly_a")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_fly_b")
+}],
+"loop": 1,
+"name": &"fly",
+"speed": 4.0
+}]

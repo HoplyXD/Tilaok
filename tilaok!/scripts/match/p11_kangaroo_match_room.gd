@@ -211,7 +211,7 @@ func play_tag_text() -> String:
 	if commands.is_empty():
 		return ""
 	var command: Dictionary = commands[0]
-	return "DEBUG %s" % KangarooRoundController.command_name(int(command.command))
+	return "KANGAROO • %s" % KangarooRoundController.command_name(int(command.command))
 
 
 func play_status_text() -> String:

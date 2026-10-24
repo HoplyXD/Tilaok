@@ -56,7 +56,7 @@ func _capture_live_route() -> void:
 	_join_ready(room)
 	room.set_match_seed(73)
 	room.tuning.match_target_score_units = 100000
-	room.go_countdown_seconds = 3.0
+	room.build_phase_seconds = 10.0
 	room.start_match()
 	for seat_index in range(2):
 		var egg: Dictionary = room.egg_pool[seat_index]
@@ -67,11 +67,11 @@ func _capture_live_route() -> void:
 	room._flush_claims()
 	await _frames(5)
 	await _save("04-live-pugad.png")
-	await _save("05-live-go.png")
-	room.go_countdown_seconds = 0.1
-	room._go_remaining = 0.1
-	room.phase_controller.remaining_seconds = 0.1
-	room._process(0.2)
+	room.phase_controller.remaining_seconds = 3.0
+	room.presenter._update_fullscreen_countdown()
+	await _save("05-live-build-final-countdown.png")
+	room.phase_controller.remaining_seconds = 0.01
+	room._physics_process(0.02)
 	if room.race_round_controller != null:
 		room.race_round_controller.hard_cap_seconds = 3600.0
 	await _frames(5)
@@ -134,12 +134,13 @@ func _capture_lagsanay_event() -> void:
 	room.items.round_number = 3
 	room.schedule.lock_round(4)
 	room._begin_pugad()
+	room.build_phase_seconds = 0.1
 	for seat_index in range(2):
 		var egg: Dictionary = room.egg_pool[seat_index]
 		room._queue_claim(seat_index, str(egg.egg_id))
 	room._flush_claims()
-	room.go_countdown_seconds = 0.1
-	room._process(0.2)
+	room.build_phase_seconds = 0.1
+	room._physics_process(0.2)
 	await _frames(8)
 	await _save("10-live-lagsanay-event.png")
 	room.queue_free()

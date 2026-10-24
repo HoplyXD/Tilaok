@@ -11,7 +11,7 @@ signal live_placement_boundary_resolved(results: Array)
 
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
 const JOB_PREVIEW := preload("res://scripts/match/construction_job_preview.gd")
-@export_range(1.0, 10.0, 0.25) var go_countdown_seconds := 3.0
+const CONSTRUCTION_TIME_EPSILON := 0.000001
 @export_range(1.0, 30.0, 0.25) var build_phase_seconds := 10.0
 @export_range(0.1, 10.0, 0.1) var construction_seconds := 2.0
 @export_range(1.0, 32.0, 1.0) var live_cursor_cells_per_second := 8.0
@@ -27,8 +27,6 @@ var live_notices: Dictionary = {}
 var construction_jobs: Dictionary = {}
 var _aim_repeat: Dictionary = {}
 var _request_serial := 0
-var _go_remaining := 0.0
-var _go_start_pending := false
 var _live_admission_open := false
 var _edge_layer: CanvasLayer
 var _edge_root: Control
@@ -65,6 +63,36 @@ func _exit_tree() -> void:
 	super._exit_tree()
 
 
+func _update_camera_targets() -> void:
+	if phase_controller == null or phase_controller.phase != MatchPhaseController.Phase.BUILD:
+		super._update_camera_targets()
+		return
+	if camera_rig == null:
+		return
+	_camera_targets.clear()
+	for seat_variant in placement_controller.cursors:
+		var seat_index := int(seat_variant)
+		if bool(inventory_used.get(seat_index, false)):
+			continue
+		var cursor: Dictionary = placement_controller.cursors[seat_index]
+		var target := _cached_camera_target("preparation_cursor_%d" % seat_index)
+		target.world_rect = _preparation_cursor_rect(cursor)
+		_camera_targets.append(target)
+	camera_rig.set_targets(_camera_targets)
+
+
+func _preparation_cursor_rect(cursor: Dictionary) -> Rect2:
+	var origin := Vector2(cursor.cell) * tuning.grid_cell_wu
+	if BaryaObjectiveDefinition.is_variant(str(cursor.variant_key)):
+		return Rect2(origin, Vector2.ONE * tuning.grid_cell_wu)
+	var found := definitions.find_variant(str(cursor.variant_key))
+	if found.is_empty():
+		return Rect2(origin, Vector2.ONE * tuning.grid_cell_wu)
+	return ItemPlacementValidator.footprint_rect_for(
+		found.variant as ItemVariantDefinition, cursor.cell, int(cursor.quarter_turns), tuning
+	)
+
+
 func _process(delta: float) -> void:
 	super._process(delta)
 	if get_tree().paused or not _simulation_can_commit():
@@ -97,15 +125,6 @@ func _physics_process(delta: float) -> void:
 			_advance_preparation_phase(delta)
 		elif phase_controller.phase == MatchPhaseController.Phase.PLAY:
 			return
-	elif phase_controller.phase == MatchPhaseController.Phase.GO:
-		_advance_construction_jobs(delta)
-		var go_finished := phase_controller.advance(delta)
-		_go_remaining = phase_controller.remaining_seconds
-		last_message = "GO • %d" % ceili(_go_remaining)
-		_notify_presentation(&"live_build")
-		if go_finished and not _go_start_pending:
-			_go_start_pending = true
-			_start_live_play.call_deferred()
 	else:
 		# The terminal round result (resolved in super) closes admission before any queued edit.
 		_close_live_attempt()
@@ -115,14 +134,12 @@ func _physics_process(delta: float) -> void:
 func _advance_preparation_phase(delta: float) -> void:
 	if phase_controller.advance(delta):
 		_close_live_admission()
-		phase_controller.enter(MatchPhaseController.Phase.GO, go_countdown_seconds)
-		_go_remaining = go_countdown_seconds
-		input_router.set_phase(LocalInputRouter.Phase.GO)
 		for seat_variant in build_mode.keys():
-			_set_live_ghost_visible(int(seat_variant), false)
-		last_message = "GO • movement and live building begin after the countdown."
+			var seat_index := int(seat_variant)
+			_set_build_mode(seat_index, false)
+			_set_live_ghost_visible(seat_index, false)
 		_notify_presentation(&"live_build")
-		_refresh_match_ui()
+		_start_live_play()
 
 
 func _close_live_admission() -> void:
@@ -159,7 +176,7 @@ func _enter_place() -> void:
 	input_router.live_build_confirm_enabled = true
 	phase_controller.enter(MatchPhaseController.Phase.BUILD, build_phase_seconds)
 	input_router.set_phase(LocalInputRouter.Phase.BUILD)
-	current_context = BoundedStageCamera.Context.PLAY
+	current_context = BoundedStageCamera.Context.PLACE
 	camera_rig.set_context(current_context)
 	_free_match_ghosts()
 	for seat_index in seats:
@@ -175,12 +192,13 @@ func _enter_place() -> void:
 
 
 func _start_live_play() -> void:
-	if phase_controller.phase != MatchPhaseController.Phase.GO:
+	if phase_controller.phase != MatchPhaseController.Phase.BUILD:
 		return
 	# P12 starts the locked Main/Twist here. Its existing taya freeze and immunity stay authoritative.
 	super._enter_play()
 	if phase_controller.phase != MatchPhaseController.Phase.PLAY:
 		return
+	_update_camera_targets()
 	for seat_index in placement_controller.cursors.keys():
 		_set_build_mode(int(seat_index), false)
 		if bool(inventory_used.get(int(seat_index), false)):
@@ -190,7 +208,6 @@ func _start_live_play() -> void:
 		(_ghosts[int(seat_index)] as ItemGhost).visible = false
 		_create_edge_marker(int(seat_index))
 	_live_admission_open = true
-	_go_start_pending = false
 	_refresh_match_ui()
 
 
@@ -363,10 +380,7 @@ func _sync_actor_build_lock(seat_index: int) -> void:
 	var actor := actors.get(seat_index) as ChickenController
 	if actor != null and is_instance_valid(actor):
 		actor.build_input_locked = (
-			(
-				phase_controller.phase
-				in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.GO]
-			)
+			(phase_controller.phase == MatchPhaseController.Phase.BUILD)
 			or bool(build_mode.get(seat_index, false))
 		)
 
@@ -476,18 +490,34 @@ func _resolve_live_placement_boundary() -> void:
 	if requests.is_empty():
 		return
 	var resolved: Array[Dictionary] = []
+	var preparation_phase := phase_controller.phase == MatchPhaseController.Phase.BUILD
 	for receipt in requests:
 		var request_id := str(receipt.request_id)
 		var seat_index := int(receipt.seat_index)
 		var intent: Dictionary = receipt.intent
-		var result := _start_construction_job(seat_index, intent, boundary)
+		var result: Dictionary
+		if preparation_phase:
+			# BUILD is a preparation placement, so materialize the inert piece immediately. The
+			# separate two-second construction job applies only to placements during active PLAY.
+			items.live_boundary = boundary
+			result = _commit_live_intent(seat_index, intent, boundary, true, false)
+			if bool(result.get("terrain_mutated", false)):
+				items.stage_version += 1
+				request_pipeline.stage_version = items.stage_version
+			result.stage_version = items.stage_version
+		else:
+			result = _start_construction_job(seat_index, intent, boundary)
 		resolved.append({"request_id": request_id, "result": result})
 		inventory_used[seat_index] = bool(result.get("allowed", false))
 		live_notices[seat_index] = str(result.get("reason", "Placement resolved."))
 		if bool(result.get("allowed", false)):
 			_set_build_mode(seat_index, false)
 			_set_live_ghost_visible(seat_index, false)
-			live_notices[seat_index] = "Building • %.1f s remaining." % construction_seconds
+			live_notices[seat_index] = (
+				"Placed during prep • this round's item is used."
+				if preparation_phase
+				else "Building • %.1f s remaining." % construction_seconds
+			)
 		else:
 			# Keep build mode active after a rejected placement so players can reposition and retry.
 			var actor := actors.get(seat_index) as ChickenController
@@ -625,7 +655,7 @@ func _advance_construction_jobs(delta: float) -> void:
 		if not _seat_can_keep_job(seat_index):
 			_cancel_construction_job(job_id, false)
 			continue
-		if remaining > 0.0:
+		if elapsed + CONSTRUCTION_TIME_EPSILON < construction_seconds:
 			live_notices[seat_index] = "Building • %.1f s remaining." % remaining
 			continue
 		items.live_boundary = Engine.get_physics_frames()
@@ -689,11 +719,7 @@ func _seat_can_keep_job(seat_index: int) -> bool:
 	return (
 		(
 			phase_controller.phase
-			in [
-				MatchPhaseController.Phase.BUILD,
-				MatchPhaseController.Phase.GO,
-				MatchPhaseController.Phase.PLAY
-			]
+			in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
 		)
 		and (items.in_play == (phase_controller.phase == MatchPhaseController.Phase.PLAY))
 		and bool(input_router.registry.get_seat(seat_index).get("joined", false))
@@ -772,17 +798,11 @@ func _commit_live_intent(
 		"commit_boundary": boundary,
 		"stage_version": items.stage_version,
 	}
-	var preparation_phase := (
-		phase_controller.phase in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.GO]
-	)
+	var preparation_phase := phase_controller.phase == MatchPhaseController.Phase.BUILD
 	if (
 		(
 			phase_controller.phase
-			not in [
-				MatchPhaseController.Phase.BUILD,
-				MatchPhaseController.Phase.PLAY,
-				MatchPhaseController.Phase.GO
-			]
+			not in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
 		)
 		or items.in_play == preparation_phase
 	):
@@ -1110,8 +1130,6 @@ func play_status_text() -> String:
 				% ceili(phase_controller.remaining_seconds)
 			)
 		)
-	elif phase_controller.phase == MatchPhaseController.Phase.GO:
-		notices.append("GO • %d" % ceili(_go_remaining))
 	for job in construction_jobs.values():
 		var remaining := maxf(
 			0.0, construction_seconds - (_construction_clock - float(job.started_at))
@@ -1154,5 +1172,4 @@ func reset_room() -> void:
 	_request_serial = 0
 	_construction_clock = 0.0
 	_live_admission_open = false
-	_go_start_pending = false
 	super.reset_room()

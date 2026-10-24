@@ -431,3 +431,32 @@ Read from frame `133:1205` "Library" of the team Figma file "UI-Tilaok-" through
 ## Settings screen from the Figma frame — 2026-10-24
 
 Built from frame `133:1336` "Settings" of the team Figma file "UI-Tilaok-", using the team's own 2x PNG export (`Downloads/Figma UI Screens/Settings.png`; the Figma connector was at its Starter plan limit). No new art file was added. The chevrons (Back, arrow boxes, row pointer) reuse `ui.library.icon_back`, tinted and mirrored, and the leaf divider reuses `ui.library.leaf_divider`. Rows, arrow boxes, slider track, knob and page are Theme StyleBoxes (`Settings*` and the Library's types). Whether the frame's chevrons are the same drawing as the Library's could not be confirmed without the frame's SVGs; in the export they match in size and position.
+
+### Title chicken — 2026-10-24
+
+The user supplied `assets/character/cyan_sprites.png` and asked for it on the title screen. It is a 6144 × 2048 transparent sheet of three 2048 px frames: two standing/stepping poses and one flying or dashing pose. `assets/character/cyan_chicken_frames.tres` cuts it into a `step` animation (frames 1–2, 3 fps, looping) and a `dash` animation (frame 3, unused for now). `title_screen.tscn` shows `step` on `ChickenSpot/Art_Chicken` (an `AnimatedSprite2D` at 0.16 scale, feet on `ChickenSpot`), over the menu art and under the card and quit dialog. The import generates mipmaps so the large frames shrink cleanly.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `character.cyan_chicken` | `assets/character/cyan_sprites.png` (SHA-256 `caf63087…2c2f2b65db`) | Sprite sheet; title screen chicken | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Slicing and placement only ([AI_USAGE](AI_USAGE.md#ui-and-placement-sound-effects--october-23-2026)) | Imported — creator confirmation open |
+
+The user then supplied two more sheets for the title ("do the same for these too"). Each is 8192 × 2048 with four 2048 px slots, and only the first two slots hold art. `green_chicken_frames.tres` makes a two-frame `walk` (3 fps). Its second frame is shifted down 84 px (AtlasTexture margin) so the feet stay planted. `pink_chicken_frames.tres` makes a two-frame `fly` (4 fps). Its second frame is shifted down 390 px so the body flaps in place instead of jumping. Both sprites draw uncentered, with the feet (green) or body centre (pink) on their `GreenChickenSpot` / `PinkChickenSpot` node. Their scale (0.07 and 0.05) was chosen to sit with the cyan chicken, which the user had resized to about 0.058 in the editor.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `character.green_chicken` | `assets/character/spritesheet (1).png` (SHA-256 `d8a7dcb9…c40af5570b`) | Sprite sheet; title screen, walking on the path | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Slicing and placement only | Imported — creator confirmation open |
+| `character.pink_chicken` | `assets/character/spritesheet (2).png` (SHA-256 `ecb4bd24…e86fbbb2e5`) | Sprite sheet; title screen, flying in the sky | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Slicing and placement only | Imported — creator confirmation open |
+
+A fourth sheet followed, `title_screen_default_chicken.png`: the yellow default chicken facing the viewer, 8192 × 2048 in four frames (two identical neutral poses, then a head tilt each way). `default_chicken_frames.tres` loops neutral (1.5) → tilt → neutral (1.5) → other tilt at 3 fps. The two tilt frames are shifted down 22 / 17 px so the feet stay planted. It stands at the front of the path on `DefaultChickenSpot` at 0.09 scale.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `character.default_chicken` | `assets/character/title_screen_default_chicken.png` (SHA-256 `c1f1319f…f6af756032`) | Sprite sheet; title screen, idle at the front of the path | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Slicing and placement only | Imported — creator confirmation open |
+
+### Pugad nest replaced — 2026-10-24
+
+At the user's request ("can you replace the existing pugad with this one?"), the Pugad pick screen's `Nest` now uses `assets/ui/pugad/nest.png` instead of `ui.pugad.nest.png`. The old file stays in the folder, unused. The new image is square, so the node keeps its box and draws it keep-aspect-centred (`stretch_mode = 5`). Its import generates mipmaps.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `ui.pugad.nest` | `assets/ui/pugad/nest.png` (SHA-256 `773873e0…e9d1ed0687`; 2560 × 2560, transparent) | UI image; Pugad pick screen, behind the eggs | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Swap and placement only | Imported — creator confirmation open |

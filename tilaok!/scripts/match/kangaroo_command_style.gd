@@ -213,11 +213,9 @@ static func update_panel(panel: Dictionary, command: Dictionary, active_time: fl
 		if is_telegraph
 		else float(command.response_end_at) - float(command.response_start_at)
 	)
-	panel.pose.text = (
-		"DEBUG POSE • %s  %s" % [icon(type), KangarooRoundController.command_name(type)]
-	)
-	panel.steps.text = "DEBUG AUDIO %d Hz • KANG  →  GA  →  ROO" % frequency(type)
-	panel.note.text = "DEBUG • " + instruction(command)
+	panel.pose.text = "%s  %s" % [icon(type), KangarooRoundController.command_name(type)]
+	panel.steps.text = "KANG  →  GA  →  ROO"
+	panel.note.text = instruction(command)
 	if bool(command.is_storm):
 		panel.pose.text += " • STORM %d" % int(command.command_id)
 	panel.ring.set_time(maxf(0.0, countdown_start - active_time), countdown_total)

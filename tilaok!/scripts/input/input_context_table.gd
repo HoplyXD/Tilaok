@@ -236,11 +236,11 @@ static func _gamepad(context: String) -> Array:
 			rows.append_array(
 				[
 					_row(
-						JOY_BUTTON_A,
+						LocalInputRouter.GENERIC_USB_PLACE_BUTTON,
 						"live_confirm" if context in ["build", "preparation"] else "jump"
 					),
 					_row(
-						JOY_BUTTON_X,
+						LocalInputRouter.GENERIC_USB_ROTATE_BUTTON,
 						"live_rotate" if context in ["build", "preparation"] else "cheer"
 					),
 					_row(JOY_BUTTON_Y, "build_toggle")
