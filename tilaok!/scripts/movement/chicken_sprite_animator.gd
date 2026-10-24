@@ -17,11 +17,15 @@ extends AnimatedSprite2D
 ## Left/right comes from `ChickenController.facing_input` -- the movement key the controller
 ## accepted -- not from velocity, so a chicken sliding on ice or taking knockback reads as idle.
 
+const DEFAULT_TINT_STRENGTH := 2.1
+
+## Lobby slot previews should hold a standing idle pose independent of gameplay state.
+@export var force_idle_preview := false
+
 ## Per-animation offset in texture pixels (so it scales with the node) that puts the feet of
 ## every frame on the collision bottom. Unlisted animations sit at the node origin; fill this in
 ## from the editor for any pose whose art does not already end on the cell's feet line.
 @export var animation_offsets := {}
-const DEFAULT_TINT_STRENGTH := 2.1
 
 ## Multiplier on the seat colour so the mid-grey placeholder reads as that colour.
 @export var tint_strength := DEFAULT_TINT_STRENGTH
@@ -63,7 +67,7 @@ func _process(_delta: float) -> void:
 	if chicken == null:
 		return
 	_track_transitions()
-	var next := pose_for_state()
+	var next := &"idle" if force_idle_preview else pose_for_state()
 	# A pose the sheet has no frames for yet holds the current one instead of erroring out.
 	if sprite_frames == null or not sprite_frames.has_animation(next):
 		next = animation

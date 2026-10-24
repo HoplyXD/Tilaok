@@ -13,6 +13,9 @@ const EMPTY_CHICKEN_ALPHA := 0.38
 @onready var _state_label: Label = %StateLabel
 @onready var _device_label: Label = %DeviceLabel
 @onready var _preview_chicken: ChickenController = %PreviewChicken
+@onready var _preview_animator: ChickenSpriteAnimator = (
+	_preview_chicken.get_node("ChickenAnimation") as ChickenSpriteAnimator
+)
 
 
 func bind(seat: Dictionary, map: UiPromptMap) -> void:
@@ -26,6 +29,7 @@ func bind(seat: Dictionary, map: UiPromptMap) -> void:
 		seat.get("color", PlayerSeatRegistry.COLORS[seat_index]) if joined else EMPTY_CHICKEN_TINT
 	)
 	_preview_chicken.modulate.a = 1.0 if joined else EMPTY_CHICKEN_ALPHA
+	_preview_animator.force_idle_preview = true
 	_preview_chicken.queue_redraw()
 	theme_type_variation = FRAME_READY if is_ready else FRAME_NORMAL
 	# An open slot previews its fixed number + shape, faded, above the "Open slot" text.
