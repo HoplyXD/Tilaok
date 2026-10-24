@@ -39,6 +39,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_check_parol_post_joins()
 	var tuning := GameplayTuning.new()
 	ItemEnabledProfiles.apply(tuning, "items_lab")
 	var definitions := ItemDefinitions.load_for_profile(tuning, "items_lab")
@@ -98,6 +99,43 @@ func _check(condition: bool, label: String) -> void:
 	else:
 		failures += 1
 		push_error("FAIL " + label)
+
+
+func _check_parol_post_joins() -> void:
+	var horizontal_beam := Rect2(0.0, 0.0, 320.0, 12.0)
+	var horizontal_from_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(0.0, 0.0, 128.0, 12.0), horizontal_beam, 12.0
+	)
+	_check(
+		is_equal_approx(horizontal_from_post.position.x, -8.0)
+		and is_equal_approx(horizontal_from_post.end.x, 128.0),
+		"horizontal Parol art reaches its post without crossing a clipped beam end"
+	)
+	var horizontal_to_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(192.0, 0.0, 128.0, 12.0), horizontal_beam, 12.0
+	)
+	_check(
+		is_equal_approx(horizontal_to_post.position.x, 192.0)
+		and is_equal_approx(horizontal_to_post.end.x, 328.0),
+		"horizontal Parol art reaches the far post without crossing a clipped beam end"
+	)
+	var vertical_beam := Rect2(0.0, 0.0, 12.0, 320.0)
+	var vertical_from_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(0.0, 0.0, 12.0, 128.0), vertical_beam, 12.0
+	)
+	_check(
+		is_equal_approx(vertical_from_post.position.y, -8.0)
+		and is_equal_approx(vertical_from_post.end.y, 128.0),
+		"vertical Parol art reaches its post without crossing a clipped beam end"
+	)
+	var vertical_to_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(0.0, 192.0, 12.0, 128.0), vertical_beam, 12.0
+	)
+	_check(
+		is_equal_approx(vertical_to_post.position.y, 192.0)
+		and is_equal_approx(vertical_to_post.end.y, 328.0),
+		"vertical Parol art reaches the far post without crossing a clipped beam end"
+	)
 
 
 func _preview_fits_egg(

@@ -10,6 +10,7 @@ const CELL := 64.0
 var room: ItemVisualizerRoom
 var actor: ChickenController
 var parol: HazardPiece
+var launcher: HazardPiece
 var state_label: Label
 var failures := 0
 
@@ -45,10 +46,14 @@ func _run() -> void:
 	var bula_result := room.items.place(
 		"hazard.bubble_planter.path_1x5", Vector2i(16, 13), 0, seat, [] as Array[Rect2]
 	)
+	var launcher_result := room.items.place(
+		"hazard.slipper_launcher.lane_4x1", Vector2i(13, 8), 0, seat, [] as Array[Rect2]
+	)
 	if (
 		not bool(trumpo_result.allowed)
 		or not bool(parol_result.allowed)
 		or not bool(bula_result.allowed)
+		or not bool(launcher_result.allowed)
 	):
 		_fail(
 			(
@@ -58,7 +63,12 @@ func _run() -> void:
 		)
 		quit(1)
 		return
+	var trumpo := room.items.piece_for(str(trumpo_result.instance_id)) as HazardPiece
 	parol = room.items.piece_for(str(parol_result.instance_id)) as HazardPiece
+	launcher = room.items.piece_for(str(launcher_result.instance_id)) as HazardPiece
+	for connected_piece: HazardPiece in [trumpo, parol, launcher]:
+		if not _uses_connected_painter(connected_piece):
+			_fail("a connected-art item is still using its old scene placeholder sprite")
 	room.toggle_overlays()
 	for node in room.get_tree().get_nodes_in_group("debug_world"):
 		if node is CanvasItem:
@@ -193,9 +203,11 @@ func _save_manifest(output_dir: String) -> void:
 		"# P24 in-game capture\n\nGodot "
 		+ Engine.get_version_info().string
 		+ "; 1920×1080; Item Visualizer stage; real Bula bubble captured the live ChickenController. "
-		+ "Trumpo is live. A matched baseline uses the painter's code-drawn placeholder fallbacks "
+		+ "Trumpo is live, and a Tsinelas launcher lane is shown. A matched baseline uses the painter's code-drawn placeholder fallbacks "
 		+ "in the same frozen scene; after images use the imported art. Parol is sampled at inactive, "
-		+ "charge, and active preview times while physics is frozen for the stills.\n"
+		+ "charge, and active preview times while physics is frozen for the stills. Rail, beam and "
+		+ "launcher guide seams are rendered as connected visual joins; gameplay footprints and "
+		+ "blocker clipping are unchanged.\n"
 	)
 	file.store_string(body)
 	file.close()
@@ -214,3 +226,15 @@ func _frames(count: int) -> void:
 func _fail(message: String) -> void:
 	failures += 1
 	push_error("P24 capture: " + message)
+
+
+func _uses_connected_painter(piece: HazardPiece) -> bool:
+	if piece == null or not piece.painter_static_parts:
+		return false
+	var visual := piece.get_node_or_null("Visual") as Node2D
+	if visual == null:
+		return false
+	for child in visual.get_children():
+		if (child is Sprite2D or child is AnimatedSprite2D) and (child as CanvasItem).visible:
+			return false
+	return true
