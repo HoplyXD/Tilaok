@@ -313,6 +313,11 @@ func _add_map_visual() -> void:
 	map.z_index = stage_tiles.z_index
 	map.scale = Vector2.ONE * tuning.grid_cell_wu / 64.0
 	world_layer.add_child(map)
+	var blocks := map.blocks_layer()
+	if blocks != null:
+		# Keep map art above its scene-authored sky Sprite2D (same base z), but behind actors.
+		# The map root shares StageTiles' -5 z-index; this raises only the tile art to -4.
+		blocks.z_index = 1
 	stage_tiles.clear()
 
 
@@ -629,7 +634,7 @@ func _update_camera_targets() -> void:
 			)
 			var marker_scale := tuning.body_height_wu / 48.0
 			var marker_rect := Rect2(
-				actor.global_position + Vector2(-11.0, -41.0) * marker_scale,
+				actor.global_position + Vector2(-11.0, -47.0) * marker_scale,
 				Vector2(22.0, 22.0) * marker_scale
 			)
 			var target_id := "seat_%d" % seat_index
