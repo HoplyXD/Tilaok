@@ -4,12 +4,17 @@
 [ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_lp4j3"]
 [ext_resource type="Resource" uid="uid://xtmqewvgjhre" path="res://data/items/visual/move.tire_spring.tres" id="3_ecn56"]
 [ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_ykbkr"]
+[ext_resource type="Texture2D" uid="uid://cvnakij7k1dtw" path="res://assets/tiles/tire.png" id="5_lp4j3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0fdtb"]
 size = Vector2(128, 128)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4mhpq"]
 size = Vector2(128, 64)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ecn56"]
+cull_mode = 1
+polygon = PackedVector2Array(0, -64, 25, -59, 44, -46, 58, -26, 64, 0, 59, 26, 46, 44, 26, 59, 0, 64, -25, 59, -45, 46, -59, 24, -64, 0, -31, 0, -29, 12, -23, 21, -13, 28, 0, 32, 13, 29, 22, 22, 29, 13, 31, 0, 30, -11, 23, -21, 14, -28, 0, -32, -12, -29, -22, -22, -29, -12, -31, 0, -64, 0, -58, -26, -45, -45, -23, -59)
 
 [node name="GulongTire2x2" type="AnimatableBody2D" unique_id=1495161671]
 sync_to_physics = false
@@ -38,9 +43,11 @@ preview_cue = "coil_arrow"
 visual_set = ExtResource("3_ecn56")
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=1587871264]
+visible = false
 shape = SubResource("RectangleShape2D_0fdtb")
 
 [node name="LaunchHitbox" type="Area2D" parent="." unique_id=1882756883]
+visible = false
 collision_layer = 0
 collision_mask = 0
 monitoring = false
@@ -53,3 +60,11 @@ position = Vector2(0, -32)
 shape = SubResource("RectangleShape2D_4mhpq")
 
 [node name="Visual" type="Node2D" parent="." unique_id=181300582]
+show_behind_parent = true
+
+[node name="Body" type="Sprite2D" parent="Visual" unique_id=52598530]
+scale = Vector2(0.275, 0.275)
+texture = ExtResource("5_lp4j3")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=42598241]
+occluder = SubResource("OccluderPolygon2D_ecn56")

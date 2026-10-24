@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_ajjxu"]
 [ext_resource type="Resource" path="res://data/items/visual/hazard.parol_pulse.tres" id="3_kcp6i"]
 [ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_enum7"]
+[ext_resource type="Texture2D" uid="uid://d4noihu1d8ko3" path="res://assets/items/hazard.parol_pulse/PLACEHOLDER_post.svg" id="5_ajjxu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j52pr"]
 size = Vector2(64, 64)
@@ -13,6 +14,25 @@ size = Vector2(64, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mwfoq"]
 size = Vector2(192, 64)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_kcp6i"]
+cull_mode = 1
+polygon = PackedVector2Array(-160, -32, -96, -32, -96, 32, -160, 32)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_enum7"]
+cull_mode = 1
+polygon = PackedVector2Array(96, -32, 160, -32, 160, 32, 96, 32)
+
+[sub_resource type="Gradient" id="Gradient_j52pr"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_m1vk4"]
+gradient = SubResource("Gradient_j52pr")
+width = 322
+height = 66
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(2, 2)
 
 [node name="ParolSpan5x1" type="AnimatableBody2D" unique_id=88706765]
 sync_to_physics = false
@@ -57,3 +77,25 @@ effect = 4
 shape = SubResource("RectangleShape2D_mwfoq")
 
 [node name="Visual" type="Node2D" parent="." unique_id=873599678]
+show_behind_parent = true
+
+[node name="PostLeft" type="Sprite2D" parent="Visual" unique_id=992260849]
+position = Vector2(-128, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("5_ajjxu")
+
+[node name="PostRight" type="Sprite2D" parent="Visual" unique_id=649248027]
+position = Vector2(128, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("5_ajjxu")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1502872599]
+occluder = SubResource("OccluderPolygon2D_kcp6i")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="Visual" unique_id=2112458751]
+occluder = SubResource("OccluderPolygon2D_enum7")
+
+[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=1991796133]
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_m1vk4")

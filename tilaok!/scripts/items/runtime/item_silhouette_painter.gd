@@ -5,6 +5,10 @@ extends RefCounted
 ## (footprint top-left is the origin). Every part first asks the family's `ItemVisualSet` for a
 ## replaceable slot and only falls back to a graybox shape when the slot is missing, so artists
 ## swap files without code. All shapes are PLACEHOLDER; nothing here is final art.
+##
+## `static_parts = false` draws only what moves or changes with state (the trumpo top, parol beam,
+## slipper lane and projectiles, sweeping broom, bubble), for scene blocks whose Visual node
+## already authors the fixed art (bodies, rails, posts, pots, paths, the cleanup area).
 
 const INK := Color("#1d2930")
 const PAPER := Color("#f6efd8")
@@ -35,24 +39,26 @@ static func draw_variant(
 	turns: int,
 	tuning: GameplayTuning,
 	state: Dictionary,
-	tag: String = ""
+	tag: String = "",
+	static_parts: bool = true
 ) -> void:
 	var regions := ItemGeometry.resolve_regions(variant, turns, tuning)
 	var visual := family.visual_set
 	var seconds := float(state.get("elapsed", 0.0))
 	match family.preview_silhouette:
 		"tire":
-			_draw_tire(canvas, regions, visual, state, turns, seconds)
+			if static_parts:
+				_draw_tire(canvas, regions, visual, state, turns, seconds)
 		"rail_top":
-			_draw_rail(canvas, regions, visual, state, tuning, seconds)
+			_draw_rail(canvas, regions, visual, state, tuning, seconds, static_parts)
 		"parol":
-			_draw_parol(canvas, regions, visual, state, tuning, seconds)
+			_draw_parol(canvas, regions, visual, state, tuning, seconds, static_parts)
 		"slipper":
-			_draw_launcher(canvas, regions, visual, state, tuning, seconds)
+			_draw_launcher(canvas, regions, visual, state, tuning, seconds, static_parts)
 		"broom":
-			_draw_broom(canvas, regions, visual, state, seconds)
+			_draw_broom(canvas, regions, visual, state, seconds, static_parts)
 		"flower":
-			_draw_flower(canvas, regions, visual, state, tuning, seconds)
+			_draw_flower(canvas, regions, visual, state, tuning, seconds, static_parts)
 	if tag != "":
 		_draw_tag(canvas, tag, envelope(variant, turns, tuning))
 
@@ -63,6 +69,16 @@ static func _rects(regions: Array[Dictionary], kind: ItemRegionSpec.Kind) -> Arr
 		if region.kind == kind:
 			result.append(region.rect)
 	return result
+
+
+## `_rects`, or none when a scene Visual node already draws these fixed parts.
+static func _static_rects(
+	regions: Array[Dictionary], kind: ItemRegionSpec.Kind, static_parts: bool
+) -> Array[Rect2]:
+	if not static_parts:
+		var none: Array[Rect2] = []
+		return none
+	return _rects(regions, kind)
 
 
 static func _texture(visual: ItemVisualSet, slot: String, seconds: float) -> Texture2D:
@@ -142,10 +158,11 @@ static func _draw_rail(
 	visual: ItemVisualSet,
 	state: Dictionary,
 	tuning: GameplayTuning,
-	seconds: float
+	seconds: float,
+	static_parts: bool = true
 ) -> void:
 	var hit := tuning.item_trumpo_hit_wu
-	for sweep in _rects(regions, ItemRegionSpec.Kind.SWEEP):
+	for sweep in _static_rects(regions, ItemRegionSpec.Kind.SWEEP, static_parts):
 		var horizontal := sweep.size.x >= sweep.size.y
 		var rail_tex: Texture2D = _texture(visual, "rail", seconds)
 		if rail_tex != null:
@@ -223,7 +240,8 @@ static func _draw_parol(
 	visual: ItemVisualSet,
 	state: Dictionary,
 	tuning: GameplayTuning,
-	seconds: float
+	seconds: float,
+	static_parts: bool = true
 ) -> void:
 	var phase := str(state.get("phase", "inactive"))
 	var charge_t := float(state.get("charge_t", 0.0))
@@ -254,7 +272,7 @@ static func _draw_parol(
 			else:
 				canvas.draw_rect(rect, Color(BEAM, 0.85))
 				canvas.draw_rect(rect, INK, false, 2.0)
-	for post in _rects(regions, ItemRegionSpec.Kind.SOLID):
+	for post in _static_rects(regions, ItemRegionSpec.Kind.SOLID, static_parts):
 		var post_tex: Texture2D = _texture(visual, "post", seconds)
 		if post_tex != null:
 			canvas.draw_texture_rect(post_tex, post, false)
@@ -285,7 +303,8 @@ static func _draw_launcher(
 	visual: ItemVisualSet,
 	state: Dictionary,
 	tuning: GameplayTuning,
-	seconds: float
+	seconds: float,
+	static_parts: bool = true
 ) -> void:
 	var direction: Vector2 = state.get("lane_dir", Vector2.RIGHT)
 	var charge_t := float(state.get("charge_t", 0.0))
@@ -301,7 +320,7 @@ static func _draw_launcher(
 			var stop := origin + direction * clipped
 			var side := Vector2(-direction.y, direction.x) * 9.0
 			canvas.draw_line(stop - side, stop + side, Color("#ef6a5b"), 3.0)
-	for body in _rects(regions, ItemRegionSpec.Kind.SOLID):
+	for body in _static_rects(regions, ItemRegionSpec.Kind.SOLID, static_parts):
 		var tex_slot := "launcher_charge" if charge_t > 0.0 else "launcher"
 		var tex: Texture2D = _texture(visual, tex_slot, seconds)
 		if tex != null:
@@ -340,13 +359,15 @@ static func _draw_broom(
 	regions: Array[Dictionary],
 	visual: ItemVisualSet,
 	state: Dictionary,
-	seconds: float
+	seconds: float,
+	static_parts: bool = true
 ) -> void:
 	for area in _rects(regions, ItemRegionSpec.Kind.EFFECT):
-		_dotted(canvas, area.position, Vector2(area.end.x, area.position.y), AMBER, 3.0, 8.0)
-		_dotted(canvas, Vector2(area.end.x, area.position.y), area.end, AMBER, 3.0, 8.0)
-		_dotted(canvas, area.end, Vector2(area.position.x, area.end.y), AMBER, 3.0, 8.0)
-		_dotted(canvas, Vector2(area.position.x, area.end.y), area.position, AMBER, 3.0, 8.0)
+		if static_parts:
+			_dotted(canvas, area.position, Vector2(area.end.x, area.position.y), AMBER, 3.0, 8.0)
+			_dotted(canvas, Vector2(area.end.x, area.position.y), area.end, AMBER, 3.0, 8.0)
+			_dotted(canvas, area.end, Vector2(area.position.x, area.end.y), AMBER, 3.0, 8.0)
+			_dotted(canvas, Vector2(area.position.x, area.end.y), area.position, AMBER, 3.0, 8.0)
 		var tex: Texture2D = _texture(visual, "broom_outline", seconds)
 		var sweep := 0.5 + 0.5 * sin(float(state.get("elapsed", 0.0)) * 3.0)
 		var broom_center := area.position + Vector2(area.size.x * sweep, area.size.y * 0.5)
@@ -360,6 +381,8 @@ static func _draw_broom(
 			)
 			canvas.draw_rect(Rect2(broom_center + Vector2(-2, 4), Vector2(18, 12)), AMBER)
 			canvas.draw_rect(Rect2(broom_center + Vector2(-2, 4), Vector2(18, 12)), INK, false, 2.0)
+		if not static_parts:
+			continue
 		canvas.draw_line(area.position, area.end, Color(INK, 0.5), 1.0)
 		canvas.draw_line(
 			Vector2(area.end.x, area.position.y),
@@ -378,9 +401,10 @@ static func _draw_flower(
 	visual: ItemVisualSet,
 	state: Dictionary,
 	tuning: GameplayTuning,
-	seconds: float
+	seconds: float,
+	static_parts: bool = true
 ) -> void:
-	for path in _rects(regions, ItemRegionSpec.Kind.EFFECT):
+	for path in _static_rects(regions, ItemRegionSpec.Kind.EFFECT, static_parts):
 		var x := path.get_center().x
 		_dotted(
 			canvas,
@@ -399,7 +423,7 @@ static func _draw_flower(
 				Vector2(x, cursor), Vector2(x + 5, cursor + 6), Color(BUBBLE, 0.9), 2.0
 			)
 			cursor -= 32.0
-	for pot in _rects(regions, ItemRegionSpec.Kind.SOLID):
+	for pot in _static_rects(regions, ItemRegionSpec.Kind.SOLID, static_parts):
 		var tex: Texture2D = _texture(visual, "pot", seconds)
 		if tex != null:
 			canvas.draw_texture_rect(tex, pot, false)

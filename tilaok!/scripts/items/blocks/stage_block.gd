@@ -73,6 +73,8 @@ func configure(
 	if _visual != null:
 		_visual.position = footprint_size * 0.5
 		_visual.rotation = float(_turns) * PI * 0.5
+		# Authored Visual art replaces the painter's fixed parts; the painter keeps what moves.
+		painter_static_parts = _visual.get_child_count() == 0
 		_visual_sprite = _authored_visual_sprite()
 	if _visual_sprite != null:
 		if not _visual_sprite.animation_finished.is_connected(_on_visual_animation_finished):

@@ -1,34 +1,34 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://chq5lhkoh4umo"]
 
-[ext_resource type="Script" path="res://scripts/environment/grass_patch.gd" id="1_grass"]
+[ext_resource type="Script" uid="uid://cr5qevnarkrd" path="res://scripts/environment/grass_patch.gd" id="1_grass"]
 [ext_resource type="Texture2D" uid="uid://dun2fur8hkorg" path="res://assets/tiles/Grass.png" id="2_grass"]
-[ext_resource type="Shader" path="res://assets/shaders/grass_sway.gdshader" id="3_grass"]
+[ext_resource type="Shader" uid="uid://cj5hxl6o5h8qo" path="res://assets/shaders/grass_sway.gdshader" id="3_grass"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_grass"]
 shader = ExtResource("3_grass")
 shader_parameter/bend = 0.0
-shader_parameter/sway = 0.0
+shader_parameter/sway = 20.678439011779954
 shader_parameter/lean_pixels = 26.0
 shader_parameter/breeze_pixels = 3.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_grass"]
 size = Vector2(200, 96)
 
-[node name="Grass" type="Node2D"]
+[node name="Grass" type="Node2D" unique_id=114801674]
 script = ExtResource("1_grass")
 
-[node name="Visual" type="Sprite2D" parent="."]
+[node name="Visual" type="Sprite2D" parent="." unique_id=706582411]
 texture_filter = 1
 material = SubResource("ShaderMaterial_grass")
 texture = ExtResource("2_grass")
 centered = false
 offset = Vector2(-128, -256)
 
-[node name="Detector" type="Area2D" parent="."]
+[node name="Detector" type="Area2D" parent="." unique_id=868190896]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="Shape" type="CollisionShape2D" parent="Detector"]
+[node name="Shape" type="CollisionShape2D" parent="Detector" unique_id=323400691]
 position = Vector2(0, -48)
 shape = SubResource("RectangleShape2D_grass")

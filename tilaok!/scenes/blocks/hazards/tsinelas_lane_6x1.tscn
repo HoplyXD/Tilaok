@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_4w7sv"]
 [ext_resource type="Resource" path="res://data/items/visual/hazard.slipper_launcher.tres" id="3_b4eet"]
 [ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_34s3d"]
+[ext_resource type="Texture2D" uid="uid://fk755jrep8yy" path="res://assets/items/hazard.slipper_launcher/PLACEHOLDER_launcher.svg" id="5_4w7sv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_myjg3"]
 size = Vector2(64, 64)
@@ -16,6 +17,21 @@ point_count = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8wspx"]
 size = Vector2(28, 28)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_b4eet"]
+cull_mode = 1
+polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+
+[sub_resource type="Gradient" id="Gradient_34s3d"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_myjg3"]
+gradient = SubResource("Gradient_34s3d")
+width = 66
+height = 66
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(2, 2)
 
 [node name="TsinelasLane6x1" type="AnimatableBody2D" unique_id=517838402]
 sync_to_physics = false
@@ -67,3 +83,16 @@ color = Color(0.25, 0.2, 0.18, 1)
 polygon = PackedVector2Array(14, 0, 12.934313, 5.357568, 9.899495, 9.899495, 5.357568, 12.934313, 8.5722445e-16, 14, -5.357568, 12.934313, -9.899495, 9.899495, -12.934313, 5.357568, -14, 1.7144489e-15, -12.934313, -5.357568, -9.899495, -9.899495, -5.357568, -12.934313, -2.5716733e-15, -14, 5.357568, -12.934313, 9.899495, -9.899495, 12.934313, -5.357568)
 
 [node name="Visual" type="Node2D" parent="." unique_id=1270628794]
+show_behind_parent = true
+
+[node name="Launcher" type="Sprite2D" parent="Visual" unique_id=373549586]
+scale = Vector2(2, 2)
+texture = ExtResource("5_4w7sv")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1082268215]
+occluder = SubResource("OccluderPolygon2D_b4eet")
+
+[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=135783465]
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_myjg3")

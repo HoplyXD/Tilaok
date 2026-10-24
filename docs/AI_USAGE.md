@@ -904,3 +904,38 @@ Codex updated `OfflineLiveBuildMatchRoom` and the current-flow notes in `AGENTS.
 At the user's explicit request to implement the approved P23 plan, OpenAI Codex updated the scheduled match room so standalone Kangaroo uses the Karera race lifecycle and ledger; revised sequential slipper selection/cadence, Hug contacts, Rising hitbox evaluation and direct command eliminations; added a timed ChickenController control freeze and temporary blue sprite tint; guarded live-build controls/placement while frozen; enabled eligible Barya for Kangaroo races; removed the overhead KANG/GA/ROO life-marker presentation and Storm-specific presenter branch; and updated focused P02 actor-freeze, P11/P12/Barya/tutorial regressions and current-facing GDD, PRD, defaults, tutorial, Library, PLAYTEST and phase/evidence records. The source and tests are AI-generated programming and documentation outputs, not described as manually team-written. No separate human code review was performed in this task.
 
 Verification on the installed Godot 4.6.3 wrapper: headless editor import/parse passed; P02 95/0, P11 19/0, P12 scheduled match 57/0, P06 102/0, P08 86/0, Barya 72/0, P13 tutorial 58/0, P13 Library 425/0, and offline live-build 123/0 passed. The historical P12 mixed-mode stack runner still expects a retired Karera + Bomb-Taya route and fails three setup assertions and then emits cascading missing-seat index errors because it continues after stale fixture setup; it was not changed into current acceptance. `gdformat --check`, named-file `gdlint`, and `git diff --check` are recorded in the P23 evidence note. No rendered/visible playtest, human review, physical-device session, performance measurement, commit or push was performed. P11's prior AI disclosure and evidence remain intact as historical work; no final art/audio was generated.
+
+### Hazard Visual nodes, lights and occluders; falling-pose timing — October 24, 2026
+
+At the user's request ("some hazards dont have visuals nodes add them also add the hazards all their occlussion shapes and light too"), Claude Code (Claude Opus 5.5) found that the 14 hazard scenes had empty `Visual` nodes, because `ItemSilhouettePainter` drew all of their art in code. Claude asked whether to keep the code art or replace it with nodes, and the user chose nodes. Claude then found that the moving or state-driven parts cannot be static nodes:
+- the trumpo top
+- the parol beam, including its live segments that blocks clip
+- the slipper lane and projectiles
+- the sweeping broom
+- the bubble
+
+Removing those parts would have made live hazards invisible, so Claude kept them code-drawn. Only the fixed parts became nodes, which `docs/GDD.md` describes.
+
+What changed:
+- **Painter and blocks:** `ItemSilhouettePainter.draw_variant` gained `static_parts`. `HazardPiece.painter_static_parts` passes it through, and `StageBlock` sets it to false when its `Visual` has children. Egg and library previews still get the full drawing.
+- **Scenes:** a one-off Godot script (kept in the session scratchpad, not the repo) authored the nodes and saved the scenes. Saving at runtime dropped every `uid=` attribute, so Claude restored them from the committed files and the textures' `.import` files. The final scene diffs are additions only.
+- **Lights and occluders:** these copy the construction-block settings. Walis has no occluder, because nothing there is opaque.
+- **Lost with this change (the user accepted it):**
+  - the tire's compressed frame
+  - the launcher's charge frame and recoil
+  - the parol post glow
+
+**Falling pose:** the user first asked for a 1 s airborne delay. Mid-task they refined it: after a jump, `jump*_falling` plays as soon as the jump pose has played out, and only a drop with no jump waits 1 s. Claude decided two edge cases itself:
+- During that first second of a drop with no jump, the chicken keeps its run or idle pose rather than the jump pose.
+- A coyote jump or launch counts as a jump, and a glide ends the jump pose.
+
+`run_blocks_tests` gained checks that every hazard has Visual art drawn behind the painter, one light, and an occluder where it has a body. It also gained checks that falling follows the jump at once, and that a drop with no jump holds idle for the delay and then falls. Two of these checks shorten the timings inside the test so that floor-height hops can reach them.
+
+**Verification (Godot 4.7.2, Steam, one suite at a time):**
+- Green: `run_blocks_tests` 138, `run_p10_tests` 442, `run_p13_library_tests` 425, `run_offline_live_build_tests` 123, `run_p02_tests` 95, `run_p12_tests` 57.
+- `run_item_mode_integration_tests` has 6 Kangaroo hazard-kill failures, and `run_p03_tests` has 1 failure ("another player's eligible construction supports this actor"). Both fail identically on a clean `git archive HEAD` copy, so this work did not cause them.
+- `run_p03_tests` also logs the missing `_update_identity_badges`, which is still unresolved from origin/main.
+- An earlier p10 segfault and WebP decode errors happened when suites and a windowed capture ran in parallel on this 4 GB PC. They did not recur when the suites ran one at a time.
+- A rendered scratch capture of the hazards in the item lab looked correct.
+
+No human code review, visual review or feel review is claimed.

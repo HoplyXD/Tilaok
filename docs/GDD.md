@@ -269,7 +269,7 @@ Priority order, highest first: `dead` → `stun` → sneak → wall slide → ai
 | --- | --- |
 | No other state applies | `idle` |
 | Jump, while rising | `jump`, `jump_left`, `jump_right` |
-| Falling (including walking off a ledge), sided by horizontal motion | `jump*_falling` |
+| Falling, sided by horizontal motion: straight after the jump pose has played out (or a glide ends); after walking off a ledge with no jump, only once airborne for 1 s, holding run/idle until then | `jump*_falling` |
 | Holding jump while falling, sided by horizontal motion | `jump*_gliding` |
 | Touching the ground, sided by the motion just before | `jump*_landing` |
 | On the ground with a direction held | `run_left`, `run_right` |
@@ -294,6 +294,32 @@ The art is drawn facing left while the projectile path runs right, so the sprite
 
 - **Solid shrank with the new art (user authoring, 2026-10-24).** The Cannon's `Solid` shape went from the full 64x64 cell to 64x46 offset 9 wu down, so its derived SOLID region is now the bottom 72% of the cell (`(0, 0.28) size (1.0, 0.72)`): the top ~18 wu is passable and a chicken standing on it rests that much lower. The placement footprint is still 1x1, since that comes from `placement_size`, not the shape. Confirm this is the intended silhouette during visual review.
 - **Open — the blast frame trails the ball by one animation frame.** Measured: the ball spawns while the barrel is on frame 3, the last wind-up frame, and the blast (frame 4) appears 0.2 s later, because 4 frames at 5 fps exactly fills the 0.8 s telegraph and the animation starts a render frame after the state change. Raising `shoot`'s speed to 6 fps would put the shot inside frame 4 instead; left as authored pending the owner's call.
+
+### Hazard Visual nodes, lights and occluders — 2026-10-24 (user request)
+
+**Status — October 24, 2026:** requested by the user and implemented by Claude Code; `run_blocks_tests` checks every hazard scene's Visual, light and occluder. Human visual review is pending.
+
+The six hazard families (Gulong, Parol, Trumpo, Tsinelas, Walis, Bula) used to be drawn entirely by `ItemSilhouettePainter`, so their scenes' `Visual` nodes were empty. The user chose to move their art into nodes. The fixed parts are now authored under `Visual`, using the same placeholder SVGs from each family's `ItemVisualSet` (or the painter's dotted lines, rebuilt as `Polygon2D` dashes):
+
+| Hazard | Visual nodes |
+| --- | --- |
+| Gulong | tire body |
+| Parol | both posts |
+| Trumpo | rail |
+| Tsinelas | launcher |
+| Walis | dotted cleanup border and diagonals |
+| Bula | pot, dotted path and chevrons |
+
+Each `Visual` also gets a `PointLight2D` and, where there is an opaque body, a `LightOccluder2D`, following the construction-block pattern: cull mode clockwise, a radial gradient sized to the body, `range_item_cull_mask = 2`, shadows on. Walis has no occluder, because it is a cleanup zone with nothing opaque to cast a shadow.
+
+**What stays code-drawn:** the parts that move or follow behaviour state. These are the trumpo top, the parol beam (inactive, charging and live segments clipped by blocks), the slipper lane and projectiles, the sweeping broom and the bubble. Static nodes cannot show them, and dropping them would make the live hazard invisible. A placed `StageBlock` whose `Visual` has children sets `painter_static_parts = false`, so the painter skips its fixed parts. `Visual` is drawn behind the parent (`show_behind_parent`) so the moving parts stay on top. Egg and library previews still use the full painter drawing.
+
+**Lost with this change (the user accepted it):** a few fixed parts used to react to state, and as nodes they no longer do:
+- the tire's compressed frame
+- the launcher's charge frame and recoil
+- the parol posts' charge glow
+
+The parol beam's charge telegraph and the slipper lane's widening telegraph are unaffected, because they stay code-drawn.
 
 ### Map terrains and water — 2026-10-22 (user request)
 

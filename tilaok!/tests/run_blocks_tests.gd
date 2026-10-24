@@ -39,6 +39,7 @@ func _run() -> void:
 	await _frames(3)
 	_test_grid_and_tiles()
 	_test_block_scene_authoring()
+	_test_hazard_visuals()
 	seat = room.join_keyboard("K1")
 	actor = room.actors[seat] as ChickenController
 	room.start_play()
@@ -475,6 +476,18 @@ func _anim_after(frames: int) -> StringName:
 	return _worn_sprite().animation
 
 
+## Every animation shown from now until `pose` starts (or `max_frames` pass), as a set.
+func _poses_until(pose: StringName, max_frames: int = 75) -> Dictionary:
+	var seen := {}
+	for _frame in range(max_frames):
+		await _frames(1)
+		await process_frame
+		seen[_worn_sprite().animation] = true
+		if _worn_sprite().animation == pose:
+			break
+	return seen
+
+
 ## Waits up to `max_frames` for the animation to become `pose` and returns what it actually is,
 ## so a failure reports the pose that was stuck. The one-shot transitions run 0.6-1.0 s (4 frames
 ## at 5 fps), far longer than a fixed wait should hard-code.
@@ -602,14 +615,21 @@ func _test_chicken_animations() -> void:
 	_check(await _anim_after(3) == &"sneak_stand", "releasing down plays sneak_stand")
 	_check(await _await_anim(&"idle") == &"idle", "idle resumes once sneak_stand has played")
 
-	# Jump: rise, fall, land. The landing pose always follows touching the ground.
+	# Jump: rise, fall, land. After a jump the falling pose follows the moment the jump pose has
+	# played out, with no 1 s wait; the jump poses are sped up to 0.25 s so a floor hop outlasts them.
+	var worn_frames := _worn_sprite().sprite_frames
+	var jump_speeds := {}
+	for pose in [&"jump", &"jump_right"]:
+		jump_speeds[pose] = worn_frames.get_animation_speed(pose)
+		worn_frames.set_animation_speed(pose, 20.0)
 	_key(KEY_W, true)
 	_check(await _anim_after(3) == &"jump", "jumping plays jump")
 	_key(KEY_W, false)
-	_check(await _await_anim(&"jump_falling") == &"jump_falling", "falling plays jump_falling after")
+	var hop := await _poses_until(&"jump_landing")
 	_check(
-		await _await_anim(&"jump_landing") == &"jump_landing", "hitting the ground plays jump_landing"
+		hop.has(&"jump_falling"), "jump_falling follows the jump pose at once, with no 1 s wait"
 	)
+	_check(hop.has(&"jump_landing"), "hitting the ground plays jump_landing")
 	_check(
 		await _await_anim(&"idle") == &"idle", "idle resumes once jump_landing has played"
 	)
@@ -621,18 +641,39 @@ func _test_chicken_animations() -> void:
 	_check(await _anim_after(3) == &"jump_right", "jumping with right held plays jump_right")
 	_key(KEY_W, false)
 	_key(KEY_D, false)
+	var right_hop := await _poses_until(&"jump_right_landing")
+	for pose in jump_speeds:
+		worn_frames.set_animation_speed(pose, jump_speeds[pose])
 	_check(
-		await _await_anim(&"jump_right_falling") == &"jump_right_falling",
+		right_hop.has(&"jump_right_falling"),
 		"falling while moving right, key released, plays jump_right_falling"
 	)
 	_check(
-		await _await_anim(&"jump_right_landing") == &"jump_right_landing",
+		right_hop.has(&"jump_right_landing"),
 		"landing while moving right, key released, plays jump_right_landing"
 	)
 	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the directional landing")
 
-	# Glide: holding jump while falling, with and without a direction.
+	# Dropping off a ledge without a jump keeps the ground pose for falling_delay_s, then falls.
+	# A 0.72 s drop is too short for the real 1 s, so the delay is cut to 0.3 s for this check.
+	var worn := _worn_sprite()
+	worn.falling_delay_s = 0.3
 	_put_actor_feet(Vector2(736.0, 300.0))
+	var drop_start := await _poses_until(&"jump_falling", 12)
+	_check(
+		not drop_start.has(&"jump_falling") and not drop_start.has(&"jump"),
+		"dropping without a jump keeps idle for the delay instead of jump or jump_falling"
+	)
+	_check(
+		await _await_anim(&"jump_falling", 40) == &"jump_falling",
+		"once the delay has passed without a jump, jump_falling plays"
+	)
+	worn.falling_delay_s = 1.0
+	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the drop lands")
+
+	# Glide: holding jump while falling, with and without a direction. The left glide starts far
+	# right, since it drifts ~900 wu before it lands.
+	_put_actor_feet(Vector2(1700.0, 300.0))
 	_key(KEY_A, true)
 	await _frames(12)
 	_key(KEY_W, true)
@@ -642,7 +683,13 @@ func _test_chicken_animations() -> void:
 		await _anim_after(3) == &"jump_left_gliding",
 		"letting go of left while still drifting left keeps jump_left_gliding"
 	)
+	# Let go of a long glide: a glide ends the jump pose, so falling takes over at once, still left.
+	await _frames(50)
 	_key(KEY_W, false)
+	_check(
+		await _anim_after(3) == &"jump_left_falling",
+		"letting go of the glide, still drifting left, plays jump_left_falling"
+	)
 	_check(
 		await _await_anim(&"jump_left_landing", 150) == &"jump_left_landing",
 		"the drifting chicken lands with jump_left_landing"
@@ -654,7 +701,11 @@ func _test_chicken_animations() -> void:
 	_check(
 		await _anim_after(4) == &"jump_gliding", "gliding straight down plays jump_gliding"
 	)
+	await _frames(60)
 	_key(KEY_W, false)
+	_check(
+		await _anim_after(3) == &"jump_falling", "letting go of a straight glide plays jump_falling"
+	)
 	_check(
 		await _await_anim(&"idle", 120) == &"idle", "idle resumes after the straight glide lands"
 	)
@@ -723,6 +774,47 @@ func _test_grid_and_tiles() -> void:
 		tiles.map_to_local(Vector2i(6, 13)) == Vector2(6.5, 13.5) * 64.0,
 		"tile cells line up with ArenaDefinition world coordinates"
 	)
+
+
+## Every hazard scene authors its fixed art under Visual (drawn behind the painter's moving parts)
+## with a PointLight2D, and every hazard with an opaque body also casts shadows with an occluder.
+func _test_hazard_visuals() -> void:
+	var dir := "res://scenes/blocks/hazards/"
+	var art_ok := true
+	var light_ok := true
+	var occluder_ok := true
+	var count := 0
+	for file in DirAccess.get_files_at(dir):
+		if not file.ends_with(".tscn"):
+			continue
+		count += 1
+		var block := (load(dir + file) as PackedScene).instantiate()
+		var visual := block.get_node_or_null("Visual") as Node2D
+		var art := 0
+		var lights := 0
+		var occluders := 0
+		if visual != null:
+			for child in visual.get_children():
+				if child is PointLight2D:
+					lights += 1
+				elif child is LightOccluder2D:
+					occluders += 1
+					occluder_ok = (
+						occluder_ok
+						and (child as LightOccluder2D).occluder != null
+						and (child as LightOccluder2D).occluder.polygon.size() >= 3
+					)
+				else:
+					art += 1
+		art_ok = art_ok and visual != null and visual.show_behind_parent and art > 0
+		light_ok = light_ok and lights == 1
+		# Walis is a cleanup zone with nothing opaque to cast a shadow.
+		occluder_ok = occluder_ok and (occluders > 0 or file.begins_with("walis_area"))
+		block.free()
+	_check(count == 14, "all 14 hazard scenes are checked (%d)" % count)
+	_check(art_ok, "every hazard draws its fixed art from Visual nodes, behind the painter")
+	_check(light_ok, "every hazard carries one PointLight2D")
+	_check(occluder_ok, "every hazard with a body carries a LightOccluder2D")
 
 
 func _test_block_scene_authoring() -> void:

@@ -11,6 +11,9 @@ var tuning_ref: GameplayTuning
 var visual_time := 0.0
 ## Owner tags can be enabled inside the Item Visualizer harness; hidden in normal play.
 var show_owner_tag := false
+## False when a scene Visual node already draws the fixed art, so the painter adds only the parts
+## that move or change with state (see ItemSilhouettePainter.draw_variant).
+var painter_static_parts := true
 ## Only a running piece redraws every frame; Place-mode pieces redraw on change.
 var animating := false
 var _players: Dictionary = {}
@@ -82,5 +85,5 @@ func _draw() -> void:
 	if show_owner_tag:
 		tag = "%s • P%d • PLACEHOLDER" % [family.working_name, placed.owner_seat + 1]
 	ItemSilhouettePainter.draw_variant(
-		self, family, variant, placed.quarter_turns, tuning_ref, state, tag
+		self, family, variant, placed.quarter_turns, tuning_ref, state, tag, painter_static_parts
 	)

@@ -36,6 +36,10 @@ const CHICKEN_SCENE := "res://scenes/characters/chicken.tscn"
 ## Below this horizontal speed (wu/s) a falling, gliding or landing chicken counts as moving
 ## straight down and plays the sideless pose.
 @export var drift_deadzone_wu_s := 40.0
+## Seconds a chicken that walked or slid off a ledge (no jump) keeps its run/idle pose before
+## `jump*_falling` takes over, so small drops do not flick to the falling pose. After a real jump
+## the falling pose instead follows as soon as the jump animation has played out.
+@export var falling_delay_s := 1.0
 ## Stunned chickens brighten and dim smoothly at this rate (Hz). Never a hard on/off flash, and
 ## never above the 3 flashes per second photosensitivity limit; Screen shake Off holds it steady.
 @export var stun_pulse_hz := 2.0
@@ -54,6 +58,13 @@ var _was_sneaking := false
 var _was_stunned := false
 ## Where the chicken was moving on its last airborne frame, for the landing pose.
 var _air_side := ""
+## Seconds since the chicken last left the ground; 0 while grounded.
+var _air_time := 0.0
+## True when this airborne spell began with (or turned into) a rise: a jump, a coyote jump or a
+## launch. False for walking off a ledge.
+var _jumped := false
+## Set once the jump pose has played out, so `jump*_falling` follows it at once.
+var _jump_done := false
 ## Set from touching down until `_landing_pose` has played out; its name is latched at touchdown
 ## so turning mid-landing cannot restart the animation.
 var _landing := false
@@ -75,11 +86,11 @@ func _ready() -> void:
 	play(&"idle")
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if chicken == null:
 		return
 	visible = _wears_this_skin()
-	_track_transitions()
+	_track_transitions(delta)
 	var next := &"idle" if force_idle_preview else pose_for_state()
 	# A pose the sheet has no frames for yet holds the current one instead of erroring out.
 	if sprite_frames == null or not sprite_frames.has_animation(next):
@@ -120,16 +131,27 @@ func _wears_this_skin() -> bool:
 
 
 ## Watches the ground, sneak and stun edges that the one-shot transition poses hang off.
-func _track_transitions() -> void:
+func _track_transitions(delta: float) -> void:
 	var grounded := chicken.is_on_floor()
 	if grounded != _was_on_floor:
-		_replay = true
 		if grounded:
+			_replay = true
 			# "always play after hitting the ground", facing the way it was moving when it did.
 			_landing_pose = StringName("jump" + _air_side + "_landing")
 			_landing = _ends_on_its_own(_landing_pose)
 		else:
 			_landing = false
+			_jumped = false
+	_air_time = 0.0 if grounded else _air_time + delta
+	if not grounded and not _jumped and chicken.velocity.y < 0.0:
+		# Rising from the ground or a coyote jump: the jump pose starts over.
+		_jumped = true
+		_jump_done = not _ends_on_its_own(StringName("jump" + _side()))
+		_replay = true
+	if not grounded and chicken.gliding:
+		# A glide ends the jump pose; letting go of it falls straight away.
+		_jumped = true
+		_jump_done = true
 	if not grounded:
 		_air_side = _motion_side()
 	_was_on_floor = grounded
@@ -153,6 +175,8 @@ func _track_transitions() -> void:
 func _on_animation_finished() -> void:
 	if animation == _landing_pose:
 		_landing = false
+	elif animation in [&"jump", &"jump_left", &"jump_right"]:
+		_jump_done = true
 	elif animation == &"sneak":
 		_sneak_held = true
 	elif animation == &"sneak_stand":
@@ -251,20 +275,29 @@ func pose_for_state() -> StringName:
 		# The wall the chicken is held against, which is the side it is pressing toward.
 		return &"wall_slide_right" if chicken.wall_side > 0 else &"wall_slide_left"
 	if not chicken.is_on_floor():
-		# Airborne, in the order one jump passes through them. Rising reads as the jump itself and
-		# follows the key; falling and gliding follow where the chicken is moving. `_falling`
-		# covers walking off a ledge too, where there was no jump to follow.
+		# Airborne. Rising reads as the jump itself and follows the key; falling and gliding follow
+		# where the chicken is moving. After a jump, `_falling` follows the moment the jump pose has
+		# played out. Walking off a ledge keeps the run/idle pose for `falling_delay_s` first.
 		if chicken.gliding:
 			return StringName("jump" + _motion_side() + "_gliding")
-		if chicken.velocity.y > 0.0:
+		if _jumped:
+			if _jump_done:
+				return StringName("jump" + _motion_side() + "_falling")
+			return StringName("jump" + _side())
+		if _air_time >= falling_delay_s:
 			return StringName("jump" + _motion_side() + "_falling")
-		return StringName("jump" + _side())
+		return _locomotion_pose()
 	# Grounded. The landing and stand-up one-shots play out before idle or run resume; both are
 	# cut short by a new jump, since the airborne branch above is reached first.
 	if _landing:
 		return _landing_pose
 	if _standing_up:
 		return &"sneak_stand"
+	return _locomotion_pose()
+
+
+## `idle`, or `run_left` / `run_right` from the accepted movement key.
+func _locomotion_pose() -> StringName:
 	var side := _side()
 	if side.is_empty():
 		return &"idle"
