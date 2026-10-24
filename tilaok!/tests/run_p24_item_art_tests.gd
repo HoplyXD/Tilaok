@@ -73,6 +73,7 @@ func _run() -> void:
 				slot != null and slot.placeholder and slot.sound != null,
 				"%s/%s placeholder audio remains unchanged" % [family_id, slot_id]
 			)
+	_check_launcher_prototype(definitions)
 	for family in definitions.families:
 		for variant in family.variants:
 			for turns in variant.rotations:
@@ -90,6 +91,23 @@ func _run() -> void:
 	)
 	print("P24_ITEM_ART checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
+
+
+func _check_launcher_prototype(definitions: ItemDefinitions) -> void:
+	var family := definitions.find_family("hazard.slipper_launcher")
+	_check(family != null and family.visual_set != null, "launcher visual set loads")
+	if family == null or family.visual_set == null:
+		return
+	for slot_id in ["launcher", "launcher_charge"]:
+		var slot := family.visual_set.get_slot(slot_id)
+		_check(slot != null and not slot.placeholder, "launcher/%s is art" % slot_id)
+		if slot == null or slot.frames.is_empty() or slot.frames[0] == null:
+			_check(false, "launcher/%s texture resolves" % slot_id)
+			continue
+		_check(
+			Vector2i(slot.frames[0].get_size()) == Vector2i(64, 64),
+			"launcher/%s matches the 64×64 footprint" % slot_id
+		)
 
 
 func _check(condition: bool, label: String) -> void:

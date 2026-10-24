@@ -71,6 +71,15 @@ The scheduled P23 route now uses the following AI-generated, edited derivatives.
 
 The references remain unchanged originals: `tilaok!/assets/tiles/cannon sprites/Cannon_0000.png` is the main outlined-prop reference; `tilaok!/assets/character/title_screen_default_chicken.png` guides friendly proportions and palette. The painterly Pugad nest was not used. See [P23 AI usage](AI_USAGE.md#kangaroo-presentation-illustration--october-24-2026) and [P23 presentation evidence](evidence/p23_presentation/README.md).
 
+### Tsinelas Launcher flat vector prototype — October 25, 2026
+
+| Asset | Use | Source and changes | Provenance / review |
+|---|---|---|---|
+| `hazard.slipper_launcher` — `tilaok!/assets/items/hazard.slipper_launcher/launcher.svg` | Launcher idle sprite, 64×64 transparent SVG | Original flat-color vector authored for this project with Codex assistance, using the current item palette and outline style; replaces only the placeholder launcher slot. | No third-party art copied. Provisional prototype; human art approval, creator confirmation and competition eligibility review remain pending. |
+| `hazard.slipper_launcher` — `tilaok!/assets/items/hazard.slipper_launcher/launcher_charge.svg` | Launcher charge sprite, 64×64 transparent SVG | Matching vector with a few simple charge sparks; same centered pivot and silhouette as idle. | Same provenance and pending review as above. |
+
+These are deliberately simple integration prototypes, not human-approved production art. The projectile and both audio slots remain unchanged. See [Tsinelas Launcher AI usage](AI_USAGE.md#tsinelas-launcher-art-prototype--october-25-2026).
+
 ## Cultural verification ledger
 
 Names, regional-language terms, history statements, and “Alam mo ba?” cards need native-speaker and evidence review before release. A visually Filipino motif alone does not establish a factual cultural claim.

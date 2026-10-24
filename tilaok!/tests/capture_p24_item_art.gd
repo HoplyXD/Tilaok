@@ -47,7 +47,7 @@ func _run() -> void:
 		"hazard.bubble_planter.path_1x5", Vector2i(16, 13), 0, seat, [] as Array[Rect2]
 	)
 	var launcher_result := room.items.place(
-		"hazard.slipper_launcher.lane_4x1", Vector2i(13, 8), 0, seat, [] as Array[Rect2]
+		"hazard.slipper_launcher.lane_4x1", Vector2i(13, 14), 0, seat, [] as Array[Rect2]
 	)
 	if (
 		not bool(trumpo_result.allowed)
@@ -121,6 +121,17 @@ func _run() -> void:
 		var result := root.get_texture().get_image().save_png(output_dir.path_join(str(view.name)))
 		if result != OK:
 			_fail("capture save failed for %s (error %d)" % [view.name, result])
+	var launcher_behavior := launcher.behavior as LauncherBehavior
+	launcher_behavior.preview_at(launcher_behavior.tuning.item_launcher_telegraph_s * 0.6)
+	launcher.queue_redraw()
+	_set_state_label("TSINELAS LAUNCHER: CHARGE")
+	await _frames(3)
+	await RenderingServer.frame_post_draw
+	var launcher_charge_result := root.get_texture().get_image().save_png(
+		output_dir.path_join("p24_tsinelas_launcher_charge.png")
+	)
+	if launcher_charge_result != OK:
+		_fail("launcher charge capture save failed (error %d)" % launcher_charge_result)
 	await _save_manifest(output_dir)
 	print(
 		(
@@ -162,6 +173,7 @@ func _capture_placeholder_baseline(output_dir: String) -> void:
 		"hazard.rail_trumpo": ["rail_end", "rail_mid", "top"],
 		"hazard.parol_pulse":
 		["post_inactive", "post_charge", "post_active", "beam_charge", "beam_active"],
+		"hazard.slipper_launcher": ["launcher", "launcher_charge"],
 	}
 	var saved: Array[Dictionary] = []
 	for piece in room.items.pieces.values():

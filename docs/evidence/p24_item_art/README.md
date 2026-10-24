@@ -25,13 +25,18 @@ The user approved the rendered check. Two windowed Godot 4.6.3/OpenGL 3.3 captur
 
 | Capture | Result | Notes |
 |---|---|---|
-| `p24_in_game_before_placeholders.png` and `p24_in_game_active.png` | PASSED | Matched 1920×1080 scene and captured chicken; the “before” image temporarily clears art textures to show the current painter's code fallback, not a binary from the earlier revision. |
+| `p24_in_game_before_placeholders.png` and `p24_in_game_active.png` | PASSED | Matched 1920×1080 scene and captured chicken; `p24_in_game_active.png` is refreshed with the simplified Tsinelas launcher art. The “before” image temporarily clears art textures to show the current painter's code fallback, not a binary from the earlier revision. |
 | `p24_in_game_bula_capture_closeup.png` | PASSED | Real chicken held in the real bubble during a live Item Visualizer run. |
 | `p24_in_game_inactive.png`, `p24_in_game_charge.png`, `p24_in_game_active.png` | PASSED | Same captured-chicken and moving-Trumpo scene; Parol's three visual states are shown separately. |
 | `p24_pugad_egg_previews.png` | PASSED | Actual Pugad UI with Bula, Trumpo and Parol previews; egg pool was injected for this showcase. |
 | `p24_library_bula_preview.png` | PASSED | Actual Library screen and Bula entry preview using `items_lab`; this does not enable the item for release. |
 | `asset_contact_sheet.png` | PASSED | All eleven repository PNGs composed on light cards with System.Drawing; source artwork is unchanged. |
+| `p24_tsinelas_launcher_charge.png` | PASSED | Windowed 1920×1080 showcase with the launcher behavior set to its charge preview; shows the matching charge sprite in-game. |
 
 Capture console output is in `in_game_capture.log` and `selection_capture.log`; the setup and limits are summarized in their adjacent `*_manifest.md` files. The runner sources are `tilaok!/tests/capture_p24_item_art.gd` and `tilaok!/tests/capture_p24_selection_previews.gd`.
+
+## Tsinelas Launcher art follow-up — 2026-10-25
+
+The user asked for a simpler launcher sprite. Codex replaced the idle and charge placeholder textures with compact flat-color vector prototypes and moved the launcher lower in the showcase layout so it is fully visible. `p24_in_game_active.png` shows the launcher in the running Item Visualizer beside the live Trumpo, active Parol and captured Bula chicken; `p24_tsinelas_launcher_charge.png` shows its charge variant. The windowed Godot 4.6.3 capture exited 0 with `P24_IN_GAME_CAPTURE failures=0 captured_chicken=true`. Headless resource checks now include the two 64×64 launcher slots; P24 passed 198/198 and P10 passed 443/443. No gameplay or audio changes were made. Human art approval and provenance/competition review remain pending.
 
 The matched baseline is a same-scene code-fallback comparison, not a capture from the prior Git revision. The inspection is scripted, not a human play session. Creator confirmation, license/competition eligibility, cultural/art approval, physical-device review and performance remain unreviewed. P24-T08 stays unchecked for those remaining acceptance items. No gameplay timing, collision geometry, footprints, ownership, audio or effect lifecycles were intentionally changed. No commit or push was made.
