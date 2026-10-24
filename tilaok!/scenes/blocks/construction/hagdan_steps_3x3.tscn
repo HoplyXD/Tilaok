@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://da2gsox8pei6i"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
 
 [sub_resource type="RectangleShape2D" id="Step0"]
 size = Vector2(64, 64)
@@ -12,11 +12,25 @@ size = Vector2(64, 128)
 [sub_resource type="RectangleShape2D" id="Step2"]
 size = Vector2(64, 192)
 
-[node name="HagdanSteps3x3" type="AnimatableBody2D"]
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_tpykh"]
+cull_mode = 1
+polygon = PackedVector2Array(31, -97, 97, -97, 97, 97, -97, 97, -97, 31, -33, 31, -33, -33, 31, -33)
+
+[sub_resource type="Gradient" id="Gradient_ey56e"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vdbkf"]
+gradient = SubResource("Gradient_ey56e")
+width = 260
+height = 260
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[node name="HagdanSteps3x3" type="AnimatableBody2D" unique_id=19497111]
 sync_to_physics = false
 script = ExtResource("1_blk")
 
-[node name="BlockData" type="Node2D" parent="."]
+[node name="BlockData" type="Node2D" parent="." unique_id=1300384059]
 script = ExtResource("2_dat")
 block_name = "Hagdan ng Bahay"
 family_id = "build.house_stairs"
@@ -31,38 +45,49 @@ rotations = PackedInt32Array(0, 1, 2, 3)
 gated_rotations = PackedInt32Array()
 pool_weight = 20.0
 
-[node name="Step0" type="CollisionShape2D" parent="."]
+[node name="Step0" type="CollisionShape2D" parent="." unique_id=1166455891]
 position = Vector2(-64, 64)
 shape = SubResource("Step0")
 
-[node name="Step1" type="CollisionShape2D" parent="."]
+[node name="Step1" type="CollisionShape2D" parent="." unique_id=764331288]
 position = Vector2(0, 32)
 shape = SubResource("Step1")
 
-[node name="Step2" type="CollisionShape2D" parent="."]
+[node name="Step2" type="CollisionShape2D" parent="." unique_id=1624903844]
 position = Vector2(64, 0)
 shape = SubResource("Step2")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="Node2D" parent="." unique_id=267415724]
 
-[node name="Fill" type="Polygon2D" parent="Visual"]
+[node name="Fill" type="Polygon2D" parent="Visual" unique_id=1041450856]
+light_mask = 3
 color = Color(0.62, 0.45, 0.28, 1)
 polygon = PackedVector2Array(-96, 96, -96, 32, -32, 32, -32, -32, 32, -32, 32, -96, 96, -96, 96, 96, -96, 96)
 
-[node name="Outline" type="Line2D" parent="Visual"]
+[node name="Outline" type="Line2D" parent="Visual" unique_id=889240909]
+light_mask = 3
 points = PackedVector2Array(-96, 96, -96, 32, -32, 32, -32, -32, 32, -32, 32, -96, 96, -96, 96, 96, -96, 96)
 width = 3.0
 default_color = Color(0.25, 0.16, 0.08, 1)
 
-[node name="Label" type="Label" parent="Visual"]
-offset_left = -90
+[node name="Label" type="Label" parent="Visual" unique_id=2090090389]
+visible = false
+offset_left = -90.0
 offset_top = -28.0
-offset_right = 90
+offset_right = 90.0
 offset_bottom = -6.0
-theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.1, 0.12, 1)
 theme_override_constants/outline_size = 4
-visible = false
-text = ""
+theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=385330628]
+occluder = SubResource("OccluderPolygon2D_tpykh")
+
+[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=529213796]
+position = Vector2(31, 31)
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_vdbkf")
+offset = Vector2(1, 1)

@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c2qi3m6io4ee3"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_06nvt"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_3mnxt"]
-[ext_resource type="Resource" path="res://data/items/visual/hazard.rail_trumpo.tres" id="3_wiflx"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_vljuh"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_06nvt"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_3mnxt"]
+[ext_resource type="Resource" uid="uid://c313luywdg3re" path="res://data/items/visual/hazard.rail_trumpo.tres" id="3_wiflx"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_vljuh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aof5b"]
 size = Vector2(384, 64)
@@ -35,6 +35,10 @@ preview_cue = "rail_pause"
 visual_set = ExtResource("3_wiflx")
 
 [node name="RailSweep" type="Area2D" parent="." unique_id=257010142]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_vljuh")
 effect = 3
 

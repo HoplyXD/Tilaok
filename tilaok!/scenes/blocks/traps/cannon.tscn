@@ -121,6 +121,7 @@ polygon = PackedVector2Array(14, 0, 12.934313, 5.357568, 9.899495, 9.899495, 5.3
 [node name="Visual" type="Node2D" parent="." unique_id=966763023]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visual" unique_id=469393689]
+light_mask = 3
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_yf5fn")
 animation = &"shoot"
@@ -129,6 +130,7 @@ frame = 8
 frame_progress = 1.0
 
 [node name="AnimatedSprite2D2" type="Sprite2D" parent="Visual" unique_id=1828503062]
+light_mask = 3
 position = Vector2(-15, 12.999999)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("13_l2enu")

@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c3iko3yinqqev"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_x1rgl"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_lp4j3"]
-[ext_resource type="Resource" path="res://data/items/visual/move.tire_spring.tres" id="3_ecn56"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_ykbkr"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_x1rgl"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_lp4j3"]
+[ext_resource type="Resource" uid="uid://xtmqewvgjhre" path="res://data/items/visual/move.tire_spring.tres" id="3_ecn56"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_ykbkr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0fdtb"]
 size = Vector2(128, 128)
@@ -41,6 +41,10 @@ visual_set = ExtResource("3_ecn56")
 shape = SubResource("RectangleShape2D_0fdtb")
 
 [node name="LaunchHitbox" type="Area2D" parent="." unique_id=1882756883]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_ykbkr")
 effect = 2
 

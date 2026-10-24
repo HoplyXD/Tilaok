@@ -7,6 +7,19 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3wn3k"]
 size = Vector2(64, 64)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_w8qf1"]
+cull_mode = 1
+polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+
+[sub_resource type="Gradient" id="Gradient_ey56e"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3wn3k"]
+gradient = SubResource("Gradient_ey56e")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(2, 2)
+
 [node name="CollapsingBlock" type="AnimatableBody2D" unique_id=619088270]
 sync_to_physics = false
 script = ExtResource("1_ko3cw")
@@ -32,5 +45,14 @@ shape = SubResource("RectangleShape2D_3wn3k")
 [node name="Visual" type="Node2D" parent="." unique_id=1229893236]
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=1803773346]
+light_mask = 3
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_w8qf1")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=787732401]
+occluder = SubResource("OccluderPolygon2D_w8qf1")
+
+[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=903581581]
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_3wn3k")

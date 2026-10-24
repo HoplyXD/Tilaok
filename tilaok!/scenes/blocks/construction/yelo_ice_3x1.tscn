@@ -1,16 +1,31 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bkdnj1m27fvpo"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
 
 [sub_resource type="RectangleShape2D" id="Slab"]
 size = Vector2(192, 64)
 
-[node name="YeloIce3x1" type="AnimatableBody2D"]
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_xlgul"]
+cull_mode = 1
+polygon = PackedVector2Array(-97.5, -33.5, 97.5, -33.5, 97.5, 33.5, -97.5, 33.5)
+
+[sub_resource type="Gradient" id="Gradient_ey56e"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3v34h"]
+gradient = SubResource("Gradient_ey56e")
+width = 200
+height = 70
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(2, 2)
+
+[node name="YeloIce3x1" type="AnimatableBody2D" unique_id=758528182]
 sync_to_physics = false
 script = ExtResource("1_blk")
 
-[node name="BlockData" type="Node2D" parent="."]
+[node name="BlockData" type="Node2D" parent="." unique_id=1933796724]
 script = ExtResource("2_dat")
 block_name = "Yelo ng Sorbetero"
 family_id = "modifier.sorbetes_ice"
@@ -28,44 +43,57 @@ wall_slide_eligible = false
 pool_weight = 20.0
 slippery = true
 
-[node name="Solid" type="CollisionShape2D" parent="."]
+[node name="Solid" type="CollisionShape2D" parent="." unique_id=1451485341]
 shape = SubResource("Slab")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="Node2D" parent="." unique_id=889689822]
 
-[node name="Fill" type="Polygon2D" parent="Visual"]
+[node name="Fill" type="Polygon2D" parent="Visual" unique_id=214906586]
+light_mask = 3
 color = Color(0.7, 0.88, 0.97, 1)
 polygon = PackedVector2Array(-96, -32, 96, -32, 96, 32, -96, 32)
 
-[node name="Frost0" type="Line2D" parent="Visual"]
+[node name="Frost0" type="Line2D" parent="Visual" unique_id=1570531471]
+light_mask = 3
 points = PackedVector2Array(-82, -24, -70, -30, -58, -24, -46, -30)
 width = 3.0
 default_color = Color(1, 1, 1, 0.9)
 
-[node name="Frost1" type="Line2D" parent="Visual"]
+[node name="Frost1" type="Line2D" parent="Visual" unique_id=640480226]
+light_mask = 3
 points = PackedVector2Array(-18, -24, -6, -30, 6, -24, 18, -30)
 width = 3.0
 default_color = Color(1, 1, 1, 0.9)
 
-[node name="Frost2" type="Line2D" parent="Visual"]
+[node name="Frost2" type="Line2D" parent="Visual" unique_id=1394538907]
+light_mask = 3
 points = PackedVector2Array(46, -24, 58, -30, 70, -24, 82, -30)
 width = 3.0
 default_color = Color(1, 1, 1, 0.9)
 
-[node name="Outline" type="Line2D" parent="Visual"]
+[node name="Outline" type="Line2D" parent="Visual" unique_id=153154466]
+light_mask = 3
 points = PackedVector2Array(-96, -32, 96, -32, 96, 32, -96, 32, -96, -32)
 width = 3.0
 default_color = Color(0.3, 0.5, 0.65, 1)
 
-[node name="Label" type="Label" parent="Visual"]
-offset_left = -90
+[node name="Label" type="Label" parent="Visual" unique_id=1845509615]
+visible = false
+offset_left = -90.0
 offset_top = -28.0
-offset_right = 90
+offset_right = 90.0
 offset_bottom = -6.0
-theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.1, 0.12, 1)
 theme_override_constants/outline_size = 4
-visible = false
-text = ""
+theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1784234308]
+occluder = SubResource("OccluderPolygon2D_xlgul")
+
+[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=129366636]
+color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_3v34h")

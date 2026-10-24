@@ -7,6 +7,21 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vxf84"]
 size = Vector2(128, 128)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ieue3"]
+cull_mode = 1
+polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+
+[sub_resource type="Gradient" id="Gradient_vxf84"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1jkl7"]
+gradient = SubResource("Gradient_vxf84")
+width = 130
+height = 130
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(2, 2)
+
 [node name="WoodBox" type="AnimatableBody2D" unique_id=1348425855]
 sync_to_physics = false
 script = ExtResource("1_sebsq")
@@ -33,5 +48,14 @@ shape = SubResource("RectangleShape2D_vxf84")
 [node name="Visual" type="Node2D" parent="." unique_id=1800300999]
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=410106659]
+light_mask = 3
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_ieue3")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1513688417]
+occluder = SubResource("OccluderPolygon2D_ieue3")
+
+[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=595868818]
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_1jkl7")
