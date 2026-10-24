@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://w5yyc368m7ob" path="res://scripts/movement/chicken_controller.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://o87bmdol5x3a" path="res://scripts/movement/chicken_sprite_animator.gd" id="2_animator"]
+[ext_resource type="Texture2D" uid="uid://7hqb8fxnyttf" path="res://assets/character/dead chicken sprites/downdead_animation_front-1.png" id="2_p0p4b"]
+[ext_resource type="Texture2D" uid="uid://e4xisxvttidp" path="res://assets/character/dead chicken sprites/downdead_animation_front-2.png" id="3_518dl"]
+[ext_resource type="Texture2D" uid="uid://d4nwi7usq7vv" path="res://assets/character/dead chicken sprites/downdead_animation_front-3.png" id="4_c671b"]
 [ext_resource type="Texture2D" uid="uid://pg7vh322nh6w" path="res://assets/character/Chicken 1 Sprite Sheet.png" id="4_qkxpq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
@@ -12,10 +15,6 @@ size = Vector2(56, 56)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sneak"]
 size = Vector2(56, 56)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qkxpq"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(10240, 4096, 2048, 2048)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rgun1"]
 atlas = ExtResource("4_qkxpq")
@@ -249,7 +248,13 @@ region = Rect2(2048, 8192, 2048, 2048)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_qkxpq")
+"texture": ExtResource("2_p0p4b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_518dl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_c671b")
 }],
 "loop": 1,
 "name": &"dead",
@@ -580,6 +585,7 @@ disabled = true
 [node name="ChickenAnimation" type="AnimatedSprite2D" parent="." unique_id=646713635]
 scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
-animation = &"idle"
+animation = &"dead"
 autoplay = "idle"
+frame_progress = 0.66047037
 script = ExtResource("2_animator")

@@ -17,6 +17,10 @@ signal restored
 enum CollapseState { SOLID, CRUMBLING, GONE }
 
 const VISUAL_NODE := "Visual"
+## Animations an authored AnimatedSprite2D under VISUAL_NODE may carry: the firing wind-up and the
+## pose between shots. A block whose sprite lacks either simply keeps playing its own autoplay.
+const VISUAL_FIRE_ANIMATION := &"shoot"
+const VISUAL_REST_ANIMATION := &"reloading"
 ## A push lasts this many physics steps after the last chicken contact.
 const PUSH_HOLD_STEPS := 2
 const SHAKE_WU := 3.0
@@ -40,6 +44,9 @@ var _push_steps := 0
 var _collapse_timer := 0.0
 var _shake_clock := 0.0
 var _visual: Node2D
+## Optional AnimatedSprite2D under VISUAL_NODE, and whether its fire animation is already running.
+var _visual_sprite: AnimatedSprite2D
+var _visual_winding := false
 var _projectile_template: Node2D
 var _projectile_visuals: Array[Node2D] = []
 
@@ -66,6 +73,11 @@ func configure(
 	if _visual != null:
 		_visual.position = footprint_size * 0.5
 		_visual.rotation = float(_turns) * PI * 0.5
+		_visual_sprite = _authored_visual_sprite()
+	if _visual_sprite != null:
+		if not _visual_sprite.animation_finished.is_connected(_on_visual_animation_finished):
+			_visual_sprite.animation_finished.connect(_on_visual_animation_finished)
+		_visual_winding = false
 	if data != null and not data.projectile_node.is_empty():
 		_projectile_template = get_node_or_null(data.projectile_node) as Node2D
 		if _projectile_template != null:
@@ -126,6 +138,11 @@ func reset_to_start() -> void:
 	velocity = Vector2.ZERO
 	_push_dir = 0
 	_push_steps = 0
+	# A reset mid-shot leaves the barrel mid-recoil otherwise.
+	_visual_winding = false
+	if _visual_sprite != null and _visual_sprite.sprite_frames != null:
+		if _visual_sprite.sprite_frames.has_animation(VISUAL_REST_ANIMATION):
+			_visual_sprite.play(VISUAL_REST_ANIMATION)
 	_restore_collapse()
 	_sync_behavior_origin()
 
@@ -282,6 +299,43 @@ func _sync_behavior_origin() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	_sync_projectile_visuals()
+	_sync_visual_animation()
+
+
+## Drives an AnimatedSprite2D authored under the scene's Visual node, if the block has one. The
+## Cannon's `shoot` runs its wind-up through the launcher telegraph so the blast frame lands on
+## the shot itself, then hands back to `reloading`. Starting it is the only cue: once playing it
+## is left alone, or firing would cut off its own muzzle flash and smoke.
+func _sync_visual_animation() -> void:
+	if _visual_sprite == null or _visual_sprite.sprite_frames == null:
+		return
+	var launcher := behavior as LauncherBehavior
+	var winding := (
+		active and launcher != null and launcher.state == LauncherBehavior.State.TELEGRAPH
+	)
+	if winding == _visual_winding:
+		return
+	_visual_winding = winding
+	if winding and _visual_sprite.sprite_frames.has_animation(VISUAL_FIRE_ANIMATION):
+		_visual_sprite.play(VISUAL_FIRE_ANIMATION)
+
+
+## `shoot` is authored non-looping so it reaches this and returns the barrel to rest. A looping
+## or missing rest pose is simply left alone rather than restarted every frame.
+func _on_visual_animation_finished() -> void:
+	if _visual_sprite == null or _visual_sprite.animation != VISUAL_FIRE_ANIMATION:
+		return
+	if _visual_sprite.sprite_frames.has_animation(VISUAL_REST_ANIMATION):
+		_visual_sprite.play(VISUAL_REST_ANIMATION)
+
+
+## The scene's own animated sprite, if it authored one. Projectile copies live under the
+## projectile template, not Visual, so they are never picked up here.
+func _authored_visual_sprite() -> AnimatedSprite2D:
+	for child in _visual.get_children():
+		if child is AnimatedSprite2D:
+			return child as AnimatedSprite2D
+	return null
 
 
 ## Shows one copy of the projectile template's Visual per live projectile (non-painter blocks).

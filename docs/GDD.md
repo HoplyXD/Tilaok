@@ -266,7 +266,20 @@ Priority order, highest first: `dead` → `stun` → sneak → wall slide → ai
 
 Three of these are transitions that must be seen in full before the next pose starts, gated on `animation_finished`: `sneak` → `sneak_hold`, `sneak_stand` → idle/run, and `jump*_landing` → idle/run. Each is authored non-looping so it ends on its own; a pose that loops, or is missing from the sheet, is never waited for, so a mis-set loop flag cannot freeze the chicken. A fresh jump cuts a landing or stand-up short, because the airborne branch is reached first.
 
+**Open — `dead` is authored looping.** The user's three `downdead_animation_front` frames are a collapse that settles on an X-eyes sitting pose, but the animation is flagged `loop = 1`, so an eliminated chicken replays the collapse every 0.6 s instead of staying down. `loop = 0` would hold the final frame. Left as authored, since the owner keeps the loop flags.
+
 **Open — responsiveness cost of the one-shots.** As authored, `jump*_landing` runs 0.80 s and `sneak_stand` 0.60 s (4 and 3 frames at 5 fps), and both block `run_left` / `run_right`. A player who lands already holding a direction therefore sees the landing animation for 0.8 s before the run starts. This is the behaviour the owner asked for ("always play after hitting the ground"), but it has not had a feel review. If it reads as sluggish, the fix is either shorter landing frames or letting a held direction cut the landing short.
+
+### Cannon art and firing animation — 2026-10-24 (user request)
+
+**Status — October 24, 2026:** art supplied by the user, wired by Claude Code; `run_blocks_tests` covers it (122 checks). Human visual review is pending.
+
+The Cannon's placeholder polygons are replaced by the bamboo cannon sprite (`assets/tiles/cannon sprites/`, 9 frames plus a wheel). Its `shoot` animation is driven from the launcher's own state rather than on a timer: it starts when the piece enters its 0.8 s telegraph, so the wind-up frames run while the shot is charging and the muzzle-blast frame is on screen as the ball spawns. It then hands back to the one-frame `reloading` rest pose. `shoot` is authored non-looping so `animation_finished` can make that handover; `StageBlock` leaves a looping or missing pose alone rather than restarting it, so a mis-set flag cannot strand the barrel mid-recoil. A round reset returns it to rest.
+
+The art is drawn facing left while the projectile path runs right, so the sprite is flipped in the scene (`flip_h`) rather than re-exported; the firing direction, lane region and all four rotations are unchanged. Any block may now carry an `AnimatedSprite2D` under its `Visual` node and get the same treatment.
+
+- **Solid shrank with the new art (user authoring, 2026-10-24).** The Cannon's `Solid` shape went from the full 64x64 cell to 64x46 offset 9 wu down, so its derived SOLID region is now the bottom 72% of the cell (`(0, 0.28) size (1.0, 0.72)`): the top ~18 wu is passable and a chicken standing on it rests that much lower. The placement footprint is still 1x1, since that comes from `placement_size`, not the shape. Confirm this is the intended silhouette during visual review.
+- **Open — the blast frame trails the ball by one animation frame.** Measured: the ball spawns while the barrel is on frame 3, the last wind-up frame, and the blast (frame 4) appears 0.2 s later, because 4 frames at 5 fps exactly fills the 0.8 s telegraph and the animation starts a render frame after the state change. Raising `shoot`'s speed to 6 fps would put the shot inside frame 4 instead; left as authored pending the owner's call.
 
 ### Map terrains and water — 2026-10-22 (user request)
 

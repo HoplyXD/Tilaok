@@ -460,3 +460,20 @@ At the user's request ("can you replace the existing pugad with this one?"), the
 | Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
 |---|---|---|---|---|---|---|---|
 | `ui.pugad.nest` | `assets/ui/pugad/nest.png` (SHA-256 `773873e0…e9d1ed0687`; 2560 × 2560, transparent) | UI image; Pugad pick screen, behind the eggs | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | Swap and placement only | Imported — creator confirmation open |
+
+### Bamboo cannon sprite — 2026-10-24
+
+The user supplied `assets/tiles/cannon sprites/`: nine 512 × 512 transparent frames (`Cannon_0000`–`Cannon_0008`) and a separate `Bamboo_Cannon_Wheel.png`. The frames are one firing cycle — four of wind-up as the bamboo swells, one muzzle blast, three of drifting smoke, and a return to the rest pose (frame 8 matches frame 0). They replace the Cannon's placeholder polygons in `scenes/blocks/traps/cannon.tscn`, as a `reloading` rest pose and a `shoot` one-shot. The art faces left while the cannon fires right, so the scene flips it with `flip_h` rather than altering the files.
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `tiles.cannon.frames` | `assets/tiles/cannon sprites/Cannon_0000.png`–`Cannon_0008.png` (9 files, 512 × 512, transparent; `Cannon_0000.png` SHA-256 `119bc549…ef4db2ed`) | Sprite frames; Cannon block, rest and firing cycle | Supplied by the user; creator to confirm (presumed team art) | To confirm | None to the files; flipped horizontally in the scene | Wiring and `flip_h` by Claude Code; no AI-generated art | Origin to confirm |
+| `tiles.cannon.wheel` | `assets/tiles/cannon sprites/Bamboo_Cannon_Wheel.png` (512 × 512, transparent; SHA-256 `46569a4b…fe02b150`) | Sprite; Cannon block carriage wheel | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | None | Origin to confirm |
+
+### Dead chicken sprites — 2026-10-24
+
+The user added `assets/character/dead chicken sprites/`: three 2048 × 2048 transparent frames, and wired them into the chicken's `dead` animation in `scenes/characters/chicken.tscn` in place of its single placeholder frame. `ChickenSpriteAnimator` already plays `dead` for an eliminated chicken (GDD §6), so they are live without any further wiring. They are authored looping — see the open note in [GDD](GDD.md#chicken-animation-states--2026-10-24-user-request).
+
+| Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
+|---|---|---|---|---|---|---|---|
+| `character.downdead_front` | `assets/character/dead chicken sprites/downdead_animation_front-1.png` (SHA-256 `eb014151…`), `-2.png` (`bdee2a03…`), `-3.png` (`22116f2c…`) (3 files, 2048 × 2048, transparent) | Sprite frames; the chicken's `dead` pose on elimination | Supplied by the user; creator to confirm (presumed team art) | To confirm | None | None | Origin to confirm |

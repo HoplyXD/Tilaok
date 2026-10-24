@@ -267,14 +267,32 @@ func _test_cannon() -> void:
 		is_equal_approx(cannon.behavior.tuning.item_launcher_cooldown_s, 2.0),
 		"Cannon's own fire interval (2 s) overrides the global launcher cooldown"
 	)
+	var barrel := cannon.get_node_or_null("Visual/AnimatedSprite2D") as AnimatedSprite2D
+	_check(
+		(
+			barrel != null
+			and barrel.flip_h
+			and not barrel.sprite_frames.get_animation_loop(&"shoot")
+		),
+		"the barrel art faces the lane and its shoot animation is a one-shot"
+	)
 	_put_actor_feet(Vector2(15.0 * 64.0 + 32.0, FLOOR_Y))
 	var died := false
 	var saw_ball := false
+	# The wind-up runs through the telegraph, so the muzzle-blast frame should be on screen at the
+	# moment the ball spawns rather than the barrel sitting at rest.
+	var shots_seen := 0
+	var pose_at_shot := ""
+	var frame_at_shot := -1
 	for _frame in range(240):
 		_put_actor_feet(Vector2(15.0 * 64.0 + 32.0, FLOOR_Y))
 		await physics_frame
 		await process_frame
 		saw_ball = saw_ball or cannon.get_node_or_null("ProjectileVisual0") != null
+		if barrel != null and behavior.shots_fired > shots_seen:
+			shots_seen = behavior.shots_fired
+			pose_at_shot = str(barrel.animation)
+			frame_at_shot = barrel.frame
 		if actor.lifecycle.status == PlayerLifecycleState.Status.ELIMINATED:
 			died = true
 			break
@@ -284,6 +302,14 @@ func _test_cannon() -> void:
 	_check(
 		not kills.is_empty() and kills[0].source_family_id == "block.cannon",
 		"the cannon kill names the cannon family"
+	)
+	# Frame 4 of 0-8 is the muzzle blast; the four before it are the 0.8 s wind-up.
+	_check(
+		pose_at_shot == "shoot" and frame_at_shot >= 3 and frame_at_shot <= 5,
+		(
+			"the barrel is on its blast frame when the ball spawns (%s frame %d)"
+			% [pose_at_shot, frame_at_shot]
+		)
 	)
 	# Cover: a Kaing block in the path stops the ball.
 	_revive()

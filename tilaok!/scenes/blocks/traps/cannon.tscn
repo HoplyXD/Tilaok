@@ -3,9 +3,19 @@
 [ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_wtt3y"]
 [ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_aa8ry"]
 [ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="3_nw3c4"]
+[ext_resource type="Texture2D" uid="uid://cx53ljlveo81c" path="res://assets/tiles/cannon sprites/Cannon_0000.png" id="4_dhnu7"]
+[ext_resource type="Texture2D" uid="uid://cvlaae4l4foaw" path="res://assets/tiles/cannon sprites/Cannon_0001.png" id="5_8q41s"]
+[ext_resource type="Texture2D" uid="uid://bkdylbcqcvk7f" path="res://assets/tiles/cannon sprites/Cannon_0002.png" id="6_uxwx4"]
+[ext_resource type="Texture2D" uid="uid://dyb5752bw7ghq" path="res://assets/tiles/cannon sprites/Cannon_0003.png" id="7_4ilxp"]
+[ext_resource type="Texture2D" uid="uid://bynv3gharnn7d" path="res://assets/tiles/cannon sprites/Cannon_0004.png" id="8_u0wbt"]
+[ext_resource type="Texture2D" uid="uid://datha7p2v2548" path="res://assets/tiles/cannon sprites/Cannon_0005.png" id="9_74k2f"]
+[ext_resource type="Texture2D" uid="uid://cl6cafqenjfnp" path="res://assets/tiles/cannon sprites/Cannon_0006.png" id="10_74ssg"]
+[ext_resource type="Texture2D" uid="uid://dypsnaj7tu284" path="res://assets/tiles/cannon sprites/Cannon_0007.png" id="11_h7b1x"]
+[ext_resource type="Texture2D" uid="uid://bpk1fcjuk2de" path="res://assets/tiles/cannon sprites/Cannon_0008.png" id="12_qk2nx"]
+[ext_resource type="Texture2D" uid="uid://dw6l5bp3uv6qm" path="res://assets/tiles/cannon sprites/Bamboo_Cannon_Wheel.png" id="13_l2enu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v2iee"]
-size = Vector2(64, 64)
+size = Vector2(64, 46)
 
 [sub_resource type="Curve2D" id="Curve2D_lhs17"]
 _data = {
@@ -15,6 +25,49 @@ point_count = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ntb1k"]
 size = Vector2(28, 28)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yf5fn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_dhnu7")
+}],
+"loop": 1,
+"name": &"reloading",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_dhnu7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_8q41s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_uxwx4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_4ilxp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_u0wbt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_74k2f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_74ssg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_h7b1x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_qk2nx")
+}],
+"loop": 0,
+"name": &"shoot",
+"speed": 5.0
+}]
 
 [node name="Cannon" type="AnimatableBody2D" unique_id=1787259802]
 sync_to_physics = false
@@ -39,6 +92,7 @@ projectile_size_wu = 28.0
 fire_interval_s = 2.0
 
 [node name="Solid" type="CollisionShape2D" parent="." unique_id=729435625]
+position = Vector2(0, 9)
 shape = SubResource("RectangleShape2D_v2iee")
 
 [node name="Projectile" type="Node2D" parent="." unique_id=1466892033]
@@ -66,15 +120,15 @@ polygon = PackedVector2Array(14, 0, 12.934313, 5.357568, 9.899495, 9.899495, 5.3
 
 [node name="Visual" type="Node2D" parent="." unique_id=966763023]
 
-[node name="Body" type="Polygon2D" parent="Visual" unique_id=1841348443]
-color = Color(0.25, 0.27, 0.3, 1)
-polygon = PackedVector2Array(-30, -24, 14, -24, 14, 24, -30, 24)
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visual" unique_id=469393689]
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_yf5fn")
+animation = &"shoot"
+autoplay = "reloading"
+frame_progress = 0.11778601
+flip_h = true
 
-[node name="Barrel" type="Polygon2D" parent="Visual" unique_id=710579245]
-color = Color(0.15, 0.16, 0.18, 1)
-polygon = PackedVector2Array(10, -14, 32, -14, 32, 14, 10, 14)
-
-[node name="Wheel" type="Polygon2D" parent="Visual" unique_id=1729690863]
-position = Vector2(-12, 20)
-color = Color(0.55, 0.38, 0.2, 1)
-polygon = PackedVector2Array(12, 0, 11.086554, 4.592201, 8.485281, 8.485281, 4.592201, 11.086554, 7.347638e-16, 12, -4.592201, 11.086554, -8.485281, 8.485281, -11.086554, 4.592201, -12, 1.4695276e-15, -11.086554, -4.592201, -8.485281, -8.485281, -4.592201, -11.086554, -2.2042914e-15, -12, 4.592201, -11.086554, 8.485281, -8.485281, 11.086554, -4.592201)
+[node name="AnimatedSprite2D2" type="Sprite2D" parent="Visual" unique_id=1828503062]
+position = Vector2(-15, 12.999999)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("13_l2enu")
