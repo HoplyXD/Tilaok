@@ -13,6 +13,7 @@ const CONTROL_ACTIONS := [
 	["navigate", "Move / menus"],
 	["run", "Run"],
 	["jump", "Jump"],
+	["crouch", "Crouch"],
 	["claim", "Claim egg / confirm"],
 	["rotate", "Rotate piece"],
 	["back", "Back"],
