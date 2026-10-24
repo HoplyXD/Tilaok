@@ -209,13 +209,21 @@ Art slots (all empty; asset IDs): `ui.title.logo`, `ui.title.background`, `ui.lo
 
 ## Placeholders recorded — P10 (2026-10-14)
 
-P10 added 23 **temporary placeholder** files so every first-batch item is visible and audible in the Item Visualizer and the match loop. They are original plain geometric SVG shapes and synthesized sine/square/noise tones written by `tilaok!/tools/generate_placeholder_assets.gd`; no third-party material, sample, font or UCH asset is used. **AI assistance:** Claude Code (Anthropic, Sonnet 5.5) wrote the generator and ran it; no human editing or art review has occurred. They are not final art/audio, are not team-made production assets, and are not presented as such; final assets are human-made (Jorge/Ivie art, Shanti audio). Each file is named `PLACEHOLDER_*`, every slot is flagged `placeholder = true` with its final owner, and `PlaceholderAudit.release_violations()` fails any family that is both `release_target` and `runtime_enabled` while it still uses one. Replacing a file by name needs no code or resource edit (verified: [swap probe](evidence/p10/swap_file_level_probe.txt)).
+P10 added 23 **temporary placeholder** files so every first-batch item is visible and audible in the Item Visualizer and the match loop. They are original plain geometric SVG shapes and synthesized sine/square/noise tones written by `tilaok!/tools/generate_placeholder_assets.gd`; no third-party material, sample, font or UCH asset is used. **AI assistance:** Claude Code (Anthropic, Sonnet 5.5) wrote the generator and ran it; no human editing or art review has occurred. They are not final art/audio, are not team-made production assets, and are not presented as such; final assets are human-made (Jorge/Ivie art, Shanti audio). At P10, each visual/audio slot used a `PLACEHOLDER_*` file and was flagged `placeholder = true`; later replacements and their review status are listed below. `PlaceholderAudit.release_violations()` fails any family that is both `release_target` and `runtime_enabled` while it still uses one. Replacing a file by name needs no code or resource edit (verified: [swap probe](evidence/p10/swap_file_level_probe.txt)).
 
 | File | Type | Slot | Status | Final owner |
 |---|---|---|---|---|
-| `assets/items/move.tire_spring/PLACEHOLDER_body.svg` | SVG | `body` | Temporary tire, spring and base placeholder adapted from the player's sketch; replace with final art | Jorge/Ivie |
-| `assets/items/move.tire_spring/PLACEHOLDER_body_compressed.svg` | SVG | `body_compressed` | Temporary compressed tire, spring and base placeholder adapted from the player's sketch; replace with final art | Jorge/Ivie |
+| `assets/items/move.tire_spring/PLACEHOLDER_body.svg` | SVG | historical `body` placeholder | Retained source placeholder; no longer assigned to the Gulong visual slots | Jorge/Ivie |
+| `assets/items/move.tire_spring/PLACEHOLDER_body_compressed.svg` | SVG | historical `body_compressed` placeholder | Retained source placeholder; no longer assigned to the Gulong visual slots | Jorge/Ivie |
 | `assets/items/move.tire_spring/PLACEHOLDER_sfx_launch.wav` | WAV | `sfx_launch` | PLACEHOLDER — replace | Shanti |
+
+### Gulong Pugad preview alignment — October 25, 2026
+
+| Asset | Use | Source and changes | Provenance / review |
+|---|---|---|---|
+| `assets/tiles/tire.png` | Gulong placed sprite and Pugad `body` / `body_compressed` preview slots | Existing 512×512 hand-drawn tire image reused directly; no image edits. Both preview states now reference this exact texture. | Existing project asset; creator/source confirmation and human art review remain pending. |
+
+The old Gulong body SVG files remain in the repository as unassigned placeholder sources. The launch sound slot and gameplay behavior are unchanged. See [Gulong Pugad preview evidence](evidence/p24_item_art/README.md#gulong-pugad-preview-alignment--october-25-2026) and [AI usage](AI_USAGE.md#gulong-pugad-preview-alignment--october-25-2026).
 | `assets/items/hazard.rail_trumpo/PLACEHOLDER_rail.svg` | SVG | `rail` | PLACEHOLDER — replace | Jorge/Ivie |
 | `assets/items/hazard.rail_trumpo/PLACEHOLDER_top.svg` | SVG | `top` | PLACEHOLDER — replace | Jorge/Ivie |
 | `assets/items/hazard.rail_trumpo/PLACEHOLDER_sfx_pause.wav` | WAV | `sfx_pause` | PLACEHOLDER — replace | Shanti |

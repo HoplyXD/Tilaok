@@ -1,0 +1,206 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PASS horizontal Parol art reaches its post without crossing a clipped beam end
+PASS horizontal Parol art reaches the far post without crossing a clipped beam end
+PASS vertical Parol art reaches its post without crossing a clipped beam end
+PASS vertical Parol art reaches the far post without crossing a clipped beam end
+PASS hazard.bubble_planter visual set loads
+PASS hazard.bubble_planter/pot is registered artwork
+PASS hazard.bubble_planter/pot dimensions are (512, 512)
+PASS hazard.bubble_planter/pot points at its generated asset
+PASS hazard.bubble_planter/bubble is registered artwork
+PASS hazard.bubble_planter/bubble dimensions are (512, 512)
+PASS hazard.bubble_planter/bubble points at its generated asset
+PASS hazard.bubble_planter/captive_icon is registered artwork
+PASS hazard.bubble_planter/captive_icon dimensions are (256, 256)
+PASS hazard.bubble_planter/captive_icon points at its generated asset
+PASS hazard.bubble_planter/sfx_emit placeholder audio remains unchanged
+PASS hazard.bubble_planter/sfx_capture placeholder audio remains unchanged
+PASS hazard.bubble_planter/sfx_pop placeholder audio remains unchanged
+PASS hazard.rail_trumpo visual set loads
+PASS hazard.rail_trumpo/rail_end is registered artwork
+PASS hazard.rail_trumpo/rail_end dimensions are (512, 512)
+PASS hazard.rail_trumpo/rail_end points at its generated asset
+PASS hazard.rail_trumpo/rail_mid is registered artwork
+PASS hazard.rail_trumpo/rail_mid dimensions are (512, 512)
+PASS hazard.rail_trumpo/rail_mid points at its generated asset
+PASS hazard.rail_trumpo/top is registered artwork
+PASS hazard.rail_trumpo/top dimensions are (512, 512)
+PASS hazard.rail_trumpo/top points at its generated asset
+PASS hazard.rail_trumpo/sfx_pause placeholder audio remains unchanged
+PASS hazard.parol_pulse visual set loads
+PASS hazard.parol_pulse/post_inactive is registered artwork
+PASS hazard.parol_pulse/post_inactive dimensions are (512, 512)
+PASS hazard.parol_pulse/post_inactive points at its generated asset
+PASS hazard.parol_pulse/post_charge is registered artwork
+PASS hazard.parol_pulse/post_charge dimensions are (512, 512)
+PASS hazard.parol_pulse/post_charge points at its generated asset
+PASS hazard.parol_pulse/post_active is registered artwork
+PASS hazard.parol_pulse/post_active dimensions are (512, 512)
+PASS hazard.parol_pulse/post_active points at its generated asset
+PASS hazard.parol_pulse/beam_charge is registered artwork
+PASS hazard.parol_pulse/beam_charge dimensions are (512, 192)
+PASS hazard.parol_pulse/beam_charge points at its generated asset
+PASS hazard.parol_pulse/beam_active is registered artwork
+PASS hazard.parol_pulse/beam_active dimensions are (512, 192)
+PASS hazard.parol_pulse/beam_active points at its generated asset
+PASS hazard.parol_pulse/sfx_charge placeholder audio remains unchanged
+PASS hazard.parol_pulse/sfx_on placeholder audio remains unchanged
+PASS launcher visual set loads
+PASS launcher/launcher is art
+PASS launcher/launcher matches the 64×64 footprint
+PASS launcher/launcher_charge is art
+PASS launcher/launcher_charge matches the 64×64 footprint
+PASS Gulong visual set loads
+PASS Gulong/body uses current art
+PASS Gulong/body matches the placed tire sprite
+PASS Gulong/body_compressed uses current art
+PASS Gulong/body_compressed matches the placed tire sprite
+PASS build.hollow_blocks/cell_1x1 at 0 degrees preview configures
+PASS build.hollow_blocks/cell_1x1 at 0 degrees stays in egg
+PASS build.hollow_blocks/column_1x3 at 0 degrees preview configures
+PASS build.hollow_blocks/column_1x3 at 0 degrees stays in egg
+PASS build.hollow_blocks/column_1x3 at 90 degrees preview configures
+PASS build.hollow_blocks/column_1x3 at 90 degrees stays in egg
+PASS build.hollow_blocks/stack_2x3 at 0 degrees preview configures
+PASS build.hollow_blocks/stack_2x3 at 0 degrees stays in egg
+PASS build.hollow_blocks/stack_2x3 at 90 degrees preview configures
+PASS build.hollow_blocks/stack_2x3 at 90 degrees stays in egg
+PASS build.bamboo_bridge/span_3x1 at 0 degrees preview configures
+PASS build.bamboo_bridge/span_3x1 at 0 degrees stays in egg
+PASS build.bamboo_bridge/span_3x1 at 90 degrees preview configures
+PASS build.bamboo_bridge/span_3x1 at 90 degrees stays in egg
+PASS build.bamboo_bridge/span_4x1 at 0 degrees preview configures
+PASS build.bamboo_bridge/span_4x1 at 0 degrees stays in egg
+PASS build.bamboo_bridge/span_4x1 at 90 degrees preview configures
+PASS build.bamboo_bridge/span_4x1 at 90 degrees stays in egg
+PASS build.bamboo_bridge/span_5x1 at 0 degrees preview configures
+PASS build.bamboo_bridge/span_5x1 at 0 degrees stays in egg
+PASS build.bamboo_bridge/span_5x1 at 90 degrees preview configures
+PASS build.bamboo_bridge/span_5x1 at 90 degrees stays in egg
+PASS move.tire_spring/tire_2x2 at 0 degrees preview configures
+PASS move.tire_spring/tire_2x2 at 0 degrees stays in egg
+PASS move.tire_spring/tire_2x2 at 90 degrees preview configures
+PASS move.tire_spring/tire_2x2 at 90 degrees stays in egg
+PASS move.tire_spring/tire_2x2 at 180 degrees preview configures
+PASS move.tire_spring/tire_2x2 at 180 degrees stays in egg
+PASS move.tire_spring/tire_2x2 at 270 degrees preview configures
+PASS move.tire_spring/tire_2x2 at 270 degrees stays in egg
+PASS hazard.rail_trumpo/rail_4x1 at 0 degrees preview configures
+PASS hazard.rail_trumpo/rail_4x1 at 0 degrees stays in egg
+PASS hazard.rail_trumpo/rail_4x1 at 90 degrees preview configures
+PASS hazard.rail_trumpo/rail_4x1 at 90 degrees stays in egg
+PASS hazard.rail_trumpo/rail_4x1 at 180 degrees preview configures
+PASS hazard.rail_trumpo/rail_4x1 at 180 degrees stays in egg
+PASS hazard.rail_trumpo/rail_4x1 at 270 degrees preview configures
+PASS hazard.rail_trumpo/rail_4x1 at 270 degrees stays in egg
+PASS hazard.rail_trumpo/rail_5x1 at 0 degrees preview configures
+PASS hazard.rail_trumpo/rail_5x1 at 0 degrees stays in egg
+PASS hazard.rail_trumpo/rail_5x1 at 90 degrees preview configures
+PASS hazard.rail_trumpo/rail_5x1 at 90 degrees stays in egg
+PASS hazard.rail_trumpo/rail_5x1 at 180 degrees preview configures
+PASS hazard.rail_trumpo/rail_5x1 at 180 degrees stays in egg
+PASS hazard.rail_trumpo/rail_5x1 at 270 degrees preview configures
+PASS hazard.rail_trumpo/rail_5x1 at 270 degrees stays in egg
+PASS hazard.rail_trumpo/rail_6x1 at 0 degrees preview configures
+PASS hazard.rail_trumpo/rail_6x1 at 0 degrees stays in egg
+PASS hazard.rail_trumpo/rail_6x1 at 90 degrees preview configures
+PASS hazard.rail_trumpo/rail_6x1 at 90 degrees stays in egg
+PASS hazard.rail_trumpo/rail_6x1 at 180 degrees preview configures
+PASS hazard.rail_trumpo/rail_6x1 at 180 degrees stays in egg
+PASS hazard.rail_trumpo/rail_6x1 at 270 degrees preview configures
+PASS hazard.rail_trumpo/rail_6x1 at 270 degrees stays in egg
+PASS hazard.parol_pulse/span_3x1 at 0 degrees preview configures
+PASS hazard.parol_pulse/span_3x1 at 0 degrees stays in egg
+PASS hazard.parol_pulse/span_3x1 at 90 degrees preview configures
+PASS hazard.parol_pulse/span_3x1 at 90 degrees stays in egg
+PASS hazard.parol_pulse/span_4x1 at 0 degrees preview configures
+PASS hazard.parol_pulse/span_4x1 at 0 degrees stays in egg
+PASS hazard.parol_pulse/span_4x1 at 90 degrees preview configures
+PASS hazard.parol_pulse/span_4x1 at 90 degrees stays in egg
+PASS hazard.parol_pulse/span_5x1 at 0 degrees preview configures
+PASS hazard.parol_pulse/span_5x1 at 0 degrees stays in egg
+PASS hazard.parol_pulse/span_5x1 at 90 degrees preview configures
+PASS hazard.parol_pulse/span_5x1 at 90 degrees stays in egg
+PASS hazard.parol_pulse/span_6x1 at 0 degrees preview configures
+PASS hazard.parol_pulse/span_6x1 at 0 degrees stays in egg
+PASS hazard.parol_pulse/span_6x1 at 90 degrees preview configures
+PASS hazard.parol_pulse/span_6x1 at 90 degrees stays in egg
+PASS hazard.slipper_launcher/lane_4x1 at 0 degrees preview configures
+PASS hazard.slipper_launcher/lane_4x1 at 0 degrees stays in egg
+PASS hazard.slipper_launcher/lane_4x1 at 180 degrees preview configures
+PASS hazard.slipper_launcher/lane_4x1 at 180 degrees stays in egg
+PASS hazard.slipper_launcher/lane_6x1 at 0 degrees preview configures
+PASS hazard.slipper_launcher/lane_6x1 at 0 degrees stays in egg
+PASS hazard.slipper_launcher/lane_6x1 at 180 degrees preview configures
+PASS hazard.slipper_launcher/lane_6x1 at 180 degrees stays in egg
+PASS utility.walis_cleanup/area_3x3 at 0 degrees preview configures
+PASS utility.walis_cleanup/area_3x3 at 0 degrees stays in egg
+PASS utility.walis_cleanup/area_5x5 at 0 degrees preview configures
+PASS utility.walis_cleanup/area_5x5 at 0 degrees stays in egg
+PASS hazard.bubble_planter/path_1x3 at 0 degrees preview configures
+PASS hazard.bubble_planter/path_1x3 at 0 degrees stays in egg
+PASS hazard.bubble_planter/path_1x5 at 0 degrees preview configures
+PASS hazard.bubble_planter/path_1x5 at 0 degrees stays in egg
+PASS build.solid_block/slab_3x1 at 0 degrees preview configures
+PASS build.solid_block/slab_3x1 at 0 degrees stays in egg
+PASS build.solid_block/slab_3x1 at 90 degrees preview configures
+PASS build.solid_block/slab_3x1 at 90 degrees stays in egg
+PASS build.wood_box/box_2x2 at 0 degrees preview configures
+PASS build.wood_box/box_2x2 at 0 degrees stays in egg
+PASS build.collapsing_block/cell_1x1 at 0 degrees preview configures
+PASS build.collapsing_block/cell_1x1 at 0 degrees stays in egg
+PASS block.spikes/main at 0 degrees preview configures
+PASS block.spikes/main at 0 degrees stays in egg
+PASS block.spikes/main at 90 degrees preview configures
+PASS block.spikes/main at 90 degrees stays in egg
+PASS block.spikes/main at 180 degrees preview configures
+PASS block.spikes/main at 180 degrees stays in egg
+PASS block.spikes/main at 270 degrees preview configures
+PASS block.spikes/main at 270 degrees stays in egg
+PASS block.cannon/main at 0 degrees preview configures
+PASS block.cannon/main at 0 degrees stays in egg
+PASS block.cannon/main at 90 degrees preview configures
+PASS block.cannon/main at 90 degrees stays in egg
+PASS block.cannon/main at 180 degrees preview configures
+PASS block.cannon/main at 180 degrees stays in egg
+PASS block.cannon/main at 270 degrees preview configures
+PASS block.cannon/main at 270 degrees stays in egg
+PASS build.house_stairs/steps_2x2 at 0 degrees preview configures
+PASS build.house_stairs/steps_2x2 at 0 degrees stays in egg
+PASS build.house_stairs/steps_2x2 at 90 degrees preview configures
+PASS build.house_stairs/steps_2x2 at 90 degrees stays in egg
+PASS build.house_stairs/steps_2x2 at 180 degrees preview configures
+PASS build.house_stairs/steps_2x2 at 180 degrees stays in egg
+PASS build.house_stairs/steps_2x2 at 270 degrees preview configures
+PASS build.house_stairs/steps_2x2 at 270 degrees stays in egg
+PASS build.house_stairs/steps_3x3 at 0 degrees preview configures
+PASS build.house_stairs/steps_3x3 at 0 degrees stays in egg
+PASS build.house_stairs/steps_3x3 at 90 degrees preview configures
+PASS build.house_stairs/steps_3x3 at 90 degrees stays in egg
+PASS build.house_stairs/steps_3x3 at 180 degrees preview configures
+PASS build.house_stairs/steps_3x3 at 180 degrees stays in egg
+PASS build.house_stairs/steps_3x3 at 270 degrees preview configures
+PASS build.house_stairs/steps_3x3 at 270 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_3x1 at 0 degrees preview configures
+PASS hazard.toy_burr_strip/strip_3x1 at 0 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_3x1 at 90 degrees preview configures
+PASS hazard.toy_burr_strip/strip_3x1 at 90 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_3x1 at 180 degrees preview configures
+PASS hazard.toy_burr_strip/strip_3x1 at 180 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_3x1 at 270 degrees preview configures
+PASS hazard.toy_burr_strip/strip_3x1 at 270 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_4x1 at 0 degrees preview configures
+PASS hazard.toy_burr_strip/strip_4x1 at 0 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_4x1 at 90 degrees preview configures
+PASS hazard.toy_burr_strip/strip_4x1 at 90 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_4x1 at 180 degrees preview configures
+PASS hazard.toy_burr_strip/strip_4x1 at 180 degrees stays in egg
+PASS hazard.toy_burr_strip/strip_4x1 at 270 degrees preview configures
+PASS hazard.toy_burr_strip/strip_4x1 at 270 degrees stays in egg
+PASS modifier.sorbetes_ice/surface_3x1 at 0 degrees preview configures
+PASS modifier.sorbetes_ice/surface_3x1 at 0 degrees stays in egg
+PASS modifier.sorbetes_ice/surface_4x1 at 0 degrees preview configures
+PASS modifier.sorbetes_ice/surface_4x1 at 0 degrees stays in egg
+PASS art replacement does not enable a release family
+P24_ITEM_ART checks=203 failures=0

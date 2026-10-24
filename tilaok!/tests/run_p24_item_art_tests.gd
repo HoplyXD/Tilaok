@@ -74,6 +74,7 @@ func _run() -> void:
 				"%s/%s placeholder audio remains unchanged" % [family_id, slot_id]
 			)
 	_check_launcher_prototype(definitions)
+	_check_tire_preview_uses_placed_art(definitions)
 	for family in definitions.families:
 		for variant in family.variants:
 			for turns in variant.rotations:
@@ -107,6 +108,23 @@ func _check_launcher_prototype(definitions: ItemDefinitions) -> void:
 		_check(
 			Vector2i(slot.frames[0].get_size()) == Vector2i(64, 64),
 			"launcher/%s matches the 64×64 footprint" % slot_id
+		)
+
+
+func _check_tire_preview_uses_placed_art(definitions: ItemDefinitions) -> void:
+	var family := definitions.find_family("move.tire_spring")
+	_check(family != null and family.visual_set != null, "Gulong visual set loads")
+	if family == null or family.visual_set == null:
+		return
+	for slot_id in ["body", "body_compressed"]:
+		var slot := family.visual_set.get_slot(slot_id)
+		_check(slot != null and not slot.placeholder, "Gulong/%s uses current art" % slot_id)
+		_check(
+			slot != null
+			and not slot.frames.is_empty()
+			and slot.frames[0] != null
+			and slot.frames[0].resource_path == "res://assets/tiles/tire.png",
+			"Gulong/%s matches the placed tire sprite" % slot_id
 		)
 
 

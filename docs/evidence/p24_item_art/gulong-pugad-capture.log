@@ -1,0 +1,19 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.62 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4050 Laptop GPU
+
+WARNING: Volumetric fog is only available when using the Forward+ renderer.
+   at: environment_set_volumetric_fog (servers/rendering/storage/environment_storage.cpp:458)
+   GDScript backtrace (most recent call first):
+       [0] _scan (res://scripts/stage/map_catalog.gd:84)
+       [1] entries (res://scripts/stage/map_catalog.gd:27)
+       [2] ids (res://scripts/stage/map_catalog.gd:44)
+       [3] _ready (res://scripts/flow/game_flow.gd:81)
+       [4] _run (res://tests/capture_p24_selection_previews.gd:31)
+TILAOK_FLOW_READY state=title profile=karera_slice route=offline_live_build
+P04_ITEM_LAB_READY families=16 enabled_variants=31 profile=karera_slice
+P05_MATCH_READY build=P07-match-ui-dev seed=3875098428
+P07_FIRST_PLAYABLE_READY build=P07-first-playable-dev profile=karera_slice seed=3875098428 variants=build.hollow_blocks.cell_1x1,build.hollow_blocks.column_1x3,build.hollow_blocks.stack_2x3,build.bamboo_bridge.span_3x1,build.bamboo_bridge.span_4x1,build.bamboo_bridge.span_5x1,move.tire_spring.tire_2x2,hazard.rail_trumpo.rail_4x1,hazard.rail_trumpo.rail_5x1,hazard.rail_trumpo.rail_6x1,hazard.parol_pulse.span_3x1,hazard.parol_pulse.span_4x1,hazard.parol_pulse.span_5x1,hazard.parol_pulse.span_6x1,hazard.slipper_launcher.lane_4x1,hazard.slipper_launcher.lane_6x1,utility.walis_cleanup.area_3x3,utility.walis_cleanup.area_5x5,hazard.bubble_planter.path_1x3,hazard.bubble_planter.path_1x5,build.solid_block.slab_3x1,build.wood_box.box_2x2,build.collapsing_block.cell_1x1,block.spikes.main,block.cannon.main,build.house_stairs.steps_2x2,build.house_stairs.steps_3x3,hazard.toy_burr_strip.strip_3x1,hazard.toy_burr_strip.strip_4x1,modifier.sorbetes_ice.surface_3x1,modifier.sorbetes_ice.surface_4x1
+P09_MATCH_LIFECYCLE_READY build=P09-match-lifecycle-dev seed=3875098428
+P12_SCHEDULED_MATCH_READY build=P12-scheduled-match-dev seed=3875098428 barya_enabled=true
+P12_SCHEDULE round=1 now=KARERA next=LAGSANAY
+P24_SELECTION_CAPTURE failures=0 output=C:/Users/roman/Desktop/Vscode Projects/Tilaok/docs/evidence/p24_item_art
