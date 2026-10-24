@@ -29,7 +29,9 @@ func bind(seat: Dictionary, map: UiPromptMap) -> void:
 	_preview_chicken.marker_color = seat.get("color", PlayerSeatRegistry.COLORS[seat_index])
 	_preview_chicken.modulate.a = 1.0 if joined else EMPTY_CHICKEN_ALPHA
 	for animator in _preview_animators:
-		(animator as ChickenSpriteAnimator).force_idle_preview = true
+		var preview_animator := animator as ChickenSpriteAnimator
+		preview_animator.force_idle_preview = true
+		preview_animator.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	_preview_chicken.queue_redraw()
 	theme_type_variation = FRAME_READY if is_ready else FRAME_NORMAL
 	# An open slot previews its fixed number + shape, faded, above the "Open slot" text.

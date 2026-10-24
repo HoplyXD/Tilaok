@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_lobby_slot.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/characters/chicken.tscn" id="3"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lobby_preview"]
+viewport_path = NodePath("Content/ChickenPreview/PreviewViewport")
 
 [node name="LobbySlot" type="PanelContainer"]
 layout_mode = 3
@@ -28,13 +31,16 @@ prefix_text = "Player "
 tint_darken = 0.45
 unique_name_in_owner = true
 
-[node name="ChickenPreview" type="SubViewportContainer" parent="Content"]
+[node name="ChickenPreview" type="TextureRect" parent="Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 170)
 layout_mode = 2
 size_flags_horizontal = 3
-stretch = true
 mouse_filter = 2
+texture = SubResource("ViewportTexture_lobby_preview")
+expand_mode = 1
+stretch_mode = 6
+texture_filter = 2
 
 [node name="PreviewViewport" type="SubViewport" parent="Content/ChickenPreview"]
 unique_name_in_owner = true
