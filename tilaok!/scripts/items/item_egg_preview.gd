@@ -17,6 +17,27 @@ const HAZARD_MAX_SCALE := 0.6
 ## Silhouettes drawn here as simple shapes; every other family uses ItemSilhouettePainter.
 const BOX_SILHOUETTES := ["crate", "bamboo_bridge", "solid_block", "wood_box", "collapsing_block"]
 
+
+class PreviewCanvas extends Node2D:
+	var family: ItemFamilyDefinition
+	var variant: ItemVariantDefinition
+	var quarter_turns := 0
+	var tuning: GameplayTuning
+	var behavior: ItemBehavior
+	var elapsed := 0.0
+
+
+	func _draw() -> void:
+		if family == null or variant == null or tuning == null:
+			return
+		var state := {"elapsed": elapsed}
+		if behavior != null:
+			behavior.preview_at(elapsed)
+			state = behavior.readout()
+		ItemSilhouettePainter.draw_variant(
+			self, family, variant, quarter_turns, tuning, state
+		)
+
 ## False skips the code-drawn shell, for an egg card that draws the team's egg art behind the item.
 @export var draw_shell := true
 
@@ -31,11 +52,18 @@ var _preview_behavior: ItemBehavior
 var _barya_preview := false
 ## Scene-authored blocks ("scene" silhouette): a copy of the block scene's own Visual node.
 var _scene_visual: Node2D
+## Separate canvas lets Node2D scale the preview while painter-local rotations/transforms are used.
+var _preview_canvas: PreviewCanvas
 
 
 func configure(
 	definitions: ItemDefinitions, key: String, turns: int, source_tuning: GameplayTuning
 ) -> bool:
+	_clear_preview_canvas()
+	if _scene_visual != null and is_instance_valid(_scene_visual):
+		_scene_visual.visible = false
+		_scene_visual.queue_free()
+	_scene_visual = null
 	if BaryaObjectiveDefinition.is_variant(key):
 		variant_key = key
 		quarter_turns = turns
@@ -60,15 +88,20 @@ func configure(
 	_variant = found.variant
 	_tuning = source_tuning
 	_preview_behavior = null
-	if _scene_visual != null:
-		_scene_visual.queue_free()
-		_scene_visual = null
 	if _family.preview_silhouette == BlockCatalog.SCENE_PREVIEW:
 		_add_scene_visual()
 	elif _family.preview_silhouette not in BOX_SILHOUETTES:
 		_preview_behavior = ItemBehaviorFactory.create_preview(
 			_family, _variant, turns, source_tuning
 		)
+		_preview_canvas = PreviewCanvas.new()
+		_preview_canvas.name = "PreviewCanvas"
+		_preview_canvas.family = _family
+		_preview_canvas.variant = _variant
+		_preview_canvas.quarter_turns = turns
+		_preview_canvas.tuning = source_tuning
+		_preview_canvas.behavior = _preview_behavior
+		add_child(_preview_canvas)
 	custom_minimum_size = EGG_SIZE + Vector2(8.0, 8.0)
 	size = custom_minimum_size
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -95,6 +128,9 @@ func loop_phase() -> float:
 
 func _process(delta: float) -> void:
 	elapsed += delta
+	if _preview_canvas != null:
+		_preview_canvas.elapsed = elapsed
+		_preview_canvas.queue_redraw()
 	queue_redraw()
 
 
@@ -148,17 +184,21 @@ func _draw_egg(center: Vector2, highlight: bool) -> void:
 
 
 func _draw_hazard_silhouette(center: Vector2) -> void:
+	if _preview_canvas == null:
+		return
 	var envelope := ItemSilhouettePainter.envelope(_variant, quarter_turns, _tuning)
 	var fit := minf(HAZARD_BOX_WU.x / envelope.size.x, HAZARD_BOX_WU.y / envelope.size.y)
 	var scale_value := minf(fit, HAZARD_MAX_SCALE)
-	var state := {"elapsed": elapsed}
-	if _preview_behavior != null:
-		_preview_behavior.preview_at(elapsed)
-		state = _preview_behavior.readout()
-	var offset := center - envelope.get_center() * scale_value
-	draw_set_transform(offset, 0.0, Vector2(scale_value, scale_value))
-	ItemSilhouettePainter.draw_variant(self, _family, _variant, quarter_turns, _tuning, state)
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	_preview_canvas.position = center - envelope.get_center() * scale_value
+	_preview_canvas.scale = Vector2.ONE * scale_value
+	_preview_canvas.visible = true
+
+
+func _clear_preview_canvas() -> void:
+	if _preview_canvas != null and is_instance_valid(_preview_canvas):
+		_preview_canvas.visible = false
+		_preview_canvas.queue_free()
+	_preview_canvas = null
 
 
 func _draw_silhouette(center: Vector2, wobble: float) -> void:
