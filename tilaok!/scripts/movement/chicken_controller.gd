@@ -40,6 +40,11 @@ var coyote_remaining := 0.0
 var jump_buffer_remaining := 0.0
 var jump_was_held := false
 var intentional_input := false
+## Sign of the movement key the controller accepted this step: -1 left, +1 right, 0 neither.
+## ChickenSpriteAnimator picks its left/right pose from this, so the pose follows the key the
+## player is holding rather than the velocity -- ice slides and knockback do not read as running.
+## Zero whenever the controller ignores movement (build mode, no seat, outside Play).
+var facing_input := 0
 ## Build mode suppresses direct player movement while leaving gravity, collisions and external
 ## forces active. The live-build room owns this per-seat lock.
 var build_input_locked := false
@@ -134,6 +139,9 @@ func _physics_process(delta: float) -> void:
 	var building := in_play and (input_router.is_build_mode(seat_index) or build_input_locked)
 	var controls_active := in_play and not building
 	var axis := input_router.movement_axis(seat_index) if controls_active else 0.0
+	# Captured before stun and sneak zero `axis` below: those poses have no left/right variant,
+	# and the animator should still know which way a recovering chicken is asking to go.
+	facing_input = 0 if is_zero_approx(axis) else (1 if axis > 0.0 else -1)
 	var jump_down := controls_active and input_router.is_action_held(seat_index, "jump")
 	var next_intent := (
 		controls_active

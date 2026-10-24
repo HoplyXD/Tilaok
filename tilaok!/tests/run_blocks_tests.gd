@@ -432,6 +432,19 @@ func _anim_after(frames: int) -> StringName:
 	return (actor.get_node(ANIMATION_NODE) as AnimatedSprite2D).animation
 
 
+## Waits up to `max_frames` for the animation to become `pose` and returns what it actually is,
+## so a failure reports the pose that was stuck. The one-shot transitions run 0.6-1.0 s (4 frames
+## at 5 fps), far longer than a fixed wait should hard-code.
+func _await_anim(pose: StringName, max_frames: int = 75) -> StringName:
+	var sprite := actor.get_node(ANIMATION_NODE) as AnimatedSprite2D
+	for _frame in range(max_frames):
+		await _frames(1)
+		await process_frame
+		if sprite.animation == pose:
+			return sprite.animation
+	return sprite.animation
+
+
 func _test_chicken_animations() -> void:
 	room.items.reset_match()
 	room.items.begin_play()
@@ -440,9 +453,7 @@ func _test_chicken_animations() -> void:
 	_check(sprite != null and not actor.draw_debug_body, "chickens use the animated chicken scene")
 	if sprite == null:
 		return
-	# Every pose ChickenSpriteAnimator.animation_for_state() can ask for. The sheet also carries
-	# transition poses (jump_landing, jump_falling, sneak_hold, sneak_stand) that nothing drives
-	# yet, so this list is the contract, not the sheet's full contents.
+	# Every pose ChickenSpriteAnimator.pose_for_state() can ask for.
 	var names := [
 		&"idle",
 		&"run_right",
@@ -450,12 +461,20 @@ func _test_chicken_animations() -> void:
 		&"wall_slide_right",
 		&"wall_slide_left",
 		&"sneak",
+		&"sneak_hold",
+		&"sneak_stand",
 		&"jump",
 		&"jump_right",
 		&"jump_left",
+		&"jump_falling",
+		&"jump_right_falling",
+		&"jump_left_falling",
 		&"jump_gliding",
 		&"jump_right_gliding",
 		&"jump_left_gliding",
+		&"jump_landing",
+		&"jump_right_landing",
+		&"jump_left_landing",
 		&"stun",
 		&"dead",
 	]
@@ -467,8 +486,9 @@ func _test_chicken_animations() -> void:
 		var texture := sprite.sprite_frames.get_frame_texture(anim_name, 0) as AtlasTexture
 		frames_ok = frames_ok and texture != null and texture.region.size == Vector2(2048, 2048)
 	_check(frames_ok, "every state animation exists with 2048x2048 sheet cells")
+	# Settling onto the floor is itself a landing, so idle only resumes once it has played out.
 	_put_actor_feet(Vector2(736.0, FLOOR_Y))
-	_check(await _anim_after(10) == &"idle", "standing still plays idle")
+	_check(await _await_anim(&"idle") == &"idle", "standing still plays idle")
 	_key(KEY_D, true)
 	_check(await _anim_after(10) == &"run_right", "moving right plays run_right")
 	_key(KEY_D, false)
@@ -476,24 +496,51 @@ func _test_chicken_animations() -> void:
 	_check(await _anim_after(12) == &"run_left", "moving left plays run_left")
 	_key(KEY_A, false)
 	await _frames(10)
+
+	# Sneak: the one-shot intro, then the hold, then the stand-up on release.
 	_key(KEY_S, true)
-	_check(await _anim_after(3) == &"sneak", "sneaking plays sneak")
+	_check(await _anim_after(3) == &"sneak", "pressing down plays sneak")
+	_check(await _await_anim(&"sneak_hold") == &"sneak_hold", "holding down plays sneak_hold after")
 	_key(KEY_S, false)
-	await _frames(3)
-	_put_actor_feet(Vector2(736.0, 300.0))
-	_check(await _anim_after(3) == &"jump", "airborne with no input plays jump")
+	_check(await _anim_after(3) == &"sneak_stand", "releasing down plays sneak_stand")
+	_check(await _await_anim(&"idle") == &"idle", "idle resumes once sneak_stand has played")
+
+	# Jump: rise, fall, land. The landing pose always follows touching the ground.
+	_key(KEY_W, true)
+	_check(await _anim_after(3) == &"jump", "jumping plays jump")
+	_key(KEY_W, false)
+	_check(await _await_anim(&"jump_falling") == &"jump_falling", "falling plays jump_falling after")
+	_check(
+		await _await_anim(&"jump_landing") == &"jump_landing", "hitting the ground plays jump_landing"
+	)
+	_check(await _await_anim(&"idle") == &"idle", "idle resumes once jump_landing has played")
+
+	# The same arc with right held picks the directional variants.
 	_key(KEY_D, true)
-	_check(await _anim_after(8) == &"jump_right", "airborne moving right plays jump_right")
+	_key(KEY_W, true)
+	_check(await _anim_after(3) == &"jump_right", "jumping with right held plays jump_right")
+	_key(KEY_W, false)
+	_check(
+		await _await_anim(&"jump_right_falling") == &"jump_right_falling",
+		"falling with right held plays jump_right_falling"
+	)
+	_check(
+		await _await_anim(&"jump_right_landing") == &"jump_right_landing",
+		"landing with right held plays jump_right_landing"
+	)
 	_key(KEY_D, false)
+	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the directional landing")
+
+	# Glide: holding jump while falling, with and without a direction.
+	_put_actor_feet(Vector2(736.0, 300.0))
 	_key(KEY_A, true)
 	await _frames(12)
 	_key(KEY_W, true)
 	_check(await _anim_after(4) == &"jump_left_gliding", "gliding left plays jump_left_gliding")
 	_key(KEY_A, false)
-	# Neutral air input keeps horizontal speed by design; stop the drift for the still pose.
-	actor.locomotion_velocity.x = 0.0
-	_check(await _anim_after(3) == &"jump_gliding", "gliding still plays jump_gliding")
+	_check(await _anim_after(3) == &"jump_gliding", "gliding with no direction plays jump_gliding")
 	_key(KEY_W, false)
+	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the glide lands")
 	var ids := _arrange([[SOLID, Vector2i(23, 9), 1]])
 	_put_actor_feet(Vector2(1472.0 - room.tuning.body_width_wu * 0.5 - 0.1, 640.0))
 	_check(await _anim_after(4) == &"wall_slide_right", "wall on the right plays wall_slide_right")

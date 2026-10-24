@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bx6kmqcuhmlo2"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_4sy8y"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_7qfvx"]
-[ext_resource type="Resource" path="res://data/items/visual/utility.walis_cleanup.tres" id="3_ovr0o"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_5xilf"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_4sy8y"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_7qfvx"]
+[ext_resource type="Resource" uid="uid://b34mdo2j7tq0o" path="res://data/items/visual/utility.walis_cleanup.tres" id="3_ovr0o"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_5xilf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k1j5l"]
 size = Vector2(192, 192)
@@ -35,6 +35,10 @@ preview_cue = "area_sweep"
 visual_set = ExtResource("3_ovr0o")
 
 [node name="CleanupArea" type="Area2D" parent="." unique_id=70443087]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_5xilf")
 effect = 6
 

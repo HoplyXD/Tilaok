@@ -243,6 +243,31 @@ The chicken carries one authored hitbox per pose and enables exactly one at a ti
 - Growing back to the standing body needs headroom, reusing the sneak check: a chicken that lands in a one-tile gap keeps the small body until it fits.
 - The tuning body size stays authoritative — the controller resizes the authored standing and sneak shapes to `body_width_wu` / `body_height_wu` / `sneak_height_wu` on ready. `JumpHitbox` has no gameplay counterpart, so its authored size is left alone and only its feet are pinned to the standing feet line.
 
+### Chicken animation states — 2026-10-24 (user request)
+
+**Status — October 24, 2026:** requested by the user and implemented; `run_blocks_tests` covers every chain below (120 checks). Human feel review is pending, and one open concern is recorded at the end.
+
+`ChickenSpriteAnimator` calls `play()` once per pose change, never per frame, so each animation's own loop flag in the SpriteFrames decides whether it repeats. Left/right comes from the movement key the controller accepted (`ChickenController.facing_input`), not from velocity, so a chicken sliding on ice or taking knockback reads as idle rather than running.
+
+Priority order, highest first: `dead` → `stun` → sneak → wall slide → airborne → landing / stand-up → run / `idle`.
+
+| Trigger | Pose |
+| --- | --- |
+| No other state applies | `idle` |
+| Jump, while rising | `jump`, `jump_left`, `jump_right` |
+| Falling (including walking off a ledge) | `jump*_falling` |
+| Holding jump while falling | `jump*_gliding` |
+| Touching the ground | `jump*_landing` |
+| On the ground with a direction held | `run_left`, `run_right` |
+| Pressing down | `sneak`, then `sneak_hold` while held |
+| Releasing down | `sneak_stand` |
+| Stunned | `stun` |
+| Held against a wall | `wall_slide_left`, `wall_slide_right` |
+
+Three of these are transitions that must be seen in full before the next pose starts, gated on `animation_finished`: `sneak` → `sneak_hold`, `sneak_stand` → idle/run, and `jump*_landing` → idle/run. Each is authored non-looping so it ends on its own; a pose that loops, or is missing from the sheet, is never waited for, so a mis-set loop flag cannot freeze the chicken. A fresh jump cuts a landing or stand-up short, because the airborne branch is reached first.
+
+**Open — responsiveness cost of the one-shots.** As authored, `jump*_landing` runs 0.80 s and `sneak_stand` 0.60 s (4 and 3 frames at 5 fps), and both block `run_left` / `run_right`. A player who lands already holding a direction therefore sees the landing animation for 0.8 s before the run starts. This is the behaviour the owner asked for ("always play after hitting the ground"), but it has not had a feel review. If it reads as sluggish, the fix is either shorter landing frames or letting a held direction cut the landing short.
+
 ### Map terrains and water — 2026-10-22 (user request)
 
 **Status — October 22, 2026:** requested by the user and implemented; automated Godot checks pass (maps, P02 movement, P03 stage, blocks and tutorial suites). Human feel review, water art and physical-device checks are pending. No shipped map paints water yet.
