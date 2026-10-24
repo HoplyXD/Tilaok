@@ -58,7 +58,7 @@ texture = ExtResource("2")
 expand_mode = 1
 metadata/asset_id = "ui.library.step_pugad"
 
-[node name="Art_Place" type="TextureRect" parent="Illustration"]
+[node name="Art_Build" type="TextureRect" parent="Illustration"]
 visible = false
 texture_filter = 4
 layout_mode = 1
@@ -178,7 +178,7 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
-metadata/note = "This project's Mansalva sets some lines a few px narrower than Figma's; 10 px less width keeps Figma's line breaks (PLACE wraps \"it.\", PUGAD stays on one line)."
+metadata/note = "This project's Mansalva sets some lines a few px narrower than Figma's; 10 px less width keeps the round-step card copy readable."
 
 [node name="StepBody" type="Label" parent="Explanation/BodyMargin"]
 layout_mode = 2

@@ -250,12 +250,12 @@ Placement notes: a variant may reserve only part of its footprint (`occupied_cel
 - the spawn feet point;
 - the exact flag rectangle;
 - the protected flag zone;
-- the tutorial BUILD HERE zone;
+- the legacy tutorial BUILD HERE marker zone (developer Place route);
 - extra non-tile surfaces, drawn as plain boxes.
 
 The Tutorial map uses them for its half-tile flag ledge.
 
-**Tutorial map** (`scenes/maps/tutorial.tscn`, id `tutorial`). It replaced `data/stage/tutorial_arena_layout.tres` on 2026-10-16. Its surfaces, wall flags, half-tile cap, spawn, build region, protected goal, flag and BUILD HERE zone matched that verified layout exactly ([parity record](evidence/maps/2026-10-16_tutorial_map_parity.txt)); the tutorial gate suite now runs on the map (48 checks, 3,341 no-build attempts, flag never reached). Re-run the gate tests after editing the Tutorial map.
+**Tutorial map** (`scenes/maps/tutorial.tscn`, id `tutorial`). It replaced `data/stage/tutorial_arena_layout.tres` on 2026-10-16. Its surfaces, wall flags, half-tile cap, spawn, build region, protected goal, flag and legacy BUILD HERE marker matched the old layout exactly ([historical parity record](evidence/maps/2026-10-16_tutorial_map_parity.txt)). The old 3,341-attempt no-build result predates the current movement set and is not evidence that construction remains mandatory or that the current lesson route is solvable. The P25 gate rerun exposed an obsolete floor-equality assertion; the full search did not complete. Treat current map solvability as unverified until P25-T05 is complete.
 - While the guided tutorial is pending, a new session's first match starts on it.
 - Picking another map in the Lobby skips the tutorial for the session, like the pause menu's Skip tutorial; picking Tutorial again brings it back (as does Library > Replay tutorial).
 - Once the tutorial is done or skipped, a leftover Tutorial selection falls back to the default stage.
@@ -265,7 +265,7 @@ The Tutorial map uses them for its half-tile flag ledge.
 - The Lobby rescans `scenes/maps/` every time it opens, so a map saved while the game is running appears in the next Lobby.
 - A map needs a Map Name, at least one block and at least one of each marker. Broken maps stay out of the selection; `MapCatalog.errors()` and the editor's scene warnings say why.
 - One map per match: the map is chosen in the Lobby (left/right on any joined seat) before the match starts. Changing it rebuilds the Lobby room on the new stage; joined seats stay.
-- The built-in default stage is always the first choice. The guided tutorial match always uses the tutorial stage.
+- The built-in default stage is always the first choice. The guided tutorial match uses the tutorial stage, but current onboarding does not say that construction is mandatory to reach the flag.
 - From the command line: `-- --map=<id>`.
 
 **Sample Map.** The default stage rebuilt as a map scene. Its collision rectangles, build region, spawn zone and flag equal the built-in default exactly. Spawn x is the centre of the Spawn area (2.5 tiles instead of the built-in 3.0).

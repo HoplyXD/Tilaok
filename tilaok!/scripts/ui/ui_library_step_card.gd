@@ -4,7 +4,7 @@ extends Panel
 
 ## One "Round step" card on a Library page (Figma 133:1286): an illustration, the step's name with
 ## a short note on the right, and the explanation under them. `art` shows the illustration child
-## named Art_<Art> (Art_Pugad, Art_Place, Art_Play) and hides the others; an unknown name shows
+## named Art_<Art> (Art_Pugad, Art_Build, Art_Play) and hides the others; an unknown name shows
 ## none. It runs in the editor so the Inspector's text and art show up in the 2D view.
 
 @export var heading := "PUGAD":

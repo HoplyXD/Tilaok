@@ -49,7 +49,11 @@ func _run() -> void:
 			after_tutorial = map_id
 			break
 	_default_signature = (
-		ArenaDefinition.new(tuning, MapCatalog.layout_for(after_tutorial)).arena_geometry_signature()
+		(
+			ArenaDefinition
+			. new(tuning, MapCatalog.layout_for(after_tutorial))
+			. arena_geometry_signature()
+		)
 		if not after_tutorial.is_empty()
 		else ArenaDefinition.new(tuning).arena_geometry_signature()
 	)
@@ -375,16 +379,16 @@ func _test_copy_follows_tuning_and_devices() -> void:
 	_join_k2(room)
 	coach.rebuild()
 	_check(
-		str(coach.view.glyph).contains("A / D") and str(coach.view.glyph).contains("Left / Right"),
-		"K1 + K2 shows both devices' glyphs (%s)" % coach.view.glyph
+		str(coach.view.glyph).is_empty(),
+		"K1 + K2 uses each seat's own HUD hints instead of merging keys (%s)" % coach.view.glyph
 	)
 	var pad := room.input_router.registry.join_gamepad(900)
 	if pad >= 0:
 		room.input_router.seat_joined.emit(pad)
 	coach.rebuild()
 	_check(
-		str(coach.view.glyph).contains("D-pad"),
-		"a gamepad seat adds its glyph (%s)" % coach.view.glyph
+		str(coach.view.glyph).is_empty(),
+		"mixed keyboard/gamepad seats do not share a combined glyph (%s)" % coach.view.glyph
 	)
 	await _free_flow()
 

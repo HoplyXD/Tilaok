@@ -1625,7 +1625,13 @@ func _test_library_frame() -> void:
 	var label_specs := [
 		["Frame/TitleLabel", &"LibraryTitle", "Library", "#784623", 66],
 		["%EntryTitle", &"LibraryChapterTitle", "The round loop", "#784623", 42],
-		["%EntrySummary", &"LibraryChapterSummary", "Every round has three steps.", "#563b2b", 21],
+		[
+			"%EntrySummary",
+			&"LibraryChapterSummary",
+			"Every round has Pugad, shared BUILD, then active play and results.",
+			"#563b2b",
+			21
+		],
 	]
 	for spec in label_specs:
 		var label := library.get_node(str(spec[0])) as Label
@@ -1656,7 +1662,7 @@ func _test_library_frame() -> void:
 			),
 			"library step card %d at %s, #fff3da with a #c4a074 edge" % [index + 1, want]
 		)
-	_check(arts == PackedStringArray(["pugad", "place", "play"]), "step art %s" % [arts])
+	_check(arts == PackedStringArray(["pugad", "build", "play"]), "step art %s" % [arts])
 	var keys := PackedStringArray()
 	for key in ["%ChooseKey", "%ReadKey", "%BackKey"]:
 		keys.append((library.get_node(key) as Label).text)

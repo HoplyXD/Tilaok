@@ -71,7 +71,7 @@ func bind_live(view: Dictionary) -> void:
 	var width := _match_right - _match_left
 	if step_id == "welcome":
 		width = lobby_width
-	elif step_id == "live_build":
+	elif step_id in ["live_build", "live_place"]:
 		width = live_build_width
 	var left := results_offset_left if step_id == "results" else _match_left
 	_anchor.offset_left = left

@@ -5,12 +5,15 @@ extends Resource
 ## order and advance rules live in TutorialCoordinator, wording and glyph actions live here.
 
 const STEP_WELCOME := &"welcome"
+const STEP_MOVE := &"move_practice"
 const STEP_PUGAD := &"pugad"
 const STEP_PLACE := &"place"
 const STEP_KARERA := &"karera"
 const STEP_LIVE_BUILD := &"live_build"
+const STEP_LIVE_PLACE := &"live_place"
 const STEP_RESULTS := &"results"
 const STEP_LAGSANAY := &"lagsanay"
+const STEP_ITEM_LITERACY := &"item_literacy"
 ## Just-in-time Kangaroo prompts (P13-T07): poses in the Pugad before the first Kangaroo round,
 ## built supports in its Place, the three misses once its commands run.
 const STEP_KANGAROO_POSES := &"kangaroo_poses"
@@ -25,7 +28,7 @@ const KANGAROO_STEPS: Array[StringName] = [
 @export var placeholder_tag := "PLACEHOLDER copy"
 ## Static caption that replaces the old Back-bound skip glyph in live mode.
 @export var skip_caption := "Pause > Skip tutorial"
-@export var total_steps := 5
+@export var total_steps := 7
 
 
 func step(step_id: StringName) -> TutorialStepDef:
@@ -38,12 +41,14 @@ func step(step_id: StringName) -> TutorialStepDef:
 func has_all_steps() -> bool:
 	for step_id in [
 		STEP_WELCOME,
+		STEP_MOVE,
 		STEP_PUGAD,
-		STEP_PLACE,
 		STEP_LIVE_BUILD,
+		STEP_LIVE_PLACE,
 		STEP_KARERA,
 		STEP_RESULTS,
-		STEP_LAGSANAY
+		STEP_LAGSANAY,
+		STEP_ITEM_LITERACY
 	]:
 		if step(step_id) == null:
 			return false

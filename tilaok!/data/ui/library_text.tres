@@ -13,10 +13,10 @@ art = "pugad"
 
 [sub_resource type="Resource" id="Step_1_2"]
 script = ExtResource("3")
-heading = "PLACE"
-note = "about {place_s} s"
-body = "PLACE: put your piece on the shared stage (about {place_s} s) and confirm to lock it."
-art = "place"
+heading = "BUILD"
+note = "up to {build_s} s"
+body = "BUILD lasts up to {build_s} seconds. Confirm your item now to place it quietly, or save it for play. If everyone places, the final 3–2–1 begins early; otherwise the timer runs out and play starts."
+art = "build"
 
 [sub_resource type="Resource" id="Step_1_3"]
 script = ExtResource("3")
@@ -29,7 +29,7 @@ art = "play"
 script = ExtResource("2")
 category = "How to Play"
 title = "The round loop"
-body = "Every round has three steps."
+body = "Every round has Pugad, shared BUILD, then active play and results."
 requires = ""
 steps = Array[ExtResource("3")]([SubResource("Step_1_1"), SubResource("Step_1_2"), SubResource("Step_1_3")])
 
@@ -43,8 +43,8 @@ requires = ""
 [sub_resource type="Resource" id="Page_3"]
 script = ExtResource("2")
 category = "How to Play"
-title = "Placing a piece"
-body = "Move the ghost with the move keys and rotate it where the shape allows. A solid outline with OK is a valid spot; a dashed outline with an X is blocked and the reason is shown.\nYou cannot place on a chicken, the spawn, the flag platform or the base stage. The first player to confirm a spot claims it for the rest of Place."
+title = "Build now or save"
+body = "In BUILD, the camera follows your preview. A valid confirmation places your item at once as a quiet piece; hazards activate when play starts. Save it and use your per-player build controls during play: aim, rotate where supported, confirm or cancel. A live build takes {construction_s} seconds; your chicken can move while it finishes. Red/blocked feedback gives the reason. One item is shared across both phases."
 requires = ""
 
 [sub_resource type="Resource" id="Page_4"]
@@ -58,7 +58,7 @@ requires = ""
 script = ExtResource("2")
 category = "How to Play"
 title = "Winning"
-body = "First to {target} points wins, or the highest score after round {round_limit}. A tie plays a Sudden Death Lagsanay. Round 1 is always Karera and every 4th round is a Lagsanay."
+body = "First to {target} points wins, or the highest score after round {round_limit}. A tie plays a Sudden Death Lagsanay. Rounds 1–3 are Karera, Lagsanay, then Kangaroo. Later rounds draw from those three challenges."
 requires = ""
 
 [sub_resource type="Resource" id="Page_6"]

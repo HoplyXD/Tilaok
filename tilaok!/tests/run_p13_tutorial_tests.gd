@@ -35,6 +35,7 @@ func _run() -> void:
 	await _test_standalone_and_mixed_rejection()
 	await _test_skip_and_replay()
 	await _test_guided_match_keeps_its_steps()
+	_test_per_seat_learning_memory()
 	_test_no_disk_io()
 	print("P13_TUTORIAL_TESTS checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -55,21 +56,25 @@ func _test_script_data() -> void:
 	)
 	var pugad := script.step(TutorialScript.STEP_PUGAD)
 	_check(
-		pugad.variants.has("barya") and str(pugad.variants["barya"]).contains("Reach the flag"),
+		(
+			pugad.variants.has("barya")
+			and str(pugad.variants["barya"]).to_lower().contains("barya")
+			and str(pugad.variants["barya"]).to_lower().contains("reach the flag")
+		),
 		"the Pugad coach has a Barya pickup and scoring explanation"
 	)
 	var live_build := script.step(TutorialScript.STEP_LIVE_BUILD)
 	var preparation_copy := str(live_build.variants.get("preparation", ""))
 	_check(
 		(
-			preparation_copy.contains("Build now, or save your item for play")
-			and preparation_copy.contains("inactive until PLAY")
+			preparation_copy.contains("Place your item now or save it for play")
+			and preparation_copy.contains("quiet until GO")
 		),
 		"preparation tutorial explains early build, saving the item and inert prepared hazards"
 	)
 	_check(
-		str(script.step(TutorialScript.STEP_PLACE).body).contains("During Place"),
-		"the scheduled developer Place route keeps its own tutorial copy"
+		str(script.step(TutorialScript.STEP_PLACE).body).contains("not the normal match loop"),
+		"the developer placement route is explicitly separated from normal onboarding"
 	)
 	var joined := ""
 	for step_id in TutorialScript.KANGAROO_STEPS:
@@ -81,13 +86,13 @@ func _test_script_data() -> void:
 	_check(
 		(
 			joined.to_lower().contains("freeze")
-			and joined.to_lower().contains("rising wave")
+			and joined.to_lower().contains("rising")
 			and joined.to_lower().contains("hug")
 		),
 		"the prompts name the three poses"
 	)
 	_check(
-		joined.contains("hitbox") and joined.contains("support is not required"),
+		joined.contains("bottom of its hitbox") and joined.contains("No platform is needed"),
 		"the prompts explain the final Rising hitbox check without a support requirement"
 	)
 
@@ -117,6 +122,13 @@ func _test_barya_pugad_prompt() -> void:
 		),
 		"an enabled Pugad Barya offer changes the live coach copy"
 	)
+	_check(
+		str(flow.tutorial.view.glyph).is_empty(),
+		(
+			"mixed keyboard seats use their own score-row controls instead of merged glyphs (%s)"
+			% flow.tutorial.view.glyph
+		)
+	)
 	await _free()
 
 
@@ -132,7 +144,7 @@ func _test_main_kangaroo_sequence() -> void:
 	_goto_place()
 	_check(_step(coach) == "kangaroo_supports", "its Place shows the built-support prompt")
 	_check(
-		str(coach.view.body).contains("support is not required"),
+		str(coach.view.body).contains("No platform is needed"),
 		"the Rising prompt explains its final evaluation"
 	)
 	_goto_play()
@@ -149,10 +161,10 @@ func _test_main_kangaroo_sequence() -> void:
 	)
 	_check(
 		(
-			str(coach.view.body).to_lower().contains("race scoring")
-			and str(coach.view.body).to_lower().contains("no life markers")
+			str(coach.view.body).to_lower().contains("pairs, groups and chains")
+			and str(coach.view.body).to_lower().contains("hug is skipped")
 		),
-		"the race prompt explains scoring and removed markers"
+		"the Hug prompt explains group contact and sole-runner behavior"
 	)
 	# Seen once: after the round the session holds all three and a later Kangaroo shows nothing.
 	room._end_event_view()
@@ -186,16 +198,15 @@ func _test_standalone_and_mixed_rejection() -> void:
 		_step(coach) == "kangaroo_misses", "stale mixed input does not show a second taya prompt"
 	)
 	await _free()
-	# A Lagsanay Main round: the taya prompt hands the stage back after its time.
+	# A Lagsanay Main round: the taya prompt stays until the mode ends.
 	await _open(true)
 	_force(1, LAGSANAY, NONE)
 	_goto_place()
 	_goto_play()
 	_check(_step(flow.tutorial) == "lagsanay", "a Lagsanay Main round shows the taya prompt")
-	flow.tutorial._on_taya_prompt_timeout()
 	_check(
-		_step(flow.tutorial) == "" and flow.tutorial_session.seen_lagsanay,
-		"the taya prompt hands over after its time and counts as seen"
+		_step(flow.tutorial) == "lagsanay" and not flow.tutorial_session.seen_lagsanay,
+		"the taya prompt remains active without an elapsed-time dismissal"
 	)
 	await _free()
 	# Karera + Kangaroo is normalized to the Karera Main.
@@ -259,6 +270,35 @@ func _test_guided_match_keeps_its_steps() -> void:
 		"during the guided first match the Pugad keeps the guided step (%s)" % _step(flow.tutorial)
 	)
 	await _free()
+
+
+func _test_per_seat_learning_memory() -> void:
+	var session := TutorialSession.new()
+	for player_count in [2, 3, 4]:
+		var seats: Array[int] = []
+		for seat_index in player_count:
+			seats.append(seat_index)
+		session.replay()
+		for seat_index in seats:
+			session.mark_action_learned(&"preparation", seat_index)
+			_check(
+				not session.all_seats_learned(&"live_build", seats),
+				(
+					"preparation for seat %d does not imply live build for %d seats"
+					% [seat_index, player_count]
+				)
+			)
+		for seat_index in seats:
+			session.mark_action_learned(&"live_build", seat_index)
+		_check(
+			(
+				session.all_seats_learned(&"preparation", seats)
+				and session.all_seats_learned(&"live_build", seats)
+			),
+			"all %d seats must learn both item paths" % player_count
+		)
+	session.replay()
+	_check(session.learned_actions.is_empty(), "Replay clears per-seat lesson records")
 
 
 func _test_no_disk_io() -> void:

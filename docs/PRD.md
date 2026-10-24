@@ -118,7 +118,7 @@ Launch → Title → local Lobby → Pugad → shared 10-second BUILD → final 
 |---|---|
 | Title | Start local match, Library, settings, quit; development build label. |
 | Lobby | 2–4 slots, device prompts, fixed number/shape plus color, join/ready/leave/help. |
-| Tutorial | One instruction at a time; move/jump, claim, place/rotate, flag and actual results. |
+| Tutorial | Action-aware, per-seat guidance for movement, Pugad, shared BUILD or saved-item live building, flag, real results, and contextual Lagsanay/Kangaroo/item clues. Skip/replay remain session-only. Novice comprehension is not yet verified. |
 | Pugad | Exact animated item/size, countdown, ownership, next-round Main/Twist announcement. No names/descriptions. |
 | Place | Pointer/ghost, rotate/confirm, countdown, validity reason, protected zones and effect/trajectory guide. |
 | Play | Objective, relevant timers, round/scores/identity/state, readable hazards and event prompts. |

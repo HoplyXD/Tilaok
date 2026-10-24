@@ -1,6 +1,6 @@
 # Tilaok! UI, Accessibility, and Tutorial Specification
 
-**Current onboarding (2026-10-24):** teach local join, Pugad selection, shared 10-second BUILD with its timer in the side HUD, final 3–2–1/GO cue, cursor-following camera, instant inert preparation placement, movement while building in PLAY, preview warnings, live two-second completion delay, obstruction rejection and cancellation. Explain that skipping BUILD saves the assigned item for live placement, that BUILD expires directly into active play, and that the separate three-second countdown is used when resuming from pause. Phone/LAN help content is retired; historical NLB records are archived.
+**Current onboarding (2026-10-25):** normal play is Lobby → Pugad → shared BUILD (up to 10 s) → final 3–2–1/GO → active play/build → results. Teach movement from each player's assigned-device HUD hints; the coach never merges multiple players' keys into one glyph string. The same one item can be placed inertly during BUILD or saved for a two-second live build. BUILD expiry starts play directly; GET READY is only the pause-resume countdown. Skip/replay stay session-only. Novice validation remains open.
 
 
 ## Experience goals
@@ -29,11 +29,11 @@ flowchart LR
 | Title | Game title, start-local-match option, Library, settings, clear build/version label during development. | Start, Library, settings, back/quit. |
 | Library | Browse enabled items, events, scoring, controls, and accessibility help outside an active match. | Choose category, inspect animated entry, back. |
 | Local join lobby | Two-to-four player join slots, controller/keyboard prompt, chicken colour plus number/shape marker, ready state. | Join, select permitted identifier, ready, leave. |
-| Tutorial | Guided first Karera with one instruction at a time. Teaches local controls, Pugad, live building while the race continues, the two-second completion, then the flag and results. | Move, jump, claim an egg, aim/rotate/confirm or cancel a build, reach flag. |
+| Tutorial | Guided first match with one action-aware instruction at a time. Teaches movement, Pugad, shared BUILD, saved-item live building, the flag, results and contextual mode lessons. | Use each seat's own input hints; move, claim, prepare or save an item, race, and read results. |
 | Pugad | Visible eggs and contained items, selection countdown, locked next-round Main Challenge/Twist announcement where applicable. | Move pointer/character, claim egg. |
-| BUILD / active Play | BUILD’s final 3–2–1 cue leads directly into active play; there is no separate GO wait. The build lesson stays visible during Play until every active player completes a build or leaves the round. Build mode pauses only that chicken while aiming; confirming resumes movement while the visible, non-gameplay job runs for 2.0 gameplay seconds. The preview shows player number, shape, footprint, progress and time remaining. Invalid completion rejects and keeps the item. | Move, jump, toggle build, aim, rotate, confirm or cancel. |
-| Place | Shared stage, each player pointer, valid/invalid ghost, rotation prompt, countdown, protected-zone feedback. | Move, rotate where available, confirm. |
-| Play | Phase/objective display, timer where applicable, score, player identity markers, event and item tells. | Run and jump baseline; wall slide/jump controls appear only if the approved Should extension is implemented, verified and selected for release. |
+| BUILD / active Play | Shared BUILD lasts up to 10 seconds. Confirmation places an inert item immediately; if all players place, only the unused wait is skipped before the final 3–2–1/GO. A saved item can be used in Play; aiming pauses that chicken, and confirming restores movement while a visible two-second job runs. | Move, jump, toggle build, aim, rotate where supported, confirm or cancel. |
+| Developer Place route | Separate legacy/test phase, not part of normal onboarding. | Follow the route-specific test controls. |
+| Play | Phase/objective display, timer where applicable, score, player identity markers, event and item tells. | Run and jump baseline; optional sneak, glide and wall slide/jump are enabled in current tuning. |
 | Round result | Finishes/eliminations, awarded points, current match total, clear winner or no-score explanation. | Continue when all players are ready or after timeout. |
 | Match result | Exactly one winner, each original participant's exact final score, ordinary or sudden-death outcome, and Last Cluck explanation when applicable. | Replay, Return to Lobby, Quit; all original participants freshly ready. Quit/whole-group leave require confirmation and cancel restores the prior state. |
 
@@ -125,48 +125,50 @@ The giant background slipper is a non-colliding presenter. The scheduled P23 rou
 
 ## Tutorial sequence
 
-The first match begins with a guided Karera. It teaches the normal live-build loop; it does not require a player to learn Lagsanay or Kangaroo before playing.
+The first match begins with a guided Karera. It teaches the normal live-build loop; it does not require a player to learn Lagsanay or Kangaroo before playing. The core route target is one short round (roughly 2–3 minutes, unvalidated); contextual lessons may recur in later rounds if a seat misses an action.
 
 1. **Welcome:** identify the player’s chicken number/shape and explain the local join display.
 2. **Move and jump:** reach short, safe markers on the base stage.
 3. **Pugad:** point out that each egg shows the item inside; claim one egg.
-4. **BUILD transition / build mode:** keep the lesson visible from BUILD through active Play until each player uses their item, becomes terminal, or the round ends. Explain the cursor-following camera and immediate inert placement during BUILD; BUILD expires directly into Play after its final 3–2–1 cue. In PLAY, camera follows chickens and confirmed live construction takes 2.0 seconds while movement resumes immediately. Show the tutorial build zone, footprint warning and cancellation. Use the individual controls displayed above each player's P# score. Pause resume has its own separate 3-second GET READY countdown.
-5. **Karera:** run, jump and reach the flag.
-6. **Results:** explain Tapos and first-finisher Una with the actual Karera result; explain that second and third finishers get no rank bonus.
-7. **Later just-in-time prompts:** before the first Lagsanay, explain taya, pass, timer, and last-survivor objective. Before the first Kangaroo, explain the flag race, sequential slipper responses, direct elimination on failure, and Rising’s final hitbox check.
+4. **Move and jump:** during active play, track each seat's actual run, jump and upward movement. Offer optional sneak, glide and wall movement tips. Terminal or round end releases the prompt without recording a successful lesson.
+5. **BUILD and live building:** explain one item per player per round, prepare-now versus save-for-play, inert preparation placement, camera behavior, validation and two-second live construction. A seat that used its item during BUILD is never asked to place it again that round. Leave an untried path replayable; do not block round progression.
+6. **Karera and results:** teach the flag and persistent stage, then explain the actual score chart, total/target and award rows. Explain all-finish/no-finisher suppression and the eligible Barya exception. Reference help covers match target, round cap and tied-player sudden death.
+7. **Later just-in-time prompts:** first Lagsanay teaches taya, head start, pass, unchanged countdown, trap danger and last-survivor scoring. First Kangaroo teaches the race, sequential commands, Freeze's lack of projectile immunity, Rising's final hitbox test, any-contact Hug and sole-runner behavior.
+8. **Item clues:** on a later play with construction present, point out safe surfaces, hazard tells, moving hazards, bubble capture and footprint versus effect area. The Library holds full item details.
 
 Tutorial prompts must be skippable after a player has completed them in the current session. A replayable rules/help page remains available from the lobby and pause/settings menu.
 
-**Future approved Should extension:** if wall movement is included before release, add a brief optional practice cue showing that wall contact slows descent and a fresh jump press kicks away. The cue must explain that holding jump does not repeat and that players must separate before kicking from the same wall again. Add the control to the Library and tutorial only after implementation and verification; no wall-movement tutorial, HUD, animation or sound currently exists. Human production owns any final animation/audio assets.
+**Optional movement cues:** wall slide/jump, sneak and glide are enabled in current tuning. Keep them optional after basic movement and point to the current per-seat input hints. Tuning values remain provisional.
 
-## Guided first match — live-build onboarding
+## Guided first match — action-aware onboarding
 
-The guided first match teaches Pugad → shared BUILD → final 3–2–1/GO → build while moving → Karera. In BUILD, teach “Build now, or save your item for play.” The same single assigned item is available throughout BUILD and PLAY; waiting does not place or consume it. The coach stays on the preparation/build step until every active player has placed their item or is out, so instructions remain available into Play. Explain that BUILD camera follows placement cursors and valid confirmation places an inert item immediately; PLAY camera follows chickens and live construction takes two seconds; the cancel control only closes an unconfirmed preview. Pause resume uses a separate 3-second GET READY countdown. Skip and replay are session-only.
+The coach reads room state and player input; it does not change normal match rules, scoring, timers, inventory or terminal outcomes. Session-only per-seat records cover movement/jump and whether each seat used its item during BUILD or active play. An untried lesson can return in later rounds. A terminal seat or ended round releases the current instruction without counting it as learned. Everyone completes movement plus both item-use paths before the session marks the guided match complete; Pause > Skip remains the escape. Rounds continue if a player misses a prompt, is eliminated, or chooses the other valid item path.
 
-| Step | Shown during | Advances when |
+| Lesson | Trigger and action | Completion / recovery |
 |---|---|---|
-| 1 Welcome | Lobby | the match leaves the Lobby (number + shape of every seat; run/jump glyphs per device) |
-| 2 Pugad | Pugad | a seat owns an egg or the timer assigns one (copy for claimed / lost / timeout; claim feedback wins over the Barya note, which repeats the claim key and timer — 2026-10-16) |
-| 3 BUILD transition / build | final BUILD countdown, then active race | every active player places their item, becomes terminal, or the round ends; keep instructions visible into Play. Teach that the BUILD camera follows cursors and a valid prep confirm places immediately as an inert piece; the side timer counts down, full-screen 3–2–1 appears only in the final 3 seconds, and GO starts active play immediately. In PLAY the camera follows chickens, movement resumes on confirm, and a visible 2.0-second live job completes automatically; live-built hazards activate at completion. |
-| 4 Karera | active race | the round ends |
-| 5 Results | Round result | the next round starts; text selected from the real result (some / everyone / nobody); all-finish suppresses ordinary awards even with two players, while Barya still counts |
-| Lagsanay | first Lagsanay or sudden death of a session | Lagsanay ends; shown once per session (only reachable on the lifecycle route today) |
+| Join and identity | Lobby; join and ready with the assigned device. | Existing lobby state; coach is display-only. |
+| Move/jump | First active play; move and jump toward the next safe ledge. | Per-seat movement and jump are observed. Terminal/round end releases without marking success; retry in later play. |
+| Pugad | Pugad; claim a visible egg. | Per-seat assignment, lost claim or timeout; choose again if available. |
+| Prepare item | BUILD; confirm a valid preparation placement or save the item. | Track each seat's BUILD use; no live placement is required if the item was already spent. |
+| Live build | Active play while the seat still owns its item; toggle, aim, confirm or cancel. | Per-seat item use; normal validation and job completion apply. Round end releases the lesson. |
+| Karera/results | Active race, then Round result. | Round state; copy is selected from actual result data. |
+| Lagsanay/Kangaroo | First occurrence of that Main Challenge or sudden-death Lagsanay. | Mode state/round end, never elapsed prompt display alone. Seen state is session-only. |
+| Item clues | Later play with construction present. | Shown contextually; Library reference stays available. |
 
-Move/jump is taught before and during the first race. The scheduled Place route remains available as a developer fallback and is not part of normal onboarding.
+Normal rounds use shared BUILD for up to 10 seconds, with early completion when every seat places. Otherwise the timer continues; expiry starts play. BUILD confirmation places the item immediately as an inert piece. A saved item can be aimed during play; confirm restores movement while a two-second construction job runs, and hazards activate when it completes. BUILD's final 3–2–1 is part of that phase; there is no extra wait. The separate three-second GET READY is only for pause resume.
 
-Skip is a Pause menu entry ("Skip tutorial", shown only while the tutorial is active); Back is not used (P09 binds it to leave-confirm). Replay is the "Replay tutorial" entry on the Library How to Play page; it clears the session set. The coach box is display-only and sits where it does not cover the 64 px HUD or the Place strip. Copy lives in `tilaok!/data/ui/tutorial_script.tres` and is not culturally reviewed. The wall-slide practice cue is still a later Should extension. No human novice session has run: P13-T08 stays unchecked.
+Skip is Pause > Skip tutorial; Replay is Library > How to Play. Both stay session-only. Replay clears per-seat learning and just-in-time state and creates a fresh reachable tutorial room. Live prompts remain display-only. Per-seat input hints stay under each player's score. Copy remains PLACEHOLDER pending human language/cultural review. No novice session is claimed; P13-T08 remains open.
 
-## Just-in-time prompts — implemented (2026-10-15, PLACEHOLDER copy)
+## Just-in-time prompts — current route (PLACEHOLDER copy)
 
 | Prompt | Shown when | Source |
 |---|---|---|
-| `lagsanay` | the first Lagsanay Main round, or a Bomb-Taya Twist (Twist wording: the flag still wins); hands over after 12 s | `tutorial_script.tres` step `lagsanay`, variant `twist` |
-| `kangaroo_poses` | the Pugad of a round that is, or precedes, a Kangaroo Main or Twist round | step `kangaroo_poses` |
-| `kangaroo_supports` | the Place of that round (build up for the Rising wave) | step `kangaroo_supports` |
-| `kangaroo_misses` | once Kangaroo commands run (failed response directly eliminates) | step `kangaroo_misses` |
+| `lagsanay` | first Lagsanay Main or sudden death, until that mode ends | `tutorial_script.tres` step `lagsanay` |
+| `kangaroo_poses` | Pugad before a scheduled Kangaroo Main | step `kangaroo_poses` |
+| `kangaroo_supports` | BUILD before Kangaroo; Rising's final line does not require a platform | step `kangaroo_supports` |
+| `kangaroo_misses` | Kangaroo Play; explains Hug contact groups and sole-runner behavior | step `kangaroo_misses` |
 
-Each shows once per session (`TutorialSession.seen_kangaroo_steps`, never saved); Pause > Skip tutorial hides all of them and Library > How to Play > Replay tutorial clears them. On a stacked round the taya prompt is shown first and hands over to the Kangaroo prompt. The guided first match keeps its Pugad / BUILD-transition / Results steps; the Kangaroo prompt takes over during the event. Evidence: [P13 tutorial suite](evidence/p13/test_logs/run_p13_tutorial_tests.txt).
-
+Each shows once per session and is never saved. Pause > Skip hides coach prompts; Library > How to Play > Replay clears them. Lagsanay and Kangaroo are standalone Main Challenges on the current route. Old P13 evidence covers scripted prompt/state checks only, not novice comprehension.
 ## Accessibility baseline
 
 - Colour is never the sole identifier for chickens, teams, valid/invalid state, taya, Barya, or hazards.
@@ -196,7 +198,7 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 ## Verification links
 
 `PLAYTEST.md` contains the required 2/3/4-player, device, minimum-zoom Parol, Kangaroo accessibility, tutorial, and event-stack checks. P08 taya/head-start/pass immunity and P09 live match-end, sudden-death, result and restart behavior passed synthetic engineering checks. P11's standalone command cues and event checks also have synthetic engineering evidence; see [P08 evidence](evidence/p08/README.md), [P09 evidence](evidence/p09/README.md) and [P11 evidence](evidence/p11/README.md). The guided tutorial, final visual treatment, player comprehension/readability, physical-device validation and P13 product UI remain open.
-**Status (updated 2026-10-24):** the normal onboarding route teaches Pugad → shared 10-second BUILD with its timer in the side HUD → final 3–2–1/GO cue → build while moving → Karera → results. BUILD expiry starts Play immediately; pause resume uses a separate 3-second GET READY countdown. The guidance here defines what players must understand and operate; it does not prescribe final visual style. The UI shell inventory and P05/P06/P09 implementation details below are dated historical notes. The scheduled Place route is now a developer fallback. No human novice, spectator or QA session is claimed; related acceptance remains open (see [P13 evidence](evidence/p13/README.md)).
+**Current status (2026-10-25):** current onboarding uses the action-aware sequence above. P13 technical evidence is historical and does not establish novice comprehension. Human language/cultural review and a novice session remain open.
 # Current Play readability amendment — 2026-10-23
 
 Tutorial and Library content describes standalone Karera, standalone Lagsanay/Bomb-Taya, and standalone Kangaroo. It no longer teaches a mixed Twist route. Runtime timer tokens use `GameplayTuning`; current starting values are Pugad 15 s, Karera 120/30 s, Lagsanay 20/25/30 s, and Kangaroo 2/6/1.5 s with explicit acceleration floors. The Kangaroo guide identifies the race objective, sequential command cue and selected Rising target line. Values are provisional and do not claim balance approval.

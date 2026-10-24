@@ -12,8 +12,10 @@ signal live_placement_boundary_resolved(results: Array)
 const REQUEST_PIPELINE := preload("res://scripts/match/live_placement_pipeline.gd")
 const JOB_PREVIEW := preload("res://scripts/match/construction_job_preview.gd")
 const CONSTRUCTION_TIME_EPSILON := 0.000001
-@export_range(1.0, 30.0, 0.25) var build_phase_seconds := 10.0
-@export_range(0.1, 10.0, 0.1) var construction_seconds := 2.0
+const DEFAULT_BUILD_PHASE_SECONDS := 10.0
+const DEFAULT_CONSTRUCTION_SECONDS := 2.0
+@export_range(1.0, 30.0, 0.25) var build_phase_seconds := DEFAULT_BUILD_PHASE_SECONDS
+@export_range(0.1, 10.0, 0.1) var construction_seconds := DEFAULT_CONSTRUCTION_SECONDS
 @export_range(1.0, 32.0, 1.0) var live_cursor_cells_per_second := 8.0
 @export_range(0.0, 1.0, 0.05) var live_cursor_initial_delay := 0.25
 @export_range(0.0, 64.0, 1.0) var live_actor_clearance_wu := 32.0
