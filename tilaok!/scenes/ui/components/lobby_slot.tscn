@@ -39,15 +39,16 @@ mouse_filter = 2
 [node name="PreviewViewport" type="SubViewport" parent="Content/ChickenPreview"]
 unique_name_in_owner = true
 handle_input_locally = false
-size = Vector2i(238, 170)
+size = Vector2i(476, 340)
 transparent_bg = true
 render_target_update_mode = 4
 
 [node name="PreviewStage" type="Node2D" parent="Content/ChickenPreview/PreviewViewport"]
-position = Vector2(119, 108)
+position = Vector2(238, 200)
+scale = Vector2(2, 2)
 
 [node name="Perch" type="Polygon2D" parent="Content/ChickenPreview/PreviewViewport/PreviewStage"]
-position = Vector2(0, 43)
+position = Vector2(0, 63)
 scale = Vector2(1.15, 0.2)
 polygon = PackedVector2Array(-56, 0, -54, -13, -48, -23, -38, -30, -25, -35, -10, -38, 10, -38, 25, -35, 38, -30, 48, -23, 54, -13, 56, 0, 54, 13, 48, 23, 38, 30, 25, 35, 10, 38, -10, 38, -25, 35, -38, 30, -48, 23, -54, 13)
 color = Color(0.80784315, 0.6745098, 0.49019608, 0.7)
