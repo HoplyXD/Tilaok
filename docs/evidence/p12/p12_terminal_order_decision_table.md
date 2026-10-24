@@ -1,4 +1,6 @@
-# P12 terminal-order decision table (P12-T03 / P12-T04)
+# P12 terminal-order decision table (historical P12-T03 / P12-T04)
+
+**Current status (2026-10-24):** P12 rows describe the retired mixed-mode stack design and are retained as historical approval/evidence. Standalone Kangaroo now uses the P23 race ledger and same-step elimination-before-goal ordering; see [P23 evidence](../p23_kangaroo_race/README.md).
 
 **Status:** APPROVED row by row by the project owner. Implemented on the scheduled match room (`P12ScheduledMatchRoom`, `BombTayaTwist`, `KangarooRoundController` Twist role) and verified by `tilaok!/tests/p12_table_scenarios.gd` (pure controller scenarios, with callback-order permutations) and `tilaok!/tests/p12_pair_room_scenarios.gd` (real room, real physics, 2/3/4 seats), both run by `tilaok!/tests/run_p12_pairs_tests.gd`. It supersedes the [draft](../../P12_TERMINAL_ORDER_DRAFT.md) rows K1–K8, C1–C4 and L1–L4 (mapping at the end).
 

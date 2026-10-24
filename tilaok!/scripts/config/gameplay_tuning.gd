@@ -95,6 +95,7 @@ const DISTANCE_FIELDS: PackedStringArray = [
 @export var kangaroo_reset_acceleration_step_seconds: float = 0.15
 @export var kangaroo_reset_min_seconds: float = 0.75
 @export var kangaroo_freeze_release_seconds: float = 0.10
+@export var kangaroo_freeze_duration_seconds: float = 2.0
 @export var kangaroo_wave_middle_low_y_wu: float = 768.0
 @export var kangaroo_wave_middle_y_wu: float = 576.0
 @export var kangaroo_wave_middle_high_y_wu: float = 384.0
@@ -310,6 +311,7 @@ func validate() -> PackedStringArray:
 		"kangaroo_reset_acceleration_step_seconds",
 		"kangaroo_reset_min_seconds",
 		"kangaroo_freeze_release_seconds",
+		"kangaroo_freeze_duration_seconds",
 		"kangaroo_wave_middle_low_y_wu",
 		"kangaroo_wave_middle_y_wu",
 		"kangaroo_wave_middle_high_y_wu",
@@ -404,6 +406,7 @@ func validate() -> PackedStringArray:
 		or taya_pass_back_seconds < 0.0
 		or lagsanay_last_cluck_freeze_seconds < 0.0
 		or kangaroo_freeze_release_seconds < 0.0
+		or kangaroo_freeze_duration_seconds <= 0.0
 	):
 		errors.append("timing values cannot be negative")
 	if (
@@ -472,7 +475,7 @@ func validate() -> PackedStringArray:
 		or kangaroo_storm_min_active_seconds < 3.0
 		or kangaroo_storm_max_active != 2
 	):
-		errors.append("Kangaroo cadence and Storm values are outside their valid range")
+		errors.append("Kangaroo cadence values are outside their valid range")
 	if kangaroo_response_min_seconds < 3.0 or kangaroo_reset_min_seconds < 0.75:
 		errors.append("Kangaroo acceleration floors cannot be shorter than 3.0/0.75 seconds")
 	if not (

@@ -4,7 +4,7 @@
 
 **PROTOTYPE VALUES — NOT BALANCE-APPROVED.** Prepared 2026-10-12; documentation verification completed 2026-10-13. The standing AI-assisted programming workflow is recorded in `AI_USAGE.md`; P01/P02 assistance history and verification limits are recorded there and in `PHASETASK.md`. This programming authorization does not prove balance, constitute human review, or establish competition eligibility. The wall-movement extension below was approved October 13, 2026; its rule choices are active design direction, while numeric starting values remain untested. Other proposed rule changes remain inactive until explicitly accepted.
 
-**Current timer/mode amendment — 2026-10-23 (provisional, no balance claim):** `GameplayTuning` defaults are Pugad 15 s, Karera hard cap 120 s and first-finisher window 30 s, Lagsanay taya 20/25/30 s with 2/3/4 live players, Kangaroo telegraph 2 s / response 6 s / reset 1.5 s. Acceleration uses centralized steps (0.5 s response, 0.15 s reset) with minimums 3 s / 0.75 s. Storm starts after 16 completed commands and uses 3 s response / 1.5 s landing interval. Only standalone Main modes are scheduled. See P21; timer changes do not scale physics or unrelated cooldowns.
+**Current timer/mode amendment — 2026-10-24 (provisional, no balance claim):** `GameplayTuning` defaults are Pugad 15 s, Karera hard cap 120 s and first-finisher window 30 s, Lagsanay taya 20/25/30 s with 2/3/4 live players, Kangaroo telegraph 2 s / response 6 s / recovery 1.5 s. Each completed slipper reduces response by 0.5 s (3 s floor) and recovery by 0.15 s (0.75 s floor), including across eliminations. Freeze locks controls for 2 s. There is no Storm. Only standalone Main modes are scheduled. See P23; timer changes do not scale physics or unrelated cooldowns.
 
 **Preparation phase amendment — 2026-10-24 (provisional, no balance claim):** normal Play inserts a shared 10-second BUILD after Pugad. The side HUD shows the timer throughout BUILD; the full-screen 3–2–1 cue appears only in the final three seconds, and its expiry starts active play immediately with a brief GO! cue. The separate three-second GET READY countdown is reserved for pause resume. `OfflineLiveBuildMatchRoom.build_phase_seconds` and `construction_seconds` remain independent values (10 / 2 seconds). BUILD freezes gameplay and hazards while the camera follows eligible placement cursors. Confirmed items appear immediately as inert prepared pieces that activate at PLAY. During PLAY, the camera follows chickens and live construction uses the separate two-second gameplay clock, which pauses with the room. See P22; no balance or human usability result is claimed.
 
@@ -238,6 +238,8 @@ An external 100 ms Windows process-tree sample recorded peak working set 287.84 
 
 **C:** bodies pass through each other in every supported mode; tag/Hug use sensors, never pushing. This follows GDD.md:73 and the race-stack rules; the more general collision wording at :181 should be read consistently with them.
 
+**Historical P11 Freeze-input contract, superseded by P23:** this paragraph describes the former intentional-input Freeze challenge and does not define current Kangaroo. Current Freeze is a two-second movement/jump/build control lock on strike; gravity, movers, external forces, capture and projectiles remain active.
+
 **P:** evaluate ongoing overlaps each physics step, not only entry callbacks. Permit at most one taya transfer globally per step. Freeze the candidate set before transfer; pick nearest eligible contact. Preserve the current lowest-slot exact tie until R1 is approved. After a pass, the previous taya cannot receive it back for 1.0 s; contacts with others remain eligible. A stationary overlapping pair can pass back after immunity expires, never multiple times within one step. Ignore eliminated/secured chickens. Opening frozen taya cannot tag or be tagged during the head start. Hug uses the same contact geometry, requires actual overlap at evaluation, and never pushes bodies.
 
 State precedence for movement: terminal outcome (secured or eliminated, mutually exclusive) > opening taya freeze > bubble capture > externally forced motion > normal locomotion. Do not let a lower state reactivate a terminal player. Same-step goal/death resolves by recorded time; indistinguishable elimination wins, per GDD. Opening freeze fixes position, clears pending motion and ignores hazards/capture. Bubble replaces movement control but remains taggable/vulnerable under its existing contract. Normal forced motion adds external velocity without a default input lockout; acceleration still permits steering. A spring launch is not shortened by releasing the ordinary jump button.
@@ -246,28 +248,9 @@ State precedence for movement: terminal outcome (secured or eliminated, mutually
 
 Freeze reads intentional run/jump input before movement-state suppression, with the same device thresholds as locomotion. Only input already held at response start receives one 0.10 s release grace; it passes only if released within that window. A fresh run/jump press fails immediately, including a press/release between physics samples. Grace cannot renew. Opposing run buttons still count as intentional input even when movement cancels. Passive conveyors, spring launches and knockback do not fail Freeze. Merely being captured is not a Freeze failure; deliberately pressing run/jump while captured is still intentional input.
 
-### P11 independent Kangaroo development profile
+### P11 independent Kangaroo development profile — historical and superseded
 
-The `kangaroo_contract_lab` route uses the shared Lobby → Pugad → Place → Play/results lifecycle and persistent construction. It has no race deadline, Karera goal scoring or Bomb-Taya controller. Its explicit pool contains the reviewed seed construction plus only Trumpo and the Tsinelas Launcher among hazards; unreviewed hazards remain disabled. These settings are implementation defaults, not balance approval.
-
-| P11 tuning | Prototype value | Contract |
-|---|---:|---|
-| `kangaroo_telegraph_seconds` | 1.0 s | Initial command landing/tell |
-| `kangaroo_response_seconds` | 3.0 s | Initial response; minimum 1.0 s |
-| `kangaroo_reset_seconds` | 0.75 s | Base reset; minimum 0.0 s |
-| `kangaroo_freeze_release_seconds` | 0.10 s | One release grace only for input held when response starts |
-| `kangaroo_wave_middle_low_y_wu` | 768 wu | Fixed world-space line on current 64-wu stage grid |
-| `kangaroo_wave_middle_y_wu` | 576 wu | Fixed world-space line |
-| `kangaroo_wave_middle_high_y_wu` | 384 wu | Fixed world-space line |
-| `support_height_epsilon_wu` | 1 wu | Numerical boundary tolerance; not visible grace |
-| `kangaroo_storm_after_commands` | 8 | Enter Storm after eight completions without elimination |
-| `kangaroo_storm_landing_seconds` | 0.5 s | Delay between Storm landings |
-| `kangaroo_storm_active_seconds` | 1.0 s | Active window per Storm command |
-| `kangaroo_storm_max_active` | 2 | Delay another landing until a slot opens |
-
-Every two no-elimination completions reduce the next response by 0.5 s and reset by 0.15 s. Any elimination resets cadence/Storm pressure. At exactly two survivors, each Storm pair is a seeded-order Freeze plus Rising overlap; Hug is excluded. This forced overlap is a locked risk, not evidence of fair or enjoyable play. Pair-only Hug and stable lowest-slot Last Cluck remain current contracts; R1–R4 are inactive. See [P11 tests, route capture and remaining review](evidence/p11/README.md).
-
-**P11 automated evidence boundary:** the current deterministic and rendered harness checks are synthetic; the 1920×1080 route capture, local debug timing/static-memory samples and a short Windows process-memory sample are not release-hardware, human readability, physical-controller, player-feel or balance evidence. Those remain open with the team.
+The P11 values below were used by the former standalone survival route and are not current settings. P11's test logs and captures remain available under [P11 evidence](evidence/p11/README.md) as evidence of that retired design. Current Kangaroo values are the `GameplayTuning` defaults summarized above and the P23 requirements in [PHASETASK](PHASETASK.md#p23--kangaroo-race-redesign): 2 s telegraph, 6 s base response, 1.5 s base recovery, 0.5/0.15 s per-completed-slipper acceleration, 3/0.75 s floors, and 2 s Freeze. There is no current Storm, marker accumulation, or Lagsanay placement scoring for Kangaroo.
 
 **P out-of-bounds safeguard:** visible solid side walls, floor and ceiling prevent normal escape. Race-only unexpected escape beyond the arena is a single failed terminal outcome, never a respawn or repeat score. Lagsanay, including its stacks, never converts falling into elimination: an unexpected containment breach pauses the entire simulation and reports a prototype defect; restart the round with its pre-round score snapshot and unchanged construction, with no awards from the aborted attempt. Do not teleport the taya to safety while its timer continues or reset only that player's timer. Kangaroo-only containment failure uses the same paused defect recovery. This is a development safeguard, not a player ability or finished recovery feature.
 

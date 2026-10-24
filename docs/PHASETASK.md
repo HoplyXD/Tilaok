@@ -5005,6 +5005,11 @@ All requirements have both implementation/non-code deliverables and verification
 | [REQ-KANG-004](PRD.md#req-kang-004--evaluate-pair-only-hug-deterministically) | [P11-T07](#p11-t07) | [P11-T08](#p11-t08) | REQUIRED |
 | [REQ-KANG-005](PRD.md#req-kang-005--integrate-failure-markers-elimination-and-cleanup) | [P11-T09](#p11-t09) | [P11-T10](#p11-t10) | REQUIRED |
 | [REQ-KANG-006](PRD.md#req-kang-006--implement-no-elimination-acceleration-and-slipper-storm) | [P11-T11](#p11-t11) | [P11-T12](#p11-t12) | REQUIRED |
+| [REQ-KANGAROO-RACE-01](PRD.md#req-kangaroo-race-01--race-objective-and-awards) | [P23-T01](#p23-t01) | [P23-T01](#p23-t01) | REQUIRED |
+| [REQ-KANGAROO-SEQUENTIAL-01](PRD.md#req-kangaroo-sequential-01--sequential-slipper-lifecycle) | [P23-T02](#p23-t02) | [P23-T02](#p23-t02) | REQUIRED |
+| [REQ-KANGAROO-RACE-DOCS-01](PRD.md#req-kangaroo-race-docs-01--keep-current-rules-and-disclosure-accurate) | [P23-T03](#p23-t03) | [P23-T03](#p23-t03) | REQUIRED |
+| [REQ-KANGAROO-REVIEW-01](PRD.md#req-kangaroo-review-01--separate-engineering-checks-from-player-review) | [P23-T04](#p23-t04) | [P23-T04](#p23-t04) | REQUIRED |
+| [REQ-KANGAROO-VERIFICATION-01](PRD.md#req-kangaroo-verification-01--verify-and-record-the-implementation) | [P23-T05](#p23-t05) | [P23-T05](#p23-t05) | REQUIRED |
 | [REQ-EVENT-001](PRD.md#req-event-001--select-and-announce-the-required-event-schedule) | [P12-T01](#p12-t01) | [P12-T02](#p12-t02) | REQUIRED |
 | [REQ-EVENT-002](PRD.md#req-event-002--review-unresolved-simultaneous-terminal-ordering) | [P12-T03](#p12-t03) | [P12-T04](#p12-t04) | REQUIRED |
 | [REQ-STACK-001](PRD.md#req-stack-001--integrate-karera-with-lagsanay-pressure) | [P12-T05](#p12-t05) | [P12-T06](#p12-t06) | REQUIRED |
@@ -5188,6 +5193,8 @@ This dated scope change records the user's approval of the separate Should-scope
 
 ## P21 — Longer timers, standalone rounds and Kangaroo readability
 
+**Historical status note (2026-10-24):** P21 acceptance/evidence is retained as recorded, but its Storm cadence, KANG/GA/ROO markers, and support-required Rising evaluation are superseded by P23 and do not define current behavior.
+
 **Status:** IN PROGRESS (2026-10-23). **Goal / player-visible result:** longer decision windows, exactly one challenge per round, map-aware and reachable Rising targets, and KANG / GA / ROO strikes above each chicken. This is a provisional balance/readability slice; no final balance claim is made. The GDD's earlier Twist contract is explicitly superseded for normal Play; historical P12 pair test evidence remains unchanged and does not prove the current standalone schedule.
 
 **Scope:** timer defaults only (no physics/cooldown scaling); standalone Karera, Lagsanay/Bomb-Taya, and Kangaroo; actual map bounds and completed eligible construction for Rising; world-relative target presentation and exact current-support evaluation; overhead marker presentation. Preserve offline loop, construction, scores, Barya, terminal precedence, and all three Kangaroo commands.
@@ -5246,3 +5253,28 @@ This dated scope change records the user's approval of the separate Should-scope
   - **Evidence:** Godot 4.6.3 headless editor import/parse exited 0; `gdformat --check` passed for the room and focused runner; `gdlint` passed for both named GDScript files; `git diff --check` passed (Git reports existing CRLF normalization warnings). Gameplay suites were not run for this update, so lifecycle behavior still needs focused verification. No commit/push, rendered playtest, physical-device test or human review was performed. Provisional 60 FPS / 16.67 ms at 1080p and 512 MiB budgets remain unmeasured.
 
 **Current P22 status:** 1/5 tasks checked. Documentation was updated for instant inert preparation placement and camera handoff. Implementation has not received current runtime/lifecycle verification; the previous P22 logs describe the old preparation-job behavior. P22-T03 remains open because the broader legacy tutorial suite has 17 old-route/copy failures and its gate search stalled; the focused P13 tutorial suite still passes. Rendered, physical-device, performance and human acceptance remain open and were not performed.
+
+
+## P23 — Kangaroo race redesign
+
+**Status:** IN PROGRESS (2026-10-24). **Goal / player-visible result:** standalone Kangaroo races to the flag with Karera clocks, race outcomes and scoring, while one sequential slipper challenge runs at a time. Command failures are direct race eliminations. P11 remains evidence of the superseded survival design only.
+
+**Scope:** race lifecycle integration, outcome batching, Barya/trap scoring, secured finishers and last-runner behavior; equal independent slipper selection; 2 s telegraph, response/recovery acceleration and floors; real Freeze control lock and tint; final-hitbox Rising evaluation and cleanup; group Hug; current tutorials, Library and design/verification records. No mixed-mode scheduling, Storm, failure markers, Lagsanay placement for Kangaroo, or production art/audio changes.
+
+- [ ] **P23-T01 — Integrate Kangaroo with the Karera race lifecycle** (REQ-KANGAROO-RACE-01)
+  - **Acceptance:** 2/3/4 players use the race clock, flag order, first-finisher window/hard cap, race ledger, standard scoring suppression, eligible Barya, direct trap credit and ordinary results; eliminations beat same-step goal finishes; secured finishers are excluded; one unfinished runner continues without Hug; zero unfinished runners completes once.
+  - **Evidence:** scheduled Kangaroo race fixture passed in the focused P12 suite (details in the P23 evidence note). The full P23 scoring and edge-case matrix remains pending until its dedicated run is recorded.
+- [ ] **P23-T02 — Implement and verify sequential slipper behavior** (REQ-KANGAROO-SEQUENTIAL-01)
+  - **Acceptance:** equal independent 1:1:1 draws, repeats allowed; 2 s telegraph; one active effect; response 6 s stepping down 0.5 s to 3 s, recovery 1.5 s stepping down 0.15 s to 0.75 s; acceleration persists across eliminations; Rise drains and cleanup precedes next telegraph; pause/resume does not catch up; ten resets leave no stale state. Freeze locks controls/build for 2 s while gravity, movers, external forces, capture and projectiles remain active; started construction finishes; terminal state cannot thaw. Rising evaluates once using current hitbox bottom and 1 wu tolerance, with submerged-safe rise and fair alternate fallback. Hug accepts pairs, groups and chains, fails isolated chickens, works at two and is skipped at one.
+  - **Evidence:** P11 sequential scheduler suite 19 checks / 0 failures and P12 scheduled-room suite 57 / 0 are preliminary synthetic evidence. P02 actor-level Freeze tests cover active lock, buffered jump release, translucent blue tint, airborne gravity, blocked steering, external forces, projectile elimination, terminal cleanup and reset (95 total checks / 0 failures). Ten controller resets are covered in P11. Direct projectile/capture interaction, moving supports, Rising hitbox boundary/drain, Hug contact actors, pause and ten full room reset cycles remain open.
+- [x] **P23-T03 — Update current-facing docs and disclosure** (REQ-KANGAROO-RACE-DOCS-01)
+  - **Acceptance:** GDD, PRD, defaults, tutorial, Library, HUD notes, PLAYTEST, AI_USAGE and current summaries teach the Kangaroo race and label old survival rules historical. P11/P21/P22 history stays available. No final art/audio is generated or described as completed.
+  - **Evidence:** current route, P23 rule text, truthful AI_USAGE entry, and historical P11/P21/P22 labels are updated; no human review or generated production media is claimed.
+- [ ] **P23-T04 — Complete human, rendered and device review** (REQ-KANGAROO-REVIEW-01)
+  - **Acceptance:** human play verifies readability/fairness/accessibility and controls; rendered capture confirms Freeze tint/line/pose/HUD legibility; physical devices and performance are recorded only if actually exercised.
+  - **Evidence:** not run. No visible/rendered application or physical-device session was launched for this task. Human and performance evidence are not claimed.
+- [x] **P23-T05 — Record installed-engine verification and local delivery state** (REQ-KANGAROO-VERIFICATION-01)
+  - **Acceptance:** Godot 4.6.3 editor import/parse; focused P11/P12/P06/P08/Barya/P13 tutorial/Library and offline live-build suites; named-file `gdformat`/`gdlint`; `git diff --check`; current synthetic results and open limits recorded. Preserve the user's existing movement and P03 harness edits and `.codex-remote-attachments/`. No commit/push without separate authorization.
+  - **Evidence:** Godot 4.6.3 headless editor import/parse passed; P02 95/0, P11 19/0, P12 57/0, P06 102/0, P08 86/0, Barya 72/0, P13 tutorial 58/0, P13 Library 425/0 and offline live-build 123/0 passed. Named-file `gdformat --check`, `gdlint`, and `git diff --check` passed. Legacy P12 stack suite has three setup failures because it requires retired mixed-mode scheduling, followed by cascading missing-seat index errors; see evidence note. No commit/push, rendered playtest, physical-device test or human review.
+
+**Current P23 status:** 2/5 task records checked (T03 docs/disclosure and T05 verification record). The implementation is in place, but the complete race scoring edge matrix and actor-level Freeze/Rising/Hug behavior (including projectile/capture, support motion and full room reset cycles) remain open under T01/T02; ten controller resets and a focused airborne Freeze actor test passed. Visual, human, device and performance acceptance remains open under T04. P23 adds 5 records to the P00–P22 baseline of 425, for 430 records across 23 phases.

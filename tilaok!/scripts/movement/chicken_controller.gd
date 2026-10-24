@@ -1,3 +1,4 @@
+# gdlint: disable=max-file-lines
 class_name ChickenController
 extends CharacterBody2D
 
@@ -9,6 +10,7 @@ signal sneak_changed(is_sneaking: bool)
 signal stunned(seconds: float)
 
 const WATER_DRAG := 0.86
+const IDENTITY_NUMBER_FONT := preload("res://assets/fonts/margarine/Margarine-Regular.ttf")
 const IDENTITY_MARKER_TEXTURES := {
 	"CIRCLE": preload("res://assets/ui/common/identity_circle.svg"),
 	"TRIANGLE": preload("res://assets/ui/common/identity_triangle.svg"),
@@ -67,7 +69,13 @@ var sneaking := false
 ## Stun (block STUN hitboxes): controls frozen while > 0; a short immunity follows each stun.
 var stun_remaining := 0.0
 var stun_immunity_remaining := 0.0
+## Kangaroo control freeze; gravity, hazards and external forces remain active.
+var kangaroo_freeze_remaining := 0.0
+var kangaroo_jump_release_required := false
 var gliding := false
+## The compact pose can be automatic under a low ceiling; unlike a held manual crouch it still
+## permits horizontal movement so a chicken can pass through a one-block gap.
+var auto_sneaking := false
 ## True while standing on a slippery block (Yelo ice, 2026-10-16); refreshed every step.
 var on_ice := false
 ## Water volumes in world units (ArenaDefinition.water_regions). Empty on a stage without water.
@@ -140,16 +148,24 @@ func _physics_process(delta: float) -> void:
 	):
 		return
 	var in_play := input_router.phase == LocalInputRouter.Phase.PLAY
+	var was_frozen := kangaroo_freeze_remaining > 0.0
+	kangaroo_freeze_remaining = maxf(0.0, kangaroo_freeze_remaining - delta)
+	if was_frozen and kangaroo_freeze_remaining <= 0.0:
+		_set_freeze_tint(false)
 	if not in_play:
 		_clear_support()
 	# In build mode the movement keys drive the block cursor, so the chicken holds still.
+	var frozen_now := kangaroo_freeze_remaining > 0.0
+	var jump_held := input_router.is_action_held(seat_index, "jump")
+	if kangaroo_jump_release_required and not jump_held:
+		kangaroo_jump_release_required = false
 	var building := in_play and (input_router.is_build_mode(seat_index) or build_input_locked)
-	var controls_active := in_play and not building
+	var controls_active := in_play and not building and not frozen_now
 	var axis := input_router.movement_axis(seat_index) if controls_active else 0.0
 	# Captured before stun and sneak zero `axis` below: those poses have no left/right variant,
 	# and the animator should still know which way a recovering chicken is asking to go.
 	facing_input = 0 if is_zero_approx(axis) else (1 if axis > 0.0 else -1)
-	var jump_down := controls_active and input_router.is_action_held(seat_index, "jump")
+	var jump_down := controls_active and not kangaroo_jump_release_required and jump_held
 	var next_intent := (
 		controls_active
 		and (input_router.has_direction_intent(seat_index) or absf(axis) > 0.0 or jump_down)
@@ -157,7 +173,12 @@ func _physics_process(delta: float) -> void:
 	if intentional_input != next_intent:
 		intentional_input = next_intent
 		intentional_input_changed.emit(intentional_input)
-	if controls_active and input_router.consume_pressed(seat_index, "jump"):
+	if (
+		controls_active
+		and not frozen_now
+		and not kangaroo_jump_release_required
+		and input_router.consume_pressed(seat_index, "jump")
+	):
 		jump_buffer_remaining = tuning.jump_buffer_seconds
 	elif building:
 		jump_buffer_remaining = 0.0
@@ -173,11 +194,16 @@ func _physics_process(delta: float) -> void:
 
 	if _advance_locked_state(delta):
 		return
+	if frozen_now and input_router.is_build_mode(seat_index):
+		input_router.set_build_mode(seat_index, false)
 	stun_immunity_remaining = maxf(0.0, stun_immunity_remaining - delta)
 	var stunned_now := stun_remaining > 0.0
 	if building:
 		# Entering build mode stops player-driven horizontal motion immediately. Gravity and
 		# external motion from hazards remain part of the live simulation.
+		locomotion_velocity.x = 0.0
+		jump_was_held = false
+	if frozen_now:
 		locomotion_velocity.x = 0.0
 		jump_was_held = false
 	if stunned_now:
@@ -187,10 +213,14 @@ func _physics_process(delta: float) -> void:
 		jump_down = false
 		jump_buffer_remaining = 0.0
 	_update_sneak(input_router.is_action_held(seat_index, "down") and not stunned_now)
-	if sneaking:
-		# Sneaking chickens hold still: no walking and no jump (buffered presses are dropped).
+	if sneaking and not auto_sneaking:
+		# A manually held crouch still holds the chicken still, as before.
 		axis = 0.0
 		locomotion_velocity.x = 0.0
+		jump_buffer_remaining = 0.0
+	elif auto_sneaking:
+		# Tight-space crouching keeps horizontal movement but does not allow a jump into the ceiling.
+		jump_down = false
 		jump_buffer_remaining = 0.0
 	_update_water()
 	_update_wall_contact(delta)
@@ -403,6 +433,9 @@ func reset_for_round(spawn_position: Vector2) -> void:
 	lifecycle.terminal_reason = ""
 	reset_wall_state()
 	clear_stun()
+	kangaroo_freeze_remaining = 0.0
+	kangaroo_jump_release_required = false
+	_set_freeze_tint(false)
 
 
 ## Stun touch: freeze controls for `seconds` and knock back (through launch, so all launch caps
@@ -439,6 +472,42 @@ func clear_stun() -> void:
 	stun_immunity_remaining = 0.0
 
 
+## Control-only freeze used by Kangaroo. Gravity, contact, capture and damage remain live.
+func set_kangaroo_frozen(seconds: float) -> bool:
+	if (
+		not _can_mutate()
+		or seconds <= 0.0
+		or lifecycle.is_terminal()
+		or lifecycle.status == PlayerLifecycleState.Status.CAPTURED
+	):
+		return false
+	kangaroo_freeze_remaining = maxf(kangaroo_freeze_remaining, seconds)
+	kangaroo_jump_release_required = (
+		input_router != null and input_router.is_action_held(seat_index, "jump")
+	)
+	jump_buffer_remaining = 0.0
+	jump_was_held = false
+	locomotion_velocity.x = 0.0
+	if intentional_input:
+		intentional_input = false
+		intentional_input_changed.emit(false)
+	if input_router != null:
+		input_router.consume_held_presses_for_seat(seat_index)
+		input_router.set_build_mode(seat_index, false)
+	_set_freeze_tint(true)
+	return true
+
+
+func is_kangaroo_frozen() -> bool:
+	return kangaroo_freeze_remaining > 0.0 and not lifecycle.is_terminal()
+
+
+func _set_freeze_tint(enabled: bool) -> void:
+	var sprite := get_node_or_null("ChickenAnimation") as CanvasItem
+	if sprite != null:
+		sprite.modulate = Color(0.48, 0.76, 1.0, 0.68) if enabled else Color.WHITE
+
+
 func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	if not _can_mutate():
 		return false
@@ -448,6 +517,9 @@ func _set_terminal(status: PlayerLifecycleState.Status, reason: String) -> bool:
 	reset_wall_state()
 	reset_sneak()
 	clear_stun()
+	kangaroo_freeze_remaining = 0.0
+	kangaroo_jump_release_required = false
+	_set_freeze_tint(false)
 	locomotion_velocity = Vector2.ZERO
 	external_velocity = Vector2.ZERO
 	jump_buffer_remaining = 0.0
@@ -536,20 +608,44 @@ func _refresh_wall_debug() -> void:
 ## Leaves sneak when there is headroom; a chicken under a low ceiling stays small.
 func reset_sneak() -> void:
 	if sneaking and _can_stand():
+		auto_sneaking = false
 		_set_sneak_shape(false)
 
 
 func _update_sneak(down_held: bool) -> void:
+	if not tuning.sneak_enabled:
+		if sneaking and _can_stand():
+			auto_sneaking = false
+			_set_sneak_shape(false)
+		return
 	if not sneaking:
-		if (
-			tuning.sneak_enabled
-			and down_held
-			and is_on_floor()
-			and external_velocity.length_squared() <= 0.01
-		):
+		if down_held and is_on_floor() and external_velocity.length_squared() <= 0.01:
+			auto_sneaking = false
 			_set_sneak_shape(true)
-	elif (not down_held or not tuning.sneak_enabled) and _can_stand():
+		elif is_on_floor() and _standing_headroom_is_blocked():
+			auto_sneaking = true
+			_set_sneak_shape(true)
+		return
+	if auto_sneaking and down_held:
+		# The player's hold-down request turns automatic crouching into the usual stationary crouch.
+		auto_sneaking = false
+	if not down_held and _can_stand():
+		auto_sneaking = false
 		_set_sneak_shape(false)
+
+
+func _standing_headroom_is_blocked() -> bool:
+	if _sneak_shape == null:
+		return false
+	# Temporarily test the standing sweep from the compact body without emitting pose changes. This
+	# lets the chicken crouch before its full-height collider gets wedged against the low ceiling.
+	var previous_sneaking := sneaking
+	sneaking = true
+	_sync_body_shape()
+	var blocked := not _can_stand()
+	sneaking = previous_sneaking
+	_sync_body_shape()
+	return blocked
 
 
 func _capture_body_shape() -> void:
@@ -916,11 +1012,11 @@ func _draw() -> void:
 	if draw_debug_body:
 		_draw_debug_body()
 		if draw_identity_marker:
-			_draw_identity_marker(Vector2(0.0, -27.0))
+			_draw_identity_marker(Vector2(0.0, -33.0))
 	elif draw_identity_marker:
 		# Sprite body: unsquashed marker just above the head, lowered with the sneaking body.
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * draw_scale)
-		_draw_identity_marker(Vector2(0.0, -30.0 + drop / draw_scale))
+		_draw_identity_marker(Vector2(0.0, -36.0 + drop / draw_scale))
 	if show_wall_debug:
 		_draw_wall_debug()
 	draw_set_transform(Vector2.ZERO)
@@ -957,22 +1053,25 @@ func _draw_debug_body() -> void:
 
 func _draw_identity_marker(marker: Vector2) -> void:
 	var texture := (
-		IDENTITY_MARKER_TEXTURES.get(identity_shape, IDENTITY_MARKER_TEXTURES["CIRCLE"]) as Texture2D
+		IDENTITY_MARKER_TEXTURES.get(identity_shape, IDENTITY_MARKER_TEXTURES["CIRCLE"])
+		as Texture2D
 	)
 	draw_texture_rect(
 		texture, Rect2(marker - Vector2(11.0, 11.0), Vector2(22.0, 22.0)), false, marker_color
 	)
-	var font := ThemeDB.fallback_font
-	if font != null:
-		draw_string(
-			font,
-			marker + Vector2(-11.0, 5.0),
-			str(identity_number),
-			HORIZONTAL_ALIGNMENT_CENTER,
-			22.0,
-			14,
-			Color("#15242b")
-		)
+	draw_string(
+		IDENTITY_NUMBER_FONT,
+		marker + Vector2(-11.0, 4.0),
+		str(identity_number),
+		HORIZONTAL_ALIGNMENT_CENTER,
+		22.0,
+		15,
+		Color("#15242b"),
+		3,
+		TextServer.DIRECTION_AUTO,
+		TextServer.ORIENTATION_HORIZONTAL,
+		3.0
+	)
 
 
 func _draw_wall_debug() -> void:

@@ -29,7 +29,7 @@ func _run() -> void:
 	_test_main_distribution()
 	_test_no_mixed_modes()
 	_test_required_mode_refusal()
-	_test_kangaroo_storm_drain_resumes()
+	_test_kangaroo_sequential_lifecycle()
 	_test_kangaroo_reset_keeps_room_actors()
 	for players in [2, 3, 4]:
 		await _test_full_scheduled_match(players)
@@ -332,51 +332,36 @@ func _test_required_mode_refusal() -> void:
 	)
 
 
-## Regression (2026-10-15): an elimination ends a Slipper Storm while a Storm command is still
-## pending; once the pending commands drain, the base cadence must resume (it used to stall, so a
-## Kangaroo round in the scheduled match could never end).
-func _test_kangaroo_storm_drain_resumes() -> void:
+## P23: standalone race Kangaroo never creates overlapping commands or Storm volleys.
+func _test_kangaroo_sequential_lifecycle() -> void:
 	var tuning := GameplayTuning.new()
-	tuning.kangaroo_telegraph_seconds = 0.1
-	tuning.kangaroo_response_seconds = 1.0
-	tuning.kangaroo_reset_seconds = 0.05
-	tuning.kangaroo_storm_after_commands = 16
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 41
 	var controller := KangarooRoundController.new()
-	var seats: Array[int] = [0, 1, 2]
+	var seats: Array[int] = [0, 1, 2, 3]
 	var no_contacts: Array[Dictionary] = []
-	_check(controller.begin("p12:storm-drain", seats, {}, rng, tuning, 0.0), "storm fixture begins")
+	_check(
+		controller.begin("p23:sequential", seats, {}, rng, tuning, 0.0), "sequential fixture begins"
+	)
 	var now := 0.0
 	var tick := 1
-	while now < 180.0 and not (controller.storm_active and _pending_storms(controller) >= 1):
-		now += 0.05
+	var max_active := 0
+	while now < 45.0:
+		now += 1.0 / 60.0
 		tick += 1
 		controller.advance_to(now, tick, {}, null, no_contacts)
-	_check(controller.storm_active, "idle seats pass every command, so a Slipper Storm starts")
-	var record := AttributionRecord.new()
-	record.player_seat = 2
-	record.round_id = controller.round_id
-	record.event_id = "p12:storm-drain:hazard"
-	record.physics_tick = tick
-	controller.submit_hazard(record)
-	now += 0.05
-	tick += 1
-	controller.advance_to(now, tick, {}, null, no_contacts)
-	var eliminated_at := now
+		max_active = maxi(max_active, controller.active_commands().size())
 	_check(
-		not controller.storm_active and controller.live_seats == [0, 1],
-		"a trap elimination ends the Storm while a Storm command is still pending"
+		controller.slippers_completed >= 3,
+		"successive slipper commands complete on the active simulation clock"
 	)
-	var relaunched := false
-	while now < eliminated_at + 10.0 and not relaunched:
-		now += 0.05
-		tick += 1
-		controller.advance_to(now, tick, {}, null, no_contacts)
-		for command in controller.command_history:
-			if not bool(command.is_storm) and float(command.telegraph_start_at) > eliminated_at:
-				relaunched = true
-	_check(relaunched, "after the pending Storm commands drain, the base command cadence resumes")
+	_check(max_active <= 1, "the command controller exposes at most one active challenge")
+	_check(
+		controller.command_history.all(
+			func(row: Dictionary) -> bool: return not bool(row.is_storm)
+		),
+		"Storm is absent from the standalone command sequence"
+	)
 
 
 ## Regression (2026-10-15): resetting the controller cleared the room's own actor map (it kept a
@@ -557,7 +542,7 @@ func _test_full_scheduled_match(players: int) -> void:
 				"round %d HUD challenge %s" % [active_round, room.play_challenge_text()]
 			)
 		var before := room.cumulative_score_units.duplicate()
-		if main == KARERA:
+		if main in [KARERA, KANGAROO]:
 			_check_goal_live(active_round, true, mismatches)
 			await _finish_race_round([seats[0]])
 		else:
@@ -598,7 +583,7 @@ func _test_full_scheduled_match(players: int) -> void:
 							kangaroo_paused
 							and room.kangaroo_round.controller.active_time() == command_clock
 						),
-						"2p: pause freezes the Kangaroo command clock"
+						"2p: pause freezes the Kangaroo challenge clock"
 					)
 					room.pause_coordinator.external_menu = true
 					room.pause_coordinator.resume_countdown_seconds = 0.0
@@ -607,7 +592,6 @@ func _test_full_scheduled_match(players: int) -> void:
 					)
 					room.pause_coordinator._process(0.0)
 					pause_kangaroo_checked = true
-				_hold_run_input(seats.slice(0, seats.size() - 1))
 			var frames := 0
 			while (
 				room.phase_controller.phase == MatchPhaseController.Phase.PLAY

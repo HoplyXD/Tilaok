@@ -53,7 +53,7 @@ func _test_offer_policy() -> void:
 		not BaryaOfferPolicy.eligible(true, LAGSANAY, KARERA, false), "Lagsanay Main is excluded"
 	)
 	_check(
-		not BaryaOfferPolicy.eligible(true, KANGAROO, KARERA, false), "Kangaroo Main is excluded"
+		BaryaOfferPolicy.eligible(true, KANGAROO, KARERA, false), "Kangaroo race Main is eligible"
 	)
 	_check(not BaryaOfferPolicy.eligible(true, KARERA, KARERA, true), "sudden death is excluded")
 	for player_count in [2, 3, 4]:
@@ -96,7 +96,7 @@ func _test_offer_policy() -> void:
 			BaryaOfferPolicy.roll_offer(true, KANGAROO, KARERA, false, empty, 1.0, rng) == -1
 			and rng.state == initial_state
 		),
-		"ineligible offer consumes no Barya randomness"
+		"empty Kangaroo race offer consumes no Barya randomness"
 	)
 	var pool: Array[Dictionary] = [
 		{"egg_id": "egg_01", "variant_key": "build.hollow_blocks.cell_1x1"},

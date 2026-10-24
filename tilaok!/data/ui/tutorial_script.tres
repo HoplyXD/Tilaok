@@ -71,22 +71,22 @@ variants = {
 [sub_resource type="Resource" id="Step_6"]
 script = ExtResource("2")
 step_id = &"kangaroo_poses"
-title = "Kangaroo - the slipper"
-body = "A giant slipper lands {telegraph_s} seconds before each command. Sole down: FREEZE, stop running and jumping. Sole up: RISING WAVE, stand on a reachable built piece above the shown line. Sideways: HUG, touch one other chicken. The response window is {response_s} seconds. KANG / GA / ROO strikes appear above your chicken."
+title = "Kangaroo - race and respond"
+body = "Race to the flag while answering one slipper challenge at a time. A {telegraph_s}-second telegraph gives way to a {response_s}-second response. FREEZE locks movement for 2 seconds when it strikes; RISING WAVE checks your hitbox at the final line; HUG accepts contact with any living chicken. A failed command directly eliminates you through race results."
 glyph_action = "move"
 
 [sub_resource type="Resource" id="Step_7"]
 script = ExtResource("2")
 step_id = &"kangaroo_supports"
-title = "Kangaroo - build up"
-body = "Kangaroo is coming. A Rising wave only counts pieces players built, not the base stage. Build UP this round where chickens can climb: place with {confirm}, rotate with {rotate}."
+title = "Kangaroo - Rising"
+body = "Rising shows its target line before the wave rises slowly. At response end, your full chicken hitbox must clear the line within a tiny 1-unit tolerance. Submersion during the rise is safe, and support is not required. Place with {confirm}, rotate with {rotate}."
 glyph_action = "rotate"
 
 [sub_resource type="Resource" id="Step_8"]
 script = ExtResource("2")
 step_id = &"kangaroo_misses"
-title = "Kangaroo - three misses"
-body = "Each missed command adds a mark: KANG, then GA, then ROO. The third mark puts you out. Traps still eliminate you. Last chicken standing wins."
+title = "Kangaroo - race outcomes"
+body = "Reach the flag to finish and become safe from later challenges. Failed commands and traps eliminate through the race ledger. Race scoring applies; there are no life markers or survival placement points."
 glyph_action = "jump"
 
 [resource]

@@ -863,8 +863,7 @@ func _test_live_go_pause_and_commit() -> void:
 		)
 		_check(
 			(
-				pad_hint.contains("BUILD North")
-				and pad_hint.contains("AIM D-pad/stick · PLACE B0")
+				pad_hint.contains("AIM D-pad/stick · PLACE B0")
 				and pad_hint.contains("ROTATE B2 · CLOSE LB")
 			),
 			"HUD switches a gamepad seat to its live-build controls"

@@ -5,7 +5,11 @@ extends RefCounted
 static func eligible(
 	enabled: bool, main_challenge: int, karera_value: int, sudden_death: bool
 ) -> bool:
-	return enabled and not sudden_death and main_challenge == karera_value
+	return (
+		enabled
+		and not sudden_death
+		and main_challenge in [karera_value, EventSchedule.Challenge.KANGAROO]
+	)
 
 
 static func roll_offer(

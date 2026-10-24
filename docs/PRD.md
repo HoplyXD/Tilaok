@@ -6,7 +6,7 @@
 
 **Product owner:** Producer, name TBD. **Development leads:** Francis (lead developer) and Carlos (co-lead developer); both use AI-assisted programming. **Human production roles:** Shanti handles UI design and game audio; Jorge and Ivie handle maps, characters, obstacles, traps, effects and related game assets without AI generation. Registration status, capacity, audio backup, individual task owners and review completion remain unrecorded. This document was prepared with disclosed AI assistance; it is not evidence of a completed game.
 
-**Current decision amendment (2026-10-23):** normal rounds contain exactly one standalone Main; mixed-mode Twists are disabled and stale compatibility rows cannot activate a second controller. Provisional longer timers, map-aware Rising selection/fallback and overhead Kangaroo strikes are specified in the current GDD amendment and P21 tracker. Earlier stack requirements below remain dated source history and are superseded for normal Play; the historical pair-test record is not current schedule evidence.
+**Current decision amendment (2026-10-24):** normal rounds contain exactly one standalone Main; mixed-mode Twists are retired from normal scheduling and stale compatibility rows cannot activate a second controller. Kangaroo is a Karera race with sequential slipper challenges, detailed in the current GDD amendment and P23 tracker. Earlier stack requirements below remain dated source history and are not current schedule evidence; historical pair tests remain evidence of the superseded design only.
 
 ## Contents
 
@@ -98,7 +98,7 @@ Pillars: readable run/jump controls; strategic shared construction; original Fil
 | Milestone | Observable completion |
 |---|---|
 | First playable vertical slice | Two verified inputs complete two build/race rounds with Kaing/Tulay, basic tutorial/results and ten resets; explicitly race-only developmental profile. |
-| Feature-complete submission | Required eight families/applicable variants, independent Karera/Lagsanay/Kangaroo, three stacks, full match/scoring, menus/Library/tutorial and essential presentation are integrated. |
+| Feature-complete submission | Required eight families/applicable variants, standalone Karera/Lagsanay/Kangaroo, full match/scoring, menus/Library/tutorial and essential presentation are integrated. |
 | Release-ready | Supported 2/3/4-player/device tests, full-match/restarts, clean-PC export, accessibility and measured budgets pass; no critical defect; provenance complete. |
 | Submitted | Reviewed package/forms/synopsis/trailer/demo delivered with successful receipt and preserved evidence. |
 | Finalist preparation | Only after qualification: category extras, poster and real event-hardware rehearsal. |
@@ -106,7 +106,7 @@ Pillars: readable run/jump controls; strategic shared construction; original Fil
 
 October 13 scope decision targets **all eight** initial families. Any cut needs an explicit owner decision; review Bula first if capacity slips. All applicable approved variants remain targeted, while vertical Tulay depends on a written support gate. Prototype slices may enable fewer variants without deleting the others.
 
-Required: one arena, controls/local input, construction loop, exact outcomes/scoring, independent Lagsanay/Kangaroo, all three stacks, title/results/settings/help/Library, tutorial, accessibility, essential original art/music/SFX, export/quality/provenance and submission. Should: Barya, session win tally, enhanced crowd, richer skins/accessories, reviewed educational cards and Langit-Lupa. Included Should content becomes subject to required release quality gates. Other catalog families/events/stages are expansion.
+Required: one arena, controls/local input, construction loop, exact outcomes/scoring, standalone Karera/Lagsanay/Kangaroo, title/results/settings/help/Library, tutorial, accessibility, essential original art/music/SFX, export/quality/provenance and submission. Should: Barya, session win tally, enhanced crowd, richer skins/accessories, reviewed educational cards and Langit-Lupa. Included Should content becomes subject to required release quality gates. Other catalog families/events/stages are expansion.
 
 Non-goals: networking, online accounts, servers/RPCs, paid gameplay licence, cloud saves, disk progression, extra movement abilities, team-based modes for the deadline, arbitrary event combinations and importing core mechanics from tutorials/templates. Save migrations and server/RPC validation are N/A. Session tutorial completion and optional session win tally do not introduce persistent saves.
 
@@ -217,7 +217,7 @@ Prototype digital stick activation is absolute x ≥.25, neutral below .20; D-pa
 
 Exact motion/geometry defaults remain centralized in [PROTOTYPE_DEFAULTS](PROTOTYPE_DEFAULTS.md) and [STAGE_AND_PLACEMENT](STAGE_AND_PLACEMENT.md). Numerical restatements here are readable summaries, not a second tuning authority. Retune jump/collider/grid/gaps/camera together and record experiments. World units are provisionally unscaled pixels; actual collision and readability remain untested.
 
-Base stage is playable before construction; player changes may make it difficult or unsolvable. Player-built elevation helps Rising wave while immutable base platforms never qualify. No structural attachment simulation is implied: legal floating built support can qualify when actually supporting feet. Visibility and protected zones are hard constraints; solvability is not guaranteed.
+Base stage is playable before construction; player changes may make it difficult or unsolvable. Rising evaluates the current full chicken hitbox against its shown final line at response end; support provenance is not part of the pass condition. No structural attachment simulation is implied: legal floating built support can qualify when actually supporting feet. Visibility and protected zones are hard constraints; solvability is not guaranteed.
 
 
 ### REQ-MOVE-001 — Implement responsive run and jump only
@@ -534,79 +534,84 @@ Simultaneous earlier eliminations average affected lower places exactly. If the 
 
 **Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** `placement_score_resolver.gd` preserves tick-only callers and compares latest recorded time only when records are marked comparable; `match_results_view_model.gd` supplies the explanation and the P08 room adds an independent brief freeze. 2/3/4-player all-final, exact-time, tick-only, callback-order and one-time score checks passed; the supplied distinguishable-time presentation fixture displays the result in [the Last Cluck capture](evidence/p08/06_last_cluck_explained_results_1920x1080.png). Fixture timestamps are not claimed as physical sub-frame measurements. See [P08 evidence](evidence/p08/README.md).
 
-## 10. Kangaroo
+## 10. Kangaroo race redesign (2026-10-24)
 
-The giant slipper is a background presenter, not a crushing collider. Freeze checks intentional input; Rising checks current eligible player-built support against world-space lines at 768/576/384 wu; Hug pairs live contacts at evaluation. Three misses shown as KANG/GA/ROO eliminate. Independent Kangaroo ends with one survivor and the Lagsanay placement family. Traps and input continue throughout. The standalone `kangaroo_contract_lab` has no Bomb-Taya controller; the later stack may run both systems together.
+Standalone Kangaroo is a Karera race to the flag. It uses the existing race clock (120 s hard cap / 30 s after the first finisher), outcome ledger, one-shot results, score calculator, eligible Barya rules, and race trap credit. Secured finishers are safe and excluded from later challenges. A sole unfinished runner continues racing and skips Hug; zero unfinished runners ends through the race lifecycle. Command failures directly eliminate through the race ledger; they grant neither Lagsanay placement nor Patibong. Same-step elimination beats a flag finish.
 
-Current pair-only Hug, lowest-slot exact ties, forced Freeze+Rising Storm overlap and continuously running Bomb-Taya in the future stack remain active contracts despite documented risks. Direct hazard time wins over a command failure only when strictly earlier and comparable; a tie or unavailable comparison resolves as command failure without Patibong credit. R1–R4 alternatives are not enabled by this PRD. The team must observe and explicitly review problematic cases rather than quietly changing them.
+Each slipper is drawn independently with equal 1:1:1 odds and repeats are allowed. Commands run as telegraph → response/effect → evaluation → cleanup/recovery → next telegraph. Telegraph is 2 s; response begins at 6 s and shortens by 0.5 s per completed slipper to a 3 s floor. Recovery begins at 1.5 s and shortens by 0.15 s per completed slipper to a 0.75 s floor. Acceleration persists through eliminations. Only one command is active; there is no Storm or failure accumulation. Rising drains during recovery and the next command waits for effect cleanup.
 
+Freeze locks movement, jump and build controls for 2 s on strike. Clear buffered jump/build inputs. Gravity, moving supports, external forces, capture and projectile damage continue; Freeze grants no invulnerability. Already-started construction continues, and frozen players cannot start/control live construction. A temporary translucent blue body tint clears on thaw/reset, while terminal state remains authoritative.
+
+Rising displays a selected line before a slow rise. Evaluate once at response end using the current chicken hitbox bottom and 1 wu tolerance; a hitbox fully above the line survives. Submersion during the rise is safe; lethality ends after evaluation and the visual drains. Bounded map-aware target selection uses fair reachable targets, but support is not required at evaluation. If no fair target exists, issue an eligible alternate with no failure or pressure credit.
+
+Hug uses the full response window and checks current contact at response end against the living eligible snapshot before the same-step batch commits. Contact with any other living eligible chicken passes, including pairs, groups and chains; isolated chickens fail. Hug is permitted with two players and skipped for a sole unfinished runner. A same-step projectile victim may count as a partner and is still eliminated by the race batch.
+
+P11 requirements and results below describe the superseded standalone survival design and remain historical evidence only. They do not define current play. P23 in PHASETASK tracks the redesign implementation, paired synthetic verification, docs and open human/device/rendered checks.
+
+### Current acceptance
+
+- Run 2/3/4-player Kangaroo races through the flag lifecycle. Verify finish order, 120 s hard cap, 30 s post-first-finisher window, all-finish/no-finisher suppression, eligible Barya, direct trap credit, no duplicate commits, secured finishers, sole-runner continuation, and zero-runner completion.
+- Verify equal independent command selection, allowed repeats, 2 s telegraph, one active effect, cadence acceleration/floors, no pause catch-up, Rising alternate fallback, Hug at two players and exclusion at one, and ten reset cycles without stale jobs/effects/callbacks.
+- Verify Freeze movement/build lock, gravity, moving supports, knockback/capture/projectile elimination, input clearing, thaw/terminal cleanup, and completion of started construction. Verify Rising boundary/hitbox evaluation, submerged-safe rise, one evaluation and visual drain. Verify Hug pairs, groups, chains and isolation.
+- Retain the historical P11 verification links as evidence of the retired design; do not present them as current acceptance.
+
+### REQ-KANGAROO-RACE-01 — Race objective and awards
+
+**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT.
+
+**Expected behavior:** Kangaroo uses the Karera flag, race clock, terminal ledger, scoring and Barya/trap-credit rules. Finishers become secured. A sole unfinished runner continues without Hug; zero unfinished runners completes the race once. Elimination wins a same-step tie with the goal.
+
+### REQ-KANGAROO-SEQUENTIAL-01 — Sequential slipper lifecycle
+
+**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT.
+
+**Expected behavior:** Draw Freeze/Rising/Hug independently at equal odds with repeats allowed. Run one challenge at a time with 2 s telegraph, 6 s base response and 1.5 s recovery. Reduce response/recovery by 0.5/0.15 s per completed challenge to 3/0.75 s floors, persisting across eliminations. Freeze, Rising and Hug follow the current P23 rules above; cleanup precedes the next telegraph.
+
+### REQ-KANGAROO-RACE-DOCS-01 — Keep current rules and disclosure accurate
+
+**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT.
+
+**Expected behavior:** Player-facing tutorial/Library and current design summaries explain the race, direct command elimination and sequential challenges. Identify P11 survival rules as historical and preserve truthful AI-use disclosure. Do not describe placeholder code art/audio as production assets.
+
+### REQ-KANGAROO-REVIEW-01 — Separate engineering checks from player review
+
+**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT.
+
+**Expected behavior:** Record actual rendered, human and physical-device play separately from synthetic checks. Leave balance, readability, accessibility and performance unapproved until those reviews are performed and documented.
+
+### REQ-KANGAROO-VERIFICATION-01 — Verify and record the implementation
+
+**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT.
+
+**Expected behavior:** Run the installed-engine import, focused relevant regressions, named-file format/lint and diff checks; record actual outcomes, limits and local delivery state without committing or pushing absent separate authorization.
 
 ### REQ-KANG-001 — Present and schedule independent Kangaroo commands
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
-
-**Expected behavior:** Non-colliding background slipper announces Freeze sole-down, Rising sole-up/facing-down, Hug sideways at equal 1:1:1 weights. Use 1 s telegraph, 3 s response, evaluation and .75 s reset initially. Pose, text/icon, distinct audio and timing ring are redundant. World/input/traps/taya continue. Reroll Hug before telegraph at two survivors without pressure increment.
-
-**Acceptance:** Seeded selection checks distribution and two-survivor reroll; no commands after a sole survivor; presenter never collides; full/reduced/off shake preserves comprehension.
-
-**Source:** [GDD.md](GDD.md); [UI_TUTORIAL.md](UI_TUTORIAL.md). **Implementation/evidence:** independent controller, seeded selection, command instance state, full/reduced/off shake, and labeled debug presenter are in `kangaroo_round_controller.gd`, `kangaroo_command_instance.gd` and `p11_kangaroo_match_room.gd`. Seed/reroll/cadence and muted/Shake Off HUD checks pass; the rendered 1920×1080 debug capture is [here](evidence/p11/p11_2p_command_hud_1920x1080.png). Automated evidence only; novice comprehension and final pose/audio review remain open. See [P11 verification](evidence/p11/README.md).
-
+**Historical P11 requirement; superseded by P23.** Retained here to preserve the P11 traceability anchor and old evidence links.
 
 ### REQ-KANG-002 — Evaluate Freeze from intentional input
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
-
-**Expected behavior:** During response, intentional run/jump fails Freeze. Input already held at response start gets exactly one 0.10 s release grace; a fresh press fails immediately, and grace never renews. Shared deadzone filters drift. Opposing run buttons still count as intent. Passive motion, launch, wind or tag contact does not fail; deliberate run/jump while captured still counts.
-
-**Acceptance:** Test drift, held/released inputs, opposite keys, forced motion, capture and passive tag; input intent and movement outcome cannot be confused.
-
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `local_input_router.gd` emits physical intentional-input edges and current held sources; the controller records between-sample presses/releases. P11 tests cover tap, held release/expiry, fresh jump, opposing keys, captured input, and forced movement. The existing P02 input suite covers device thresholds; P11 results are synthetic, not physical-stick drift or human play evidence. See [P11 verification](evidence/p11/README.md).
-
+**Historical P11 requirement; superseded by P23.** Retained here to preserve the P11 traceability anchor and old evidence links.
 
 ### REQ-KANG-003 — Evaluate Rising wave with actual built support
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
-
-**Expected behavior:** Select equal-probability world bands at 768/576/384 wu, never camera-relative or rerolled for an impossible layout. Telegraph target line then raise/drain wave. At evaluation require current grounded player-built eligible support at or above the line, with the documented 1-wu numerical tolerance; base, airborne, jumping through, bubble or coyote state fails.
-
-**Acceptance:** Test every support-table state just above/on/below each band, destroyed/moving support on evaluation tick and another player’s platform; empty layout remains intentionally unsolvable; drain clears.
-
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** command rows lock the selected world line; `SupportTracker.evaluate` supplies current provenance/contact at evaluation; the code-drawn wave raises and drains. P11 synthetic tests cover band lines, built/base/ineligible/stale/below/removal, same-step refresh and drain; P03's 103-check real-physics support suite covers the full support-state matrix and moving/crumbling-platform evaluation. Human explanation and stage playability remain open; see [P11 verification](evidence/p11/README.md).
-
+**Historical P11 requirement; superseded by P23.** Rising now uses the current chicken hitbox at response end; support provenance is not the pass condition.
 
 ### REQ-KANG-004 — Evaluate pair-only Hug deterministically
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
-
-**Expected behavior:** At evaluation pair live eligible chickens by shortest contact first, equal-distance player-slot order; one partner maximum. Paired chickens pass and unpaired fail. Contact only at evaluation matters. Three clustered chickens leave one unpaired; four may form two pairs. R2 group-contact alternative remains inactive.
-
-**Acceptance:** Verify all-contact three, two pairs of four, split groups, equal distances, entry/exit at evaluation, removed players and the two-survivor pre-telegraph reroll.
-
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** `pair_hug_contacts` sorts actual evaluation contacts by distance then stable seat IDs and assigns at most one partner. Automated cases cover two pairs, a three-player cluster, exact ties, evaluation-only contacts and two-player Hug rejection. Synthetic contact snapshots; physical playability remains open. See [P11 verification](evidence/p11/README.md).
-
+**Historical P11 requirement; superseded by P23.** Hug now accepts any current contact group and can be drawn at two players.
 
 ### REQ-KANG-005 — Integrate failure markers, elimination and cleanup
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
-
-**Expected behavior:** Failed commands add KANG, GA, ROO markers; third eliminates. A comparable direct hazard takes terminal precedence only if its timestamp is strictly earlier than command evaluation. Exact ties and unavailable/incomparable times resolve as command failure without Patibong credit for that failure. Remove terminal players from future command/tag eligibility. Last survivor uses Lagsanay placement/Bawi/Patibong rules and Last Cluck ordering. Resolve once through shared outcome infrastructure.
-
-**Acceptance:** Test first/second/third failures, overlapping failures and trap same-step review cases; no fourth marker or duplicate placement. End/removal/restart clears scheduler, rings, wave and markers.
-
-**Source:** [GDD.md](GDD.md); [STAGE_AND_PLACEMENT.md](STAGE_AND_PLACEMENT.md). **Implementation/evidence:** bounded markers, batched command/hazard outcomes, shared placement resolver, one-time commit and terminal cleanup are implemented. Deterministic tests cover first/second/third/fourth marker behavior, same-step/tied hazards, no-credit command failures, simultaneous Last Cluck and reset; the synthetic route verifies placement results, hazard attribution, persistent construction and teardown. See [P11 verification](evidence/p11/README.md).
-
+**Historical P11 requirement; superseded by P23.** The race ledger directly commits a command failure; no KANG/GA/ROO markers or Lagsanay placement scoring remain in Kangaroo.
 
 ### REQ-KANG-006 — Implement no-elimination acceleration and Slipper Storm
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
-
-**Expected behavior:** After every two completed commands without elimination reduce next response .5 s and reset .15 s, minimum 1 s response and zero reset. After eight enter Storm: landing every .5 s, 1 s command, maximum two active; delay a third. At two survivors force overlapping Freeze plus Rising pairs; Hug rerolls. Any elimination resets pressure/cadence. R3 non-overlap proposal remains inactive.
-
-**Acceptance:** Check each acceleration boundary, active cap, delayed landing, two-survivor overlap, elimination reset and all-remaining Last Cluck; reproduce unavoidable-choice risks without claiming balance.
-
-**Source:** [GDD.md](GDD.md); [PROTOTYPE_DEFAULTS.md](PROTOTYPE_DEFAULTS.md). **Implementation/evidence:** deterministic tests cover two-command easing, eight-command Storm entry, 0.5 s landings, 1 s windows, max-two overlap, delayed landing, the two-survivor seeded Freeze/Rising pair, no Hug, and elimination reset. These checks establish scheduler behavior only; overlap fairness and balance review remain open. See [P11 verification](evidence/p11/README.md).
+**Historical P11 requirement; superseded by P23.** Cadence accelerates per completed slipper; Storm and overlapping commands are retired.
 
 ## 11. Scheduling, announcements and compatible stacks
+
+**Current status (2026-10-24):** the schedule selects one standalone Main per round. The compatibility and REQ-STACK rows below are preserved as historical planning/evidence, superseded for normal Play; do not implement or route mixed Main + Twist rounds from them.
 
 | Main | Twist | Score/end authority |
 |---|---|---|
@@ -619,7 +624,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 ### REQ-EVENT-001 — Select and announce the required event schedule
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
+**Scope:** REQUIRED · **Design status:** HISTORICAL / SUPERSEDED FOR NORMAL PLAY · **Owner role:** Gameplay (name TBD).
 
 **Expected behavior:** Round 1 Karera; rounds 4/8/12 standalone Lagsanay. Other eligible rounds use Karera 70%, Lagsanay 20%, Kangaroo 10%. Only non-guaranteed rounds roll a Twist: 0% rounds 1–4, 10% 5–7, 20% 8–10, 30% 11–12. No self-stack, maximum one Twist, none in sudden death. Lock next round and announce Main then Twist during preceding Pugad; tutorial override only guided first Karera.
 
@@ -641,7 +646,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 ### REQ-STACK-001 — Integrate Karera with Lagsanay pressure
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
+**Scope:** REQUIRED · **Design status:** HISTORICAL / SUPERSEDED FOR NORMAL PLAY · **Owner role:** Gameplay (name TBD).
 
 **Expected behavior:** Flag remains active, bodies pass through, tag sensor works. Finishers become secured and leave taya/target/hazard eligibility. Finishing taya transfers to random unfinished live runner or resolves if none. Prototype reassignment preserves remaining countdown and gives no new opening freeze. Use race-only scoring/suppression and optional Barya.
 
@@ -652,7 +657,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 ### REQ-STACK-002 — Integrate Karera with Kangaroo pressure
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
+**Scope:** REQUIRED · **Design status:** HISTORICAL / SUPERSEDED FOR NORMAL PLAY · **Owner role:** Gameplay (name TBD).
 
 **Expected behavior:** Karera controls round end and scoring. Kangaroo third failure eliminates unfinished runners; secured finishers receive no commands/hazards. Flag and optional Barya stay available; command failure gives no Patibong and no extra score table.
 
@@ -663,7 +668,7 @@ Only these pairs may initially enter the pool after verification. Flag is hidden
 
 ### REQ-STACK-003 — Integrate Kangaroo with Lagsanay pressure
 
-**Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Gameplay (name TBD).
+**Scope:** REQUIRED · **Design status:** HISTORICAL / SUPERSEDED FOR NORMAL PLAY · **Owner role:** Gameplay (name TBD).
 
 **Expected behavior:** Kangaroo is Main; Bomb-Taya passes/counts continuously including Freeze. Either third failure, timeout or trap can eliminate; last survivor wins with Lagsanay placement family only. R4 pausing the taya countdown during Freeze remains inactive.
 
@@ -1278,7 +1283,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Art/UI (name TBD).
 
-**Expected behavior:** Show round/Main Challenge, subordinate TWIST label, exact score totals, relevant deadlines, number/shape, alive/secured/eliminated/taya state, KANG→GA→ROO and enabled Barya carrier. Explain suppressed awards, Last Cluck and next-round selection. No internal IDs/collision shapes/seeds.
+**Expected behavior:** Show round/Main Challenge, subordinate TWIST label, exact score totals, relevant deadlines, number/shape, alive/secured/eliminated/taya state, Kangaroo slipper challenge and enabled Barya carrier. Explain suppressed awards, Last Cluck and next-round selection. No internal IDs/collision shapes/seeds.
 
 **Acceptance:** Spectators identify phase, objective, leader, taya, winner and no-score reason; overlapping command rings stay distinct at minimum zoom and with sound/shake off.
 
@@ -1300,7 +1305,7 @@ The Library is the slow-reading space; Pugad stays visual and fast. Every enable
 
 **Scope:** REQUIRED · **Design status:** CURRENT CONTRACT · **Owner role:** Art/UI (name TBD).
 
-**Expected behavior:** Guided first Karera teaches identity, move/jump, visible-item selection, claim timeout, place/rotate/validity/confirm, flag and actual results. Prompts are skippable after completion in current session; replayable help remains. First Lagsanay teaches taya/pass/timer/last survivor; first Kangaroo teaches poses, three misses and built supports.
+**Expected behavior:** Guided first Karera teaches identity, move/jump, visible-item selection, claim timeout, place/rotate/validity/confirm, flag and actual results. Prompts are skippable after completion in current session; replayable help remains. First Lagsanay teaches taya/pass/timer/last survivor; first Kangaroo teaches the race objective and sequential slipper responses.
 
 **Acceptance:** A novice follows the guided loop and explains objective/input/placement; record each facilitator intervention. Session skip and help replay work; no tutorial bonus or disk completion save is invented.
 

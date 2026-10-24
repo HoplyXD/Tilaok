@@ -10,6 +10,7 @@ enum Command { FREEZE, RISING, HUG }
 const COMMAND_INSTANCE_SCRIPT := preload("res://scripts/match/kangaroo_command_instance.gd")
 const COMMAND_NAMES := ["FREEZE", "RISING", "HUG"]
 const COMMAND_HISTORY_LIMIT := 128
+const MAX_SCHEDULER_STEP_SECONDS := 0.25
 
 var active := false
 var ended := false
@@ -23,6 +24,7 @@ var terminal_outcomes: Array[Dictionary] = []
 var elimination_records: Array[Dictionary] = []
 var starting_totals: Dictionary = {}
 var no_elimination_commands := 0
+var slippers_completed := 0
 var storm_active := false
 var storm_landing_pending := false
 var last_cluck := false
@@ -31,6 +33,7 @@ var commit_done := false
 ## P12 stacks: as a Twist (Karera Main) this controller never ends the round, never names a
 ## winner and runs no Storm; finishers leave the live roster via `secure_seat`.
 var twist_role := false
+var race_role := false
 var secured_seats: Array[int] = []
 
 var _external_causes: Dictionary = {}
@@ -61,12 +64,11 @@ static func command_name(command: int) -> String:
 
 
 static func select_command(rng: RandomNumberGenerator, alive_count: int) -> int:
-	if rng == null or alive_count <= 1:
+	if rng == null or alive_count <= 0:
 		return -1
-	var selected := rng.randi_range(Command.FREEZE, Command.HUG)
-	while alive_count == 2 and selected == Command.HUG:
-		selected = rng.randi_range(Command.FREEZE, Command.HUG)
-	return selected
+	if alive_count == 1:
+		return rng.randi_range(Command.FREEZE, Command.RISING)
+	return rng.randi_range(Command.FREEZE, Command.HUG)
 
 
 static func wave_y_for_band(tuning: GameplayTuning, band: int) -> float:
@@ -82,6 +84,10 @@ static func wave_y_for_band(tuning: GameplayTuning, band: int) -> float:
 	return -1.0
 
 
+static func rising_hitbox_clears(hitbox: Rect2, line_y: float) -> bool:
+	return hitbox.end.y <= line_y + 1.0
+
+
 static func hazard_precedes_command(
 	hazard_time_comparable: bool, hazard_time: float, command_evaluation_time: float
 ) -> bool:
@@ -94,41 +100,15 @@ static func pair_hug_contacts(
 	var live: Dictionary = {}
 	for seat in live_seat_list:
 		live[seat] = true
-	var best_distance: Dictionary = {}
+	var touching: Dictionary = {}
 	for contact in contacts:
 		var seat_a := int(contact.get("seat_a", contact.get("seat_index", -1)))
 		var seat_b := int(contact.get("seat_b", contact.get("other_seat_index", -1)))
 		if seat_a == seat_b or not live.has(seat_a) or not live.has(seat_b):
 			continue
-		var low := mini(seat_a, seat_b)
-		var high := maxi(seat_a, seat_b)
-		var key := "%d:%d" % [low, high]
-		var distance := float(contact.get("distance_squared", 0.0))
-		if not best_distance.has(key) or distance < float(best_distance[key]):
-			best_distance[key] = distance
-	var pairs: Array[Dictionary] = []
-	for key in best_distance:
-		var parts := str(key).split(":")
-		(
-			pairs
-			. append(
-				{
-					"seat_a": int(parts[0]),
-					"seat_b": int(parts[1]),
-					"distance_squared": float(best_distance[key]),
-				}
-			)
-		)
-	pairs.sort_custom(_hug_pair_less)
-	var paired: Dictionary = {}
-	for pair in pairs:
-		var seat_a := int(pair.seat_a)
-		var seat_b := int(pair.seat_b)
-		if paired.has(seat_a) or paired.has(seat_b):
-			continue
-		paired[seat_a] = true
-		paired[seat_b] = true
-	return paired
+		touching[seat_a] = true
+		touching[seat_b] = true
+	return touching
 
 
 static func _hug_pair_less(left: Dictionary, right: Dictionary) -> bool:
@@ -146,14 +126,16 @@ func begin(
 	random_stream: RandomNumberGenerator,
 	gameplay_tuning: GameplayTuning,
 	start_time: float = 0.0,
-	initial_intent_sources: Dictionary = {}
+	initial_intent_sources: Dictionary = {},
+	is_race_role: bool = false
 ) -> bool:
 	if not _can_mutate():
 		return false
 	reset()
+	race_role = is_race_role
 	if (
 		new_round_id.is_empty()
-		or seats.size() < 2
+		or seats.is_empty()
 		or seats.size() > 4
 		or random_stream == null
 		or gameplay_tuning == null
@@ -201,12 +183,14 @@ func reset() -> void:
 	elimination_records.clear()
 	starting_totals.clear()
 	no_elimination_commands = 0
+	slippers_completed = 0
 	storm_active = false
 	storm_landing_pending = false
 	last_cluck = false
 	last_cluck_seat = -1
 	commit_done = false
 	twist_role = false
+	race_role = false
 	secured_seats.clear()
 	_external_causes.clear()
 	_rng = null
@@ -352,6 +336,9 @@ func advance_to(
 		return {"new_outcomes": [], "ended": false}
 	if not active or ended or not is_finite(simulation_time) or simulation_time < _now:
 		return {"advanced": false, "new_outcomes": [], "completed_commands": 0}
+	var step_gap := simulation_time - _now
+	if step_gap > MAX_SCHEDULER_STEP_SECONDS:
+		_rebase_pending_deadlines(step_gap)
 	_step_physics_tick = physics_tick
 	_step_actors = actors
 	_step_support_tracker = support_tracker
@@ -373,29 +360,8 @@ func advance_to(
 		_check_freeze_graces_at(event_time)
 		var completed_here := _evaluate_commands_at(event_time)
 		_apply_hazards_at(event_time, simulation_time)
-		if completed_here > 0 and not _step_had_elimination:
-			if (
-				(
-					_step_provisional_count
-					>= maxi(
-						_tuning.kangaroo_storm_min_after_commands,
-						_tuning.kangaroo_storm_after_commands
-					)
-				)
-				and not storm_active
-				and not twist_role
-			):
-				storm_active = true
-				_next_base_launch = -1.0
-				_step_storm_trigger_at = event_time
-				_next_storm_landing = (
-					event_time
-					+ maxf(
-						_tuning.kangaroo_storm_min_landing_seconds,
-						_tuning.kangaroo_storm_landing_seconds
-					)
-				)
-		_process_launches_at(event_time)
+		# This race mode has one command at a time. Historical Storm scheduling is retired.
+		_process_launches_at(event_time, simulation_time)
 		_maybe_resume_base_after_drain(event_time)
 	if iterations >= 4096:
 		push_error("Kangaroo scheduler exceeded its deterministic event bound.")
@@ -410,7 +376,9 @@ func advance_to(
 		no_elimination_commands = _step_provisional_count
 		if _step_storm_trigger_at >= 0.0:
 			storm_active = true
-	if not twist_role and live_seats.size() <= 1:
+	if not twist_role and not race_role and live_seats.size() <= 1:
+		_end_round()
+	elif race_role and live_seats.is_empty():
 		_end_round()
 	_now = simulation_time
 	return {
@@ -420,6 +388,21 @@ func advance_to(
 		"ended": ended,
 		"last_cluck": last_cluck,
 	}
+
+
+func _rebase_pending_deadlines(seconds: float) -> void:
+	if _next_base_launch >= 0.0:
+		_next_base_launch += seconds
+	if _next_storm_landing >= 0.0:
+		_next_storm_landing += seconds
+	for command in command_history:
+		if bool(command.evaluated):
+			continue
+		command.telegraph_start_at = float(command.telegraph_start_at) + seconds
+		command.response_start_at = float(command.response_start_at) + seconds
+		command.response_end_at = float(command.response_end_at) + seconds
+		if float(command.grace_at) >= 0.0:
+			command.grace_at = float(command.grace_at) + seconds
 
 
 func active_commands() -> Array[Dictionary]:
@@ -595,7 +578,7 @@ func _evaluate_commands_at(event_time: float) -> int:
 			return int(left.command_id) < int(right.command_id)
 	)
 	for command in due:
-		var paired := (
+		var touching := (
 			pair_hug_contacts(live_seats, _step_hug_contacts)
 			if int(command.command) == Command.HUG
 			else {}
@@ -607,17 +590,13 @@ func _evaluate_commands_at(event_time: float) -> int:
 			var passed := false
 			match int(command.command):
 				Command.FREEZE:
-					passed = not bool(command.freeze_violations.get(seat, false))
+					passed = true
 				Command.RISING:
-					if _step_support_tracker != null:
-						var support := _step_support_tracker.evaluate(
-							actor.support_actor_id,
-							float(command.wave_y),
-							_tuning.support_height_epsilon_wu
-						)
-						passed = bool(support.get("qualifies", false))
+					passed = rising_hitbox_clears(actor.hit_rect(), float(command.wave_y))
 				Command.HUG:
-					passed = bool(paired.get(seat, false))
+					passed = bool(touching.get(seat, false))
+			if int(command.command) == Command.FREEZE:
+				actor.set_kangaroo_frozen(_tuning.kangaroo_freeze_duration_seconds)
 			command.pass_by_seat[seat] = passed
 			if not passed:
 				command.failure_seats.append(seat)
@@ -625,35 +604,31 @@ func _evaluate_commands_at(event_time: float) -> int:
 		command.status = "COMPLETE"
 		command.evaluated_at = float(command.response_end_at)
 		_step_completed_count += 1
+		slippers_completed += 1
 		if not _step_had_elimination:
 			_step_provisional_count += 1
 		for seat in command.failure_seats:
 			if not live_seats.has(int(seat)):
 				continue
-			var next_marker := int(marker_counts.get(seat, 0)) + 1
-			marker_counts[seat] = mini(next_marker, 3)
-			if next_marker >= 3:
-				_record_elimination(
-					{
-						"seat_index": int(seat),
-						"cause": "command_failure",
-						"physics_tick": _step_physics_tick,
-						"physics_time": float(command.response_end_at),
-						"time_comparable": true,
-						"direct_owner_seat": -1,
-						"source_item_id": "",
-						"event_id": "%s:kangaroo:%d:%d" % [round_id, command.command_id, seat],
-					}
-				)
-		command.reset_seconds = (
-			0.0
-			if bool(command.is_storm)
-			else (
-				_base_reset_seconds()
-				if _step_had_elimination
-				else _reset_for_count(_step_provisional_count)
+			_record_elimination(
+				{
+					"seat_index": int(seat),
+					"cause": "slipper_" + command_name(int(command.command)).to_lower(),
+					"physics_tick": _step_physics_tick,
+					"physics_time": float(command.response_end_at),
+					"time_comparable": true,
+					"direct_owner_seat": -1,
+					"source_item_id": "",
+					"event_id": "%s:kangaroo:%d:%d" % [round_id, command.command_id, seat],
+				}
 			)
+		command.reset_seconds = (
+			0.0 if bool(command.is_storm) else _reset_for_count(slippers_completed)
 		)
+		if int(command.command) == Command.FREEZE:
+			command.reset_seconds = maxf(
+				command.reset_seconds, _tuning.kangaroo_freeze_duration_seconds
+			)
 		_schedule_after_command(command, event_time)
 	return due.size()
 
@@ -717,24 +692,12 @@ func _record_elimination(outcome: Dictionary) -> void:
 
 
 func _schedule_after_command(command: Dictionary, evaluated_at: float) -> void:
-	if storm_active or bool(command.is_storm):
-		if _step_had_elimination:
-			storm_active = false
-			if _active_storm_count() == 0 and live_seats.size() > 1:
-				_next_base_launch = evaluated_at + _base_reset_seconds()
-			return
-		if storm_landing_pending and _active_storm_count() < _tuning.kangaroo_storm_max_active:
-			storm_landing_pending = false
-			_next_storm_landing = evaluated_at
+	if bool(command.is_storm):
 		return
-	if not _step_had_elimination:
-		var adjusted_reset := _reset_for_count(_step_provisional_count)
-		_next_base_launch = evaluated_at + adjusted_reset
-	else:
-		_next_base_launch = evaluated_at + _base_reset_seconds()
+	_next_base_launch = evaluated_at + float(command.reset_seconds)
 
 
-func _process_launches_at(event_time: float) -> void:
+func _process_launches_at(event_time: float, simulation_time: float) -> void:
 	if live_seats.size() < _command_min_live():
 		_next_base_launch = -1.0
 		_next_storm_landing = -1.0
@@ -747,7 +710,9 @@ func _process_launches_at(event_time: float) -> void:
 			_launch_storm(event_time)
 	if not storm_active and _next_base_launch >= 0.0 and _next_base_launch <= event_time:
 		_next_base_launch = -1.0
-		_launch_base(event_time)
+		# A delayed physics step starts a fresh telegraph now; it never replays launches on stale
+		# timestamps or compresses the reaction window to catch up.
+		_launch_base(maxf(event_time, simulation_time))
 	if (
 		storm_active
 		and storm_landing_pending
@@ -757,16 +722,13 @@ func _process_launches_at(event_time: float) -> void:
 		_launch_storm(event_time)
 
 
-## Standalone and Main rounds need two live seats for a command; as a Twist the last unfinished
-## runner keeps receiving Freeze and Rising commands (P12 table U7).
+## Race Main and Twist rounds continue for a sole unfinished runner; the survival lab ends at one.
 func _command_min_live() -> int:
-	return 1 if twist_role else 2
+	return 1 if twist_role or race_role else 2
 
 
 func _select_for_live() -> int:
 	var count := live_seats.size()
-	if twist_role and count == 1:
-		return _rng.randi_range(Command.FREEZE, Command.RISING)
 	return select_command(_rng, count)
 
 
@@ -831,7 +793,7 @@ func _choose_fair_wave() -> Dictionary:
 ## Rising is deferred by issuing one other eligible command. This bounded fallback does not
 ## create a hidden failed command or advance pressure for the skipped Rising selection.
 func _fallback_without_rising() -> int:
-	if live_seats.size() == 2:
+	if live_seats.size() <= 2:
 		return Command.FREEZE
 	var alternatives := [Command.FREEZE, Command.HUG]
 	return int(alternatives[_rng.randi_range(0, alternatives.size() - 1)])
@@ -841,7 +803,7 @@ func _launch_base(at_time: float) -> void:
 	var selected := _select_for_live()
 	if selected < 0:
 		return
-	var response := _response_for_count(_step_provisional_count)
+	var response := _response_for_count(slippers_completed)
 	var wave := _choose_fair_wave() if selected == Command.RISING else {}
 	if selected == Command.RISING and wave.is_empty():
 		selected = _fallback_without_rising()
@@ -966,11 +928,11 @@ func _maybe_resume_base_after_drain(event_time: float) -> void:
 	for command in command_history:
 		if not bool(command.evaluated):
 			return
-		_next_base_launch = event_time + _base_reset_seconds()
+	_next_base_launch = event_time + _reset_for_count(slippers_completed)
 
 
 func _response_for_count(completed_count: int) -> float:
-	var reductions := floori(float(completed_count) / 2.0)
+	var reductions := maxi(0, completed_count)
 	return maxf(
 		_tuning.kangaroo_response_min_seconds,
 		(
@@ -981,7 +943,7 @@ func _response_for_count(completed_count: int) -> float:
 
 
 func _reset_for_count(completed_count: int) -> float:
-	var reductions := floori(float(completed_count) / 2.0)
+	var reductions := maxi(0, completed_count)
 	return maxf(
 		_tuning.kangaroo_reset_min_seconds,
 		(
