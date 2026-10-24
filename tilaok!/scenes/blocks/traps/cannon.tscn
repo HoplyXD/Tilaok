@@ -125,8 +125,8 @@ scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_yf5fn")
 animation = &"shoot"
 autoplay = "reloading"
-frame_progress = 0.11778601
-flip_h = true
+frame = 8
+frame_progress = 1.0
 
 [node name="AnimatedSprite2D2" type="Sprite2D" parent="Visual" unique_id=1828503062]
 position = Vector2(-15, 12.999999)
