@@ -889,3 +889,11 @@ At the user's request ("the map names should be what theyre called in the node",
 - a straight-down glide
 
 Verified on **Godot 4.7.2 (Steam)** directly on the project: `run_blocks_tests` 129 checks, 0 failures after the flip_h check was dropped; `run_ui_theme_tests` 274, 3 failures (score chip, title card, menu offset), identical on a clean `git archive HEAD` copy; `run_scoreboard_chart_tests` 52, `run_p13_accessibility_tests` 66 and `run_match_ui_binding_tests` 177 green. `run_maps_tests` segfaults after a missing `Blocks Sprite Sheet.png`, and it did the same on HEAD. AI-generated code and scene edits. No human code review, visual review or feel review is claimed, and gdformat / gdlint were not run.
+
+**Merge with origin/main (2fadc55), resolved by Claude Code at the user's request:** both sides changed `ChickenSpriteAnimator`. The remote's `force_idle_preview` (lobby previews hold `idle`) was kept alongside the colour sprites and motion-sided poses, and the remote copy's `DEFAULT_TINT_STRENGTH` / `tint_strength` stayed removed. The remote's `ui_lobby_slot.gd` merged without a textual conflict but looked up the removed `ChickenAnimation` node, which would have failed on a null as soon as a lobby slot was bound. It now sets `force_idle_preview` on every colour animator under the preview chicken. Both sides' entries in this file were kept.
+
+### BUILD prep countdown shortens when everyone has placed — October 24, 2026
+
+At the user's request, the shared preparation BUILD now moves to its existing final 3–2–1/GO cue as soon as every joined player's assigned item has been successfully placed. The placement receipts for a physics boundary are resolved before this all-used check, so a confirmation queued on the last player's boundary counts. Invalid attempts do not spend inventory; if even one player has not placed, the shared preparation timer continues and that player can save the item for active play. The shortcut never starts PLAY directly.
+
+Codex updated `OfflineLiveBuildMatchRoom` and the current-flow notes in `AGENTS.md`, `README.md`, `docs/GDD.md` and the P22 acceptance text. This is AI-generated programming under the standing workflow. No test suite or rendered playtest was run for this small change. Godot headless import/parse and `git diff --check` passed; no human review is claimed.

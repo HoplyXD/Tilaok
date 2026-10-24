@@ -142,7 +142,6 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	if get_tree().paused or not _simulation_can_commit():
 		return
-	_update_identity_badges()
 	_update_camera_targets()
 	if phase_controller.phase == MatchPhaseController.Phase.LOBBY:
 		_poll_map_selection()

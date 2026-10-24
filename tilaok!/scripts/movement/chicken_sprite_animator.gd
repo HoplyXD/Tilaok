@@ -23,6 +23,9 @@ extends AnimatedSprite2D
 
 const CHICKEN_SCENE := "res://scenes/characters/chicken.tscn"
 
+## Lobby slot previews should hold a standing idle pose independent of gameplay state.
+@export var force_idle_preview := false
+
 ## Per-animation offset in texture pixels (so it scales with the node) that puts the feet of
 ## every frame on the collision bottom. Unlisted animations sit at the node origin; fill this in
 ## from the editor for any pose whose art does not already end on the cell's feet line.
@@ -77,7 +80,7 @@ func _process(_delta: float) -> void:
 		return
 	visible = _wears_this_skin()
 	_track_transitions()
-	var next := pose_for_state()
+	var next := &"idle" if force_idle_preview else pose_for_state()
 	# A pose the sheet has no frames for yet holds the current one instead of erroring out.
 	if sprite_frames == null or not sprite_frames.has_animation(next):
 		next = animation

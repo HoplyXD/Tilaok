@@ -28,6 +28,7 @@ var construction_jobs: Dictionary = {}
 var _aim_repeat: Dictionary = {}
 var _request_serial := 0
 var _live_admission_open := false
+var _preparation_fast_forwarded := false
 var _edge_layer: CanvasLayer
 var _edge_root: Control
 var _edge_markers: Dictionary = {}
@@ -132,6 +133,19 @@ func _physics_process(delta: float) -> void:
 
 
 func _advance_preparation_phase(delta: float) -> void:
+	# Placement receipts for this physics boundary have already been resolved by the caller.
+	# If every assigned item was used, skip the unused prep time but retain the final GO cue.
+	if not _preparation_fast_forwarded and _all_preparation_items_used():
+		_preparation_fast_forwarded = true
+		_close_live_admission()
+		for seat_variant in build_mode.keys():
+			var seat_index := int(seat_variant)
+			_set_build_mode(seat_index, false)
+			_set_live_ghost_visible(seat_index, false)
+		if phase_controller.remaining_seconds > 3.0:
+			phase_controller.enter(MatchPhaseController.Phase.BUILD, 3.0)
+		_notify_presentation(&"live_build")
+		_refresh_match_ui()
 	if phase_controller.advance(delta):
 		_close_live_admission()
 		for seat_variant in build_mode.keys():
@@ -140,6 +154,15 @@ func _advance_preparation_phase(delta: float) -> void:
 			_set_live_ghost_visible(seat_index, false)
 		_notify_presentation(&"live_build")
 		_start_live_play()
+
+
+func _all_preparation_items_used() -> bool:
+	if placement_controller.cursors.is_empty():
+		return false
+	for seat_variant in placement_controller.cursors:
+		if not bool(inventory_used.get(int(seat_variant), false)):
+			return false
+	return true
 
 
 func _close_live_admission() -> void:
@@ -171,6 +194,7 @@ func _enter_place() -> void:
 		inventory_used[seat_index] = false
 		live_notices.erase(seat_index)
 		_aim_repeat[seat_index] = {"elapsed": 0.0, "first": true, "direction": Vector2.ZERO}
+	_preparation_fast_forwarded = false
 	input_router.set_rotation_supported(false)
 	# Keyboard south keys (R, Enter, O, Num 0) confirm in the preparation and live-build phases.
 	input_router.live_build_confirm_enabled = true
