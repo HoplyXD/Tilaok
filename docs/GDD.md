@@ -226,6 +226,23 @@ Terminal, opening-freeze, capture and external-force precedence remain unchanged
 - **Glide:** hold jump while falling to cap descent at a configurable 180 wu/s; steering is unchanged. Tapping still jumps normally, a fresh press on a wall still wall-jumps, and wall slide wins over glide while touching an eligible wall.
 - Wall slide and wall jump are the existing approved extension below (rescaled to the 64 px grid).
 
+### Per-pose hitboxes — 2026-10-24 (user request)
+
+**Status — October 24, 2026:** requested by the user and implemented; automated Godot checks pass (P02 movement and wall, P03 stage, blocks, sneak hitbox). Human feel review and physical-device checks are pending. Checked on Godot 4.6 in a throwaway copy, because the installed engines here are 4.5.1 and 4.6 while the project targets 4.7.
+
+The chicken carries one authored hitbox per pose and enables exactly one at a time. The controller's state picks it, and the sprite animator picks its animation from that same state, so the pose on screen and the body in the physics world cannot disagree. All three share a feet line, so a swap never moves the chicken.
+
+| Pose | Hitbox | Size (wu) |
+| --- | --- | --- |
+| Standing, running, grounded | `MainHitbox` | 56 × 120 |
+| Airborne (jump, fall, glide, wall slide) | `JumpHitbox` | 56 × 56 |
+| Sneaking | `SneakHitbox` | 56 × 56 |
+
+- The swap is **physics only**. The gameplay hitbox that traps, beams, slippers, block kill/stun hitboxes, tagging and the "a chicken is too close" building check read is still the tuning-derived body described under Sneak above, and it is unchanged while airborne.
+- **Wall-slide reach narrows (owner decision, 2026-10-24).** The airborne body is one tile tall at the feet, so a wall slide only catches a wall beside that tile. A chicken can no longer slide on a block level with its standing head but more than one tile above its feet. This is a deliberate narrowing of [Wall slide and wall jump](#wall-slide-and-wall-jump--approved-extension), chosen over keeping the previous reach; it is not a bug. Feel review should confirm it before the freeze.
+- Growing back to the standing body needs headroom, reusing the sneak check: a chicken that lands in a one-tile gap keeps the small body until it fits.
+- The tuning body size stays authoritative — the controller resizes the authored standing and sneak shapes to `body_width_wu` / `body_height_wu` / `sneak_height_wu` on ready. `JumpHitbox` has no gameplay counterpart, so its authored size is left alone and only its feet are pinned to the standing feet line.
+
 ### Map terrains and water — 2026-10-22 (user request)
 
 **Status — October 22, 2026:** requested by the user and implemented; automated Godot checks pass (maps, P02 movement, P03 stage, blocks and tutorial suites). Human feel review, water art and physical-device checks are pending. No shipped map paints water yet.

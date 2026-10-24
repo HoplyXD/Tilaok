@@ -403,11 +403,8 @@ func _build_actor(seat_index: int) -> ChickenController:
 	actor.collision_layer = 2
 	actor.collision_mask = 1
 	actor.set_meta("support_half_height", tuning.body_height_wu * 0.5)
-	# The tuning body size is authoritative; the scene's authored shape is resized to match.
-	var body_shape := actor.get_node("CollisionShape2D") as CollisionShape2D
-	var rectangle := body_shape.shape.duplicate() as RectangleShape2D
-	rectangle.size = Vector2(tuning.body_width_wu, tuning.body_height_wu)
-	body_shape.shape = rectangle
+	# `actor.tuning` is already set, so the controller resizes its own authored hitboxes to the
+	# tuning body on _ready (ChickenController._apply_body_tuning).
 	world_layer.add_child(actor)
 	var badge := Label.new()
 	badge.name = "IdentityBadge"

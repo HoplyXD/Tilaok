@@ -66,7 +66,11 @@ func _currently_intersects_body(other: Node2D) -> bool:
 		return false
 	var body_shape: CollisionShape2D
 	for child in other.get_children():
-		if child is CollisionShape2D and (child as CollisionShape2D).shape is RectangleShape2D:
+		# A chicken carries one hitbox per pose (standing, airborne, sneaking) and enables only
+		# the one its state calls for, so the enabled shape is the body to measure against.
+		if not (child is CollisionShape2D) or (child as CollisionShape2D).disabled:
+			continue
+		if (child as CollisionShape2D).shape is RectangleShape2D:
 			body_shape = child
 			break
 	if body_shape == null:

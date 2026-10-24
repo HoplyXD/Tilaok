@@ -3,33 +3,17 @@ class_name ChickenSpriteAnimator
 extends AnimatedSprite2D
 
 ## Picks the chicken animation from its ChickenController parent every frame. Frames live in the
-## SpriteFrames of scenes/characters/chicken.tscn (PLACEHOLDER sheet:
-## assets/character/Chicken Placeholder Sprite Sheet.png, 4 cols x 2 rows of 512x512 cells).
-## Artists can replace or add frames per animation in the editor without touching this script.
+## SpriteFrames of scenes/characters/chicken.tscn (assets/character/Chicken 1 Sprite Sheet.png,
+## 2048x2048 cells). Artists can replace or add frames per animation in the editor without
+## touching this script; node scale and per-animation offsets are authored there too.
 
-## Sheet cell size in texture pixels; one cell maps onto two grid tiles (a chicken's 1x2 clearance).
-const CELL_PX := 512.0
 ## Below this horizontal speed (wu/s) the chicken counts as standing still.
 const MOVE_THRESHOLD_WU_S := 20.0
 
-## Per-animation offset in texture pixels so the feet of every frame sit on the collision bottom.
-## Row-1 feet touch the cell bottom; row-2 (air) poses end higher in their cells.
-@export var animation_offsets := {
-	&"idle": Vector2(0, -16),
-	&"run_right": Vector2(0, -16),
-	&"run_left": Vector2(0, -16),
-	&"wall_slide_right": Vector2(0, -16),
-	&"wall_slide_left": Vector2(0, -16),
-	&"sneak": Vector2(0, -16),
-	&"jump": Vector2(0, 130),
-	&"jump_right": Vector2(0, 108),
-	&"jump_left": Vector2(0, 108),
-	&"glide": Vector2(0, 130),
-	&"glide_right": Vector2(0, 108),
-	&"glide_left": Vector2(0, 108),
-	&"stun": Vector2(0, -16),
-	&"dead": Vector2(0, 109),
-}
+## Per-animation offset in texture pixels (so it scales with the node) that puts the feet of
+## every frame on the collision bottom. Unlisted animations sit at the node origin; fill this in
+## from the editor for any pose whose art does not already end on the cell's feet line.
+@export var animation_offsets := {}
 const DEFAULT_TINT_STRENGTH := 2.1
 
 ## Multiplier on the seat colour so the mid-grey placeholder reads as that colour.
@@ -47,9 +31,6 @@ var chicken: ChickenController
 
 func _ready() -> void:
 	chicken = get_parent() as ChickenController
-	if chicken != null and chicken.tuning != null:
-		# Two tiles tall: 0.25 on the 64 wu grid (512 px cell -> 128 wu).
-		scale = Vector2.ONE * (chicken.tuning.grid_cell_wu * 2.0 / CELL_PX)
 	play(&"idle")
 
 
@@ -57,7 +38,10 @@ func _process(_delta: float) -> void:
 	if chicken == null:
 		return
 	var next := animation_for_state()
-	if animation != next:
+	# A pose the sheet has no frames for yet holds the current one instead of erroring out.
+	if sprite_frames == null or not sprite_frames.has_animation(next):
+		next = animation
+	elif animation != next:
 		play(next)
 	offset = animation_offsets.get(next, Vector2.ZERO)
 	var base := Color.WHITE if chicken.lifecycle.is_terminal() else chicken.marker_color
@@ -108,7 +92,8 @@ func animation_for_state() -> StringName:
 	elif vx < -MOVE_THRESHOLD_WU_S:
 		side = "_left"
 	if not chicken.is_on_floor():
-		return StringName(("glide" if chicken.gliding else "jump") + side)
+		# jump / jump_left / jump_right, each with a _gliding variant.
+		return StringName("jump" + side + ("_gliding" if chicken.gliding else ""))
 	if side.is_empty():
 		return &"idle"
 	return StringName("run" + side)

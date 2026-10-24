@@ -9,6 +9,12 @@ signal sneak_changed(is_sneaking: bool)
 signal stunned(seconds: float)
 
 const WATER_DRAG := 0.86
+## Hitbox children of scenes/characters/chicken.tscn. Exactly one is ever enabled: the state
+## below picks it, and ChickenSpriteAnimator picks its animation from that same state, so the
+## pose on screen and the body in the physics world never disagree. The first unnamed rectangle
+## shape is the standing body, so a chicken built in code with a single shape still works.
+const JUMP_SHAPE_NODE := "JumpHitbox"
+const SNEAK_SHAPE_NODE := "SneakHitbox"
 
 @export var seat_index := 0
 @export var tuning: GameplayTuning
@@ -75,8 +81,13 @@ var _wall_grace_side := 0
 var _wall_collider_id := 0
 var _wall_debug_signature := 0
 var _body_shape: CollisionShape2D
+var _jump_shape: CollisionShape2D
+var _sneak_shape: CollisionShape2D
 var _standing_size := Vector2.ZERO
 var _standing_offset := Vector2.ZERO
+## True while the compact airborne body is the enabled hitbox. Not the same as `not is_on_floor()`:
+## a chicken that lands with no headroom keeps the small body until it fits again.
+var _airborne_body := false
 var _contact_sensor: ChickenContactSensor
 
 
@@ -192,6 +203,7 @@ func _physics_process(delta: float) -> void:
 	elif external_velocity.length_squared() > 0.01:
 		coyote_remaining = 0.0
 	_notify_block_contacts(axis)
+	_update_body_shape_for_air()
 	_refresh_wall_debug()
 	_check_border()
 	_check_bounds()
@@ -529,13 +541,94 @@ func _capture_body_shape() -> void:
 	if _body_shape != null:
 		return
 	for child in get_children():
-		if child is CollisionShape2D and (child as CollisionShape2D).shape is RectangleShape2D:
-			_body_shape = child
-			# Own the shape so resizing never affects another chicken sharing the resource.
-			_body_shape.shape = _body_shape.shape.duplicate()
-			_standing_size = (_body_shape.shape as RectangleShape2D).size
-			_standing_offset = _body_shape.position
-			return
+		if not (child is CollisionShape2D):
+			continue
+		var collision := child as CollisionShape2D
+		if not (collision.shape is RectangleShape2D):
+			continue
+		var node_name := str(collision.name)
+		if node_name == JUMP_SHAPE_NODE:
+			_jump_shape = collision
+		elif node_name == SNEAK_SHAPE_NODE:
+			_sneak_shape = collision
+		elif _body_shape == null:
+			_body_shape = collision
+	if _body_shape == null:
+		return
+	# Own the shapes so resizing one never affects another chicken sharing the resource.
+	for owned in _hitboxes():
+		owned.shape = owned.shape.duplicate()
+	_standing_size = (_body_shape.shape as RectangleShape2D).size
+	_standing_offset = _body_shape.position
+	_apply_body_tuning()
+	_sync_body_shape()
+
+
+## The tuning body size is authoritative; the scene's authored hitboxes are resized to match so
+## the physics body never disagrees with `hit_rect()`, which hazards, block kill/stun hitboxes and
+## placement clearance all read. JumpHitbox has no `hit_rect()` counterpart (it is physics-only),
+## so its authored size is left alone and only its feet are pinned to the standing feet line.
+func _apply_body_tuning() -> void:
+	if _body_shape == null or tuning == null:
+		return
+	_standing_size = Vector2(tuning.body_width_wu, tuning.body_height_wu)
+	(_body_shape.shape as RectangleShape2D).size = _standing_size
+	_body_shape.position = _standing_offset
+	var feet := _standing_offset.y + _standing_size.y * 0.5
+	if _sneak_shape != null:
+		var sneak_size := Vector2(_standing_size.x, _sneak_height())
+		(_sneak_shape.shape as RectangleShape2D).size = sneak_size
+		_sneak_shape.position = Vector2(_standing_offset.x, feet - sneak_size.y * 0.5)
+	if _jump_shape != null:
+		var jump_size := (_jump_shape.shape as RectangleShape2D).size
+		_jump_shape.position = Vector2(_jump_shape.position.x, feet - jump_size.y * 0.5)
+
+
+## Every hitbox this chicken owns, standing body first.
+func _hitboxes() -> Array[CollisionShape2D]:
+	var result: Array[CollisionShape2D] = []
+	for collision in [_body_shape, _jump_shape, _sneak_shape]:
+		if collision != null:
+			result.append(collision)
+	return result
+
+
+## The hitbox the current state calls for. Sneak wins over airborne: a sneaking chicken is on
+## the floor by definition, and leaving sneak already needs the `_can_stand()` headroom check.
+func _active_shape() -> CollisionShape2D:
+	if sneaking and _sneak_shape != null:
+		return _sneak_shape
+	if _airborne_body and _jump_shape != null:
+		return _jump_shape
+	return _body_shape
+
+
+## Enables exactly `_active_shape()` and disables the rest. A chicken authored with only the
+## standing body (code-built actors, older scenes) falls back to resizing that one shape.
+func _sync_body_shape() -> void:
+	if _body_shape == null:
+		return
+	if _jump_shape == null and _sneak_shape == null:
+		var height := _sneak_height() if sneaking else _standing_size.y
+		# Keep the feet in place: the origin stays fixed and the shape shifts down.
+		(_body_shape.shape as RectangleShape2D).size = Vector2(_standing_size.x, height)
+		_body_shape.position = _standing_offset + Vector2(0.0, (_standing_size.y - height) * 0.5)
+		return
+	var active := _active_shape()
+	for collision in _hitboxes():
+		collision.disabled = collision != active
+
+
+## Swaps to the compact airborne body on leaving the floor and back on landing. Growing again
+## needs headroom, so a chicken that lands in a one-tile gap keeps the small body until it fits.
+func _update_body_shape_for_air() -> void:
+	if _jump_shape == null or sneaking:
+		return
+	var airborne := not is_on_floor()
+	if airborne == _airborne_body or (not airborne and not _can_stand()):
+		return
+	_airborne_body = airborne
+	_sync_body_shape()
 
 
 ## World-space hitbox used by hazards, block kill/stun hitboxes and placement clearance. While
@@ -557,7 +650,10 @@ func _can_stand() -> bool:
 	_capture_body_shape()
 	if _body_shape == null or not is_inside_tree():
 		return true
-	var rise := _standing_size.y - (_body_shape.shape as RectangleShape2D).size.y
+	# Sweeping the enabled (compact) body up by the height it is missing covers exactly the space
+	# the standing body would need above it.
+	var active := _active_shape()
+	var rise := _standing_size.y - (active.shape as RectangleShape2D).size.y
 	if rise <= 0.0:
 		return true
 	return not test_move(global_transform, Vector2(0.0, -rise))
@@ -568,11 +664,8 @@ func _set_sneak_shape(enabled: bool) -> void:
 	if _body_shape == null or sneaking == enabled:
 		return
 	sneaking = enabled
-	var rectangle := _body_shape.shape as RectangleShape2D
 	var height := _sneak_height() if enabled else _standing_size.y
-	# Keep the feet in place: the origin stays fixed and the shape shifts down.
-	rectangle.size = Vector2(_standing_size.x, height)
-	_body_shape.position = _standing_offset + Vector2(0.0, (_standing_size.y - height) * 0.5)
+	_sync_body_shape()
 	if _contact_sensor != null:
 		var full_height := tuning.contact_sensor_height_wu
 		var sensor_height := full_height * height / _standing_size.y
@@ -618,6 +711,7 @@ func _apply_tuning() -> void:
 	_ascent_gravity = 2.0 * tuning.jump_height_wu / pow(tuning.jump_apex_seconds, 2.0)
 	_fall_gravity = _ascent_gravity * tuning.fall_gravity_multiplier
 	_jump_impulse = -_ascent_gravity * tuning.jump_apex_seconds
+	_apply_body_tuning()
 
 
 func _update_horizontal(axis: float, delta: float) -> void:

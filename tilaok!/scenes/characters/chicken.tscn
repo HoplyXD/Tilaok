@@ -2,11 +2,16 @@
 
 [ext_resource type="Script" uid="uid://w5yyc368m7ob" path="res://scripts/movement/chicken_controller.gd" id="1_controller"]
 [ext_resource type="Script" uid="uid://o87bmdol5x3a" path="res://scripts/movement/chicken_sprite_animator.gd" id="2_animator"]
-[ext_resource type="SpriteFrames" uid="uid://rle61sgko63g" path="res://assets/character/chicken_sprite_frames.tres" id="4_frames"]
 [ext_resource type="Texture2D" uid="uid://pg7vh322nh6w" path="res://assets/character/Chicken 1 Sprite Sheet.png" id="4_qkxpq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(56, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jump"]
+size = Vector2(56, 56)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sneak"]
+size = Vector2(56, 56)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qkxpq"]
 atlas = ExtResource("4_qkxpq")
@@ -559,19 +564,22 @@ collision_layer = 2
 script = ExtResource("1_controller")
 draw_debug_body = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1035786012]
+[node name="MainHitbox" type="CollisionShape2D" parent="." unique_id=1035786012]
 shape = SubResource("RectangleShape2D_body")
 
-[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=484679011]
-show_behind_parent = true
-scale = Vector2(0.25, 0.25)
-sprite_frames = ExtResource("4_frames")
-animation = &"idle"
-offset = Vector2(0, -16)
-script = ExtResource("2_animator")
+[node name="JumpHitbox" type="CollisionShape2D" parent="." unique_id=1594575326]
+position = Vector2(0, 32)
+shape = SubResource("RectangleShape2D_jump")
+disabled = true
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=646713635]
+[node name="SneakHitbox" type="CollisionShape2D" parent="." unique_id=2003430447]
+position = Vector2(0, 32)
+shape = SubResource("RectangleShape2D_sneak")
+disabled = true
+
+[node name="ChickenAnimation" type="AnimatedSprite2D" parent="." unique_id=646713635]
 scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
-animation = &"jump_right_gliding"
+animation = &"idle"
 autoplay = "idle"
+script = ExtResource("2_animator")

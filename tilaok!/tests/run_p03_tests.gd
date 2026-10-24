@@ -443,7 +443,7 @@ func _test_support_contacts(actor: ChickenController) -> void:
 		SupportSurfaceMetadata.Eligibility.ELIGIBLE,
 		true
 	)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	var built_result := room.current_support_result(actor.support_actor_id, 240.0)
 	_check(
 		bool(built_result.qualifies), "Kaing-like built solid qualifies with actual upward support"
@@ -529,7 +529,7 @@ func _test_support_contacts(actor: ChickenController) -> void:
 		SupportSurfaceMetadata.Eligibility.ELIGIBLE,
 		true
 	)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	_check(
 		bool(room.current_support_result(actor.support_actor_id, 240.0).qualifies),
 		"separate spring face qualifies only during actual upward support"
@@ -548,7 +548,7 @@ func _test_support_contacts(actor: ChickenController) -> void:
 		SupportSurfaceMetadata.Eligibility.ELIGIBLE,
 		true
 	)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	_check(
 		bool(room.current_support_result(actor.support_actor_id, 240.0).qualifies),
 		"explicit safe hazard face qualifies only while actually supporting"
@@ -568,7 +568,7 @@ func _test_support_contacts(actor: ChickenController) -> void:
 	var child_body := _make_surface_with_metadata(
 		child, Rect2(Vector2(300.0, 240.0), Vector2(160.0, 8.0))
 	)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	var child_result := room.current_support_result(actor.support_actor_id, 240.0)
 	_check(
 		bool(child_result.qualifies),
@@ -588,7 +588,7 @@ func _test_support_contacts(actor: ChickenController) -> void:
 		SupportSurfaceMetadata.Eligibility.ELIGIBLE,
 		true
 	)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	_check(
 		bool(room.current_support_result(actor.support_actor_id, 240.0).qualifies),
 		"crumbling platform qualifies before collapse"
@@ -619,7 +619,7 @@ func _test_fixture_support_lines(actor: ChickenController) -> void:
 				SupportSurfaceMetadata.Eligibility.ELIGIBLE,
 				true
 			)
-			await _place_actor_on(actor, Vector2(600.0, feet_y - 24.0))
+			await _place_actor_on(actor, _standing_on(feet_y, 600.0))
 			var result := room.current_support_result(actor.support_actor_id, line_y)
 			var expected := float(offset) <= room.tuning.support_height_epsilon_wu
 			_check(
@@ -646,7 +646,7 @@ func _test_base_and_ineligible_surfaces(actor: ChickenController) -> void:
 		SupportSurfaceMetadata.Eligibility.INELIGIBLE,
 		true
 	)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	var ineligible_result := room.current_support_result(actor.support_actor_id, 240.0)
 	_check(
 		not bool(ineligible_result.qualifies) and ineligible_result.reason == "ineligible surface",
@@ -778,7 +778,7 @@ func _test_moving_surface(actor: ChickenController) -> void:
 	shape.size = Vector2(160.0, 8.0)
 	collision.shape = shape
 	moving.add_child(collision)
-	await _place_actor_on(actor, Vector2(350.0, 216.0))
+	await _place_actor_on(actor, _standing_on(240.0))
 	var before := room.current_support_result(actor.support_actor_id, 240.0)
 	_check(bool(before.qualifies), "moving platform supports only while carrying actual contact")
 	var before_boundary := room.current_support_result(actor.support_actor_id, 231.0)
@@ -920,6 +920,13 @@ func _eligible_metadata(surface_id: String, construction_id: String) -> SupportS
 	metadata.player_built = true
 	metadata.wave_support_eligibility = SupportSurfaceMetadata.Eligibility.ELIGIBLE
 	return metadata
+
+
+## Controller origin that stands the actor ON `feet_y` rather than inside it: the origin sits
+## half a body above the feet. Teleporting a body into a surface is not a neutral setup -- which
+## way it depenetrates depends on the body's size, so it must start clear.
+func _standing_on(feet_y: float, x: float = 350.0) -> Vector2:
+	return Vector2(x, feet_y - room.tuning.body_height_wu * 0.5)
 
 
 func _place_actor_on(actor: ChickenController, position: Vector2) -> void:

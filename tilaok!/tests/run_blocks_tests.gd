@@ -20,6 +20,7 @@ const BLOCK_SCENES := {
 }
 const FLOOR_Y := 960.0
 const TOLERANCE := 1.0
+const ANIMATION_NODE := "ChickenAnimation"
 
 var failures := 0
 var checks := 0
@@ -117,9 +118,11 @@ func _block_shapes(block: Node) -> Array[CollisionShape2D]:
 	return result
 
 
+## The hitbox the chicken currently presents to physics. It carries one shape per pose
+## (standing, airborne, sneaking) and enables exactly the one its state calls for.
 func _body_shape() -> CollisionShape2D:
 	for child in actor.get_children():
-		if child is CollisionShape2D:
+		if child is CollisionShape2D and not (child as CollisionShape2D).disabled:
 			return child
 	return null
 
@@ -426,18 +429,20 @@ func _test_drop_in_block() -> void:
 func _anim_after(frames: int) -> StringName:
 	await _frames(frames)
 	await process_frame
-	return (actor.get_node("Sprite") as AnimatedSprite2D).animation
+	return (actor.get_node(ANIMATION_NODE) as AnimatedSprite2D).animation
 
 
 func _test_chicken_animations() -> void:
 	room.items.reset_match()
 	room.items.begin_play()
 	_release_all()
-	var sprite := actor.get_node_or_null("Sprite") as ChickenSpriteAnimator
+	var sprite := actor.get_node_or_null(ANIMATION_NODE) as ChickenSpriteAnimator
 	_check(sprite != null and not actor.draw_debug_body, "chickens use the animated chicken scene")
 	if sprite == null:
 		return
-	_check(sprite.scale.is_equal_approx(Vector2.ONE * 0.25), "512 px cells scale to 128 wu (0.25)")
+	# Every pose ChickenSpriteAnimator.animation_for_state() can ask for. The sheet also carries
+	# transition poses (jump_landing, jump_falling, sneak_hold, sneak_stand) that nothing drives
+	# yet, so this list is the contract, not the sheet's full contents.
 	var names := [
 		&"idle",
 		&"run_right",
@@ -448,9 +453,11 @@ func _test_chicken_animations() -> void:
 		&"jump",
 		&"jump_right",
 		&"jump_left",
-		&"glide",
-		&"glide_right",
-		&"glide_left",
+		&"jump_gliding",
+		&"jump_right_gliding",
+		&"jump_left_gliding",
+		&"stun",
+		&"dead",
 	]
 	var frames_ok := true
 	for anim_name in names:
@@ -458,8 +465,8 @@ func _test_chicken_animations() -> void:
 		if not sprite.sprite_frames.has_animation(anim_name):
 			continue
 		var texture := sprite.sprite_frames.get_frame_texture(anim_name, 0) as AtlasTexture
-		frames_ok = frames_ok and texture != null and texture.region.size == Vector2(512, 512)
-	_check(frames_ok, "all 12 animations exist with 512x512 sheet cells")
+		frames_ok = frames_ok and texture != null and texture.region.size == Vector2(2048, 2048)
+	_check(frames_ok, "every state animation exists with 2048x2048 sheet cells")
 	_put_actor_feet(Vector2(736.0, FLOOR_Y))
 	_check(await _anim_after(10) == &"idle", "standing still plays idle")
 	_key(KEY_D, true)
@@ -481,11 +488,11 @@ func _test_chicken_animations() -> void:
 	_key(KEY_A, true)
 	await _frames(12)
 	_key(KEY_W, true)
-	_check(await _anim_after(4) == &"glide_left", "gliding left plays glide_left")
+	_check(await _anim_after(4) == &"jump_left_gliding", "gliding left plays jump_left_gliding")
 	_key(KEY_A, false)
 	# Neutral air input keeps horizontal speed by design; stop the drift for the still pose.
 	actor.locomotion_velocity.x = 0.0
-	_check(await _anim_after(3) == &"glide", "gliding still plays glide")
+	_check(await _anim_after(3) == &"jump_gliding", "gliding still plays jump_gliding")
 	_key(KEY_W, false)
 	var ids := _arrange([[SOLID, Vector2i(23, 9), 1]])
 	_put_actor_feet(Vector2(1472.0 - room.tuning.body_width_wu * 0.5 - 0.1, 640.0))
@@ -493,7 +500,7 @@ func _test_chicken_animations() -> void:
 	_put_actor_feet(Vector2(1536.0 + room.tuning.body_width_wu * 0.5 + 0.1, 640.0))
 	_check(await _anim_after(4) == &"wall_slide_left", "wall on the left plays wall_slide_left")
 	_check(
-		sprite.offset == sprite.animation_offsets[&"wall_slide_left"],
+		sprite.offset == sprite.animation_offsets.get(&"wall_slide_left", Vector2.ZERO),
 		"each animation applies its feet offset"
 	)
 	_check(ids.size() == 1, "wall fixture placed")
@@ -656,8 +663,10 @@ func _test_sneak() -> void:
 	)
 	_key(KEY_S, false)
 	await _frames(2)
+	# Re-read: standing up swaps which hitbox is enabled, it does not resize the sneak one.
+	var standing_rect := _body_shape().shape as RectangleShape2D
 	_check(
-		not actor.sneaking and rect.size.y == room.tuning.body_height_wu,
+		not actor.sneaking and standing_rect.size.y == room.tuning.body_height_wu,
 		"releasing S in open space stands back up"
 	)
 	_put_actor_feet(Vector2(736.0, 400.0))
@@ -889,8 +898,11 @@ func _test_collapsing_block() -> void:
 	# Wall-slide contact also starts the timer.
 	ids = _arrange([[COLLAPSE, Vector2i(22, 9)]])
 	block = room.items.node_for(ids[0]) as StageBlock
-	var face := block.footprint_world_rect().end.x
-	_put_actor_feet(Vector2(face + room.tuning.body_width_wu * 0.5 + 0.1, 700.0))
+	var face := block.footprint_world_rect()
+	# An airborne chicken is one tile tall at the feet (JumpHitbox), so a wall slide only catches
+	# a wall beside that tile, not one up at the standing body's head. Start level with the
+	# block's underside; feet at 700 would leave the compact body 4 wu clear of it.
+	_put_actor_feet(Vector2(face.end.x + room.tuning.body_width_wu * 0.5 + 0.1, face.end.y))
 	var slid := false
 	for _frame in range(8):
 		await physics_frame
