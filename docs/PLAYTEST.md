@@ -1,6 +1,8 @@
 # Tilaok! Verification and Playtest Plan
 
-**Current verification status (2026-10-22):** local/offline live-build is the normal route. The P20 synthetic regression and focused existing P12, Barya, controls, UI and lifecycle checks are recorded at [P20 evidence](evidence/p20_offline_live_build/README.md). Historical phone/LAN tests remain archived and are not active acceptance. This record distinguishes synthetic input from physical-controller and human play evidence; those sessions remain open.
+**Current verification status (2026-10-24):** P23 redesign verification is synthetic and partial: Godot 4.6.3 P02 movement/Freeze actor suite 93/0, P11 scheduler 18/0, P12 scheduled match 57/0, P06 102/0, P08 86/0, Barya 72/0, P13 Tutorial 58/0, P13 Library 425/0 and offline live-build 123/0. The legacy P12 stack runner still expects retired mixed modes and fails its three runtime setup assertions and then emits cascading missing-seat index errors because the fixture continues after setup failure; it is not current-route acceptance. Freeze/Rising/Hug actor matrix, rendered/human/device review and performance remain open.
+
+**Prior verification status (2026-10-22):** local/offline live-build is the normal route. The P20 synthetic regression and focused existing P12, Barya, controls, UI and lifecycle checks are recorded at [P20 evidence](evidence/p20_offline_live_build/README.md). Historical phone/LAN tests remain archived and are not active acceptance. This record distinguishes synthetic input from physical-controller and human play evidence; those sessions remain open.
 
 _Originally a plan only on 2026-10-12. Updated through P11 technical engineering verification on 2026-10-14. This is not a full game or release playtest._
 
@@ -973,3 +975,10 @@ Fresh settings are intended to start unmuted, with Master / Music / Effects / Cr
 |---|---|---|
 | P13 accessibility/settings production-path suite | PASSED | Godot 4.7.2, headless, fixed 60 FPS, checkout `036ad32` plus uncommitted settings edits; 66 checks, 0 failures. Verifies new settings defaults (all four buses 100%, unmuted, Full shake) and fresh-flow reset. Log: `evidence/p21_balance_readability/settings-effects-tests.log`. |
 | Interactive Settings screen / item-effect visual review | COULD-NOT-RUN | No visible game launched; no rendered or human review. |
+
+
+## P23 Kangaroo race redesign — engineering verification (2026-10-24)
+
+The P23 implementation was exercised headlessly with synthetic fixtures on Godot 4.6.3. `run_p02_tests.gd` passed 95/95 movement/recovery assertions, including airborne Freeze gravity/control lock/tint/external movement/projectile elimination/reset; `run_p11_tests.gd` passed 19/19 scheduler assertions including sole-runner challenge and ten controller resets; `run_p12_tests.gd` passed 57/57 scheduled-room assertions including 2/3/4-seat race routes; P06 passed 102/102; P08 86/86; Barya 72/72; P13 tutorial 58/58; P13 Library 425/425; offline live-build 123/123. The offline suite emits no failures. Barya's runner reported three leaked resources at process exit; all 72 assertions passed.
+
+`run_p12_stack_tests.gd` is retained historical mixed-mode coverage and reports 3 setup failures because its fixture requires Karera + Bomb-Taya, which current scheduling intentionally rejects, then emits cascading missing-seat index errors; its controller checks for the retired feature are not P23 acceptance. P02 exercises real actor Freeze input lock, jump-buffer clearing, blue tint, airborne gravity and reset cleanup. P23 still lacks projectile/capture interaction, moving-support behavior during Freeze, wave-drain actor checks (P11 covers the exact static hitbox boundary and tolerance), Hug actor-contact matrix, and ten full room reset cycles. No rendered capture, human session, physical-device test, or performance measurement was performed. Provisional performance budgets remain unmeasured. See [P23 evidence](evidence/p23_kangaroo_race/README.md).

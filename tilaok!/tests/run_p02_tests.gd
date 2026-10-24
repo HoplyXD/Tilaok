@@ -30,6 +30,7 @@ func _run() -> void:
 	await _test_no_held_jump_repeat()
 	await _test_launch_and_containment()
 	await _test_terminal_precedence()
+	await _test_kangaroo_control_freeze()
 	_test_water_float()
 	await _test_cleanup_cycles()
 	print("P02_TESTS checks=%d failures=%d" % [checks, failures])
@@ -92,8 +93,9 @@ func _test_water_float() -> void:
 			settled_steps = 0
 	_check(
 		absf(actor.global_position.y - waterline) <= tuning.grid_cell_wu * 0.25,
-		"a floating chicken rises and settles at the waterline (%.1f wu off)" % absf(
-			actor.global_position.y - waterline
+		(
+			"a floating chicken rises and settles at the waterline (%.1f wu off)"
+			% absf(actor.global_position.y - waterline)
 		)
 	)
 
@@ -709,6 +711,62 @@ func _test_cleanup_cycles() -> void:
 	_check(
 		root.get_child_count() == root_nodes_before - 1,
 		"five fixture reload cycles release their scene nodes and signal owners"
+	)
+
+
+func _test_kangaroo_control_freeze() -> void:
+	room._reset_trial()
+	var actor: ChickenController = room.actors[0]
+	var router := room.input_router
+	var restore_position := actor.global_position
+	var sprite := Sprite2D.new()
+	sprite.name = "ChickenAnimation"
+	actor.add_child(sprite)
+	router.set_phase(LocalInputRouter.Phase.PLAY)
+	actor.global_position = Vector2(320.0, 120.0)
+	actor.locomotion_velocity = Vector2.ZERO
+	actor.external_velocity = Vector2.ZERO
+	router._handle_key(_event(KEY_D, true))
+	router._handle_key(_event(KEY_SPACE, true))
+	_check(actor.set_kangaroo_frozen(2.0), "Kangaroo Freeze applies to an active chicken")
+	var before := actor.global_position
+	_check(
+		(
+			actor.is_kangaroo_frozen()
+			and actor.jump_buffer_remaining == 0.0
+			and actor.kangaroo_jump_release_required
+			and sprite.modulate.b > sprite.modulate.r
+			and sprite.modulate.a < 1.0
+		),
+		"Freeze clears jump buffering, requires release, and shows a translucent blue tint"
+	)
+	await physics_frame
+	_check(
+		actor.global_position.y > before.y and is_equal_approx(actor.global_position.x, before.x),
+		"airborne Freeze preserves gravity while blocking player steering"
+	)
+	router._handle_key(_event(KEY_D, false))
+	router._handle_key(_event(KEY_SPACE, false))
+	var before_force := actor.global_position
+	actor.external_velocity = Vector2(150.0, 0.0)
+	await physics_frame
+	_check(
+		actor.is_kangaroo_frozen() and actor.global_position.x > before_force.x,
+		"external movement forces still affect a frozen chicken"
+	)
+	_check(
+		(
+			actor.eliminate("projectile")
+			and actor.lifecycle.is_terminal()
+			and not actor.is_kangaroo_frozen()
+		),
+		"projectile elimination remains active during Freeze and terminal state prevents thaw"
+	)
+	actor.reset_for_round(restore_position)
+	sprite.queue_free()
+	_check(
+		not actor.is_kangaroo_frozen() and sprite.modulate == Color.WHITE,
+		"round reset clears Freeze and restores the chicken presentation"
 	)
 
 

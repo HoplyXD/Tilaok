@@ -249,7 +249,11 @@ func _on_match_navigation_step(seat_index: int, direction: String) -> void:
 		super._on_match_navigation_step(seat_index, direction)
 		return
 	if phase_controller.phase == MatchPhaseController.Phase.BUILD:
-		if bool(build_mode.get(seat_index, false)):
+		var actor := actors.get(seat_index) as ChickenController
+		if (
+			bool(build_mode.get(seat_index, false))
+			and (actor == null or not actor.is_kangaroo_frozen())
+		):
 			var step := Vector2i.ZERO
 			match direction:
 				"left":
@@ -273,6 +277,10 @@ func _advance_live_aim(delta: float) -> void:
 		):
 			continue
 		var actor := actors.get(seat_index) as ChickenController
+		if actor != null and actor.is_kangaroo_frozen():
+			_set_build_mode(seat_index, false)
+			_set_live_ghost_visible(seat_index, false)
+			continue
 		if actor == null or actor.lifecycle.is_terminal():
 			_set_build_mode(seat_index, false)
 			_set_live_ghost_visible(seat_index, false)
@@ -330,6 +338,9 @@ func _move_live_cursor(seat_index: int, step: Vector2i) -> void:
 
 func _on_match_action_pressed(seat_index: int, action_name: String) -> void:
 	if seat_index < 0:
+		return
+	var command_actor := actors.get(seat_index) as ChickenController
+	if command_actor != null and command_actor.is_kangaroo_frozen():
 		return
 	if phase_controller.phase == MatchPhaseController.Phase.GO:
 		return
@@ -394,6 +405,9 @@ func _set_live_ghost_visible(seat_index: int, shown: bool) -> void:
 
 
 func _set_build_mode(seat_index: int, enabled: bool) -> void:
+	var actor := actors.get(seat_index) as ChickenController
+	if enabled and actor != null and actor.is_kangaroo_frozen():
+		return
 	build_mode[seat_index] = enabled
 	if input_router != null:
 		input_router.set_build_mode(seat_index, enabled)
@@ -475,6 +489,7 @@ func _submit_live_placement(seat_index: int) -> void:
 			not in [MatchPhaseController.Phase.BUILD, MatchPhaseController.Phase.PLAY]
 		)
 		or not bool(build_mode.get(seat_index, false))
+		or _seat_is_frozen(seat_index)
 		or bool(inventory_used.get(seat_index, false))
 		or not placement_controller.cursors.has(seat_index)
 	):
@@ -506,6 +521,11 @@ func _submit_live_placement(seat_index: int) -> void:
 	_notify_presentation(&"live_build")
 
 
+func _seat_is_frozen(seat_index: int) -> bool:
+	var actor := actors.get(seat_index) as ChickenController
+	return actor != null and actor.is_kangaroo_frozen()
+
+
 func _resolve_live_placement_boundary() -> void:
 	if request_pipeline.attempt_id.is_empty():
 		return
@@ -520,7 +540,14 @@ func _resolve_live_placement_boundary() -> void:
 		var seat_index := int(receipt.seat_index)
 		var intent: Dictionary = receipt.intent
 		var result: Dictionary
-		if preparation_phase:
+		if _seat_is_frozen(seat_index):
+			result = _live_result(
+				{"request_id": request_id, "seat_index": seat_index, "commit_boundary": boundary},
+				false,
+				"frozen",
+				"Freeze is active • the item is still available."
+			)
+		elif preparation_phase:
 			# BUILD is a preparation placement, so materialize the inert piece immediately. The
 			# separate two-second construction job applies only to placements during active PLAY.
 			items.live_boundary = boundary
@@ -549,6 +576,7 @@ func _resolve_live_placement_boundary() -> void:
 				actor != null
 				and not actor.lifecycle.is_terminal()
 				and actor.lifecycle.status != PlayerLifecycleState.Status.CAPTURED
+				and not actor.is_kangaroo_frozen()
 			)
 			_set_build_mode(seat_index, still_eligible)
 			_set_live_ghost_visible(seat_index, still_eligible)

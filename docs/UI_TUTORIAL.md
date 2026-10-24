@@ -47,7 +47,7 @@ The HUD shows only information needed to make a current decision:
 - time limit/countdown only when the active challenge uses one;
 - each player’s number or shape marker in addition to colour;
 - player state: alive, finished/secured, eliminated, or current taya;
-- Kangaroo failure sequence: **KANG → GA → ROO**;
+- Kangaroo is a flag race with one sequential slipper challenge at a time; command failures directly eliminate through race results.
 - Barya carrier marker when Barya is enabled;
 - next-round event announcement during the preceding Pugad phase.
 
@@ -62,7 +62,7 @@ The Library is available from the title screen, lobby, and pause/settings menu. 
 | How to Play | Pugad → shared BUILD (place now or save item) → GO → move and build → results, local controls, safety checks, stage persistence, and match end. |
 | Karera | Flag objective, Tapos, first-finisher Una, no second/third-place points, Bayani, Bawi, Barya, and too-easy/too-hard outcomes. |
 | Lagsanay | Taya, passing, timer, eliminations, Last Cluck, and survival placement scoring (first eliminated in four-player play is fourth for zero placement points). |
-| Kangaroo | Slipper poses, Freeze, Rising wave, Hug pairs, misses, Slipper Storm, and player-built wave supports. |
+| Kangaroo | Race to the flag, sequential Freeze/Rising/Hug challenges, race results and secured finishers. |
 | Items | Name, looping animation, grid/size variants, what it does, placement preview, tell, counterplay, and applicable event behavior. |
 | Accessibility | Player markers, colour-independent tells, screen-shake settings, and audio/visual cue policy. |
 
@@ -93,7 +93,7 @@ Keyboard layouts keep each player's controls in a familiar cluster: K1 uses **Q*
 ## Karera communication
 
 - The flag is visible and clearly marks the objective.
-- A finisher receives a **secured** state marker in Karera + Lagsanay and Karera + Kangaroo stacks.
+- A Kangaroo finisher is secured and excluded from later slipper challenges.
 - The post-first-finish countdown is visible to unfinished live runners.
 - The round result explains Tapos, Una, Bayani, Bawi, Patibong, and Barya awards in plain language.
 - When the too-easy or too-hard rule suppresses points, the result screen explicitly says why.
@@ -115,13 +115,13 @@ The giant background slipper is a non-colliding presenter. Every command needs a
 |---|---|---|
 | Normal, sole down | Freeze | Freeze icon/text, distinct audio, timing ring. |
 | Sole up/facing down | Rising wave | Wave icon/text, target line, distinct audio, timing ring. |
-| Sideways | Hug | Pair icon/text, distinct audio, timing ring. |
+| Sideways | Hug | Contact icon/text, distinct audio, timing ring. |
 
 - Screen shake defaults to Full, with Reduced and Off available. The command remains legible without screen shake or colour.
-- Rising wave shows its world-space target line before the wave rises. A player-built support above the line is required; base platforms do not qualify.
-- Hug shows the evaluation moment clearly. Pairing is evaluated only at that instant, and each chicken can have one partner.
-- A sideways slipper rerolls at two survivors; communicate the reroll before the next telegraph.
-- During Slipper Storm, show the two active command requirements separately and retain the same pose/icon/audio cues. The display must make the two-command cap clear.
+- Rising shows its world-space target line before a slow rise. At response end, the current chicken hitbox bottom must clear the line with 1 wu tolerance; support is not required, and submersion during the rise is safe.
+- Hug shows the response-end evaluation clearly. Any contact group passes, including pairs, groups and chains; isolated chickens fail. Hug may occur with two players and is skipped for a sole unfinished runner.
+- Commands are independent equal-probability draws; repeats are allowed. Only one command may be active at a time.
+- Freeze strikes lock movement, jump and build controls for 2 s. Gravity and hazards continue; the blue translucent body tint clears on thaw.
 
 ## Tutorial sequence
 
@@ -133,7 +133,7 @@ The first match begins with a guided Karera. It teaches the normal live-build lo
 4. **BUILD transition / build mode:** keep the lesson visible from BUILD through active Play until each player uses their item, becomes terminal, or the round ends. Explain the cursor-following camera and immediate inert placement during BUILD; BUILD expires directly into Play after its final 3–2–1 cue. In PLAY, camera follows chickens and confirmed live construction takes 2.0 seconds while movement resumes immediately. Show the tutorial build zone, footprint warning and cancellation. Use the individual controls displayed above each player's P# score. Pause resume has its own separate 3-second GET READY countdown.
 5. **Karera:** run, jump and reach the flag.
 6. **Results:** explain Tapos and first-finisher Una with the actual Karera result; explain that second and third finishers get no rank bonus.
-7. **Later just-in-time prompts:** before the first Lagsanay, explain taya, pass, timer, and last-survivor objective. Before the first Kangaroo, explain the three slipper poses, three misses, and player-built Rising wave supports.
+7. **Later just-in-time prompts:** before the first Lagsanay, explain taya, pass, timer, and last-survivor objective. Before the first Kangaroo, explain the flag race, sequential slipper responses, direct elimination on failure, and Rising’s final hitbox check.
 
 Tutorial prompts must be skippable after a player has completed them in the current session. A replayable rules/help page remains available from the lobby and pause/settings menu.
 
@@ -163,7 +163,7 @@ Skip is a Pause menu entry ("Skip tutorial", shown only while the tutorial is ac
 | `lagsanay` | the first Lagsanay Main round, or a Bomb-Taya Twist (Twist wording: the flag still wins); hands over after 12 s | `tutorial_script.tres` step `lagsanay`, variant `twist` |
 | `kangaroo_poses` | the Pugad of a round that is, or precedes, a Kangaroo Main or Twist round | step `kangaroo_poses` |
 | `kangaroo_supports` | the Place of that round (build up for the Rising wave) | step `kangaroo_supports` |
-| `kangaroo_misses` | once Kangaroo commands run (KANG, GA, ROO; the third is out) | step `kangaroo_misses` |
+| `kangaroo_misses` | once Kangaroo commands run (failed response directly eliminates) | step `kangaroo_misses` |
 
 Each shows once per session (`TutorialSession.seen_kangaroo_steps`, never saved); Pause > Skip tutorial hides all of them and Library > How to Play > Replay tutorial clears them. On a stacked round the taya prompt is shown first and hands over to the Kangaroo prompt. The guided first match keeps its Pugad / BUILD-transition / Results steps; the Kangaroo prompt takes over during the event. Evidence: [P13 tutorial suite](evidence/p13/test_logs/run_p13_tutorial_tests.txt).
 
@@ -199,4 +199,4 @@ Provisional phase bindings, device/identity assignment, held-button policy and p
 **Status (updated 2026-10-24):** the normal onboarding route teaches Pugad → shared 10-second BUILD with its timer in the side HUD → final 3–2–1/GO cue → build while moving → Karera → results. BUILD expiry starts Play immediately; pause resume uses a separate 3-second GET READY countdown. The guidance here defines what players must understand and operate; it does not prescribe final visual style. The UI shell inventory and P05/P06/P09 implementation details below are dated historical notes. The scheduled Place route is now a developer fallback. No human novice, spectator or QA session is claimed; related acceptance remains open (see [P13 evidence](evidence/p13/README.md)).
 # Current Play readability amendment — 2026-10-23
 
-Tutorial and Library content describes standalone Karera, standalone Lagsanay/Bomb-Taya, and standalone Kangaroo. It no longer teaches a mixed Twist route. Runtime timer tokens use `GameplayTuning`; current starting values are Pugad 15 s, Karera 120/30 s, Lagsanay 20/25/30 s, and Kangaroo 2/6/1.5 s with explicit acceleration floors. The Kangaroo guide identifies the overhead KANG / GA / ROO segments and the selected Rising target line. Values are provisional and do not claim balance approval.
+Tutorial and Library content describes standalone Karera, standalone Lagsanay/Bomb-Taya, and standalone Kangaroo. It no longer teaches a mixed Twist route. Runtime timer tokens use `GameplayTuning`; current starting values are Pugad 15 s, Karera 120/30 s, Lagsanay 20/25/30 s, and Kangaroo 2/6/1.5 s with explicit acceleration floors. The Kangaroo guide identifies the race objective, sequential command cue and selected Rising target line. Values are provisional and do not claim balance approval.

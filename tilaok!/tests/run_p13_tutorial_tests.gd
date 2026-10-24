@@ -75,14 +75,21 @@ func _test_script_data() -> void:
 	for step_id in TutorialScript.KANGAROO_STEPS:
 		joined += script.step(step_id).body
 	_check(
-		joined.contains("KANG") and joined.contains("GA") and joined.contains("ROO"),
-		"the prompts name KANG, GA and ROO"
+		joined.to_lower().contains("directly") and joined.to_lower().contains("eliminates"),
+		"the prompts explain direct race elimination"
 	)
 	_check(
-		joined.contains("FREEZE") and joined.contains("RISING WAVE") and joined.contains("HUG"),
+		(
+			joined.to_lower().contains("freeze")
+			and joined.to_lower().contains("rising wave")
+			and joined.to_lower().contains("hug")
+		),
 		"the prompts name the three poses"
 	)
-	_check(joined.contains("built"), "the prompts explain built supports")
+	_check(
+		joined.contains("hitbox") and joined.contains("support is not required"),
+		"the prompts explain the final Rising hitbox check without a support requirement"
+	)
 
 
 # --- a Kangaroo Main round ----------------------------------------------------------------------
@@ -119,10 +126,15 @@ func _test_main_kangaroo_sequence() -> void:
 	var coach := flow.tutorial
 	_check(coach != null, "the scheduled route attaches the coach")
 	_check(_step(coach) == "kangaroo_poses", "the Pugad before the first Kangaroo shows the poses")
-	_check(str(coach.view.body).contains("FREEZE"), "the poses prompt explains the commands")
+	_check(
+		str(coach.view.body).to_lower().contains("freeze"), "the poses prompt explains the commands"
+	)
 	_goto_place()
 	_check(_step(coach) == "kangaroo_supports", "its Place shows the built-support prompt")
-	_check(str(coach.view.body).contains("Build UP"), "the supports prompt says to build up")
+	_check(
+		str(coach.view.body).contains("support is not required"),
+		"the Rising prompt explains its final evaluation"
+	)
 	_goto_play()
 	_check(_step(coach) == "", "the Karera round before it shows no Kangaroo prompt")
 	await _finish_round()
@@ -133,9 +145,15 @@ func _test_main_kangaroo_sequence() -> void:
 	)
 	_check(
 		_step(coach) == "kangaroo_misses",
-		"its Play shows the three-misses prompt (poses and supports were already seen)"
+		"its Play shows the race-outcomes prompt (poses and Rising were already seen)"
 	)
-	_check(str(coach.view.body).contains("KANG"), "the misses prompt names the marks")
+	_check(
+		(
+			str(coach.view.body).to_lower().contains("race scoring")
+			and str(coach.view.body).to_lower().contains("no life markers")
+		),
+		"the race prompt explains scoring and removed markers"
+	)
 	# Seen once: after the round the session holds all three and a later Kangaroo shows nothing.
 	room._end_event_view()
 	await _finish_kangaroo_round()

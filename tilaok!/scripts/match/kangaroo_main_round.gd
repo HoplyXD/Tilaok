@@ -26,8 +26,6 @@ var _tones: Dictionary = {}
 var _shake_remaining := 0.0
 var _last_simulation_time := 0.0
 var _last_simulation_wall_usec := 0
-var _life_markers: Dictionary = {}
-var _life_marker_signature := ""
 
 
 func setup(room: P05MatchRoom) -> void:
@@ -64,7 +62,8 @@ func begin(round_id: String, seats: Array[int], score_units: Dictionary) -> bool
 		_room.match_streams.kangaroo,
 		_room.tuning,
 		active_time,
-		initial_sources
+		initial_sources,
+		true
 	):
 		return false
 	_last_simulation_time = active_time
@@ -127,7 +126,6 @@ func update_view(delta: float) -> void:
 			_seen_command_ids[command_id] = true
 			_play_cue(int(command.command))
 	_hud.bind_commands(commands, active_time)
-	_update_life_markers()
 	if _room.arena != null:
 		_presenter.set_state(
 			controller.presentation_commands(active_time),
@@ -142,11 +140,6 @@ func update_view(delta: float) -> void:
 ## Hides every prompt; the controller keeps its outcomes for the room's results.
 func clear_view() -> void:
 	_seen_command_ids.clear()
-	for marker in _life_markers.values():
-		if is_instance_valid(marker):
-			marker.queue_free()
-	_life_markers.clear()
-	_life_marker_signature = ""
 	_hud.clear()
 	_overlay.visible = false
 	var none: Array[Dictionary] = []
@@ -174,61 +167,6 @@ func hud() -> UiKangarooHud:
 
 func _can_mutate() -> bool:
 	return authority != null and authority.can_commit()
-
-
-func _update_life_markers() -> void:
-	var signature_rows := PackedStringArray(
-		[str(controller.marker_counts), str(controller.live_seats)]
-	)
-	for seat in controller.seat_indices:
-		var tracked_actor := _room.actors.get(seat) as ChickenController
-		signature_rows.append(
-			(
-				"%d:%d" % [seat, tracked_actor.get_instance_id()]
-				if tracked_actor != null and is_instance_valid(tracked_actor)
-				else "%d:missing" % seat
-			)
-		)
-	var signature := ":".join(signature_rows)
-	var marker_state_changed := signature != _life_marker_signature
-	if marker_state_changed:
-		_life_marker_signature = signature
-	var active_seats: Dictionary = {}
-	for seat in controller.seat_indices:
-		var actor := _room.actors.get(seat) as ChickenController
-		if actor == null or not is_instance_valid(actor):
-			continue
-		active_seats[seat] = true
-		var marker := _life_markers.get(seat) as KangarooLifeMarker
-		if marker == null or not is_instance_valid(marker):
-			marker = KangarooLifeMarker.new()
-			marker.name = "KangarooLifeMarkerP%d" % (seat + 1)
-			_room.world_layer.add_child(marker)
-			_life_markers[seat] = marker
-		var failure_count := int(controller.marker_counts.get(seat, 0))
-		if marker_state_changed or marker.actor != actor or marker.failure_count != failure_count:
-			marker.configure(actor, failure_count, _room.tuning.body_height_wu, _room.camera_rig)
-		marker.set_overlap_lane(_life_marker_overlap_lane(seat, actor))
-	for seat in _life_markers.keys():
-		if marker_state_changed and not active_seats.has(seat):
-			var marker := _life_markers[seat] as KangarooLifeMarker
-			if is_instance_valid(marker):
-				marker.queue_free()
-			_life_markers.erase(seat)
-
-
-func _life_marker_overlap_lane(seat: int, actor: ChickenController) -> int:
-	var lane := 0
-	var zoom_value := _room.camera_rig.zoom.x if _room.camera_rig != null else 1.0
-	var overlap_distance := 136.0 / maxf(zoom_value, 0.01)
-	for other_seat in controller.seat_indices:
-		if int(other_seat) >= seat:
-			continue
-		var other := _room.actors.get(other_seat) as ChickenController
-		if other != null and is_instance_valid(other):
-			if absf(other.global_position.x - actor.global_position.x) < overlap_distance:
-				lane += 1
-	return lane
 
 
 func _hug_contacts_snapshot() -> Array[Dictionary]:

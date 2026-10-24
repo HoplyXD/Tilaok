@@ -92,8 +92,8 @@ requires = ""
 [sub_resource type="Resource" id="Page_10"]
 script = ExtResource("2")
 category = "Karera"
-title = "Kangaroo is standalone"
-body = "Kangaroo is its own round. Answer Freeze, Rising Wave and Hug commands; three failed commands eliminate you."
+title = "Kangaroo is a race"
+body = "Race to the flag while answering one sequential slipper challenge at a time. Finishers are secured; failed commands directly eliminate through race results."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_11"]
@@ -135,49 +135,49 @@ requires = ""
 script = ExtResource("2")
 category = "Kangaroo"
 title = "The giant slipper"
-body = "A giant slipper lands in the background before every command and shows what to do. Normal, sole down = FREEZE. Sole up = RISING WAVE. Sideways = HUG. Each command has an icon, a text name, a sound and a timing ring: get ready for {telegraph} s, then you have {response} s to answer."
+body = "A giant slipper signals one challenge at a time: normal, sole down = FREEZE; sole up = RISING WAVE; sideways = HUG. Each has an icon, text, sound and timing ring. Telegraph lasts {telegraph} s, then response begins at {response} s and shortens by 0.5 s per completed slipper to 3 s. Recovery begins at 1.5 s and shortens by 0.15 s to 0.75 s. Commands are equally likely and may repeat."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_17"]
 script = ExtResource("2")
 category = "Kangaroo"
 title = "Freeze"
-body = "Do not give any run or jump input while the ring runs. Being pushed or carried does not count. Input you were already holding gets a brief grace to release."
+body = "When Freeze strikes, movement, jump and build controls lock for 2 s. Gravity, moving supports, external forces, capture and projectiles continue. It grants no invulnerability; started construction finishes. A translucent blue tint clears at thaw."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_18"]
 script = ExtResource("2")
 category = "Kangaroo"
 title = "Rising wave"
-body = "A line shows where the wave will reach. At the end of the ring you must stand on a piece that players built, at or above the line. The base stage does not count, so build upwards in earlier rounds."
+body = "The target line appears before a slow rise. At response end, your current full hitbox must clear it within a tiny 1-unit tolerance. Submersion during the rise is safe. Support is not required; the visual drains after the one-time evaluation."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_19"]
 script = ExtResource("2")
 category = "Kangaroo"
 title = "Hug"
-body = "At the end of the ring you must be touching exactly one other live chicken. Chickens pair up nearest first; a group of three leaves one unpaired. With two chickens left, Hug is not used."
+body = "At response end, touch any other living eligible chicken. Pairs, groups and chains pass; isolated chickens fail. Hug can be drawn with two players and is skipped for a sole unfinished runner."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_20"]
 script = ExtResource("2")
 category = "Kangaroo"
-title = "Three misses"
-body = "Each failed command adds a mark in order: KANG, then GA, then ROO. The third is out. Traps still eliminate you at any time. Kangaroo uses Lagsanay survival placement: the last chicken standing is first, and the first eliminated in a four-player round is fourth for zero placement points. Direct Patibong can still score."
+title = "Race scoring and elimination"
+body = "A failed slipper command directly eliminates you; there are no accumulated marks. Kangaroo uses race scoring and trap credit, with no Lagsanay placement points and no Patibong for command failures. Eligible Barya follows the ordinary race rules."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_21"]
 script = ExtResource("2")
 category = "Kangaroo"
-title = "Slipper Storm"
-body = "After {storm_after} commands with no one eliminated, up to two commands can overlap. Each landing is {storm_landing} s apart and each response lasts at least {storm_response} s. Any elimination ends the Storm. With two chickens left, a Storm pair is Freeze and Rising when a fair Rising target is available; otherwise Rising is deferred."
+title = "Sequential cadence"
+body = "Only one slipper challenge can be active. After evaluation and cleanup, recovery drains before the next telegraph. Response and recovery shorten with each completed slipper to 3 s and 0.75 s floors. These settings are provisional."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_22"]
 script = ExtResource("2")
 category = "Kangaroo"
-title = "Lives above your chicken"
-body = "KANG, GA and ROO appear directly above your chicken. Each failed command strikes one segment; the third strike is out. Player number and shape still identify whose marker it is."
+title = "Secured finishers"
+body = "Reaching the flag secures your finish and removes you from later slipper challenges. A sole unfinished runner keeps racing and skips Hug; when no unfinished runners remain, the race closes."
 requires = "main:KANGAROO"
 
 [sub_resource type="Resource" id="Page_23"]
@@ -233,5 +233,5 @@ requires = "feature:barya"
 script = ExtResource("1")
 categories = PackedStringArray("How to Play", "Karera", "Lagsanay", "Kangaroo", "Items", "Accessibility")
 titles = PackedStringArray("How to Play", "Karera (race)", "Lagsanay (tag)", "Kangaroo", "Items", "Accessibility")
-bodies = PackedStringArray("The round loop, controls and winning.", "Reach the flag and score.", "Tag with a countdown. Placement points.", "Match the slipper. Three strikes.", "Every piece you can be dealt.", "Markers, cues, shake, sound and display.")
+bodies = PackedStringArray("The round loop, controls and winning.", "Reach the flag and score.", "Tag with a countdown. Placement points.", "Race the flag. Answer one slipper at a time.", "Every piece you can be dealt.", "Markers, cues, shake, sound and display.")
 pages = Array[ExtResource("2")]([SubResource("Page_1"), SubResource("Page_2"), SubResource("Page_3"), SubResource("Page_4"), SubResource("Page_5"), SubResource("Page_6"), SubResource("Page_7"), SubResource("Page_8"), SubResource("Page_9"), SubResource("Page_10"), SubResource("Page_11"), SubResource("Page_12"), SubResource("Page_13"), SubResource("Page_14"), SubResource("Page_15"), SubResource("Page_16"), SubResource("Page_17"), SubResource("Page_18"), SubResource("Page_19"), SubResource("Page_20"), SubResource("Page_21"), SubResource("Page_22"), SubResource("Page_23"), SubResource("Page_24"), SubResource("Page_25"), SubResource("Page_26"), SubResource("Page_27"), SubResource("Page_28"), SubResource("Page_29")])

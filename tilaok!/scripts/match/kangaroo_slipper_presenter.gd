@@ -42,8 +42,6 @@ func _draw() -> void:
 		var landing_progress := clampf(
 			(simulation_time - start) / maxf(response_start - start, 0.001), 0.0, 1.0
 		)
-		if bool(command.get("is_storm", false)):
-			landing_progress = clampf((simulation_time - start) / 0.16, 0.0, 1.0)
 		center.y = lerpf(-148.0, -12.0, _ease_out(landing_progress))
 		var angle := 0.0
 		if command_type == KangarooRoundController.Command.RISING:

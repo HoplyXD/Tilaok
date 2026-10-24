@@ -12,11 +12,14 @@ const RING_SCENE := preload("res://scenes/ui/components/countdown_ring.tscn")
 static func instruction(command: Dictionary) -> String:
 	match int(command.command):
 		KangarooRoundController.Command.FREEZE:
-			return "Freeze: no intentional run or jump input. Forced motion does not count."
+			return "Freeze: movement and building lock for 2 seconds; gravity and hazards continue."
 		KangarooRoundController.Command.RISING:
-			return "Rising: stand on built support above %.0f wu." % float(command.wave_y)
+			return (
+				"Rising wave: stay above the final line at the strike. "
+				+ "Submersion during the rise is safe."
+			)
 		KangarooRoundController.Command.HUG:
-			return "Hug: pair with one live chicken at evaluation."
+			return "Hug: touch any living chicken at the strike. Groups and chains count."
 	return ""
 
 
@@ -24,11 +27,11 @@ static func instruction(command: Dictionary) -> String:
 static func player_instruction(command: int) -> String:
 	match command:
 		KangarooRoundController.Command.FREEZE:
-			return "Freeze: stop running and jumping."
+			return "Freeze: movement locks briefly; gravity and hazards continue."
 		KangarooRoundController.Command.RISING:
-			return "Rising wave: stand on a built piece above the line."
+			return "Rising wave: stay above the final line at the strike. Underwater is safe while it rises."
 		KangarooRoundController.Command.HUG:
-			return "Hug: touch exactly one other chicken."
+			return "Hug: touch any living chicken. Groups and chains count."
 	return ""
 
 
@@ -214,8 +217,6 @@ static func update_panel(panel: Dictionary, command: Dictionary, active_time: fl
 		else float(command.response_end_at) - float(command.response_start_at)
 	)
 	panel.pose.text = "%s  %s" % [icon(type), KangarooRoundController.command_name(type)]
-	panel.steps.text = "KANG  →  GA  →  ROO"
+	panel.steps.text = "RACE TO FLAG · ONE CHALLENGE AT A TIME"
 	panel.note.text = instruction(command)
-	if bool(command.is_storm):
-		panel.pose.text += " • STORM %d" % int(command.command_id)
 	panel.ring.set_time(maxf(0.0, countdown_start - active_time), countdown_total)

@@ -27,7 +27,6 @@ var event_main: int = EventSchedule.Challenge.NONE
 
 var _schedule_match_id := -1
 var _step_delta := 1.0 / 60.0
-var _marker_signature := ""
 ## Karera + Bomb-Taya: hazard records of this step, decided against the taya timeout (table C4).
 var _twist_hazards: Array[AttributionRecord] = []
 
@@ -239,7 +238,7 @@ func _on_round_objective_placements_resolved(_results: Array[Dictionary]) -> voi
 func _resolve_round_objective_pickups(physics_tick: int) -> void:
 	if (
 		phase_controller.phase != MatchPhaseController.Phase.PLAY
-		or event_main != EventSchedule.Challenge.KARERA
+		or event_main not in [EventSchedule.Challenge.KARERA, EventSchedule.Challenge.KANGAROO]
 		or _sudden_death_active
 		or barya_objective.state != BaryaRoundObjective.State.AVAILABLE
 		or barya_objective.coin == null
@@ -396,10 +395,22 @@ func _enter_play() -> void:
 		return
 	var entry := current_entry()
 	event_main = int(entry.get("main", EventSchedule.Challenge.KARERA))
-	if event_main == EventSchedule.Challenge.KARERA:
+	if event_main in [EventSchedule.Challenge.KARERA, EventSchedule.Challenge.KANGAROO]:
 		_set_goal_visible(true)
 		bomb_taya.reset()
 		super._enter_play()
+		if event_main == EventSchedule.Challenge.KANGAROO:
+			var seats: Array[int] = []
+			for seat in input_router.registry.joined_seats():
+				seats.append(int(seat.seat))
+			var round_id := race_round_controller.ledger.round_id
+			if not kangaroo_round.begin(round_id, seats, round_start_score_units):
+				push_error("P12 could not begin Kangaroo race %s" % round_id)
+				return
+			items.director.active_round_id = round_id
+			items.director.elimination_sink_exclusive = false
+			last_message = "Kangaroo: reach the flag and react to each slipper challenge."
+			_refresh_match_ui()
 		return
 	_free_match_ghosts()
 	input_router.set_rotation_supported(false)
@@ -417,21 +428,13 @@ func _enter_play() -> void:
 	for seat in input_router.registry.joined_seats():
 		seats.append(int(seat.seat))
 	var round_id := "%d:%d:p12:%s" % [match_run_id, items.round_number + 1, play_challenge_text()]
-	var began := (
-		_begin_lagsanay_main(round_id, seats)
-		if event_main == EventSchedule.Challenge.LAGSANAY
-		else kangaroo_round.begin(round_id, seats, round_start_score_units)
-	)
+	var began := _begin_lagsanay_main(round_id, seats)
 	if not began:
 		push_error("P12 could not begin %s round %s" % [play_challenge_text(), round_id])
 		return
 	items.director.active_round_id = round_id
 	items.director.elimination_sink_exclusive = true
-	last_message = (
-		"Lagsanay: pass the taya before the countdown expires."
-		if event_main == EventSchedule.Challenge.LAGSANAY
-		else "Kangaroo: match the slipper pose. Three failed commands eliminate."
-	)
+	last_message = ("Lagsanay: pass the taya before the countdown expires.")
 	_refresh_match_ui()
 
 
@@ -618,8 +621,6 @@ func _physics_process(delta: float) -> void:
 		return
 	if event_main == EventSchedule.Challenge.LAGSANAY:
 		_advance_lagsanay_main(delta)
-	else:
-		_advance_kangaroo_main()
 
 
 func _process(delta: float) -> void:
@@ -633,11 +634,6 @@ func _process(delta: float) -> void:
 		or _kangaroo_twist_running()
 	):
 		kangaroo_round.update_view(delta)
-		# A miss changes the score row and the KANG GA ROO readout between whole seconds.
-		var signature := str(kangaroo_round.controller.marker_counts)
-		if signature != _marker_signature:
-			_marker_signature = signature
-			_notify_presentation(&"kangaroo")
 
 
 ## Runs inside the race step after support finalisation and before the ledger drains: the
@@ -646,6 +642,27 @@ func _collect_goal_overlaps() -> void:
 	super._collect_goal_overlaps()
 	if _kangaroo_twist_running():
 		_advance_kangaroo_twist()
+	elif (
+		phase_controller.phase == MatchPhaseController.Phase.PLAY
+		and event_main == EventSchedule.Challenge.KANGAROO
+		and kangaroo_round != null
+		and kangaroo_round.controller.active
+	):
+		_advance_kangaroo_race()
+
+
+func _advance_kangaroo_race() -> void:
+	var tick := Engine.get_physics_frames()
+	var result := kangaroo_round.advance(tick)
+	for outcome in result.new_outcomes:
+		race_candidate_queue.queue_elimination(
+			int(outcome.get("seat_index", -1)),
+			tick,
+			str(outcome.get("source_item_id", "")),
+			int(outcome.get("direct_owner_seat", -1)),
+			str(outcome.get("event_id", "")),
+			str(outcome.get("cause", "elimination"))
+		)
 
 
 func _advance_kangaroo_twist() -> void:
@@ -668,7 +685,7 @@ func _advance_kangaroo_twist() -> void:
 
 func _apply_race_outcomes(outcomes: Array) -> void:
 	super._apply_race_outcomes(outcomes)
-	if kangaroo_round == null or not kangaroo_round.controller.twist_role:
+	if kangaroo_round == null or event_main != EventSchedule.Challenge.KANGAROO:
 		return
 	for outcome in outcomes:
 		var seat := int(outcome.get("seat_index", -1))
@@ -681,7 +698,7 @@ func _apply_race_outcomes(outcomes: Array) -> void:
 func _finish_race(reason: String) -> void:
 	if not _simulation_can_commit():
 		return
-	if kangaroo_round != null and kangaroo_round.controller.twist_role:
+	if kangaroo_round != null and event_main == EventSchedule.Challenge.KANGAROO:
 		kangaroo_round.clear_view()
 	super._finish_race(reason)
 
@@ -829,31 +846,14 @@ func _apply_event_outcomes(
 func _finish_event_round() -> void:
 	if not _simulation_can_commit():
 		return
-	if not _event_round_active():
+	if not _event_round_active() or event_main != EventSchedule.Challenge.LAGSANAY:
 		return
 	var active_round := items.round_number + 1
-	var is_lagsanay := event_main == EventSchedule.Challenge.LAGSANAY
-	var score_result: Dictionary
-	var outcome_rows: Array[Dictionary]
-	if is_lagsanay:
-		score_result = lagsanay_controller.score_result()
-		outcome_rows = lagsanay_controller.outcomes()
-		if not lagsanay_controller.commit_score_once(score_result):
-			return
-	else:
-		score_result = kangaroo_round.controller.score_result()
-		outcome_rows = kangaroo_round.controller.outcomes()
-		if not kangaroo_round.controller.commit_score_once(score_result):
-			return
-	_stage_round_record(
-		(
-			MatchResultTypes.ScoringFamily.LAGSANAY
-			if is_lagsanay
-			else MatchResultTypes.ScoringFamily.KANGAROO
-		),
-		score_result,
-		outcome_rows
-	)
+	var score_result := lagsanay_controller.score_result()
+	var outcome_rows := lagsanay_controller.outcomes()
+	if not lagsanay_controller.commit_score_once(score_result):
+		return
+	_stage_round_record(MatchResultTypes.ScoringFamily.LAGSANAY, score_result, outcome_rows)
 	_record_score_presentation(active_round, score_result)
 	last_resolution = score_result.duplicate(true)
 	for seat_index in score_result.totals_units:
@@ -862,28 +862,20 @@ func _finish_event_round() -> void:
 	items.director.elimination_sink_exclusive = false
 	_end_event_view()
 	var seats := input_router.registry.joined_seats()
-	var model: MatchResultsViewModel
-	if is_lagsanay:
-		model = MatchResultsViewModel.lag_sanay(
-			items.round_number,
-			seats,
-			outcome_rows,
-			score_result,
-			tuning.lagsanay_opening_head_start_seconds,
-			tuning.lagsanay_taya_seconds_2p,
-			tuning.lagsanay_taya_seconds_3p,
-			tuning.lagsanay_taya_seconds_4p,
-			tuning.taya_pass_back_seconds
-		)
-	else:
-		model = MatchResultsViewModel.kangaroo(
-			items.round_number, seats, outcome_rows, score_result
-		)
+	var model := MatchResultsViewModel.lag_sanay(
+		items.round_number,
+		seats,
+		outcome_rows,
+		score_result,
+		tuning.lagsanay_opening_head_start_seconds,
+		tuning.lagsanay_taya_seconds_2p,
+		tuning.lagsanay_taya_seconds_3p,
+		tuning.lagsanay_taya_seconds_4p,
+		tuning.taya_pass_back_seconds
+	)
 	event_main = EventSchedule.Challenge.NONE
 	_conclude_round(
-		active_round,
-		model,
-		"%s round %d complete. Match continues." % [_event_label(is_lagsanay), active_round]
+		active_round, model, "Lagsanay round %d complete. Match continues." % active_round
 	)
 
 
@@ -916,7 +908,7 @@ func _on_item_elimination(record: AttributionRecord) -> bool:
 	if _event_round_active():
 		if event_main == EventSchedule.Challenge.LAGSANAY:
 			return lagsanay_controller.submit_hazard(record)
-		return kangaroo_round.controller.submit_hazard(record)
+		return super._on_item_elimination(record)
 	if _kangaroo_twist_running():
 		# Kangaroo arbitrates trap vs command failure; its outcomes reach the ledger as candidates.
 		return kangaroo_round.controller.submit_hazard(record)
@@ -929,10 +921,7 @@ func _on_item_elimination(record: AttributionRecord) -> bool:
 func _on_intentional_input_edge(
 	seat_index: int, action_name: String, source_id: String, is_pressed: bool, event_usec: int
 ) -> void:
-	if (
-		(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
-		or _kangaroo_twist_running()
-	):
+	if _kangaroo_twist_running():
 		kangaroo_round.record_input_edge(seat_index, action_name, source_id, is_pressed, event_usec)
 
 
@@ -1055,14 +1044,7 @@ func play_clock_seconds() -> float:
 		if lagsanay_controller.head_start_remaining > 0.0:
 			return lagsanay_controller.head_start_remaining
 		return lagsanay_controller.countdown_remaining
-	var commands := kangaroo_round.controller.active_commands()
-	if commands.is_empty():
-		return 0.0
-	var command: Dictionary = commands[0]
-	var deadline := float(command.response_start_at)
-	if str(command.status) == "RESPONSE":
-		deadline = float(command.response_end_at)
-	return maxf(0.0, deadline - items.director.simulation_time)
+	return super.play_clock_seconds()
 
 
 func play_goal_text() -> String:
@@ -1070,7 +1052,7 @@ func play_goal_text() -> String:
 		return super.play_goal_text()
 	if event_main == EventSchedule.Challenge.LAGSANAY:
 		return "Touch to pass the taya!"
-	return "Match the slipper pose."
+	return "Race to the flag; react to each slipper challenge."
 
 
 ## Taya tag beside the Main's clock: Karera adds the countdown (and the finish window); under
@@ -1163,6 +1145,8 @@ func seat_state_text(seat_index: int) -> String:
 	if not _event_round_active():
 		var base := super.seat_state_text(seat_index)
 		return base if not base.is_empty() else _kangaroo_miss_text(seat_index)
+	if event_main == EventSchedule.Challenge.KANGAROO:
+		return super.seat_state_text(seat_index)
 	if (
 		event_main == EventSchedule.Challenge.LAGSANAY
 		and lagsanay_controller.active
@@ -1179,9 +1163,4 @@ func _kangaroo_miss_text(_seat_index: int) -> String:
 
 
 func debug_status_text() -> String:
-	if (
-		(_event_round_active() and event_main == EventSchedule.Challenge.KANGAROO)
-		or _kangaroo_twist_running()
-	):
-		return KangarooCommandStyle.marker_status(kangaroo_round.controller, input_router.registry)
 	return super.debug_status_text()

@@ -6,14 +6,24 @@ _Last updated: 2026-10-14 — guided first match uses a tutorial-only stage wher
 
 ### Current balance and standalone-mode decision — 2026-10-23
 
-This dated decision supersedes the earlier §1 stacking pitch, §3 optional Twist cadence/table, mixed-mode interface examples, and any “Karera with Bomb-Taya/Kangaroo” current-play text. Every round has exactly one Main: Karera, standalone Lagsanay (Bomb-Taya), or standalone Kangaroo. Sudden death remains standalone Lagsanay. Historical P12 pair tests remain historical integration evidence; they do not prove the current schedule. Provisional designer-editable windows are Pugad 15 s; Karera 120 s hard cap and 30 s after first finisher; Lagsanay 20/25/30 s at 2/3/4 alive; Kangaroo 2 s telegraph, 6 s base response, 1.5 s ordinary reset, accelerated floors 3 s/0.75 s, Storm threshold 16 commands, Storm response at least 3 s and 1.5 s landing interval. These are not final balance.
+This dated decision supersedes the earlier §1 stacking pitch, §3 optional Twist cadence/table, mixed-mode interface examples, and any “Karera with Bomb-Taya/Kangaroo” current-play text. Every round has exactly one Main: Karera, standalone Lagsanay (Bomb-Taya), or standalone Kangaroo. Sudden death remains standalone Lagsanay. Historical P12 pair tests remain historical integration evidence; they do not prove the current schedule. Provisional designer-editable windows at that time were Pugad 15 s; Karera 120 s hard cap and 30 s after first finisher; Lagsanay 20/25/30 s at 2/3/4 alive; Kangaroo 2 s telegraph, 6 s base response, 1.5 s ordinary reset, accelerated floors 3 s/0.75 s, and Storm threshold 16 commands. The Storm settings and survival interpretation were superseded by the 2026-10-24 P23 race redesign below. These values are not final balance.
 
-Rising Wave selects a world-space line from completed, explicitly eligible player-built support within playable map bounds and a conservative movement-response reach estimate. The selected line is shown before evaluation and is the line evaluated against fresh grounded support. If no fair target exists, Rising is skipped and one eligible alternate command is issued; no failure or command credit is charged for an unissued wave. Base geometry, previews, unfinished construction, side contact, coyote state and airborne crossing never qualify. Kangaroo KANG / GA / ROO strikes are compact overhead indicators driven by the existing controller count; the former side-panel miss rows are retired. See P21 in PHASETASK and the current evidence note for verification limits.
+**P21 historical Rising/marker rule, superseded by P23:** Rising formerly evaluated grounded support on completed eligible player construction, and Kangaroo used overhead KANG / GA / ROO markers. P23 now evaluates the current full chicken hitbox at response end and removes life markers; the old P21 text and evidence do not define current play.
+
+### Kangaroo race redesign — 2026-10-24
+
+Standalone Kangaroo is a Karera race to the flag with one sequential slipper challenge active at a time. It uses the race clock (120 s hard cap / 30 s after the first finisher), race outcome ledger, race scoring, eligible Barya, trap credit and ordinary results. A finisher is secured and excluded from later challenges; a sole unfinished runner continues racing and skips Hug; zero unfinished runners closes through the race lifecycle. Command failures directly eliminate through the race ledger and do not grant Lagsanay placement or Patibong.
+
+Slippers are independent equal-probability draws; repeats are allowed. Each has a 2 s telegraph, then a 6 s response that shortens by 0.5 s per completed slipper to a 3 s floor. Recovery begins at 1.5 s and shortens by 0.15 s per completed slipper to a 0.75 s floor. Acceleration persists across eliminations. There is no Storm or accumulated failure counter. Same-step elimination beats flag completion in the shared race ledger.
+
+Freeze locks movement, jump and build controls for 2 s when it strikes. Gravity, moving supports, external forces, capture and projectile damage continue; it grants no invulnerability. Buffered jump/build input is cleared, already-started construction continues, and a temporary translucent blue body tint clears on thaw/reset/terminal state. Rising shows its selected line before a slow rise and evaluates once at response end against the current chicken hitbox bottom with 1 wu tolerance. Clearing the line at evaluation survives; submersion during the rise is safe, and the visual drains after evaluation. Target selection remains bounded and map-aware, but support is not required at evaluation; when no fair target exists an eligible alternate is issued. Hug checks current contact with any other living eligible chicken at response end, so pairs, groups and chains pass, isolated chickens fail, and two-player rounds may draw Hug.
+
+P11 remains historical evidence for the superseded survival design. P23 in PHASETASK tracks this redesign and its current verification limits. These settings remain provisional pending human playtesting.
 
 ## 1. Pitch
-A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), place what hatches on a shared stage, then play a main challenge. **Karera** is the default flag-race challenge; every 4th round, a **traditional Filipino game event** takes over the same stage. As the match advances, a rare compatible second event can stack on the main challenge.
+A 2–4 player competitive party platformer. Each round, players pick eggs from the **Pugad** (nest), prepare the shared stage, then play exactly one standalone Main challenge: Karera, Lagsanay (Bomb-Taya), or Kangaroo. Karera and Kangaroo race to the flag; Lagsanay is bomb-taya tag.
 
-**One-liner:** Build the level, survive the level, and every few rounds a laro ng lahi takes over.
+**One-liner:** Build the stage, race or tag through it, and master a Filipino-inspired slipper challenge.
 
 ## 2. Concept: Sabong, Reimagined
 All characters are chickens. Instead of the traditional sabong where roosters fight, Tilaok!'s chickens compete through platforming and Filipino games. It turns a gambling-associated tradition into a wholesome, skill-based competition.
@@ -31,9 +41,7 @@ The normal route assigns one egg item per seat in Pugad, then runs a shared ten-
    - ~15s to place. If time runs out, the item auto-places at the pointer if the spot is valid, otherwise it is discarded.
    - Nothing is active during Place. The sole exception is the one-shot **Walis Cleanup** edit when confirmed; it is a construction action, never a Play-phase hazard. When Play begins, placed items reset to their defined starting position/state.
    - Pointers are visible to everyone. Barya placement and carrying receive a live text cue so the round objective stays identifiable among the construction pieces.
-3. **Play:** either
-   - a **Main Challenge**: Karera (run from start to the flag) or an active laro ng lahi event; and
-   - at most one compatible **Twist** event layered onto that main challenge.
+3. **Play:** exactly one standalone **Main Challenge**: Karera (run from start to the flag), Lagsanay (bomb-taya tag), or Kangaroo (race to the flag while responding to slipper challenges).
 
 The stage **persists and grows** across rounds. Pugad and building continue during event rounds too, so traps become terrain for events.
 
@@ -41,7 +49,7 @@ The stage **persists and grows** across rounds. Pugad and building continue duri
 
 **Maps (2026-10-16, user request):** stages are map scenes in `scenes/maps/` (see [STAGE_AND_PLACEMENT](STAGE_AND_PLACEMENT.md#map-scenes-and-the-lobby-map-selection--2026-10-16-requested-by-jorge)). Players pick the map in the Lobby, and one map is used for the whole match. The built-in default stage stays available.
 
-**Starting stage:** a hand-built base layout with a spawn on the left, a flag on the right, a solid floor and a few platforms, so round 1 already has something to run across. Base stage pieces, the spawn and the flag are indestructible. Raised player-built geometry is the intended way to prepare for Kangaroo's Rising wave; a team that does not build useful elevation can lose to it. (Exact layout to be designed and playtested.)
+**Starting stage:** a hand-built base layout with a spawn on the left, a flag on the right, a solid floor and a few platforms, so round 1 already has something to run across. Base stage pieces, the spawn and the flag are indestructible. Raised geometry can help with Rising, but passing its response-end check does not require support.
 
 **Construction rules (design contract):** the stage uses a logical tile grid of **64×64 px tiles** (2026-10-14). A chicken is 1 tile wide and 2 tiles tall (clearance 64×128; collision body 56×120). Block sizes are written width×height in tiles (1x1 = 64×64, 3x1 = 192×64) and most blocks rotate in Place with R. The base stage is drawn by a 64 px TileMapLayer. Validate simultaneous edits against a shared phase snapshot. **Overlapping placements (2026-10-16, user request):** first come, first served (2026-10-14) was removed. Confirming earlier gives no advantage. A ghost only says **Tile occupied** (a piece, the stage or a chicken is there) or **Invalid spot**. If two players place on the same cells in one Place phase, the lower seat number keeps them and the other sees "Tile occupied" (the original P05 seat-order rule). Intentional solid/trigger intersections are allowed only when the trigger remains readable and its danger region is shown. Walis Cleanup targets only removable player-built items in its preview; cleanup targets are resolved as one edit against the phase snapshot, then remaining placements are validated and committed as one set. It cannot affect base geometry, spawn safety, the goal platform/flag zone, or a hidden event goal zone. Removal persists across rounds. A removed support does not cause crushing: unsupported moving items return to their defined safe start or are removed according to their item contract. Layout solvability is not guaranteed.
 
@@ -58,9 +66,13 @@ Each event is its own mini game mode with its own win condition, played on the c
 
 **"Alam mo ba?" card (Should, optional):** when included, before each event, a short card explains the real traditional game (what it is, where it's from, how it's played in real life) so the game communicates the theme, not just uses it.
 
-### Event stacks (core)
+### Event stacks — historical design contract, retired from normal Play
 
-The Main Challenge alone determines the round's end condition and scoring family. A Twist adds pressure and can eliminate players, but never creates a second score table. Objective Main Challenges use Tapos/Una/Bayani/Bawi and race-only Barya where applicable; elimination Main Challenges use Lagsanay placement scoring and Bawi. Patibong still belongs only to the direct placed hazard that eliminates a player. A taya timeout or Kangaroo command failure is an event elimination, not a Patibong.
+The following stack table and same-step stack contract are retained as P12 historical evidence only. The normal route schedules one standalone Main per round; standalone Kangaroo uses the P23 race design above. These rows do not define current behavior.
+
+### Event stacks (historical P12 evidence)
+
+The Main Challenge alone determines the round's end condition and scoring family. A Twist adds pressure and can eliminate players, but never creates a second score table. Karera and Kangaroo use race scoring (Tapos/Una/Bayani/Bawi, race-only Barya where eligible). Lagsanay alone uses placement scoring. Patibong belongs only to the direct placed hazard that eliminates a player. A taya timeout or Kangaroo command failure is an elimination, not a Patibong.
 
 The first compatible stacks are:
 
