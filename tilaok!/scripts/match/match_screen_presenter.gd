@@ -747,10 +747,12 @@ func _control_hint_lines(
 		else:
 			var movement := ""
 			var jump := ""
+			var crouch := prompt_map.glyph("crouch", device)
 			var build := prompt_map.glyph("build_toggle", device)
 			if device == "gamepad":
 				movement = "D-pad/Stick"
 				jump = "South"
+				crouch = "Down"
 			elif device == "k2":
 				movement = "Left/Right"
 				jump = "Right Ctrl"
@@ -761,8 +763,8 @@ func _control_hint_lines(
 				movement = prompt_map.glyph("run", device)
 				jump = prompt_map.glyph("jump", device)
 			line = (
-				"P%d · %s · BUILD %s\nMOVE %s · JUMP %s"
-				% [player_number, device_tag, build, movement, jump]
+				"P%d · %s · BUILD %s\nMOVE %s · JUMP %s · CROUCH %s"
+				% [player_number, device_tag, build, movement, jump, crouch]
 			)
 		hints[seat_index] = line
 	return hints
