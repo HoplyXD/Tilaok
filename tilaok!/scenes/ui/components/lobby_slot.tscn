@@ -56,7 +56,6 @@ color = Color(0.80784315, 0.6745098, 0.49019608, 0.7)
 unique_name_in_owner = true
 position = Vector2(0, -1)
 identity_number = 1
-marker_color = Color(0.5372549, 0.5058824, 0.4627451, 1)
 draw_debug_body = false
 draw_identity_marker = false
 

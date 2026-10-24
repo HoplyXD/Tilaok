@@ -27,7 +27,7 @@ size = Vector2(3188, 1678)
 
 [node name="Plains" type="Node2D" unique_id=1695612668]
 script = ExtResource("1_7lk03")
-map_name = "Sample Map"
+map_name = "Plains"
 map_order = 10
 description = "The default stage rebuilt as a map scene; duplicate it to start a new map."
 

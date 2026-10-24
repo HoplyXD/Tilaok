@@ -1,13 +1,13 @@
 extends SceneTree
 
-## Rendered (windowed) capture for map scenes: the Lobby with the map row on the Sample Map, and
+## Rendered (windowed) capture for map scenes: the Lobby with the map row on Plains, and
 ## Play on that map (its Blocks layer is the stage). Synthetic seats; placeholder art.
 ## Run: godot --path tilaok! --script res://tests/capture_maps_evidence.gd
 
 const FLOW_SCENE := preload("res://scenes/flow/game_flow.tscn")
 const OUTPUT_DIR := "../docs/evidence/maps"
-## The Basic Map (framed stage with a tall pillar), 2026-10-16.
-const MAP_ID := "Basic Map"
+## The Cave map (framed stage with a tall pillar), 2026-10-16.
+const MAP_ID := "map2"
 
 var failures := 0
 var _output_dir := ""

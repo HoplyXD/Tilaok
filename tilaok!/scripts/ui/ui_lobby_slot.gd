@@ -6,7 +6,6 @@ extends PanelContainer
 const FRAME_NORMAL := &"SlotPanel"
 const FRAME_READY := &"SlotPanelReady"
 const OPEN_BADGE_ALPHA := 0.45
-const EMPTY_CHICKEN_TINT := Color("#898989")
 const EMPTY_CHICKEN_ALPHA := 0.38
 
 @onready var badge: UiPlayerBadge = %Badge
@@ -22,9 +21,8 @@ func bind(seat: Dictionary, map: UiPromptMap) -> void:
 	var seat_index := clampi(get_index(), 0, PlayerSeatRegistry.MAX_SEATS - 1)
 	_preview_chicken.identity_number = int(seat.get("identity", seat_index + 1))
 	_preview_chicken.identity_shape = str(seat.get("shape", PlayerSeatRegistry.SHAPES[seat_index]))
-	_preview_chicken.marker_color = (
-		seat.get("color", PlayerSeatRegistry.COLORS[seat_index]) if joined else EMPTY_CHICKEN_TINT
-	)
+	# An open slot previews the colour it will get, faded (the chicken art is already coloured).
+	_preview_chicken.marker_color = seat.get("color", PlayerSeatRegistry.COLORS[seat_index])
 	_preview_chicken.modulate.a = 1.0 if joined else EMPTY_CHICKEN_ALPHA
 	_preview_chicken.queue_redraw()
 	theme_type_variation = FRAME_READY if is_ready else FRAME_NORMAL

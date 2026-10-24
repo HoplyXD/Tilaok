@@ -247,7 +247,9 @@ The chicken carries one authored hitbox per pose and enables exactly one at a ti
 
 **Status — October 24, 2026:** requested by the user and implemented; `run_blocks_tests` covers every chain below (120 checks). Human feel review is pending, and one open concern is recorded at the end.
 
-`ChickenSpriteAnimator` calls `play()` once per pose change, never per frame, so each animation's own loop flag in the SpriteFrames decides whether it repeats. Left/right comes from the movement key the controller accepted (`ChickenController.facing_input`), not from velocity, so a chicken sliding on ice or taking knockback reads as idle rather than running.
+`ChickenSpriteAnimator` calls `play()` once per pose change, never per frame, so each animation's own loop flag in the SpriteFrames decides whether it repeats. Left/right of running and of the rising `jump` comes from the movement key the controller accepted (`ChickenController.facing_input`), so a chicken sliding on ice reads as idle rather than running. **Revised the same day at the user's request:** falling, gliding and landing follow where the chicken is actually moving (`velocity.x`, with a 40 wu/s deadzone that plays the sideless pose), not the key, so a chicken that lets go of left mid-air while still drifting left keeps falling, gliding and landing facing left. The landing side is the one it was moving on its last airborne frame.
+
+**Per-colour art, no tint (2026-10-24, user request):** `scenes/characters/chicken.tscn` holds one `ChickenSpriteAnimator` per seat colour (pink, yellow, cyan, green) under an `Animations` node, each with its own pre-coloured SpriteFrames. Each sprite has a `skin_color` (the matching `PlayerSeatRegistry.COLORS` entry) and only the one nearest the chicken's `marker_color` is shown; the old grey-art seat tint (`seat_tint`, `tint_strength`) is gone. The results chart reads the same SpriteFrames through `ChickenSpriteAnimator.frames_for_color()`, and an open Lobby slot shows its own colour's chicken faded instead of a grey one. Eliminated chickens keep their own colour (the grey art used to be tinted white). The stun brightness pulse is unchanged and is the only modulate left on the sprite. The number/shape marker above the head remains the second identifier.
 
 Priority order, highest first: `dead` → `stun` → sneak → wall slide → airborne → landing / stand-up → run / `idle`.
 
@@ -255,9 +257,9 @@ Priority order, highest first: `dead` → `stun` → sneak → wall slide → ai
 | --- | --- |
 | No other state applies | `idle` |
 | Jump, while rising | `jump`, `jump_left`, `jump_right` |
-| Falling (including walking off a ledge) | `jump*_falling` |
-| Holding jump while falling | `jump*_gliding` |
-| Touching the ground | `jump*_landing` |
+| Falling (including walking off a ledge), sided by horizontal motion | `jump*_falling` |
+| Holding jump while falling, sided by horizontal motion | `jump*_gliding` |
+| Touching the ground, sided by the motion just before | `jump*_landing` |
 | On the ground with a direction held | `run_left`, `run_right` |
 | Pressing down | `sneak`, then `sneak_hold` while held |
 | Releasing down | `sneak_stand` |
@@ -276,7 +278,7 @@ Three of these are transitions that must be seen in full before the next pose st
 
 The Cannon's placeholder polygons are replaced by the bamboo cannon sprite (`assets/tiles/cannon sprites/`, 9 frames plus a wheel). Its `shoot` animation is driven from the launcher's own state rather than on a timer: it starts when the piece enters its 0.8 s telegraph, so the wind-up frames run while the shot is charging and the muzzle-blast frame is on screen as the ball spawns. It then hands back to the one-frame `reloading` rest pose. `shoot` is authored non-looping so `animation_finished` can make that handover; `StageBlock` leaves a looping or missing pose alone rather than restarting it, so a mis-set flag cannot strand the barrel mid-recoil. A round reset returns it to rest.
 
-The art is drawn facing left while the projectile path runs right, so the sprite is flipped in the scene (`flip_h`) rather than re-exported; the firing direction, lane region and all four rotations are unchanged. Any block may now carry an `AnimatedSprite2D` under its `Visual` node and get the same treatment.
+The art is drawn facing left while the projectile path runs right, so the sprite is flipped in the scene (`flip_h`) rather than re-exported; the firing direction, lane region and all four rotations are unchanged. **2026-10-24:** the owner removed `flip_h` from the barrel sprite on purpose, so the art is now drawn as authored; the test no longer asserts the flip. Any block may now carry an `AnimatedSprite2D` under its `Visual` node and get the same treatment.
 
 - **Solid shrank with the new art (user authoring, 2026-10-24).** The Cannon's `Solid` shape went from the full 64x64 cell to 64x46 offset 9 wu down, so its derived SOLID region is now the bottom 72% of the cell (`(0, 0.28) size (1.0, 0.72)`): the top ~18 wu is passable and a chicken standing on it rests that much lower. The placement footprint is still 1x1, since that comes from `placement_size`, not the shape. Confirm this is the intended silhouette during visual review.
 - **Open — the blast frame trails the ball by one animation frame.** Measured: the ball spawns while the barrel is on frame 3, the last wind-up frame, and the blast (frame 4) appears 0.2 s later, because 4 frames at 5 fps exactly fills the 0.8 s telegraph and the animation starts a render frame after the state change. Raising `shoot`'s speed to 6 fps would put the shot inside frame 4 instead; left as authored pending the owner's call.

@@ -463,7 +463,7 @@ At the user's request ("can you replace the existing pugad with this one?"), the
 
 ### Bamboo cannon sprite — 2026-10-24
 
-The user supplied `assets/tiles/cannon sprites/`: nine 512 × 512 transparent frames (`Cannon_0000`–`Cannon_0008`) and a separate `Bamboo_Cannon_Wheel.png`. The frames are one firing cycle — four of wind-up as the bamboo swells, one muzzle blast, three of drifting smoke, and a return to the rest pose (frame 8 matches frame 0). They replace the Cannon's placeholder polygons in `scenes/blocks/traps/cannon.tscn`, as a `reloading` rest pose and a `shoot` one-shot. The art faces left while the cannon fires right, so the scene flips it with `flip_h` rather than altering the files.
+The user supplied `assets/tiles/cannon sprites/`: nine 512 × 512 transparent frames (`Cannon_0000`–`Cannon_0008`) and a separate `Bamboo_Cannon_Wheel.png`. The frames are one firing cycle — four of wind-up as the bamboo swells, one muzzle blast, three of drifting smoke, and a return to the rest pose (frame 8 matches frame 0). They replace the Cannon's placeholder polygons in `scenes/blocks/traps/cannon.tscn`, as a `reloading` rest pose and a `shoot` one-shot. The art faces left while the cannon fires right, so the scene flips it with `flip_h` rather than altering the files. On 2026-10-24 the owner removed that `flip_h` on purpose; the scene now draws the frames unflipped.
 
 | Asset ID | File | Type / used in | Creator / source | Licence and proof | Modification | AI assistance | Status |
 |---|---|---|---|---|---|---|---|

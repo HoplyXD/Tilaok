@@ -439,7 +439,7 @@ static func seed_from_args(arguments: PackedStringArray) -> int:
 	return result
 
 
-## "Sample Map  (2/3)": the map's name and its place in the selection.
+## "Plains  (2/3)": the map's name and its place in the selection.
 static func map_label(map_id: String) -> String:
 	var all := MapCatalog.ids()
 	var entry := MapCatalog.entry_for(map_id)

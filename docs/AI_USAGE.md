@@ -862,3 +862,30 @@ Claude inspected the nine frames before deciding where to hook them and reported
 **Flagged, not changed:** the `Solid` shape went from the full 64x64 cell to 64x46 offset 9 wu down, so the derived SOLID region is now the bottom 72% of the cell and the top ~18 wu is passable (the 1x1 placement footprint is unaffected, coming from `placement_size`). The blast frame trails the ball by one animation frame: measured, the ball spawns on frame 3 and the blast shows 0.2 s later, because the wind-up exactly fills the telegraph and the animation starts a render frame after the state change; 6 fps would land the shot inside frame 4. The user's `dead` animation is authored looping, so an eliminated chicken replays its collapse every 0.6 s. See [GDD](GDD.md#cannon-art-and-firing-animation--2026-10-24-user-request).
 
 Two checks were added to `_test_cannon` in `run_blocks_tests.gd` (the barrel faces the lane and `shoot` is a one-shot; the barrel is on its blast frame as the ball spawns), taking it to 122 checks. Verified on **Godot 4.6 in a throwaway copy**, with renders of the cannon before and after the flip, the real projectile direction drawn in. Also green: `run_item_mode_integration_tests` 83, `run_place_claim_tests` 14, `run_p13_library_tests` 425. `run_p07_tests` (2 failures), `run_fix_regression_tests` (1 script error) and `run_offline_live_build_tests` (1 failure) match their established pre-existing baselines. gdformat / gdlint are not installed on this PC. No human code review, visual review or physical-device test is claimed.
+
+### Map names, motion-sided air poses and per-colour chicken art — October 24, 2026
+
+At the user's request ("the map names should be what theyre called in the node", "not strictly on key press now its where the chicken is going/moving now" for `jump_{left,right}_{falling,gliding,landing}`, and "i added all the other chicken colors now :> remove the modulate"), Claude Code (Claude Opus 5.5) made these changes:
+
+- **Map names:** `map_name` now matches each map's root node: `map1.tscn` "Sample Map" → "Plains", `map2.tscn` "Basic Map" → "Cave"; the tutorial was already "Tutorial". `capture_maps_evidence.gd` selected the map by the name "Basic Map", which is not a map id, so it now uses `map2`.
+- **Air poses by motion:** `ChickenSpriteAnimator` now picks the side of falling, gliding and landing from `velocity.x` (40 wu/s deadzone → sideless pose). Landing uses the side from the chicken's last airborne frame. Running and the rising `jump` still follow the accepted key.
+- **Per-colour art:** the user's scene had moved the four colour sprites under an `Animations` node. The animator was still reading `get_parent()` as the chicken, so at HEAD it found none and stopped animating (the clean-HEAD run fails "chickens use the animated chicken scene"). It now walks up to the `ChickenController`. Each sprite has a `skin_color` (its `PlayerSeatRegistry.COLORS` entry), and only the one nearest the chicken's `marker_color` is shown. The seat tint (`seat_tint`, `tint_strength`) is removed. Only the stun brightness pulse remains as a modulate. The results chart reads the coloured SpriteFrames through `frames_for_color()`: its scale is 0.0375 for 2048 px frames, with a 224 px feet inset taken from the in-game hitbox. Open Lobby slots now show their own colour faded, not a grey chicken.
+- **Art wiring Claude found and fixed, as consistency fixes and not as art decisions:**
+  - Yellow `jump_left_landing` and `sneak_stand` still used grey-sheet atlas frames. The grey sheet is no longer referenced by the chicken scene.
+  - Cyan `jump_right_landing` used the left-facing frames.
+  - Yellow `jump_landing` looped and played at speed 1.0 (a 5 s landing), and its last two frames were in the opposite order from the other colours.
+
+  Each was set to match the other three colours.
+
+**Cannon `flip_h`:** `run_blocks_tests` "the barrel art faces the lane…" failed at HEAD because the last commit dropped `flip_h = true` from the cannon barrel. Claude flagged it; the user replied that they "removed flip_h on purpose", so the scene was left as is and the check now asserts only that `shoot` is a one-shot. The landing one-shots are now 5 frames (1.0 s), up from the 0.8 s recorded above.
+
+`run_blocks_tests` gains checks for the following:
+- one visible, untinted sprite per seat colour
+- every frame coming from its own colour folder
+- left and right poses using different art
+- the same frame count, loop flag and speed for every pose across all colours
+- falling and landing to the right with the key released
+- the left glide continuing after the key is released
+- a straight-down glide
+
+Verified on **Godot 4.7.2 (Steam)** directly on the project: `run_blocks_tests` 129 checks, 0 failures after the flip_h check was dropped; `run_ui_theme_tests` 274, 3 failures (score chip, title card, menu offset), identical on a clean `git archive HEAD` copy; `run_scoreboard_chart_tests` 52, `run_p13_accessibility_tests` 66 and `run_match_ui_binding_tests` 177 green. `run_maps_tests` segfaults after a missing `Blocks Sprite Sheet.png`, and it did the same on HEAD. AI-generated code and scene edits. No human code review, visual review or feel review is claimed, and gdformat / gdlint were not run.

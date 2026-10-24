@@ -546,10 +546,9 @@ func _test_lobby_open_slot() -> void:
 				(
 					chicken != null
 					and chicken.modulate.a < 0.5
-					and absf(chicken.marker_color.r - chicken.marker_color.g) < 0.01
-					and absf(chicken.marker_color.g - chicken.marker_color.b) < 0.01
+					and chicken.marker_color == PlayerSeatRegistry.COLORS[index]
 				),
-				"empty Lobby slot %d shows a faded grey chicken" % (index + 1)
+				"empty Lobby slot %d shows its own colour's chicken, faded" % (index + 1)
 			)
 	screen.queue_free()
 	await process_frame

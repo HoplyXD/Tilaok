@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/score_column.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/player_badge.tscn" id="2_badge"]
-[ext_resource type="SpriteFrames" path="res://assets/character/chicken_sprite_frames.tres" id="3_frames"]
 
 [node name="ScoreColumn" type="Control"]
 custom_minimum_size = Vector2(116, 320)
@@ -12,10 +11,8 @@ script = ExtResource("1_script")
 [node name="Chicken" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 z_index = 1
-scale = Vector2(0.15, 0.15)
-sprite_frames = ExtResource("3_frames")
+scale = Vector2(0.0375, 0.0375)
 animation = &"idle"
-offset = Vector2(0, -57)
 
 [node name="IdentityBadge" parent="." instance=ExtResource("2_badge")]
 prefix_text = "P"

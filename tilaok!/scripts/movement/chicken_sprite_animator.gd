@@ -2,10 +2,12 @@
 class_name ChickenSpriteAnimator
 extends AnimatedSprite2D
 
-## Picks the chicken animation from its ChickenController parent every frame. Frames live in the
-## SpriteFrames of scenes/characters/chicken.tscn (assets/character/Chicken 1 Sprite Sheet.png,
-## 2048x2048 cells). Artists can replace or add frames per animation in the editor without
-## touching this script; node scale and per-animation offsets are authored there too.
+## Picks the chicken animation from its ChickenController every frame. scenes/characters/
+## chicken.tscn groups one of these sprites per chicken colour under its Animations node, each
+## with its own SpriteFrames (assets/character/Chicken Sprites/<colour>/, 2048x2048 frames), and
+## shows only the one whose `skin_color` is nearest the chicken's `marker_color`. The art is
+## already coloured, so nothing is tinted. Artists can replace or add frames per animation in the
+## editor without touching this script; node scale and per-animation offsets are authored there.
 ##
 ## `play()` is called once per pose change, never per frame, so each animation's own loop /
 ## no-loop flag in the SpriteFrames decides whether it repeats. Three poses are transitions that
@@ -14,17 +16,23 @@ extends AnimatedSprite2D
 ## Because that gate needs the pose to end on its own, each is authored non-looping; a pose that
 ## loops (or is missing from the sheet) is never waited for, so a mis-set flag cannot deadlock.
 ##
-## Left/right comes from `ChickenController.facing_input` -- the movement key the controller
-## accepted -- not from velocity, so a chicken sliding on ice or taking knockback reads as idle.
+## Left/right of running and of the rising `jump` comes from `ChickenController.facing_input` --
+## the movement key the controller accepted -- so a chicken sliding on ice reads as idle. Falling,
+## gliding and landing instead follow where the chicken is actually moving (`velocity.x`), so a
+## chicken knocked or drifting left falls, glides and lands facing left whatever key is held.
+
+const CHICKEN_SCENE := "res://scenes/characters/chicken.tscn"
 
 ## Per-animation offset in texture pixels (so it scales with the node) that puts the feet of
 ## every frame on the collision bottom. Unlisted animations sit at the node origin; fill this in
 ## from the editor for any pose whose art does not already end on the cell's feet line.
 @export var animation_offsets := {}
-const DEFAULT_TINT_STRENGTH := 2.1
-
-## Multiplier on the seat colour so the mid-grey placeholder reads as that colour.
-@export var tint_strength := DEFAULT_TINT_STRENGTH
+## The seat colour this sprite's art is drawn in (PlayerSeatRegistry.COLORS). Of the sprites
+## under one chicken, only the one nearest the chicken's marker_color is shown.
+@export var skin_color := Color("#f2c14e")
+## Below this horizontal speed (wu/s) a falling, gliding or landing chicken counts as moving
+## straight down and plays the sideless pose.
+@export var drift_deadzone_wu_s := 40.0
 ## Stunned chickens brighten and dim smoothly at this rate (Hz). Never a hard on/off flash, and
 ## never above the 3 flashes per second photosensitivity limit; Screen shake Off holds it steady.
 @export var stun_pulse_hz := 2.0
@@ -33,11 +41,16 @@ const DEFAULT_TINT_STRENGTH := 2.1
 ## A steady brightening while stunned so the state never depends on motion.
 @export var stun_base_brightness := 1.5
 
+## skin_color -> SpriteFrames of every colour sprite in the chicken scene, read on first use.
+static var _skin_frames := {}
+
 var chicken: ChickenController
 
 var _was_on_floor := true
 var _was_sneaking := false
 var _was_stunned := false
+## Where the chicken was moving on its last airborne frame, for the landing pose.
+var _air_side := ""
 ## Set from touching down until `_landing_pose` has played out; its name is latched at touchdown
 ## so turning mid-landing cannot restart the animation.
 var _landing := false
@@ -52,7 +65,7 @@ var _replay := false
 
 
 func _ready() -> void:
-	chicken = get_parent() as ChickenController
+	chicken = _owning_chicken()
 	animation_finished.connect(_on_animation_finished)
 	if chicken != null:
 		_was_on_floor = chicken.is_on_floor()
@@ -62,6 +75,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if chicken == null:
 		return
+	visible = _wears_this_skin()
 	_track_transitions()
 	var next := pose_for_state()
 	# A pose the sheet has no frames for yet holds the current one instead of erroring out.
@@ -71,7 +85,35 @@ func _process(_delta: float) -> void:
 		play(next)
 	_replay = false
 	offset = animation_offsets.get(animation, Vector2.ZERO)
-	_apply_tint()
+	_apply_stun_pulse()
+
+
+## The ChickenController this sprite belongs to: its parent, or further up when the sprite sits
+## under the Animations node that groups one sprite per colour.
+func _owning_chicken() -> ChickenController:
+	var node := get_parent()
+	while node != null and not node is ChickenController:
+		node = node.get_parent()
+	return node as ChickenController
+
+
+## True when this sprite is the sibling whose skin_color is nearest the chicken's marker_color
+## (the first one on a tie), so exactly one colour of each chicken is drawn.
+func _wears_this_skin() -> bool:
+	var worn: ChickenSpriteAnimator = null
+	for node in get_parent().get_children():
+		var skin := node as ChickenSpriteAnimator
+		if skin == null:
+			continue
+		if (
+			worn == null
+			or (
+				skin_distance(skin.skin_color, chicken.marker_color)
+				< skin_distance(worn.skin_color, chicken.marker_color)
+			)
+		):
+			worn = skin
+	return worn == self
 
 
 ## Watches the ground, sneak and stun edges that the one-shot transition poses hang off.
@@ -80,11 +122,13 @@ func _track_transitions() -> void:
 	if grounded != _was_on_floor:
 		_replay = true
 		if grounded:
-			# "always play after hitting the ground"
-			_landing_pose = StringName("jump" + _side() + "_landing")
+			# "always play after hitting the ground", facing the way it was moving when it did.
+			_landing_pose = StringName("jump" + _air_side + "_landing")
 			_landing = _ends_on_its_own(_landing_pose)
 		else:
 			_landing = false
+	if not grounded:
+		_air_side = _motion_side()
 	_was_on_floor = grounded
 	var sneaking := chicken.sneaking
 	if sneaking != _was_sneaking:
@@ -129,24 +173,54 @@ func _side() -> String:
 	return ""
 
 
-func _apply_tint() -> void:
-	var base := Color.WHITE if chicken.lifecycle.is_terminal() else chicken.marker_color
-	modulate = seat_tint(base, tint_strength)
-	if animation == &"stun":
-		var level := stun_brightness(
-			Time.get_ticks_msec() / 1000.0,
-			PresentationApplier.shake_mode,
-			stun_pulse_hz,
-			stun_base_brightness,
-			stun_peak_brightness
-		)
-		modulate = Color(level, level, level, base.a)
+## "_left" / "_right" / "" from where the chicken is actually moving, "" inside the deadzone.
+func _motion_side() -> String:
+	if chicken.velocity.x > drift_deadzone_wu_s:
+		return "_right"
+	if chicken.velocity.x < -drift_deadzone_wu_s:
+		return "_left"
+	return ""
 
 
-## The modulate that makes the grey chicken art read as `color` (brightened, alpha kept). The
-## results chart uses it too, so its chickens match the ones in the game.
-static func seat_tint(color: Color, strength: float = DEFAULT_TINT_STRENGTH) -> Color:
-	return Color(color.r * strength, color.g * strength, color.b * strength, color.a)
+func _apply_stun_pulse() -> void:
+	if animation != &"stun":
+		modulate = Color.WHITE
+		return
+	var level := stun_brightness(
+		Time.get_ticks_msec() / 1000.0,
+		PresentationApplier.shake_mode,
+		stun_pulse_hz,
+		stun_base_brightness,
+		stun_peak_brightness
+	)
+	modulate = Color(level, level, level, 1.0)
+
+
+## How far apart two colours are, for matching a seat colour to the nearest chicken skin.
+static func skin_distance(left: Color, right: Color) -> float:
+	return Vector3(left.r - right.r, left.g - right.g, left.b - right.b).length_squared()
+
+
+## The SpriteFrames of the chicken-scene sprite drawn in the colour nearest `color`. The results
+## chart uses it, so its chickens are the same coloured art as the ones in the game.
+static func frames_for_color(color: Color) -> SpriteFrames:
+	if _skin_frames.is_empty():
+		var scene := load(CHICKEN_SCENE) as PackedScene
+		var root := scene.instantiate() if scene != null else null
+		if root != null:
+			for node in root.find_children("*", "AnimatedSprite2D", true, false):
+				var skin := node as ChickenSpriteAnimator
+				if skin != null and skin.sprite_frames != null:
+					_skin_frames[skin.skin_color] = skin.sprite_frames
+			root.free()
+	var best: SpriteFrames = null
+	var best_distance := INF
+	for skin_color in _skin_frames:
+		var distance := skin_distance(skin_color, color)
+		if distance < best_distance:
+			best = _skin_frames[skin_color]
+			best_distance = distance
+	return best
 
 
 ## Brightness multiplier of a stunned chicken at `time_seconds`: a steady brightening plus, unless
@@ -173,21 +247,22 @@ func pose_for_state() -> StringName:
 	if chicken.wall_sliding and chicken.wall_side != 0:
 		# The wall the chicken is held against, which is the side it is pressing toward.
 		return &"wall_slide_right" if chicken.wall_side > 0 else &"wall_slide_left"
-	var side := _side()
 	if not chicken.is_on_floor():
-		# Airborne, in the order one jump passes through them. Rising reads as the jump itself;
-		# `_falling` covers walking off a ledge too, where there was no jump to follow.
+		# Airborne, in the order one jump passes through them. Rising reads as the jump itself and
+		# follows the key; falling and gliding follow where the chicken is moving. `_falling`
+		# covers walking off a ledge too, where there was no jump to follow.
 		if chicken.gliding:
-			return StringName("jump" + side + "_gliding")
+			return StringName("jump" + _motion_side() + "_gliding")
 		if chicken.velocity.y > 0.0:
-			return StringName("jump" + side + "_falling")
-		return StringName("jump" + side)
+			return StringName("jump" + _motion_side() + "_falling")
+		return StringName("jump" + _side())
 	# Grounded. The landing and stand-up one-shots play out before idle or run resume; both are
 	# cut short by a new jump, since the airborne branch above is reached first.
 	if _landing:
 		return _landing_pose
 	if _standing_up:
 		return &"sneak_stand"
+	var side := _side()
 	if side.is_empty():
 		return &"idle"
 	return StringName("run" + side)

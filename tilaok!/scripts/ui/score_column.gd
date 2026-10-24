@@ -41,6 +41,9 @@ const MOTION_REDUCED := PresentationSettings.RESULT_REVEAL_REDUCED
 const MOTION_OFF := PresentationSettings.RESULT_REVEAL_OFF
 const STEP_SECONDS := 0.24
 const MAX_REVEAL_SECONDS := 2.4
+## Texture pixels from the bottom of a 2048 px chicken frame up to the art's feet (the line the
+## in-game hitbox stands on), so the feet rather than the frame edge rest on the bar.
+const CHICKEN_FEET_INSET_PX := 224.0
 
 var badge: UiPlayerBadge
 var _row: Dictionary = {}
@@ -99,7 +102,7 @@ func bind_row(
 		"joined": true,
 	}
 	badge.bind_seat(seat)
-	_chicken.modulate = ChickenSpriteAnimator.seat_tint(_row.get("color", Color.WHITE))
+	_chicken.sprite_frames = ChickenSpriteAnimator.frames_for_color(_row.get("color", Color.WHITE))
 	_refresh_labels()
 	_layout_marker()
 	queue_redraw()
@@ -284,7 +287,9 @@ func _chicken_foot_offset() -> float:
 		return 0.0
 	var frame_height := frame.get_size().y
 	var frame_top := -frame_height * 0.5 if _chicken.centered else 0.0
-	return (frame_top + frame_height + _chicken.offset.y) * _chicken.scale.y
+	return (
+		(frame_top + frame_height - CHICKEN_FEET_INSET_PX + _chicken.offset.y) * _chicken.scale.y
+	)
 
 
 func _notification(what: int) -> void:

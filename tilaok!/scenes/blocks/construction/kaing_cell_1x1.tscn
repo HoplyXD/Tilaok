@@ -7,6 +7,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hop5y"]
 size = Vector2(64, 64)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ey56e"]
+polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+
 [node name="KaingCell1x1" type="AnimatableBody2D" unique_id=1421458399]
 sync_to_physics = false
 script = ExtResource("1_c06e7")
@@ -37,3 +40,9 @@ texture = ExtResource("3_ey56e")
 hframes = 9
 vframes = 7
 frame = 10
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1817509369]
+occluder = SubResource("OccluderPolygon2D_ey56e")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1028396375]
+shadow_enabled = true

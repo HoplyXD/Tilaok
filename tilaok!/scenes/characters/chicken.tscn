@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://u3s7hbap5vdb" path="res://assets/character/Chicken Sprites/pink chicken version/downdead_animation_front-1.png" id="2_txsa7"]
 [ext_resource type="Texture2D" uid="uid://b5q33ejdq068w" path="res://assets/character/Chicken Sprites/pink chicken version/downdead_animation_front-2.png" id="3_pa20g"]
 [ext_resource type="Texture2D" uid="uid://c62glsdj311hh" path="res://assets/character/Chicken Sprites/pink chicken version/downdead_animation_front-3.png" id="4_m5p5a"]
-[ext_resource type="Texture2D" uid="uid://pg7vh322nh6w" path="res://assets/character/Chicken 1 Sprite Sheet.png" id="4_qkxpq"]
 [ext_resource type="Texture2D" uid="uid://c6q43elwgi7tc" path="res://assets/character/Chicken Sprites/pink chicken version/chicken_idle-1.png" id="5_ue3tl"]
 [ext_resource type="Texture2D" uid="uid://c2bf6njloihwl" path="res://assets/character/Chicken Sprites/pink chicken version/chicken_idle-2.png" id="6_54834"]
 [ext_resource type="Texture2D" uid="uid://bjsn5omtj0egp" path="res://assets/character/Chicken Sprites/cyan chicken version/downdead_animation_front-1.png" id="7_byrox"]
@@ -462,30 +461,6 @@ animations = [{
 "speed": 2.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_564bi"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(8192, 8192, 2048, 2048)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_brg28"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(2048, 8192, 2048, 2048)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_al0ey"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(0, 8192, 2048, 2048)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_q0263"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(4096, 8192, 2048, 2048)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_mhv3p"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(2048, 0, 2048, 2048)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qp7lg"]
-atlas = ExtResource("4_qkxpq")
-region = Rect2(0, 0, 2048, 2048)
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
 animations = [{
 "frames": [{
@@ -569,14 +544,14 @@ animations = [{
 "texture": ExtResource("50_i5rhm")
 }, {
 "duration": 1.0,
-"texture": ExtResource("44_r0tlx")
+"texture": ExtResource("43_trubl")
 }, {
 "duration": 1.0,
-"texture": ExtResource("43_trubl")
+"texture": ExtResource("44_r0tlx")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"jump_landing",
-"speed": 1.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -619,16 +594,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_564bi")
+"texture": ExtResource("55_a1646")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_brg28")
+"texture": ExtResource("52_2dr1u")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_al0ey")
+"texture": ExtResource("51_ij8es")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_q0263")
+"texture": ExtResource("53_4lhoi")
 }],
 "loop": 0,
 "name": &"jump_left_landing",
@@ -757,10 +732,10 @@ animations = [{
 "texture": ExtResource("50_i5rhm")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mhv3p")
+"texture": ExtResource("44_r0tlx")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_qp7lg")
+"texture": ExtResource("43_trubl")
 }],
 "loop": 0,
 "name": &"sneak_stand",
@@ -992,16 +967,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("29_hcxjt")
+"texture": ExtResource("34_kokb7")
 }, {
 "duration": 1.0,
-"texture": ExtResource("26_c7rc7")
+"texture": ExtResource("31_42r3k")
 }, {
 "duration": 1.0,
-"texture": ExtResource("25_wgbrd")
+"texture": ExtResource("30_x7cum")
 }, {
 "duration": 1.0,
-"texture": ExtResource("27_kkqwq")
+"texture": ExtResource("32_x2dfv")
 }],
 "loop": 0,
 "name": &"jump_right_landing",
@@ -1464,6 +1439,7 @@ animation = &"idle"
 autoplay = "idle"
 frame_progress = 0.65242994
 script = ExtResource("2_animator")
+skin_color = Color(0.9411765, 0.4862745, 0.42352942, 1)
 
 [node name="Yellow_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=646713635]
 scale = Vector2(0.075, 0.075)
@@ -1480,6 +1456,7 @@ animation = &"idle"
 autoplay = "idle"
 frame_progress = 0.85606194
 script = ExtResource("2_animator")
+skin_color = Color(0.3882353, 0.654902, 1, 1)
 
 [node name="Green_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=240522610]
 scale = Vector2(0.075, 0.075)
@@ -1488,3 +1465,4 @@ animation = &"idle"
 autoplay = "idle"
 frame_progress = 0.7246816
 script = ExtResource("2_animator")
+skin_color = Color(0.5372549, 0.78039217, 0.48235294, 1)

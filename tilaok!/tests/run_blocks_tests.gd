@@ -20,7 +20,7 @@ const BLOCK_SCENES := {
 }
 const FLOOR_Y := 960.0
 const TOLERANCE := 1.0
-const ANIMATION_NODE := "ChickenAnimation"
+const ANIMATIONS_NODE := "Animations"
 
 var failures := 0
 var checks := 0
@@ -270,11 +270,9 @@ func _test_cannon() -> void:
 	var barrel := cannon.get_node_or_null("Visual/AnimatedSprite2D") as AnimatedSprite2D
 	_check(
 		(
-			barrel != null
-			and barrel.flip_h
-			and not barrel.sprite_frames.get_animation_loop(&"shoot")
+			barrel != null and not barrel.sprite_frames.get_animation_loop(&"shoot")
 		),
-		"the barrel art faces the lane and its shoot animation is a one-shot"
+		"the barrel's shoot animation is a one-shot"
 	)
 	_put_actor_feet(Vector2(15.0 * 64.0 + 32.0, FLOOR_Y))
 	var died := false
@@ -452,17 +450,36 @@ func _test_drop_in_block() -> void:
 # ---------------------------------------------------------------- chicken scene and animations
 
 
+## The colour sprite the actor is drawn with: the Animations child whose skin_color is nearest its
+## marker_color, as ChickenSpriteAnimator picks it.
+func _worn_sprite() -> ChickenSpriteAnimator:
+	var worn: ChickenSpriteAnimator = null
+	for node in actor.get_node(ANIMATIONS_NODE).get_children():
+		var sprite := node as ChickenSpriteAnimator
+		if sprite == null:
+			continue
+		if (
+			worn == null
+			or (
+				ChickenSpriteAnimator.skin_distance(sprite.skin_color, actor.marker_color)
+				< ChickenSpriteAnimator.skin_distance(worn.skin_color, actor.marker_color)
+			)
+		):
+			worn = sprite
+	return worn
+
+
 func _anim_after(frames: int) -> StringName:
 	await _frames(frames)
 	await process_frame
-	return (actor.get_node(ANIMATION_NODE) as AnimatedSprite2D).animation
+	return _worn_sprite().animation
 
 
 ## Waits up to `max_frames` for the animation to become `pose` and returns what it actually is,
 ## so a failure reports the pose that was stuck. The one-shot transitions run 0.6-1.0 s (4 frames
 ## at 5 fps), far longer than a fixed wait should hard-code.
 func _await_anim(pose: StringName, max_frames: int = 75) -> StringName:
-	var sprite := actor.get_node(ANIMATION_NODE) as AnimatedSprite2D
+	var sprite := _worn_sprite()
 	for _frame in range(max_frames):
 		await _frames(1)
 		await process_frame
@@ -475,10 +492,32 @@ func _test_chicken_animations() -> void:
 	room.items.reset_match()
 	room.items.begin_play()
 	_release_all()
-	var sprite := actor.get_node_or_null(ANIMATION_NODE) as ChickenSpriteAnimator
+	var sprites := actor.find_children("*", "AnimatedSprite2D", true, false).filter(
+		func(node: Node) -> bool: return node is ChickenSpriteAnimator
+	)
+	var sprite := _worn_sprite() if actor.has_node(ANIMATIONS_NODE) else null
 	_check(sprite != null and not actor.draw_debug_body, "chickens use the animated chicken scene")
 	if sprite == null:
 		return
+	_check(sprites.size() == 4, "the chicken scene has one sprite per seat colour")
+	var skins_ok := true
+	var own_color := actor.marker_color
+	for color in PlayerSeatRegistry.COLORS:
+		actor.marker_color = color
+		await process_frame
+		await process_frame
+		var shown := sprites.filter(func(node: Node) -> bool: return (node as Node2D).visible)
+		skins_ok = (
+			skins_ok
+			and shown.size() == 1
+			and (shown[0] as ChickenSpriteAnimator).skin_color.is_equal_approx(color)
+			and (shown[0] as CanvasItem).modulate == Color.WHITE
+		)
+	_check(skins_ok, "each seat colour shows only its own untinted chicken sprite")
+	actor.marker_color = own_color
+	await process_frame
+	await process_frame
+	sprite = _worn_sprite()
 	# Every pose ChickenSpriteAnimator.pose_for_state() can ask for.
 	var names := [
 		&"idle",
@@ -505,13 +544,45 @@ func _test_chicken_animations() -> void:
 		&"dead",
 	]
 	var frames_ok := true
-	for anim_name in names:
-		frames_ok = frames_ok and sprite.sprite_frames.has_animation(anim_name)
-		if not sprite.sprite_frames.has_animation(anim_name):
-			continue
-		var texture := sprite.sprite_frames.get_frame_texture(anim_name, 0) as AtlasTexture
-		frames_ok = frames_ok and texture != null and texture.region.size == Vector2(2048, 2048)
-	_check(frames_ok, "every state animation exists with 2048x2048 sheet cells")
+	var sides_ok := true
+	var timing_ok := true
+	for node in sprites:
+		var frames := (node as AnimatedSprite2D).sprite_frames
+		var folder := frames.get_frame_texture(&"idle", 0).resource_path.get_base_dir()
+		# Left and right poses must not share art (a copied animation left on the wrong side).
+		for pose in [&"jump%s", &"jump%s_falling", &"jump%s_landing", &"wall_slide%s"]:
+			var left := frames.get_frame_texture(StringName(pose % "_left"), 0)
+			var right := frames.get_frame_texture(StringName(pose % "_right"), 0)
+			sides_ok = sides_ok and left != right
+		for anim_name in names:
+			frames_ok = frames_ok and frames.has_animation(anim_name)
+			if not frames.has_animation(anim_name):
+				continue
+			# The colours are the same chicken, so each pose must time out alike in all of them.
+			var reference := (sprites[0] as AnimatedSprite2D).sprite_frames
+			timing_ok = (
+				timing_ok
+				and frames.get_frame_count(anim_name) == reference.get_frame_count(anim_name)
+				and frames.get_animation_loop(anim_name) == reference.get_animation_loop(anim_name)
+				and (
+					is_equal_approx(
+						frames.get_animation_speed(anim_name),
+						reference.get_animation_speed(anim_name)
+					)
+				)
+			)
+			for index in frames.get_frame_count(anim_name):
+				var texture := frames.get_frame_texture(anim_name, index)
+				frames_ok = (
+					frames_ok
+					and texture != null
+					and not texture is AtlasTexture
+					and texture.get_size() == Vector2(2048, 2048)
+					and texture.resource_path.get_base_dir() == folder
+				)
+	_check(frames_ok, "every colour has every state animation, in its own 2048x2048 frames")
+	_check(sides_ok, "every colour's left and right poses use different frames")
+	_check(timing_ok, "every colour's poses share frame count, loop flag and speed")
 	# Settling onto the floor is itself a landing, so idle only resumes once it has played out.
 	_put_actor_feet(Vector2(736.0, FLOOR_Y))
 	_check(await _await_anim(&"idle") == &"idle", "standing still plays idle")
@@ -539,22 +610,25 @@ func _test_chicken_animations() -> void:
 	_check(
 		await _await_anim(&"jump_landing") == &"jump_landing", "hitting the ground plays jump_landing"
 	)
-	_check(await _await_anim(&"idle") == &"idle", "idle resumes once jump_landing has played")
+	_check(
+		await _await_anim(&"idle") == &"idle", "idle resumes once jump_landing has played"
+	)
 
-	# The same arc with right held picks the directional variants.
+	# The same arc moving right picks the directional variants. Rising follows the key; falling
+	# and landing follow the motion, so they stay right after the key is let go (no air drag).
 	_key(KEY_D, true)
 	_key(KEY_W, true)
 	_check(await _anim_after(3) == &"jump_right", "jumping with right held plays jump_right")
 	_key(KEY_W, false)
+	_key(KEY_D, false)
 	_check(
 		await _await_anim(&"jump_right_falling") == &"jump_right_falling",
-		"falling with right held plays jump_right_falling"
+		"falling while moving right, key released, plays jump_right_falling"
 	)
 	_check(
 		await _await_anim(&"jump_right_landing") == &"jump_right_landing",
-		"landing with right held plays jump_right_landing"
+		"landing while moving right, key released, plays jump_right_landing"
 	)
-	_key(KEY_D, false)
 	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the directional landing")
 
 	# Glide: holding jump while falling, with and without a direction.
@@ -564,9 +638,26 @@ func _test_chicken_animations() -> void:
 	_key(KEY_W, true)
 	_check(await _anim_after(4) == &"jump_left_gliding", "gliding left plays jump_left_gliding")
 	_key(KEY_A, false)
-	_check(await _anim_after(3) == &"jump_gliding", "gliding with no direction plays jump_gliding")
+	_check(
+		await _anim_after(3) == &"jump_left_gliding",
+		"letting go of left while still drifting left keeps jump_left_gliding"
+	)
 	_key(KEY_W, false)
+	_check(
+		await _await_anim(&"jump_left_landing", 150) == &"jump_left_landing",
+		"the drifting chicken lands with jump_left_landing"
+	)
 	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the glide lands")
+	_put_actor_feet(Vector2(736.0, 300.0))
+	await _frames(12)
+	_key(KEY_W, true)
+	_check(
+		await _anim_after(4) == &"jump_gliding", "gliding straight down plays jump_gliding"
+	)
+	_key(KEY_W, false)
+	_check(
+		await _await_anim(&"idle", 120) == &"idle", "idle resumes after the straight glide lands"
+	)
 	var ids := _arrange([[SOLID, Vector2i(23, 9), 1]])
 	_put_actor_feet(Vector2(1472.0 - room.tuning.body_width_wu * 0.5 - 0.1, 640.0))
 	_check(await _anim_after(4) == &"wall_slide_right", "wall on the right plays wall_slide_right")
