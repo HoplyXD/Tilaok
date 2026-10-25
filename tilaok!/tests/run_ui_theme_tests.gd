@@ -1661,7 +1661,7 @@ func _test_library_frame() -> void:
 	for key in ["%ChooseKey", "%ReadKey", "%BackKey"]:
 		keys.append((library.get_node(key) as Label).text)
 	_check(
-		keys == PackedStringArray(["Arrow keys", "Enter", "Backspace"]),
+		keys == PackedStringArray(["I J K L", "O", "H"]),
 		"library footer keys come from the prompt map for K2 %s" % [keys]
 	)
 	holder.queue_free()

@@ -13,7 +13,7 @@ size = Vector2(64, 128)
 size = Vector2(64, 192)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_tpykh"]
-cull_mode = 1
+cull_mode = 2
 polygon = PackedVector2Array(31, -97, 97, -97, 97, 97, -97, 97, -97, 31, -33, 31, -33, -33, 31, -33)
 
 [sub_resource type="Gradient" id="Gradient_ey56e"]
@@ -23,7 +23,6 @@ colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 gradient = SubResource("Gradient_ey56e")
 width = 260
 height = 260
-fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
 [node name="HagdanSteps3x3" type="AnimatableBody2D" unique_id=19497111]
@@ -84,10 +83,12 @@ horizontal_alignment = 1
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=385330628]
 occluder = SubResource("OccluderPolygon2D_tpykh")
+sdf_collision = false
 
 [node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=529213796]
-position = Vector2(31, 31)
+position = Vector2(33, 33)
 range_item_cull_mask = 2
 shadow_enabled = true
+shadow_color = Color(0, 0, 1, 0)
+shadow_filter_smooth = 1.7
 texture = SubResource("GradientTexture2D_vdbkf")
-offset = Vector2(1, 1)

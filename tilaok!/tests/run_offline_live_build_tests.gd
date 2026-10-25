@@ -166,11 +166,15 @@ func _test_live_controls_are_isolated() -> void:
 		),
 		"K1 movement keys steer the preview while build mode owns the controls"
 	)
-	_check(router._key_action("K1", KEY_E, 0) == "live_rotate", "K1 E rotates the live preview")
-	_check(router._key_action("K1", KEY_R, 0) == "confirm", "K1 R places the live preview")
+	_check(router._key_action("K1", KEY_R, 0) == "live_rotate", "K1 R rotates the live preview")
 	_check(
-		router._key_action("K1", KEY_F, 0) == "live_cancel",
-		"K1 F closes an unconfirmed live preview"
+		router._key_action("K1", KEY_E, 0) == "confirm"
+		and router._key_action("K1", KEY_F, 0) == "confirm",
+		"K1 E or F places the live preview"
+	)
+	_check(
+		router._key_action("K1", KEY_G, 0) == "live_cancel",
+		"K1 G closes an unconfirmed live preview"
 	)
 	_check(
 		router._key_action("K1", KEY_SPACE, 0) == "confirm",
@@ -196,17 +200,15 @@ func _test_live_controls_are_isolated() -> void:
 	_check(
 		router._key_action("K1", KEY_T) == "live_rotate", "K1 live rotate is separate from cheer"
 	)
+	_check(router._key_action("K2", KEY_U) == "build_toggle", "K2 U toggles live build mode")
 	_check(
-		router._key_action("K2", KEY_BRACKETLEFT) == "build_toggle",
-		"K2 bracket toggles live build mode"
+		router._key_action("K3", KEY_SHIFT) == "build_toggle",
+		"K3 Right Shift toggles live build mode"
 	)
+	_check(router._key_action("K2", KEY_7) == "aim_up", "K2 number-row aim stays independent")
 	_check(
-		router._key_action("K3", KEY_MINUS) == "build_toggle", "K3 minus toggles live build mode"
-	)
-	_check(router._key_action("K3", KEY_7) == "aim_up", "K3 number-row aim stays independent")
-	_check(
-		router._key_action("K4", KEY_KP_ADD) == "build_toggle",
-		"K4 numpad plus toggles live build mode"
+		router._key_action("K4", KEY_KP_5) == "build_toggle",
+		"K4 numpad 5 toggles live build mode"
 	)
 	_check(
 		router._gamepad_phase_action(JOY_BUTTON_RIGHT_SHOULDER) == "live_rotate",
@@ -229,11 +231,12 @@ func _test_live_controls_are_isolated() -> void:
 			and _has_binding(keyboard_build, KEY_A, "aim_left")
 			and _has_binding(keyboard_build, KEY_S, "aim_down")
 			and _has_binding(keyboard_build, KEY_D, "aim_right")
-			and _has_binding(keyboard_build, KEY_E, "live_rotate")
-			and _has_binding(keyboard_build, KEY_R, "live_confirm")
-			and _has_binding(keyboard_build, KEY_F, "live_cancel")
+			and _has_binding(keyboard_build, KEY_R, "live_rotate")
+			and _has_binding(keyboard_build, KEY_E, "live_confirm")
+			and _has_binding(keyboard_build, KEY_F, "live_confirm")
+			and _has_binding(keyboard_build, KEY_G, "live_cancel")
 		),
-		"K1 build guide shows WASD, Q, E, R and F in the correct roles"
+		"K1 build guide shows WASD, Q, R, E/F and G in the correct roles"
 	)
 	_check(
 		keyboard_preparation == keyboard_build,
@@ -246,9 +249,9 @@ func _test_live_controls_are_isolated() -> void:
 	)
 	router.set_live_build_mode(0, true)
 	for layout_check in [
-		{"layout": "K2", "rotate": KEY_SHIFT, "close": KEY_BACKSPACE, "up": KEY_UP},
-		{"layout": "K3", "rotate": KEY_P, "close": KEY_U, "up": KEY_I},
-		{"layout": "K4", "rotate": KEY_KP_5, "close": KEY_KP_PERIOD, "up": KEY_KP_8},
+		{"layout": "K2", "rotate": KEY_P, "close": KEY_H, "up": KEY_I},
+		{"layout": "K3", "rotate": KEY_BACKSPACE, "close": KEY_BACKSLASH, "up": KEY_UP},
+		{"layout": "K4", "rotate": KEY_KP_0, "close": KEY_KP_PERIOD, "up": KEY_KP_8},
 	]:
 		var layout_name := str(layout_check.layout)
 		var bindings := InputContextTable.bindings(layout_name.to_lower(), "build")
@@ -781,8 +784,8 @@ func _test_live_go_pause_and_commit() -> void:
 	_check(
 		(
 			visible_build_hints == 2
-			and build_hints[0].contains("AIM WASD · PLACE R")
-			and build_hints[1].contains("AIM Arrow keys · PLACE Enter")
+			and build_hints[0].contains("AIM WASD · PLACE E/F")
+			and build_hints[1].contains("AIM I J K L · PLACE O")
 		),
 		"per-seat build controls are visible during the shared BUILD window"
 	)
@@ -824,12 +827,12 @@ func _test_live_go_pause_and_commit() -> void:
 		_check(
 			(
 				p1_hint.contains("P1 · AIM WASD")
-				and p1_hint.contains("AIM WASD · PLACE R")
-				and p1_hint.contains("ROTATE E · CLOSE F")
+				and p1_hint.contains("AIM WASD · PLACE E/F")
+				and p1_hint.contains("ROTATE R · CLOSE G")
 				and p2_hint.contains("P2 · K2 KEYBOARD")
-				and p2_hint.contains("MOVE Left/Right")
-				and p2_hint.contains("JUMP Right Ctrl")
-				and p2_hint.contains("BUILD [")
+				and p2_hint.contains("MOVE J / L")
+				and p2_hint.contains("JUMP I")
+				and p2_hint.contains("BUILD U")
 				and p1_hint.count("\n") == 1
 				and p2_hint.count("\n") == 1
 			),

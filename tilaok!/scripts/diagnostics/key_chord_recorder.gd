@@ -27,12 +27,12 @@ const CHORDS: Array[Dictionary] = [
 	{"id": "C01", "group": "Run + jump", "label": "K1 left + jump", "keys": ["A", "Space"]},
 	{"id": "C02", "group": "Run + jump", "label": "K1 right + jump", "keys": ["D", "Space"]},
 	{"id": "C03", "group": "Run + jump", "label": "K1 right + alt jump (W)", "keys": ["D", "W"]},
-	{"id": "C04", "group": "Run + jump", "label": "K2 left + jump", "keys": ["Left", "RCtrl"]},
-	{"id": "C05", "group": "Run + jump", "label": "K2 right + jump", "keys": ["Right", "RCtrl"]},
+	{"id": "C04", "group": "Run + jump", "label": "K3 left + jump", "keys": ["Left", "RCtrl"]},
+	{"id": "C05", "group": "Run + jump", "label": "K3 right + jump", "keys": ["Right", "RCtrl"]},
 	{
 		"id": "C06",
 		"group": "Run + jump",
-		"label": "K2 right + alt jump (Up)",
+		"label": "K3 right + alt jump (Up)",
 		"keys": ["Right", "Up"]
 	},
 	{
@@ -44,7 +44,7 @@ const CHORDS: Array[Dictionary] = [
 	{
 		"id": "C08",
 		"group": "Two seats",
-		"label": "K1 left + jump, K2 right + jump",
+		"label": "K1 left + jump, K3 right + jump",
 		"keys": ["A", "Space", "Right", "RCtrl"]
 	},
 	{
@@ -56,19 +56,19 @@ const CHORDS: Array[Dictionary] = [
 	{"id": "C10", "group": "Place", "label": "K1 pointer + rotate", "keys": ["D", "R"]},
 	{"id": "C11", "group": "Place", "label": "K1 pointer + confirm", "keys": ["D", "E"]},
 	{"id": "C12", "group": "Place", "label": "K1 diagonal + rotate", "keys": ["W", "D", "R"]},
-	{"id": "C13", "group": "Place", "label": "K2 pointer + rotate", "keys": ["Right", "RShift"]},
-	{"id": "C14", "group": "Place", "label": "K2 pointer + confirm", "keys": ["Right", "Enter"]},
+	{"id": "C13", "group": "Place", "label": "K3 pointer + rotate", "keys": ["Right", "Backspace"]},
+	{"id": "C14", "group": "Place", "label": "K3 pointer + confirm", "keys": ["Right", "Enter"]},
 	{
 		"id": "C15",
 		"group": "Place",
-		"label": "K2 diagonal + rotate",
-		"keys": ["Up", "Right", "RShift"]
+		"label": "K3 diagonal + rotate",
+		"keys": ["Up", "Right", "Backspace"]
 	},
 	{
 		"id": "C16",
 		"group": "Two seats",
 		"label": "both pointers + rotate",
-		"keys": ["D", "R", "Right", "RShift"]
+		"keys": ["D", "R", "Right", "Backspace"]
 	},
 	{
 		"id": "C17",
@@ -77,7 +77,7 @@ const CHORDS: Array[Dictionary] = [
 		"keys": ["W", "D", "E", "Up", "Right", "Enter"]
 	},
 	{"id": "C18", "group": "Menus", "label": "both seats claim / confirm", "keys": ["E", "Enter"]},
-	{"id": "C19", "group": "Menus", "label": "K1 back + K2 back", "keys": ["G", "Backspace"]},
+	{"id": "C19", "group": "Menus", "label": "K1 back + K2 back", "keys": ["G", "H"]},
 	{
 		"id": "C20",
 		"group": "Pause",
@@ -87,27 +87,27 @@ const CHORDS: Array[Dictionary] = [
 	{
 		"id": "C21",
 		"group": "Pause",
-		"label": "pause while K2 runs + jumps",
+		"label": "pause while K3 runs + jumps",
 		"keys": ["Esc", "Right", "RCtrl"]
 	},
-	{"id": "C22", "group": "Cheer", "label": "both cheer", "keys": ["R", "RShift"]},
+	{"id": "C22", "group": "Cheer", "label": "both cheer", "keys": ["R", "Backspace"]},
 	{
 		"id": "C23",
 		"group": "Cheer",
-		"label": "K1 cheers while K2 runs + jumps",
+		"label": "K1 cheers while K3 runs + jumps",
 		"keys": ["R", "Right", "RCtrl"]
 	},
 	{
 		"id": "C24",
 		"group": "Cheer",
-		"label": "K2 cheers while K1 runs + jumps",
-		"keys": ["RShift", "D", "Space"]
+		"label": "K3 cheers while K1 runs + jumps",
+		"keys": ["Backspace", "D", "Space"]
 	},
-	# Four keyboard players (2026-10-16): K3 = I J K L / O / P, K4 = Numpad 8 4 2 6 / 0 / 5.
-	{"id": "C25", "group": "Four seats", "label": "K3 run + jump", "keys": ["L", "I"]},
+	# Four keyboards (remapped 2026-10-25): K2 = I J K L / O / P, K4 = Num 8 4 2 6 / Enter / 0.
+	{"id": "C25", "group": "Four seats", "label": "K2 run + jump", "keys": ["L", "I"]},
 	{"id": "C26", "group": "Four seats", "label": "K4 run + jump", "keys": ["Num 6", "Num 8"]},
-	{"id": "C27", "group": "Place", "label": "K3 pointer + confirm", "keys": ["L", "O"]},
-	{"id": "C28", "group": "Place", "label": "K4 pointer + rotate", "keys": ["Num 6", "Num 5"]},
+	{"id": "C27", "group": "Place", "label": "K2 pointer + confirm", "keys": ["L", "O"]},
+	{"id": "C28", "group": "Place", "label": "K4 pointer + rotate", "keys": ["Num 6", "Num 0"]},
 	{
 		"id": "C29",
 		"group": "Four seats",
@@ -124,7 +124,7 @@ const CHORDS: Array[Dictionary] = [
 		"id": "C31",
 		"group": "Four seats",
 		"label": "all four confirm",
-		"keys": ["E", "Enter", "O", "Num 0"]
+		"keys": ["E", "Enter", "O", "Num Enter"]
 	},
 ]
 
@@ -144,6 +144,8 @@ const KEY_NAMES := {
 	KEY_KP_0: "Num 0",
 	KEY_KP_5: "Num 5",
 	KEY_KP_PERIOD: "Num .",
+	KEY_KP_ENTER: "Num Enter",
+	KEY_BACKSLASH: "\\",
 }
 
 var index := 0

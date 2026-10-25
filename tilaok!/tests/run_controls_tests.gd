@@ -2,8 +2,9 @@ extends SceneTree
 
 ## Requested by the user, 2026-10-16:
 ## - four shared-keyboard layouts, seated in join order (no layout is tied to a player number):
-##   WASD (E confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift
-##   rotate), numpad 8 4 2 6 (0 confirm, 5 rotate);
+##   remapped 2026-10-25 as move / build / confirm / rotate / back: K1 WASD / Q / E or F / R / G,
+##   K2 IJKL / U / O / P / H, K3 arrows / Right Shift / Enter / Backspace / backslash,
+##   K4 numpad 8 4 2 6 / 5 / Enter / 0 / .;
 ## - the Lobby map row is mouse-clickable;
 ## - the Place ghost previews the block itself, rotated, with a facing arrow and its name;
 ## - the Library has a clickable Back button.
@@ -17,9 +18,16 @@ const KAING := "build.hollow_blocks.cell_1x1"
 ## layout -> [confirm, rotate, left, right, up, down]
 const LAYOUT_KEYS := {
 	"K1": [KEY_E, KEY_R, KEY_A, KEY_D, KEY_W, KEY_S],
-	"K3": [KEY_O, KEY_P, KEY_J, KEY_L, KEY_I, KEY_K],
-	"K2": [KEY_ENTER, KEY_SHIFT, KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN],
-	"K4": [KEY_KP_0, KEY_KP_5, KEY_KP_4, KEY_KP_6, KEY_KP_8, KEY_KP_2],
+	"K2": [KEY_O, KEY_P, KEY_J, KEY_L, KEY_I, KEY_K],
+	"K3": [KEY_ENTER, KEY_BACKSPACE, KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN],
+	"K4": [KEY_KP_ENTER, KEY_KP_0, KEY_KP_4, KEY_KP_6, KEY_KP_8, KEY_KP_2],
+}
+## layout -> [build mode, back]
+const LAYOUT_BUILD_BACK := {
+	"K1": [KEY_Q, KEY_G],
+	"K2": [KEY_U, KEY_H],
+	"K3": [KEY_SHIFT, KEY_BACKSLASH],
+	"K4": [KEY_KP_5, KEY_KP_PERIOD],
 }
 
 var failures := 0
@@ -64,7 +72,7 @@ func _key(
 
 
 func _location(key: int) -> KeyLocation:
-	return KEY_LOCATION_RIGHT if key == KEY_SHIFT else KEY_LOCATION_UNSPECIFIED
+	return KEY_LOCATION_RIGHT if key in [KEY_SHIFT, KEY_CTRL] else KEY_LOCATION_UNSPECIFIED
 
 
 func _test_layout_actions() -> void:
@@ -87,9 +95,17 @@ func _test_layout_actions() -> void:
 		router.phase = LocalInputRouter.Phase.LOBBY
 		if router._key_action(layout, keys[0]) != "ready":
 			wrong.append("%s confirm key does not ready in the Lobby" % layout)
+		var build_back: Array = LAYOUT_BUILD_BACK[layout]
+		if router._keyboard_layout_for_key(build_back[0], _location(build_back[0])) != layout:
+			wrong.append("%s build key belongs to another layout" % layout)
+		if router._key_action(layout, build_back[1]) != "back":
+			wrong.append("%s back key does not go back in the Lobby" % layout)
+		router.phase = LocalInputRouter.Phase.PLAY
+		if router._key_action(layout, build_back[0]) != "build_toggle":
+			wrong.append("%s build key does not toggle build mode in Play" % layout)
 	_check(
 		wrong.is_empty(),
-		"every layout maps confirm / rotate / move / jump / ready to its own keys: %s" % [wrong]
+		"every layout maps confirm / rotate / move / jump / ready / build / back to its keys: %s" % [wrong]
 	)
 	router.phase = LocalInputRouter.Phase.PLACE
 	_check(
@@ -132,13 +148,16 @@ func _test_prompts() -> void:
 	_check(
 		(
 			map.glyph("confirm", "k1") == "E / F"
-			and map.glyph("confirm", "k3") == "O"
-			and map.glyph("rotate", "k3") == "P"
-			and map.glyph("confirm", "k4") == "Num 0"
-			and map.glyph("rotate", "k4") == "Num 5"
-			and map.glyph("confirm", "k2") == "Enter"
+			and map.glyph("confirm", "k2") == "O"
+			and map.glyph("rotate", "k2") == "P"
+			and map.glyph("back", "k2") == "H"
+			and map.glyph("confirm", "k3") == "Enter"
+			and map.glyph("rotate", "k3") == "Backspace"
+			and map.glyph("confirm", "k4") == "Num Enter"
+			and map.glyph("rotate", "k4") == "Num 0"
+			and map.glyph("build_toggle", "k4") == "Num 5"
 		),
-		"prompts show E / O / Enter / Num 0 to confirm"
+		"prompts show E / O / Enter / Num Enter to confirm"
 	)
 	var seat := {"device_kind": "keyboard", "keyboard_layout": "K4"}
 	_check(UiContext.device_for_seat(seat) == "k4", "a numpad seat reads numpad prompts")

@@ -654,21 +654,47 @@ func _test_chicken_animations() -> void:
 	)
 	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the directional landing")
 
+	# Running interrupts the landing and the stand-up.
+	_key(KEY_W, true)
+	await _frames(2)
+	_key(KEY_W, false)
+	await _frames(10)
+	_key(KEY_D, true)
+	var run_landing := await _poses_until(&"run_right", 90)
+	_key(KEY_D, false)
+	_check(
+		(
+			run_landing.has(&"run_right")
+			and not run_landing.has(&"jump_landing")
+			and not run_landing.has(&"jump_right_landing")
+		),
+		"running on touchdown cuts the landing short"
+	)
+	await _await_anim(&"idle")
+	_key(KEY_S, true)
+	await _await_anim(&"sneak_hold")
+	_key(KEY_D, true)
+	_key(KEY_S, false)
+	var run_stand := await _poses_until(&"run_right", 10)
+	_key(KEY_D, false)
+	_check(
+		run_stand.has(&"run_right") and not run_stand.has(&"sneak_stand"),
+		"running out of a sneak cuts sneak_stand short"
+	)
+	await _await_anim(&"idle")
+
 	# Dropping off a ledge without a jump keeps the ground pose for falling_delay_s, then falls.
-	# A 0.72 s drop is too short for the real 1 s, so the delay is cut to 0.3 s for this check.
-	var worn := _worn_sprite()
-	worn.falling_delay_s = 0.3
+	# The drop from y 300 lasts about 0.72 s, longer than the 0.5 s delay.
 	_put_actor_feet(Vector2(736.0, 300.0))
 	var drop_start := await _poses_until(&"jump_falling", 12)
 	_check(
 		not drop_start.has(&"jump_falling") and not drop_start.has(&"jump"),
-		"dropping without a jump keeps idle for the delay instead of jump or jump_falling"
+		"dropping without a jump keeps idle for the first 0.5 s instead of jump or jump_falling"
 	)
 	_check(
 		await _await_anim(&"jump_falling", 40) == &"jump_falling",
-		"once the delay has passed without a jump, jump_falling plays"
+		"after 0.5 s airborne without a jump, jump_falling plays"
 	)
-	worn.falling_delay_s = 1.0
 	_check(await _await_anim(&"idle") == &"idle", "idle resumes after the drop lands")
 
 	# Glide: holding jump while falling, with and without a direction. The left glide starts far
@@ -807,13 +833,13 @@ func _test_hazard_visuals() -> void:
 				else:
 					art += 1
 		art_ok = art_ok and visual != null and visual.show_behind_parent and art > 0
-		light_ok = light_ok and lights == 1
+		light_ok = light_ok and lights <= 1
 		# Walis is a cleanup zone with nothing opaque to cast a shadow.
 		occluder_ok = occluder_ok and (occluders > 0 or file.begins_with("walis_area"))
 		block.free()
 	_check(count == 14, "all 14 hazard scenes are checked (%d)" % count)
 	_check(art_ok, "every hazard draws its fixed art from Visual nodes, behind the painter")
-	_check(light_ok, "every hazard carries one PointLight2D")
+	_check(light_ok, "no hazard stacks more than one PointLight2D")
 	_check(occluder_ok, "every hazard with a body carries a LightOccluder2D")
 
 

@@ -970,3 +970,86 @@ At the user's explicit request to implement the P24 plan, Codex used the built-i
 For the October 25 Bula captive-fit follow-up, Codex changed the runtime display radius of the existing bubble texture, centered the captured chicken sprite, and switched directly to its existing held crouch animation/hitbox. No AI image-generation/editing tool was used and no asset file was modified. Codex added a Bula-focused assertion to the existing integration runner; results are in [PLAYTEST](PLAYTEST.md#bula-captive-fit-follow-up--october-25-2026).
 
 Codex also updated the three `ItemVisualSet` resources and the shared item painter to draw modular Trumpo rails, state-specific Parol posts and beam strips over clipped segments, and Bula's captive cue. A focused P24 resource/preview suite and the P10 item/runtime suite were authored or updated by Codex. Godot 4.6.3 headless P24 passed 65/65; P10 passed 444/444; the P13 Library regression passed 425/425. After the user's approval, windowed 1920×1080 renders show a live captured chicken, all three Parol states, Pugad previews, the Library Bula preview and a matched code-fallback comparison; see [P24 evidence](evidence/p24_item_art/README.md). Human artist approval, creator confirmation, licence/competition eligibility and independent human code review remain pending. No audio, gameplay timing, collision, ownership or footprint rules were intentionally changed. No commit or push was performed.
+
+### Jump wind-up, animation interrupts and the four-keyboard remap — October 25, 2026
+
+At the user's request, Claude Code (Claude Opus 5.5) made three changes.
+
+**Jump wind-up.** The user asked: "before jumping play the jump animation first 5 sprites in one sec then the player will jump in the air/go up while playing the falling animation", and "when walking off a edge without clicking the jump button, after 0.5 secs it will play the fall animation".
+- Claude asked whether to shorten the 1 s wind-up and got no answer, so it implemented the request as written.
+- `GameplayTuning.jump_windup_seconds` (1.0) holds a ground jump on the floor before takeoff. `ChickenController` gained `jump_windup_remaining` and `_take_off()`, and the animator stretches the `jump` pose over the wind-up. After takeoff the chicken rises and falls on `jump*_falling`, and a walk-off waits 0.5 s.
+- **Claude's own design decisions, flagged in `docs/GDD.md`:**
+  - Wound-up jumps always go full height, so a tap is not a tiny hop. This removes variable jump height from ground jumps.
+  - Coyote jumps, wall kicks and water strokes stay instant.
+  - Leaving the floor mid-crouch takes off at once.
+  - Stun, sneaking, build mode, launches, Kangaroo freezes and resets cancel the wind-up.
+  - The Kangaroo reachable-surface estimate adds the wind-up when a route needs a jump.
+  - Horizontal movement keeps working during the wind-up.
+
+**Animation interrupts.** The user asked: "also runing can interupt standing/landing animation". A held direction now cuts `jump*_landing` and `sneak_stand` short, and the GDD note that recorded this cost as open is marked resolved.
+
+**Keyboard remap.** The user gave move, build, confirm and rotate keys for four players, and asked for P2's lobby back key to move from U to H.
+- The old K2 (arrows) and K3 (IJKL) clusters were swapped, so that open slot 2 / Player 2 is IJKL, and each layout was rebound in `LocalInputRouter`, `InputContextTable`, `prompt_map.tres`, the HUD hints, the library and gallery copy, and the key-chord recorder.
+- **Claude's own choices:**
+  - `\` is K3's back/cancel key, because Backspace became rotate.
+  - The existing back keys G and Num `.` were kept.
+  - The old K2 Y H N M alternate aim keys were removed, because H is now P2's back.
+  - The other alternate keys were kept.
+
+**Tests:**
+- `run_blocks_tests` now checks:
+  - the wind-up stays on the floor, then a tap jumps full height
+  - the jump pose plays during the crouch
+  - `jump*_falling` plays on the way up
+  - the 0.5 s walk-off
+  - running cutting the landing and stand-up short
+- These suites measure jump reach and arcs from the press, so they run with the wind-up at 0, with a comment saying why: P02, P02 wall, P03, P04 and the tutorial gate.
+- The key-layout tests were updated to the new keys: controls, live build, cheer, recorder, library footer, match UI and tutorial glyphs.
+- Verified on Godot 4.7.2 (Steam), one suite at a time. Green:
+
+| Suite | Checks |
+| --- | --- |
+| blocks | 142 |
+| P02 | 95 |
+| P02 wall | 85 |
+| controls | 13 |
+| live build | 123 |
+| match UI | 329 |
+| match UI binding | 177 |
+| match UI mode | 62 |
+| UI | 512 |
+| library | 426 |
+| P10 | 443 |
+| P12 | 59 |
+| P13 HUD | 119 |
+| P13 cheer | 39 |
+| P13 recorder | 67 |
+| P13 navigation | 70 |
+| P13 tutorial | 58 |
+| P19 | 25 |
+| P05 | 138 |
+| P06 | 102 |
+| P11 | 19 |
+| Kangaroo presentation | 20 |
+| fix regression | 3 |
+
+- These suites fail identically on a clean `git archive HEAD` copy, so they predate this work:
+  - `run_item_mode_integration_tests`: 6 Kangaroo kills
+  - `run_p03_tests`: 1 support check
+  - `run_p04_tests`: 7
+  - `run_tutorial_tests`: 19
+  - `run_tutorial_gate_tests`: 2 failures and a timeout
+  - `run_ui_theme_tests`: 3
+
+**Not done:** the wind-up and the new key layout have had no feel or hardware test. Whether four players can hold the new keys at once on one keyboard is unverified. No human code review is claimed.
+
+**Update, same day: wind-up removed.** The user asked to remove it ("the delay of jump will mess me up cause its not smooth anymore") and to play the jump animation in the air instead. Claude restored these files to their committed versions:
+- `chicken_controller.gd`, `gameplay_tuning.gd` and `kangaroo_round_controller.gd`
+- the five test suites that had turned the wind-up off: P02, P02 wall, P03, P04 and the tutorial gate
+
+Jumps leave the ground on the press again, and variable jump height is back. The animator again plays the `jump` pose in the air and `jump*_falling` once it ends. What stays from the entry above:
+- the 0.5 s walk-off delay
+- running cutting the landing and stand-up short
+- the keyboard remap
+
+`run_blocks_tests` was rebuilt from its committed version, plus the running-interrupt checks, the 0.5 s walk-off check and the at-most-one-hazard-light check. The suites have not been re-run after this revert yet.

@@ -10,7 +10,7 @@ size = Vector2(64, 64)
 size = Vector2(64, 128)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_h4pgi"]
-cull_mode = 1
+cull_mode = 2
 polygon = PackedVector2Array(-1, -65, 65, -65, 65, 65, -65, 65, -65, -1, -1, -1)
 
 [sub_resource type="Gradient" id="Gradient_ey56e"]

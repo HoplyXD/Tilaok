@@ -1435,13 +1435,13 @@ disabled = true
 [node name="Pink_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=363765960]
 scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_x2dfv")
-animation = &"idle"
+animation = &"run_left"
 autoplay = "idle"
-frame_progress = 0.65242994
 script = ExtResource("2_animator")
 skin_color = Color(0.9411765, 0.4862745, 0.42352942, 1)
 
 [node name="Yellow_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=646713635]
+visible = false
 scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
 animation = &"idle"
@@ -1450,6 +1450,7 @@ frame_progress = 0.4630047
 script = ExtResource("2_animator")
 
 [node name="Cyan Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=1274822697]
+visible = false
 scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_2un65")
 animation = &"idle"
@@ -1459,6 +1460,7 @@ script = ExtResource("2_animator")
 skin_color = Color(0.3882353, 0.654902, 1, 1)
 
 [node name="Green_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=240522610]
+visible = false
 scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_ojpan")
 animation = &"idle"

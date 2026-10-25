@@ -118,8 +118,8 @@ func _test_two_rounds_through_the_whole_flow() -> void:
 		room.presenter.lobby_screen.get_node("%NeedPlayersLabel").visible,
 		"Lobby says 'need two players' with one seat"
 	)
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await process_frame
 	var seat2 := flow.router.registry.get_seat(1)
 	_check(
@@ -140,8 +140,8 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 	var presenter := room.presenter
 	if round_number == 1:
 		# Both seats ready (seat 1 already is); K2 readies and the match auto-starts.
-		_key("K2", KEY_ENTER, true)
-		_key("K2", KEY_ENTER, false)
+		_key("K3", KEY_ENTER, true)
+		_key("K3", KEY_ENTER, false)
 		await process_frame
 	await _wait_frames(2)
 	_check(
@@ -184,9 +184,9 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 	)
 	# Both seats point at egg 0 and claim on the same tick: one wins, one sees a lost-claim cue.
 	_key("K1", KEY_E, true)
-	_key("K2", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, true)
 	_key("K1", KEY_E, false)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, false)
 	await _wait_physics_frames(2)
 	await process_frame
 	_check(room.assignments.size() == 1, "round %d: same-tick claim has one owner" % round_number)
@@ -213,11 +213,11 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		_key("K1", KEY_E, true)
 		_key("K1", KEY_E, false)
 	else:
-		_key("K2", KEY_RIGHT, true)
-		_key("K2", KEY_RIGHT, false)
+		_key("K3", KEY_RIGHT, true)
+		_key("K3", KEY_RIGHT, false)
 		await process_frame
-		_key("K2", KEY_ENTER, true)
-		_key("K2", KEY_ENTER, false)
+		_key("K3", KEY_ENTER, true)
+		_key("K3", KEY_ENTER, false)
 	await _wait_physics_frames(2)
 	await process_frame
 	_check(
@@ -261,9 +261,9 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 	)
 	# Confirm both with the keyboard; the edits resolve together and Play starts.
 	_key("K1", KEY_E, true)
-	_key("K2", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, true)
 	_key("K1", KEY_E, false)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, false)
 	await _wait_physics_frames(2)
 	await process_frame
 	_check(
@@ -317,8 +317,8 @@ func _play_round_through_keys(room: P05MatchRoom, round_number: int) -> void:
 		)
 	# K1 stays held through the advance; K2 confirms. The held press must not claim in the next Pugad.
 	_key("K1", KEY_E, true)
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await _wait_physics_frames(2)
 	await process_frame
 	_check(
@@ -401,29 +401,29 @@ func _test_pause_menu_ownership_and_resume() -> void:
 		"pausing in Play keeps the phase"
 	)
 	# The owner moves the menu and opens Settings, which keeps the simulation paused.
-	_key("K2", KEY_DOWN, true)
-	_key("K2", KEY_DOWN, false)
+	_key("K3", KEY_DOWN, true)
+	_key("K3", KEY_DOWN, false)
 	await process_frame
 	_check(menu.selected == 1, "the owner moves the pause menu")
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await _wait_frames(2)
 	_check(
 		room.presenter._overlay is UiSettingsScreen and room.get_tree().paused,
 		"Settings opens over the pause menu with the simulation still paused"
 	)
-	_key("K2", KEY_BACKSPACE, true)
-	_key("K2", KEY_BACKSPACE, false)
+	_key("K3", KEY_BACKSLASH, true)
+	_key("K3", KEY_BACKSLASH, false)
 	await _wait_frames(2)
 	_check(
 		room.presenter._overlay == null and pause.visible,
 		"Back returns from Settings to the pause menu"
 	)
-	_key("K2", KEY_UP, true)
-	_key("K2", KEY_UP, false)
+	_key("K3", KEY_UP, true)
+	_key("K3", KEY_UP, false)
 	await process_frame
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await process_frame
 	_check(
 		room.pause_coordinator.state == PauseRecoveryCoordinator.State.COUNTDOWN,
@@ -502,10 +502,10 @@ func _test_pause_menu_input_is_not_game_input() -> void:
 	var cell_before: Vector2i = room.placement_controller.cursors[1].cell
 	room.input_router.pause_requested.emit(1)
 	await _wait_frames(2)
-	_key("K2", KEY_RIGHT, true)
-	_key("K2", KEY_RIGHT, false)
-	_key("K2", KEY_DOWN, true)
-	_key("K2", KEY_DOWN, false)
+	_key("K3", KEY_RIGHT, true)
+	_key("K3", KEY_RIGHT, false)
+	_key("K3", KEY_DOWN, true)
+	_key("K3", KEY_DOWN, false)
 	await process_frame
 	_check(
 		room.placement_controller.cursors[1].cell == cell_before,
@@ -513,11 +513,11 @@ func _test_pause_menu_input_is_not_game_input() -> void:
 	)
 	_key("K1", KEY_E, true)
 	_key("K1", KEY_E, false)
-	_key("K2", KEY_UP, true)
-	_key("K2", KEY_UP, false)
+	_key("K3", KEY_UP, true)
+	_key("K3", KEY_UP, false)
 	await process_frame
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await process_frame
 	_check(
 		(
@@ -528,8 +528,8 @@ func _test_pause_menu_input_is_not_game_input() -> void:
 	)
 	await create_timer(RESUME_SECONDS + 0.4, true, false, true).timeout
 	_check(not room.get_tree().paused, "the countdown resumed the game")
-	_key("K2", KEY_RIGHT, true)
-	_key("K2", KEY_RIGHT, false)
+	_key("K3", KEY_RIGHT, true)
+	_key("K3", KEY_RIGHT, false)
 	await process_frame
 	_check(
 		room.placement_controller.cursors[1].cell != cell_before,
@@ -673,8 +673,8 @@ func _test_disconnect_and_reclaim(phase_name: String) -> void:
 func _test_double_activation_and_echo() -> void:
 	await _new_flow()
 	# K2 joins the Title with Enter; then Enter must activate Start exactly once.
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await process_frame
 	var title := flow._screen as UiTitleScreen
 	var counter := {"starts": 0}
@@ -684,10 +684,10 @@ func _test_double_activation_and_echo() -> void:
 			(title.get_node("%" + button_name) as Button).focus_mode == Control.FOCUS_NONE,
 			"%s takes no Godot focus (no Enter double activation)" % button_name
 		)
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, true, true)
-	_key("K2", KEY_ENTER, true, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, true, true)
+	_key("K3", KEY_ENTER, true, true)
+	_key("K3", KEY_ENTER, false)
 	await _wait_frames(2)
 	_check(counter.starts == 1, "Enter plus OS key-repeat echo activates Start exactly once")
 	_check(
@@ -881,13 +881,13 @@ func _room_in_play() -> P05MatchRoom:
 	_key("K1", KEY_E, false)
 	await process_frame
 	var room := flow.room
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await process_frame
 	_key("K1", KEY_E, true)
 	_key("K1", KEY_E, false)
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await _wait_frames(2)
 	await _claim_and_confirm(room)
 	return room
@@ -903,13 +903,13 @@ func _room_in_place() -> P05MatchRoom:
 	_key("K1", KEY_E, false)
 	await process_frame
 	var room := flow.room
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await process_frame
 	_key("K1", KEY_E, true)
 	_key("K1", KEY_E, false)
-	_key("K2", KEY_ENTER, true)
-	_key("K2", KEY_ENTER, false)
+	_key("K3", KEY_ENTER, true)
+	_key("K3", KEY_ENTER, false)
 	await _wait_frames(2)
 	room.assignments = {0: str(room.egg_pool[0].egg_id), 1: str(room.egg_pool[1].egg_id)}
 	room._enter_place()

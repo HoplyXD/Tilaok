@@ -44,7 +44,7 @@ static var _skin_frames := {}
 ## Seconds a chicken that walked or slid off a ledge (no jump) keeps its run/idle pose before
 ## `jump*_falling` takes over, so small drops do not flick to the falling pose. After a real jump
 ## the falling pose instead follows as soon as the jump animation has played out.
-@export var falling_delay_s := 1.0
+@export var falling_delay_s := 0.5
 ## Stunned chickens brighten and dim smoothly at this rate (Hz). Never a hard on/off flash, and
 ## never above the 3 flashes per second photosensitivity limit; Screen shake Off holds it steady.
 @export var stun_pulse_hz := 2.0
@@ -180,6 +180,10 @@ func _track_transitions(delta: float) -> void:
 	if stunned and not _was_stunned:
 		_replay = true
 	_was_stunned = stunned
+	if grounded and not _side().is_empty():
+		# Running interrupts the landing and stand-up one-shots (checked last, after the sneak edge).
+		_landing = false
+		_standing_up = false
 
 
 func _on_animation_finished() -> void:
@@ -297,8 +301,8 @@ func pose_for_state() -> StringName:
 		if _air_time >= falling_delay_s:
 			return StringName("jump" + _motion_side() + "_falling")
 		return _locomotion_pose()
-	# Grounded. The landing and stand-up one-shots play out before idle or run resume; both are
-	# cut short by a new jump, since the airborne branch above is reached first.
+	# Grounded. The landing and stand-up one-shots play out before idle resumes; running or a new
+	# jump cuts them short.
 	if _landing:
 		return _landing_pose
 	if _standing_up:

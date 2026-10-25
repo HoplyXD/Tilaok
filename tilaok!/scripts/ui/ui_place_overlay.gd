@@ -7,7 +7,7 @@ const MARK_BLOCKED := "[X] Blocked"
 const MARK_LOCKED := "[SET] Locked"
 ## Guide card (Figma "Obstacle Place"): title and the gallery sample of the live three-line hint.
 const GUIDE_TITLE := "Guide"
-const SAMPLE_GUIDE := "Move: W A S D/Arrow keys\nRotate: R/Right Shift\nConfirm: F/Enter"
+const SAMPLE_GUIDE := "Move: W A S D/I J K L\nRotate: R/P\nConfirm: E/O"
 
 var pointer_chips: Array[UiPlayerBadge] = []
 var seat_rows: Array[UiScoreRow] = []

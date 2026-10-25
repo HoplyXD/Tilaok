@@ -53,7 +53,7 @@ func _test_matrix(recorder: KeyChordRecorder) -> void:
 		"Enter",
 		"Backspace",
 		"RCtrl",
-		"RShift",
+		"H",
 		"Esc"
 	]:
 		_check(keys.has(needed), "the matrix uses %s" % needed)

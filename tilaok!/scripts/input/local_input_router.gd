@@ -825,12 +825,13 @@ func tuning_neutral_threshold() -> float:
 	return tuning.stick_neutral_threshold
 
 
-## Four shared-keyboard layouts (2026-10-16, user request). The layout is only a device:
-## seats are numbered in join order, so any layout can be any player.
-## K1 W A S D, E or F confirm, R rotate (Space jump, G back)
-## K2 Arrow keys, Enter confirm, Right Shift rotate (Right Ctrl jump, Backspace back)
-## K3 I J K L, O confirm, P rotate (U back)
-## K4 Numpad 8 4 2 6, Numpad 0 confirm, Numpad 5 rotate (Numpad . back)
+## Four shared-keyboard layouts (2026-10-16, user request; remapped 2026-10-25, user request).
+## The layout is only a device: seats are numbered in join order, so any layout can be any player.
+## Move / Build mode / Confirm / Rotate, then Back (also cancels a placement):
+## K1 W A S D / Q / E or F / R, G back (Space jump)
+## K2 I J K L / U / O / P, H back
+## K3 Arrow keys / Right Shift / Enter / Backspace, \ back (Right Ctrl jump)
+## K4 Numpad 8 4 2 6 / Numpad 5 / Numpad Enter / Numpad 0, Numpad . back
 func _keyboard_layout_for_key(key: int, location: int) -> String:
 	if (
 		key
@@ -857,27 +858,6 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 	if (
 		key
 		in [
-			KEY_UP,
-			KEY_DOWN,
-			KEY_LEFT,
-			KEY_RIGHT,
-			KEY_ENTER,
-			KEY_BACKSPACE,
-			KEY_BRACKETLEFT,
-			KEY_BRACKETRIGHT,
-			KEY_Y,
-			KEY_H,
-			KEY_N,
-			KEY_M,
-			KEY_BACKSLASH
-		]
-	):
-		return "K2"
-	if key in [KEY_SHIFT, KEY_CTRL] and location == KEY_LOCATION_RIGHT:
-		return "K2"
-	if (
-		key
-		in [
 			KEY_I,
 			KEY_J,
 			KEY_K,
@@ -885,17 +865,31 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 			KEY_O,
 			KEY_P,
 			KEY_U,
-			KEY_MINUS,
+			KEY_H,
 			KEY_EQUAL,
-			KEY_SEMICOLON,
 			KEY_APOSTROPHE,
-			KEY_QUOTELEFT,
 			KEY_7,
 			KEY_4,
 			KEY_8,
 			KEY_6
 		]
 	):
+		return "K2"
+	if (
+		key
+		in [
+			KEY_UP,
+			KEY_DOWN,
+			KEY_LEFT,
+			KEY_RIGHT,
+			KEY_ENTER,
+			KEY_BACKSPACE,
+			KEY_BACKSLASH,
+			KEY_BRACKETRIGHT
+		]
+	):
+		return "K3"
+	if key in [KEY_SHIFT, KEY_CTRL] and location == KEY_LOCATION_RIGHT:
 		return "K3"
 	if (
 		key
@@ -910,8 +904,8 @@ func _keyboard_layout_for_key(key: int, location: int) -> String:
 			KEY_KP_9,
 			KEY_KP_0,
 			KEY_KP_5,
+			KEY_KP_ENTER,
 			KEY_KP_PERIOD,
-			KEY_KP_ADD,
 			KEY_KP_SUBTRACT,
 			KEY_KP_MULTIPLY
 		]
@@ -929,27 +923,27 @@ func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
 			return build_direction
 		if layout == "K1":
 			match key:
-				KEY_E:
-					return "live_rotate"
 				KEY_R:
+					return "live_rotate"
+				KEY_E, KEY_F:
 					return "confirm"
-				KEY_F:
+				KEY_G:
 					return "live_cancel"
 		if layout == "K2":
 			match key:
-				KEY_SHIFT:
+				KEY_P:
 					return "live_rotate"
-				KEY_BACKSPACE:
+				KEY_H:
 					return "live_cancel"
 		if layout == "K3":
 			match key:
-				KEY_P:
+				KEY_BACKSPACE:
 					return "live_rotate"
-				KEY_U:
+				KEY_BACKSLASH:
 					return "live_cancel"
 		if layout == "K4":
 			match key:
-				KEY_KP_5:
+				KEY_KP_0:
 					return "live_rotate"
 				KEY_KP_PERIOD:
 					return "live_cancel"
@@ -985,9 +979,9 @@ func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
 				return "back"
 			KEY_R:
 				return "rotate"
-	elif layout == "K3":
+	elif layout == "K2":
 		match key:
-			KEY_MINUS:
+			KEY_U:
 				return "build_toggle"
 			KEY_7:
 				return "aim_up"
@@ -1011,13 +1005,13 @@ func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
 				return "down"
 			KEY_O:
 				return _keyboard_south_action()
-			KEY_U:
+			KEY_H:
 				return "back"
 			KEY_P:
 				return "rotate"
 	elif layout == "K4":
 		match key:
-			KEY_KP_ADD:
+			KEY_KP_5:
 				return "build_toggle"
 			KEY_KP_7:
 				return "aim_up"
@@ -1039,28 +1033,18 @@ func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
 				return _keyboard_up_action()
 			KEY_KP_2:
 				return "down"
-			KEY_KP_0:
+			KEY_KP_ENTER:
 				return _keyboard_south_action()
 			KEY_KP_PERIOD:
 				return "back"
-			KEY_KP_5:
+			KEY_KP_0:
 				return "rotate"
 	else:
 		match key:
-			KEY_BRACKETLEFT:
+			KEY_SHIFT:
 				return "build_toggle"
-			KEY_Y:
-				return "aim_up"
-			KEY_H:
-				return "aim_left"
-			KEY_N:
-				return "aim_down"
-			KEY_M:
-				return "aim_right"
 			KEY_BRACKETRIGHT:
 				return "live_rotate"
-			KEY_BACKSLASH:
-				return "live_cancel"
 			KEY_LEFT:
 				return "left"
 			KEY_RIGHT:
@@ -1073,9 +1057,9 @@ func _key_action(layout: String, key: int, seat_index: int = -1) -> String:
 				return "jump"
 			KEY_ENTER:
 				return _keyboard_south_action()
-			KEY_BACKSPACE:
+			KEY_BACKSLASH:
 				return "back"
-			KEY_SHIFT:
+			KEY_BACKSPACE:
 				return "rotate"
 	return ""
 
@@ -1091,7 +1075,7 @@ func _build_aim_action_for_key(layout: String, key: int) -> String:
 				return "aim_up"
 			KEY_S:
 				return "aim_down"
-	elif layout == "K3":
+	elif layout == "K2":
 		match key:
 			KEY_J:
 				return "aim_left"
@@ -1146,8 +1130,8 @@ func _gamepad_build_action_for_joy_button(button: int, fallback: String) -> Stri
 	return _build_aim_action_for_joy_button(button, fallback)
 
 
-## W (K1), Up (K2), I (K3) and Numpad 8 (K4) jump during Play (hold to glide) and stay "up" for
-## menus and Place. Space/Right Ctrl remain alternate jump keys for K1/K2.
+## W (K1), I (K2), Up (K3) and Numpad 8 (K4) jump during Play (hold to glide) and stay "up" for
+## menus and Place. Space/Right Ctrl remain alternate jump keys for K1/K3.
 func _keyboard_up_action() -> String:
 	return "jump" if phase == Phase.PLAY else "up"
 

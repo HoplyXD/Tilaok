@@ -1,7 +1,7 @@
 extends SceneTree
 
 ## P13-T11 spectator cheer: eliminated and secured seats cheer during Play with the Rotate control
-## (R / Right Shift / West); live seats, other phases, pauses and the results ignore it; a 1 s
+## (R / P / West); live seats, other phases, pauses and the results ignore it; a 1 s
 ## per-seat cooldown holds; the HUD mark stays inside the existing score row; and a cheer-spam run
 ## leaves scores, clocks, positions, commands and every random stream exactly as a no-cheer run.
 ## Synthetic seats and input only; the physical-keyboard check stays with P02-T04 / P13-T12.
@@ -74,7 +74,7 @@ func _test_router_binding() -> void:
 	)
 	router.set_phase(LocalInputRouter.Phase.PLAY)
 	_tap_key(router, KEY_R, false)
-	_tap_key(router, KEY_SHIFT, true)
+	_tap_key(router, KEY_P, false)
 	var event := InputEventJoypadButton.new()
 	event.device = PADS[0]
 	event.button_index = JOY_BUTTON_X
@@ -84,7 +84,7 @@ func _test_router_binding() -> void:
 	router._handle_joy_button(event)
 	_check(
 		seen == ["0:cheer", "1:cheer", "2:cheer"],
-		"R, Right Shift and West cheer during Play (%s)" % [seen]
+		"R, P and West cheer during Play (%s)" % [seen]
 	)
 	seen.clear()
 	for phase in [
@@ -283,7 +283,7 @@ func _press(seat: int) -> void:
 		0:
 			_tap_key(router, KEY_R, false)
 		1:
-			_tap_key(router, KEY_SHIFT, true)
+			_tap_key(router, KEY_P, false)
 		_:
 			var event := InputEventJoypadButton.new()
 			event.device = PADS[seat - 2]

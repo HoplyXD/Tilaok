@@ -375,7 +375,7 @@ func _test_copy_follows_tuning_and_devices() -> void:
 	_join_k2(room)
 	coach.rebuild()
 	_check(
-		str(coach.view.glyph).contains("A / D") and str(coach.view.glyph).contains("Left / Right"),
+		str(coach.view.glyph).contains("A / D") and str(coach.view.glyph).contains("J / L"),
 		"K1 + K2 shows both devices' glyphs (%s)" % coach.view.glyph
 	)
 	var pad := room.input_router.registry.join_gamepad(900)

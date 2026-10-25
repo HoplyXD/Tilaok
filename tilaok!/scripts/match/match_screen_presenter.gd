@@ -721,23 +721,23 @@ func _control_hint_lines(
 				close_preview = "LB"
 			elif device == "k1":
 				aim = "WASD"
-				place = "R"
-				rotate = "E"
-				close_preview = "F"
+				place = "E/F"
+				rotate = "R"
+				close_preview = "G"
 			elif device == "k2":
-				aim = "Arrow keys"
-				place = "Enter"
-				rotate = "Right Shift"
-				close_preview = "Backspace"
-			elif device == "k3":
 				aim = "I J K L"
 				place = "O"
 				rotate = "P"
-				close_preview = "U"
+				close_preview = "H"
+			elif device == "k3":
+				aim = "Arrow keys"
+				place = "Enter"
+				rotate = "Backspace"
+				close_preview = "\\"
 			else:
 				aim = "Num 8/4/2/6"
-				place = "Num 0"
-				rotate = "Num 5"
+				place = "Num Enter"
+				rotate = "Num 0"
 				close_preview = "Num ."
 			# Two lines so the hint fits under its score card; CLOSE leaves build mode.
 			line = (
@@ -753,7 +753,7 @@ func _control_hint_lines(
 				movement = "D-pad/Stick"
 				jump = "South"
 				crouch = "Down"
-			elif device == "k2":
+			elif device == "k3":
 				movement = "Left/Right"
 				jump = "Right Ctrl"
 			elif device == "k4":

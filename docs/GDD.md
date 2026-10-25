@@ -218,7 +218,13 @@ Items arrive as eggs in the Pugad (item visible inside) and hatch when picked. T
 - Engine: **Godot 4.7** (free and open source, so no license is needed to play or build).
 - PC (free to play, no license needed).
 - **Local multiplayer** (2–4 players, **gamepads first**, shared keyboard as fallback). Online play is out of scope for the deadline.
-- **Four keyboard layouts (2026-10-16, user request):** WASD (E or F confirm, R rotate), IJKL (O confirm, P rotate), arrows (Enter confirm, Right Shift rotate) and numpad 8 4 2 6 (Num 0 confirm, Num 5 rotate). A layout is only a device: seats are numbered in join order, so any layout can be any player. Internally WASD is K1, arrows K2, IJKL K3 and numpad K4. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard.
+- **Four keyboard layouts (2026-10-16, user request; remapped 2026-10-25, user request):** listed as move / build mode / confirm / rotate (cheer, Lobby help) / back (also cancels a placement):
+  - **Player 1 (K1):** WASD / Q / E or F / R / G. Space is an alternate jump.
+  - **Player 2 (K2):** IJKL / U / O / P / H. Back moved from U to H because U is now build mode.
+  - **Player 3 (K3):** arrow keys / Right Shift / Enter / Backspace / `\`. Right Ctrl is an alternate jump.
+  - **Player 4 (K4):** numpad 8 4 2 6 / Num 5 / Num Enter / Num 0 / Num `.`.
+
+  The user named the move, build, confirm and rotate keys. The back keys were kept where free; Claude chose `\` for K3, because Backspace became rotate. A layout is only a device: seats are numbered in join order, so any layout can be any player, and open Lobby slot *n* shows K*n*'s join key. The 2026-10-25 remap swapped the old K2 (arrows) and K3 (IJKL) clusters so that Player 2 is IJKL. The extra aim/rotate/cancel keys that were bound alongside the named ones (Z C V B / T / X on K1, 7 4 8 6 / = / ' on K2, `]` on K3, Num 7 1 3 9 / * / - on K4) still work. Their old K2 Y H N M aim keys were removed, because H is now Player 2's back key. Four players on one keyboard depends on that keyboard's key rollover, which is untested; the key-chord recorder (chords C25–C31) checks it on the real keyboard.
 - **Keyboard controls (2026-10-14):** K1 A/D move, **W jump (hold W while falling to glide)**, **S sneak**; K2 uses the arrows the same way (Up jump/glide, Down sneak). Space/Ctrl stay as alternate jump keys and W/Up still move cursors in menus and Place. Gamepad: A jumps (hold to glide), d-pad down sneaks. See [Sneak and glide](#sneak-and-glide--2026-10-14-extension).
 - **Controls baseline:** the measured P02 controller implements run and jump only. On October 13, wall slide/jump was approved as a separate Should-scope extension, implemented, verified on synthetic evidence and enabled by default as core movement (owner decision, 2026-10-13); see [Wall slide and wall jump](#wall-slide-and-wall-jump--approved-extension). Dash, double jump and drop-through remain excluded.
 - **Player collision:** chicken bodies pass through each other in all supported modes. Separate contact sensors handle Lagsanay tagging and Kangaroo Hug; contact does not introduce body pushing. Future modes need their own explicit contract.
@@ -268,21 +274,23 @@ Priority order, highest first: `dead` → `stun` → sneak → wall slide → ai
 | Trigger | Pose |
 | --- | --- |
 | No other state applies | `idle` |
-| Jump, while rising | `jump`, `jump_left`, `jump_right` |
-| Falling, sided by horizontal motion: straight after the jump pose has played out (or a glide ends); after walking off a ledge with no jump, only once airborne for 1 s, holding run/idle until then | `jump*_falling` |
+| Jump, in the air right after takeoff (the chicken leaves the ground on the press) | `jump`, `jump_left`, `jump_right` |
+| Falling, sided by horizontal motion: straight after the jump pose has played out (or a glide ends); after walking off a ledge with no jump, once airborne for 0.5 s, holding run/idle until then | `jump*_falling` |
 | Holding jump while falling, sided by horizontal motion | `jump*_gliding` |
-| Touching the ground, sided by the motion just before | `jump*_landing` |
+| Touching the ground, sided by the motion just before; running cuts it short | `jump*_landing` |
 | On the ground with a direction held | `run_left`, `run_right` |
 | Pressing down | `sneak`, then `sneak_hold` while held |
-| Releasing down | `sneak_stand` |
+| Releasing down; running cuts it short | `sneak_stand` |
 | Stunned | `stun` |
 | Held against a wall | `wall_slide_left`, `wall_slide_right` |
+
+**Jump wind-up tried and removed (2026-10-25, user request):** a 1 s crouch before takeoff was built and then removed the same day, because the delay made jumping feel unsmooth. Jumps leave the ground on the press again, and the `jump` pose plays in the air.
 
 Three of these are transitions that must be seen in full before the next pose starts, gated on `animation_finished`: `sneak` → `sneak_hold`, `sneak_stand` → idle/run, and `jump*_landing` → idle/run. Each is authored non-looping so it ends on its own; a pose that loops, or is missing from the sheet, is never waited for, so a mis-set loop flag cannot freeze the chicken. A fresh jump cuts a landing or stand-up short, because the airborne branch is reached first.
 
 **Open — `dead` is authored looping.** The user's three `downdead_animation_front` frames are a collapse that settles on an X-eyes sitting pose, but the animation is flagged `loop = 1`, so an eliminated chicken replays the collapse every 0.6 s instead of staying down. `loop = 0` would hold the final frame. Left as authored, since the owner keeps the loop flags.
 
-**Open — responsiveness cost of the one-shots.** As authored, `jump*_landing` runs 0.80 s and `sneak_stand` 0.60 s (4 and 3 frames at 5 fps), and both block `run_left` / `run_right`. A player who lands already holding a direction therefore sees the landing animation for 0.8 s before the run starts. This is the behaviour the owner asked for ("always play after hitting the ground"), but it has not had a feel review. If it reads as sluggish, the fix is either shorter landing frames or letting a held direction cut the landing short.
+**Resolved 2026-10-25 — responsiveness cost of the one-shots.** `jump*_landing` and `sneak_stand` used to block `run_left` / `run_right` for their full 0.8 s / 0.6 s. At the owner's request, holding a direction now cuts either one short, so a chicken that lands or stands up while running goes straight into the run.
 
 ### Cannon art and firing animation — 2026-10-24 (user request)
 

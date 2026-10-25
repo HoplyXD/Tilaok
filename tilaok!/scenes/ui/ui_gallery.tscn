@@ -280,7 +280,7 @@ unique_name_in_owner = true
 
 [node name="Hint" type="Label" parent="Chrome/Scroll/Col"]
 layout_mode = 2
-text = "K1: WASD/F/G  K2: arrows/Enter/Backspace"
+text = "K1: WASD/E/G  K2: IJKL/O/H"
 theme_type_variation = &"CaptionLabel"
 autowrap_mode = 3
 

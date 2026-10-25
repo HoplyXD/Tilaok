@@ -270,7 +270,8 @@ func _test_figma_layout(
 	)
 	var expected := {
 		"k1": ["W A S D", "E / F", "G"],
-		"k2": ["Arrow keys", "Enter", "Backspace"],
+		"k2": ["I J K L", "O", "H"],
+		"k3": ["Arrow keys", "Enter", "\\"],
 		"gamepad": ["D-pad / Left stick", "South", "East"],
 	}
 	for device in expected:

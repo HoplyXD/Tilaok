@@ -5,7 +5,7 @@ extends RefCounted
 ## and shell belong to P13; this keeps the fields the entry must expose testable now.
 
 const CONTROLS_TEXT := (
-	"K1 WASD/R/F  •  K2 arrows/Right Shift/Enter  •  Gamepad D-pad/West/South"
+	"K1 WASD/R/E  •  K2 IJKL/P/O  •  Gamepad D-pad/West/South"
 	+ " (move, rotate, confirm)"
 )
 

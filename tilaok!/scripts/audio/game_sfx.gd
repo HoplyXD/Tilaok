@@ -2,8 +2,8 @@ class_name GameSfx
 extends Node
 
 ## Short interface, building and chicken sounds, all on the Effects bus:
-## - Click: a button is pressed (mouse or touch press), a confirm key is pressed (E/F, Enter, O,
-##   Numpad 0 or gamepad A, outside Place and Play; a new player's join press counts too), or a
+## - Click: a button is pressed (mouse or touch press), a confirm key is pressed (E/F, O, Enter,
+##   Numpad Enter or gamepad A, outside Place and Play; a new player's join press counts too), or a
 ##   Lobby map change is accepted.
 ## - Switch: the selection moves to another button (a router step, or the mouse moving onto one).
 ## - Place: a player places a block.

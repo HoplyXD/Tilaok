@@ -88,7 +88,16 @@ The Library displays only enabled release content by default. Backlog entries ca
 
 ### Live-build keyboard and gamepad controls — October 23, 2026
 
-Keyboard layouts keep each player's controls in a familiar cluster: K1 uses **Q** to toggle, **WASD** to aim, **E** to rotate, **R** to place and **F** to close; K2 uses **[**, the **arrow keys**, **Right Shift**, **Enter** and **Backspace**; K3 uses **-**, **IJKL**, **P**, **O** and **U**; K4 uses **Num +**, **numpad 8/4/2/6**, **Num 5**, **Num 0** and **Num .** in the same order. The chicken pauses during aiming and resumes when the preview is confirmed or closed. K1 Space remains an alternate place key. On a gamepad, the West/X face button rotates the preview and RB remains an alternate. The live HUD repeats the active bindings. These build-mode bindings do not change ordinary movement/jump behavior outside build mode.
+Keyboard layouts keep each player's controls in a familiar cluster, in the order toggle, aim, rotate, place and close (remapped 2026-10-25):
+
+| Player | Toggle | Aim | Rotate | Place | Close |
+| --- | --- | --- | --- | --- | --- |
+| P1 (K1) | **Q** | **WASD** | **R** | **E/F** | **G** |
+| P2 (K2) | **U** | **IJKL** | **P** | **O** | **H** |
+| P3 (K3) | **Right Shift** | **arrow keys** | **Backspace** | **Enter** | **\** |
+| P4 (K4) | **Num 5** | **numpad 8/4/2/6** | **Num 0** | **Num Enter** | **Num .** |
+
+The chicken pauses during aiming and resumes when the preview is confirmed or closed. K1 Space remains an alternate place key. On a gamepad, the West/X face button rotates the preview and RB remains an alternate. The live HUD repeats the active bindings. These build-mode bindings do not change ordinary movement/jump behavior outside build mode.
 
 ## Karera communication
 

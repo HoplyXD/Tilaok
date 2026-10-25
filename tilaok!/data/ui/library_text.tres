@@ -212,7 +212,7 @@ requires = ""
 script = ExtResource("2")
 category = "Accessibility"
 title = "Cheering"
-body = "A chicken that is out or has finished can cheer during Play with the Rotate key (R, Right Shift or West). A cheer never changes scores, timers or movement and has a 1 s cooldown."
+body = "A chicken that is out or has finished can cheer during Play with the Rotate key (R, P, Backspace, Numpad 0 or West). A cheer never changes scores, timers or movement and has a 1 s cooldown."
 requires = ""
 
 [sub_resource type="Resource" id="Page_28"]
