@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://vcostmhwca2m" path="res://scripts/items/item_visual_set.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbfukw8trs4iv" path="res://scripts/items/item_visual_slot.gd" id="2"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.slipper_launcher/launcher.svg" id="3"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.slipper_launcher/launcher_charge.svg" id="4"]
+[ext_resource type="Texture2D" uid="uid://dyjm6ts0ckfvx" path="res://assets/items/hazard.slipper_launcher/launcher.svg" id="3"]
+[ext_resource type="Texture2D" uid="uid://bkkjtpfhtg8lc" path="res://assets/items/hazard.slipper_launcher/launcher_charge.svg" id="4"]
 [ext_resource type="Texture2D" uid="uid://8n8gmhd7exdt" path="res://assets/items/hazard.slipper_launcher/PLACEHOLDER_projectile.svg" id="5"]
 [ext_resource type="AudioStream" uid="uid://dcwwcy1jdqbnq" path="res://assets/items/hazard.slipper_launcher/PLACEHOLDER_sfx_charge.wav" id="6"]
 [ext_resource type="AudioStream" uid="uid://dpxylfx87rhwg" path="res://assets/items/hazard.slipper_launcher/PLACEHOLDER_sfx_fire.wav" id="7"]

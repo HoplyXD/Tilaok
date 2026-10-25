@@ -33,7 +33,7 @@ adjustment_contrast = 1.1
 adjustment_saturation = 1.6
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_he8e3"]
-size = Vector2(4168, 2146)
+size = Vector2(4521, 2228)
 
 [node name="Arena" type="Node2D" unique_id=1695612668]
 script = ExtResource("1_sksb1")
@@ -91,13 +91,15 @@ energy = 0.5
 shadow_enabled = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1559689774]
+visible = false
 position = Vector2(951.00006, 465.00003)
 scale = Vector2(17.230747, 3.7693381)
 zoom = Vector2(0.7, 0.7)
 
 [node name="Camera Border" type="CollisionShape2D" parent="." unique_id=7145335]
+visible = false
 modulate = Color(1, 1, 1, 0.19607843)
-position = Vector2(1938, 90)
+position = Vector2(1976.5, 49)
 shape = SubResource("RectangleShape2D_he8e3")
 
 [node name="Flag" type="Sprite2D" parent="." unique_id=1350212909]

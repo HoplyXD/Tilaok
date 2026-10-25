@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://8nvcg6aklueu"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_ubdxa"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_vplog"]
-[ext_resource type="Resource" path="res://data/items/visual/hazard.parol_pulse.tres" id="3_hmh4r"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_51hji"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_ubdxa"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_vplog"]
+[ext_resource type="Resource" uid="uid://bfvshtlisbnkj" path="res://data/items/visual/hazard.parol_pulse.tres" id="3_hmh4r"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_51hji"]
 [ext_resource type="Texture2D" uid="uid://d4noihu1d8ko3" path="res://assets/items/hazard.parol_pulse/PLACEHOLDER_post.svg" id="5_vplog"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xpt5f"]
@@ -22,17 +22,6 @@ polygon = PackedVector2Array(-128, -32, -64, -32, -64, 32, -128, 32)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_51hji"]
 cull_mode = 1
 polygon = PackedVector2Array(64, -32, 128, -32, 128, 32, 64, 32)
-
-[sub_resource type="Gradient" id="Gradient_xpt5f"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_jrigg"]
-gradient = SubResource("Gradient_xpt5f")
-width = 258
-height = 66
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
 
 [node name="ParolSpan4x1" type="AnimatableBody2D" unique_id=1490565831]
 sync_to_physics = false
@@ -70,6 +59,10 @@ position = Vector2(96, 0)
 shape = SubResource("RectangleShape2D_jrigg")
 
 [node name="BeamHitbox" type="Area2D" parent="." unique_id=1660879833]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_51hji")
 effect = 4
 
@@ -94,8 +87,3 @@ occluder = SubResource("OccluderPolygon2D_hmh4r")
 
 [node name="LightOccluder2D2" type="LightOccluder2D" parent="Visual" unique_id=577928190]
 occluder = SubResource("OccluderPolygon2D_51hji")
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=716817577]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_jrigg")

@@ -2,21 +2,21 @@
 
 [ext_resource type="Script" uid="uid://vcostmhwca2m" path="res://scripts/items/item_visual_set.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbfukw8trs4iv" path="res://scripts/items/item_visual_slot.gd" id="2"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.parol_pulse/post_inactive.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.parol_pulse/post_charge.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://dd8m8ukmyaka8" path="res://assets/items/hazard.parol_pulse/post_inactive.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://bjkuviwcgv7at" path="res://assets/items/hazard.parol_pulse/post_charge.png" id="4"]
 [ext_resource type="AudioStream" uid="uid://datc2pwf1p7fu" path="res://assets/items/hazard.parol_pulse/PLACEHOLDER_sfx_charge.wav" id="5"]
 [ext_resource type="AudioStream" uid="uid://cu3hd7lub67b6" path="res://assets/items/hazard.parol_pulse/PLACEHOLDER_sfx_on.wav" id="6"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.parol_pulse/post_active.png" id="7"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.parol_pulse/beam_charge.png" id="8"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.parol_pulse/beam_active.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://ddb74m6ecfjal" path="res://assets/items/hazard.parol_pulse/post_active.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://d00okopmwk3au" path="res://assets/items/hazard.parol_pulse/beam_charge.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://bula2ss2tq00y" path="res://assets/items/hazard.parol_pulse/beam_active.png" id="9"]
 
 [sub_resource type="Resource" id="Slot_post_inactive"]
 script = ExtResource("2")
 slot_id = "post_inactive"
 frames = Array[Texture2D]([ExtResource("3")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated inactive parol lantern state; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_post_charge"]
@@ -24,8 +24,8 @@ script = ExtResource("2")
 slot_id = "post_charge"
 frames = Array[Texture2D]([ExtResource("4")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated charging parol lantern state; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_post_active"]
@@ -33,8 +33,8 @@ script = ExtResource("2")
 slot_id = "post_active"
 frames = Array[Texture2D]([ExtResource("7")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated active parol lantern state; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_beam_charge"]
@@ -42,8 +42,8 @@ script = ExtResource("2")
 slot_id = "beam_charge"
 frames = Array[Texture2D]([ExtResource("8")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated repeating charge beam strip; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_beam_active"]
@@ -51,8 +51,8 @@ script = ExtResource("2")
 slot_id = "beam_active"
 frames = Array[Texture2D]([ExtResource("9")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated repeating active beam strip; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_sfx_charge"]

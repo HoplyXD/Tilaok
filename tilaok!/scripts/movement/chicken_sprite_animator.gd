@@ -4,7 +4,7 @@ extends AnimatedSprite2D
 
 ## Picks the chicken animation from its ChickenController every frame. scenes/characters/
 ## chicken.tscn groups one of these sprites per chicken colour under its Animations node, each
-## with its own SpriteFrames (assets/character/Chicken Sprites/<colour>/, 2048x2048 frames), and
+## with its own SpriteFrames (assets/character/Chicken Sprites/<colour>/, imported at 512 px), and
 ## shows only the one whose `skin_color` is nearest the chicken's `marker_color`. The art is
 ## already coloured, so nothing is tinted. Artists can replace or add frames per animation in the
 ## editor without touching this script; node scale and per-animation offsets are authored there.

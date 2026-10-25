@@ -1065,3 +1065,21 @@ Jumps leave the ground on the press again, and variable jump height is back. The
 ### Current-game tutorial revamp — October 25, 2026
 
 At the user's request to implement the approved tutorial plan, Codex revised the tutorial coordinator/session/script resources and coach copy for action-aware movement and item-path learning. The work uses per-seat, session-only learning evidence; normal inventory, timing, scoring and terminal outcomes are unchanged. Codex updated the Library's Pugad/BUILD/live-build guidance, UI_TUTORIAL, GDD historical wording, PRD summary and P25 tracker. This is AI-assisted programming and documentation, not manually team-written work. Godot 4.6.3 headless P13 tutorial (72/0), P13 Library (425/0), P12 schedule (59/0) and offline live-build (123/0) suites passed; the broad legacy tutorial suite remains red on 21 old-route assertions and the old gate runner fails/stalls. No rendered, device or novice review is claimed. No art, audio, new persistence or gameplay-balance change was made. The Stage A project-Markdown inventory was incomplete and is recorded as such in P25; no exhaustive read claim is made. No commit or push was performed.
+
+### Chicken sprite memory fix — October 25, 2026
+
+The user reported that the game kept closing right after the match finished loading, with no error in the log, and asked whether RAM was the cause.
+
+**Diagnosis (Claude Code, Claude Opus 5.5):**
+- The 136 chicken frames (4 colours × about 34 frames) were imported at their full 2048×2048 size, Lossless, with mipmaps. That is about 21 MB per frame, or roughly 2.9 GB in total.
+- Every chicken carries all four colour sprites, so all of them load even with one player.
+- This PC has 4 GB of RAM, about 560 MB free while the editor was open, and an Intel HD 510 that shares system RAM.
+- On screen a chicken is only about 154 px tall.
+
+**Fix, at the user's request:**
+- A 512 px `process/size_limit` on every chicken frame's `.import` file. The art files themselves are unchanged.
+- The four chicken sprites rescaled from 0.075 to 0.3, and the results-chart chicken from 0.0375 to 0.15, with its feet inset changed from 224 to 56 px.
+- A scratch render measured one chicken at 153.6 px tall, the same as before, with 14 MB of textures in use after loading.
+- `run_blocks_tests` 140 (now checking 512 px frames), `run_scoreboard_chart_tests` 52 and `run_p13_hud_tests` 119 are green. `run_ui_theme_tests` has its 3 known failures.
+
+**Not changed:** the title-screen chicken sheets (`assets/character/*_chicken_frames.tres`, 2048 px cells) still load at full size. The fix has not been tried in a full match on this PC, and there has been no visual review of the downscaled art.

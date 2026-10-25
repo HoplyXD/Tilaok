@@ -68,13 +68,14 @@ texture = ExtResource("5_57ggm")
 color = Color(0.61962533, 0.7102098, 0.7519168, 1)
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="." unique_id=2088433855]
-rotation = 0.6094985
+rotation = -0.916337
 scale = Vector2(0.84000003, 1)
 color = Color(0.5411765, 0.79607844, 0.9411765, 1)
 energy = 0.5
 shadow_enabled = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2106336597]
+visible = false
 position = Vector2(721.00006, 572.0001)
 scale = Vector2(17.230747, 3.7693381)
 

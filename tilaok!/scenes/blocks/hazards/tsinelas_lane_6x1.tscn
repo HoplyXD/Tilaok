@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://btvro61uoqbbg"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_3uwes"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_4w7sv"]
-[ext_resource type="Resource" path="res://data/items/visual/hazard.slipper_launcher.tres" id="3_b4eet"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_34s3d"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_3uwes"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_4w7sv"]
+[ext_resource type="Resource" uid="uid://c8qs2jcbi5tv" path="res://data/items/visual/hazard.slipper_launcher.tres" id="3_b4eet"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_34s3d"]
 [ext_resource type="Texture2D" uid="uid://fk755jrep8yy" path="res://assets/items/hazard.slipper_launcher/PLACEHOLDER_launcher.svg" id="5_4w7sv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_myjg3"]
@@ -21,17 +21,6 @@ size = Vector2(28, 28)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_b4eet"]
 cull_mode = 1
 polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
-
-[sub_resource type="Gradient" id="Gradient_34s3d"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_myjg3"]
-gradient = SubResource("Gradient_34s3d")
-width = 66
-height = 66
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
 
 [node name="TsinelasLane6x1" type="AnimatableBody2D" unique_id=517838402]
 sync_to_physics = false
@@ -69,6 +58,10 @@ shape = SubResource("RectangleShape2D_myjg3")
 curve = SubResource("Curve2D_xd0el")
 
 [node name="Hitbox" type="Area2D" parent="Projectile" unique_id=122020509]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_34s3d")
 
 [node name="Shape" type="CollisionShape2D" parent="Projectile/Hitbox" unique_id=503064965]
@@ -91,8 +84,3 @@ texture = ExtResource("5_4w7sv")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1082268215]
 occluder = SubResource("OccluderPolygon2D_b4eet")
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=135783465]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_myjg3")

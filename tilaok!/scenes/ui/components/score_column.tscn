@@ -11,7 +11,7 @@ script = ExtResource("1_script")
 [node name="Chicken" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 z_index = 1
-scale = Vector2(0.0375, 0.0375)
+scale = Vector2(0.15, 0.15)
 
 [node name="IdentityBadge" parent="." instance=ExtResource("2_badge")]
 prefix_text = "P"

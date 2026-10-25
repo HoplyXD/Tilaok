@@ -12,10 +12,6 @@ size = Vector2(128, 128)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4mhpq"]
 size = Vector2(128, 64)
 
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ecn56"]
-cull_mode = 1
-polygon = PackedVector2Array(0, -64, 25, -59, 44, -46, 58, -26, 64, 0, 59, 26, 46, 44, 26, 59, 0, 64, -25, 59, -45, 46, -59, 24, -64, 0, -31, 0, -29, 12, -23, 21, -13, 28, 0, 32, 13, 29, 22, 22, 29, 13, 31, 0, 30, -11, 23, -21, 14, -28, 0, -32, -12, -29, -22, -22, -29, -12, -31, 0, -64, 0, -58, -26, -45, -45, -23, -59)
-
 [node name="GulongTire2x2" type="AnimatableBody2D" unique_id=1495161671]
 sync_to_physics = false
 script = ExtResource("1_x1rgl")
@@ -65,6 +61,3 @@ show_behind_parent = true
 [node name="Body" type="Sprite2D" parent="Visual" unique_id=52598530]
 scale = Vector2(0.275, 0.275)
 texture = ExtResource("5_lp4j3")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=42598241]
-occluder = SubResource("OccluderPolygon2D_ecn56")

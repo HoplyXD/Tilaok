@@ -9,21 +9,6 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c2nr2"]
 size = Vector2(320, 64)
 
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3xl4f"]
-cull_mode = 1
-polygon = PackedVector2Array(-160, -12, 160, -12, 160, 12, -160, 12)
-
-[sub_resource type="Gradient" id="Gradient_oud3u"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_c2nr2"]
-gradient = SubResource("Gradient_oud3u")
-width = 322
-height = 66
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
-
 [node name="TrumpoRail5x1" type="AnimatableBody2D" unique_id=1139915260]
 sync_to_physics = false
 script = ExtResource("1_udpog")
@@ -67,11 +52,3 @@ show_behind_parent = true
 [node name="Rail" type="Sprite2D" parent="Visual" unique_id=1438690353]
 scale = Vector2(5, 4)
 texture = ExtResource("5_qjlor")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=212639974]
-occluder = SubResource("OccluderPolygon2D_3xl4f")
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=2040579401]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_c2nr2")

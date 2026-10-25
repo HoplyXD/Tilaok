@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://vcostmhwca2m" path="res://scripts/items/item_visual_set.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbfukw8trs4iv" path="res://scripts/items/item_visual_slot.gd" id="2"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.bubble_planter/pot.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.bubble_planter/bubble.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.bubble_planter/captive_icon.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://3tp25q10ej8w" path="res://assets/items/hazard.bubble_planter/pot.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://cq4i55yaeoki1" path="res://assets/items/hazard.bubble_planter/bubble.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://c5deashhm7yeb" path="res://assets/items/hazard.bubble_planter/captive_icon.png" id="5"]
 [ext_resource type="AudioStream" uid="uid://gq5jq0w1g3ln" path="res://assets/items/hazard.bubble_planter/PLACEHOLDER_sfx_emit.wav" id="6"]
 [ext_resource type="AudioStream" uid="uid://dx3gmcb3e6kw1" path="res://assets/items/hazard.bubble_planter/PLACEHOLDER_sfx_capture.wav" id="7"]
 [ext_resource type="AudioStream" uid="uid://cumrog6lr7ntd" path="res://assets/items/hazard.bubble_planter/PLACEHOLDER_sfx_pop.wav" id="8"]
@@ -14,8 +14,8 @@ script = ExtResource("2")
 slot_id = "pot"
 frames = Array[Texture2D]([ExtResource("3")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated with Codex ImageGen using the team chicken and bamboo cannon as style references; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_bubble"]
@@ -23,8 +23,8 @@ script = ExtResource("2")
 slot_id = "bubble"
 frames = Array[Texture2D]([ExtResource("4")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated with Codex ImageGen using the team chicken and bamboo cannon as style references; generic bubble only, no chicken baked in. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_captive_icon"]
@@ -32,8 +32,8 @@ script = ExtResource("2")
 slot_id = "captive_icon"
 frames = Array[Texture2D]([ExtResource("5")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated with Codex ImageGen as a generic capture-status mark; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_sfx_emit"]

@@ -23,17 +23,6 @@ polygon = PackedVector2Array(-96, -32, -32, -32, -32, 32, -96, 32)
 cull_mode = 1
 polygon = PackedVector2Array(32, -32, 96, -32, 96, 32, 32, 32)
 
-[sub_resource type="Gradient" id="Gradient_81hch"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_g131b"]
-gradient = SubResource("Gradient_81hch")
-width = 194
-height = 66
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
-
 [node name="ParolSpan3x1" type="AnimatableBody2D" unique_id=815494094]
 sync_to_physics = false
 script = ExtResource("1_7tbe0")
@@ -98,8 +87,3 @@ occluder = SubResource("OccluderPolygon2D_lqgah")
 
 [node name="LightOccluder2D2" type="LightOccluder2D" parent="Visual" unique_id=413407217]
 occluder = SubResource("OccluderPolygon2D_mw4rc")
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=1160025262]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_g131b")

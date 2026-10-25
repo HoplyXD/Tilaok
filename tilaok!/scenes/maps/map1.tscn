@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://br6ddg4pmxqbn"]
 
 [ext_resource type="Script" uid="uid://geqwgx67xcxi" path="res://scripts/stage/stage_map.gd" id="1_7lk03"]
-[ext_resource type="PackedScene" path="res://scenes/environment/grass.tscn" id="2_7lk03"]
+[ext_resource type="PackedScene" uid="uid://chq5lhkoh4umo" path="res://scenes/environment/grass.tscn" id="2_7lk03"]
 [ext_resource type="Texture2D" uid="uid://ojn4ou4lu2j5" path="res://assets/background/sky.jpeg" id="2_37bq5"]
 [ext_resource type="TileSet" uid="uid://bh4ygm0w4gxut" path="res://assets/tiles/map_markers_tileset.tres" id="3_tdg3v"]
 [ext_resource type="TileSet" uid="uid://ds7qv2mxk1n4w" path="res://assets/tiles/map_tiles_tileset.tres" id="4_ykcni"]
@@ -242,6 +242,7 @@ energy = 0.5
 shadow_enabled = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1974188064]
+visible = false
 position = Vector2(1001, 1188)
 scale = Vector2(17.230747, 3.7693381)
 

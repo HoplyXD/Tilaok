@@ -2,18 +2,18 @@
 
 [ext_resource type="Script" uid="uid://vcostmhwca2m" path="res://scripts/items/item_visual_set.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbfukw8trs4iv" path="res://scripts/items/item_visual_slot.gd" id="2"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.rail_trumpo/rail_end.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.rail_trumpo/rail_mid.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/items/hazard.rail_trumpo/top.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://bp1mt2l18uofc" path="res://assets/items/hazard.rail_trumpo/rail_end.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://cyhdnx3pqgiom" path="res://assets/items/hazard.rail_trumpo/rail_mid.png" id="4"]
 [ext_resource type="AudioStream" uid="uid://bv5af66dalfv6" path="res://assets/items/hazard.rail_trumpo/PLACEHOLDER_sfx_pause.wav" id="5"]
+[ext_resource type="Texture2D" uid="uid://bcmoug6h8jbmy" path="res://assets/items/hazard.rail_trumpo/top.png" id="6"]
 
 [sub_resource type="Resource" id="Slot_rail_end"]
 script = ExtResource("2")
 slot_id = "rail_end"
 frames = Array[Texture2D]([ExtResource("3")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated modular rail stop, based on team chicken and bamboo cannon style references; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_rail_mid"]
@@ -21,8 +21,8 @@ script = ExtResource("2")
 slot_id = "rail_mid"
 frames = Array[Texture2D]([ExtResource("4")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated repeatable rail module, based on team chicken and bamboo cannon style references; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_top"]
@@ -30,8 +30,8 @@ script = ExtResource("2")
 slot_id = "top"
 frames = Array[Texture2D]([ExtResource("6")])
 fps = 2.0
-final_owner = "Art/UI (Jorge/Ivie)"
 placeholder = false
+final_owner = "Art/UI (Jorge/Ivie)"
 source_note = "AI-generated wooden trumpo toy; human art review pending. See docs/ASSETS.md."
 
 [sub_resource type="Resource" id="Slot_sfx_pause"]

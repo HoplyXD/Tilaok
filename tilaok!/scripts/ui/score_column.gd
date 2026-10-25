@@ -41,9 +41,9 @@ const MOTION_REDUCED := PresentationSettings.RESULT_REVEAL_REDUCED
 const MOTION_OFF := PresentationSettings.RESULT_REVEAL_OFF
 const STEP_SECONDS := 0.24
 const MAX_REVEAL_SECONDS := 2.4
-## Texture pixels from the bottom of a 2048 px chicken frame up to the art's feet (the line the
-## in-game hitbox stands on), so the feet rather than the frame edge rest on the bar.
-const CHICKEN_FEET_INSET_PX := 224.0
+## Texture pixels from the bottom of a chicken frame (imported at 512 px) up to the art's feet
+## (the line the in-game hitbox stands on), so the feet rather than the frame edge rest on the bar.
+const CHICKEN_FEET_INSET_PX := 56.0
 
 var badge: UiPlayerBadge
 var _row: Dictionary = {}

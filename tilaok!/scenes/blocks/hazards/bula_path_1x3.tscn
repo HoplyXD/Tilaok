@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://27ugbc5583b3"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_y4u8p"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_a8s00"]
-[ext_resource type="Resource" path="res://data/items/visual/hazard.bubble_planter.tres" id="3_208hp"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_qjtsm"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_y4u8p"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_a8s00"]
+[ext_resource type="Resource" uid="uid://bksj01xeos6kb" path="res://data/items/visual/hazard.bubble_planter.tres" id="3_208hp"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_qjtsm"]
 [ext_resource type="Texture2D" uid="uid://cd1pqelwbht6l" path="res://assets/items/hazard.bubble_planter/PLACEHOLDER_pot.svg" id="5_a8s00"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cuoox"]
@@ -17,21 +17,6 @@ point_count = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7pxsd"]
 size = Vector2(28, 28)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_208hp"]
-cull_mode = 1
-polygon = PackedVector2Array(-22, -4, 22, -4, 16, 28, -16, 28)
-
-[sub_resource type="Gradient" id="Gradient_qjtsm"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_cuoox"]
-gradient = SubResource("Gradient_qjtsm")
-width = 66
-height = 66
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
 
 [node name="BulaPath1x3" type="AnimatableBody2D" unique_id=1044523795]
 sync_to_physics = false
@@ -68,6 +53,10 @@ shape = SubResource("RectangleShape2D_cuoox")
 curve = SubResource("Curve2D_0ttin")
 
 [node name="Hitbox" type="Area2D" parent="Bubble" unique_id=1514592473]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_qjtsm")
 effect = 5
 
@@ -123,11 +112,3 @@ default_color = Color(0.7490196, 0.90588236, 0.9607843, 0.9)
 [node name="Pot" type="Sprite2D" parent="Visual" unique_id=1909954082]
 scale = Vector2(2, 2)
 texture = ExtResource("5_a8s00")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=1171702321]
-occluder = SubResource("OccluderPolygon2D_208hp")
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=1160205080]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_cuoox")

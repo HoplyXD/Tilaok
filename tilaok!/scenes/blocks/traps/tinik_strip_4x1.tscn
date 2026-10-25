@@ -1,17 +1,17 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://chi1weye13mc0"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="3_hit"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_blk"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_dat"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="3_hit"]
 
 [sub_resource type="RectangleShape2D" id="Strip"]
 size = Vector2(248, 18)
 
-[node name="TinikStrip4x1" type="AnimatableBody2D"]
+[node name="TinikStrip4x1" type="AnimatableBody2D" unique_id=340460041]
 sync_to_physics = false
 script = ExtResource("1_blk")
 
-[node name="BlockData" type="Node2D" parent="."]
+[node name="BlockData" type="Node2D" parent="." unique_id=1377701787]
 script = ExtResource("2_dat")
 block_name = "Tinik-Tinik Strip"
 family_id = "hazard.toy_burr_strip"
@@ -30,64 +30,63 @@ counts_as_support = false
 pool_weight = 20.0
 kill = true
 
-[node name="KillHitbox" type="Area2D" parent="."]
+[node name="KillHitbox" type="Area2D" parent="." unique_id=129019040]
 collision_layer = 0
 collision_mask = 0
 monitoring = false
 monitorable = false
 script = ExtResource("3_hit")
 
-[node name="Shape" type="CollisionShape2D" parent="KillHitbox"]
+[node name="Shape" type="CollisionShape2D" parent="KillHitbox" unique_id=1455646164]
 position = Vector2(0, 23)
 shape = SubResource("Strip")
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="Node2D" parent="." unique_id=2087559403]
 
-[node name="Base" type="Polygon2D" parent="Visual"]
+[node name="Base" type="Polygon2D" parent="Visual" unique_id=762224668]
 color = Color(0.22, 0.4, 0.2, 1)
 polygon = PackedVector2Array(-128, 26, 128, 26, 128, 32, -128, 32)
 
-[node name="Burr0" type="Polygon2D" parent="Visual"]
+[node name="Burr0" type="Polygon2D" parent="Visual" unique_id=930199603]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(-124, 32, -120, 20, -112, 14, -104, 20, -100, 32)
 
-[node name="Burr1" type="Polygon2D" parent="Visual"]
+[node name="Burr1" type="Polygon2D" parent="Visual" unique_id=787718497]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(-92, 32, -88, 20, -80, 14, -72, 20, -68, 32)
 
-[node name="Burr2" type="Polygon2D" parent="Visual"]
+[node name="Burr2" type="Polygon2D" parent="Visual" unique_id=1441075680]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(-60, 32, -56, 20, -48, 14, -40, 20, -36, 32)
 
-[node name="Burr3" type="Polygon2D" parent="Visual"]
+[node name="Burr3" type="Polygon2D" parent="Visual" unique_id=1799759740]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(-28, 32, -24, 20, -16, 14, -8, 20, -4, 32)
 
-[node name="Burr4" type="Polygon2D" parent="Visual"]
+[node name="Burr4" type="Polygon2D" parent="Visual" unique_id=294466552]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(4, 32, 8, 20, 16, 14, 24, 20, 28, 32)
 
-[node name="Burr5" type="Polygon2D" parent="Visual"]
+[node name="Burr5" type="Polygon2D" parent="Visual" unique_id=1368910026]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(36, 32, 40, 20, 48, 14, 56, 20, 60, 32)
 
-[node name="Burr6" type="Polygon2D" parent="Visual"]
+[node name="Burr6" type="Polygon2D" parent="Visual" unique_id=47433429]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(68, 32, 72, 20, 80, 14, 88, 20, 92, 32)
 
-[node name="Burr7" type="Polygon2D" parent="Visual"]
+[node name="Burr7" type="Polygon2D" parent="Visual" unique_id=821338265]
 color = Color(0.36, 0.62, 0.3, 1)
 polygon = PackedVector2Array(100, 32, 104, 20, 112, 14, 120, 20, 124, 32)
 
-[node name="Label" type="Label" parent="Visual"]
-offset_left = -122
+[node name="Label" type="Label" parent="Visual" unique_id=1237424389]
+visible = false
+offset_left = -122.0
 offset_top = -28.0
-offset_right = 122
+offset_right = 122.0
 offset_bottom = -6.0
-theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.1, 0.12, 1)
 theme_override_constants/outline_size = 4
-visible = false
-text = ""
+theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1

@@ -8,17 +8,6 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k1j5l"]
 size = Vector2(192, 192)
 
-[sub_resource type="Gradient" id="Gradient_4sy8y"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_7qfvx"]
-gradient = SubResource("Gradient_4sy8y")
-width = 194
-height = 194
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
-
 [node name="WalisArea3x3" type="AnimatableBody2D" unique_id=632116792]
 sync_to_physics = false
 script = ExtResource("1_4sy8y")
@@ -73,8 +62,3 @@ default_color = Color(0.11372549, 0.16078432, 0.1882353, 0.5)
 points = PackedVector2Array(96, -96, -96, 96)
 width = 1.0
 default_color = Color(0.11372549, 0.16078432, 0.1882353, 0.5)
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=1345756235]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_7qfvx")

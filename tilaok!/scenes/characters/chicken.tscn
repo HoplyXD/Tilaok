@@ -195,7 +195,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -254,7 +254,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -290,7 +290,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -310,7 +310,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -346,7 +346,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -397,7 +397,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"sneak",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -512,7 +512,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -571,7 +571,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -607,7 +607,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -627,7 +627,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -663,7 +663,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -714,7 +714,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"sneak",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -829,7 +829,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -888,7 +888,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -924,7 +924,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -944,7 +944,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -980,7 +980,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1031,7 +1031,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"sneak",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1146,7 +1146,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1205,7 +1205,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1241,7 +1241,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_left_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1261,7 +1261,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1297,7 +1297,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"jump_right_landing",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1348,7 +1348,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"sneak",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -1433,38 +1433,35 @@ disabled = true
 [node name="Animations" type="Node2D" parent="." unique_id=425302569]
 
 [node name="Pink_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=363765960]
-scale = Vector2(0.075, 0.075)
+scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_x2dfv")
-animation = &"run_left"
+animation = &"jump"
 autoplay = "idle"
 script = ExtResource("2_animator")
 skin_color = Color(0.9411765, 0.4862745, 0.42352942, 1)
 
 [node name="Yellow_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=646713635]
 visible = false
-scale = Vector2(0.075, 0.075)
+scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
-animation = &"idle"
+animation = &"jump"
 autoplay = "idle"
-frame_progress = 0.4630047
 script = ExtResource("2_animator")
 
 [node name="Cyan Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=1274822697]
 visible = false
-scale = Vector2(0.075, 0.075)
+scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_2un65")
-animation = &"idle"
+animation = &"jump"
 autoplay = "idle"
-frame_progress = 0.85606194
 script = ExtResource("2_animator")
 skin_color = Color(0.3882353, 0.654902, 1, 1)
 
 [node name="Green_Chicken" type="AnimatedSprite2D" parent="Animations" unique_id=240522610]
 visible = false
-scale = Vector2(0.075, 0.075)
+scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_ojpan")
-animation = &"idle"
+animation = &"jump"
 autoplay = "idle"
-frame_progress = 0.7246816
 script = ExtResource("2_animator")
 skin_color = Color(0.5372549, 0.78039217, 0.48235294, 1)

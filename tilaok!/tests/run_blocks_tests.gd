@@ -590,10 +590,10 @@ func _test_chicken_animations() -> void:
 					frames_ok
 					and texture != null
 					and not texture is AtlasTexture
-					and texture.get_size() == Vector2(2048, 2048)
+					and texture.get_size() == Vector2(512, 512)
 					and texture.resource_path.get_base_dir() == folder
 				)
-	_check(frames_ok, "every colour has every state animation, in its own 2048x2048 frames")
+	_check(frames_ok, "every colour has every state animation, in its own frames imported at 512 px")
 	_check(sides_ok, "every colour's left and right poses use different frames")
 	_check(timing_ok, "every colour's poses share frame count, loop flag and speed")
 	# Settling onto the floor is itself a landing, so idle only resumes once it has played out.

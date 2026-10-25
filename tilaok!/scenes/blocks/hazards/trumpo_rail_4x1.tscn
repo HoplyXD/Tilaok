@@ -1,28 +1,13 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://3wppx6hvvy7i"]
 
-[ext_resource type="Script" path="res://scripts/items/blocks/stage_block.gd" id="1_gifmx"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_data.gd" id="2_cg1in"]
-[ext_resource type="Resource" path="res://data/items/visual/hazard.rail_trumpo.tres" id="3_lk4xy"]
-[ext_resource type="Script" path="res://scripts/items/blocks/block_hitbox.gd" id="4_2iw8r"]
+[ext_resource type="Script" uid="uid://cckrtuphdvvv5" path="res://scripts/items/blocks/stage_block.gd" id="1_gifmx"]
+[ext_resource type="Script" uid="uid://dxaypckpm4xt7" path="res://scripts/items/blocks/block_data.gd" id="2_cg1in"]
+[ext_resource type="Resource" uid="uid://c313luywdg3re" path="res://data/items/visual/hazard.rail_trumpo.tres" id="3_lk4xy"]
+[ext_resource type="Script" uid="uid://cmbp4hkpmmgs2" path="res://scripts/items/blocks/block_hitbox.gd" id="4_2iw8r"]
 [ext_resource type="Texture2D" uid="uid://cxn4slq332iff" path="res://assets/items/hazard.rail_trumpo/PLACEHOLDER_rail.svg" id="5_cg1in"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e38ok"]
 size = Vector2(256, 64)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lk4xy"]
-cull_mode = 1
-polygon = PackedVector2Array(-128, -12, 128, -12, 128, 12, -128, 12)
-
-[sub_resource type="Gradient" id="Gradient_2iw8r"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_e38ok"]
-gradient = SubResource("Gradient_2iw8r")
-width = 258
-height = 66
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(2, 2)
 
 [node name="TrumpoRail4x1" type="AnimatableBody2D" unique_id=1151227551]
 sync_to_physics = false
@@ -51,6 +36,10 @@ preview_cue = "rail_pause"
 visual_set = ExtResource("3_lk4xy")
 
 [node name="RailSweep" type="Area2D" parent="." unique_id=443511997]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
 script = ExtResource("4_2iw8r")
 effect = 3
 
@@ -63,11 +52,3 @@ show_behind_parent = true
 [node name="Rail" type="Sprite2D" parent="Visual" unique_id=1428212598]
 scale = Vector2(4, 4)
 texture = ExtResource("5_cg1in")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Visual" unique_id=271536696]
-occluder = SubResource("OccluderPolygon2D_lk4xy")
-
-[node name="PointLight2D" type="PointLight2D" parent="Visual" unique_id=1208182753]
-range_item_cull_mask = 2
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_e38ok")
