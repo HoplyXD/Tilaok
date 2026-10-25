@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialScript" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="TutorialScript" load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/tutorial/tutorial_script.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/tutorial/tutorial_step_def.gd" id="2"]
@@ -6,26 +6,33 @@
 [sub_resource type="Resource" id="Step_0"]
 script = ExtResource("2")
 step_id = &"welcome"
-title = "Step 1 of 5 - Welcome"
-body = "You are {roster}. Look for your number and shape above your chicken. Run: {move}. Jump: {jump}."
+title = "Find your chicken"
+body = "Match your number and shape. Join and ready with your assigned device. Check your own control hints in your score row."
 glyph_action = "move"
+
+[sub_resource type="Resource" id="Step_Move"]
+script = ExtResource("2")
+step_id = &"move_practice"
+title = "Move and jump"
+body = "Use your controls shown below. Reach the next safe ledge. Hold jump while falling to glide; hold down on the ground to sneak. At a wall, jump to kick away."
+glyph_action = "jump"
 
 [sub_resource type="Resource" id="Step_1"]
 script = ExtResource("2")
 step_id = &"pugad"
-title = "Step 2 of 5 - Pugad"
-body = "Each egg shows the piece inside. Point at one and press {claim}. If someone is faster, pick again. After {pugad_s} seconds you get one."
+title = "Choose an egg"
+body = "Each egg shows its item. Claim one with your claim control. If it is taken, choose another. No pick? Your item is assigned when the {pugad_s}-second timer ends."
 glyph_action = "claim"
 variants = {
-"claimed": "Egg claimed! Leftover eggs are handed out when the {pugad_s} second timer ends.", "lost": "Claim lost - pick another egg and press {claim} again.", "barya": "Point at an egg and press {claim}; after {pugad_s} seconds you get one. The coin egg is Barya, not a build piece: its picker places it, touch to carry, elimination drops it. Reach the flag carrying it for +0.5."
+"claimed": "Egg claimed! Unclaimed eggs are assigned when the timer ends.", "lost": "That egg was claimed first. Choose another with your claim control.", "barya": "Eggs show their item. Claim with your control; unclaimed eggs are assigned when the {pugad_s}-second timer ends. The coin egg is Barya: place it, touch to carry it, and reach the flag for +0.5."
 }
 
 [sub_resource type="Resource" id="Step_2"]
 script = ExtResource("2")
 step_id = &"place"
-title = "Step 3 of 5 - Place before the race"
-body = "The flag is {ledge_tiles} tiles up; one jump reaches {jump_tiles}. During Place, move your ghost into BUILD HERE, rotate {rotate}, then confirm {confirm}. Confirmed pieces cannot be moved or undone. The race starts after {place_s} seconds."
-retry_body = "Nobody reached the flag last round. Place in BUILD HERE; a step beside the flag wall can help. Built pieces stay on the stage."
+title = "Developer placement route"
+body = "This test route uses a separate placement phase. Move the preview into a valid space, rotate where allowed, then confirm. This is not the normal match loop."
+retry_body = "This test route uses a separate placement phase. Confirm one valid piece, or use the developer route controls to continue."
 glyph_action = "rotate"
 variants = {
 "timeout": "The Pugad timer picked an egg for you. Place it during this phase; the race starts after {place_s} seconds."
@@ -34,63 +41,74 @@ variants = {
 [sub_resource type="Resource" id="Step_9"]
 script = ExtResource("2")
 step_id = &"live_build"
-title = "Step 3 of 5 - Build while you play"
-body = "Use the controls above each P# score.\nBUILD: your chicken pauses while aiming.\nAIM / ROTATE with the shown controls.\nCONFIRM: movement resumes while the visible {construction_s}s build finishes. A started build completes automatically.\nHazards activate as soon as they finish, even near a chicken. CANCEL closes the preview before confirming. Red preview = invalid spot."
+title = "Prepare your item"
+body = "BUILD lasts up to {build_s} seconds. Place your item now or save it for play. Check your own control hints in your score row. The camera follows your preview. Confirm places it at once; it stays quiet until GO. If everyone places, the final 3–2–1 starts early. Otherwise the timer continues; expiry starts play."
 glyph_action = "build_toggle"
 variants = {
-	"get_ready": "The BUILD timer stays in the side HUD. The camera follows your placement cursor. Final 3–2–1, then GO starts play. Keep your item saved or prepare to run. You can still BUILD during active play, where hazards work as soon as a build finishes.\nBUILD: your chicken pauses while aiming. AIM / ROTATE with the shown controls. CONFIRM places your item instantly and safely. CANCEL closes the preview. Red preview = invalid spot.",
-	"preparation": "Build now, or save your item for play. The camera follows your placement cursor in BUILD. Aim and rotate; your chicken stays safe and still. CONFIRM places your item instantly. Prepared pieces stay inactive until PLAY. If you wait, use BUILD during active play; its camera follows chickens and builds take {construction_s}s. The final 3–2–1 leads directly to GO. Red preview = invalid spot."
+	"get_ready": "The final 3–2–1 is part of BUILD. GO starts play right away. Your item is still available if you saved it.",
+	"preparation": "Place your item now or save it for play. Check your own control hints in your score row. In BUILD, the camera follows your preview. Confirm places it at once; it stays quiet until GO."
 }
+
+[sub_resource type="Resource" id="Step_LivePlace"]
+script = ExtResource("2")
+step_id = &"live_place"
+title = "Build during play"
+body = "Saved your item? Check your own control hints in your score row. Aim and rotate where supported; your chicken pauses while aiming. Confirm starts the {construction_s}-second build and restores movement. Cancel closes the preview. Red means invalid. Finished hazards activate."
+glyph_action = "build_toggle"
 
 [sub_resource type="Resource" id="Step_3"]
 script = ExtResource("2")
 step_id = &"karera"
-title = "Step 4 of 5 - Race to the flag"
-body = "Run {move} and jump {jump} for the flag. Builds finish while you move. The first finisher starts a {finish_s}s countdown; the round ends at {cap_s}s."
+title = "Race to the flag"
+body = "Reach the flag to finish. First finish starts the {finish_s}-second countdown; play ends by {cap_s} seconds. The stage stays built for later rounds."
 glyph_action = "jump"
 
 [sub_resource type="Resource" id="Step_4"]
 script = ExtResource("2")
 step_id = &"results"
-title = "Step 5 of 5 - Results"
-body = "Tapos: reaching the flag earns points; the first to finish also gets Una. Next round in {advance_s} seconds. {result_reason}"
+title = "Read the results"
+body = "Each column is a player. New segments show points gained; the top is your total and the line is the winning target. Tapos: finish. Una: finish first. Bayani: only finisher. Patibong: trap elimination. Bawi: comeback. Barya: carry the coin to the flag. {result_reason}"
 glyph_action = "confirm"
 variants = {
-"nobody": "Nobody reached the flag: no points. Build closer to the flag wall. Next round in {advance_s} seconds. {result_reason}", "everyone": "Everyone reached the flag: normal race awards are 0, even with 2 players; Barya still counts if carried. Next round in {advance_s} seconds. {result_reason}"
+"nobody": "Nobody finished, so race points are off and Barya does not score. Each column is a player; new segments show this round, total shows all points. {result_reason}", "everyone": "Everyone finished, so ordinary race points are off, even with two players. Eligible Barya still counts. Each column shows this round and total points. {result_reason}"
 }
 
 [sub_resource type="Resource" id="Step_5"]
 script = ExtResource("2")
 step_id = &"lagsanay"
-title = "Lagsanay - tag"
-body = "One chicken is the taya, frozen for {head_start_s} seconds. Touch another chicken to pass it on. The countdown never resets: at zero the taya is out. Last chicken standing wins."
+title = "Lagsanay: pass TAYA"
+body = "Find TAYA. They get a {head_start_s}-second head start. Touch another chicken to pass it on; the countdown does not reset. Whoever is TAYA at zero is out. Traps still eliminate. Last chicken standing wins."
 glyph_action = "move"
-variants = {
-}
+
+[sub_resource type="Resource" id="Step_Items"]
+script = ExtResource("2")
+step_id = &"item_literacy"
+title = "Read item clues"
+body = "Solid surfaces are safe to stand on. Watch each hazard’s shape and charge, active and safe tells. Moving hazards can hit; a bubble can capture you. Placement footprint is where it sits; its effect can reach farther. See the Library for every item."
 
 [sub_resource type="Resource" id="Step_6"]
 script = ExtResource("2")
 step_id = &"kangaroo_poses"
-title = "Kangaroo - race and respond"
-body = "Race to the flag while answering one slipper challenge at a time. A {telegraph_s}-second telegraph gives way to a {response_s}-second response. FREEZE locks movement for 2 seconds when it strikes; RISING WAVE checks your hitbox at the final line; HUG accepts contact with any living chicken. A failed command directly eliminates you through race results."
+title = "Kangaroo: race and respond"
+body = "Race to the flag. One slipper command runs at a time. FREEZE locks movement, jump and build for 2 seconds when it strikes; hazards and projectiles still hit. Finishers are safe; command failure or a trap eliminates you directly."
 glyph_action = "move"
 
 [sub_resource type="Resource" id="Step_7"]
 script = ExtResource("2")
 step_id = &"kangaroo_supports"
-title = "Kangaroo - Rising"
-body = "Rising shows its target line before the wave rises slowly. At response end, your full chicken hitbox must clear the line within a tiny 1-unit tolerance. Submersion during the rise is safe, and support is not required. Place with {confirm}, rotate with {rotate}."
+title = "RISING checks your feet"
+body = "At the end, your chicken’s feet (the bottom of its hitbox) must clear the final line. Being underwater while the wave rises is safe. No platform is needed."
 glyph_action = "rotate"
 
 [sub_resource type="Resource" id="Step_8"]
 script = ExtResource("2")
 step_id = &"kangaroo_misses"
-title = "Kangaroo - race outcomes"
-body = "Reach the flag to finish and become safe from later challenges. Failed commands and traps eliminate through the race ledger. Race scoring applies; there are no life markers or survival placement points."
+title = "HUG needs a friend"
+body = "Touch any living chicken before time runs out. Pairs, groups and chains count; alone fails. With one runner left, HUG is skipped; FREEZE or RISING can still happen."
 glyph_action = "jump"
 
 [resource]
 script = ExtResource("1")
-steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8"), SubResource("Step_9")])
+steps = Array[ExtResource("2")]([SubResource("Step_0"), SubResource("Step_Move"), SubResource("Step_1"), SubResource("Step_2"), SubResource("Step_9"), SubResource("Step_LivePlace"), SubResource("Step_3"), SubResource("Step_4"), SubResource("Step_5"), SubResource("Step_Items"), SubResource("Step_6"), SubResource("Step_7"), SubResource("Step_8")])
 placeholder_tag = "PLACEHOLDER copy"
 skip_caption = "Pause > Skip tutorial"

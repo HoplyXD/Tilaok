@@ -17,6 +17,9 @@ signal restored
 enum CollapseState { SOLID, CRUMBLING, GONE }
 
 const VISUAL_NODE := "Visual"
+const CONNECTED_PAINTER_FAMILIES := [
+	"hazard.rail_trumpo", "hazard.parol_pulse", "hazard.slipper_launcher"
+]
 ## Animations an authored AnimatedSprite2D under VISUAL_NODE may carry: the firing wind-up and the
 ## pose between shots. A block whose sprite lacks either simply keeps playing its own autoplay.
 const VISUAL_FIRE_ANIMATION := &"shoot"
@@ -73,8 +76,16 @@ func configure(
 	if _visual != null:
 		_visual.position = footprint_size * 0.5
 		_visual.rotation = float(_turns) * PI * 0.5
-		# Authored Visual art replaces the painter's fixed parts; the painter keeps what moves.
-		painter_static_parts = _visual.get_child_count() == 0
+		# These families use their replaceable ItemVisualSet art for fixed and moving parts.
+		# Keep authored lighting and occluders, but hide the older placeholder sprites.
+		if data != null and data.family_id in CONNECTED_PAINTER_FAMILIES:
+			for child in _visual.get_children():
+				if child is Sprite2D or child is AnimatedSprite2D:
+					(child as CanvasItem).visible = false
+			painter_static_parts = true
+		else:
+			# Authored Visual art replaces the painter's fixed parts; the painter keeps what moves.
+			painter_static_parts = _visual.get_child_count() == 0
 		_visual_sprite = _authored_visual_sprite()
 	if _visual_sprite != null:
 		if not _visual_sprite.animation_finished.is_connected(_on_visual_animation_finished):

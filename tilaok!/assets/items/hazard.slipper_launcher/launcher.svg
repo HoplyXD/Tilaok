@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Compact, flat-color catapult; transparent padding keeps the cell-centered pivot clear. -->
+  <g stroke="#1d2930" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M7 49 Q31 47 57 49 L59 56 Q32 59 6 56 Z" fill="#9a6b3a"/>
+    <path d="M14 49 L25 29 Q27 27 30 29 L43 49 Z" fill="#b47b38"/>
+    <path d="M26 31 L43 16 Q46 14 49 17 L51 20 L32 39 Z" fill="#9a6b3a"/>
+    <circle cx="29" cy="34" r="3.5" fill="#f2b84b"/>
+    <path d="M45 14 Q49 8 55 10 Q60 12 59 17 L56 22 Q53 25 48 22 L44 19 Z" fill="#e8896b"/>
+    <path d="M51 11 Q53 14 54 21" fill="none" stroke="#f6efd8" stroke-width="2"/>
+  </g>
+</svg>

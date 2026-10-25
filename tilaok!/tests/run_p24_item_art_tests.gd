@@ -39,6 +39,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_check_parol_post_joins()
 	var tuning := GameplayTuning.new()
 	ItemEnabledProfiles.apply(tuning, "items_lab")
 	var definitions := ItemDefinitions.load_for_profile(tuning, "items_lab")
@@ -72,6 +73,8 @@ func _run() -> void:
 				slot != null and slot.placeholder and slot.sound != null,
 				"%s/%s placeholder audio remains unchanged" % [family_id, slot_id]
 			)
+	_check_launcher_prototype(definitions)
+	_check_tire_preview_uses_placed_art(definitions)
 	for family in definitions.families:
 		for variant in family.variants:
 			for turns in variant.rotations:
@@ -91,6 +94,40 @@ func _run() -> void:
 	quit(1 if failures > 0 else 0)
 
 
+func _check_launcher_prototype(definitions: ItemDefinitions) -> void:
+	var family := definitions.find_family("hazard.slipper_launcher")
+	_check(family != null and family.visual_set != null, "launcher visual set loads")
+	if family == null or family.visual_set == null:
+		return
+	for slot_id in ["launcher", "launcher_charge"]:
+		var slot := family.visual_set.get_slot(slot_id)
+		_check(slot != null and not slot.placeholder, "launcher/%s is art" % slot_id)
+		if slot == null or slot.frames.is_empty() or slot.frames[0] == null:
+			_check(false, "launcher/%s texture resolves" % slot_id)
+			continue
+		_check(
+			Vector2i(slot.frames[0].get_size()) == Vector2i(64, 64),
+			"launcher/%s matches the 64×64 footprint" % slot_id
+		)
+
+
+func _check_tire_preview_uses_placed_art(definitions: ItemDefinitions) -> void:
+	var family := definitions.find_family("move.tire_spring")
+	_check(family != null and family.visual_set != null, "Gulong visual set loads")
+	if family == null or family.visual_set == null:
+		return
+	for slot_id in ["body", "body_compressed"]:
+		var slot := family.visual_set.get_slot(slot_id)
+		_check(slot != null and not slot.placeholder, "Gulong/%s uses current art" % slot_id)
+		_check(
+			slot != null
+			and not slot.frames.is_empty()
+			and slot.frames[0] != null
+			and slot.frames[0].resource_path == "res://assets/tiles/tire.png",
+			"Gulong/%s matches the placed tire sprite" % slot_id
+		)
+
+
 func _check(condition: bool, label: String) -> void:
 	checks += 1
 	if condition:
@@ -98,6 +135,43 @@ func _check(condition: bool, label: String) -> void:
 	else:
 		failures += 1
 		push_error("FAIL " + label)
+
+
+func _check_parol_post_joins() -> void:
+	var horizontal_beam := Rect2(0.0, 0.0, 320.0, 12.0)
+	var horizontal_from_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(0.0, 0.0, 128.0, 12.0), horizontal_beam, 12.0
+	)
+	_check(
+		is_equal_approx(horizontal_from_post.position.x, -8.0)
+		and is_equal_approx(horizontal_from_post.end.x, 128.0),
+		"horizontal Parol art reaches its post without crossing a clipped beam end"
+	)
+	var horizontal_to_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(192.0, 0.0, 128.0, 12.0), horizontal_beam, 12.0
+	)
+	_check(
+		is_equal_approx(horizontal_to_post.position.x, 192.0)
+		and is_equal_approx(horizontal_to_post.end.x, 328.0),
+		"horizontal Parol art reaches the far post without crossing a clipped beam end"
+	)
+	var vertical_beam := Rect2(0.0, 0.0, 12.0, 320.0)
+	var vertical_from_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(0.0, 0.0, 12.0, 128.0), vertical_beam, 12.0
+	)
+	_check(
+		is_equal_approx(vertical_from_post.position.y, -8.0)
+		and is_equal_approx(vertical_from_post.end.y, 128.0),
+		"vertical Parol art reaches its post without crossing a clipped beam end"
+	)
+	var vertical_to_post := ItemSilhouettePainter._join_parol_post_edges(
+		Rect2(0.0, 192.0, 12.0, 128.0), vertical_beam, 12.0
+	)
+	_check(
+		is_equal_approx(vertical_to_post.position.y, 192.0)
+		and is_equal_approx(vertical_to_post.end.y, 328.0),
+		"vertical Parol art reaches the far post without crossing a clipped beam end"
+	)
 
 
 func _preview_fits_egg(

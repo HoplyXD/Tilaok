@@ -175,6 +175,9 @@ static func _draw_rail(
 		var rail_end: Texture2D = _texture(visual, "rail_end", seconds)
 		var rail_mid: Texture2D = _texture(visual, "rail_mid", seconds)
 		if rail_end != null and rail_mid != null:
+			# The PNG modules have transparent gutters, so keep the underlying steel tracks
+			# continuous through their seams without changing the authored footprint.
+			_draw_rail_underlay(canvas, sweep)
 			var cell := tuning.grid_cell_wu
 			var rail_length := sweep.size.x if horizontal else sweep.size.y
 			var cell_count := maxi(1, roundi(rail_length / cell))
@@ -265,6 +268,20 @@ static func _draw_rail(
 			)
 
 
+static func _draw_rail_underlay(canvas: CanvasItem, sweep: Rect2) -> void:
+	var horizontal := sweep.size.x >= sweep.size.y
+	var center := sweep.get_center()
+	var travel := Vector2.RIGHT if horizontal else Vector2.DOWN
+	var rail_axis := Vector2.DOWN if horizontal else Vector2.RIGHT
+	var length := sweep.size.x if horizontal else sweep.size.y
+	for offset in [-4.0, 4.0]:
+		var from: Vector2 = center - travel * length * 0.5 + rail_axis * offset
+		var to: Vector2 = center + travel * length * 0.5 + rail_axis * offset
+		canvas.draw_line(from, to, INK, 5.0)
+		canvas.draw_line(from, to, Color("#777064"), 3.0)
+		canvas.draw_line(from - rail_axis, to - rail_axis, Color("#b6a98d"), 0.8)
+
+
 # ---------------- Parol Pulse
 
 
@@ -280,24 +297,33 @@ static func _draw_parol(
 	var phase := str(state.get("phase", "inactive"))
 	var charge_t := float(state.get("charge_t", 0.0))
 	var width := tuning.item_parol_beam_width_wu
+	var full_beams := _rects(regions, ItemRegionSpec.Kind.EFFECT)
+	var full_beam := full_beams[0] if not full_beams.is_empty() else Rect2()
 	var segments: Array = state.get("segments", [])
 	for segment in segments:
 		var rect: Rect2 = segment
 		if rect.size.x <= 0.0 or rect.size.y <= 0.0:
 			continue
+		var visual_rect := _join_parol_post_edges(rect, full_beam, width)
 		var horizontal := rect.size.x >= rect.size.y
 		var center := rect.get_center()
-		var from := (
-			Vector2(rect.position.x, center.y) if horizontal else Vector2(center.x, rect.position.y)
+		var from: Vector2 = (
+			Vector2(visual_rect.position.x, center.y)
+			if horizontal
+			else Vector2(center.x, visual_rect.position.y)
 		)
-		var to := Vector2(rect.end.x, center.y) if horizontal else Vector2(center.x, rect.end.y)
+		var to: Vector2 = (
+			Vector2(visual_rect.end.x, center.y)
+			if horizontal
+			else Vector2(center.x, visual_rect.end.y)
+		)
 		match phase:
 			"inactive":
 				_dotted(canvas, from, to, Color(BEAM, 0.45), 2.0, 6.0)
 			"charge":
 				var charge_tex: Texture2D = _texture(visual, "beam_charge", seconds)
 				if charge_tex != null:
-					_draw_beam_strip(canvas, charge_tex, rect, width, tuning.grid_cell_wu)
+					_draw_beam_strip(canvas, charge_tex, visual_rect, width, tuning.grid_cell_wu)
 				else:
 					var line_width := lerpf(2.0, width * 0.7, charge_t)
 					_dotted(
@@ -306,10 +332,10 @@ static func _draw_parol(
 			_:
 				var active_tex: Texture2D = _texture(visual, "beam_active", seconds)
 				if active_tex != null:
-					_draw_beam_strip(canvas, active_tex, rect, width, tuning.grid_cell_wu)
+					_draw_beam_strip(canvas, active_tex, visual_rect, width, tuning.grid_cell_wu)
 				else:
-					canvas.draw_rect(rect, Color(BEAM, 0.85))
-					canvas.draw_rect(rect, INK, false, 2.0)
+					canvas.draw_rect(visual_rect, Color(BEAM, 0.85))
+					canvas.draw_rect(visual_rect, INK, false, 2.0)
 	for post in _static_rects(regions, ItemRegionSpec.Kind.SOLID, static_parts):
 		var post_slot := "post_inactive"
 		if phase == "charge":
@@ -335,6 +361,26 @@ static func _draw_parol(
 			BEAM if phase != "inactive" else PAPER
 		)
 		canvas.draw_rect(post, SLATE, false, 2.0)
+
+
+static func _join_parol_post_edges(segment: Rect2, full_beam: Rect2, beam_width: float) -> Rect2:
+	if full_beam.size == Vector2.ZERO:
+		return segment
+	var joined := segment
+	var overlap := minf(beam_width * 0.75, 8.0)
+	if full_beam.size.x >= full_beam.size.y:
+		if is_equal_approx(segment.position.x, full_beam.position.x):
+			joined.position.x -= overlap
+			joined.size.x += overlap
+		if is_equal_approx(segment.end.x, full_beam.end.x):
+			joined.size.x += overlap
+	else:
+		if is_equal_approx(segment.position.y, full_beam.position.y):
+			joined.position.y -= overlap
+			joined.size.y += overlap
+		if is_equal_approx(segment.end.y, full_beam.end.y):
+			joined.size.y += overlap
+	return joined
 
 
 static func _draw_beam_strip(
@@ -382,6 +428,10 @@ static func _draw_launcher(
 	var clipped: float = float(state.get("clipped_length", full))
 	if full > 0.0:
 		var lane_width := 2.0 + 4.0 * charge_t
+		var lane_end := origin + direction * clipped
+		# Keep the animated dash cue, with a faint continuous core underneath so the
+		# launcher path reads as one connected lane.
+		canvas.draw_line(origin, lane_end, Color("#d9eff5", 0.6), lane_width, true)
 		_dotted(
 			canvas, origin, origin + direction * clipped, Color(Color.WHITE, 0.75), lane_width, 5.0
 		)

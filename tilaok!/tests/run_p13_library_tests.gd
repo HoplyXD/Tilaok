@@ -168,22 +168,25 @@ func _test_round_loop_steps(text: UiLibraryText, context: Dictionary) -> void:
 		)
 	_check(
 		(
-			headings == PackedStringArray(["PUGAD", "PLACE", "PLAY"])
-			and arts == PackedStringArray(["pugad", "place", "play"])
+			headings == PackedStringArray(["PUGAD", "BUILD", "PLAY"])
+			and arts == PackedStringArray(["pugad", "build", "play"])
 		),
-		"step cards are PUGAD, PLACE, PLAY with their pictures %s %s" % [headings, arts]
+		"step cards are PUGAD, BUILD, PLAY with their pictures %s %s" % [headings, arts]
 	)
 	var tokens: Dictionary = context.tokens
 	_check(
 		(
 			str(steps[0].note) == "about %s s" % tokens.pugad_s
-			and str(steps[1].note) == "about %s s" % tokens.place_s
+			and str(steps[1].note) == "up to %s s" % tokens.build_s
 			and str(steps[0].body).contains("(about %s s)" % tokens.pugad_s)
 		),
-		"step notes quote the tuned Pugad and Place seconds"
+		"step notes show tuned Pugad and current BUILD duration"
 	)
 	_check(
-		UiLibraryText.display_body(str(loop.body)) == "Every round has three steps.",
+		(
+			UiLibraryText.display_body(str(loop.body))
+			== "Every round has Pugad, shared BUILD, then active play and results."
+		),
 		"the round loop summary is shown without the PLACEHOLDER line"
 	)
 
@@ -233,7 +236,7 @@ func _test_figma_layout(
 		(
 			steps.visible
 			and summary.is_visible_in_tree()
-			and summary.text == "Every round has three steps."
+			and summary.text == "Every round has Pugad, shared BUILD, then active play and results."
 			and not body.visible
 		),
 		"the round loop shows its summary over three step cards"

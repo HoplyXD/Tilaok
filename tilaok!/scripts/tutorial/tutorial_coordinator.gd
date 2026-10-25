@@ -10,16 +10,12 @@ signal step_changed(new_view: Dictionary)
 
 const TUTORIAL_LAYOUT_ID := "tutorial"
 const MARKER_SCENE := preload("res://scenes/tutorial/build_here_marker.tscn")
-const GLYPH_SEPARATOR := " / "
 const VARIANT_CLAIMED := &"claimed"
 const VARIANT_LOST := &"lost"
 const VARIANT_TIMEOUT := &"timeout"
 const VARIANT_GET_READY := &"get_ready"
 const VARIANT_NOBODY := &"nobody"
 const VARIANT_EVERYONE := &"everyone"
-## The standalone Lagsanay taya prompt shares the coach box with just-in-time event prompts.
-const TAYA_PROMPT_SECONDS := 12.0
-
 var room: P05MatchRoom
 var session: TutorialSession
 var tutorial_script: TutorialScript
@@ -34,7 +30,11 @@ var _assigned_snapshot := 0
 var _nobody_finished_last_round := false
 var _completion_pending := false
 var _lagsanay_showing := false
-var _taya_prompt_expired := false
+var _movement_origins: Dictionary = {}
+var _movement_saw_jump: Dictionary = {}
+var _movement_saw_run: Dictionary = {}
+var _build_used_this_round: Dictionary = {}
+var _item_literacy_was_shown := false
 ## The Kangaroo prompt shown during the current phase; marked seen when that phase ends.
 var _kangaroo_step: StringName = &""
 
@@ -83,6 +83,14 @@ func _exit_tree() -> void:
 	detach()
 
 
+func _physics_process(_delta: float) -> void:
+	if room == null or not is_instance_valid(room) or session == null or session.skipped:
+		return
+	_track_movement_practice()
+	_track_item_use()
+	rebuild()
+
+
 ## The presenter hides the box and marker while a pause, overlay, confirmation or final result
 ## owns the screen.
 func set_suppressed(value: bool) -> void:
@@ -125,6 +133,7 @@ func _on_phase_changed(
 	if next_phase == MatchPhaseController.Phase.PUGAD:
 		_timeout_assigned = false
 		_assigned_snapshot = 0
+		_build_used_this_round.clear()
 		if previous_phase == MatchPhaseController.Phase.RESULTS and _completion_pending:
 			_completion_pending = false
 			session.mark_completed()
@@ -133,6 +142,14 @@ func _on_phase_changed(
 		_timeout_assigned = room.assignments.size() > _assigned_snapshot
 	elif next_phase == MatchPhaseController.Phase.RESULTS:
 		_record_round_outcome()
+		if _item_literacy_was_shown:
+			session.mark_item_literacy_seen()
+			_item_literacy_was_shown = false
+	if (
+		previous_phase == MatchPhaseController.Phase.BUILD
+		and next_phase != MatchPhaseController.Phase.BUILD
+	):
+		_snapshot_prepared_items()
 	rebuild()
 
 
@@ -150,11 +167,6 @@ func _on_actor_created(actor: ChickenController) -> void:
 
 
 func _on_actor_terminal(_status: PlayerLifecycleState.Status, _reason: String) -> void:
-	rebuild()
-
-
-func _on_taya_prompt_timeout() -> void:
-	_taya_prompt_expired = true
 	rebuild()
 
 
@@ -183,8 +195,86 @@ func _record_round_outcome() -> void:
 		return
 	var finishers := finisher_count()
 	_nobody_finished_last_round = finishers == 0
-	if finishers > 0 and is_tutorial_stage():
+	if finishers > 0 and is_tutorial_stage() and _all_players_learned_core():
 		_completion_pending = true
+
+
+func _joined_seat_indices() -> Array[int]:
+	var result: Array[int] = []
+	if room == null or room.input_router == null:
+		return result
+	for seat in room.input_router.registry.joined_seats():
+		result.append(int(seat.seat))
+	return result
+
+
+func _all_players_learned_core() -> bool:
+	var seats := _joined_seat_indices()
+	return (
+		session.all_seats_learned(&"movement", seats)
+		and session.all_seats_learned(&"preparation", seats)
+		and session.all_seats_learned(&"live_build", seats)
+	)
+
+
+func _track_movement_practice() -> void:
+	if room.phase_controller.phase != MatchPhaseController.Phase.PLAY:
+		return
+	var cell := room.tuning.grid_cell_wu
+	for seat in _joined_seat_indices():
+		if session.has_learned_action(&"movement", seat):
+			continue
+		var actor := room.actors.get(seat) as ChickenController
+		if actor == null or actor.lifecycle.is_terminal():
+			continue
+		if not _movement_origins.has(seat):
+			_movement_origins[seat] = actor.global_position
+		var origin: Vector2 = _movement_origins[seat]
+		if room.input_router.is_action_held(seat, "jump"):
+			_movement_saw_jump[seat] = true
+		if (
+			room.input_router.is_action_held(seat, "left")
+			or room.input_router.is_action_held(seat, "right")
+		):
+			_movement_saw_run[seat] = true
+		if (
+			bool(_movement_saw_jump.get(seat, false))
+			and bool(_movement_saw_run.get(seat, false))
+			and origin.y - actor.global_position.y >= cell * 0.25
+		):
+			session.mark_action_learned(&"movement", seat)
+
+
+func _snapshot_prepared_items() -> void:
+	var live_room := room as OfflineLiveBuildMatchRoom
+	if live_room == null:
+		return
+	for seat in _joined_seat_indices():
+		if bool(live_room.inventory_used.get(seat, false)):
+			_build_used_this_round[seat] = true
+			session.mark_action_learned(&"preparation", seat)
+
+
+func _track_item_use() -> void:
+	var live_room := room as OfflineLiveBuildMatchRoom
+	if live_room == null or room.phase_controller.phase != MatchPhaseController.Phase.PLAY:
+		return
+	for seat in _joined_seat_indices():
+		if (
+			bool(live_room.inventory_used.get(seat, false))
+			and not bool(_build_used_this_round.get(seat, false))
+		):
+			session.mark_action_learned(&"live_build", seat)
+			_build_used_this_round[seat] = true
+
+
+func _item_literacy_due() -> bool:
+	return (
+		is_tutorial_stage()
+		and not session.seen_item_literacy
+		and room.items != null
+		and room.items.persistent_count() > 0
+	)
 
 
 func _lagsanay_running() -> bool:
@@ -196,14 +286,7 @@ func _lagsanay_running() -> bool:
 
 func _update_lagsanay_flag() -> void:
 	var running := _lagsanay_running()
-	if not running:
-		_taya_prompt_expired = false
-	elif _taya_prompt_expired:
-		running = false
 	if running and session.lagsanay_prompt_due():
-		if not _lagsanay_showing and is_inside_tree():
-			_taya_prompt_expired = false
-			get_tree().create_timer(TAYA_PROMPT_SECONDS).timeout.connect(_on_taya_prompt_timeout)
 		_lagsanay_showing = true
 	elif not running and _lagsanay_showing:
 		_lagsanay_showing = false
@@ -292,10 +375,15 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 			else:
 				result = _view_for(TutorialScript.STEP_KARERA, &"", 4)
 		MatchPhaseController.Phase.PLAY:
-			if room is OfflineLiveBuildMatchRoom and not _live_build_tutorial_complete():
-				result = _view_for(TutorialScript.STEP_LIVE_BUILD, &"", 3)
+			if _movement_practice_due():
+				result = _view_for(TutorialScript.STEP_MOVE, &"", 2)
+			elif _live_build_tutorial_due():
+				result = _view_for(TutorialScript.STEP_LIVE_PLACE, &"", 3)
+			elif _item_literacy_due():
+				result = _view_for(TutorialScript.STEP_ITEM_LITERACY, &"", 3)
+				_item_literacy_was_shown = true
 			else:
-				result = _view_for(TutorialScript.STEP_KARERA, &"", 4)
+				result = _view_for(TutorialScript.STEP_KARERA, &"", 5)
 		MatchPhaseController.Phase.RESULTS:
 			result = _view_for(TutorialScript.STEP_RESULTS, _results_variant(), 5)
 	return result
@@ -304,26 +392,35 @@ func _phase_view(hidden: Dictionary) -> Dictionary:
 ## Keep the build lesson up until each player has built or is out of the round. Showing it only
 ## before the BUILD countdown ends would hide the instructions before anyone can use them; keeping
 ## it while a build is pending also reinforces that movement resumes immediately after confirmation.
-func _live_build_tutorial_complete() -> bool:
+func _movement_practice_due() -> bool:
+	if not is_tutorial_stage() or session.all_seats_learned(&"movement", _joined_seat_indices()):
+		return false
+	for seat in _joined_seat_indices():
+		var actor := room.actors.get(seat) as ChickenController
+		if (
+			actor != null
+			and not actor.lifecycle.is_terminal()
+			and not session.has_learned_action(&"movement", seat)
+		):
+			return true
+	return false
+
+
+func _live_build_tutorial_due() -> bool:
 	var live_room := room as OfflineLiveBuildMatchRoom
 	if live_room == null:
-		return true
+		return false
 	var seats := room.input_router.registry.joined_seats()
 	if seats.is_empty():
 		return false
 	for seat in seats:
 		var seat_index := int(seat.seat)
 		var actor := room.actors.get(seat_index) as ChickenController
-		if actor == null:
-			return false
-		if actor.lifecycle.is_terminal():
+		if actor == null or actor.lifecycle.is_terminal():
 			continue
 		if not bool(live_room.inventory_used.get(seat_index, false)):
-			return false
-		for job in live_room.construction_jobs.values():
-			if int(job.get("seat_index", -1)) == seat_index:
-				return false
-	return true
+			return true
+	return false
 
 
 ## Claim feedback first: a new player must always see "claimed" / "lost" and the timer. The
@@ -368,8 +465,7 @@ func _view_for(step_id: StringName, variant: StringName, number: int, level: int
 		"glyph": glyph,
 		"action": action_label,
 		"hint_level": level,
-		"build_here":
-		step_id == TutorialScript.STEP_PLACE or step_id == TutorialScript.STEP_LIVE_BUILD,
+		"build_here": step_id == TutorialScript.STEP_PLACE,
 		"skip_caption": tutorial_script.skip_caption,
 		"tag": tutorial_script.placeholder_tag,
 	}
@@ -380,12 +476,10 @@ func _view_for(step_id: StringName, variant: StringName, number: int, level: int
 
 func _fill(text: String) -> String:
 	var tuning := room.tuning
-	var cell := tuning.grid_cell_wu
 	var reason := ""
 	if room.last_results_model != null:
 		reason = room.last_results_model.suppression_reason
 	var tokens := {
-		"roster": _roster(),
 		"move": _glyphs("run"),
 		"jump": _glyphs("jump"),
 		"claim": _glyphs("claim"),
@@ -397,7 +491,14 @@ func _fill(text: String) -> String:
 		"rotate_live": _glyphs("live_rotate"),
 		"cancel": _glyphs("live_cancel"),
 		"pugad_s": _number(tuning.match_pugad_seconds),
-		"place_s": _number(tuning.match_place_seconds),
+		"build_s":
+		_number(
+			(
+				(room as OfflineLiveBuildMatchRoom).build_phase_seconds
+				if room is OfflineLiveBuildMatchRoom
+				else tuning.match_place_seconds
+			)
+		),
 		"construction_s":
 		_number(
 			(
@@ -412,8 +513,6 @@ func _fill(text: String) -> String:
 		"head_start_s": _number(tuning.lagsanay_opening_head_start_seconds),
 		"telegraph_s": _number(tuning.kangaroo_telegraph_seconds),
 		"response_s": _number(tuning.kangaroo_response_seconds),
-		"ledge_tiles": _number(room.arena.flag_height_tiles()),
-		"jump_tiles": _number(tuning.jump_height_wu / cell),
 		"result_reason": reason,
 	}
 	var result := text
@@ -422,26 +521,20 @@ func _fill(text: String) -> String:
 	return result.strip_edges()
 
 
-func _roster() -> String:
-	var parts: Array[String] = []
-	for seat in room.input_router.registry.joined_seats():
-		parts.append("%d %s" % [int(seat.identity), str(seat.shape)])
-	return ", ".join(parts)
-
-
-## Glyphs for every device in play (K1 / K2 / gamepad), de-duplicated, in seat order.
+## Show one glyph only when every joined seat has the same binding; mixed seats use HUD hints.
 func _glyphs(action: String) -> String:
 	if prompt_map == null or action.is_empty():
 		return ""
 	var mapped := _map_action(action)
-	var seen: Array[String] = []
+	var shared_glyph := ""
 	for seat in room.input_router.registry.joined_seats():
 		var glyph := prompt_map.glyph(mapped, UiContext.device_for_seat(seat))
-		if not seen.has(glyph):
-			seen.append(glyph)
-	if seen.is_empty():
-		seen.append(prompt_map.glyph(mapped, "k1"))
-	return GLYPH_SEPARATOR.join(seen)
+		if shared_glyph.is_empty():
+			shared_glyph = glyph
+		elif shared_glyph != glyph:
+			# Different seats keep their own actionable hints in the HUD score rows.
+			return ""
+	return shared_glyph if not shared_glyph.is_empty() else prompt_map.glyph(mapped, "k1")
 
 
 func _map_action(action: String) -> String:

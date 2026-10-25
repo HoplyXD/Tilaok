@@ -14,7 +14,7 @@ From the repository root, launch with Godot 4.7.2:
 & 'D:\Downloads\Godot_v4.7.2-stable_win64_console.exe' --path 'tilaok!'
 ```
 
-Join with a local keyboard or gamepad, ready up in the Lobby, pick an egg in Pugad, then build during the shared 10-second BUILD window or save your one item for play. The final 3 seconds show `3–2–1`, then `GO!` starts play immediately. The in-game tutorial and Controls screen describe each seat's bindings. Developer-only alternatives: `-- --match-route=lifecycle` opens the scheduled Place flow; `-- --match-route=first_playable` opens the first-playable slice.
+Join with a local keyboard or gamepad, ready up in the Lobby, pick an egg in Pugad, then build during the shared 10-second BUILD window or save your one item for play. The final 3 seconds show `3–2–1`, then `GO!` starts play immediately. The first match uses the guided tutorial stage; use **Library → How to Play → Replay tutorial** to restart its lessons. Pause → Skip tutorial skips the session-only coach. Each player should use the controls shown in their own score row. Developer-only alternatives: `-- --match-route=lifecycle` opens the scheduled Place flow; `-- --match-route=first_playable` opens the first-playable slice.
 
 ## Project documents
 

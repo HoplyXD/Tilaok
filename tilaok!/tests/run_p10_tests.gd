@@ -1765,8 +1765,8 @@ func _test_placeholder_audit() -> void:
 	var rows := PlaceholderAudit.slot_rows(definitions)
 	var files := PlaceholderAudit.placeholder_files()
 	_check(
-		rows.size() >= 16,
-		"audit lists remaining placeholder slots after P24 art (%d)" % rows.size()
+		rows.size() >= 12,
+		"audit lists remaining placeholder slots after P24 and Gulong art (%d)" % rows.size()
 	)
 	_check(files.size() >= 23, "audit finds every PLACEHOLDER_* file (%d)" % files.size())
 	_check(

@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Windowed Pugad and Library preview captures for the three P24 art families.
+## Windowed Pugad and Library preview captures for the item art families.
 
 const FLOW_SCENE := preload("res://scenes/flow/game_flow.tscn")
 const VIEW_SIZE := Vector2i(1920, 1080)
@@ -9,6 +9,7 @@ const P24_VARIANTS := [
 	"hazard.bubble_planter.path_1x3",
 	"hazard.rail_trumpo.rail_5x1",
 	"hazard.parol_pulse.span_5x1",
+	"move.tire_spring.tire_2x2",
 ]
 
 var failures := 0
@@ -104,7 +105,7 @@ func _save_manifest(output_dir: String) -> void:
 	var manifest: String = (
 		"# P24 selection-preview captures\n\nGodot "
 		+ Engine.get_version_info().string
-		+ "; 1920×1080; windowed. Pugad uses the normal offline match UI with three P24 variant "
+		+ "; 1920×1080; windowed. Pugad uses the normal offline match UI with four item variant "
 		+ "previews injected for this visual showcase. The Library capture uses its real screen and "
 		+ "shared ItemEggPreview with the `items_lab` catalog so the not-yet-release-enabled Bula art "
 		+ "can be inspected. These are synthetic presentation captures, not proof of item release "

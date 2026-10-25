@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" uid="uid://vcostmhwca2m" path="res://scripts/items/item_visual_set.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbfukw8trs4iv" path="res://scripts/items/item_visual_slot.gd" id="2"]
-[ext_resource type="Texture2D" uid="uid://mum1ge0kptbm" path="res://assets/items/move.tire_spring/PLACEHOLDER_body.svg" id="3"]
-[ext_resource type="Texture2D" uid="uid://ctwtrlplskodq" path="res://assets/items/move.tire_spring/PLACEHOLDER_body_compressed.svg" id="4"]
+[ext_resource type="Texture2D" uid="uid://cvnakij7k1dtw" path="res://assets/tiles/tire.png" id="3"]
 [ext_resource type="AudioStream" uid="uid://tbqa02vj84le" path="res://assets/items/move.tire_spring/PLACEHOLDER_sfx_launch.wav" id="5"]
 
 [sub_resource type="Resource" id="Slot_body"]
@@ -11,16 +10,18 @@ script = ExtResource("2")
 slot_id = "body"
 frames = Array[Texture2D]([ExtResource("3")])
 fps = 2.0
+placeholder = false
 final_owner = "Art/UI (Jorge/Ivie)"
-source_note = "Temporary placeholder adapted from the player's sketch; human art team owns final production art."
+source_note = "Uses the existing Gulong scene tire sprite from assets/tiles/tire.png; creator confirmation and human art review remain pending."
 
 [sub_resource type="Resource" id="Slot_body_compressed"]
 script = ExtResource("2")
 slot_id = "body_compressed"
-frames = Array[Texture2D]([ExtResource("4")])
+frames = Array[Texture2D]([ExtResource("3")])
 fps = 2.0
+placeholder = false
 final_owner = "Art/UI (Jorge/Ivie)"
-source_note = "Temporary compressed placeholder adapted from the player's sketch; human art team owns final production art."
+source_note = "Uses the existing Gulong scene tire sprite from assets/tiles/tire.png in the egg preview's compressed animation state; creator confirmation and human art review remain pending."
 
 [sub_resource type="Resource" id="Slot_sfx_launch"]
 script = ExtResource("2")

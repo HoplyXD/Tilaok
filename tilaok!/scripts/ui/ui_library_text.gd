@@ -109,6 +109,8 @@ static func build_context(
 		"round_limit": str(tuning.match_round_limit),
 		"pugad_s": str(roundi(tuning.match_pugad_seconds)),
 		"place_s": str(roundi(tuning.match_place_seconds)),
+		"build_s": str(roundi(OfflineLiveBuildMatchRoom.DEFAULT_BUILD_PHASE_SECONDS)),
+		"construction_s": str(roundi(OfflineLiveBuildMatchRoom.DEFAULT_CONSTRUCTION_SECONDS)),
 		"finish_window": str(roundi(tuning.match_race_after_first_finish_seconds)),
 		"hard_cap": str(roundi(tuning.match_race_hard_cap_seconds)),
 		"head_start": str(roundi(tuning.lagsanay_opening_head_start_seconds)),

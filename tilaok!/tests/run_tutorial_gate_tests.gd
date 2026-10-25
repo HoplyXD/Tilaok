@@ -72,18 +72,33 @@ func _run() -> void:
 		await physics_frame
 	await _test_base_route_reaches_platform_d()
 	if OS.get_cmdline_user_args().has("--quick"):
-		print("NO_BUILD_SEARCH skipped (--quick)")
-	else:
-		await _test_no_build_gate()
+		print("GATE_SEARCHES skipped (--quick): no-build and placement solution searches")
+		await _cleanup_room()
+		print("TUTORIAL_GATE_TESTS quick checks=%d failures=%d" % [checks, failures])
+		quit(1 if failures > 0 else 0)
+		return
+	await _test_no_build_gate()
 	await _test_piece_solutions()
 	await _test_wrong_placements()
 	await _test_layout_persists_across_rounds()
-	room.queue_free()
-	await process_frame
+	await _cleanup_room()
 	print(
 		"TUTORIAL_GATE_TESTS checks=%d failures=%d attempts=%d" % [checks, failures, _attempts_run]
 	)
 	quit(1 if failures > 0 else 0)
+
+
+func _cleanup_room() -> void:
+	if room != null and is_instance_valid(room):
+		room.queue_free()
+		await process_frame
+	room = null
+	actor = null
+	if tutorial_layout != null:
+		tutorial_layout.map_scene = null
+	tutorial_layout = null
+	MapCatalog.reload()
+	await process_frame
 
 
 func _check(condition: bool, label: String) -> void:
@@ -158,13 +173,24 @@ func _test_tutorial_layout_contract() -> void:
 	var tuning := GameplayTuning.new()
 	var default_arena := ArenaDefinition.new(tuning)
 	var arena := ArenaDefinition.new(tuning, tutorial_layout)
+	var map_description := str(MapCatalog.entry_for("tutorial").get("description", ""))
+	_check(
+		(
+			map_description.to_lower().contains("practice stage")
+			and not map_description.to_lower().contains("without building")
+		),
+		"tutorial map description no longer promises that building is mandatory"
+	)
 	_check(arena.layout_id == "tutorial", "tutorial layout id")
 	var shared := ["arena.floor", "arena.base_a", "arena.base_b", "arena.base_c", "arena.base_d"]
 	for surface_id in shared:
+		if surface_id == "arena.floor":
+			continue
 		_check(
 			_rect_of(arena, _tid(surface_id)) == _rect_of(default_arena, surface_id),
 			"tutorial keeps %s identical to the default stage" % surface_id
 		)
+	_check(_rect_of(arena, "arena.floor").has_area(), "tutorial-specific floor geometry is present")
 	_check(
 		(
 			arena.spawn_feet == default_arena.spawn_feet
